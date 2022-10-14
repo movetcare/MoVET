@@ -16,7 +16,7 @@ importers:
       prettier: 2.7.1
       turbo: 1.5.6
 
-  apps/docs:
+  apps/app.movetcare.com:
     specifiers:
       '@babel/core': ^7.0.0
       '@types/node': ^18.8.5
@@ -37,7 +37,7 @@ importers:
       ui: link:../../packages/ui
     devDependencies:
       '@babel/core': 7.19.3
-      '@types/node': 18.8.5
+      '@types/node': 18.11.0
       '@types/react': 18.0.21
       eslint: 8.25.0
       eslint-config-custom: link:../../packages/eslint-config-custom
@@ -45,7 +45,7 @@ importers:
       tsconfig: link:../../packages/tsconfig
       typescript: 4.8.4
 
-  apps/web:
+  apps/movetcare.com:
     specifiers:
       '@babel/core': ^7.0.0
       '@types/node': ^18.8.5
@@ -66,7 +66,7 @@ importers:
       ui: link:../../packages/ui
     devDependencies:
       '@babel/core': 7.19.3
-      '@types/node': 18.8.5
+      '@types/node': 18.11.0
       '@types/react': 18.0.21
       eslint: 8.25.0
       eslint-config-custom: link:../../packages/eslint-config-custom
@@ -532,8 +532,8 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: false
 
-  /@types/node/18.8.5:
-    resolution: {integrity: sha512-Bq7G3AErwe5A/Zki5fdD3O6+0zDChhg671NfPjtIcbtzDNZTv4NPKMRFr7gtYPG7y+B8uTiNK4Ngd9T0FTar6Q==}
+  /@types/node/18.11.0:
+    resolution: {integrity: sha512-IOXCvVRToe7e0ny7HpT/X9Rb2RYtElG1a+VshjwT00HxrM2dWBApHQoqsI6WiY7Q03vdf2bCrIGzVrkF/5t10w==}
     dev: true
 
   /@types/prop-types/15.7.5:

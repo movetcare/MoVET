@@ -11,12 +11,15 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
+    "test": "echo 'RUNNING TESTS...'",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "update": "pnpm -r update -i -L",
-    "clean": "pnpm run clean:modules && pnpm run clean:lock && pnpm install && pnpm run build --force",
+    "clean": "pnpm run clean:modules && pnpm run clean:lock && pnpm run clean:turbo && pnpm install && pnpm run build --force",
     "clean:builds": "find ./ -name .next -type d -exec rm -rf {} + && find ./ -name dist -type d -exec rm -rf {} +",
     "clean:modules": "find ./ -name node_modules -type d -exec rm -rf {} +",
-    "clean:lock": "find ./ -name packages-lock.json -type d -exec rm -rf {} + && find ./ -name yarn.lock -type d -exec rm -rf {} + && find ./ -name pnpm-lock.yaml -type d -exec rm -rf {} +"
+    "clean:turbo": "find ./ -name .turbo -type d -exec rm -rf {} +",
+    "clean:lock": "find ./ -name packages-lock.json -type f -exec rm -rf {} + && find ./ -name yarn.lock -type f -exec rm -rf {} + && find ./ -name pnpm-lock.yaml -type f -exec rm -rf {} +",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:0.0.0",
@@ -33,7 +36,7 @@
     "apps/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix"
     ],
-    "packages/ui/**/*.{js,ts,jsx,tsx}": [
+    "packages/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix"
     ],
     "*.json": [
