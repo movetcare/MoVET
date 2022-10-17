@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import {useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { Transition } from '@headlessui/react';
-import {Button} from 'ui';
-import kebabCase from 'lodash.kebabcase';
-import { isAndroid } from 'react-device-detect';
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { Transition } from "@headlessui/react";
+import { Button } from "ui";
+import kebabCase from "lodash.kebabcase";
+import { isAndroid } from "react-device-detect";
 import {
   faArrowRight,
   faBell,
@@ -16,9 +16,9 @@ import {
   faSms,
   faStar,
   faTimes,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Image from 'next/image';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 // import {environment} from 'utilities';
 
 interface NavigationItem {
@@ -32,7 +32,7 @@ const Header: React.FC = () => {
   const [showBanner, setShowBanner] = useState<boolean>(true);
   const [fadeIn, setShowFadeIn] = useState<boolean>(false);
   const [mobileMenu, toggleMobileMenu] = useState(true);
-  const pathName = useRouter().pathname.split('/')[1];
+  const pathName = useRouter().pathname.split("/")[1];
 
   // const announcementBannerBackgroundColor =
   //   announcement?.color === '#DAAA00'
@@ -88,30 +88,30 @@ const Header: React.FC = () => {
       //   text: 'About',
       // },
       {
-        link: '/services',
-        text: 'Services',
+        link: "/services",
+        text: "Services",
       },
       {
-        link: '/reviews',
-        text: 'Reviews',
+        link: "/reviews",
+        text: "Reviews",
       },
       {
-        link: '/careers',
-        text: 'Careers',
+        link: "/careers",
+        text: "Careers",
       },
       {
-        link: '/blog',
-        text: 'Blog',
+        link: "/blog",
+        text: "Blog",
       },
       {
-        link: '/contact',
-        text: 'Contact',
+        link: "/contact",
+        text: "Contact",
       },
     ]);
   }, []);
 
   useEffect(() => {
-    if (displayAnnouncement === 'false' || router.pathname === '/careers') {
+    if (displayAnnouncement === "false" || router.pathname === "/careers") {
       setShowBanner(false);
     }
     setTimeout(() => {
@@ -121,29 +121,29 @@ const Header: React.FC = () => {
 
   const generateNavigationItem = (
     data: NavigationItem,
-    size: 'desktop' | 'mobile'
+    size: "desktop" | "mobile"
   ) => {
-    let headerClassName = '';
-    if (size === 'desktop') {
+    let headerClassName = "";
+    if (size === "desktop") {
       headerClassName =
         pathName.toLowerCase() === data.text.toLowerCase()
-          ? 'font-bold text-movet-red px-3 py-2 rounded-md text-sm cursor-pointer'
-          : 'text-movet-black hover:text-movet-red hover:bg-opacity-75 px-3 py-2 rounded-md text-sm font-medium cursor-pointer';
+          ? "font-bold text-movet-red px-3 py-2 rounded-md text-sm cursor-pointer"
+          : "text-movet-black hover:text-movet-red hover:bg-opacity-75 px-3 py-2 rounded-md text-sm font-medium cursor-pointer";
     } else {
       headerClassName =
         pathName.toLowerCase() === data.text.toLowerCase()
-          ? 'font-bold text-movet-red block px-3 py-2 rounded-md text-base cursor-pointer'
-          : 'text-movet-black hover:bg-movet-brown hover:text-movet-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer';
+          ? "font-bold text-movet-red block px-3 py-2 rounded-md text-base cursor-pointer"
+          : "text-movet-black hover:bg-movet-brown hover:text-movet-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer";
     }
     return (
       <div
         id={`${size}-${kebabCase(data.text)}`}
-        className={'self-center mx-4 md:mx-0 lg:mx-2'}
+        className={"self-center mx-4 md:mx-0 lg:mx-2"}
       >
         <Link href={data.link} passHref>
           <span
             className={
-              headerClassName + ' font-abside ease-in-out duration-500'
+              headerClassName + " font-abside ease-in-out duration-500"
             }
             onClick={() => {
               toggleMobileMenu(!mobileMenu);
@@ -281,14 +281,8 @@ const Header: React.FC = () => {
       </Transition> */}
       <nav
         className={`flex flex-row
-        ${
-          showBanner && fadeIn 
-              ? ' sm:mt-20'
-              : ' sm:mt-16'
-            
-         
-        }
-        ${router.pathname === '/' ? ' bg-movet-white' : ' bg-white'}`}
+        ${showBanner && fadeIn ? " sm:mt-20" : " sm:mt-16"}
+        ${router.pathname === "/" ? " bg-movet-white" : " bg-white"}`}
       >
         <div className="w-full z-20">
           <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -314,7 +308,7 @@ const Header: React.FC = () => {
                     mainNavigationElements.map(
                       (navigationItem: NavigationItem) => (
                         <div key={`desktop-${kebabCase(navigationItem.text)}`}>
-                          {generateNavigationItem(navigationItem, 'desktop')}
+                          {generateNavigationItem(navigationItem, "desktop")}
                         </div>
                       )
                     )}
@@ -322,7 +316,7 @@ const Header: React.FC = () => {
                     <a
                       className="text-center ease-in-out duration-500 w-full lg:w-40 flex justify-center items-center border border-transparent shadow-sm text-movet-white text-sm font-medium font-abside uppercase bg-movet-brown group-hover:bg-movet-dark-brown hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-brown py-2 px-6 rounded-full"
                       target="_blank"
-                      href={'sms://+17205077387'}
+                      href={"sms://+17205077387"}
                       rel="noopener noreferrer"
                     >
                       <FontAwesomeIcon
@@ -339,8 +333,8 @@ const Header: React.FC = () => {
                       target="_blank"
                       href={
                         isAndroid
-                          ? 'https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US'
-                          : 'https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556'
+                          ? "https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US"
+                          : "https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556"
                       }
                       rel="noopener noreferrer"
                     >
@@ -375,7 +369,7 @@ const Header: React.FC = () => {
                     (navigationItem: NavigationItem) => {
                       return (
                         <div key={`mobile-${kebabCase(navigationItem.text)}`}>
-                          {generateNavigationItem(navigationItem, 'mobile')}
+                          {generateNavigationItem(navigationItem, "mobile")}
                         </div>
                       );
                     }
@@ -386,7 +380,7 @@ const Header: React.FC = () => {
                   <a
                     className="w-full flex justify-center items-center border border-transparent shadow-sm text-movet-white text-base font-abside font-medium uppercase bg-movet-brown group-hover:bg-movet-black hover:bg-movet-dark-brown focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-brown py-2 px-6 rounded-full ease-in-out duration-500"
                     target="_blank"
-                    href={'sms://+17205077387'}
+                    href={"sms://+17205077387"}
                     rel="noopener noreferrer"
                   >
                     <FontAwesomeIcon icon={faSms} size="lg" className="mr-2" />
@@ -401,8 +395,8 @@ const Header: React.FC = () => {
                     target="_blank"
                     href={
                       isAndroid
-                        ? 'https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US'
-                        : 'https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556'
+                        ? "https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US"
+                        : "https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556"
                     }
                     rel="noopener noreferrer"
                   >
@@ -418,7 +412,7 @@ const Header: React.FC = () => {
             </div>
           </Transition>
         </div>
-        {router.pathname === '/' && (
+        {router.pathname === "/" && (
           <div className="hidden sm:block absolute top-0 right-0 w-2/5 max-w-md z-10">
             <svg
               className="fill-current text-movet-tan w-full"

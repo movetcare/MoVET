@@ -7,7 +7,7 @@ import { AnalyticsTracker, environment } from "utilities";
 const MoVET = ({ Component, pageProps }: AppProps) => {
   return (
     <>
-      {environment === "development" && (
+      {environment === "production" && (
         <AnalyticsTracker trackerId="G-Y9896HXDFN" />
       )}
       <Layout>
