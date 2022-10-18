@@ -33,7 +33,7 @@ export const AnnouncementBanner = ({
   const { displayAnnouncement } = router.query;
   const [showBanner, setShowBanner] = useState<boolean>(true);
   const [fadeIn, setShowFadeIn] = useState<boolean>(false);
-  console.log("announcement", announcement);
+
   const announcementBannerBackgroundColor =
     announcement?.color === "#DAAA00"
       ? "bg-movet-yellow"

@@ -1,14 +1,45 @@
 import admin from "firebase-admin";
+import { environment } from "utilities";
+console.log("SERVER ENVIRONMENT =>", process.env.NODE_ENV);
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      project_id: "movet-care",
-      private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-      client_email: process.env.FIREBASE_CLIENT_EMAIL,
-    } as any),
-    databaseURL: "https://movet-care.firebaseio.com",
-  });
+if (environment === "development")
+  process.env.FIRESTORE_EMULATOR_HOST = `localhost:8080`;
+
+if (environment === "production") {
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        project_id: "movet-care",
+        private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+        client_email: process.env.FIREBASE_CLIENT_EMAIL,
+      } as any),
+      databaseURL: "https://movet-care.firebaseio.com",
+    });
+    admin.firestore().settings({
+      ignoreUndefinedProperties: true,
+    });
+  }
+} else {
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        project_id: "movet-care-staging",
+        private_key: process.env.STAGING_FIREBASE_PRIVATE_KEY?.replace(
+          /\\n/g,
+          "\n"
+        ),
+        client_email: process.env.STAGING_FIREBASE_CLIENT_EMAIL,
+      } as any),
+      databaseURL: "https://movet-care-staging.firebaseio.com",
+    });
+    admin.firestore().settings({
+      host: `localhost:8080`,
+      ssl: false,
+      ignoreUndefinedProperties: true,
+      experimentalForceLongPolling: true,
+    });
+  }
 }
+
 
 export default admin.firestore();

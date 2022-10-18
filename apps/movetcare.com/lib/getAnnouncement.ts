@@ -7,10 +7,8 @@ export async function getAnnouncement() {
       .doc("banner")
       .get()
       .then((doc: any) => doc.data());
-    const { color, message, title, link, isActive, icon, lastUpdated } =
-      announcement || {};
-    console.log("getAnnouncement()", {
-      lastUpdated,
+    const { color, message, title, link, isActive, icon } = announcement || {};
+    console.log("(SSG) FIRESTORE QUERY -> getAnnouncement() =>", {
       color,
       message,
       title,
@@ -19,13 +17,12 @@ export async function getAnnouncement() {
       icon,
     });
     return {
-      lastUpdated,
-      color,
-      message,
-      title,
-      link,
-      isActive,
-      icon,
+      color: color || null,
+      message: message || null,
+      title: title || null,
+      link: link || null,
+      isActive: isActive || false,
+      icon: icon || null,
     };
   } catch (error) {
     return { error };

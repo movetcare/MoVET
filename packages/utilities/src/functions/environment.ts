@@ -3,4 +3,6 @@ export const environment =
     ? "production"
     : typeof window !== "undefined" && window.location.hostname === "localhost"
     ? "development"
-    : "staging";
+    : process.env.NODE_ENV === "development"
+    ? "development"
+    : "production";
