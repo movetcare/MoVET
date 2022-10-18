@@ -16,7 +16,7 @@ import { useContext, useEffect, useState } from 'react';
 // import { SignUp } from './signup';
 import Image from 'next/image';
 
-const Footer = () => {
+export const Footer = () => {
   const router = useRouter();
   const { displayAnnouncement } = router.query;
   const [showBanner, setShowBanner] = useState<boolean>(true);
@@ -65,7 +65,7 @@ const Footer = () => {
   //     ? faInfoCircle
   //     : faIcons;
   useEffect(() => {
-    if (displayAnnouncement === 'false' || router.pathname === '/careers')
+    if (displayAnnouncement === "false" || router.pathname === "/careers")
       setShowBanner(false);
     setTimeout(() => {
       setShowFadeIn(true);
@@ -158,8 +158,8 @@ const Footer = () => {
           className="relative bottom-0 w-1/2 font-abside cursor-pointer"
           onClick={() =>
             window.open(
-              'https://www.instagram.com/nessie_themovetpup/',
-              '_blank'
+              "https://www.instagram.com/nessie_themovetpup/",
+              "_blank"
             )
           }
         >
@@ -269,15 +269,13 @@ const Footer = () => {
         </div>
       </div>
       <div className="flex flex-col justify-center items-center sm:hidden bg-movet-brown px-8">
-        <div className="my-8 text-movet-white">
-          {/* <SignUp /> */}
-        </div>
+        <div className="my-8 text-movet-white">{/* <SignUp /> */}</div>
         <div className="font-abside cursor-pointer">
           <div
             onClick={() =>
               window.open(
-                'https://www.instagram.com/nessie_themovetpup/',
-                '_blank'
+                "https://www.instagram.com/nessie_themovetpup/",
+                "_blank"
               )
             }
           >
@@ -342,10 +340,7 @@ const Footer = () => {
       </div>
       <div
         className={`flex justify-center items-center py-1 bg-movet-black text-white text-xs text-center tracking-widest${
-          showBanner && fadeIn 
-              ? ' mb-36 sm:mb-0'
-              : ' mb-16 sm:mb-0'
-          
+          showBanner && fadeIn ? " mb-36 sm:mb-0" : " mb-16 sm:mb-0"
         }`}
       >
         <p className=" mx-1">© MoVET {new Date().getFullYear()}</p>
@@ -418,5 +413,3 @@ const Footer = () => {
     </footer>
   );
 };
-
-export default Footer;
