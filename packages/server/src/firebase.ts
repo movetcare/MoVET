@@ -1,5 +1,13 @@
 import admin from "firebase-admin";
-import { environment } from "utilities";
+const environment =
+  typeof window !== "undefined" && window.location.hostname === "movetcare.com"
+    ? "production"
+    : typeof window !== "undefined" && window.location.hostname === "localhost"
+    ? "development"
+    : process.env.NODE_ENV === "development"
+    ? "development"
+    : "production";
+
 console.log("SERVER ENVIRONMENT =>", process.env.NODE_ENV);
 
 if (environment === "development")
@@ -40,6 +48,5 @@ if (environment === "production") {
     });
   }
 }
-
 
 export default admin.firestore();

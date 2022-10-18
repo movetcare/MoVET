@@ -1,6 +1,6 @@
-import admin from "./firebase-admin";
+import admin from "../firebase";
 
-export async function getAnnouncement() {
+export const getAnnouncement = async () => {
   try {
     const announcement = await admin
       .collection("alerts")
@@ -27,4 +27,4 @@ export async function getAnnouncement() {
   } catch (error) {
     return { error };
   }
-}
+};

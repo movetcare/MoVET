@@ -15,14 +15,14 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.3",
-    "firebase-admin": "^11.2.0",
     "lodash.kebabcase": "^4.1.1",
     "next": "12.3.1",
     "react": "18.2.0",
     "react-device-detect": "^2.2.2",
     "react-dom": "18.2.0",
     "ui": "workspace:*",
-    "utilities": "workspace:*"
+    "utilities": "workspace:*",
+    "server": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

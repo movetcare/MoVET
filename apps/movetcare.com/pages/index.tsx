@@ -1,8 +1,8 @@
 import Layout from "components/Layout";
-import { getAnnouncement } from "lib/getAnnouncement";
+import { getAnnouncement } from "server";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Announcement, AnnouncementBanner } from "ui";
+import { Announcement } from "ui";
 import { environment } from "utilities";
 
 export async function getStaticProps() {
