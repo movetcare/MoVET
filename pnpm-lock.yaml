@@ -57,18 +57,18 @@ importers:
       '@types/lodash.kebabcase': ^4.1.7
       '@types/node': ^18.11.0
       '@types/react': 18.0.21
-      autoprefixer: ^10.4.0
+      autoprefixer: ^10.4.12
       eslint: 8.25.0
       eslint-config-custom: workspace:*
       firebase-admin: ^11.2.0
       lodash.kebabcase: ^4.1.1
       next: 12.3.1
       next-transpile-modules: 9.1.0
-      postcss: ^8.4.4
+      postcss: ^8.4.18
       react: 18.2.0
       react-device-detect: ^2.2.2
       react-dom: 18.2.0
-      tailwindcss: ^3.0.0
+      tailwindcss: ^3.1.8
       tsconfig: workspace:*
       typescript: ^4.8.4
       ui: workspace:*
@@ -105,11 +105,11 @@ importers:
   packages/eslint-config-custom:
     specifiers:
       eslint: ^8.25.0
-      eslint-config-next: ^12.0.8
-      eslint-config-prettier: ^8.3.0
+      eslint-config-next: ^12.3.1
+      eslint-config-prettier: ^8.5.0
       eslint-config-turbo: latest
       eslint-plugin-react: 7.31.10
-      typescript: ^4.7.4
+      typescript: ^4.8.4
     devDependencies:
       eslint: registry.npmjs.org/eslint/8.25.0
       eslint-config-next: registry.npmjs.org/eslint-config-next/12.3.1_z4bbprzjrhnsfa24uvmcbu7f5q
@@ -138,7 +138,7 @@ importers:
       react-hook-form: ^7.37.0
       react-swipeable: ^7.0.0
       tsconfig: workspace:*
-      typescript: ^4.5.2
+      typescript: ^4.8.4
       yup: ^0.32.11
     devDependencies:
       '@fortawesome/fontawesome-svg-core': registry.npmjs.org/@fortawesome/fontawesome-svg-core/6.2.0

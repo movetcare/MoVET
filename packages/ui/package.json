@@ -6,7 +6,8 @@
   "license": "NONE",
   "private": true,
   "scripts": {
-    "lint": "eslint *.ts*"
+    "lint": "eslint *.ts*",
+    "update": "ncu -u"
   },
   "devDependencies": {
     "@types/react": "^18.0.21",
@@ -15,7 +16,7 @@
     "eslint-config-custom": "workspace:*",
     "react": "^18.2.0",
     "tsconfig": "workspace:*",
-    "typescript": "^4.5.2",
+    "typescript": "^4.8.4",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
