@@ -4,12 +4,10 @@
   "main": "./index.tsx",
   "types": "./index.tsx",
   "license": "NONE",
+  "private": true,
   "scripts": {
     "lint": "eslint *.ts*"
   },
-  "files": [
-    "tailwind.config.js"
-  ],
   "devDependencies": {
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
@@ -17,9 +15,7 @@
     "eslint-config-custom": "workspace:*",
     "react": "^18.2.0",
     "tsconfig": "workspace:*",
-    "typescript": "^4.5.2"
-  },
-  "dependencies": {
+    "typescript": "^4.5.2",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
