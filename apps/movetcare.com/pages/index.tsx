@@ -1,8 +1,19 @@
+import Layout from "components/Layout";
+import { getAnnouncement } from "lib/getAnnouncement";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { Announcement, AnnouncementBanner } from "ui";
 import { environment } from "utilities";
 
-export default function Home() {
+export async function getStaticProps() {
+  return {
+    props: {
+      announcement: await getAnnouncement(),
+    },
+  };
+}
+
+export default function Home({ announcement }: { announcement: Announcement }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { link } = router.query;
@@ -32,15 +43,16 @@ export default function Home() {
     }
   }, [router, link]);
   return (
-    <div className="flex flex-col items-center justify-center min-py-2">
-      <main className="w-full flex-1 overflow-x-hidden">
-        {isLoading ? (
-          <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 m-8 sm:p-8 z-50">
-            <h1>Loading, please wait...</h1>
-          </section>
-        ) : (
-          <>
-            {/* <Hero />
+    <Layout announcement={announcement}>
+      <div className="flex flex-col items-center justify-center min-py-2">
+        <main className="w-full flex-1 overflow-x-hidden">
+          {isLoading ? (
+            <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 m-8 sm:p-8 z-50">
+              <h1>Loading, please wait...</h1>
+            </section>
+          ) : (
+            <>
+              {/* <Hero />
             <Locations />
             <Amenities />
             <Services />
@@ -50,9 +62,10 @@ export default function Home() {
               <ContactForm />
             </div>
             <CallToAction /> */}
-          </>
-        )}
-      </main>
-    </div>
+            </>
+          )}
+        </main>
+      </div>
+    </Layout>
   );
 }

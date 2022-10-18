@@ -2,7 +2,6 @@ import '../tailwind.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import Head from "next/head";
 import type { AppProps } from "next/app";
-import Layout from "components/Layout";
 import { AnalyticsTracker, environment } from "utilities";
 
 const MoVET = ({ Component, pageProps }: AppProps) => {
@@ -19,9 +18,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
       {environment === "development" && (
         <AnalyticsTracker trackerId="G-Y9896HXDFN" />
       )}
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <Component {...pageProps} />
     </>
   );
 };
