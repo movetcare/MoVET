@@ -95,6 +95,7 @@ export const Button = ({
 
   return (
     <button
+      title={name}
       onClick={onClick}
       type={type}
       ref={reference}

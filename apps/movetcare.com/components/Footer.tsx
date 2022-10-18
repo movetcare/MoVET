@@ -65,8 +65,7 @@ export const Footer = () => {
   //     ? faInfoCircle
   //     : faIcons;
   useEffect(() => {
-    if (displayAnnouncement === "false" || router.pathname === "/careers")
-      setShowBanner(false);
+    if (displayAnnouncement === "false") setShowBanner(false);
     setTimeout(() => {
       setShowFadeIn(true);
     }, 1500);
@@ -180,43 +179,43 @@ export const Footer = () => {
               {/* <div className="w-"></div> */}
               <div className="w-64 grid grid-cols-3 gap-1 pb-2 mx-auto">
                 <Image
-                  height={82}
-                  width={82}
+                  height={256}
+                  width={256}
                   className="hover:opacity-70 ease-in-out duration-500"
                   src="/images/pets/nessie-1.png"
                   alt="nessie"
                 />
                 <Image
-                  height={82}
-                  width={82}
+                  height={256}
+                  width={256}
                   className="hover:opacity-70 ease-in-out duration-500"
                   src="/images/pets/nessie-2.png"
                   alt="nessie"
                 />
                 <Image
-                  height={82}
-                  width={82}
+                  height={256}
+                  width={256}
                   className="hover:opacity-70 ease-in-out duration-500"
                   src="/images/pets/nessie-3.png"
                   alt="nessie"
                 />
                 <Image
-                  height={82}
-                  width={82}
+                  height={256}
+                  width={256}
                   className="hover:opacity-70 ease-in-out duration-500"
                   src="/images/pets/nessie-4.png"
                   alt="nessie"
                 />
                 <Image
-                  height={82}
-                  width={82}
+                  height={256}
+                  width={256}
                   className="hover:opacity-70 ease-in-out duration-500"
                   src="/images/pets/nessie-5.png"
                   alt="nessie"
                 />
                 <Image
-                  height={82}
-                  width={82}
+                  height={256}
+                  width={256}
                   className="hover:opacity-70 ease-in-out duration-500"
                   src="/images/pets/nessie-6.png"
                   alt="nessie"
