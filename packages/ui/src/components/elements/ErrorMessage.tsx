@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { capitalizeFirstLetter } from "../../utils/capitalizeFirstLetter";
+import { capitalizeFirstLetter } from "../../utils";
 
 export const ErrorMessage = ({ errorMessage }: { errorMessage: string }) => (
   <Transition

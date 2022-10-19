@@ -35,14 +35,14 @@ export const Amenities = () => (
       <h5 className="text-3xl mx-auto font-semibold text-center">
         Additional Amenities
       </h5>
-      <p className="text-base w-full text-center">
+      <p className="text-lg w-full text-center">
         Available at our <span className="font-extrabold">NEW</span> Belleview
         Station location
       </p>
       <a
         href="https://goo.gl/maps/bRjYuF66CtemGSyq8"
         target="_blank"
-        className="text-sm text-center hover:underline text-movet-brown"
+        className="text-center hover:underline text-movet-brown"
         rel="noreferrer"
       >
         4912 S Newport St, Denver CO 80237

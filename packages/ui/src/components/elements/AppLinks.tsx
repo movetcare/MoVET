@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { classNames } from "../../utils/classNames";
+import { classNames } from "../../utils";
 
 export const AppLinks = ({ size = "sm" }: { size?: "sm" | "lg" }) => (
   <>

@@ -1,11 +1,11 @@
 import Link from "next/link";
-// import { SignUp } from './signup';
 import Image from "next/image";
+import { BookAnAppointmentForm } from "ui";
 
 export const Footer = () => {
   return (
     <footer className="flex-col w-full">
-      <div className="hidden sm:flex flex-row bg-white mt-40">
+      <div className="hidden sm:flex flex-row bg-movet-white">
         <div
           className="relative bottom-0 w-1/2 font-abside cursor-pointer"
           onClick={() =>
@@ -29,7 +29,6 @@ export const Footer = () => {
                   @nessie_themovetpup
                 </span>
               </div>
-              {/* <div className="w-"></div> */}
               <div className="w-64 grid grid-cols-3 gap-1 pb-2 mx-auto">
                 <Image
                   height={256}
@@ -117,7 +116,12 @@ export const Footer = () => {
               <Link href="/join-the-team">Join the Team</Link>
             </li>
           </menu> */}
-          {/* <SignUp /> */}
+          <div className="flex flex-col justify-center items-center mb-2">
+            <p className="font-abside text-2xl text-movet-white sm:text-movet-black mb-2">
+              Join MoVET Today
+            </p>
+            <BookAnAppointmentForm />
+          </div>
         </div>
       </div>
       <div className="flex flex-col justify-center items-center sm:hidden bg-movet-brown px-8">

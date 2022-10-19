@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SizeProp } from "@fortawesome/fontawesome-svg-core";
-import { classNames } from "../../utils/classNames";
+import { classNames } from "../../utils";
 import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 
 interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {

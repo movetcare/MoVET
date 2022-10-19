@@ -5,10 +5,15 @@ import { useEffect, useState } from "react";
 import {
   Announcement,
   Hero,
-  BookAnAppointment,
+  BookAnAppointmentForm,
   AppLinks,
   ServiceTypes,
   Amenities,
+  Services,
+  Hours,
+  Reviews,
+  Contact,
+  CallToAction,
 } from "ui";
 import { environment } from "utilities";
 
@@ -72,7 +77,7 @@ export default function Home({ announcement }: { announcement: Announcement }) {
                   <p className="mb-3 font-abside text-sm">
                     BOOK AN APPOINTMENT
                   </p>
-                  <BookAnAppointment autoFocus />
+                  <BookAnAppointmentForm autoFocus />
                   <div className="flex justify-center">
                     <p className="text-sm font-abside my-3">OR</p>
                   </div>
@@ -85,14 +90,11 @@ export default function Home({ announcement }: { announcement: Announcement }) {
             />
             <ServiceTypes />
             <Amenities />
-            {/*
             <Services />
             <Hours />
             <Reviews />
-            <div className="relative w-full mb-12 mt-20">
-              <ContactForm />
-            </div>
-            <CallToAction /> */}
+            <Contact />
+            <CallToAction />
           </>
         )}
       </div>

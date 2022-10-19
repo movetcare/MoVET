@@ -1,11 +1,11 @@
 import { faPaw } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button } from "../../components/elements/Button";
-import { EmailInput } from "../inputs/EmailInput";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
+import { Button } from "../../elements";
+import { EmailInput } from "../inputs";
 
-export const BookAnAppointment = ({
+export const BookAnAppointmentForm = ({
   autoFocus = false,
 }: {
   autoFocus?: boolean;

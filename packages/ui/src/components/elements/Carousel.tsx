@@ -9,7 +9,7 @@ import { Transition } from "@headlessui/react";
 import Image from "next/image";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { useSwipeable } from "react-swipeable";
-import { classNames } from "../../utils/classNames";
+import { classNames } from "../../utils";
 
 export interface imageInfo {
   src: string;

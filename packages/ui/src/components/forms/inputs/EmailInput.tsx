@@ -1,6 +1,6 @@
 import { Controller } from "react-hook-form";
-import { classNames } from "../../utils/classNames";
-import { ErrorMessage } from "../../components/elements/ErrorMessage";
+import { classNames } from "../../../utils";
+import { ErrorMessage } from "../../elements";
 
 export const EmailInput = ({
   label,

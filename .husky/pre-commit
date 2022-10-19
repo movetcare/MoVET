@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpm run build && pnpm run test && npx lint-staged && git add && git status
+pnpm run update && pnpm run build && pnpm run test && npx lint-staged && git add . && git status
