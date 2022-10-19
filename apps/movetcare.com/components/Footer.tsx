@@ -152,7 +152,7 @@ export const Footer = () => {
 
   return (
     <footer className="flex-col">
-      <div className="hidden sm:flex flex-row bg-white">
+      <div className="hidden sm:flex flex-row bg-white mt-40">
         <div
           className="relative bottom-0 w-1/2 font-abside cursor-pointer"
           onClick={() =>
