@@ -24,7 +24,7 @@
     "@hookform/resolvers": "^2.9.9",
     "next": "12.3.1",
     "react-dom": "18.2.0",
-    "react-hook-form": "^7.37.0",
+    "react-hook-form": "^7.38.0",
     "react-swipeable": "^7.0.0",
     "yup": "^0.32.11"
   }
