@@ -8,7 +8,6 @@ import { isAndroid } from "react-device-detect";
 import { faCalendarPlus, faSms } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { environment } from "utilities";
 
 interface NavigationItem {
   text: string;
@@ -91,7 +90,7 @@ export const Header = () => {
   return (
     <>
       <nav
-        className={`flex flex-row ${
+        className={`w-full flex flex-row ${
           router.pathname === "/" ? " bg-movet-white" : " bg-white"
         }`}
       >

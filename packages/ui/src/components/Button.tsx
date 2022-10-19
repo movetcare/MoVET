@@ -15,7 +15,7 @@ interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   screenReaderText?: string;
   iconColor?: string;
   shape?: "wide" | "tall" | "round";
-  name?: string;
+  title?: string;
   iconSize?: SizeProp;
   color?: "black" | "red" | "white";
   type?: "button" | "submit" | "reset";
@@ -33,7 +33,7 @@ export const Button = ({
   iconColor = "white",
   onClick,
   shape = "round",
-  name,
+  title,
   iconSize = "lg",
   color,
   type = "button",
@@ -95,7 +95,7 @@ export const Button = ({
 
   return (
     <button
-      title={name}
+      title={title}
       onClick={onClick}
       type={type}
       ref={reference}
@@ -113,7 +113,6 @@ export const Button = ({
           : "",
         className ? className : ""
       )}
-      data-cy={name}
       {...rest}
     >
       {screenReaderText && <span className="sr-only">{screenReaderText}</span>}

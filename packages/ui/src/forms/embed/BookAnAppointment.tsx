@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { faPaw } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "../../components/Button";
@@ -6,12 +5,14 @@ import { EmailInput } from "../../components/inputs/EmailInput";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 
-export const BookAnAppointment = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+export const BookAnAppointment = ({
+  autoFocus = false,
+}: {
+  autoFocus?: boolean;
+}) => {
   const {
     control,
     handleSubmit,
-    reset,
     formState: { isDirty, errors },
   } = useForm({
     mode: "onSubmit",
@@ -27,8 +28,6 @@ export const BookAnAppointment = () => {
     },
   });
   const onSubmit = async (data: any) => {
-    setIsLoading(true);
-    setIsLoading(false);
     window.open(
       `https://app.movetcare.com/book-an-appointment?email=${data.email
         ?.toLowerCase()
@@ -42,21 +41,20 @@ export const BookAnAppointment = () => {
       className="flex justify-center items-top"
     >
       <EmailInput
-        autoFocus
+        autoFocus={autoFocus}
         required
-        disabled={isLoading}
         name="email"
         errors={errors}
         control={control}
         placeholder={"Your Email Address"}
       />
       <Button
+        title="Book an Appointment"
         type="submit"
         icon={faPaw}
         iconSize={"lg"}
-        disabled={!isDirty || isLoading}
+        disabled={!isDirty}
         color="red"
-        loading={isLoading}
         text=""
         className={"ml-2 mr-0 mt-1"}
         onClick={handleSubmit(onSubmit)}

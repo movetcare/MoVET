@@ -103,6 +103,7 @@ export const AnnouncementBanner = ({
           enterFrom="opacity-0"
           enterTo="opacity-100"
           leaveFrom="opacity-100"
+          className="w-full"
         >
           <div className="hidden sm:block relative inset-x-0 top-0 z-50">
             <div className={`py-4 px-4 ${announcementBannerBackgroundColor}`}>

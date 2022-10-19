@@ -65,7 +65,7 @@ export default function Home({ announcement }: { announcement: Announcement }) {
                   <p className="mb-3 font-abside text-sm">
                     BOOK AN APPOINTMENT
                   </p>
-                  <BookAnAppointment />
+                  <BookAnAppointment autoFocus />
                   <div className="flex justify-center">
                     <p className="text-sm font-abside my-3">OR</p>
                   </div>
