@@ -2,7 +2,14 @@ import Layout from "components/Layout";
 import { getAnnouncement } from "server";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Announcement, Hero, BookAnAppointment, AppLinks } from "ui";
+import {
+  Announcement,
+  Hero,
+  BookAnAppointment,
+  AppLinks,
+  ServiceTypes,
+  Amenities,
+} from "ui";
 import { environment } from "utilities";
 
 export async function getStaticProps() {
@@ -76,8 +83,9 @@ export default function Home({ announcement }: { announcement: Announcement }) {
               }
               imageUrl="/images/pets/home-appointment-2.jpg"
             />
-            {/* <Locations />
+            <ServiceTypes />
             <Amenities />
+            {/*
             <Services />
             <Hours />
             <Reviews />

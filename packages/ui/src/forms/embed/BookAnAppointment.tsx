@@ -1,7 +1,7 @@
 import { faPaw } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button } from "../../components/Button";
-import { EmailInput } from "../../components/inputs/EmailInput";
+import { Button } from "../../components/elements/Button";
+import { EmailInput } from "../inputs/EmailInput";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 
