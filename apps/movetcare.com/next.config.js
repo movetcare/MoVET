@@ -8,4 +8,7 @@ module.exports = withTM({
     defaultLocale: "en",
   },
   images: { domains: ["images.unsplash.com", "storage-us.provetcloud.com"] },
+  experimental: {
+    nextScriptWorkers: true,
+  },
 });

@@ -3,10 +3,10 @@ import Script from "next/script";
 export const AnalyticsTracker = ({ trackerId }: { trackerId: string }) => (
   <>
     <Script
-      strategy="afterInteractive"
+      strategy="worker"
       src={`https://www.googletagmanager.com/gtag/js?id=${trackerId}`}
     />
-    <Script strategy="afterInteractive" id="gtag">
+    <Script strategy="worker" id="gtag">
       {`
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
