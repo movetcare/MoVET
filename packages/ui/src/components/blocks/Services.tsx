@@ -176,7 +176,9 @@ export const Services = ({
       {router.route === "/services" ? (
         <h2 className="text-4xl text-center my-8">Services</h2>
       ) : (
-        <h3 className="text-4xl text-center mt-16">Our Services</h3>
+        <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-black mt-8">
+          Our Services
+        </h2>
       )}
       <div
         className={`flex flex-col sm:flex-row sm:max-w-screen-lg py-8 lg:px-8 relative z-20 text-lg mx-auto${
@@ -212,9 +214,9 @@ export const Services = ({
             enterFrom="opacity-0"
             enterTo="opacity-100"
           >
-            <h5 className="text-3xl text-movet-red font-bold">
+            <h3 className="text-2xl text-movet-red font-bold">
               {kindsOfService[activeService].name}
-            </h5>
+            </h3>
             <div>
               <div>
                 <p>{kindsOfService[0].description}</p>
@@ -243,9 +245,9 @@ export const Services = ({
             enterFrom="opacity-0"
             enterTo="opacity-100"
           >
-            <h5 className="text-3xl text-movet-red font-bold">
+            <h3 className="text-2xl text-movet-red font-bold">
               {kindsOfService[activeService].name}
-            </h5>
+            </h3>
 
             <div>
               <div>
@@ -272,9 +274,9 @@ export const Services = ({
             enterFrom="opacity-0"
             enterTo="opacity-100"
           >
-            <h5 className="text-3xl text-movet-red font-bold">
+            <h3 className="text-2xl text-movet-red font-bold">
               {kindsOfService[activeService].name}
-            </h5>
+            </h3>
             <div>
               <div>
                 <p>{kindsOfService[2].description}</p>
@@ -319,9 +321,9 @@ export const Services = ({
             enterFrom="opacity-0"
             enterTo="opacity-100"
           >
-            <h5 className="text-3xl text-movet-red font-bold">
+            <h3 className="text-2xl text-movet-red font-bold">
               {kindsOfService[activeService].name}
-            </h5>
+            </h3>
 
             <div>
               <p> {kindsOfService[3].description}</p>
@@ -333,9 +335,9 @@ export const Services = ({
             enterFrom="opacity-0"
             enterTo="opacity-100"
           >
-            <h5 className="text-3xl text-movet-red font-bold">
+            <h3 className="text-2xl text-movet-red font-bold">
               {kindsOfService[activeService].name}
-            </h5>
+            </h3>
             <div>
               <p className="font-bold mb-4">
                 There are some diagnostic tests and procedures that require

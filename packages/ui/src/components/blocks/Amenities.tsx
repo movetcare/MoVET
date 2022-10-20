@@ -31,10 +31,10 @@ const amenities: {
 ];
 export const Amenities = () => (
   <div className="relative z-30 my-12 sm:px-8 sm:max-w-screen-lg sm:mx-auto">
-    <div className="-mt-2 sm:mb-16 flex flex-col">
-      <h5 className="text-3xl mx-auto font-semibold text-center">
+    <div className="-mt-2 sm:mb-16 flex flex-col mx-4">
+      <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-black">
         Additional Amenities
-      </h5>
+      </h2>
       <p className="text-lg w-full text-center">
         Available at our <span className="font-extrabold">NEW</span> Belleview
         Station location
@@ -108,7 +108,7 @@ export const Amenities = () => (
                   <h3 className="text-2xl tracking-wide">
                     {serviceStyle?.name}
                   </h3>
-                  <p className="text-p-2 my-3 tracking-tight">
+                  <p className="text-base my-3 tracking-tight">
                     {serviceStyle?.description}
                   </p>
                 </div>

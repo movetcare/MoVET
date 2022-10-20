@@ -54,9 +54,9 @@ export const Reviews = () => (
           </div>
         </div>
         <div className="text-center text-white max-w-lg relative z-20">
-          <h5 className="text-4xl mb-4 tracking-wide mt-10 font-bold whitespace-nowrap">
+          <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white">
             Our Happy Clients
-          </h5>
+          </h2>
           <p className="text-lg">
             Online reviews from great clients like you help others to feel
             confident about choosing MoVET and will help our business grow.
@@ -188,10 +188,7 @@ export const Reviews = () => (
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-center items-center max-w-7xl mx-auto sm:p-4">
-        <h5 className="text-3xl tracking-wide font-bold whitespace-nowrap text-movet-white italic md:mb-4 mt-10 sm:mt-8">
-          Testimonials
-        </h5>
+      <div className="flex flex-col justify-center items-center max-w-7xl mx-auto sm:p-4 mt-8">
         <ClientReviews />
       </div>
     </div>

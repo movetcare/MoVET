@@ -21,17 +21,17 @@ export const Hero = ({
         <div className="sm:w-1/2 flex justify-center">
           <div className="w-80 relative z-10 sm:text-center my-0 sm:mt-10 md:my-0">
             {title && (
-              <h1 className="first-letter:tracking-wide text-slogan-1 whitespace-nowrap mb-1.5">
+              <h1 className="text-2xl sm:text-3xl whitespace-nowrap mb-1.5">
                 {title}
               </h1>
             )}
             {secondTitle && (
-              <h1 className="text-slogan-2 sm:text-6xl text-movet-red mb-4">
+              <h1 className="text-4xl sm:text-6xl text-movet-red mb-4">
                 {secondTitle}
               </h1>
             )}
             {description && (
-              <p className="text-lg font-bold font-abside leading-6 text-center">
+              <p className="text-base sm:text-lg font-bold font-abside leading-6 text-center">
                 {description}
               </p>
             )}

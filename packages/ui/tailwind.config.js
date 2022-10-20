@@ -27,14 +27,5 @@ module.exports = {
       "source-sans-pro": "Source Sans Pro",
       "source-sans-pro-italic": "Source Sans Pro Italic",
     },
-    fontSize: {
-      "slogan-1": ["1.75rem", "2rem"],
-      "slogan-2": ["2.75rem", "1"],
-      "p-1": [".75rem", "1.125rem"],
-      "p-2": ["1rem", "1.35rem"],
-    },
-    borderRadius: {
-      image: "100% 50% / 50% 100% / 50% 100% / 100%",
-    },
   },
 };

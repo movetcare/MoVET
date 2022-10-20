@@ -122,6 +122,7 @@ export const AnnouncementBanner = ({
                           href={`https://movetcare.com${announcement?.link}`}
                           target="_blank"
                           rel="noreferrer"
+                          aria-label="Announcement Link"
                           className="flex items-center justify-center ml-0.5"
                         >
                           <FontAwesomeIcon
@@ -146,6 +147,7 @@ export const AnnouncementBanner = ({
                           href={`https://movetcare.com${announcement?.link}`}
                           target="_blank"
                           rel="noreferrer"
+                          aria-label="Announcement Link"
                         >
                           <>
                             <p className="ml-8 font-medium text-white my-0 italic text-lg hover:text-opacity-80">
@@ -174,6 +176,7 @@ export const AnnouncementBanner = ({
                         href={`https://movetcare.com${announcement?.link}`}
                         target="_blank"
                         rel="noreferrer"
+                        aria-label="Announcement Link"
                       >
                         <p
                           className={`w-full flex justify-center border border-transparent shadow-sm text-sm font-abside font-medium uppercase bg-movet-white group-hover:bg-opacity-80 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red py-2 px-6 rounded-full ease-in-out duration-500 cursor-pointer ${announcementBannerTextColor}`}
@@ -236,6 +239,7 @@ export const AnnouncementBanner = ({
                             href={`https://movetcare.com${announcement?.link}`}
                             target="_blank"
                             rel="noreferrer"
+                            aria-label="Announcement Link"
                           >
                             <span
                               className={`flex p-2 rounded-xl justify-center items-center bg-movet-white text-lg h-9 w-9 hover:bg-opacity-80 ease-in-out duration-500 ${announcementBannerTextColor}`}
@@ -251,6 +255,7 @@ export const AnnouncementBanner = ({
                               href={`https://movetcare.com${announcement?.link}`}
                               target="_blank"
                               rel="noreferrer"
+                              aria-label="Announcement Link"
                             >
                               <p className="ml-8 font-medium text-white my-0 italic text-base hover:text-opacity-80">
                                 {announcement?.title}
@@ -260,6 +265,7 @@ export const AnnouncementBanner = ({
                               href={`https://movetcare.com${announcement?.link}`}
                               target="_blank"
                               rel="noreferrer"
+                              aria-label="Announcement Link"
                             >
                               <p className="ml-8 font-medium text-white my-0 italic text-sm hover:text-opacity-80">
                                 {announcement?.message}
@@ -272,6 +278,7 @@ export const AnnouncementBanner = ({
                             href={`https://movetcare.com${announcement?.link}`}
                             target="_blank"
                             rel="noreferrer"
+                            aria-label="Announcement Link"
                           >
                             <p
                               className={`w-full flex justify-center border border-transparent shadow-sm text-xs font-abside font-medium uppercase bg-movet-white group-hover:bg-opacity-80 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-blue py-2 px-6 rounded-full ease-in-out duration-500 cursor-pointer ${announcementBannerTextColor}`}

@@ -18,12 +18,12 @@ export const Hours = () => (
         </svg>
       </div>
       <div className="relative z-20 pt-12 px-8 max-w-screen-lg mx-auto mb-20 lg:mb-12">
-        <h3 className="text-4xl text-center font-bold -mt-4 mb-12">
+        <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white -mt-4 mb-12">
           Hours of Operation
-        </h3>
+        </h2>
         <div className="grid sm:grid-cols-2 gap-y-12 gap-x-8 mb-12">
           <div className="w-full max-w-lg">
-            <h3 className="text-2xl text-center font-bold pt-2">
+            <h3 className="text-xl text-center font-bold pt-2">
               MoVET @ Belleview Station
             </h3>
             <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
@@ -71,7 +71,7 @@ export const Hours = () => (
             </a>
           </div>
           <div className="w-full max-w-lg  whitespace-nowrap">
-            <h3 className="text-2xl text-center font-bold">
+            <h3 className="text-xl text-center font-bold">
               Clinic Walk-In Hours
             </h3>
             <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
@@ -92,7 +92,7 @@ export const Hours = () => (
             </div>
           </div>
           <div className="w-full max-w-lg items-center">
-            <h3 className="text-2xl text-center">Housecalls</h3>
+            <h3 className="text-xl text-center">Housecalls</h3>
             <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
               <div className="w-full">
                 <div className="flex w-full">
@@ -145,15 +145,15 @@ export const Hours = () => (
     </section>
     <section className="relative sm:hidden w-full bg-movet-brown text-white py-4 -mt-8">
       <div className="z-20 py-12 px-8 max-w-screen-lg mx-auto">
-        <h3 className="text-4xl text-center font-bold -mt-4 mb-12">
+        <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white -mt-4 mb-12">
           Hours of Operation
-        </h3>
+        </h2>
         <div className="flex flex-col justify-center items-center mb-12">
           <div className="w-full max-w-lg">
             <h3 className="text-xl text-center font-bold pt-2">
               MoVET @ Belleview Station
             </h3>
-            <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
+            <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
               <div className="w-full">
                 <div className="flex w-full">
                   <span className="whitespace-nowrap">MON - FRI</span>
@@ -201,7 +201,7 @@ export const Hours = () => (
             <h3 className="text-xl text-center font-bold">
               Clinic Walk-In Hours
             </h3>
-            <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
+            <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
               <div className="w-full text-sm sm:text-base">
                 <div className="flex w-full">
                   <span>TUESDAY</span>

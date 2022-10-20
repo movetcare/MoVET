@@ -34,9 +34,9 @@ const services: {
 export const ServiceTypes = () => (
   <section className="bg-movet-tan sm:bg-movet-white pt-8 relative w-full">
     <div className="relative z-10 -mt-2">
-      <h5 className="text-3xl mx-auto font-semibold text-center pt-32 sm:pt-0 mb-8 px-4">
+      <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-black pt-32 sm:pt-0 mb-8 px-4">
         Moving Pet Care Forward
-      </h5>
+      </h2>
       <div className="flex flex-col sm:flex-row mx-auto justify-center mt-4 mb-12 sm:mb-16 max-w-screen-lg">
         {services.map((service) => (
           <div
@@ -108,7 +108,7 @@ export const ServiceTypes = () => (
                   <h3 className="text-2xl tracking-wide">
                     {serviceStyle?.name}
                   </h3>
-                  <p className="text-p-2 my-3 tracking-tight">
+                  <p className="text-base my-3 tracking-tight">
                     {serviceStyle?.description}
                   </p>
                 </div>

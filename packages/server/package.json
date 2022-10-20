@@ -10,7 +10,7 @@
     "update": "ncu -u"
   },
   "devDependencies": {
-    "@types/node": "^18.11.2",
+    "@types/node": "^18.11.3",
     "eslint": "8.25.0",
     "eslint-config-custom": "workspace:*",
     "firebase-admin": "^11.2.0",
