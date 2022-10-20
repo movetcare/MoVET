@@ -19,6 +19,8 @@
     "clean:modules": "find ./ -name node_modules -type d -exec rm -rf {} +",
     "clean:turbo": "find ./ -name .turbo -type d -exec rm -rf {} +",
     "clean:lock": "find ./ -name packages-lock.json -type f -exec rm -rf {} + && find ./ -name yarn.lock -type f -exec rm -rf {} + && find ./ -name pnpm-lock.yaml -type f -exec rm -rf {} +",
+    "push:prod": "git push origin main",
+    "push:dev": "git push origin development",
     "prepare": "husky install"
   },
   "devDependencies": {
