@@ -190,7 +190,7 @@ export const Services = ({
             return activeService === i ? (
               <PaddedBackground className="mb-2" key={service.name}>
                 <button
-                  className="text-white text-lg font-abside text-center w-full whitespace-nowrap py-2 px-4"
+                  className="text-movet-white text-lg font-abside text-center w-full whitespace-nowrap py-2 px-4"
                   onClick={() => setActiveService(i)}
                 >
                   <BreakText text={service.name} breaker="&" />

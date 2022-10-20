@@ -90,7 +90,10 @@ export const Button = ({
           {text && <span className="ml-3">{text}</span>}
         </div>
       );
-    else content = <p className="m-0 self-center font-bold">{text}</p>;
+    else
+      content = (
+        <p className="m-0 self-center font-bold text-movet-white">{text}</p>
+      );
   }
 
   return (
