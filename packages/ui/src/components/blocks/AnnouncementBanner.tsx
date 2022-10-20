@@ -181,7 +181,7 @@ export const AnnouncementBanner = ({
                         <p
                           className={`w-full flex justify-center border border-transparent shadow-sm text-sm font-abside font-medium uppercase bg-movet-white group-hover:bg-opacity-80 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red py-2 px-6 rounded-full ease-in-out duration-500 cursor-pointer ${announcementBannerTextColor}`}
                         >
-                          Read <More></More>
+                          Read More
                           <span
                             className={`ml-2 h-3.5 w-3.5 mt-0 ${announcementBannerTextColor}`}
                           >
@@ -283,7 +283,7 @@ export const AnnouncementBanner = ({
                             <p
                               className={`w-full flex justify-center border border-transparent shadow-sm text-xs font-abside font-medium uppercase bg-movet-white group-hover:bg-opacity-80 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-blue py-2 px-6 rounded-full ease-in-out duration-500 cursor-pointer ${announcementBannerTextColor}`}
                             >
-                              Read <More></More>
+                              Read More
                               <span
                                 className={`ml-2 h-3.5 w-3.5 ${announcementBannerTextColor}`}
                               >
