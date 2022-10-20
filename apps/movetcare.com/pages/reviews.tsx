@@ -65,7 +65,7 @@ const Reviews = () => {
                   </div>
                 </div>
               </div>
-              <div className="text-center max-w-lg relative z-20 sm:mb-14 mt-0 sm:mt-6">
+              <div className="text-center max-w-lg relative z-20 sm:mb-28 mt-0 sm:mt-6">
                 <h5 className="text-3xl mb-4 tracking-wide font-bold whitespace-nowrap">
                   Leave Us a Review!
                 </h5>

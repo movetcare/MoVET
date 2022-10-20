@@ -8,6 +8,7 @@ import { isAndroid } from "react-device-detect";
 import { faCalendarPlus, faSms } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import { environment } from "utilities";
 
 interface NavigationItem {
   text: string;
@@ -137,9 +138,9 @@ export const Header = () => {
                     className="text-center ease-in-out duration-500 w-full xl:w-72 flex justify-center items-center border border-transparent shadow-sm text-movet-white text-sm font-medium font-abside uppercase bg-movet-red group-hover:bg-movet-black hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red py-2 sm:px-6 xl:px-0 rounded-full"
                     target="_blank"
                     href={
-                      isAndroid
-                        ? "https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US"
-                        : "https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556"
+                      environment === "production"
+                        ? "https://app.movetcare.com/book-an-appointment"
+                        : `http://locathost:3001/book-an-appointment`
                     }
                     rel="noopener noreferrer"
                   >
@@ -234,9 +235,9 @@ export const Header = () => {
                   className="w-full flex justify-center items-center border border-transparent shadow-sm text-movet-white text-base font-abside font-medium uppercase bg-movet-red group-hover:bg-movet-black hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red py-2 px-6 rounded-full ease-in-out duration-500"
                   target="_blank"
                   href={
-                    isAndroid
-                      ? "https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US"
-                      : "https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556"
+                    environment === "production"
+                      ? "https://app.movetcare.com/book-an-appointment"
+                      : `http://locathost:3001/book-an-appointment`
                   }
                   rel="noopener noreferrer"
                 >
