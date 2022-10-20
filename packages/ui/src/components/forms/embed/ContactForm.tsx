@@ -12,6 +12,7 @@ const Reasons = [
   { id: "general-inquiry", name: "General Inquiry" },
   { id: "appointment-request", name: "Appointment Request" },
   { id: "report-a-bug", name: "Report a Bug" },
+  { id: "relief-request", name: "Relief / Partnership Request" },
 ];
 
 export const ContactForm = () => {
@@ -75,10 +76,22 @@ export const ContactForm = () => {
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log("DATA =>", data);
-    const didSucceed = true;
-    if (didSucceed) setSubmissionSuccess(true);
-    else setSubmissionSuccess(false);
+    const submitForm = async () =>
+      (
+        await fetch("/api/contact", {
+          method: "POST",
+          body: JSON.stringify(data),
+        })
+      ).json();
+    submitForm()
+      .then((data) => {
+        console.log("DATA", data);
+        setSubmissionSuccess(true);
+      })
+      .catch((error: any) => {
+        console.error("ERROR", error);
+        setSubmissionSuccess(false);
+      });
     reset();
     setIsLoading(false);
   };

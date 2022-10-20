@@ -41,9 +41,9 @@ const PhoneInput = ({
             mask="_"
             onBlur={onBlur}
             value={value}
-            onValueChange={(target: any) => {
-              onChange(target.value);
-            }}
+            onValueChange={(target: any) =>
+              onChange(target.value.replaceAll("_", ""))
+            }
             disabled={disabled}
             readOnly={readOnly}
             autoFocus={autoFocus}
