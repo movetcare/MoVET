@@ -38,8 +38,8 @@ export default function Home({ announcement }: { announcement: Announcement }) {
       const linkParams = Object.fromEntries(
         new URLSearchParams(
           params.link
-            .replaceAll("http://localhost:3000/account/", "")
-            .replaceAll("https://movetcare.com/account/", "")
+            .replaceAll("http://localhost:3001/account/", "")
+            .replaceAll("https://app.movetcare.com/account/", "")
         ).entries()
       );
       if (environment === "development")

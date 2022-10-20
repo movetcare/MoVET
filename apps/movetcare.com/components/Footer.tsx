@@ -87,35 +87,6 @@ export const Footer = () => {
           </div>
         </div>
         <div className="w-5/12 ml-auto flex justify-evenly py-4">
-          {/* <menu className="text-center font-abside-smooth">
-            <span className="uppercase text-lg">Quick Links</span>
-            <li className="my-2 list-none">
-              <a
-                className="font-abside-smooth hover:text-movet-red"
-                target="_blank"
-                href={
-                  isAndroid
-                    ? 'https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US'
-                    : 'https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556'
-                }
-                rel="noopener noreferrer"
-              >
-                Get the App
-              </a>
-            </li>
-            <li className="my-2 list-none hover:text-movet-red">
-              <Link href="/services">Services</Link>
-            </li>
-          </menu>
-          <menu className="text-center pt-4 md:pt-0 md:ml-8 font-abside-smooth">
-            <span className="uppercase text-lg">Other</span>
-            <li className="my-2 list-none hover:text-movet-red">
-              <Link href="/relief-services">Relief Services</Link>
-            </li>
-            <li className="my-2 list-none hover:text-movet-red">
-              <Link href="/join-the-team">Join the Team</Link>
-            </li>
-          </menu> */}
           <div className="flex flex-col justify-center items-center mb-2">
             <p className="font-abside text-2xl text-movet-white sm:text-movet-black mb-2">
               Join MoVET Today
@@ -125,7 +96,12 @@ export const Footer = () => {
         </div>
       </div>
       <div className="flex flex-col justify-center items-center sm:hidden bg-movet-brown px-8">
-        <div className="my-8 text-movet-white">{/* <SignUp /> */}</div>
+        <div className="flex flex-col justify-center items-center my-8">
+          <p className="font-abside text-2xl text-movet-white sm:text-movet-black mb-2">
+            Join MoVET Today
+          </p>
+          <BookAnAppointmentForm />
+        </div>
         <div className="font-abside cursor-pointer">
           <div
             onClick={() =>

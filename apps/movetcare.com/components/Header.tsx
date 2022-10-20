@@ -69,7 +69,7 @@ export const Header = () => {
         id={`${size}-${kebabCase(data.text)}`}
         className={"self-center mx-4 md:mx-0 lg:mx-2"}
       >
-        <Link href={data.link} passHref prefetch={false}>
+        <Link href={data.link} passHref>
           <span
             className={
               headerClassName + " font-abside ease-in-out duration-500"
@@ -96,7 +96,7 @@ export const Header = () => {
       <div className="w-full z-20">
         <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-center">
-            <Link href="/" prefetch={false} passHref>
+            <Link href="/" passHref>
               <div
                 className="cursor-pointer mx-4 hover:opacity-80 ease-in-out duration-500"
                 onClick={() => {
