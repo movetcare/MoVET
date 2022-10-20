@@ -34,12 +34,12 @@ export const Header = () => {
         text: "Reviews",
       },
       {
-        link: "/careers",
-        text: "Careers",
-      },
-      {
         link: "/blog",
         text: "Blog",
+      },
+      {
+        link: "/careers",
+        text: "Careers",
       },
       {
         link: "/contact",

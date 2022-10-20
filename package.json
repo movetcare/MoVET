@@ -13,7 +13,7 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "update": "pnpm -r update -i -L && pnpm -r run update && pnpm install && pnpm run build",
+    "update": "pnpm -r update -i -L && pnpm -r run update && pnpm install && pnpm run build --force",
     "clean": "pnpm run clean:modules && pnpm run clean:lock && pnpm run clean:turbo && pnpm install && pnpm run build --force",
     "clean:builds": "find ./ -name .next -type d -exec rm -rf {} + && find ./ -name dist -type d -exec rm -rf {} +",
     "clean:modules": "find ./ -name node_modules -type d -exec rm -rf {} +",

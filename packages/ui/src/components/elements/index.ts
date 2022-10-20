@@ -4,3 +4,4 @@ export * from "./Carousel";
 export * from "./ErrorMessage";
 export * from "./ClientReviews";
 export * from "./EmergencyWarning";
+export * from "./Loader";

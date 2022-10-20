@@ -9,7 +9,7 @@ export default function ContactUs() {
         <title>Contact Us</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="bg-white max-w-3xl rounded-xl mx-auto mb-4 sm:mb-20">
+      <div className="bg-white max-w-3xl rounded-xl mx-auto mt-8 mb-8 sm:mb-20">
         <Contact />
       </div>
     </Layout>
