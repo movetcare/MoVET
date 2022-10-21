@@ -1,8 +1,8 @@
 {
   "name": "server",
   "version": "0.0.0",
-  "main": "./index.tsx",
-  "types": "./index.tsx",
+  "main": "index.tsx",
+  "types": "index.tsx",
   "license": "NONE",
   "private": true,
   "scripts": {
@@ -12,7 +12,7 @@
   "devDependencies": {
     "@firebase/app-types": "^0.8.0",
     "@types/node": "^18.11.3",
-    "eslint": "8.25.0",
+    "eslint": "8.26.0",
     "eslint-config-custom": "workspace:*",
     "firebase-admin": "^11.2.0",
     "next": "12.3.1",
@@ -21,6 +21,7 @@
     "tsconfig": "workspace:*",
     "typescript": "^4.8.4",
     "yup": "^0.32.11",
-    "types": "workspace:*"
+    "types": "workspace:*",
+    "schemas": "workspace:*"
   }
 }

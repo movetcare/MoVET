@@ -1,21 +1,22 @@
 import admin from "../firebase";
-
+const DEBUG = true;
 export const getAnnouncement = async () => {
   try {
     const announcement = await admin
       .collection("alerts")
       .doc("banner")
       .get()
-      .then((doc: any) => doc.data());
+      .then((doc) => doc.data());
     const { color, message, title, link, isActive, icon } = announcement || {};
-    console.log("(SSG) FIRESTORE QUERY -> getAnnouncement() =>", {
-      color,
-      message,
-      title,
-      link,
-      isActive,
-      icon,
-    });
+    if (DEBUG)
+      console.log("(SSG) FIRESTORE QUERY -> getAnnouncement() =>", {
+        color,
+        message,
+        title,
+        link,
+        isActive,
+        icon,
+      });
     return {
       color: color || null,
       message: message || null,

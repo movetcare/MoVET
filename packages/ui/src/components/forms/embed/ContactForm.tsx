@@ -3,12 +3,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { object, string } from "yup";
+import { contactSchema } from "schemas";
 import { Button, EmergencyWarning, ErrorMessage } from "../../elements";
 import Loader from "../../elements/Loader";
 import { EmailInput, SelectInput, TextInput } from "../inputs";
 import PhoneInput from "../inputs/PhoneInput";
-import type { ServerResponse } from "types";
+import type { ContactForm as ContactFormType, ServerResponse } from "types";
 
 const Reasons = [
   { id: "general-inquiry", name: "General Inquiry" },
@@ -34,19 +34,7 @@ export const ContactForm = () => {
     formState: { isDirty, errors },
   } = useForm({
     mode: "onSubmit",
-    resolver: yupResolver(
-      object({
-        email: string()
-          .email("Email must be a valid email address")
-          .required("An email address is required"),
-        firstName: string(),
-        lastName: string(),
-        phone: string()
-          .min(10, "Phone number must be 10 digits")
-          .required("A phone number is required"),
-        message: string().required("A message is required"),
-      })
-    ),
+    resolver: yupResolver(contactSchema),
     defaultValues: {
       reason: Reasons[0],
       firstName: firstName || "",
@@ -77,23 +65,23 @@ export const ContactForm = () => {
       });
   }, [mode, firstName, lastName, phone, email, appointmentRequest, reset]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: unknown) => {
     setIsLoading(true);
     const submitForm = async () =>
       (
         await fetch("/api/contact", {
           method: "POST",
-          body: JSON.stringify(data),
+          body: JSON.stringify(data as ContactFormType),
         })
       ).json();
     submitForm()
-      .then((data: ServerResponse) => {
-        if (data.error) {
-          setErrorMessage(data.error);
+      .then((response: ServerResponse) => {
+        if (response.error) {
+          setErrorMessage(response.error);
           setSubmissionSuccess(false);
         } else setSubmissionSuccess(true);
       })
-      .catch((error: any) => {
+      .catch((error) => {
         setErrorMessage(error?.message || JSON.stringify(error));
         setSubmissionSuccess(false);
       })

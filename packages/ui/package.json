@@ -18,7 +18,7 @@
     "@hookform/resolvers": "^2.9.10",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
-    "eslint": "^8.25.0",
+    "eslint": "^8.26.0",
     "eslint-config-custom": "workspace:*",
     "lottie-web": "^5.9.6",
     "next": "12.3.1",
@@ -31,6 +31,7 @@
     "tsconfig": "workspace:*",
     "typescript": "^4.8.4",
     "yup": "^0.32.11",
-    "types": "workspace:*"
+    "types": "workspace:*",
+    "schemas": "workspace:*"
   }
 }

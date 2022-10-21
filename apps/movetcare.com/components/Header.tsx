@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { Transition } from "@headlessui/react";
 import { Button } from "ui";
 import kebabCase from "lodash.kebabcase";
-import { isAndroid } from "react-device-detect";
 import { faCalendarPlus, faSms } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";

@@ -1,45 +1,43 @@
+import { contactSchema } from "schemas";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { object, string } from "yup";
+import { setContact } from "../../queries/setContact";
 import { sendResponse } from "../sendResponse";
 
 const DEBUG = true;
 const logSource = "(API) /contact -> processContactRequest()";
 const allowedMethods = ["POST"];
-const formSchema = object({
-  email: string()
-    .email("Email must be a valid email address")
-    .required("An email address is required"),
-  firstName: string(),
-  lastName: string(),
-  reason: object({ id: string(), name: string() }),
-  phone: string()
-    .min(10, "Phone number must be 10 digits")
-    .required("A phone number is required"),
-  message: string().required("A message is required"),
-});
-
 export const processContactRequest = (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (!allowedMethods.includes(req.method!) || req.method == "OPTIONS")
       return sendResponse({
         status: 405,
         error: logSource,
         res,
       });
-    return formSchema
+    return contactSchema
       .validate(typeof req.body === "object" ? req.body : JSON.parse(req.body))
-      .then(function (value: any) {
+      .then(async (value) => {
         if (DEBUG) console.log(logSource, value);
-        // write to firebase
-        return sendResponse({
-          status: 200,
-          res,
-        });
+        const didSucceed = await setContact(req.body);
+        if (didSucceed)
+          return sendResponse({
+            status: 200,
+            res,
+          });
+        else {
+          console.error(logSource, "setContact() FAILED");
+          return sendResponse({
+            status: 500,
+            error: logSource,
+            res,
+          });
+        }
       })
-      .catch(function (error: any) {
+      .catch((error) => {
         console.error(logSource, error);
         return sendResponse({
           status: 400,
@@ -47,7 +45,7 @@ export const processContactRequest = (
           res,
         });
       });
-  } catch (error: any) {
+  } catch (error) {
     console.error(logSource, error);
     return sendResponse({
       status: 500,
