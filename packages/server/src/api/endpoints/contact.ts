@@ -18,11 +18,13 @@ export const processContactRequest = (
         error: logSource,
         res,
       });
+    const request =
+      typeof req.body === "object" ? req.body : JSON.parse(req.body);
     return contactSchema
-      .validate(typeof req.body === "object" ? req.body : JSON.parse(req.body))
+      .validate(request)
       .then(async (value) => {
         if (DEBUG) console.log(logSource, value);
-        const didSucceed = await setContact(req.body);
+        const didSucceed = await setContact(request);
         if (didSucceed)
           return sendResponse({
             status: 200,
