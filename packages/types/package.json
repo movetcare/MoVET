@@ -1,0 +1,10 @@
+{
+  "name": "types",
+  "version": "0.0.0",
+  "types": "index.d.ts",
+  "scripts": {
+    "lint": "eslint *.ts*"
+  },
+  "private": true,
+  "license": "NONE"
+}

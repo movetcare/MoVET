@@ -1,25 +1,12 @@
 import type { NextApiResponse } from "next";
-export interface ServerResponse {
-  success: boolean;
-  error?: string;
-}
+import type { ServerResponse } from "types";
 
 export const sendResponse = ({
-  statusCode,
-  success,
-  error = undefined,
+  status,
+  error,
   res,
 }: {
-  statusCode: 200 | 400 | 405 | 500;
-  success: boolean;
-  error?: string | undefined;
+  status: ServerResponse["status"];
+  error?: ServerResponse["error"];
   res: NextApiResponse<ServerResponse>;
-}) =>
-  res.status(statusCode).send(
-    error
-      ? {
-          success,
-          error,
-        }
-      : { success }
-  );
+}) => res.status(status).send(error ? { status, error } : { status });

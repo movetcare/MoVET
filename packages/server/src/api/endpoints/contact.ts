@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { object, string } from "yup";
 import { sendResponse } from "../sendResponse";
 
+const DEBUG = true;
+const logSource = "(API) /contact -> processContactRequest()";
 const allowedMethods = ["POST"];
 const formSchema = object({
   email: string()
@@ -9,6 +11,7 @@ const formSchema = object({
     .required("An email address is required"),
   firstName: string(),
   lastName: string(),
+  reason: object({ id: string(), name: string() }),
   phone: string()
     .min(10, "Phone number must be 10 digits")
     .required("A phone number is required"),
@@ -22,36 +25,33 @@ export const processContactRequest = (
   try {
     if (!allowedMethods.includes(req.method!) || req.method == "OPTIONS")
       return sendResponse({
-        statusCode: 405,
-        success: false,
-        error: "Method not allowed.",
+        status: 405,
+        error: logSource,
         res,
       });
     return formSchema
       .validate(typeof req.body === "object" ? req.body : JSON.parse(req.body))
       .then(function (value: any) {
-        console.log(value);
+        if (DEBUG) console.log(logSource, value);
+        // write to firebase
         return sendResponse({
-          statusCode: 200,
-          success: true,
+          status: 200,
           res,
         });
       })
       .catch(function (error: any) {
-        console.error(error);
+        console.error(logSource, error);
         return sendResponse({
-          statusCode: 400,
-          success: false,
-          error: error?.message || JSON.stringify(error),
+          status: 400,
+          error: logSource,
           res,
         });
       });
   } catch (error: any) {
-    console.error(error);
+    console.error(logSource, error);
     return sendResponse({
-      statusCode: 500,
-      success: false,
-      error: error?.message || JSON.stringify(error),
+      status: 500,
+      error: logSource,
       res,
     });
   }

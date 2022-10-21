@@ -4,10 +4,11 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
-import { Button, EmergencyWarning } from "../../elements";
+import { Button, EmergencyWarning, ErrorMessage } from "../../elements";
 import Loader from "../../elements/Loader";
 import { EmailInput, SelectInput, TextInput } from "../inputs";
 import PhoneInput from "../inputs/PhoneInput";
+import type { ServerResponse } from "types";
 
 const Reasons = [
   { id: "general-inquiry", name: "General Inquiry" },
@@ -21,6 +22,7 @@ export const ContactForm = () => {
   const { mode, firstName, lastName, phone, email, appointmentRequest } =
     router.query;
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
     null
   );
@@ -33,7 +35,7 @@ export const ContactForm = () => {
   } = useForm({
     mode: "onSubmit",
     resolver: yupResolver(
-      object().shape({
+      object({
         email: string()
           .email("Email must be a valid email address")
           .required("An email address is required"),
@@ -85,12 +87,14 @@ export const ContactForm = () => {
         })
       ).json();
     submitForm()
-      .then((data) => {
-        console.log("DATA", data);
-        setSubmissionSuccess(true);
+      .then((data: ServerResponse) => {
+        if (data.error) {
+          setErrorMessage(data.error);
+          setSubmissionSuccess(false);
+        } else setSubmissionSuccess(true);
       })
       .catch((error: any) => {
-        console.error("ERROR", error);
+        setErrorMessage(error?.message || JSON.stringify(error));
         setSubmissionSuccess(false);
       })
       .finally(() => {
@@ -141,6 +145,11 @@ export const ContactForm = () => {
                     : "Contact Us"
                   : "Whoops!"}
               </h2>
+              {errorMessage && (
+                <pre>
+                  <ErrorMessage errorMessage={errorMessage} />
+                </pre>
+              )}
               <p
                 className={`${
                   isLoading ? "italic " : ""
