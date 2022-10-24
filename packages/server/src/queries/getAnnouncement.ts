@@ -26,6 +26,7 @@ export const getAnnouncement = async () => {
       icon: icon || null,
     };
   } catch (error) {
-    return { error };
+    console.error(error);
+    return { error: (error as any)?.message || JSON.stringify(error) };
   }
 };

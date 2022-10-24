@@ -5,4 +5,7 @@ export declare type ContactForm = {
   email: string;
   phone: string;
   message: string;
+  createdOn?: Date;
+  updatedOn?: Date;
+  status?: string;
 };

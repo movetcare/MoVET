@@ -20,7 +20,7 @@ import { environment } from "utilities";
 export async function getStaticProps() {
   return {
     props: {
-      announcement: await getAnnouncement(),
+      announcement: (await getAnnouncement()) || null,
     },
   };
 }

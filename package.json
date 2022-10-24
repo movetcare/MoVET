@@ -1,5 +1,5 @@
 {
-  "name": "@movet/movet",
+  "name": "@movet/platform",
   "version": "0.0.0",
   "private": true,
   "workspaces": [

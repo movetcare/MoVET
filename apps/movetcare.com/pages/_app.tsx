@@ -6,7 +6,7 @@ import { environment } from "utilities";
 import dynamic from "next/dynamic";
 
 const AnalyticsTracker = dynamic(() =>
-  import("utilities").then((mod) => mod.AnalyticsTracker)
+  import("ui").then((mod) => mod.AnalyticsTracker)
 );
 
 const MoVET = ({ Component, pageProps }: AppProps) => {

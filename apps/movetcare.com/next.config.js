@@ -4,6 +4,7 @@ const withTM = require("next-transpile-modules")([
   "server",
   "types",
   "schemas",
+  "constant",
 ]);
 
 module.exports = withTM({
@@ -13,5 +14,5 @@ module.exports = withTM({
     locales: ["en"],
     defaultLocale: "en",
   },
-  images: { domains: ["images.unsplash.com", "storage-us.provetcloud.com"] },
+  images: { domains: ["storage-us.provetcloud.com"] },
 });

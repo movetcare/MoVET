@@ -1,5 +1,5 @@
 {
-  "name": "@movet/movetcare.com",
+  "name": "movetcare.com",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "update": "ncu -u"
+    "update": "ncu -u --color"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
@@ -27,8 +27,8 @@
     "@babel/core": "^7.19.6",
     "@tailwindcss/forms": "^0.5.3",
     "@types/lodash.kebabcase": "^4.1.7",
-    "@types/node": "^18.11.3",
-    "@types/react": "18.0.21",
+    "@types/node": "^18.11.4",
+    "@types/react": "18.0.22",
     "autoprefixer": "^10.4.12",
     "eslint": "8.26.0",
     "eslint-config-custom": "workspace:*",
@@ -38,6 +38,7 @@
     "tsconfig": "workspace:*",
     "typescript": "^4.8.4",
     "types": "workspace:*",
-    "schemas": "workspace:*"
+    "schemas": "workspace:*",
+    "constant": "workspace:*"
   }
 }

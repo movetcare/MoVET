@@ -5,7 +5,7 @@
   "license": "NONE",
   "private": true,
   "scripts": {
-    "update": "ncu -u"
+    "update": "ncu -u --color"
   },
   "devDependencies": {
     "typescript": "^4.8.4",
@@ -14,8 +14,8 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-turbo": "latest",
     "eslint-plugin-react": "7.31.10",
-    "@typescript-eslint/eslint-plugin": "^5.40.1",
-    "@typescript-eslint/parser": "^5.40.1",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
     "tsconfig": "workspace:*"
   }
 }

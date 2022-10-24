@@ -7,16 +7,15 @@
   "private": true,
   "scripts": {
     "lint": "eslint *.ts*",
-    "update": "ncu -u"
+    "update": "ncu -u --color"
   },
   "devDependencies": {
     "@babel/core": "^7.19.6",
-    "@types/node": "^18.11.3",
-    "@types/react": "18.0.21",
+    "@types/node": "^18.11.4",
+    "@types/react": "18.0.22",
     "eslint": "8.26.0",
     "eslint-config-custom": "workspace:*",
     "next": "12.3.1",
-    "next-transpile-modules": "9.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tsconfig": "workspace:*",

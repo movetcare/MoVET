@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint *.ts*",
-    "update": "ncu -u"
+    "update": "ncu -u --color"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
@@ -16,8 +16,8 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.3",
     "@hookform/resolvers": "^2.9.10",
-    "@types/react": "^18.0.21",
-    "@types/react-dom": "^18.0.6",
+    "@types/react": "^18.0.22",
+    "@types/react-dom": "^18.0.7",
     "eslint": "^8.26.0",
     "eslint-config-custom": "workspace:*",
     "lottie-web": "^5.9.6",
