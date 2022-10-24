@@ -1,0 +1,46 @@
+name: STAGING - Deploy Cloud Functions
+on:
+  push:
+    branches:
+      - development
+    paths:
+      - "functions/**"
+jobs:
+  deploy:
+    name: Deploy API
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_STAGING }}
+    steps:
+      - name: Checkout Repo
+        id: repo-checkout
+        uses: actions/checkout@master
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install Dependencies
+        id: install-dependencies
+        run: |
+          cd functions
+          npm ci
+      - name: Deploy to Firebase
+        id: deploy-functions
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions --non-interactive -f
+        env:
+          PROJECT_ID: movet-care-staging
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_STAGING }}
+      - name: Resync ProVet Configurations
+        id: reset-provet-configs
+        run: npm run init:config:stage
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#development-feed"
+        if: always()

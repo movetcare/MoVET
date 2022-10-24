@@ -1,5 +1,5 @@
 {
-  "name": "@movet/platform",
+  "name": "@movet/movet",
   "version": "0.0.0",
   "private": true,
   "workspaces": [
@@ -9,29 +9,37 @@
   "scripts": {
     "start": "turbo run dev --parallel",
     "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
+    "dev": "pnpm run start",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "update": "pnpm -r update -i -L && pnpm -r run update && pnpm install && pnpm run build --force",
-    "clean": "pnpm run clean:modules && pnpm run clean:lock && pnpm run clean:turbo && pnpm install && pnpm run build --force",
-    "clean:builds": "find ./ -name .next -type d -exec rm -rf {} + && find ./ -name dist -type d -exec rm -rf {} +",
+    "update": "pnpm -r run update && pnpm install && pnpm run build --force",
+    "clean": "pnpm run clean:logs && pnpm run clean:modules && pnpm run clean:lock && pnpm run clean:turbo && pnpm install && pnpm run build --force",
+    "clean:builds": "find ./ -name .next -type d -exec rm -rf {} + && find ./ -name dist -type d -exec rm -rf {} + && find ./ -name build -type d -exec rm -rf {} +",
     "clean:modules": "find ./ -name node_modules -type d -exec rm -rf {} +",
     "clean:turbo": "find ./ -name .turbo -type d -exec rm -rf {} +",
     "clean:lock": "find ./ -name packages-lock.json -type f -exec rm -rf {} + && find ./ -name yarn.lock -type f -exec rm -rf {} + && find ./ -name pnpm-lock.yaml -type f -exec rm -rf {} +",
+    "clean:logs": "find ./ -name *.log -type f -exec rm -rf {} + ",
     "push:prod": "git push origin main",
     "push:dev": "git push origin development",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "init:config:dev": "cd apps/api/ && pnpm run init:config:dev",
+    "init:config:stage": "cd apps/api/ && pnpm run init:config:stage",
+    "init:config:prod": "cd apps/api/ && pnpm run init:config:prod",
+    "init:config:local:prod": "cd apps/api/ && pnpm run init:config:local:prod",
+    "backup:production": "gcloud config set project movet-care && gcloud firestore export gs://movet-care-backups && gcloud config set project movet-care-staging",
+    "firestore:indexes": "firebase firestore:indexes"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:0.0.0",
+    "eslint-config-custom": "workspace:*",
+    "concurrently": "^7.5.0",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "latest",
     "turbo": "latest"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=16.14.0"
   },
   "packageManager": "pnpm@7.13.4",
   "lint-staged": {

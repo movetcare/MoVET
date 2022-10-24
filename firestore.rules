@@ -1,0 +1,118 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isMoVETStaff() {
+      return clientIsAuthed() && (request.auth.token.isSuperAdmin == true || request.auth.token.isAdmin == true || request.auth.token.isStaff == true);
+    }
+    function clientIsAuthed() {
+      return request.auth.uid != null && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+    function clientOwnsDocuments(uid) {
+      return clientIsAuthed() && request.auth.uid == uid;
+    }
+    function clientOwnsPatient() {
+      return clientIsAuthed() && request.auth.uid == string(resource.data.client);
+    }
+    match /alerts/{sid} {
+      allow read: if true;
+      allow write: if isMoVETStaff();
+    }
+    match /breeds/{bid} {
+      allow read: if true;
+      allow write: if isMoVETStaff();
+    }
+    match /reason_groups/{bid} {
+      allow read: if true;
+      allow write: if isMoVETStaff();
+    }
+    match /reasons/{bid} {
+      allow read: if true;
+      allow write: if isMoVETStaff();
+    }
+     match /configuration/{bid} {
+      allow write: if isMoVETStaff();
+    }
+    match /users/{uid} {
+      allow read, write, list: if clientIsAuthed() && (request.auth.token.isSuperAdmin == true || request.auth.token.isAdmin == true);
+    }
+    match /admins/{uid} {
+      allow read, list: if clientIsAuthed() && (request.auth.token.isSuperAdmin == true || request.auth.token.isAdmin == true);
+    }
+    match /tasks_queue/{uid} {
+      allow read, list, write: if clientIsAuthed() && (request.auth.token.isSuperAdmin == true || request.auth.token.isAdmin == true);
+    }
+    match /clients/{uid} {
+      allow read, write: if clientOwnsDocuments(uid) || isMoVETStaff();
+      match /payment_methods/{pid} {
+        allow read, write: if clientOwnsDocuments(uid) || isMoVETStaff();
+      }
+      match /chat/{oid} {
+        allow read, write, list: if clientOwnsDocuments(uid);
+      }
+      match /onboarding/{oid} {
+        allow create: if clientIsAuthed();
+        allow read, write: if clientOwnsDocuments(uid);
+      }
+    }
+    match /patients/{pid} {
+      allow read, write: if clientOwnsPatient();
+    }
+    match /reminders/{pid} {
+      allow read, write: if clientIsAuthed() && request.auth.uid  == string(resource.data.client);
+    }
+    match /appointments/{aid} {
+      allow read, write: if clientIsAuthed();
+    }
+    match /shifts/{sid} {
+      allow read, write: if clientIsAuthed();
+    }
+    match /waitlist/{wid} {
+      allow read, write, list: if isMoVETStaff();
+    }
+    match /bookings/{bid} {
+      allow read, write, list: if clientIsAuthed() && bid == string(resource.id) && request.auth.uid == string(resource.data.client.uid);
+    }
+    match /telehealth_chat/{uid} {
+      allow read, write, list: if clientOwnsDocuments(uid) || isMoVETStaff();
+      match /log/{lid} {
+        allow read, write, list: if clientOwnsDocuments(uid) || isMoVETStaff();
+      }
+    }
+    match /counter_sales/{invoiceId} {
+      allow read, list: if isMoVETStaff();
+      match /items/{itemId} {
+        allow read, list: if isMoVETStaff();
+      }
+      match /payments/{itemId} {
+        allow read, list: if isMoVETStaff();
+      }
+    }
+    match /client_invoices/{invoiceId} {
+      allow read, list: if isMoVETStaff();
+      match /items/{itemId} {
+        allow read, list: if isMoVETStaff();
+      }
+      match /payments/{itemId} {
+        allow read, list: if isMoVETStaff();
+      }
+    }
+    match /readers/{readerId} {
+      allow read, list, write: if isMoVETStaff();
+      match /logs/{logId} {
+        allow read, list, write: if isMoVETStaff();
+      }
+      match /transactions/{logId} {
+        allow read, list, write: if isMoVETStaff();
+      }
+      match /payments/{itemId} {
+        allow read, list, write: if isMoVETStaff();
+      }
+    }
+    match /configuration/{configurationId} {
+      allow read, list: if isMoVETStaff();
+      match /terminals/{terminalId} {
+        allow read, list: if isMoVETStaff();
+      }
+    }
+  }
+}

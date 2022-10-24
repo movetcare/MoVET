@@ -1,0 +1,23 @@
+name: Auto Upgrade Dependencies
+on:
+  pull_request_target:
+jobs:
+  auto-upgrade-dependencies:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PLATFORM_LOGS_STAGING }}
+    steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          channel: "#development-feed"
+      - uses: actions/checkout@v2
+      - uses: ahmadnassri/action-dependabot-auto-merge@v2
+        with:
+          github-token: ${{ secrets.DEPENDABOT_TOKEN }}
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#development-feed"
+        if: always()

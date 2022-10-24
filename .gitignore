@@ -12,10 +12,13 @@ coverage
 .next/
 out/
 build
+*.log
 
 # misc
 .DS_Store
 *.pem
+lib
+.runtimeconfig.json
 
 # debug
 npm-debug.log*

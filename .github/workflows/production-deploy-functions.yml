@@ -1,0 +1,68 @@
+name: PRODUCTION - Deploy Cloud Functions
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "functions/**"
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION }}
+    steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: starting-backup
+          channel: "#production-logs"
+      - uses: actions/checkout@master
+      - id: "auth"
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+      - name: Backup Firestore
+        id: backup-firestore
+        run: gcloud firestore export gs://movet-care-backups
+      - uses: act10ns/slack@v1
+        with:
+          status: finished-backup
+          channel: "#production-logs"
+  deploy:
+    name: Deploy API
+    needs: backup
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION }}
+    steps:
+      - name: Checkout Repo
+        id: repo-checkout
+        uses: actions/checkout@master
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install Dependencies
+        id: install-dependencies
+        run: |
+          cd functions
+          npm ci
+      - name: Deploy to Firebase
+        id: deploy-cloud-functions
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions --non-interactive -f
+        env:
+          PROJECT_ID: movet-care
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_PRODUCTION}}
+      - name: Resync ProVet Configurations
+        id: reset-provet-configs
+        run: npm run init:config:prod
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#production-logs"
+        if: always()
