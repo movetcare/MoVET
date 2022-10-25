@@ -7,13 +7,13 @@ updates:
     versioning-strategy: increase
     target-branch: "development"
   - package-ecosystem: "npm"
-    directory: "api/"
+    directory: "apps/api.movetcare.com/"
     schedule:
       interval: "weekly"
     versioning-strategy: increase
     target-branch: "development"
   - package-ecosystem: "npm"
-    directory: "cli/"
+    directory: "packages/tools/"
     schedule:
       interval: "weekly"
     versioning-strategy: increase

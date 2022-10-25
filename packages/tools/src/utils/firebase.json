@@ -8,7 +8,7 @@
       "npm --prefix \"$RESOURCE_DIR\" run lint",
       "npm --prefix \"$RESOURCE_DIR\" run build"
     ],
-    "source": "./apps/api/"
+    "source": "./apps/api.movetcare.com/"
   },
   "storage": {
     "rules": "storage.rules"

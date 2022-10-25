@@ -47,7 +47,7 @@ git clone https://github.com/movetcare/movet.git
 Reach out to Alex for the environment files and move them to the corresponding directories:
 
 - `.env`
-- `apps/api/.runtimeconfig.json`
+- `apps/api.movetcare.com/.runtimeconfig.json`
 
 ### Install Mono Repo Dependencies
 
@@ -70,6 +70,12 @@ Run the development server from the root directory
 ```sh
 pnpm start
 ```
+
+### Local App URLs
+- [movetcare.com](http://localhost:3000)
+- [api.movetcare.com](http://localhost:4000)
+- [app.movetcare.com](http://localhost:3001)
+- [admin.movetcare.com](http://localhost:3002)
 
 ## Testing
 

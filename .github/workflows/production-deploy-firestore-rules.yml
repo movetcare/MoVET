@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - "apps/api/firestore.rules"
+      - "apps/api.movetcare.com/firestore.rules"
 jobs:
   deploy:
     name: Deploy Firestore Security Rules

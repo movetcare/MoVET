@@ -1,0 +1,277 @@
+import Stripe from "stripe";
+import {admin, stripe, throwError} from "../../../../config/config";
+import {sendWelcomeEmail} from "../../../../notifications/sendWelcomeEmail";
+import {getAuthUserById} from "../../../../utils/auth/getAuthUserById";
+import {logEvent} from "../../../../utils/logging/logEvent";
+import {fetchEntity} from "../fetchEntity";
+import {saveClient} from "./saveClient";
+import {updateProVetClient} from "./updateProVetClient";
+const DEBUG = false;
+export const createNewClientTask = async (options: {clientId: number}) => {
+  const {clientId} = options;
+  if (clientId) {
+    const client = await fetchEntity("client", clientId);
+    if (client && client?.email) {
+      if (DEBUG)
+        console.log(
+          `CREATING NEW FIREBASE AUTH USER FOR CLIENT #${String(clientId)} - ${
+            client?.email
+          }`
+        );
+      await admin
+        .auth()
+        .createUser({
+          email: client?.email?.toLowerCase(),
+          emailVerified: false,
+          uid: String(clientId),
+        })
+        .then(async (userRecord: any) => {
+          if (DEBUG)
+            console.log("SUCCESSFULLY CREATED NEW USER => ", userRecord);
+          await sendWelcomeEmail(userRecord?.email, true);
+          await createNewCustomer(userRecord);
+        })
+        .then(
+          async () =>
+            await logEvent({
+              tag: "create-new-account",
+              origin: "tasks_queue",
+              success: true,
+              sendToSlack: true,
+              data: {
+                client,
+                clientId,
+                message: `:person_in_lotus_position: SUCCESSFULLY CREATED NEW MOVET ACCOUNT FOR PROVET CLIENT #${clientId}!`,
+              },
+            })
+        )
+        .catch(async (error: any) => {
+          if (DEBUG) console.log("ERROR", error);
+          if (error.code === "auth/uid-already-exists") {
+            if (DEBUG)
+              console.log(`${client?.email} IS ALREADY A FIREBASE AUTH USER!`);
+            const authUser = await getAuthUserById(`${clientId}`);
+            await createNewCustomer(authUser);
+            await logEvent({
+              tag: "create-new-account",
+              origin: "tasks_queue",
+              success: false,
+              sendToSlack: true,
+              data: {
+                error,
+                client,
+                message: `:person_frowning: FAILED TO CREATE NEW MOVET ACCOUNT FOR PROVET CLIENT #${clientId}\nREASON: CLIENT ALREADY HAS A FIREBASE AUTH USER!`,
+              },
+            });
+          }
+        });
+    } else {
+      if (DEBUG)
+        console.log(
+          "createNewClientTask FAILED! UNABLE TO FIND CLIENT`s EMAIL ADDRESS IN PROVET"
+        );
+      await logEvent({
+        tag: "create-new-account",
+        origin: "tasks_queue",
+        success: false,
+        sendToSlack: true,
+        data: {
+          ...client,
+          message: `:person_frowning: FAILED TO CREATE NEW MOVET ACCOUNT FOR PROVET CLIENT #${clientId}\nREASON: UNABLE TO FIND CLIENT's EMAIL ADDRESS IN PROVET`,
+        },
+      });
+    }
+  } else {
+    if (DEBUG) console.log("createNewClientTask FAILED! NO CLIENT ID PROVIDED");
+    await logEvent({
+      tag: "create-new-account",
+      origin: "tasks_queue",
+      success: false,
+      sendToSlack: true,
+      data: {
+        clientId,
+        message: `:person_frowning: FAILED TO CREATE NEW MOVET ACCOUNT FOR PROVET CLIENT #${clientId}\nREASON: CLIENT ALREADY HAS A FIREBASE AUTH USER!`,
+      },
+    });
+  }
+};
+
+const createNewCustomer = async (user: any) => {
+  const client = await admin
+    .firestore()
+    .collection("clients")
+    .doc(user?.uid)
+    .get()
+    .then((document: any) => document.data())
+    .catch(async (error: any) => await throwError(error));
+
+  const {data: matchingCustomers} = await stripe.customers.list({
+    email: user?.email,
+  });
+  if (DEBUG) {
+    console.log("Existing Customers => ", matchingCustomers);
+    console.log(
+      "Number of Existing Customers w/ Same Email",
+      matchingCustomers.length
+    );
+  }
+  let customer: Stripe.Customer | any = null;
+  if (matchingCustomers.length === 0) {
+    if (DEBUG)
+      console.log("Creating NEW Customer: ", {
+        address: {
+          line1: client?.street,
+          city: client?.city,
+          state: client?.state,
+          postal_code: client?.zipCode,
+          country: "US",
+        },
+        name:
+          client?.firstName && client?.lastName
+            ? `${client?.firstName} ${client?.lastName}`
+            : client?.firstName
+            ? client?.firstName
+            : client?.lastName
+            ? client?.lastName
+            : null,
+        email: user?.email,
+        phone: user?.phoneNumber,
+        metadata: {
+          clientId: user?.uid,
+        },
+      });
+    customer = await stripe.customers
+      .create({
+        address: {
+          line1: client?.street,
+          city: client?.city,
+          state: client?.state,
+          postal_code: client?.zipCode,
+          country: "US",
+        },
+        name:
+          client?.firstName && client?.lastName
+            ? `${client?.firstName} ${client?.lastName}`
+            : client?.firstName
+            ? client?.firstName
+            : client?.lastName
+            ? client?.lastName
+            : null,
+        email: user?.email,
+        phone: user?.phoneNumber,
+        metadata: {
+          clientId: user?.uid,
+        },
+      })
+      .then(
+        async () =>
+          await logEvent({
+            tag: "create-new-customer",
+            origin: "tasks_queue",
+            success: true,
+            sendToSlack: true,
+            data: {
+              client,
+              message: `:ok_hand: Created New Stripe Customer\n\n${JSON.stringify(
+                customer
+              )}`,
+            },
+          })
+      )
+      .catch(async (error: any) => (await throwError(error)) as any);
+  } else {
+    let matchedCustomer = null;
+    matchingCustomers.forEach((customerData: any) => {
+      if (DEBUG)
+        console.log(
+          `customer.metadata?.clientId (${customerData.metadata?.clientId}) === user?.uid  (${user?.uid}) `,
+          customerData.metadata?.clientId === user?.uid
+        );
+      if (customerData.metadata?.clientId === user?.uid)
+        matchedCustomer = customerData;
+    });
+    if (matchedCustomer === null) {
+      if (DEBUG)
+        console.log("No Matching clientIds Found. Creating NEW Customer: ", {
+          address: {
+            line1: client?.street,
+            city: client?.city,
+            state: client?.state,
+            postal_code: client?.zipCode,
+            country: "US",
+          },
+          name: `${client?.firstName} ${client?.lastName}`,
+          email: user?.email,
+          phone: user?.phoneNumber,
+          metadata: {
+            clientId: user?.uid,
+          },
+        });
+      customer = await stripe.customers
+        .create({
+          address: {
+            line1: client?.street,
+            city: client?.city,
+            state: client?.state,
+            postal_code: client?.zipCode,
+            country: "US",
+          },
+          name: `${client?.firstName} ${client?.lastName}`,
+          email: user?.email,
+          phone: user?.phoneNumber,
+          metadata: {
+            clientId: user?.uid,
+          },
+        })
+        .then(
+          async (client: any) =>
+            await logEvent({
+              tag: "create-new-customer",
+              origin: "tasks_queue",
+              success: true,
+              sendToSlack: true,
+              data: {
+                client,
+                message: `:ok_hand: Created New Stripe Customer\n\n${JSON.stringify(
+                  customer
+                )}`,
+              },
+            })
+        )
+        .catch(async (error: any) => (await throwError(error)) as any);
+    } else {
+      customer = matchedCustomer;
+      if (DEBUG) console.log("Matched an existing customer ID => ", customer);
+      await logEvent({
+        tag: "customer-already-exists",
+        origin: "tasks_queue",
+        success: true,
+        sendToSlack: true,
+        data: {
+          client,
+          message: `:ok_hand: Existing Stripe Customer Found: \n\n${JSON.stringify(
+            customer
+          )}`,
+        },
+      });
+    }
+  }
+
+  if (DEBUG) console.log("CUSTOMER -> ", customer);
+
+  await updateProVetClient({
+    customer: customer?.id,
+    id: user?.uid,
+  });
+
+  await saveClient(user?.uid, null, {
+    customer,
+  })
+    .then(async () => {
+      if (DEBUG)
+        console.log("Updated Client Document w/ Customer Data:", {
+          customer,
+        });
+    })
+    .catch(async (error: any) => await throwError(error));
+};

@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "turbo run dev --parallel",
+    "start": "pnpm run kill:emulator && turbo run dev --parallel",
     "build": "turbo run build",
     "dev": "pnpm run start",
     "lint": "turbo run lint",
@@ -20,13 +20,14 @@
     "clean:turbo": "find ./ -name .turbo -type d -exec rm -rf {} +",
     "clean:lock": "find ./ -name packages-lock.json -type f -exec rm -rf {} + && find ./ -name yarn.lock -type f -exec rm -rf {} + && find ./ -name pnpm-lock.yaml -type f -exec rm -rf {} +",
     "clean:logs": "find ./ -name *.log -type f -exec rm -rf {} + ",
+    "kill:emulator": "npx kill-port 5000 8080 8085 5001 9099 4000 4400 4500 9199 19002 62799",
     "push:prod": "git push origin main",
     "push:dev": "git push origin development",
     "prepare": "husky install",
-    "init:config:dev": "cd apps/api/ && pnpm run init:config:dev",
-    "init:config:stage": "cd apps/api/ && pnpm run init:config:stage",
-    "init:config:prod": "cd apps/api/ && pnpm run init:config:prod",
-    "init:config:local:prod": "cd apps/api/ && pnpm run init:config:local:prod",
+    "init:config:dev": "cd apps/api.movetcare.com/ && pnpm run init:config:dev",
+    "init:config:stage": "cd apps/api.movetcare.com/ && pnpm run init:config:stage",
+    "init:config:prod": "cd apps/api.movetcare.com/ && pnpm run init:config:prod",
+    "init:config:local:prod": "cd apps/api.movetcare.com/ && pnpm run init:config:local:prod",
     "backup:production": "gcloud config set project movet-care && gcloud firestore export gs://movet-care-backups && gcloud config set project movet-care-staging",
     "firestore:indexes": "firebase firestore:indexes"
   },

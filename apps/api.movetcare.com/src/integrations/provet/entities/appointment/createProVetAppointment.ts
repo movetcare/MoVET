@@ -1,0 +1,128 @@
+import {
+  request,
+  throwError,
+  proVetApiUrl,
+  DEBUG,
+} from "../../../../config/config";
+import {createVirtualAppointment} from "./createVirtualAppointment";
+import {saveAppointment} from "./saveAppointment";
+
+export const createProVetAppointment = async (
+  proVetData: AppointmentType,
+  movetData: any
+): Promise<boolean | string> => {
+  if (DEBUG)
+    console.log("createProVetAppointment -> ", {proVetData, movetData});
+  if (incomingDataIsValid(proVetData)) {
+    const {
+      client,
+      start,
+      end,
+      title,
+      complaint,
+      duration,
+      notes,
+      patients,
+      user,
+    } = proVetData;
+    if (DEBUG)
+      console.log("API REQUEST PAYLOAD ->", {
+        client: `${proVetApiUrl}/client/${client}/`,
+        user: `${proVetApiUrl}/user/${user}/`,
+        start,
+        end,
+        title,
+        complaint,
+        duration,
+        notes,
+        active: 1,
+        type: 2,
+        patients: patients.map(
+          (patient: any) => `${proVetApiUrl}/patient/${patient}/`
+        ),
+        department: `${proVetApiUrl}/department/${
+          2
+          // environment?.type === 'production' ? '2' : '1'
+        }/`,
+      });
+    const appointmentData = await request
+      .post("/appointment/", {
+        client: `${proVetApiUrl}/client/${client}/`, // Required by PROVET API
+        user: `${proVetApiUrl}/user/${user}/`, // Required by PROVET API
+        start, // Required by PROVET API
+        end, // Required by PROVET API
+        title, // Required by PROVET API
+        complaint, // Required by PROVET API
+        // reason: complaint,
+        duration,
+        notes,
+        active: 1,
+        type: 2,
+        patients: patients.map(
+          (patient: any) => `${proVetApiUrl}/patient/${patient}/`
+        ),
+        department: `${proVetApiUrl}/department/${
+          2
+          // environment?.type === 'production' ? '2' : '1'
+        }/`,
+      })
+      .then(async (response: any) => {
+        const {data} = response;
+        if (DEBUG) console.log("API Response: POST /appointment/ => ", data);
+        return data;
+      })
+      .catch(async (error: any) => await throwError(error));
+
+    if (movetData?.locationType === "Virtually") {
+      if (DEBUG) console.log("VIRTUAL APPOINTMENT DETECTED");
+      const virtualAppointmentUrl = await createVirtualAppointment(
+        appointmentData?.id,
+        start,
+        end,
+        appointmentData?.request_hash
+      );
+      if (virtualAppointmentUrl === false) {
+        if (DEBUG)
+          console.log("FAILED TO CREATE VIRTUAL APPOINTMENT", {
+            id: appointmentData?.id,
+            start,
+            end,
+            request_hash: appointmentData?.request_hash,
+          });
+        return await saveAppointment(appointmentData, movetData);
+      } else if (
+        await saveAppointment(
+          {...appointmentData, telemedicine_url: virtualAppointmentUrl},
+          movetData
+        )
+      ) {
+        return virtualAppointmentUrl;
+      } else return false;
+    }
+    return await saveAppointment(appointmentData, movetData);
+  } else return false;
+};
+
+const incomingDataIsValid = (data: AppointmentType): Promise<false> | true => {
+  if (
+    !(typeof data?.client === "string") ||
+    data?.client.length === 0 ||
+    !(typeof data?.start === "string") ||
+    data?.start.length === 0 ||
+    !(typeof data?.user === "string") ||
+    data?.user.length === 0 ||
+    !(typeof data?.end === "string") ||
+    data?.end.length === 0 ||
+    !(typeof data?.title === "string") ||
+    data?.title.length === 0 ||
+    !(typeof data?.complaint === "string") ||
+    data?.complaint.length === 0 ||
+    !(typeof data?.notes === "string") ||
+    data?.notes.length === 0 ||
+    !(typeof data?.patients === null) ||
+    data?.patients.length === 0 ||
+    !(typeof data?.duration === "number")
+  )
+    return true;
+  else return throwError({message: "INVALID_PAYLOAD"});
+};

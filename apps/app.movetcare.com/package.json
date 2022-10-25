@@ -1,5 +1,5 @@
 {
-  "name": "@movetcare/app.movetcare.com",
+  "name": "app.movetcare.com",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.19.6",
-    "@types/node": "^18.11.4",
+    "@types/node": "^18.11.5",
     "@types/react": "18.0.22",
     "eslint": "8.26.0",
     "eslint-config-custom": "workspace:*",

@@ -1,0 +1,103 @@
+import {
+  request,
+  throwError,
+  proVetApiUrl,
+  DEBUG,
+} from "../../../../config/config";
+import {capitalizeFirstLetter} from "../../../../utils/capitalizeFirstLetter";
+import {savePatient} from "./savePatient";
+
+export const updateProVetPatient = async (data: PatientType): Promise<any> => {
+  if (DEBUG) console.log("updateProVetPatient -> ", data);
+  // const {weight} = data;
+  const requestPayload: any = {};
+
+  Object.entries(data).forEach(([key, value]) => {
+    switch (key) {
+      case "client":
+        requestPayload.client = `${proVetApiUrl}/client/${value}/`;
+        break;
+      case "name":
+        requestPayload.name = capitalizeFirstLetter(value);
+        break;
+      case "species":
+        requestPayload.species = `${value === "Dog" ? "1445" : "1443"}001`;
+        break;
+      case "gender":
+        requestPayload.gender = value === "Male" ? 1 : 2;
+        break;
+      case "breed":
+        requestPayload.breed = `${value}001`;
+        break;
+      case "birthday":
+        requestPayload.date_of_birth = value;
+        break;
+      case "archived":
+        requestPayload.archived = value;
+        break;
+      default:
+        break;
+    }
+  });
+
+  if (DEBUG) console.log("REQUEST PAYLOAD =>", requestPayload);
+
+  const proVetPatientData = await request
+    .patch(`/patient/${data?.id}`, requestPayload)
+    .then(async (response: any) => {
+      const {data} = response;
+      // const patientId = data?.id;
+      // let updatedWeightHistory = null;
+      // if (DEBUG) console.log('API Response: POST /patient/ => ', data);
+      // if (DEBUG)
+      //   console.log('PAYLOAD: ', {
+      //     timestamp: toIsoString(new Date()), // Required by PROVET API
+      //     weight: parseInt(weight as string), // Required by PROVET API
+      //   });
+      // if (weight && patientId) {
+      //   updatedWeightHistory = await request
+      //     .post(`/patient/${patientId}/weight/`, {
+      //       timestamp: '2021-12-10T20:42:43', // Required by PROVET API
+      //       weight: parseInt(weight), // Required by PROVET API
+      //     })
+      //     .then(async (response: any) => {
+      //       const {data} = response;
+      //       if (DEBUG)
+      //         console.log(
+      //           `API Response: POST /patient/${patientId}/weight/ => `,
+      //           data
+      //         );
+      //       return data?.results;
+      //     })
+      //     .catch(async (error: any) => await throwError(error));
+      // }
+      // return {
+      //   ...data,
+      //   weight: updatedWeightHistory ? updatedWeightHistory : null,
+      // };
+      return data;
+    })
+    .catch(async (error: any) => await throwError(error));
+
+  return await savePatient(proVetPatientData);
+};
+
+// function toIsoString(date: Date) {
+//   const pad = function (num: number) {
+//     const norm = Math.floor(Math.abs(num));
+//     return (norm < 10 ? '0' : '') + norm;
+//   };
+//   return (
+//     date.getFullYear() +
+//     '-' +
+//     pad(date.getMonth() + 1) +
+//     '-' +
+//     pad(date.getDate()) +
+//     'T' +
+//     pad(date.getHours()) +
+//     ':' +
+//     pad(date.getMinutes()) +
+//     ':' +
+//     pad(date.getSeconds())
+//   );
+// }

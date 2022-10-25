@@ -10,7 +10,7 @@
     "update": "ncu -u --color"
   },
   "devDependencies": {
-    "@types/node": "^18.11.4",
+    "@types/node": "^18.11.5",
     "tsconfig": "workspace:*",
     "typescript": "^4.8.4"
   }

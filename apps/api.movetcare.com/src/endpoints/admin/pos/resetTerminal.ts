@@ -1,0 +1,30 @@
+import {
+  DEBUG,
+  defaultRuntimeOptions,
+  functions,
+  throwError,
+} from "../../../config/config";
+import {configureTerminals} from "../../../config/configureTerminals";
+import {requestIsAuthorized} from "./requestIsAuthorized";
+
+export const resetTerminal = functions
+  .runWith(defaultRuntimeOptions)
+  .https.onCall(
+    async (
+      data: {mode: "counter" | "client"; invoice: string; reader: string},
+      context: any
+    ): Promise<any> => {
+      if (DEBUG) {
+        console.log("simulatePayment context.app => ", context.app);
+        console.log("simulatePayment context.auth => ", context.auth);
+        console.log(data);
+      }
+      const isAuthorized = await requestIsAuthorized(context);
+      if (isAuthorized) {
+        return await configureTerminals();
+      } else
+        return await throwError(
+          `UNABLE TO RESET TERMINAL -> ${JSON.stringify(data)}`
+        );
+    }
+  );
