@@ -39,7 +39,7 @@ const randomRandomAnimation = () => {
   return backgroundImage;
 };
 
-const Loader = ({
+export const Loader = ({
   message = "Loading, please wait...",
   animationData = randomRandomAnimation(),
   width = 300,
@@ -68,5 +68,3 @@ const Loader = ({
     </>
   );
 };
-
-export default Loader;

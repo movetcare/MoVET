@@ -18,10 +18,10 @@ request.defaults.baseURL = `http://localhost:${
 
 const executeCron = () =>
   request()
-    .then((response: any) =>
+    .then((response) =>
       console.log(`/taskRunnerDev => ${JSON.stringify(response.data)}`)
     )
-    .catch((error: any) => {
+    .catch((error) => {
       console.error(
         `FAIL: ${request.defaults.baseURL} => ${error.syscall} ${error.code}: ${error.address}:${error.port}\n\nAre you sure "npm run dev" is running?\n`
       );

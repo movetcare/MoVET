@@ -1,5 +1,5 @@
 {
-  "name": "@movet/movet",
+  "name": "movet",
   "version": "0.0.0",
   "private": true,
   "workspaces": [
@@ -20,7 +20,7 @@
     "clean:turbo": "find ./ -name .turbo -type d -exec rm -rf {} +",
     "clean:lock": "find ./ -name packages-lock.json -type f -exec rm -rf {} + && find ./ -name yarn.lock -type f -exec rm -rf {} + && find ./ -name pnpm-lock.yaml -type f -exec rm -rf {} +",
     "clean:logs": "find ./ -name *.log -type f -exec rm -rf {} + ",
-    "kill:emulator": "npx kill-port 5000 8080 8085 5001 9099 4000 4400 4500 9199 19002 62799",
+    "kill:emulator": "npx kill-port 3000 3001 3002 3003 5000 8080 8085 5001 9099 4000 4400 4500 9199 19002 62799",
     "push:prod": "git push origin main",
     "push:dev": "git push origin development",
     "prepare": "husky install",
@@ -32,8 +32,8 @@
     "firestore:indexes": "firebase firestore:indexes"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:*",
     "concurrently": "^7.5.0",
+    "eslint-config-custom": "workspace:0.0.0",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "latest",

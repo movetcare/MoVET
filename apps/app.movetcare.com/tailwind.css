@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-display: swap;
+    font-family: 'Abside';
+    src: url('/fonts/abside-regular-webfont.woff2') format('woff2'),
+         url('/fonts/abside-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-display: swap;
+    font-family: 'Abside Smooth';
+    src: url('/fonts/abside-smooth-webfont.woff2') format('woff2'),
+         url('/fonts/abside-smooth-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-display: swap;
+    font-family: 'Parkinson';
+    font-weight: 800;
+    src: url('/fonts/parkinson-bold-webfont.woff2') format('woff2'),
+         url('/fonts/parkinson-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-display: swap;
+    font-family: 'Source Sans Pro';
+    src: url('/fonts/sourcesanspro-regular-webfont.woff2') format('woff2'),
+         url('/fonts/sourcesanspro-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-display: swap;
+    font-family: 'Source Sans Pro Italic';
+    font-style: italic;
+    src: url('/fonts/sourcesanspro-italic-webfont.woff2') format('woff2'),
+         url('/fonts/sourcesanspro-italic-webfont.woff') format('woff');
+    font-weight: normal;
+  }
+
+  ::selection {
+    @apply bg-movet-red;
+  }
+
+  ::-moz-selection {
+    @apply bg-movet-red;
+  }
+
+  ::selection {
+    @apply bg-movet-red;
+  }
+
+  ::-moz-selection {
+    @apply bg-movet-red;
+  }
+
+  h1 {
+    @apply font-parkinson text-2xl text-center mb-8;
+  }
+
+  h2 {
+    @apply text-lg font-abside mt-4 mb-2;
+  }
+
+  h3 {
+    @apply font-parkinson;
+  }
+
+  h4 {
+    @apply font-parkinson text-2xl text-center mb-8;
+  }
+
+  p {
+    @apply font-source-sans-pro my-2;
+  }
+
+  section a {
+    @apply text-movet-red hover:underline;
+  }
+}
+
+@layer components {
+  .pseudo {
+    @apply absolute content-[""] block;
+  }
+  .ellipse {
+    @apply rounded-[100%] w-[55%] h-full h-16;
+  }
+  .curve {
+    @apply absolute h-16 z-10 w-full bottom-0 before:pseudo before:ellipse after:pseudo after:ellipse before:-z-10;
+  }
+  .list-tight p {
+    @apply my-[0.375rem];
+  }
+  .backdrop-app {
+    border-radius: 100% 0% 0% 100% / 52% 50% 50% 48%;
+    bottom: 0.5rem;
+    right: -12%;
+  }
+  .claw {
+    @apply w-1/2 h-1/2 absolute left-1/4 top-1/4;
+  }
+  .paw-l .claw:nth-child(1) {
+    transform: rotate(-54deg) translateY(-160%);
+  }
+  .paw-l .claw:nth-child(2) {
+    transform: rotate(-15deg) translateY(-162%);
+  }
+  .paw-l .claw:nth-child(3) {
+    transform: rotate(24deg) translateY(-160%);
+  }
+  .paw-r .claw:nth-child(1) {
+    transform: rotate(-23deg) translateY(-160%);
+  }
+  .paw-r .claw:nth-child(2) {
+    transform: rotate(15deg) translateY(-162%);
+  }
+  .paw-r .claw:nth-child(3) {
+    transform: rotate(53deg) translateY(-160%);
+  }
+  .paw {
+    position: absolute;
+    border-radius: 50%;
+    @apply left-0 top-0;
+  }
+  .paw-r {
+    @apply left-0 top-0 ml-[5%] mr-[28%];
+  }
+  .paw-l {
+    @apply left-0 top-0 ml-[28%] mr-[5%];
+  }
+  .padded-background-border {
+    background-color: inherit;
+    @apply pseudo rounded-[100%];
+  }
+}
+
+@layer utilities {
+  .transition-elastic {
+    transition-property: transform;
+    @apply ease-[cubic-bezier(0.68,-0.55,0.265,1.55)];
+  }
+  .flip {
+    transform: rotate(180deg);
+  }
+  .mirror {
+    transform: scale(1, -1);
+  }
+}
+
+.grecaptcha-badge,
+.firebase-emulator-warning {
+  @apply hidden;
+}
+
+pre {
+  @apply bg-movet-white rounded-xl;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}

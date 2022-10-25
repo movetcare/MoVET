@@ -17,10 +17,10 @@
     "cron": "cd ../../packages/tools && pnpm run cron",
     "emulate": "firebase emulators:start --only auth,functions,firestore,pubsub,storage",
     "start": "pnpm run dev",
-    "init:config:dev": "curl -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' -X POST http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/app/config/ && curl -v -X POST http://localhost:5001/movet-care-staging/us-central1/initTestUser",
-    "init:config:stage": "curl -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' -X POST https://us-central1-movet-care-staging.cloudfunctions.net/incomingWebhook/app/config/",
-    "init:config:prod": "curl -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' -X POST https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/app/config/",
-    "init:config:local:prod": "curl -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' -X POST http://localhost:5001/movet-care/us-central1/incomingWebhook/app/config/",
+    "init:config:dev": "curl -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/app/config/ && curl -v POST http://localhost:5001/movet-care-staging/us-central1/initTestUser",
+    "init:config:stage": "curl -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST https://us-central1-movet-care-staging.cloudfunctions.net/incomingWebhook/app/config/",
+    "init:config:prod": "curl -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/app/config/",
+    "init:config:local:prod": "curl -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST http://localhost:5001/movet-care/us-central1/incomingWebhook/app/config/",
     "logs": "firebase functions:log"
   },
   "dependencies": {

@@ -1,10 +1,14 @@
-// import { Button } from "ui";
+import { AppHeader } from "components/AppHeader";
+import Layout from "components/Layout";
+import { Loader } from "ui";
 
-export default function Docs() {
+export default function Home() {
   return (
-    <div>
-      <h1>Docs</h1>
-      {/* <Button /> */}
-    </div>
+    <Layout>
+      <AppHeader />
+      <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 m-8 sm:p-8 z-50">
+        <Loader />
+      </section>
+    </Layout>
   );
 }

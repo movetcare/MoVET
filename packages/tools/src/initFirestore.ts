@@ -11,18 +11,18 @@ const readCSV = (path: string) => {
   return new Promise(resolve => {
     csv()
       .fromFile(path)
-      .then((jsonObj: any) => {
-        console.log('JSON found', jsonObj);
+      .then((jsonObj) => {
+        console.log("JSON found", jsonObj);
         resolve(jsonObj);
       })
-      .catch((error: any) => {
-        console.error('Error importing CSV - %s', error);
+      .catch((error) => {
+        console.error("Error importing CSV - %s", error);
         process.exit(1);
       });
   });
 };
 
-const addDocument = (data: any, colRef: any, recurred: boolean) => {
+const addDocument = (data, colRef, recurred: boolean) => {
   const document = null;
   try {
     if (!Array.isArray(data)) {
@@ -32,7 +32,7 @@ const addDocument = (data: any, colRef: any, recurred: boolean) => {
 
     for (let item of data) {
       let makeTimestamps = false;
-      if (typeof item.addTimestamps !== 'undefined') {
+      if (typeof item.addTimestamps !== "undefined") {
         makeTimestamps = item.addTimestamps;
       }
       delete item.addTimestamps;
@@ -46,7 +46,7 @@ const addDocument = (data: any, colRef: any, recurred: boolean) => {
 
       let id: string;
       if (document) {
-        if (typeof item[document] !== 'undefined') {
+        if (typeof item[document] !== "undefined") {
           id = item[document].toString();
           delete item[document];
         } else if (!recurred) {
@@ -62,33 +62,33 @@ const addDocument = (data: any, colRef: any, recurred: boolean) => {
 
       batch.set(docRef, item);
     }
-  } catch (error: any) {
-    console.error('Failed to add Data - Error:', error);
+  } catch (error) {
+    console.error("Failed to add Data - Error:", error);
     console.error(data);
   }
 };
 
 const importFirestoreData = async () => {
   try {
-    let data: any;
+    let data;
     const source = `${__dirname}/data`;
-    if (source.includes('.json')) {
+    if (source.includes(".json")) {
       data = await fs.readJSON(source);
-    } else if (source.includes('.csv')) {
+    } else if (source.includes(".csv")) {
       data = await readCSV(source);
     } else {
       data = JSON.parse(source);
     }
 
-    const colRef = admin.firestore().collection('configuration');
+    const colRef = admin.firestore().collection("configuration");
 
     addDocument(data, colRef, false);
 
     const response = await batch.commit();
-    console.log('RESPONSE: ', JSON.stringify(response));
+    console.log("RESPONSE: ", JSON.stringify(response));
     process.exit(0);
-  } catch (error: any) {
-    console.error('Error ->', error);
+  } catch (error) {
+    console.error("Error ->", error);
     process.exit(1);
   }
 };

@@ -1,5 +1,5 @@
-import '../tailwind.css';
-import '@fortawesome/fontawesome-svg-core/styles.css';
+import "styles";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import Head from "next/head";
 import type { AppProps } from "next/app";
 import { environment } from "utilities";

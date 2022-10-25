@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { contactSchema } from "schemas";
 import { Button, EmergencyWarning, ErrorMessage } from "../../elements";
-import Loader from "../../elements/Loader";
+import { Loader } from "../../elements/Loader";
 import { EmailInput, SelectInput, TextInput } from "../inputs";
 import PhoneInput from "../inputs/PhoneInput";
 import type { ContactForm as ContactFormType, ServerResponse } from "types";

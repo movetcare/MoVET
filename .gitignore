@@ -19,6 +19,7 @@ build
 *.pem
 lib
 .runtimeconfig.json
+.vscode
 
 # debug
 npm-debug.log*

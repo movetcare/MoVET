@@ -47,6 +47,7 @@ git clone https://github.com/movetcare/movet.git
 Reach out to Alex for the environment files and move them to the corresponding directories:
 
 - `.env`
+- `apps/movetcare.com/.env.local`
 - `apps/api.movetcare.com/.runtimeconfig.json`
 
 ### Install Mono Repo Dependencies

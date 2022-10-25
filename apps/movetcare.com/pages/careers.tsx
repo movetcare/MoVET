@@ -22,7 +22,7 @@ export default function Careers() {
           self-washing dog bath station, where pampering is a must! Healthcare
           is so much more than treating an illness for us, it&apos;s personal.
         </p>
-        <h4 className="mt-8 mb-2 text-base font-extrabold text-left">
+        <h4 className='mt-8 mb-2 text-base font-extrabold text-left'>
           Benefits of Working with MoVET
         </h4>
         <ul className="list-disc ml-8 my-4 text-left">

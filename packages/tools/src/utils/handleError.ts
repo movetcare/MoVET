@@ -1,4 +1,4 @@
-export const handleError = (error: any, debug: boolean): boolean => {
+export const handleError = (error, debug: boolean): boolean => {
   if (debug) {
     if (error.response) {
       console.error(error.response.data);
@@ -7,7 +7,7 @@ export const handleError = (error: any, debug: boolean): boolean => {
     } else if (error.request) {
       console.error(error.request);
     } else {
-      console.log('Error', error.message);
+      console.log("Error", error.message);
     }
     console.error(error.config);
   }
