@@ -2,27 +2,23 @@
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import LogRocket from "logrocket";
 import {
   faCheckCircle,
   faCircleExclamation,
   faCreditCard,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "ui";
+import { Button, AppLinks, Loader } from "ui";
 import EmailInput from "components/inputs/EmailInput";
-import { Loader } from "ui";
 import { httpsCallable } from "firebase/functions";
 import Link from "next/link";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { functions } from "services/firebase";
 import { QRCodeSVG } from "qrcode.react";
-import { environment } from "utilities";
 import { setTimeout } from "timers";
 import { object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AppLinks } from "components/AppLinks";
 
 export default function Payment() {
   const router = useRouter();
@@ -49,10 +45,6 @@ export default function Payment() {
       email: "",
     },
   });
-
-  useEffect(() => {
-    if (environment === "production") LogRocket.init("kgib44/movet");
-  }, []);
 
   const updatePaymentMethod = async (data: any) => {
     setIsLoading(true);
@@ -157,7 +149,7 @@ export default function Payment() {
                 <FontAwesomeIcon
                   icon={faCircleExclamation}
                   size="3x"
-                  color="#E76159"
+                  className="text-movet-red"
                 />
                 <p className={"mt-4 text-lg leading-6 text-movet-black"}>
                   We&apos;re sorry, but something went wrong. Please try again

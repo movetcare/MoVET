@@ -1,17 +1,11 @@
 import { AppHeader } from "components/AppHeader";
 import { ClientCheckIn } from "forms/checkin/clientCheckIn";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-import LogRocket from "logrocket";
 import { QRCodeSVG } from "qrcode.react";
-import { environment } from "utilities";
 
 export default function CheckIn() {
   const router = useRouter();
   const { mode } = router.query || {};
-  useEffect(() => {
-    if (environment === "production") LogRocket.init("kgib44/movet");
-  }, []);
   return (
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
       <main className="w-full flex-1 overflow-hidden">

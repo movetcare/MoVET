@@ -64,7 +64,7 @@ export default function MoreThanPinkWalk() {
           alt="Dr. Caldwell and her daughter, Kiley, at the Komen Walk"
           height={334}
           width={520}
-          layout="intrinsic"
+          // layout="intrinsic"
         />
         <p className="italic text-center text-sm mt-4">
           Dr. Caldwell and her daughter, Kiley, at the Komen Walk

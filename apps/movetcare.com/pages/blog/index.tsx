@@ -117,15 +117,14 @@ export default function Blog() {
                   key={post.title}
                   className="flex flex-col lg:flex-row overflow-hidden rounded-lg shadow-lg col-span-3"
                 >
-                  <div className="flex-shrink-0 -mb-2">
+                  <div className="flex-shrink-0 -mb-2 hover:opacity-75 cursor-pointer">
                     <Link href={post.href}>
                       <Image
-                        className="hover:opacity-75 cursor-pointer"
                         src={post.imageUrl}
                         alt=""
                         height={334}
                         width={520}
-                        layout="intrinsic"
+                        // layout="intrinsic"
                       />
                     </Link>
                   </div>

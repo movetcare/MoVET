@@ -119,7 +119,10 @@ export const WellnessCheck = ({
             {pets.length > 1 ? "Pets" : "Pet"}
           </legend>
           {pets
-            .sort((item, nextItem) => nextItem.vcprRequired - item.vcprRequired)
+            .sort(
+              (item: any, nextItem: any) =>
+                nextItem.vcprRequired - item.vcprRequired
+            )
             .map((pet: any, index: number) => (
               <div
                 key={index}

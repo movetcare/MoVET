@@ -23,7 +23,7 @@ import {
 } from "firebase/firestore";
 import { firestore } from "services/firebase";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AddAPet } from "./addAPet";
+import { AddAPet } from "./AddAPet";
 import { array, object, string, lazy } from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { capitalizeFirstLetter } from "utilities";
@@ -185,7 +185,10 @@ export const SelectAPet = ({
             {pets.length > 1 ? "Pets" : "Pet"}
           </legend>
           {pets
-            .sort((item, nextItem) => nextItem.vcprRequired - item.vcprRequired)
+            .sort(
+              (item: any, nextItem: any) =>
+                nextItem.vcprRequired - item.vcprRequired
+            )
             .map((pet: any, index: number) => (
               <div
                 key={index}

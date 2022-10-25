@@ -60,7 +60,7 @@ export const ChooseStaff = ({
                           {expert?.picture ? (
                             <Image
                               src={`${expert?.picture}`}
-                              layout="responsive"
+                              // layout="responsive"
                               height={10}
                               width={10}
                               className="rounded-full"
@@ -69,7 +69,7 @@ export const ChooseStaff = ({
                           ) : (
                             <Image
                               src="https://storage-us.provetcloud.com/provet/4285/users/09339fca5622431ab86783c206483ce0.jpeg"
-                              layout="responsive"
+                              // layout="responsive"
                               height={10}
                               width={10}
                               className="rounded-full"
