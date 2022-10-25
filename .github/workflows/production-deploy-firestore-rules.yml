@@ -10,7 +10,7 @@ jobs:
     name: Deploy Firestore Security Rules
     runs-on: ubuntu-latest
     env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
     steps:
       - name: Checkout Repo
         id: repo-checkout

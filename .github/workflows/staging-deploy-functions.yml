@@ -10,7 +10,7 @@ jobs:
     name: Deploy API
     runs-on: ubuntu-latest
     env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_STAGING }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_STAGING_LOGS }}
     steps:
       - name: Checkout Repo
         id: repo-checkout
