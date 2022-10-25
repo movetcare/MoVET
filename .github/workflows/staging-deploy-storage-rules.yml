@@ -4,7 +4,7 @@ on:
     branches:
       - development
     paths:
-      - "apps/api.movetcare.com/storage.rules"
+      - "storage.rules"
 jobs:
   deploy:
     name: Deploy Storage Security Rules

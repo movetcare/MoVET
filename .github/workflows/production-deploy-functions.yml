@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - "functions/**"
+      - "apps/api.movetcare.com/**"
 jobs:
   backup:
     runs-on: ubuntu-latest

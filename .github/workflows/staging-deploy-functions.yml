@@ -4,7 +4,7 @@ on:
     branches:
       - development
     paths:
-      - "functions/**"
+      - "apps/api.movetcare.com/**"
 jobs:
   deploy:
     name: Deploy API
