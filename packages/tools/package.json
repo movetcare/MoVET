@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint *.ts",
-    "update": "ncu -u --color --reject 'axios,public-ip'",
+    "update": "ncu -u --reject 'axios,public-ip'",
     "build": "cd ../../ && cp firebase.json ./packages/tools/src/utils/ && cd packages/tools && tsc",
+    "watch": "tsc --watch --preserveWatchOutput",
     "init:config:dev": "curl -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/app/config/ && curl -v POST http://localhost:5001/movet-care-staging/us-central1/initTestUser",
-    "dev": "concurrently -n 'CRON,BUILD' 'sleep 50 && pnpm run init:config:dev && pnpm run webhooks' 'sleep 60 && pnpm run cron'",
+    "dev": "pnpm run build && concurrently -n 'WEBHOOKS,CRON,BUILD_API,BUILD_TOOLS' 'sleep 50 && pnpm run init:config:dev && pnpm run webhooks' 'sleep 60 && pnpm run cron' 'cd ../../apps/api.movetcare.com && pnpm run watch' 'pnpm run watch'",
     "cron": "cd build && node ./runCron.js",
     "webhooks": "cd build && node ./ngrok.js"
   },
@@ -29,7 +30,7 @@
   },
   "devDependencies": {
     "@types/lodash.isequal": "^4.5.6",
-    "@types/node": "^18.11.5",
+    "@types/node": "^18.11.6",
     "typescript": "^4.8.4"
   }
 }

@@ -178,10 +178,14 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
               </div>
             </div>
           </form>
-          <hr className="border-movet-gray w-full sm:w-2/3 mx-auto" />
-          <div className="flex flex-row justify-center w-full mx-auto mt-8">
-            <AppLinks />
-          </div>
+          {!isAppMode && (
+            <>
+              <hr className="border-movet-gray w-full sm:w-2/3 mx-auto" />
+              <div className="flex flex-row justify-center w-full mx-auto mt-8">
+                <AppLinks />
+              </div>
+            </>
+          )}
           <p className="text-center mb-4 italic text-sm w-full sm:w-2/3 mx-auto">
             You can also download our our mobile app to book appointments,
             manage your pets, chat with us, and much more!

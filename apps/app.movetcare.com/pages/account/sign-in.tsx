@@ -1,15 +1,12 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import {
-  getAuth,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-} from "firebase/auth";
+import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 import { Button } from "ui";
 import { faRedo } from "@fortawesome/free-solid-svg-icons";
 import { AppHeader } from "components/AppHeader";
 import { Loader } from "ui";
+import { auth } from "services/firebase";
 
 export default function SignIn() {
   const router = useRouter();
@@ -20,7 +17,6 @@ export default function SignIn() {
 
   useEffect(() => {
     if (router && oobCode) {
-      const auth = getAuth();
       if (
         isSignInWithEmailLink(
           auth,
@@ -52,7 +48,10 @@ export default function SignIn() {
 
   useEffect(() => {
     if (router && verificationSuccessful)
-      router.replace(continueUrl?.toString() || "/booking");
+      router.replace(
+        (continueUrl as any)?.replaceAll("3000", "3001")?.toString() ||
+          "/booking"
+      );
   }, [verificationSuccessful, continueUrl, router]);
 
   return (
@@ -71,16 +70,16 @@ export default function SignIn() {
               <Loader message="Sign In Successful!" />
             </div>
           ) : (
-            <div className="flex-col justify-center items-center text-center">
+            <div className="flex-col justify-center items-center text-center mx-auto">
               <h2 className="text-2xl font-extrabold tracking-tight text-center">
                 Account Verification Failed
               </h2>
               <p className="text-center mb-4">Please try again...</p>
               <Button
+                color="red"
                 text="Retry Sign In"
                 icon={faRedo}
-                onClick={() => router.replace("/booking")}
-                className="bg-movet-black hover:bg-movet-green mx-auto text-white"
+                onClick={() => router.replace("/")}
               />
             </div>
           )}

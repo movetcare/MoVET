@@ -49,6 +49,10 @@
     font-weight: normal;
   }
 
+  #__next {
+    @apply bg-movet-white;
+  }
+
   ::selection {
     @apply bg-movet-red;
   }

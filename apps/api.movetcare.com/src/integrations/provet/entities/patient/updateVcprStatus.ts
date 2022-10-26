@@ -16,7 +16,7 @@ export const updateVcprStatus = async (
         ? document
             .data()
             ?.customFields.filter(
-              (customField: {field_id: number; id: number}) => {
+              (customField: { field_id: number; id: number }) => {
                 if (customField.field_id === 2) return customField.id;
                 else return;
               }
@@ -28,11 +28,11 @@ export const updateVcprStatus = async (
     console.log("updateVcprStatus => vcprCustomFieldId", vcprCustomFieldId);
     console.log(
       "updateVcprStatus => vcprCustomFieldId.length ",
-      vcprCustomFieldId.length
+      vcprCustomFieldId?.length
     );
     console.log(
       "updateVcprStatus => vcprCustomFieldId.length < 1",
-      vcprCustomFieldId.length < 1
+      vcprCustomFieldId?.length < 1
     );
     console.log(
       "updateVcprStatus => Array.isArray(vcprCustomFieldId) ",
@@ -43,7 +43,7 @@ export const updateVcprStatus = async (
     vcprCustomFieldId === null ||
     vcprCustomFieldId === false ||
     vcprCustomFieldId === undefined ||
-    (Array.isArray(vcprCustomFieldId) && vcprCustomFieldId.length < 1)
+    (Array.isArray(vcprCustomFieldId) && vcprCustomFieldId?.length < 1)
   )
     return await request
       .post("/custom_field_values/", {

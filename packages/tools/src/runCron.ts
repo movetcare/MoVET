@@ -6,8 +6,6 @@ dotenv.config({path: __dirname + '/../.env'});
 const interval = 1 * 60 * 1000;
 let runs = 0;
 
-console.log('APP ENV =>', process.env?.APP_ENVIRONMENT);
-
 request.defaults.baseURL = `http://localhost:${
   config.emulators.functions.port
 }/${

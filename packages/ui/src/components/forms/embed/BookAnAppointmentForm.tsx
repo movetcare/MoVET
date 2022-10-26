@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { Button } from "../../elements";
 import { EmailInput } from "../inputs";
+import { environment } from "utilities";
 
 export const BookAnAppointmentForm = ({
   autoFocus = false,
@@ -29,9 +30,10 @@ export const BookAnAppointmentForm = ({
   });
   const onSubmit = async (data: any) => {
     window.open(
-      `https://app.movetcare.com/book-an-appointment?email=${data.email
-        ?.toLowerCase()
-        ?.replaceAll("+", "%2B")}`,
+      (environment === "production"
+        ? "https://app.movetcare.com"
+        : `http://localhost:3001`) +
+        `?email=${data.email?.toLowerCase()?.replaceAll("+", "%2B")}`,
       "_blank"
     );
   };

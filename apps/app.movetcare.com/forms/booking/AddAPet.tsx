@@ -25,6 +25,7 @@ import { PlacesInput } from "components/inputs/PlacesInput";
 import { NumberInput } from "components/inputs/NumberInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { BookingHeader } from "components/booking/BookingHeader";
+import { Transition } from "@headlessui/react";
 
 addMethod(string, "isBeforeToday", function (errorMessage: string) {
   return (this as any).test(
@@ -218,119 +219,143 @@ export const AddAPet = ({
           description={"Please tell us about your pet."}
         />
       </div>
-      <form className="grid grid-cols-1 gap-y-8 text-left mt-8">
-        <ToggleInput
-          options={[
-            { name: "dog", icon: faDog },
-            { name: "cat", icon: faCat },
-          ]}
-          label="Type of Pet"
-          control={control}
-          errors={errors}
-          name="type"
-          required
-        />
-        <ToggleInput
-          options={[
-            { name: "male", icon: faMars },
-            { name: "female", icon: faVenus },
-          ]}
-          label="Gender"
-          control={control}
-          errors={errors}
-          name="gender"
-          required
-        />
-        <SwitchInput
-          centered
-          title={"Reproductive Status"}
-          disabled={isLoading}
-          name="spayedOrNeutered"
-          control={control}
-          errors={errors}
-          label={
-            <p className="mt-4 -mb-4">
-              My pet{" "}
-              <b className="text-movet-brown italic underline">
-                {isNonReproductive ? "IS" : "IS NOT"}
-              </b>{" "}
-              {gender === "male"
-                ? "neutered"
-                : gender === "female"
-                ? "spayed"
-                : "spayed / neutered"}
-            </p>
-          }
-        />
-        <TextInput
-          label="Name"
-          name="name"
-          control={control}
-          errors={errors}
-          placeholder="What is your pets name?"
-          autoComplete="given-name"
-          required
-        />
+      <form className="grid grid-cols-1 text-left mt-8">
+        <div className="my-4">
+          <ToggleInput
+            options={[
+              { name: "dog", icon: faDog },
+              { name: "cat", icon: faCat },
+            ]}
+            label="Type of Pet"
+            control={control}
+            errors={errors}
+            name="type"
+            required
+          />
+        </div>
+        <div className="my-4">
+          <ToggleInput
+            options={[
+              { name: "male", icon: faMars },
+              { name: "female", icon: faVenus },
+            ]}
+            label="Gender"
+            control={control}
+            errors={errors}
+            name="gender"
+            required
+          />
+        </div>
+        <div className="my-4">
+          <SwitchInput
+            centered
+            title={"Reproductive Status"}
+            disabled={isLoading}
+            name="spayedOrNeutered"
+            control={control}
+            errors={errors}
+            label={
+              <p className="mt-4 -mb-4">
+                My pet{" "}
+                <b className="text-movet-brown italic underline">
+                  {isNonReproductive ? "IS" : "IS NOT"}
+                </b>{" "}
+                {gender === "male"
+                  ? "neutered"
+                  : gender === "female"
+                  ? "spayed"
+                  : "spayed / neutered"}
+              </p>
+            }
+          />
+        </div>
+        <div className="my-4">
+          <TextInput
+            label="Name"
+            name="name"
+            control={control}
+            errors={errors}
+            placeholder="What is your pets name?"
+            autoComplete="given-name"
+            required
+          />
+        </div>
         {specie !== undefined &&
           specie !== null &&
           specie !== "" &&
           breedsList && (
-            <SearchInput
-              label="Breed"
-              options={breedsList || []}
-              control={control}
-              errors={errors}
-              name="breed"
-              placeholder="Select a Breed"
-              required
-            />
+            <div className="my-4">
+              <SearchInput
+                label="Breed"
+                options={breedsList || []}
+                control={control}
+                errors={errors}
+                name="breed"
+                placeholder="Select a Breed"
+                required
+              />
+            </div>
           )}
-        <NumberInput
-          label="Weight"
-          name="weight"
-          errors={errors}
-          control={control}
-          suffix={" lbs"}
-          required
-        />
-        <DateInput
-          label="Birthday"
-          name="birthday"
-          errors={errors}
-          control={control}
-          required
-        />
-        <PlacesInput
-          label="Previous Vet"
-          name="vet"
-          placeholder="Search for a Vet"
-          errors={errors}
-          control={control}
-          required={false}
-          types={["veterinary_care", "street_address", "street_number"]}
-        />
-        {vet !== "" && (
-          <p className="text-xs text-center italic -mt-4 mb-0">
-            * We&apos;ll send them a request for your pet&apos;s medical
-            records!
-          </p>
-        )}
-        <TextInput
-          multiline
-          numberOfLines={2}
-          label="Notes"
-          name="notes"
-          control={control}
-          errors={errors}
-          placeholder="What else should we know about your pet?"
-        />
-        <p className="text-sm text-center italic -mt-4">
+        <div className="my-4">
+          <NumberInput
+            label="Weight"
+            name="weight"
+            errors={errors}
+            control={control}
+            suffix={" lbs"}
+            required
+          />
+        </div>
+        <div className="my-4">
+          <DateInput
+            label="Birthday"
+            name="birthday"
+            errors={errors}
+            control={control}
+            required
+          />
+        </div>
+        <div className="my-4">
+          <PlacesInput
+            label="Previous Vet"
+            name="vet"
+            placeholder="Search for a Vet"
+            errors={errors}
+            control={control}
+            required={false}
+            types={["veterinary_care", "street_address", "street_number"]}
+          />
+          <Transition
+            show={vet !== ""}
+            enter="transition ease-in duration-500"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+          >
+            <p className="text-movet-yellow text-center font-extrabold -mb-4 px-4 mt-4">
+              * Please contact your previous vet and have them forward your
+              pet&apos;s medical records to{" "}
+              <span className="text-movet-red">info@movetcare.com</span>
+            </p>
+          </Transition>
+        </div>
+        <div className="my-4">
+          <TextInput
+            multiline
+            numberOfLines={2}
+            label="Notes"
+            name="notes"
+            control={control}
+            errors={errors}
+            placeholder="What else should we know about your pet?"
+          />
+        </div>
+        <p className="text-sm text-center italic mb-8">
           * Please let us know in advance of any favorite treat, scratching
           spot, or any behavioral issues you may have encountered with your pet
           previously. Are they food motivated, territorial, or aggressive
           towards humans or other pets?
         </p>
-        <div className="flex flex-col sm:flex-row">
+        <div className="flex flex-col sm:flex-row mt-8">
           <Button
             type="submit"
             icon={faArrowRight}
@@ -359,7 +384,7 @@ export const AddAPet = ({
           </p>
         )}
         {isSubmitted && errors && (
-          <p className="text-movet-red text-center m-0 -mt-4 italic text-sm">
+          <p className="text-movet-red text-center mt-4 italic text-sm">
             Please fix the errors highlighted above...
           </p>
         )}

@@ -1,10 +1,7 @@
 const config = require('./firebase.json');
 const dotenv = require('dotenv');
 dotenv.config({path: '../../.env'});
-console.log(
-  "process.env?.STAGING_FIREBASE_PROJECT_ID",
-  process.env?.STAGING_FIREBASE_PROJECT_ID
-);
+
 const initializeApp = (
   mode: string,
   environment: string = process.env.APP_ENVIRONMENT || 'development'

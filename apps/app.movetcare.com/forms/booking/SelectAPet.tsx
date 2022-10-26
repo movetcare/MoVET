@@ -359,7 +359,7 @@ export const SelectAPet = ({
               iconSize={"sm"}
               color="black"
               text="Add a Pet"
-              className={"w-full sm:w-1/2 mr-0 sm:mr-2"}
+              className={"w-full sm:w-1/2 mr-0 sm:mr-4"}
               onClick={() => {
                 setShowAddAPet(true);
                 document?.getElementById("top")?.scrollIntoView();
@@ -372,7 +372,7 @@ export const SelectAPet = ({
               disabled={!isDirty || !isValid || vcprRequiredError}
               color="red"
               text="Continue"
-              className={"w-full sm:w-1/2 ml-0 sm:ml-2 mt-4 sm:mt-0"}
+              className={"w-full sm:w-1/2 ml-0 sm:ml-4 mt-4 sm:mt-0"}
               onClick={handleSubmit(onSubmit)}
             />
           </div>

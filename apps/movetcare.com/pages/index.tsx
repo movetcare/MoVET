@@ -38,20 +38,22 @@ export default function Home({ announcement }: { announcement: Announcement }) {
       const linkParams = Object.fromEntries(
         new URLSearchParams(
           params.link
-            .replaceAll("http://localhost:3001/account/", "")
-            .replaceAll("https://app.movetcare.com/account/", "")
+            .replaceAll("http://localhost:3000/account/", "")
+            .replaceAll("https://movetcare.com/account/", "")
         ).entries()
       );
       if (environment === "development")
         console.log(
           "redirectUrl",
-          `/account/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
+          `http://localhost:3001/account/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
         );
-      linkParams?.mode === "signIn"
-        ? router.replace(
+      else
+        linkParams?.mode === "signIn"
+          ? (environment === "production"
+              ? (window.location.href = "https://app.movetcare.com")
+              : (window.location.href = `http://localhost:3001`)) +
             `/account/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
-          )
-        : setIsLoading(false);
+          : setIsLoading(false);
     }
   }, [router, link]);
   return (

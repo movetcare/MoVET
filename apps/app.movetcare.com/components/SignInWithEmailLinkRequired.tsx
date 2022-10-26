@@ -2,6 +2,7 @@ import { faEnvelopeSquare, faRedo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import router from 'next/router';
 import toast from 'react-hot-toast';
+import { environment } from "utilities";
 
 export const SignInWithEmailLinkRequired = ({
   successMessage,
@@ -29,7 +30,7 @@ export const SignInWithEmailLinkRequired = ({
       <div className="border border-movet-gray rounded-xl bg-white mt-4 text-left flex flex-row items-center w-full px-4 py-3">
         <FontAwesomeIcon
           icon={faEnvelopeSquare}
-          size={'2x'}
+          size={"2x"}
           className="text-movet-black mr-4"
         />
         <div className="text-left flex-1 justify-left">
@@ -41,6 +42,14 @@ export const SignInWithEmailLinkRequired = ({
           </p>
         </div>
       </div>
+      {environment === "development" && (
+        <pre className="my-8">
+          Copy & Paste URL Query String Arguments
+          (mode,lang,oobCode,apiKey,continueUrl) from Link Generated in Terminal
+          (http://127.0.0.1:9099/emulator/action) to:
+          {window.location.host}
+        </pre>
+      )}
       <p
         className="text-xs mt-6 uppercase text-center text-movet-brown cursor-pointer hover:underline ease-in-out duration-500"
         onClick={() => {
@@ -57,12 +66,12 @@ export const SignInWithEmailLinkRequired = ({
 
           if (email)
             (router.replace(
-              `/booking?email=${email?.replaceAll('+', '%2B')}`
+              `/booking?email=${email?.replaceAll("+", "%2B")}`
             ) as any) && router.reload();
-          else (router.replace('/booking') as any) && router.reload();
+          else (router.replace("/booking") as any) && router.reload();
         }}
       >
-        <FontAwesomeIcon icon={faRedo} className="text-movet-brown mr-2" />{' '}
+        <FontAwesomeIcon icon={faRedo} className="text-movet-brown mr-2" />{" "}
         Resend Verification Link
       </p>
     </>

@@ -4,6 +4,7 @@ import Head from "next/head";
 import type { AppProps } from "next/app";
 import { environment } from "utilities";
 import dynamic from "next/dynamic";
+import Layout from "components/Layout";
 
 const AnalyticsTracker = dynamic(() =>
   import("ui").then((mod) => mod.AnalyticsTracker)
@@ -13,7 +14,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
-        <title>MoVET - Sign In</title>
+        <title>MoVET</title>
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
@@ -23,7 +24,9 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
       {environment !== "development" && (
         <AnalyticsTracker trackerId="G-Y9896HXDFN" />
       )}
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </>
   );
 };

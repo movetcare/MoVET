@@ -7,11 +7,11 @@
   "private": true,
   "scripts": {
     "lint": "eslint *.ts*",
-    "update": "ncu -u --color"
+    "update": "ncu -u"
   },
   "devDependencies": {
     "@firebase/app-types": "^0.8.0",
-    "@types/node": "^18.11.5",
+    "@types/node": "^18.11.6",
     "firebase-admin": "^11.2.0",
     "next": "13.0.0",
     "react": "^18.2.0",

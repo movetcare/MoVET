@@ -1,9 +1,8 @@
-import {admin, proVetApiUrl, request, throwError} from "../config/config";
-import {logEvent} from "../utils/logging/logEvent";
-import {reverseDateStringMDY} from "../utils/reverseDateStringMDY";
-import {toIsoString} from "../utils/toIsoString";
-import {createProVetPatient} from "./../integrations/provet/entities/patient/createProVetPatient";
-const DEBUG = false;
+import { admin, throwError } from "../config/config";
+import { logEvent } from "../utils/logging/logEvent";
+import { reverseDateStringMDY } from "../utils/reverseDateStringMDY";
+import { createProVetPatient } from "./../integrations/provet/entities/patient/createProVetPatient";
+const DEBUG = true;
 export const addNewPatient = async (
   booking: string,
   client: string,
@@ -36,35 +35,35 @@ export const addNewPatient = async (
     vcprRequired: true,
     spayedOrNeutered: patient?.spayedOrNeutered,
   });
-  if (patient?.vet?.label)
-    await request
-      .post("/task/", {
-        status: 1,
-        task_type: 5,
-        favourite: true,
-        remind: 60,
-        title: `Retrieve Medial Records for ${patient.name}`,
-        text: `Please contact ${
-          patient.name
-        }'s previous vet and have them email their medical records to info@movetcare.com\n\n${
-          patient?.vet?.label
-            ? `Previous Vet: ${patient?.vet?.label}${
-                patient?.vet?.value?.place_id
-                  ? `- https://www.google.com/maps/place/?q=place_id:${patient?.vet?.value?.place_id}`
-                  : ""
-              }`
-            : ""
-        }`,
-        client: `${proVetApiUrl}/client/${client}/`,
-        patients: [`${proVetApiUrl}/patient/${didCreateNewPatient}/`],
-        user: `${proVetApiUrl}/user/7/`,
-        created_user: `${proVetApiUrl}/user/7/`,
-        due: toIsoString(new Date()),
-      })
-      .then(async (response: any) => {
-        if (DEBUG) console.log("API Response: POST /task/ => ", response.data);
-      })
-      .catch(async (error: any) => await throwError(error));
+  // if (patient?.vet?.label)
+  //   await request
+  //     .post("/task/", {
+  //       status: 1,
+  //       task_type: 5,
+  //       favourite: true,
+  //       remind: 60,
+  //       title: `Retrieve Medial Records for ${patient.name}`,
+  //       text: `Please contact ${
+  //         patient.name
+  //       }'s previous vet and have them email their medical records to info@movetcare.com\n\n${
+  //         patient?.vet?.label
+  //           ? `Previous Vet: ${patient?.vet?.label}${
+  //               patient?.vet?.value?.place_id
+  //                 ? `- https://www.google.com/maps/place/?q=place_id:${patient?.vet?.value?.place_id}`
+  //                 : ""
+  //             }`
+  //           : ""
+  //       }`,
+  //       client: `${proVetApiUrl}/client/${client}/`,
+  //       patients: [`${proVetApiUrl}/patient/${didCreateNewPatient}/`],
+  //       user: `${proVetApiUrl}/user/7/`,
+  //       created_user: `${proVetApiUrl}/user/7/`,
+  //       due: toIsoString(new Date()),
+  //     })
+  //     .then(async (response: any) => {
+  //       if (DEBUG) console.log("API Response: POST /task/ => ", response.data);
+  //     })
+  //     .catch(async (error: any) => await throwError(error));
 
   if (DEBUG) console.log("didCreateNewPatient", didCreateNewPatient);
   if (didCreateNewPatient)
@@ -72,7 +71,10 @@ export const addNewPatient = async (
       .firestore()
       .collection("bookings")
       .doc(booking)
-      .set({step: "patient-selection", updatedOn: new Date()}, {merge: true})
+      .set(
+        { step: "patient-selection", updatedOn: new Date() },
+        { merge: true }
+      )
       .then(
         async () =>
           await logEvent({

@@ -1,7 +1,6 @@
 const withTM = require("next-transpile-modules")([
   "ui",
   "utilities",
-  "server",
   "types",
   "schemas",
   "constant",

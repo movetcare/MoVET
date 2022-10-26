@@ -7,12 +7,12 @@
     "node": "16"
   },
   "scripts": {
-    "update": "ncu -u --color --reject axios",
+    "update": "ncu -u --reject axios",
     "lint": "eslint src/",
     "fix": "eslint src/ --fix",
     "build": "tsc",
-    "dev": "tsc && pnpm run emulate",
-    "watch": "tsc --watch",
+    "dev": "pnpm run emulate",
+    "watch": "tsc --watch --preserveWatchOutput",
     "webhooks": "cd ../../packages/tools && pnpm run webhooks",
     "cron": "cd ../../packages/tools && pnpm run cron",
     "emulate": "firebase emulators:start --only auth,functions,firestore,pubsub,storage",
@@ -46,7 +46,7 @@
   "devDependencies": {
     "@types/express": "^4.17.14",
     "@types/json2csv": "^5.0.3",
-    "@types/node": "^18.11.5",
+    "@types/node": "^18.11.6",
     "@types/safe-compare": "^1.1.0",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
