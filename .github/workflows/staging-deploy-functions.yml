@@ -25,7 +25,8 @@ jobs:
       - name: Install Dependencies
         id: install-dependencies
         run: |
-          cd functions
+          # cd apps/api.movetcare.com
+          cd fail
           npm ci
       - name: Deploy to Firebase
         id: deploy-functions
