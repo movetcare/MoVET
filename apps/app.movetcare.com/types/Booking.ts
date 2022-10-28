@@ -8,24 +8,27 @@ export interface Booking {
   reasonGroup?: number;
   reasonType?: number;
   step?:
-    | 'started'
-    | 'contact-info'
-    | 'patient-selection'
-    | 'add-pet'
-    | 'wellness-check'
-    | 'illness-assignment'
-    | 'choose-location'
-    | 'choose-reason'
-    | 'choose-staff'
-    | 'choose-datetime'
-    | 'confirmation'
-    | 'restart';
+    | "started"
+    | "contact-info"
+    | "patient-selection"
+    | "add-pet"
+    | "wellness-check"
+    | "illness-assignment"
+    | "choose-location"
+    | "choose-reason"
+    | "choose-staff"
+    | "choose-datetime"
+    | "payment-confirmation"
+    | "checkout"
+    | "confirmation"
+    | "complete"
+    | "restart";
   staff: Array<Staff>;
-  location?: 'home' | 'clinic' | 'virtual';
+  location?: "home" | "clinic" | "virtual";
   datetime?: Date;
   paymentMethodRequired?: boolean;
   checkoutUrl?: string;
-  source?: 'web' | 'mobile';
+  source?: "web" | "mobile";
   createdAt: Date;
   updatedOn?: Date;
   client: {
@@ -38,15 +41,16 @@ export interface Booking {
     {
       id: string;
       name: string;
-      species: 'canine' | 'feline';
+      species: "canine" | "feline";
       breed: string;
-      sex: 'male' | 'female';
+      sex: "male" | "female";
       birthday: string;
       recordsUploaded: boolean | null;
       vcprRequired: boolean;
       hasMinorIllness: boolean;
     }
   ];
+  checkout?: any;
   illPatients?: Array<string>;
   illnessDetails?: {
     id: string;

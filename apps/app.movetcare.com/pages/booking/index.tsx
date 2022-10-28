@@ -6,7 +6,6 @@ import { Loader } from "ui";
 import { httpsCallable } from "firebase/functions";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { functions } from "services/firebase";
-import { QRCodeSVG } from "qrcode.react";
 import { environment } from "utilities";
 import {
   getAuth,
@@ -159,52 +158,36 @@ export default function Booking() {
   return (
     <section className="w-full flex-1">
       <AppHeader />
-      {mode === "kiosk" ? (
-        <section className="flex flex-col justify-center items-center max-w-xl mx-auto bg-white rounded-xl p-8">
-          <QRCodeSVG
-            size={250}
-            value={
-              (window.location.hostname === "localhost"
-                ? "http://localhost:3000"
-                : "https://movetcare.com") + "/booking"
-            }
-          />
-          <p className="mt-4 text-lg leading-6 text-movet-black text-center">
-            Scan the QR code above to start booking an appointment with MoVET
-          </p>
-        </section>
-      ) : (
-        <div
-          className={`flex items-center justify-center bg-white rounded-xl max-w-lg mx-auto${
-            !isAppMode ? " p-4 mb-8 sm:p-8" : ""
-          }`}
-        >
-          <div className={isAppMode ? "px-8 mb-8" : "p-8"}>
-            <section className="relative mx-auto">
-              {isLoading ? (
-                <Loader />
-              ) : error ? (
-                <Error error={error} isAppMode={isAppMode} />
-              ) : (
-                <>
-                  {booking !== null ? (
-                    <ClientDataContext.Provider value={clientData as any}>
-                      <BookingController id={booking} isAppMode={isAppMode} />
-                    </ClientDataContext.Provider>
-                  ) : verificationSuccess === null ? (
-                    <StartBooking isAppMode={isAppMode} />
-                  ) : (
-                    <SignInWithEmailLinkRequired
-                      successMessage={successMessage}
-                      email={window.localStorage.getItem("email") || undefined}
-                    />
-                  )}
-                </>
-              )}
-            </section>
-          </div>
+      <div
+        className={`flex items-center justify-center bg-white rounded-xl max-w-xl mx-auto${
+          !isAppMode ? " p-4 mb-8 sm:p-8" : ""
+        }`}
+      >
+        <div className={isAppMode ? "px-8 mb-8" : "p-8"}>
+          <section className="relative mx-auto">
+            {isLoading ? (
+              <Loader />
+            ) : error ? (
+              <Error error={error} isAppMode={isAppMode} />
+            ) : (
+              <>
+                {booking !== null ? (
+                  <ClientDataContext.Provider value={clientData as any}>
+                    <BookingController id={booking} isAppMode={isAppMode} />
+                  </ClientDataContext.Provider>
+                ) : verificationSuccess === null ? (
+                  <StartBooking isAppMode={isAppMode} />
+                ) : (
+                  <SignInWithEmailLinkRequired
+                    successMessage={successMessage}
+                    email={window.localStorage.getItem("email") || undefined}
+                  />
+                )}
+              </>
+            )}
+          </section>
         </div>
-      )}
+      </div>
     </section>
   );
 }

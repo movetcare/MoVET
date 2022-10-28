@@ -1,14 +1,8 @@
-import {
-  faArrowLeft,
-  faCircleExclamation,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCircleExclamation, faRedo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRouter } from "next/router";
 import { environment } from "utilities";
 
 export const Error = ({ error, isAppMode }: any) => {
-  const router = useRouter();
-  console.error("APPLICATION ERROR => ", error);
   return (
     <div className="text-center">
       <FontAwesomeIcon
@@ -23,7 +17,7 @@ export const Error = ({ error, isAppMode }: any) => {
         We&apos;re sorry, but something went wrong.
       </p>
       {environment === "development" && (
-        <pre className="my-8">
+        <pre className="my-8 p-4">
           {JSON.stringify({
             error: { message: error?.message, code: error?.code },
           })}
@@ -50,13 +44,10 @@ export const Error = ({ error, isAppMode }: any) => {
       )}
       <div
         className="flex flex-row justify-center items-center my-4 cursor-pointer"
-        onClick={() => {
-          router.push("/booking");
-          router.reload();
-        }}
+        onClick={() => (window.location.href = window.location.origin)}
       >
-        <FontAwesomeIcon icon={faArrowLeft} />
-        <p className="ml-2">Go Back</p>
+        <FontAwesomeIcon icon={faRedo} />
+        <p className="ml-2">Try Again</p>
       </div>
     </div>
   );

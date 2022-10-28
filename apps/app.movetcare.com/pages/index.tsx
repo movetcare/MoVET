@@ -117,6 +117,7 @@ export default function Home() {
           });
           if (result.error !== true || result.error === undefined) {
             if (email) {
+              console.log(result);
               if (result.isNewClient !== true)
                 setSuccessMessage(
                   `${

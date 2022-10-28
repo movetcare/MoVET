@@ -1,5 +1,4 @@
 import Layout from "components/Layout";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { classNames } from "utilities";
@@ -23,7 +22,24 @@ interface BlogPost {
 const posts = [
   {
     isFeatured: true,
-    title: "Walk to find a cure at the Susan G. Komen “More Than Pink” Walk ",
+    title: "HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 30th @ 1pm",
+    href: "/blog/howl-o-ween",
+    category: { name: "Community", href: "#", color: "bg-movet-magenta" },
+    description:
+      "Come one come all! Join us, Oct 30th at 1pm in the Belleview Station Dog Park to show off your Halloween Best! We'll have a fall themed photo booth to capture this once-a-year attire! Come as a couple, or just in an awesome-sauce costume! We hope to see you there! Free treats and belly rubs included for all who come. Best of all, all entry photos will be posted on Instagram and Facebook -- make sure to campaign your friends to vote by LIKING your picture. Winning photo (the one with the most likes) will be announced on Halloween and be featured as MoVET's November PET OF THE MONTH!",
+    date: "Oct 20th, 2022",
+    datetime: "2022-10-20",
+    imageUrl: "/images/blog/howl-o-ween.png",
+    readingTime: "3 min",
+    author: {
+      name: "Dr. Abramson",
+      href: "#",
+      imageUrl: null,
+    },
+  },
+  {
+    isFeatured: true,
+    title: "Walk to find a cure at the Susan G. Komen “More Than Pink” Walk",
     href: "/blog/susan-g-komen-more-than-pink-walk",
     category: { name: "Community", href: "#", color: "bg-movet-magenta" },
     description:
@@ -100,31 +116,28 @@ const posts = [
 export default function Blog() {
   return (
     <Layout>
-      <Head>
-        <title>MoVET Blog</title>
-      </Head>
-      <section className="relative px-4 md:px-0px-4 md:px-0 pb-16 sm:pb-0">
+      <section className="px-4 md:px-0px-4 md:px-0 pb-16 sm:pb-20">
         <div className="relative mx-auto max-w-7xl">
           <div className="text-center">
             <h2 className="text-4xl tracking-wide mt-8 text-center">
               From The Blog
             </h2>
           </div>
-          <div className="mx-auto mt-8 sm:mb-20 sm:pb-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
+          <div className="mx-auto mt-8 sm:pb-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
             {posts.map((post: BlogPost, index: number) =>
-              post.isFeatured && index === 0 ? (
+              post.isFeatured && (index === 0 || index === 1) ? (
                 <div
                   key={post.title}
                   className="flex flex-col lg:flex-row overflow-hidden rounded-lg shadow-lg col-span-3"
                 >
-                  <div className="flex-shrink-0 -mb-2 hover:opacity-75 cursor-pointer">
+                  <div className="flex-shrink-0 -mb-2">
                     <Link href={post.href}>
                       <Image
+                        className="hover:opacity-75 cursor-pointer"
                         src={post.imageUrl}
                         alt=""
                         height={334}
                         width={520}
-                        // layout="intrinsic"
                       />
                     </Link>
                   </div>
@@ -142,13 +155,21 @@ export default function Blog() {
                         </span>
                         {/*</a>*/}
                       </p>
-                      <Link href={post.href} className="mt-2 block" passHref>
-                        <p className="text-xl font-semibold cursor-pointer">
+                      <Link
+                        href={post.href}
+                        className="mt-2 block hover:no-underline"
+                        passHref
+                      >
+                        <p className="text-xl font-semibold cursor-pointer text-movet-black">
                           {post.title}
                         </p>
                       </Link>
-                      <Link href={post.href} className="mt-2 block" passHref>
-                        <p className="mt-3 text-base cursor-pointer">
+                      <Link
+                        href={post.href}
+                        className="mt-2 block hover:no-underline"
+                        passHref
+                      >
+                        <p className="mt-3 text-base cursor-pointer text-movet-black">
                           {post.description}
                         </p>
                       </Link>
@@ -205,7 +226,7 @@ export default function Blog() {
                       alt=""
                       height={340}
                       width={520}
-                      layout="intrinsic"
+
                     />
                   </a>
                 </div>

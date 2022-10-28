@@ -1,12 +1,12 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { applyActionCode } from "firebase/auth";
+import { applyActionCode, getAuth } from "firebase/auth";
 import { environment } from "utilities";
-import { auth } from "services/firebase";
 
 export default function Verify() {
   const router = useRouter();
+  const auth = getAuth();
   const { mode, oobCode, apiKey, continueUrl } = router.query;
   const [isLoading, setLoading] = useState<boolean>(true);
   const [verificationSuccessful, setVerificationSuccessful] =
@@ -26,7 +26,7 @@ export default function Verify() {
         pathname: "/404",
         query: router.query,
       });
-  }, [router, mode, oobCode, apiKey]);
+  }, [router, mode, oobCode, apiKey, auth]);
 
   useEffect(() => {
     if (verificationSuccessful)

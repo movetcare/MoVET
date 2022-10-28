@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { firestore } from "services/firebase";
 import { Booking } from "types/Booking";
 import { environment } from "utilities";
+import { PaymentConfirmation } from "forms/booking/PaymentConfirmation";
 
 export const BookingController = ({
   id,
@@ -40,6 +41,13 @@ export const BookingController = ({
       return () => unsubscribe();
     } else return;
   }, [id]);
+  useEffect(() => {
+    if (session?.step === "checkout" && session?.checkout?.url && !isAppMode)
+      window.location.href = session?.checkout?.url;
+    if (session?.step === "complete")
+      window.location.href =
+        window.location.origin + "/booking/success?id=" + id;
+  }, [session, isAppMode, id]);
   if (isLoading) return <Loader />;
   else if (error) return <Error error={error} />;
   else if (session !== null)
@@ -64,12 +72,18 @@ export const BookingController = ({
         return <ChooseStaff session={session} isAppMode={isAppMode} />;
       case "choose-datetime":
         return <ChooseDateTime session={session} isAppMode={isAppMode} />;
+      case "payment-confirmation":
+        return <PaymentConfirmation session={session} isAppMode={isAppMode} />;
       case "confirmation":
         return <Confirmation session={session} isAppMode={isAppMode} />;
+      case "complete":
+        return <Loader message="Confirming Booking Request..." />;
+      case "checkout":
+        return <Loader message="Taking you to Stripe..." />;
       case "add-pet":
-        return <Loader />;
+        return <Loader message="Saving Pet..." />;
       case "restart":
-        return <Loader />;
+        return <Loader message="Starting New Booking..." />;
       default:
         return <Error error={{ ERROR: "MISSING STEP" }} mode={isAppMode} />;
     }

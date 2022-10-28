@@ -3,10 +3,14 @@ import { Button } from "ui";
 import EmailInput from "components/inputs/EmailInput";
 import { Loader } from "ui";
 import { SignInWithEmailLinkRequired } from "components/SignInWithEmailLinkRequired";
-import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  sendSignInLinkToEmail,
+} from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { functions } from "services/firebase";
@@ -15,9 +19,11 @@ import { Error } from "components/Error";
 import { object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AppLinks } from "ui";
+import { useRouter } from "next/router";
 
 export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
   const [verificationSuccess, setVerificationSuccess] = useState<
     boolean | null
@@ -44,7 +50,20 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
     },
   });
   const email = watch("email");
-  const verifyBookingWithEmail = async (data: any) => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(getAuth(), (user: any) => {
+      setIsLoading(true);
+      if (user) {
+        if (
+          window.location.href !==
+          window.location.origin + `/booking/?id=${user.uid}`
+        )
+          router.push(`/booking/?id=${user.uid}`);
+      } else setIsLoading(false);
+    });
+    return () => unsubscribe();
+  }, [router]);
+  const verifyBookingWithEmail = async (data: { email: string }) => {
     setIsLoading(true);
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
@@ -55,7 +74,6 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
             "verifyBooking"
           )({
             email: data.email,
-            ...data,
             token,
           });
           if (result.error !== true || result.error === undefined) {
@@ -184,12 +202,12 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
               <div className="flex flex-row justify-center w-full mx-auto mt-8">
                 <AppLinks />
               </div>
+              <p className="text-center mb-4 italic text-sm w-full sm:w-2/3 mx-auto">
+                You can also download our our mobile app to book appointments,
+                manage your pets, chat with us, and much more!
+              </p>
             </>
           )}
-          <p className="text-center mb-4 italic text-sm w-full sm:w-2/3 mx-auto">
-            You can also download our our mobile app to book appointments,
-            manage your pets, chat with us, and much more!
-          </p>
         </>
       ) : (
         <SignInWithEmailLinkRequired

@@ -4,3 +4,4 @@ export * from "./capitalizeFirstLetter";
 export * from "./formatPhoneNumber";
 export * from "./isValidZipcode";
 export * from "./validZipcodes";
+export * from "./formatDateObjectPlusTimeStringIntoString";

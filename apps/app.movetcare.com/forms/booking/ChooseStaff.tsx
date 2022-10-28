@@ -55,24 +55,24 @@ export const ChooseStaff = ({
                 session?.staff.map((expert: Staff, index: number) =>
                   expert?.isActive && expert?.isStaff ? (
                     <>
-                      <div key={index} className="mx-auto">
-                        <div className="mx-auto h-40 w-40">
+                      <div key={index}>
+                        <div className="">
                           {expert?.picture ? (
                             <Image
                               src={`${expert?.picture}`}
                               // layout="responsive"
-                              height={10}
-                              width={10}
-                              className="rounded-full"
+                              height={80}
+                              width={80}
+                              className="rounded-full mx-auto"
                               alt={`Photo of ${expert?.firstName} ${expert?.lastName}`}
                             />
                           ) : (
                             <Image
                               src="https://storage-us.provetcloud.com/provet/4285/users/09339fca5622431ab86783c206483ce0.jpeg"
                               // layout="responsive"
-                              height={10}
-                              width={10}
-                              className="rounded-full"
+                              height={80}
+                              width={80}
+                              className="rounded-full mx-auto"
                               alt={`MoVET Logo Placeholder Image for ${expert?.firstName} ${expert?.lastName}`}
                             />
                           )}
@@ -100,28 +100,26 @@ export const ChooseStaff = ({
                         icon={faCalendarCheck}
                         iconSize={"lg"}
                         color="black"
-                        text={`View 
-                          ${
-                            expert?.firstName ? `${expert?.firstName}'s ` : " "
-                          }Availability`}
-                        className={"w-full sm:w-2/3 mx-auto mt-4 sm:mt-0"}
+                        text={`Request 
+                          ${expert?.firstName ? `${expert?.firstName}` : " "}`}
+                        className={"w-full sm:w-2/3 mx-auto mt-4"}
                         onClick={() => onSubmit(expert)}
                       />
                       {index !== session?.staff?.length - 1 && (
-                        <hr className="text-movet-gray border rounded-full my-4" />
+                        <hr className="text-movet-gray border rounded-full my-8" />
                       )}
                     </>
                   ) : (
                     <></>
                   )
                 )}
-              <hr className="text-movet-gray border rounded-full my-4" />
+              <hr className="text-movet-gray border rounded-full my-8" />
               <Button
                 type="submit"
                 icon={faArrowRight}
                 iconSize={"lg"}
                 color="red"
-                text="SKIP - View Full Availability"
+                text="SKIP"
                 className={"w-full sm:w-2/3 mx-auto mt-4 sm:mt-0"}
                 onClick={() => onSubmit("none")}
               />

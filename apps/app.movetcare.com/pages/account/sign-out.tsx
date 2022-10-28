@@ -10,7 +10,7 @@ export default function SignOut() {
   const router = useRouter();
 
   useEffect(() => {
-    signOut(auth).finally(() => router.replace("/booking"));
+    signOut(auth).finally(() => router.replace("/"));
   }, [router]);
 
   return (

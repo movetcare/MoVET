@@ -8,7 +8,6 @@ import {
   faHospital,
   faHome,
   faHeadset,
-  faMapPin,
 } from "@fortawesome/free-solid-svg-icons";
 import { ToggleInput } from "components/inputs/ToggleInput";
 import { useForm } from "react-hook-form";
@@ -23,7 +22,6 @@ import { Error } from "components/Error";
 import TextInput from "components/inputs/TextInput";
 import { ClientDataContext } from "contexts/ClientDataContext";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const containerStyle = {
   width: "100%",
@@ -189,33 +187,14 @@ export const ChooseLocation = ({
                 leaveFrom="opacity-100"
               >
                 <>
-                  <div className="flex rounded-lg border-2 border-movet-brown mt-8 mb-8 p-1 w-max-sm">
+                  <div className="flex rounded-lg border-2 border-movet-brown mt-8 mb-8 p-1">
                     <div className="flex w-full h-72 mx-auto">
                       <GoogleMap
                         mapContainerStyle={containerStyle}
                         options={mapOptions}
                         center={(addressLatLon as any) || center}
                         zoom={addressLatLon ? 17 : 8.5}
-                      >
-                        {addressLatLon && (
-                          <div
-                            style={{
-                              position: "absolute",
-                              width: 400,
-                              height: 30,
-                              left: 0,
-                              top: 160,
-                              textAlign: "center",
-                            }}
-                          >
-                            <FontAwesomeIcon
-                              icon={faMapPin}
-                              size="3x"
-                              className="text-movet-red"
-                            />
-                          </div>
-                        )}
-                      </GoogleMap>
+                      />
                     </div>
                   </div>
                   <>
@@ -270,24 +249,7 @@ export const ChooseLocation = ({
                         options={mapOptions}
                         center={center}
                         zoom={13}
-                      >
-                        <div
-                          style={{
-                            position: "absolute",
-                            width: 400,
-                            height: 30,
-                            left: 0,
-                            top: 160,
-                            textAlign: "center",
-                          }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faMapPin}
-                            size="3x"
-                            className="text-movet-red"
-                          />
-                        </div>
-                      </GoogleMap>
+                      />
                     </div>
                   </div>
                   <h2 className="mb-0 mt-8 text-center">

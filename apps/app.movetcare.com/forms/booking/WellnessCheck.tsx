@@ -99,7 +99,7 @@ export const WellnessCheck = ({
   };
   return (
     <>
-      {isLoading && pets === null ? (
+      {isLoading ? (
         <Loader />
       ) : error ? (
         <Error error={error} isAppMode={isAppMode} />

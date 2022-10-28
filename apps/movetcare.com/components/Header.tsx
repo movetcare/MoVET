@@ -138,8 +138,8 @@ export const Header = () => {
                     target="_blank"
                     href={
                       environment === "production"
-                        ? "https://app.movetcare.com/book-an-appointment"
-                        : `http://locathost:3001/book-an-appointment`
+                        ? "https://app.movetcare.com/booking"
+                        : `http://localhost:3001/booking`
                     }
                     rel="noopener noreferrer"
                   >
@@ -235,8 +235,8 @@ export const Header = () => {
                   target="_blank"
                   href={
                     environment === "production"
-                      ? "https://app.movetcare.com/book-an-appointment"
-                      : `http://locathost:3001/book-an-appointment`
+                      ? "https://app.movetcare.com/booking"
+                      : `http://localhost:3001/booking`
                   }
                   rel="noopener noreferrer"
                 >

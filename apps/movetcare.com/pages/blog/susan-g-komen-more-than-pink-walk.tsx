@@ -57,14 +57,13 @@ export default function MoreThanPinkWalk() {
           content="/static/images/blog/crop-cancer-awareness.png"
         />
       </Head>
-      <main className="flex flex-col items-center justify-center sm:max-w-screen-lg sm:mx-auto bg-white rounded-xl p-4 sm:p-8 m-4 sm:m-8 sm:mb-20">
+      <section className="flex flex-col items-center justify-center sm:max-w-screen-lg mx-4 sm:mx-auto mt-8 mb-20 lg:px-20 bg-white rounded-xl p-4 sm:p-8">
         <Image
           className="rounded-xl"
           src="/images/blog/crop-cancer-awareness.png"
           alt="Dr. Caldwell and her daughter, Kiley, at the Komen Walk"
           height={334}
           width={520}
-          // layout="intrinsic"
         />
         <p className="italic text-center text-sm mt-4">
           Dr. Caldwell and her daughter, Kiley, at the Komen Walk
@@ -120,7 +119,7 @@ export default function MoreThanPinkWalk() {
           </a>
           .
         </p>
-      </main>
+      </section>
     </Layout>
   );
 }

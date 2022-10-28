@@ -9,11 +9,13 @@ import {functions} from "./../config/config";
 import {updateBookingLocation} from "../booking/updateBookingLocation";
 import {updateBookingReason} from "../booking/updateBookingReason";
 import {updateBookingStaff} from "../booking/updateBookingStaff";
+import { updateBookingRequestedDateTime } from "../booking/updateBookingRequestedDateTime";
+import { archiveBooking } from "../booking/archiveBooking";
 const DEBUG = true;
 export const handleBookingUpdate = functions.firestore
   .document("bookings/{id}")
   .onWrite(async (change: any, context: any) => {
-    const {id} = context.params || {};
+    const { id } = context.params || {};
     const data = change.after.data();
     const {
       client,
@@ -28,8 +30,9 @@ export const handleBookingUpdate = functions.firestore
       reasonGroup,
       reason,
       selectedStaff,
+      requestedDateTime,
     } = data || {};
-    if (DEBUG) console.log("handleBookingUpdate => DATA", {id, data});
+    if (DEBUG) console.log("handleBookingUpdate => DATA", { id, data });
     if (data !== undefined && isActive) {
       if (step === "restart" || step === "complete") {
         if (DEBUG)
@@ -65,6 +68,9 @@ export const handleBookingUpdate = functions.firestore
         await updateBookingReason(id, reason, reasonGroup);
       else if (step === "choose-staff" && selectedStaff)
         await updateBookingStaff(id, selectedStaff);
+      else if (step === "choose-datetime" && requestedDateTime)
+        await updateBookingRequestedDateTime(id, client.uid, requestedDateTime);
+      else if (step === "complete") await archiveBooking(id);
       else if (step === "restart") await restartBooking(id);
     } else {
       if (DEBUG)

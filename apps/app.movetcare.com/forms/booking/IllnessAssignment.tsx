@@ -110,7 +110,7 @@ export const IllnessAssignment = ({
   };
   return (
     <>
-      {isLoading || pet === null ? (
+      {isLoading ? (
         <Loader />
       ) : error ? (
         <Error error={error} isAppMode={isAppMode} />
