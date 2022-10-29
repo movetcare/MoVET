@@ -7,7 +7,7 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { firestore } from "services/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Error } from "components/Error";
-import { setDoc, doc, serverTimestamp, getDoc } from "firebase/firestore";
+import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { BookingHeader } from "components/booking/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
