@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+firebase use movet-care && firebase deploy --only functions --non-interactive -f
