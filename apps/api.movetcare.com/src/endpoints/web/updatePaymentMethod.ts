@@ -147,16 +147,17 @@ export const updatePaymentMethod = functions
               },
               success_url:
                 (environment?.type === "development"
-                  ? "http://localhost:3000"
+                  ? "http://localhost:3001"
                   : environment.type === "staging"
                   ? "https://staging.movetcare.com"
-                  : "https://movetcare.com") + "/payment/?success=true",
+                  : "https://movetcare.com") +
+                "/update-payment-method/?success=true",
               cancel_url:
                 (environment?.type === "development"
-                  ? "http://localhost:3000"
+                  ? "http://localhost:3001"
                   : environment.type === "staging"
                   ? "https://staging.movetcare.com"
-                  : "https://movetcare.com") + "/payment/",
+                  : "https://movetcare.com") + "/update-payment-method/",
             });
             if (DEBUG) console.log("session", session);
             return session?.url;

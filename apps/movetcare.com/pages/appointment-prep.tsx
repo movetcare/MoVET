@@ -50,7 +50,7 @@ const AppointmentPrep = () => {
           <i>before</i> your appointment.
         </p>
         <a
-          href="https://app.movetcare.com/payment"
+          href="https://app.movetcare.com/update-payment-method"
           target="_blank"
           rel="noreferrer"
         >

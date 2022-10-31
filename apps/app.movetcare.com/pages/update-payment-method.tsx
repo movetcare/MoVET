@@ -20,7 +20,7 @@ import { setTimeout } from "timers";
 import { object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-export default function Payment() {
+export default function UpdatePaymentMethod() {
   const router = useRouter();
   const { mode, email, success } = router.query || {};
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -97,7 +97,7 @@ export default function Payment() {
               size={250}
               value={
                 (window.location.hostname === "localhost"
-                  ? "http://localhost:3000"
+                  ? "http://localhost:3001"
                   : "https://movetcare.com") +
                 `/payment/${email ? `?email=${email}` : ""}`
               }
@@ -121,7 +121,7 @@ export default function Payment() {
               We have updated your payment method on file and will use that
               information to process your MoVET invoices going forward.
             </p>
-
+            <hr className="border-movet-gray w-full sm:w-2/3 mx-auto" />
             <p
               className={
                 "mt-4 leading-6 text-movet-black font-source-sans-pro italic"

@@ -44,7 +44,7 @@ export const sendSignInByEmailLink = async ({
         (environment.type === "production"
           ? "https://movetcare.com"
           : "http://localhost:3000") +
-        "/booking" +
+        "/book-an-appointment" +
         `${sessionId ? `?id=${sessionId}` : ""}`,
     });
   } else {

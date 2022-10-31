@@ -69,7 +69,7 @@ export const ClientCheckIn = () => {
               !result?.client?.firstName ||
               !result?.client?.lastName
             )
-              router.push("/checkin/info/");
+              router.push("/appointment-check-in/info/");
             else if (result?.session?.url) router.push(result?.session?.url);
             else {
               setClient(result.client);
@@ -123,20 +123,7 @@ export const ClientCheckIn = () => {
                 </span>{" "}
                 as soon as we are ready to begin your appointment.
               </p>
-              <p
-                className={
-                  "mt-4 leading-6 text-movet-black font-source-sans-pro italic"
-                }
-              >
-                Feel free to browse our shop and checkout our new mobile app
-                which you can use to book future clinic, at home, and telehealth
-                appointments!
-              </p>
-              <div className="flex flex-col justify-center items-center mt-6">
-                <div className="flex justify-center">
-                  <AppLinks />
-                </div>
-              </div>
+              <hr className="border-movet-gray w-full sm:w-2/3 mx-auto my-8" />
               <h3 className="mt-4">Need to change your information?</h3>
               <div className="flex flex-row justify-center items-center">
                 <div className="mx-2 flex flex-col justify-center items-center">
@@ -146,7 +133,7 @@ export const ClientCheckIn = () => {
                     iconSize={"lg"}
                     text="Update Profile"
                     className={"mt-4"}
-                    onClick={() => router.push("/checkin/info/")}
+                    onClick={() => router.push("/appointment-check-in/info/")}
                   />
                 </div>
                 {email && (
@@ -157,10 +144,26 @@ export const ClientCheckIn = () => {
                       iconSize={"lg"}
                       text="Update Payment"
                       className={"mt-4"}
-                      onClick={() => router.push(`/payment?email=${email}`)}
+                      onClick={() =>
+                        router.push(`/update-payment-method?email=${email}`)
+                      }
                     />
                   </div>
                 )}
+              </div>
+              <p
+                className={
+                  "mt-8 leading-6 text-movet-black font-source-sans-pro italic"
+                }
+              >
+                Feel free to browse our shop and checkout our new mobile app
+                which you can use to book future clinic, at home, and telehealth
+                appointments!
+              </p>
+              <div className="flex flex-col justify-center items-center mt-6">
+                <div className="flex justify-center">
+                  <AppLinks />
+                </div>
               </div>
             </div>
           ) : (

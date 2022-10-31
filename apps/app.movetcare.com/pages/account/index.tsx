@@ -27,7 +27,12 @@ export default function Account() {
         });
       else if (mode === "signIn")
         router.replace({
-          pathname: "/account/sign-in",
+          pathname: "/sign-in",
+          query: router.query,
+        });
+      else if (mode === "signOut")
+        router.replace({
+          pathname: "/sign-out",
           query: router.query,
         });
       else

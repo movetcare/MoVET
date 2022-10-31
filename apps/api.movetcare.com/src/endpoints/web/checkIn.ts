@@ -333,13 +333,14 @@ export const checkIn = functions
                           ? "http://localhost:3000"
                           : environment.type === "staging"
                           ? "https://staging.movetcare.com"
-                          : "https://movetcare.com") + "/checkin/success/",
+                          : "https://movetcare.com") +
+                        "/appointment-check-in/success/",
                       cancel_url:
                         (environment?.type === "development"
                           ? "http://localhost:3000"
                           : environment.type === "staging"
                           ? "https://staging.movetcare.com"
-                          : "https://movetcare.com") + "/checkin/",
+                          : "https://movetcare.com") + "/appointment-check-in/",
                     });
 
                     return await saveClient(proVetClientData?.id, null, {
@@ -671,13 +672,14 @@ export const checkIn = functions
                         ? "http://localhost:3000"
                         : environment.type === "staging"
                         ? "https://staging.movetcare.com"
-                        : "https://movetcare.com") + "/checkin/success/",
+                        : "https://movetcare.com") +
+                      "/appointment-check-in/success/",
                     cancel_url:
                       (environment?.type === "development"
                         ? "http://localhost:3000"
                         : environment.type === "staging"
                         ? "https://staging.movetcare.com"
-                        : "https://movetcare.com") + "/checkin/",
+                        : "https://movetcare.com") + "/appointment-check-in/",
                   });
                   await admin
                     .firestore()

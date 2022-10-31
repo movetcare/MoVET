@@ -40,7 +40,7 @@ export default function Home() {
       window.location.href =
         "http://" +
         window.location.host +
-        "/account/sign-in" +
+        "/sign-in" +
         new URL(window.location.href).search;
     }
   }, [mode]);
@@ -131,7 +131,8 @@ export default function Home() {
                 url:
                   (environment === "production"
                     ? "https://app.movetcare.com"
-                    : "http://localhost:3001") + `/booking?id=${result.id}`,
+                    : "http://localhost:3001") +
+                  `/book-an-appointment?id=${result.id}`,
                 handleCodeInApp: true,
                 iOS: {
                   bundleId: "com.movet.inc",
@@ -176,7 +177,7 @@ export default function Home() {
             value={
               (window.location.hostname === "localhost"
                 ? "http://localhost:3000"
-                : "https://movetcare.com") + "/booking"
+                : "https://movetcare.com") + "/book-an-appointment"
             }
           />
           <p className="mt-4 text-lg leading-6 text-movet-black text-center">

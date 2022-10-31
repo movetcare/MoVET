@@ -50,14 +50,14 @@ export default function SignIn() {
     if (router && verificationSuccessful)
       router.replace(
         (continueUrl as any)?.replaceAll("3000", "3001")?.toString() ||
-          "/booking"
+          "/book-an-appointment"
       );
   }, [verificationSuccessful, continueUrl, router]);
 
   return (
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
       <Head>
-        <title>Verifying Your Account...</title>
+        <title>Signing You In to MoVET...</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="w-full flex-1 overflow-hidden">
@@ -72,7 +72,7 @@ export default function SignIn() {
           ) : (
             <div className="flex-col justify-center items-center text-center mx-auto">
               <h2 className="text-2xl font-extrabold tracking-tight text-center">
-                Account Verification Failed
+                Account Sign In Failed
               </h2>
               <p className="text-center mb-4">Please try again...</p>
               <Button

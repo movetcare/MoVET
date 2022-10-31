@@ -160,11 +160,11 @@ const send24HourAppointmentNotification = async (
   clientProvetRecord: any,
   petNames: string | Array<string>
 ) => {
-  const {id, client, user, start, instructions, patients, reason} =
+  const { id, client, user, start, instructions, patients, reason } =
     appointmentDetails;
   const reasonName = reason ? await getReasonName(reason) : null;
   if (DEBUG)
-    console.log('APPOINTMENT DETAILS', {
+    console.log("APPOINTMENT DETAILS", {
       id,
       client,
       user,
@@ -176,35 +176,35 @@ const send24HourAppointmentNotification = async (
       doesHaveValidPaymentOnFile,
     });
 
-  const {email, phoneNumber, displayName} = userDetails;
-  if (DEBUG) console.log('USER DATA', {email, phoneNumber, displayName});
+  const { email, phoneNumber, displayName } = userDetails;
+  if (DEBUG) console.log("USER DATA", { email, phoneNumber, displayName });
   if (
     userNotificationSettings &&
     userNotificationSettings?.sendEmail &&
     email
   ) {
     const emailText = `${
-      displayName ? `<p>Hi ${displayName},</p>` : '<p>Hey there!</p>'
+      displayName ? `<p>Hi ${displayName},</p>` : "<p>Hey there!</p>"
     }<p>This email contains important information about your upcoming appointment with MoVET.</p>${
       user
         ? `<p><b>Location: </b>${
             user === 8
               ? `Housecall - ${
-                  clientProvetRecord?.street_address || 'STREET UNKNOWN'
-                } ${clientProvetRecord?.city || 'CITY UNKNOWN'}, ${
-                  clientProvetRecord?.state || 'STATE UNKNOWN'
-                } ${clientProvetRecord?.zip_code || 'ZIPCODE UNKNOWN'}`
+                  clientProvetRecord?.street_address || "STREET UNKNOWN"
+                } ${clientProvetRecord?.city || "CITY UNKNOWN"}, ${
+                  clientProvetRecord?.state || "STATE UNKNOWN"
+                } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
               : user === 7
               ? 'MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)'
               : user === 9
               ? "Virtual - We'll email you a link when it's time for your consultation"
               : 'UNKNOWN - Please reply to this email ASAP with the appointment location - "Housecall", "MoVET Clinic @ Belleview Station", "Virtual Consultation"'
           }</p>`
-        : ''
+        : ""
     }<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p><p><b>Pet${
-      patients.length > 1 ? 's' : ''
+      patients.length > 1 ? "s" : ""
     }: </b>${petNames}</p>${
-      reasonName !== null ? `<p><b>Reason: </b>${reasonName}</p>` : ''
+      reasonName !== null ? `<p><b>Reason: </b>${reasonName}</p>` : ""
     }${
       instructions
         ? `<p><b>Instructions: </b>${instructions}</p>`
@@ -212,22 +212,22 @@ const send24HourAppointmentNotification = async (
     }<p></p><p><b>*** KEEP READING ***</b></p><p></p>${
       doesHaveValidPaymentOnFile !== false &&
       doesHaveValidPaymentOnFile.length > 0
-        ? ''
+        ? ""
         : user === 8
-        ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://movetcare.com/payment?email=${(
+        ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll(
-            '+',
-            '%2B'
+            "+",
+            "%2B"
           )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-        : `<p><b>Our records indicate that you do not have a form of payment on file -> <a href="${`https://movetcare.com/payment?email=${(
+        : `<p><b>Our records indicate that you do not have a form of payment on file -> <a href="${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll(
-            '+',
-            '%2B'
+            "+",
+            "%2B"
           )}`}" target="_blank">Add a Form of Payment</a></b></p>`
     }<p><b> Handling Tips for your Pet${
-      patients.length > 1 ? 's' : ''
+      patients.length > 1 ? "s" : ""
     }:</b> Pets can get nervous and anxious about visiting the 
 veterinarian. We want to prevent any nervous behaviors that can later create fearful or even 
 aggressive behaviors. Once this happens, veterinary visits can become very unpleasant for both
@@ -244,27 +244,27 @@ aches, headache, new loss of taste or smell, sore throat, congestion or runny no
 vomiting) nor have you or any member of your household tested positive to the COVID-19 virus 
 in the last 14 days. <i>Please cancel and reschedule your appointment (<a href="https://movetcare.com/get-the-app" target="_blank">using our mobile app</a>) for 
 another day/time if any of the above is true.</i> No cancellation charge will apply in this case.</p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
-    if (DEBUG) console.log('emailText -> ', emailText);
+    if (DEBUG) console.log("emailText -> ", emailText);
     const emailConfig: EmailConfiguration = {
       to: email,
-      from: 'info@movetcare.com',
-      bcc: 'info@movetcare.com',
-      replyTo: 'info@movetcare.com',
+      from: "info@movetcare.com",
+      bcc: "info@movetcare.com",
+      replyTo: "info@movetcare.com",
       subject: `${petNames}'s Appointment Reminder: ${getDateStringFromDate(
         start?.toDate(),
-        'dateOnly'
-      )} @ ${getDateStringFromDate(start?.toDate(), 'timeOnly')}`,
-      text: emailText.replace(/(<([^>]+)>)/gi, ''),
+        "dateOnly"
+      )} @ ${getDateStringFromDate(start?.toDate(), "timeOnly")}`,
+      text: emailText.replace(/(<([^>]+)>)/gi, ""),
       html: emailText,
     };
-    if (DEBUG) console.log('SENDING EMAIL APPOINTMENT NOTIFICATION');
-    if (environment?.type === 'production')
+    if (DEBUG) console.log("SENDING EMAIL APPOINTMENT NOTIFICATION");
+    if (environment?.type === "production")
       await emailClient
         .send(emailConfig)
         .then(async () => {
-          if (DEBUG) console.log('EMAIL SENT!', emailConfig);
+          if (DEBUG) console.log("EMAIL SENT!", emailConfig);
           await request
-            .post('/note/', {
+            .post("/note/", {
               title: `24 Hour Appointment Reminder Notification`,
               type: 1,
               client: proVetApiUrl + `/client/${client}/`,
@@ -272,14 +272,14 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
               note: emailConfig.html,
             })
             .then(async (response: any) => {
-              const {data} = response;
-              if (DEBUG) console.log('API Response: POST /note/ => ', data);
+              const { data } = response;
+              if (DEBUG) console.log("API Response: POST /note/ => ", data);
               await logEvent({
-                tag: '24-hour-appointment-notification-email',
-                origin: 'api',
+                tag: "24-hour-appointment-notification-email",
+                origin: "api",
                 success: true,
                 data: {
-                  message: 'Synced 24 Hour Appointment Notification w/ ProVet',
+                  message: "Synced 24 Hour Appointment Notification w/ ProVet",
                   ...emailConfig,
                 },
                 sendToSlack: true,
@@ -288,11 +288,11 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
             .catch(async (error: any) => await throwError(error));
           await admin
             .firestore()
-            .collection('clients')
+            .collection("clients")
             .doc(`${client}`)
-            .collection('notifications')
+            .collection("notifications")
             .add({
-              type: 'email',
+              type: "email",
               ...emailConfig,
               createdOn: new Date(),
             })
@@ -302,9 +302,9 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
           if (DEBUG) console.error(error?.response?.body?.errors);
           await throwError(error);
         });
-    else console.log('SIMULATING APPOINTMENT NOTIFICATION CONFIRMATION EMAIL');
+    else console.log("SIMULATING APPOINTMENT NOTIFICATION CONFIRMATION EMAIL");
   } else if (DEBUG)
-    console.log('DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION EMAIL', {
+    console.log("DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION EMAIL", {
       sendEmail:
         userNotificationSettings && userNotificationSettings?.sendEmail,
       email,
@@ -314,7 +314,7 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
     userNotificationSettings?.sendSms &&
     phoneNumber
   ) {
-    if (DEBUG) console.log('SENDING SMS APPOINTMENT NOTIFICATION');
+    if (DEBUG) console.log("SENDING SMS APPOINTMENT NOTIFICATION");
     const petNames =
       patients.length > 1
         ? patients.map((patient: any, index: number) =>
@@ -323,59 +323,59 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
               : ` and ${patient?.name}`
           )
         : patients[0].name;
-    if (DEBUG) console.log('petNames -> ', petNames);
+    if (DEBUG) console.log("petNames -> ", petNames);
     const reasonName = reason ? await getReasonName(reason) : null;
     const smsText = `${
-      displayName ? `Hi ${displayName}. ` : 'Hey there! '
+      displayName ? `Hi ${displayName}. ` : "Hey there! "
     }\n\nThis is MoVET reaching out to remind you of your upcoming appointment.\n\nAPPOINTMENT DETAILS:\n${
       user
         ? `Location: ${
             user === 8
               ? `Housecall - ${
-                  clientProvetRecord?.street_address || 'STREET UNKNOWN'
-                } ${clientProvetRecord?.city || 'CITY UNKNOWN'}, ${
-                  clientProvetRecord?.state || 'STATE UNKNOWN'
-                } ${clientProvetRecord?.zip_code || 'ZIPCODE UNKNOWN'}`
+                  clientProvetRecord?.street_address || "STREET UNKNOWN"
+                } ${clientProvetRecord?.city || "CITY UNKNOWN"}, ${
+                  clientProvetRecord?.state || "STATE UNKNOWN"
+                } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
               : user === 7
-              ? 'MoVET Clinic @ 4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9'
+              ? "MoVET Clinic @ 4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9"
               : user === 9
               ? "Virtual - We'll email you a link when it's time for your consultation"
-              : 'UNKNOWN'
+              : "UNKNOWN"
           }`
-        : ''
+        : ""
     }\nTime: ${getDateStringFromDate(start?.toDate())}\nPet${
-      patients.length > 1 ? 's' : ''
-    }: ${petNames}\n${reasonName !== null ? `\nReason: ${reasonName}\n` : ''}${
-      instructions ? `Instructions: ${instructions}\n` : ''
+      patients.length > 1 ? "s" : ""
+    }: ${petNames}\n${reasonName !== null ? `\nReason: ${reasonName}\n` : ""}${
+      instructions ? `Instructions: ${instructions}\n` : ""
     }${
       doesHaveValidPaymentOnFile !== false &&
       doesHaveValidPaymentOnFile.length > 0
-        ? ''
+        ? ""
         : user === 8
-        ? `\nOur records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment. Please use the link below to add a new form of payment to your account:\n\n${`https://movetcare.com/payment?email=${(
+        ? `\nOur records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment. Please use the link below to add a new form of payment to your account:\n\n${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
-          )?.replaceAll('+', '%2B')}`}\n`
-        : `\nOur records indicate that you do not have a form of payment on file -> ADD A PAYMENT SOURCE: ${`https://movetcare.com/payment?email=${(
+          )?.replaceAll("+", "%2B")}`}\n`
+        : `\nOur records indicate that you do not have a form of payment on file -> ADD A PAYMENT SOURCE: ${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
-          )?.replaceAll('+', '%2B')}`}\n`
+          )?.replaceAll("+", "%2B")}`}\n`
     }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
-    if (DEBUG) console.log('smsText -> ', smsText);
-    if (environment?.type === 'production') {
+    if (DEBUG) console.log("smsText -> ", smsText);
+    if (environment?.type === "production") {
       await smsClient.messages
         .create({
           body: smsText,
-          from: '+17206775047',
+          from: "+17206775047",
           to: phoneNumber,
         })
         .then(async () => {
           if (DEBUG)
-            console.log('SMS SENT!', {
+            console.log("SMS SENT!", {
               body: smsText,
-              from: '+17206775047',
+              from: "+17206775047",
               to: phoneNumber,
             });
           await request
-            .post('/note/', {
+            .post("/note/", {
               title: `24 Hour Appointment Reminder Notification`,
               type: 0,
               client: proVetApiUrl + `/client/${client}/`,
@@ -383,16 +383,16 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
               note: smsText,
             })
             .then(async (response: any) => {
-              const {data} = response;
-              if (DEBUG) console.log('API Response: POST /note/ => ', data);
+              const { data } = response;
+              if (DEBUG) console.log("API Response: POST /note/ => ", data);
               await logEvent({
-                tag: '24-hour-appointment-notification-sms',
-                origin: 'api',
+                tag: "24-hour-appointment-notification-sms",
+                origin: "api",
                 success: true,
                 data: {
-                  message: 'Synced 24 Hour Appointment Notification w/ ProVet',
+                  message: "Synced 24 Hour Appointment Notification w/ ProVet",
                   body: smsText,
-                  from: '+17206775047',
+                  from: "+17206775047",
                   to: phoneNumber,
                 },
                 sendToSlack: true,
@@ -403,32 +403,32 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
         .catch(async (error: any) => {
           console.error(error);
           if (DEBUG)
-            console.log('SMS FAILED TO SEND!', {
+            console.log("SMS FAILED TO SEND!", {
               body: smsText,
-              from: '+17206775047',
+              from: "+17206775047",
               to: phoneNumber,
             });
           await request
-            .post('/note/', {
+            .post("/note/", {
               title: `FAILED TO SEND 24 Hour Appointment Reminder Notification`,
               type: 0,
               client: proVetApiUrl + `/client/${client}/`,
               patients: [],
-              note: smsText + '\n\n' + error.message,
+              note: smsText + "\n\n" + error.message,
             })
             .then(async (response: any) => {
-              const {data} = response;
-              if (DEBUG) console.log('API Response: POST /note/ => ', data);
+              const { data } = response;
+              if (DEBUG) console.log("API Response: POST /note/ => ", data);
               await logEvent({
-                tag: '24-hour-appointment-notification-sms',
-                origin: 'api',
+                tag: "24-hour-appointment-notification-sms",
+                origin: "api",
                 success: false,
                 data: {
                   message: `FAILED TO SEND 24 Hour Appointment Reminder Notification ${
-                    error.message ? `: ${error.message}` : ''
+                    error.message ? `: ${error.message}` : ""
                   }`,
                   body: smsText,
-                  from: '+17206775047',
+                  from: "+17206775047",
                   to: phoneNumber,
                 },
                 sendToSlack: true,
@@ -438,20 +438,20 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
         });
       await admin
         .firestore()
-        .collection('clients')
+        .collection("clients")
         .doc(`${client}`)
-        .collection('notifications')
+        .collection("notifications")
         .add({
-          type: 'sms',
+          type: "sms",
           body: smsText,
-          from: '+17206775047',
+          from: "+17206775047",
           to: phoneNumber,
           createdOn: new Date(),
         })
         .catch(async (error: any) => await throwError(error));
-    } else console.log('SIMULATING APPOINTMENT NOTIFICATION CONFIRMATION SMS');
+    } else console.log("SIMULATING APPOINTMENT NOTIFICATION CONFIRMATION SMS");
   } else if (DEBUG)
-    console.log('DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION SMS', {
+    console.log("DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION SMS", {
       sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
       phoneNumber,
     });
@@ -477,7 +477,7 @@ const send30MinAppointmentNotification = async (
   } = appointmentDetails;
   const reasonName = reason ? await getReasonName(reason) : null;
   if (DEBUG)
-    console.log('APPOINTMENT DETAILS', {
+    console.log("APPOINTMENT DETAILS", {
       id,
       client,
       user,
@@ -490,37 +490,37 @@ const send30MinAppointmentNotification = async (
       telemedicineUrl,
     });
 
-  const {email, phoneNumber, displayName} = userDetails;
-  if (DEBUG) console.log('USER DATA', {email, phoneNumber, displayName});
+  const { email, phoneNumber, displayName } = userDetails;
+  if (DEBUG) console.log("USER DATA", { email, phoneNumber, displayName });
   if (
     userNotificationSettings &&
     userNotificationSettings?.sendEmail &&
     email
   ) {
     const emailText = `${
-      displayName ? `<p>Hi ${displayName},</p>` : '<p>Hey there!</p>'
+      displayName ? `<p>Hi ${displayName},</p>` : "<p>Hey there!</p>"
     }${
       user === 8
         ? `<p>A MoVET Expert is on their way to ${
-            clientProvetRecord?.street_address || 'UNKNOWN'
+            clientProvetRecord?.street_address || "UNKNOWN"
           } for your ${getDateStringFromDate(
             start?.toDate(),
-            'timeOnly'
+            "timeOnly"
           )} appointment today.</p>`
         : user === 7
-        ? '<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>'
+        ? "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
         : user === 9
-        ? '<p>Dr. MoVET has invited you to join a secure video call:</p>'
-        : ''
+        ? "<p>Dr. MoVET has invited you to join a secure video call:</p>"
+        : ""
     }${
       user === 7 || user === 9
         ? `<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p>`
-        : ''
+        : ""
     }
     ${
       user === 7
         ? `<p><b>Location: </b> MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)</p>`
-        : ''
+        : ""
     }${
       instructions
         ? `<p><b>Instructions: </b>${instructions}</p>`
@@ -532,44 +532,44 @@ const send30MinAppointmentNotification = async (
         <p>Please reply to this message if you have any pictures or videos that you'd like to share with us prior to our consultation.</p>
         <p>Make sure you are using a device with good internet connection and access to camera/audio. Our telehealth platform allows you to test your device prior to starting the consultation. We highly suggest you run those diagnostic tests prior to connecting with us.</p>
         <p><b>The cost of this service is $32.00 per 15-min consultation.</b></p>`
-        : ''
+        : ""
     }
     ${
       doesHaveValidPaymentOnFile !== false &&
       doesHaveValidPaymentOnFile.length > 0
-        ? ''
+        ? ""
         : user === 8 || user === 9
-        ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://movetcare.com/payment?email=${(
+        ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll(
-            '+',
-            '%2B'
+            "+",
+            "%2B"
           )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-        : `<p><b>Our records indicate that you do not have a form of payment on file -> <a href="${`https://movetcare.com/payment?email=${(
+        : `<p><b>Our records indicate that you do not have a form of payment on file -> <a href="${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll(
-            '+',
-            '%2B'
+            "+",
+            "%2B"
           )}`}" target="_blank">Add a Form of Payment</a></b></p>`
     }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
-    if (DEBUG) console.log('emailText -> ', emailText);
+    if (DEBUG) console.log("emailText -> ", emailText);
     const emailConfig: EmailConfiguration = {
       to: email,
-      from: 'info@movetcare.com',
-      bcc: 'info@movetcare.com',
-      replyTo: 'info@movetcare.com',
+      from: "info@movetcare.com",
+      bcc: "info@movetcare.com",
+      replyTo: "info@movetcare.com",
       subject: "It's almost time for your appointment w/ MoVET!",
-      text: emailText.replace(/(<([^>]+)>)/gi, ''),
+      text: emailText.replace(/(<([^>]+)>)/gi, ""),
       html: emailText,
     };
-    if (DEBUG) console.log('SENDING EMAIL APPOINTMENT NOTIFICATION');
-    if (environment?.type === 'production')
+    if (DEBUG) console.log("SENDING EMAIL APPOINTMENT NOTIFICATION");
+    if (environment?.type === "production")
       await emailClient
         .send(emailConfig)
         .then(async () => {
-          if (DEBUG) console.log('EMAIL SENT!', emailConfig);
+          if (DEBUG) console.log("EMAIL SENT!", emailConfig);
           await request
-            .post('/note/', {
+            .post("/note/", {
               title: `30 Min Appointment Reminder Notification`,
               type: 1,
               client: proVetApiUrl + `/client/${client}/`,
@@ -577,14 +577,14 @@ const send30MinAppointmentNotification = async (
               note: emailConfig.html,
             })
             .then(async (response: any) => {
-              const {data} = response;
-              if (DEBUG) console.log('API Response: POST /note/ => ', data);
+              const { data } = response;
+              if (DEBUG) console.log("API Response: POST /note/ => ", data);
               await logEvent({
-                tag: '30-min-appointment-notification-email',
-                origin: 'api',
+                tag: "30-min-appointment-notification-email",
+                origin: "api",
                 success: true,
                 data: {
-                  message: 'Synced 30 Min Appointment Notification w/ ProVet',
+                  message: "Synced 30 Min Appointment Notification w/ ProVet",
                   ...emailConfig,
                 },
                 sendToSlack: true,
@@ -593,11 +593,11 @@ const send30MinAppointmentNotification = async (
             .catch(async (error: any) => await throwError(error));
           await admin
             .firestore()
-            .collection('clients')
+            .collection("clients")
             .doc(`${client}`)
-            .collection('notifications')
+            .collection("notifications")
             .add({
-              type: 'email',
+              type: "email",
               ...emailConfig,
               createdOn: new Date(),
             })
@@ -607,9 +607,9 @@ const send30MinAppointmentNotification = async (
           if (DEBUG) console.error(error?.response?.body?.errors);
           await throwError(error);
         });
-    else console.log('SIMULATING 30 MIN APPOINTMENT NOTIFICATION EMAIL');
+    else console.log("SIMULATING 30 MIN APPOINTMENT NOTIFICATION EMAIL");
   } else if (DEBUG)
-    console.log('DID NOT SEND 30 MIN APPOINTMENT NOTIFICATION EMAIL', {
+    console.log("DID NOT SEND 30 MIN APPOINTMENT NOTIFICATION EMAIL", {
       sendEmail:
         userNotificationSettings && userNotificationSettings?.sendEmail,
       email,
@@ -619,7 +619,7 @@ const send30MinAppointmentNotification = async (
     userNotificationSettings?.sendSms &&
     phoneNumber
   ) {
-    if (DEBUG) console.log('SENDING SMS APPOINTMENT NOTIFICATION');
+    if (DEBUG) console.log("SENDING SMS APPOINTMENT NOTIFICATION");
     const petNames =
       patients.length > 1
         ? patients.map((patient: any, index: number) =>
@@ -628,30 +628,30 @@ const send30MinAppointmentNotification = async (
               : ` and ${patient?.name}`
           )
         : patients[0].name;
-    if (DEBUG) console.log('petNames -> ', petNames);
+    if (DEBUG) console.log("petNames -> ", petNames);
     const smsText = `${
-      displayName ? `Hi ${displayName},\n\n` : 'Hey there!\n\n'
+      displayName ? `Hi ${displayName},\n\n` : "Hey there!\n\n"
     }${
       user === 8
         ? `A MoVET Expert is on their way to ${
-            clientProvetRecord?.street_address || 'UNKNOWN'
+            clientProvetRecord?.street_address || "UNKNOWN"
           } for your ${getDateStringFromDate(
             start?.toDate(),
-            'timeOnly'
+            "timeOnly"
           )} appointment today.\n`
         : user === 7
-        ? 'We are reaching out to remind you of your upcoming appointment with MoVET today.\n\nAPPOINTMENT DETAILS:\n'
+        ? "We are reaching out to remind you of your upcoming appointment with MoVET today.\n\nAPPOINTMENT DETAILS:\n"
         : user === 9
-        ? 'Dr. MoVET has invited you to join a secure video call:\n\n'
-        : ''
+        ? "Dr. MoVET has invited you to join a secure video call:\n\n"
+        : ""
     }${
       user === 7 || user === 9
         ? `Time: ${getDateStringFromDate(start?.toDate())}\n`
-        : ''
+        : ""
     }${
       user === 7
         ? `Location: MoVET Clinic @ Belleview Station (912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9)\n`
-        : ''
+        : ""
     }${
       instructions
         ? `Instructions: ${instructions}\n`
@@ -660,36 +660,36 @@ and medical records to info@movetcare.com prior to your appointment.\n`
     }${
       user === 9
         ? `\nPlease tap the "START CONSULTATION" button in our mobile app to start your Virtual Consultation session for ${petNames}. You can also use the link below to start your Virtual Consultation session via web browser:\n\n${telemedicineUrl}\n\nPlease email info@movetcare.com if you have any pictures or videos that you'd like to share with us prior to our consultation.\n\n Make sure you are using a device with good internet connection and access to camera/audio. Our telehealth platform allows you to test your device prior to starting the consultation. We highly suggest you run those diagnostic tests prior to connecting with us.\n\nThe cost of this service is $32.00 per 15-min consultation.\n\n`
-        : ''
+        : ""
     }${
       doesHaveValidPaymentOnFile !== false &&
       doesHaveValidPaymentOnFile.length > 0
-        ? ''
+        ? ""
         : user === 8 || user === 9
-        ? `Payment on File: Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment:\n\n Add a Payment Method\nhttps://movetcare.com/payment?email=${(
+        ? `Payment on File: Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment:\n\n Add a Payment Method\nhttps://app.movetcare.com/update-payment-method?email=${(
             email as string
-          )?.replaceAll('+', '%2B')}\n\n`
-        : `Our records indicate that you do not have a form of payment on file -> Add a Payment Method\nhttps://movetcare.com/payment?email=${(
+          )?.replaceAll("+", "%2B")}\n\n`
+        : `Our records indicate that you do not have a form of payment on file -> Add a Payment Method\nhttps://app.movetcare.com/update-payment-method?email=${(
             email as string
-          )?.replaceAll('+', '%2B')}\n\n`
+          )?.replaceAll("+", "%2B")}\n\n`
     }\nPlease email info@movetcare.com, text (720) 507-7387 us, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
-    if (DEBUG) console.log('smsText -> ', smsText);
-    if (environment?.type === 'production') {
+    if (DEBUG) console.log("smsText -> ", smsText);
+    if (environment?.type === "production") {
       await smsClient.messages
         .create({
           body: smsText,
-          from: '+17206775047',
+          from: "+17206775047",
           to: phoneNumber,
         })
         .then(async () => {
           if (DEBUG)
-            console.log('SMS SENT!', {
+            console.log("SMS SENT!", {
               body: smsText,
-              from: '+17206775047',
+              from: "+17206775047",
               to: phoneNumber,
             });
           await request
-            .post('/note/', {
+            .post("/note/", {
               title: `24 Hour Appointment Reminder Notification`,
               type: 0,
               client: proVetApiUrl + `/client/${client}/`,
@@ -697,16 +697,16 @@ and medical records to info@movetcare.com prior to your appointment.\n`
               note: smsText,
             })
             .then(async (response: any) => {
-              const {data} = response;
-              if (DEBUG) console.log('API Response: POST /note/ => ', data);
+              const { data } = response;
+              if (DEBUG) console.log("API Response: POST /note/ => ", data);
               await logEvent({
-                tag: '30-min-appointment-notification-sms',
-                origin: 'api',
+                tag: "30-min-appointment-notification-sms",
+                origin: "api",
                 success: true,
                 data: {
-                  message: 'Synced 24 Hour Appointment Notification w/ ProVet',
+                  message: "Synced 24 Hour Appointment Notification w/ ProVet",
                   body: smsText,
-                  from: '+17206775047',
+                  from: "+17206775047",
                   to: phoneNumber,
                 },
                 sendToSlack: true,
@@ -717,32 +717,32 @@ and medical records to info@movetcare.com prior to your appointment.\n`
         .catch(async (error: any) => {
           console.error(error);
           if (DEBUG)
-            console.log('SMS FAILED TO SEND!', {
+            console.log("SMS FAILED TO SEND!", {
               body: smsText,
-              from: '+17206775047',
+              from: "+17206775047",
               to: phoneNumber,
             });
           await request
-            .post('/note/', {
+            .post("/note/", {
               title: `FAILED TO 30 MIN Hour Appointment Reminder Notification`,
               type: 0,
               client: proVetApiUrl + `/client/${client}/`,
               patients: [],
-              note: smsText + '\n\n' + error.message,
+              note: smsText + "\n\n" + error.message,
             })
             .then(async (response: any) => {
-              const {data} = response;
-              if (DEBUG) console.log('API Response: POST /note/ => ', data);
+              const { data } = response;
+              if (DEBUG) console.log("API Response: POST /note/ => ", data);
               await logEvent({
-                tag: '30-min-appointment-notification-sms',
-                origin: 'api',
+                tag: "30-min-appointment-notification-sms",
+                origin: "api",
                 success: false,
                 data: {
                   message: `FAILED TO 30 MIN Hour Appointment Reminder Notification ${
-                    error.message ? `: ${error.message}` : ''
+                    error.message ? `: ${error.message}` : ""
                   }`,
                   body: smsText,
-                  from: '+17206775047',
+                  from: "+17206775047",
                   to: phoneNumber,
                 },
                 sendToSlack: true,
@@ -752,20 +752,20 @@ and medical records to info@movetcare.com prior to your appointment.\n`
         });
       await admin
         .firestore()
-        .collection('clients')
+        .collection("clients")
         .doc(`${client}`)
-        .collection('notifications')
+        .collection("notifications")
         .add({
-          type: 'sms',
+          type: "sms",
           body: smsText,
-          from: '+17206775047',
+          from: "+17206775047",
           to: phoneNumber,
           createdOn: new Date(),
         })
         .catch(async (error: any) => await throwError(error));
-    } else console.log('SIMULATING 30 MIN APPOINTMENT NOTIFICATION SMS');
+    } else console.log("SIMULATING 30 MIN APPOINTMENT NOTIFICATION SMS");
   } else if (DEBUG)
-    console.log('DID NOT 30 MIN HOUR APPOINTMENT NOTIFICATION SMS', {
+    console.log("DID NOT 30 MIN HOUR APPOINTMENT NOTIFICATION SMS", {
       sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
       phoneNumber,
     });

@@ -45,14 +45,14 @@ export default function Home({ announcement }: { announcement: Announcement }) {
       if (environment === "development")
         console.log(
           "redirectUrl",
-          `http://localhost:3001/account/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
+          `http://localhost:3001/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
         );
       else
         linkParams?.mode === "signIn"
           ? (environment === "production"
               ? (window.location.href = "https://app.movetcare.com")
               : (window.location.href = `http://localhost:3001`)) +
-            `/account/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
+            `/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
           : setIsLoading(false);
     }
   }, [router, link]);

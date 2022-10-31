@@ -103,7 +103,7 @@ const UpdateExistingClient = () => {
               router.push(
                 (typeof window !== "undefined" &&
                   sessionStorage.getItem("session")) ||
-                  "/checkin/"
+                  "/appointment-check-in/"
               );
             else {
               setSignUpSuccess(true);
@@ -200,7 +200,9 @@ const UpdateExistingClient = () => {
                       iconSize={"lg"}
                       text="Update Payment"
                       className={"mt-4"}
-                      onClick={() => router.push(`/payment?email=${email}`)}
+                      onClick={() =>
+                        router.push(`/update-payment-method?email=${email}`)
+                      }
                     />
                   </div>
                 )}

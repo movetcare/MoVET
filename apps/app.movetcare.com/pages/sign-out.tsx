@@ -16,7 +16,7 @@ export default function SignOut() {
   return (
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
       <Head>
-        <title>Signing Out...</title>
+        <title>Signing Out of MoVET...</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="w-full flex-1 overflow-hidden">

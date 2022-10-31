@@ -56,9 +56,9 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
       if (user) {
         if (
           window.location.href !==
-          window.location.origin + `/booking/?id=${user.uid}`
+          window.location.origin + `/book-an-appointment/?id=${user.uid}`
         )
-          router.push(`/booking/?id=${user.uid}`);
+          router.push(`/book-an-appointment/?id=${user.uid}`);
       } else setIsLoading(false);
     });
     return () => unsubscribe();
@@ -93,8 +93,8 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
                   : "http://localhost:3000") +
                 `${
                   result.id !== null && result.id !== undefined
-                    ? `/booking?id=${result.id}`
-                    : "/booking"
+                    ? `/book-an-appointment?id=${result.id}`
+                    : "/book-an-appointment"
                 }`,
               handleCodeInApp: true,
               iOS: {

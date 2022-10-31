@@ -20,14 +20,7 @@
         <loc>https://movetcare.com/contact</loc>
         <priority>0.7</priority>
     </url>
-    <url>
-        <loc>https://movetcare.com/checkin</loc>
-        <priority>0.5</priority>
-    </url>
-    <url>
-        <loc>https://movetcare.com/join</loc>
-        <priority>0.4</priority>
-    </url>
+<url>
     <url>
         <loc>https://movetcare.com/careers</loc>
         <priority>0.4</priority>

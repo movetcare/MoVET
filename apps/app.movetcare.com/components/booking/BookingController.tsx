@@ -46,7 +46,7 @@ export const BookingController = ({
       window.location.href = session?.checkout?.url;
     if (session?.step === "complete")
       window.location.href =
-        window.location.origin + "/booking/success?id=" + id;
+        window.location.origin + "/book-an-appointment/success?id=" + id;
   }, [session, isAppMode, id]);
   if (isLoading) return <Loader />;
   else if (error) return <Error error={error} />;

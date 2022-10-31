@@ -11,23 +11,26 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_STAGING_LOGS }}
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
       - name: Checkout Repo
         id: repo-checkout
         uses: actions/checkout@master
-      - name: Cache node_modules
-        uses: actions/cache@v1
+      - uses: pnpm/action-setup@v2.2.4
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          version: 7
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
       - name: Install Dependencies
         id: install-dependencies
         run: |
-          # cd apps/api.movetcare.com
-          cd fail
-          npm ci
+          cd apps/api.movetcare.com
+          pnpm i
       - name: Deploy to Firebase
         id: deploy-functions
         uses: w9jds/firebase-action@master
@@ -38,7 +41,7 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_STAGING }}
       - name: Resync ProVet Configurations
         id: reset-provet-configs
-        run: npm run init:config:stage
+        run: pnpm run init:config:stage
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}

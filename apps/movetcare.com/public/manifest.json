@@ -3,7 +3,7 @@
   "background_color": "#f6f2f0",
   "display": "standalone",
   "scope": "/",
-  "start_url": "/booking",
+  "start_url": "/book-an-appointment",
   "name": "MoVET",
   "short_name": "MoVET",
   "description": "Moving Pet Care Forward",

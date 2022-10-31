@@ -65,20 +65,7 @@ export default function Success() {
                 </span>{" "}
                 as soon as we are ready to begin your appointment.
               </p>
-              <p
-                className={
-                  "mt-4 leading-6 text-movet-black font-source-sans-pro italic"
-                }
-              >
-                Feel free to browse our shop and checkout our new mobile app
-                which you can use to book future clinic, at home, and telehealth
-                appointments!
-              </p>
-              <div className="flex flex-col justify-center items-center mt-6">
-                <div className="flex justify-center">
-                  <AppLinks />
-                </div>
-              </div>
+              <hr className="border-movet-gray w-full sm:w-2/3 mx-auto my-8" />
               <h3 className="mt-4">Need to change your information?</h3>
               <div className="flex flex-row justify-center items-center">
                 <div className="mx-2 flex flex-col justify-center items-center">
@@ -101,7 +88,7 @@ export default function Success() {
                       className={"mt-4"}
                       onClick={() =>
                         router.push(
-                          `/payment?email=${client?.email?.replaceAll(
+                          `/update-payment-method?email=${client?.email?.replaceAll(
                             "+",
                             "%2B"
                           )}`
@@ -110,6 +97,20 @@ export default function Success() {
                     />
                   </div>
                 )}
+              </div>
+              <p
+                className={
+                  "mt-8 leading-6 text-movet-black font-source-sans-pro italic"
+                }
+              >
+                Feel free to browse our shop and checkout our new mobile app
+                which you can use to book future clinic, at home, and telehealth
+                appointments!
+              </p>
+              <div className="flex flex-col justify-center items-center mt-6">
+                <div className="flex justify-center">
+                  <AppLinks />
+                </div>
               </div>
             </div>
           )}
