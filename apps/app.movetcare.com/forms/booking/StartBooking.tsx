@@ -89,8 +89,8 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
             sendSignInLinkToEmail(auth, data.email?.toLowerCase(), {
               url:
                 (environment === "production"
-                  ? "https://movetcare.com"
-                  : "http://localhost:3000") +
+                  ? "https://app.movetcare.com"
+                  : "http://localhost:3001") +
                 `${
                   result.id !== null && result.id !== undefined
                     ? `/book-an-appointment?id=${result.id}`

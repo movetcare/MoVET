@@ -49,7 +49,7 @@ export const Hours = () => (
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyAiepyL3_lhpvoTDywIXYXVJFpm2bLvSHg"
+              src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
               className="w-full h-96 rounded-xl"
             />
             <p className="w-full text-center text-sm italic mt-6 md:mt-4">
@@ -176,7 +176,7 @@ export const Hours = () => (
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyAiepyL3_lhpvoTDywIXYXVJFpm2bLvSHg"
+              src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
               className="w-full h-96 rounded-xl"
             />
             <p className="w-full text-center text-sm italic mt-6 md:mt-4">

@@ -11,6 +11,9 @@ import { auth } from "services/firebase";
 export default function SignIn() {
   const router = useRouter();
   const { oobCode, continueUrl } = router.query;
+
+  console.log("oobCode", oobCode);
+  console.log("continueUrl", continueUrl);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [verificationSuccessful, setVerificationSuccessful] =
     useState<boolean>(false);
