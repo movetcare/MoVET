@@ -24,6 +24,8 @@
     "push:prod": "git push origin main",
     "push:dev": "git push origin development",
     "prepare": "husky install",
+    "deploy:prod": "firebase use movet-care && firebase deploy --only functions --non-interactive -f && firebase use movet-care-staging && git checkout development",
+    "deploy:stage": "firebase use movet-care-staging && firebase deploy --only functions --non-interactive -f",
     "init:config:dev": "cd apps/api.movetcare.com/ && pnpm run init:config:dev",
     "init:config:stage": "cd apps/api.movetcare.com/ && pnpm run init:config:stage",
     "init:config:prod": "cd apps/api.movetcare.com/ && pnpm run init:config:prod",

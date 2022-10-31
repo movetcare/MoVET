@@ -11,11 +11,10 @@ importers:
       lint-staged: ^13.0.3
       prettier: latest
       turbo: latest
-    dependencies:
-      git-branch-is: 4.0.0
     devDependencies:
       concurrently: 7.5.0
       eslint-config-custom: link:packages/eslint-config-custom
+      git-branch-is: 4.0.0
       husky: 8.0.1
       lint-staged: 13.0.3
       prettier: 2.7.1
@@ -2657,7 +2656,6 @@ packages:
   /commander/6.2.1:
     resolution: {integrity: sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==}
     engines: {node: '>= 6'}
-    dev: false
 
   /commander/9.4.1:
     resolution: {integrity: sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw==}
@@ -4002,7 +4000,7 @@ packages:
     hasBin: true
     dependencies:
       commander: 6.2.1
-    dev: false
+    dev: true
 
   /glob-parent/5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}

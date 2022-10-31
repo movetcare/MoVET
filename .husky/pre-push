@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-if git-branch-is develop; then firebase use movet-care-staging && firebase deploy --only functions --non-interactive -f; fi && if git-branch-is master; then firebase use movet-care && firebase deploy --only functions --non-interactive -f; fi
+if git-branch-is develop; then pnpm run deploy:stage; fi && if git-branch-is main; then pnpm run deploy:prod; fi
