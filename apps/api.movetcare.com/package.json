@@ -40,7 +40,7 @@
     "semver": "^7.3.8",
     "stripe": "^10.15.0",
     "trello-node-api": "^0.0.9",
-    "twilio": "^3.83.0",
+    "twilio": "^3.83.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -49,8 +49,8 @@
     "@types/node": "^18.11.8",
     "@types/safe-compare": "^1.1.0",
     "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "^5.41.0",
-    "@typescript-eslint/parser": "^5.41.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
     "eslint": "^8.26.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.26.0",

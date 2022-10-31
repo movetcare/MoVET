@@ -4,7 +4,11 @@
     "indexes": "firestore.indexes.json"
   },
   "functions": {
-    "source": "./apps/api.movetcare.com"
+    "predeploy": [
+      "pnpm -F api.movetcare.com run lint",
+      "pnpm -F api.movetcare.com run build"
+    ],
+    "source": "apps/api.movetcare.com"
   },
   "storage": {
     "rules": "storage.rules"

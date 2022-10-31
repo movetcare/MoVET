@@ -5,10 +5,10 @@
   },
   "functions": {
     "predeploy": [
-      "npm --prefix \"$RESOURCE_DIR\" run lint",
-      "npm --prefix \"$RESOURCE_DIR\" run build"
+      "pnpm -F api.movetcare.com run lint",
+      "pnpm -F api.movetcare.com run build"
     ],
-    "source": "./apps/api.movetcare.com/"
+    "source": "apps/api.movetcare.com"
   },
   "storage": {
     "rules": "storage.rules"

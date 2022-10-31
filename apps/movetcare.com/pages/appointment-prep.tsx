@@ -143,7 +143,9 @@ const AppointmentPrep = () => {
           to connecting with us.
         </p>
         <p>
-          <b>The cost of this service is $32.00 per 15-min consultation.</b>
+          <b>
+            The cost of this service is between $32.00 - $50 per consultation.
+          </b>
         </p>
         <h3 className="text-center mt-8 text-lg">
           Please{" "}

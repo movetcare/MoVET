@@ -37,7 +37,8 @@
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "latest",
-    "turbo": "latest"
+    "turbo": "latest",
+    "git-branch-is": "^4.0.0"
   },
   "engines": {
     "node": ">=16.14.0"

@@ -531,7 +531,7 @@ const send30MinAppointmentNotification = async (
         ? `<p>Please tap the "START CONSULTATION" button in our <a href="https://movetcare.com/get-the-app" target="_blank">mobile app</a> to start your Virtual Consultation session for ${petNames}. <i>You can also use <b><a href="${telemedicineUrl}" target="_blank">this link</a></b> to start your session via web browser.</p>
         <p>Please reply to this message if you have any pictures or videos that you'd like to share with us prior to our consultation.</p>
         <p>Make sure you are using a device with good internet connection and access to camera/audio. Our telehealth platform allows you to test your device prior to starting the consultation. We highly suggest you run those diagnostic tests prior to connecting with us.</p>
-        <p><b>The cost of this service is $32.00 per 15-min consultation.</b></p>`
+        <p><b>The cost of this service is between $32.00 - $50 per consultation.</b></p>`
         : ""
     }
     ${
@@ -659,7 +659,7 @@ const send30MinAppointmentNotification = async (
 and medical records to info@movetcare.com prior to your appointment.\n`
     }${
       user === 9
-        ? `\nPlease tap the "START CONSULTATION" button in our mobile app to start your Virtual Consultation session for ${petNames}. You can also use the link below to start your Virtual Consultation session via web browser:\n\n${telemedicineUrl}\n\nPlease email info@movetcare.com if you have any pictures or videos that you'd like to share with us prior to our consultation.\n\n Make sure you are using a device with good internet connection and access to camera/audio. Our telehealth platform allows you to test your device prior to starting the consultation. We highly suggest you run those diagnostic tests prior to connecting with us.\n\nThe cost of this service is $32.00 per 15-min consultation.\n\n`
+        ? `\nPlease tap the "START CONSULTATION" button in our mobile app to start your Virtual Consultation session for ${petNames}. You can also use the link below to start your Virtual Consultation session via web browser:\n\n${telemedicineUrl}\n\nPlease email info@movetcare.com if you have any pictures or videos that you'd like to share with us prior to our consultation.\n\n Make sure you are using a device with good internet connection and access to camera/audio. Our telehealth platform allows you to test your device prior to starting the consultation. We highly suggest you run those diagnostic tests prior to connecting with us.\n\nThe cost of this service is  between $32.00 - $50 per consultation.\n\n`
         : ""
     }${
       doesHaveValidPaymentOnFile !== false &&

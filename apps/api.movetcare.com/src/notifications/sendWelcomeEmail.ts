@@ -37,7 +37,7 @@ export const sendWelcomeEmail = async (
       <li>Establish Care Consult/Exam - $85/pet</li>
       <li>Annual Veterinary Examination - $68/pet</li>
       <li>Nurse Visit - $45</li>
-      <li>Telehealth Appointment - $32 for 15-min virtual consultation</li>
+      <li>Telehealth Appointment - $32 - $50</li>
       <li>Vaccines (1 year) - $25 ea.</li>
       <li>Vaccines (3 year) - $35 ea.</li>
       <li>Annual Heartworm Blood Test - $40 </li>
