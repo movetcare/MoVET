@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - "apps/api.movetcare.com/**"
-      - "./production-deploy-functions.yml"
+      - "production-deploy-functions.yml"
 jobs:
   deploy:
     name: Deploy API
