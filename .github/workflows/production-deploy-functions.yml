@@ -33,7 +33,7 @@ jobs:
         run: pnpm -F api.movetcare.com run build
       - name: Deploy to Firebase
         id: deploy-cloud-functions
-        run: firebase use movet-care && firebase deploy --only functions --non-interactive -f --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}"
+        run: firebase use movet-care --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}" && firebase deploy --only functions --non-interactive -f --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}"
       - name: Resync ProVet Configurations
         id: reset-provet-configs
         run: npm run init:config:prod
