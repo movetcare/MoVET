@@ -11,7 +11,7 @@ const Sentry = require("@sentry/node");
 let stagingInstance: any = null;
 let productionInstance: any = null;
 export const environment: any = func.config()?.environment;
-export const DEBUG = false; // environment.type !== 'development';
+export const DEBUG = false;
 
 if (environment.type !== "development") {
   console.log = func.logger.log;

@@ -5,62 +5,36 @@ on:
       - main
     paths:
       - "apps/api.movetcare.com/**"
+      - "./production-deploy-functions.yml"
 jobs:
-  backup:
-    runs-on: ubuntu-latest
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
-    steps:
-      - uses: act10ns/slack@v1
-        with:
-          status: starting-backup
-          channel: "#production-logs"
-      - uses: actions/checkout@master
-      - id: "auth"
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
-      - name: Backup Firestore
-        id: backup-firestore
-        run: gcloud firestore export gs://movet-care-backups
-      - uses: act10ns/slack@v1
-        with:
-          status: finished-backup
-          channel: "#production-logs"
   deploy:
     name: Deploy API
-    needs: backup
     runs-on: ubuntu-latest
     env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
-    strategy:
-      matrix:
-        node-version: [16]
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION }}
     steps:
       - name: Checkout Repo
         id: repo-checkout
         uses: actions/checkout@master
-      - uses: pnpm/action-setup@v2.2.4
-        with:
-          version: 7
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          node-version: 16
+      - name: Install Global Dependencies
+        id: install-global-dependencies
+        run: npm i -g firebase-tools pnpm
       - name: Install Dependencies
         id: install-dependencies
-        run: |
-          cd apps/api.movetcare.com
-          pnpm i
+        run: pnpm -F api.movetcare.com install
+      - name: Lint Cloud Functions
+        id: lint
+        run: pnpm -F api.movetcare.com run lint
+      - name: Build Cloud Functions
+        id: build
+        run: pnpm -F api.movetcare.com run build
       - name: Deploy to Firebase
         id: deploy-cloud-functions
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only functions --non-interactive -f
-        env:
-          PROJECT_ID: movet-care
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_PRODUCTION}}
+        run: firebase deploy --only functions --non-interactive -f --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}"
       - name: Resync ProVet Configurations
         id: reset-provet-configs
         run: npm run init:config:prod
