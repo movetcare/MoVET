@@ -2,7 +2,7 @@ name: PRODUCTION - Deploy Cloud Functions
 on:
   push:
     branches:
-      - main
+      - disabled
     paths:
       - "apps/api.movetcare.com/**"
 jobs:

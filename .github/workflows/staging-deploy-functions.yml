@@ -2,7 +2,7 @@ name: STAGING - Deploy Cloud Functions
 on:
   push:
     branches:
-      - development
+      - disabled
     paths:
       - "apps/api.movetcare.com/**"
 jobs:
