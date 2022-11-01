@@ -2,13 +2,15 @@ import { contactSchema } from "schemas";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { setContact } from "../../queries/setContact";
 import { sendResponse } from "../sendResponse";
+import { ContactFormSources } from "types";
 
 const DEBUG = true;
 const logSource = "(API) /contact -> processContactRequest()";
 const allowedMethods = ["POST"];
 export const processContactRequest = (
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
+  source: ContactFormSources
 ) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -24,7 +26,7 @@ export const processContactRequest = (
       .validate(request)
       .then(async (value) => {
         if (DEBUG) console.log(logSource, value);
-        const didSucceed = await setContact(request);
+        const didSucceed = await setContact({ ...request, source });
         if (didSucceed)
           return sendResponse({
             status: 200,

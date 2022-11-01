@@ -43,7 +43,7 @@ export default function RecoverEmail() {
           setErrorMessage(error.message);
         })
         .finally(() => setLoading(false));
-  }, [oobCode, auth]);
+  }, [oobCode]);
 
   useEffect(() => {
     if (recoverySuccessful)

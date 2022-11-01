@@ -1,108 +1,145 @@
-import { sendNotifications } from "../notifications/sendNotifications";
-import { functions } from "./../config/config";
-// import type { ContactForm } from "types";
-// import { CONTACT_STATUS } from "constant";
+import { formatPhoneNumber } from "utilities";
+import { sendNotification } from "../notifications/sendNotification";
+import { admin, functions, throwError } from "./../config/config";
+import type { ContactForm } from "types";
+import { CONTACT_STATUS } from "constant";
 
 const DEBUG = true;
 export const sendContactFormNotifications = functions.firestore
   .document("contact/{id}")
-  .onWrite(async (change: any, context: any) => {
+  .onCreate(async (snapshot: any, context: any) => {
     const { id } = context.params || {};
-    const data = change.after.data();
-    const { email, firstName, lastName, message, phone, reason, status } =
-      data || {};
     if (DEBUG)
-      console.log("sendContactFormNotifications => DATA", { id, data });
-    if (status === "Needs Processing...") {
-      await sendNotifications({
-        type: "slack",
-        payload: {
-          tag: "contact-form",
-          origin: "api",
-          success: true,
-          channel: "contact-form-submissions",
-          data: {
-            id,
-            ...data,
-            updatedOn: new Date(),
-            message: [
-              {
-                type: "section",
-                text: {
-                  text: ":speech_balloon: _New Contact Form Submission_",
-                  type: "mrkdwn",
+      console.log("sendContactFormNotifications => DATA", {
+        id,
+        data: snapshot.data(),
+      });
+    const {
+      email,
+      firstName,
+      lastName,
+      message,
+      phone,
+      reason,
+      status,
+      source,
+    } = (snapshot.data() as ContactForm) || {};
+
+    if (status === CONTACT_STATUS.NEEDS_PROCESSING) {
+      try {
+        await updateContactStatus({
+          status: CONTACT_STATUS.STARTED_PROCESSING,
+          id,
+        });
+        await sendNotification({
+          type: "slack",
+          payload: {
+            tag: "contact-form",
+            origin: "api",
+            success: true,
+            channel: reason.id,
+            data: {
+              id,
+              ...snapshot.data(),
+              updatedOn: new Date(),
+              message: [
+                {
+                  type: "section",
+                  text: {
+                    text: `:speech_balloon: _New "${reason.name}" Contact Form Submission @ ${source}_`,
+                    type: "mrkdwn",
+                  },
+                  fields: [
+                    {
+                      type: "mrkdwn",
+                      text: "*Name:*",
+                    },
+                    {
+                      type: "plain_text",
+                      text: firstName + "" + lastName,
+                    },
+                    {
+                      type: "mrkdwn",
+                      text: "*Email:*",
+                    },
+                    {
+                      type: "plain_text",
+                      text: email,
+                    },
+                    {
+                      type: "mrkdwn",
+                      text: "*Phone:*",
+                    },
+                    {
+                      type: "plain_text",
+                      text: phone,
+                    },
+                    {
+                      type: "mrkdwn",
+                      text: "*Message:*",
+                    },
+                    {
+                      type: "plain_text",
+                      text: message,
+                    },
+                    {
+                      type: "mrkdwn",
+                      text: "*Source*",
+                    },
+                    {
+                      type: "plain_text",
+                      text: source,
+                    },
+                  ],
                 },
-                fields: [
-                  {
-                    type: "mrkdwn",
-                    text: "*NAME*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: firstName + "" + lastName,
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*EMAIL*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: email,
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*PHONE*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: phone,
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*REASON*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: reason?.name,
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*MESSAGE*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: message,
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*PHONE*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: phone,
-                  },
-                ],
-              },
-            ],
+              ],
+            },
+            sendToSlack: true,
           },
-          sendToSlack: true,
-        },
-      });
-      await sendNotifications({
-        type: "email",
-        payload: {
-          tag: "contact-form",
-          origin: "api",
-          success: true,
-          data: {
+        });
+        await sendNotification({
+          type: "email",
+          payload: {
+            tag: "contact-form",
+            origin: "api",
+            success: true,
             id,
-            ...data,
+            ...snapshot.data(),
             to: "alex.rodriguez@movetcare.com",
-            subject: "New MoVET Contact Form Submission!",
-            message: "",
+            replyTo: email,
+            subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName}`,
+            message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
+              phone
+            )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
             updatedOn: new Date(),
           },
-        },
-      });
+        });
+        await updateContactStatus({
+          status: CONTACT_STATUS.NEEDS_REPLY,
+          id,
+        });
+      } catch (error: any) {
+        await updateContactStatus({
+          status: CONTACT_STATUS.ERROR_PROCESSING,
+          id,
+        });
+        await throwError(error);
+      }
     }
   });
+
+const updateContactStatus = async ({
+  id,
+  status,
+}: {
+  id: string;
+  status: ContactForm["status"];
+}) => {
+  await admin
+    .firestore()
+    .collection("contact")
+    .doc(id)
+    .set({ status, updatedOn: new Date() }, { merge: true })
+    .then(() => DEBUG && console.log("CONTACT_STATUS CHANGED", status))
+    .catch(async (error: any) => await throwError(error));
+};

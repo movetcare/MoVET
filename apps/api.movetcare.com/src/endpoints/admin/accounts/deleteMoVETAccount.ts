@@ -3,8 +3,8 @@ import {updateProVetAppointment} from "../../../integrations/provet/entities/app
 import {updateProVetClient} from "../../../integrations/provet/entities/client/updateProVetClient";
 import {fetchEntity} from "../../../integrations/provet/entities/fetchEntity";
 import {updateProVetPatient} from "../../../integrations/provet/entities/patient/updateProVetPatient";
-import {sendNotifications} from "../../../notifications/sendNotifications";
-import {getProVetIdFromUrl} from "../../../utils/getProVetIdFromUrl";
+import { sendNotification } from "../../../notifications/sendNotification";
+import { getProVetIdFromUrl } from "../../../utils/getProVetIdFromUrl";
 
 export const deleteMoVETAccount = functions
   .runWith({
@@ -69,7 +69,7 @@ export const deleteMoVETAccount = functions
       if (DEBUG) console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
       await Promise.all(
         proVetAppointmentIds.map(
-          async (id: number) => await updateProVetAppointment({id, active: 0})
+          async (id: number) => await updateProVetAppointment({ id, active: 0 })
         )
       );
     } else if (DEBUG)
@@ -80,7 +80,7 @@ export const deleteMoVETAccount = functions
       await Promise.all(
         proVetPatientIds.map(
           async (id: number) =>
-            await updateProVetPatient({id: `${id}`, archived: true})
+            await updateProVetPatient({ id: `${id}`, archived: true })
         )
       );
     } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
@@ -90,7 +90,7 @@ export const deleteMoVETAccount = functions
       await Promise.all(
         proVetClientIds.map(
           async (id: number) =>
-            await updateProVetClient({id: id, archived: true})
+            await updateProVetClient({ id: id, archived: true })
         )
       );
     } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
@@ -108,10 +108,10 @@ export const deleteMoVETAccount = functions
       await stripe.customers
         .del(customerId)
         .then(
-          result => DEBUG && console.log("STRIPE CUSTOMER DELETED: ", result)
+          (result) => DEBUG && console.log("STRIPE CUSTOMER DELETED: ", result)
         );
 
-    await sendNotifications({
+    await sendNotification({
       type: "slack",
       payload: {
         tag: "delete-account",

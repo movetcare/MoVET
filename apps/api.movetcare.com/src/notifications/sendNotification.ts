@@ -1,9 +1,9 @@
-import { environment, emailClient, throwError } from "./../config/config";
-import { findSlackChannel } from "./../utils/logging/findSlackChannel";
+import { environment, emailClient, throwError } from "../config/config";
+import { findSlackChannel } from "../utils/logging/findSlackChannel";
 import { sendSlackMessage } from "../utils/logging/sendSlackMessage";
 import { getPayloadSummary } from "../utils/logging/getPayloadSummary";
 const DEBUG = true;
-export const sendNotifications = async ({
+export const sendNotification = async ({
   type,
   payload,
 }: {
@@ -19,6 +19,7 @@ export const sendNotifications = async ({
   switch (type) {
     case "slack":
       if (payload) {
+        if (DEBUG) console.log("payload?.channel", payload?.channel);
         const channelId: any = await findSlackChannel(
           payload?.channel ||
             (environment.type === "production"
@@ -58,24 +59,25 @@ export const sendNotifications = async ({
     case "email":
       // eslint-disable-next-line no-case-declarations
       const emailConfig: any = {
-        to: payload?.email || "info@movetcare.com",
+        to: payload?.to || "info@movetcare.com",
         from: payload?.from || "info@movetcare.com",
         bcc: payload?.bcc || "support@movetcare.com",
         replyTo: payload?.replyTo || "info@movetcare.com",
         subject: payload?.subject || "UNKNOWN SYSTEM EMAIL",
-        text: payload.message.replace(/(<([^>]+)>)/gi, ""),
-        html: payload.message,
+        text: payload?.message?.replace(/(<([^>]+)>)/gi, ""),
+        html: payload?.message,
       };
-      // if (environment?.type === "production")
-      await emailClient
-        .send(emailConfig)
-        .then(async () => {
-          if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-        })
-        .catch(async (error: any) => {
-          if (DEBUG) console.error(error?.response?.body?.errors);
-          await throwError(error);
-        });
+      if (DEBUG) console.log("emailConfig =>", emailConfig);
+      if (environment?.type === "production")
+        await emailClient
+          .send(emailConfig)
+          .then(async () => {
+            if (DEBUG) console.log("EMAIL SENT!", emailConfig);
+          })
+          .catch(async (error: any) => {
+            if (DEBUG) console.error(error?.response?.body?.errors);
+            await throwError(error);
+          });
       break;
     default:
       break;

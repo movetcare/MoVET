@@ -9,7 +9,7 @@
     "build": "cd ../../ && cp firebase.json ./packages/tools/src/utils/ && cd packages/tools && tsc",
     "watch": "tsc --watch --preserveWatchOutput",
     "init:config:dev": "curl -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/app/config/ && curl -v POST http://localhost:5001/movet-care-staging/us-central1/initTestUser",
-    "dev": "pnpm run build && concurrently -n 'WEBHOOKS,CRON,BUILD_API,BUILD_TOOLS' 'sleep 50 && pnpm run init:config:dev && pnpm run webhooks' 'sleep 60 && pnpm run cron' 'cd ../../apps/api.movetcare.com && pnpm run watch' 'pnpm run watch'",
+    "dev": "pnpm run build && concurrently -n 'WEBHOOKS,CRON,BUILD_API,BUILD_TOOLS,CONSTANTS,UTILITIES' 'sleep 30 && pnpm run init:config:dev && pnpm run webhooks' 'sleep 40 && pnpm run cron' 'cd ../../apps/api.movetcare.com && pnpm run watch' 'pnpm run watch' 'cd ../../packages/constant && pnpm run watch' 'cd ../../packages/utilities && pnpm run watch'",
     "cron": "cd build && node ./runCron.js",
     "webhooks": "cd build && node ./ngrok.js"
   },
@@ -21,7 +21,7 @@
     "dotenv": "^16.0.3",
     "firebase": "^9.13.0",
     "firebase-admin": "^11.2.0",
-    "firebase-functions": "^4.0.1",
+    "firebase-functions": "^4.0.2",
     "fs-extra": "^10.1.0",
     "kill-port": "^2.0.1",
     "lodash.isequal": "^4.5.0",

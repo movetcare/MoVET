@@ -35,6 +35,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.42.0
       '@typescript-eslint/parser': ^5.42.0
       axios: 0.27.2
+      constant: workspace:*
       cors: ^2.8.5
       eslint: ^8.26.0
       eslint-config-google: ^0.14.0
@@ -44,7 +45,7 @@ importers:
       expo-server-sdk: ^3.7.0
       express: ^4.18.2
       firebase-admin: ^11.2.0
-      firebase-functions: ^4.0.1
+      firebase-functions: ^4.0.2
       format-json: ^1.0.3
       json2csv: ^5.0.7
       prettier: ^2.7.1
@@ -52,7 +53,9 @@ importers:
       stripe: ^10.15.0
       trello-node-api: ^0.0.9
       twilio: ^3.83.1
+      types: workspace:*
       typescript: ^4.8.4
+      utilities: workspace:*
       uuid: ^9.0.0
     dependencies:
       '@sendgrid/client': 7.7.0
@@ -65,7 +68,7 @@ importers:
       expo-server-sdk: 3.7.0
       express: 4.18.2
       firebase-admin: 11.2.0
-      firebase-functions: 4.0.1_firebase-admin@11.2.0
+      firebase-functions: 4.0.2_firebase-admin@11.2.0
       format-json: 1.0.3
       json2csv: 5.0.7
       semver: 7.3.8
@@ -81,13 +84,16 @@ importers:
       '@types/uuid': 8.3.4
       '@typescript-eslint/eslint-plugin': 5.42.0_6xw5wg2354iw4zujk2f3vyfrzu
       '@typescript-eslint/parser': 5.42.0_wyqvi574yv7oiwfeinomdzmc3m
+      constant: link:../../packages/constant
       eslint: 8.26.0
       eslint-config-google: 0.14.0_eslint@8.26.0
       eslint-plugin-import: 2.26.0_5aea5dp4n23mfv4y2mmjxole3e
       eslint-plugin-node: 11.1.0_eslint@8.26.0
       eslint-plugin-prettier: 4.2.1_5t6g5rrqvlktilv3n3sw5svbdi
       prettier: 2.7.1
+      types: link:../../packages/types
       typescript: 4.8.4
+      utilities: link:../../packages/utilities
 
   apps/app.movetcare.com:
     specifiers:
@@ -250,7 +256,10 @@ importers:
       utilities: link:../../packages/utilities
 
   packages/constant:
-    specifiers: {}
+    specifiers:
+      typescript: ^4.8.4
+    devDependencies:
+      typescript: 4.8.4
 
   packages/eslint-config-custom:
     specifiers:
@@ -317,7 +326,7 @@ importers:
       dotenv: ^16.0.3
       firebase: ^9.13.0
       firebase-admin: ^11.2.0
-      firebase-functions: ^4.0.1
+      firebase-functions: ^4.0.2
       fs-extra: ^10.1.0
       kill-port: ^2.0.1
       lodash.isequal: ^4.5.0
@@ -330,7 +339,7 @@ importers:
       dotenv: 16.0.3
       firebase: 9.13.0
       firebase-admin: 11.2.0
-      firebase-functions: 4.0.1_firebase-admin@11.2.0
+      firebase-functions: 4.0.2_firebase-admin@11.2.0
       fs-extra: 10.1.0
       kill-port: 2.0.1
       lodash.isequal: 4.5.0
@@ -400,11 +409,9 @@ importers:
   packages/utilities:
     specifiers:
       '@types/node': ^18.11.9
-      tsconfig: workspace:*
       typescript: ^4.8.4
     devDependencies:
       '@types/node': 18.11.9
-      tsconfig: link:../tsconfig
       typescript: 4.8.4
 
 packages:
@@ -1846,8 +1853,8 @@ packages:
     resolution: {integrity: sha512-ZO1qWciukqED9qcUNW7OaPXWnTlT+tO3WcYkmudZyQW2BqD7TlMFRrdqSCoqfwKhERCwBA5A/YZt/g5A3BqgLQ==}
     dev: true
 
-  /@types/google.maps/3.50.4:
-    resolution: {integrity: sha512-edePfF9fo29bFdzcNIAS6rM4KnONY5WiZZaTKASfMLQxjdEysJp+RRkzBc71OIjFXd3bWAjriOL/ek1RloJRng==}
+  /@types/google.maps/3.50.5:
+    resolution: {integrity: sha512-RuZf1MJtctGlpW+Gd4a/eGtAufUDjMf+eyN1l+B3fbe2YLScJbg8KEljJfb+6vnSPFAeM1/48geVIEg3vqOkxw==}
     dev: false
 
   /@types/http-cache-semantics/4.0.1:
@@ -3765,8 +3772,8 @@ packages:
       - supports-color
     dev: true
 
-  /firebase-functions/4.0.1_firebase-admin@11.2.0:
-    resolution: {integrity: sha512-U0dOqGPShLi0g3jUlZ3aZlVTPFO9cREJfIxMJIlfRz/vNbYoKdIVdI7OAS9RKPcqz99zxkN/A8Ro4kjI+ytT8A==}
+  /firebase-functions/4.0.2_firebase-admin@11.2.0:
+    resolution: {integrity: sha512-y2JEMVRQfKQyib/wRMn6qSEg1kfJhl0nBOPHbcvrWN3cFakOssTVfq78GEQe3m9PPE8toF9ysabsetTUi4vkSg==}
     engines: {node: '>=14.10.0'}
     hasBin: true
     peerDependencies:
@@ -5901,7 +5908,7 @@ packages:
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       '@googlemaps/js-api-loader': 1.14.3
-      '@types/google.maps': 3.50.4
+      '@types/google.maps': 3.50.5
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-select: 4.3.1_ovnpmkgfyand75et73pnqceycy

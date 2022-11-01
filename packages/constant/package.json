@@ -1,10 +1,16 @@
 {
   "name": "constant",
   "version": "0.0.0",
-  "main": "index.ts",
+  "main": "build/index.js",
   "scripts": {
-    "lint": "eslint *.ts*"
+    "build": "tsc",
+    "watch": "tsc --watch --preserveWatchOutput",
+    "lint": "eslint *.ts*",
+    "update": "ncu -u"
   },
   "private": true,
-  "license": "NONE"
+  "license": "NONE",
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
 }

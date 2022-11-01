@@ -9,13 +9,7 @@ import { Loader } from "../../elements/Loader";
 import { EmailInput, SelectInput, TextInput } from "../inputs";
 import PhoneInput from "../inputs/PhoneInput";
 import type { ContactForm as ContactFormType, ServerResponse } from "types";
-
-const Reasons = [
-  { id: "general-inquiry", name: "General Inquiry" },
-  { id: "appointment-request", name: "Appointment Request" },
-  { id: "report-a-bug", name: "Report a Bug" },
-  { id: "relief-request", name: "Relief / Partnership Request" },
-];
+import { CONTACT_REASONS } from "constant";
 
 export const ContactForm = () => {
   const router = useRouter();
@@ -36,7 +30,7 @@ export const ContactForm = () => {
     mode: "onSubmit",
     resolver: yupResolver(contactSchema),
     defaultValues: {
-      reason: Reasons[0],
+      reason: CONTACT_REASONS[0],
       firstName: firstName || "",
       lastName: lastName || "",
       email: email || "",
@@ -56,7 +50,7 @@ export const ContactForm = () => {
       appointmentRequest
     )
       reset({
-        reason: appointmentRequest ? Reasons[1] : Reasons[0],
+        reason: appointmentRequest ? CONTACT_REASONS[1] : CONTACT_REASONS[0],
         firstName: firstName || "",
         lastName: lastName || "",
         email: email || "",
@@ -202,7 +196,7 @@ export const ContactForm = () => {
                       name="reason"
                       required
                       disabled={isLoading || Boolean(appointmentRequest)}
-                      values={Reasons}
+                      values={CONTACT_REASONS}
                       errors={errors}
                       control={control}
                     />
@@ -213,14 +207,14 @@ export const ContactForm = () => {
                     autoFocus={mode === "app"}
                     disabled={isLoading}
                     label={
-                      Reasons[2] === reason
+                      CONTACT_REASONS[2] === reason
                         ? "Tell us about the bug(s) you found"
                         : appointmentRequest
                         ? "Appointment Request"
                         : "Message"
                     }
                     placeholder={
-                      Reasons[1] === reason
+                      CONTACT_REASONS[1] === reason
                         ? "Please provide as much details as possible"
                         : appointmentRequest
                         ? 'Please provide the 5 "W"\'s (Who, What, Where, When and Why)'

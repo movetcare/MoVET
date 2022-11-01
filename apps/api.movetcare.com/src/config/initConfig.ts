@@ -29,10 +29,10 @@ export const initProVetConfig = async (
       sendToSlack: true,
     });
     const entities: Array<string> = [
-      "items",
       "breeds",
       "shifts",
       "appointments",
+      "items",
     ];
     switch (type) {
       case "all":

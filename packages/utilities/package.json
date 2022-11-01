@@ -1,17 +1,17 @@
 {
   "name": "utilities",
   "version": "0.0.0",
-  "main": "./index.tsx",
-  "types": "./index.tsx",
-  "license": "NONE",
-  "private": true,
+  "main": "build/index.js",
   "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch --preserveWatchOutput",
     "lint": "eslint *.ts*",
     "update": "ncu -u"
   },
+  "private": true,
+  "license": "NONE",
   "devDependencies": {
     "@types/node": "^18.11.9",
-    "tsconfig": "workspace:*",
     "typescript": "^4.8.4"
   }
 }

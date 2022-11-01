@@ -1,6 +1,6 @@
 import {admin, throwError} from "../../config/config";
-import {sendNotifications} from "../../notifications/sendNotifications";
-import {timestampString} from "../timestampString";
+import { sendNotification } from "../../notifications/sendNotification";
+import { timestampString } from "../timestampString";
 export const logEvent = async (payload: any): Promise<boolean> => {
   if (payload.success === false) return await saveLogEvent(payload);
   else return await sendLogAlerts(payload);
@@ -46,7 +46,7 @@ const sendLogAlerts = async (payload: any) => {
     payload?.data?.code !== "auth/user-not-found"
   ) {
     if (payload?.sendToSlack) {
-      await sendNotifications({
+      await sendNotification({
         type: "slack",
         payload,
       });
