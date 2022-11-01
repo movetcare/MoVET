@@ -107,12 +107,11 @@ export const ContactForm = () => {
                 soon as we can.
               </p>
               <p className="text-lg">
-                As we build our team back up to pre-COVID capacity, please allow
-                48-72 hours for a response. All messages are responded to in the
-                order they are received. You will hear from us. We promise. We
-                are working hard to give everyone the same service we are known
-                for and can&apos;t wait to give you the love and attention you
-                deserve.
+                Please allow 1 business day for a response. All messages are
+                responded to in the order they are received. You will hear from
+                us. We promise. We are working hard to give everyone the same
+                service we are known for and can&apos;t wait to give you the
+                love and attention you deserve.
               </p>
               <p className="text-lg">
                 Our customer service business hours are 9:00AM to 5:00PM (MST),

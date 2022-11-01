@@ -1,8 +1,8 @@
-import {environment, DEBUG} from "./../config/config";
-import {findSlackChannel} from "./../utils/logging/findSlackChannel";
-import {sendSlackMessage} from "../utils/logging/sendSlackMessage";
-import {getPayloadSummary} from "../utils/logging/getPayloadSummary";
-
+import { environment, emailClient, throwError } from "./../config/config";
+import { findSlackChannel } from "./../utils/logging/findSlackChannel";
+import { sendSlackMessage } from "../utils/logging/sendSlackMessage";
+import { getPayloadSummary } from "../utils/logging/getPayloadSummary";
+const DEBUG = true;
 export const sendNotifications = async ({
   type,
   payload,
@@ -20,9 +20,10 @@ export const sendNotifications = async ({
     case "slack":
       if (payload) {
         const channelId: any = await findSlackChannel(
-          environment.type === "production"
-            ? "production-logs"
-            : "development-feed"
+          payload?.channel ||
+            (environment.type === "production"
+              ? "production-logs"
+              : "development-feed")
         );
         if (DEBUG) console.log("sendNotifications => channelId", channelId);
         if (Array.isArray(payload?.data?.message)) {
@@ -53,6 +54,28 @@ export const sendNotifications = async ({
             payload
           )}"`
         );
+      break;
+    case "email":
+      // eslint-disable-next-line no-case-declarations
+      const emailConfig: any = {
+        to: payload?.email || "info@movetcare.com",
+        from: payload?.from || "info@movetcare.com",
+        bcc: payload?.bcc || "support@movetcare.com",
+        replyTo: payload?.replyTo || "info@movetcare.com",
+        subject: payload?.subject || "UNKNOWN SYSTEM EMAIL",
+        text: payload.message.replace(/(<([^>]+)>)/gi, ""),
+        html: payload.message,
+      };
+      // if (environment?.type === "production")
+      await emailClient
+        .send(emailConfig)
+        .then(async () => {
+          if (DEBUG) console.log("EMAIL SENT!", emailConfig);
+        })
+        .catch(async (error: any) => {
+          if (DEBUG) console.error(error?.response?.body?.errors);
+          await throwError(error);
+        });
       break;
     default:
       break;

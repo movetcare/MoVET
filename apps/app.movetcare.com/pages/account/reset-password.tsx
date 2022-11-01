@@ -1,11 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import {
-  confirmPasswordReset,
-  getAuth,
-  verifyPasswordResetCode,
-} from "firebase/auth";
+import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
 import { useForm } from "react-hook-form";
 import { Button } from "ui";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
@@ -16,10 +12,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "components/inputs/TextInput";
 import { Error } from "components/Error";
 import { AppHeader } from "components/AppHeader";
+import { auth } from "services/firebase";
 
 export default function ResetPassword() {
   const router = useRouter();
-  const auth = getAuth();
   const { mode, oobCode, apiKey, continueUrl } = router.query;
   const [isLoading, setLoading] = useState<boolean>(false);
   const [resetSuccessful, setResetSuccessful] = useState<boolean>(false);

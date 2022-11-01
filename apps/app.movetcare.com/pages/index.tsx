@@ -5,11 +5,10 @@ import { useEffect, useState } from "react";
 import { Loader } from "ui";
 import { httpsCallable } from "firebase/functions";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-import { functions } from "services/firebase";
+import { auth, functions } from "services/firebase";
 import { QRCodeSVG } from "qrcode.react";
 import { environment } from "utilities";
 import {
-  getAuth,
   onAuthStateChanged,
   sendSignInLinkToEmail,
   signInWithCustomToken,
@@ -45,7 +44,7 @@ export default function Home() {
     }
   }, [mode]);
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(getAuth(), (user: any) => {
+    const unsubscribe = onAuthStateChanged(auth, (user: any) => {
       if (user) {
         const verifyBooking = async (id?: string) => {
           setIsLoading(true);
@@ -94,7 +93,7 @@ export default function Home() {
     ) {
       setBookingToken(window.localStorage.getItem("bookingToken"));
       signInWithCustomToken(
-        getAuth(),
+        auth,
         window.localStorage.getItem("bookingToken") as string
       ).catch((error) => {
         console.error(error);
@@ -126,7 +125,6 @@ export default function Home() {
                       : "Sign In Required!"
                   }`
                 );
-              const auth = getAuth();
               sendSignInLinkToEmail(auth, (email as string)?.toLowerCase(), {
                 url:
                   (environment === "production"

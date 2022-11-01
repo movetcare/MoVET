@@ -3,17 +3,13 @@ import { Button } from "ui";
 import EmailInput from "components/inputs/EmailInput";
 import { Loader } from "ui";
 import { SignInWithEmailLinkRequired } from "components/SignInWithEmailLinkRequired";
-import {
-  getAuth,
-  onAuthStateChanged,
-  sendSignInLinkToEmail,
-} from "firebase/auth";
+import { onAuthStateChanged, sendSignInLinkToEmail } from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
-import { functions } from "services/firebase";
+import { auth, functions } from "services/firebase";
 import { environment } from "utilities";
 import { Error } from "components/Error";
 import { object, string } from "yup";
@@ -51,7 +47,7 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
   });
   const email = watch("email");
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(getAuth(), (user: any) => {
+    const unsubscribe = onAuthStateChanged(auth, (user: any) => {
       setIsLoading(true);
       if (user) {
         if (
@@ -85,7 +81,6 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
                     : "Sign In Required!"
                 }`
               );
-            const auth = getAuth();
             sendSignInLinkToEmail(auth, data.email?.toLowerCase(), {
               url:
                 (environment === "production"

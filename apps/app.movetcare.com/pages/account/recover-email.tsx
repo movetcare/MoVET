@@ -5,16 +5,15 @@ import {
   checkActionCode,
   applyActionCode,
   sendPasswordResetEmail,
-  getAuth,
 } from "firebase/auth";
 import { Button } from "ui";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { environment } from "utilities";
 import { Loader } from "ui";
+import { auth } from "services/firebase";
 
 export default function RecoverEmail() {
   const router = useRouter();
-  const auth = getAuth();
   const { mode, oobCode, apiKey, continueUrl } = router.query;
   const [isLoading, setLoading] = useState<boolean>(true);
   const [email, setEmail] = useState<string>();
