@@ -4,6 +4,10 @@ import { deleteCollection } from "../../../../utils/deleteCollection";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { fetchEntity } from "../fetchEntity";
 
+const visibleReasonsInApp = [
+  30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 46, 47, 51, 58, 73,
+  74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86,
+];
 export const configureReasons = async (): Promise<boolean> => {
   console.log("STARTING REASONS CONFIGURATION");
   await deleteCollection("reasons").then(
@@ -24,7 +28,7 @@ const saveReasonsData = async (reasons: Array<Reason>): Promise<boolean> =>
           .doc(`${reason?.id}`)
           .set(
             {
-              isVisible: true,
+              isVisible: visibleReasonsInApp.includes(reason.id),
               id: reason?.id,
               name: reason?.name,
               duration: reason?.duration,

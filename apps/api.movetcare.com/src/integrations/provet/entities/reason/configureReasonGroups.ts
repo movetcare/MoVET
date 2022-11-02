@@ -4,6 +4,8 @@ import {deleteCollection} from "../../../../utils/deleteCollection";
 import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
 import {fetchEntity} from "../fetchEntity";
 
+const visibleReasonGroupsInApp = [19, 20, 23, 25, 29, 30, 31, 32];
+
 export const configureReasonGroups = async (): Promise<boolean> => {
   console.log("STARTING REASONS CONFIGURATION");
   await deleteCollection("reason_group").then(
@@ -24,13 +26,13 @@ const saveReasonsData = async (reasons: Array<ReasonGroup>): Promise<boolean> =>
           .doc(`${group?.id}`)
           .set(
             {
-              isVisible: true,
+              isVisible: visibleReasonGroupsInApp.includes(group.id),
               id: group?.id,
               name: group?.name,
               department: getProVetIdFromUrl(group.department),
               updatedOn: new Date(),
             } as ReasonGroup,
-            {merge: true}
+            { merge: true }
           )
           .then(() => true)
           .catch(async (error: any) => await throwError(error))

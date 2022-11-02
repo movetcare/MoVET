@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-display: swap;
+    font-family: 'Abside';
+    src: url('/fonts/abside-regular-webfont.woff2') format('woff2'),
+         url('/fonts/abside-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-display: swap;
+    font-family: 'Abside Smooth';
+    src: url('/fonts/abside-smooth-webfont.woff2') format('woff2'),
+         url('/fonts/abside-smooth-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-display: swap;
+    font-family: 'Parkinson';
+    font-weight: 800;
+    src: url('/fonts/parkinson-bold-webfont.woff2') format('woff2'),
+         url('/fonts/parkinson-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-display: swap;
+    font-family: 'Source Sans Pro';
+    src: url('/fonts/sourcesanspro-regular-webfont.woff2') format('woff2'),
+         url('/fonts/sourcesanspro-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-display: swap;
+    font-family: 'Source Sans Pro Italic';
+    font-style: italic;
+    src: url('/fonts/sourcesanspro-italic-webfont.woff2') format('woff2'),
+         url('/fonts/sourcesanspro-italic-webfont.woff') format('woff');
+    font-weight: normal;
+  }
+
+  #__next {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  ::selection {
+    @apply bg-movet-red;
+  }
+
+  ::-moz-selection {
+    @apply bg-movet-red;
+  }
+
+  main {
+    flex: 1 1 auto;
+  }
+
+  h1 {
+    @apply font-parkinson text-2xl text-center;
+  }
+
+  h2 {
+    @apply text-lg font-source-sans-pro-italic uppercase mt-4 mb-2;
+  }
+
+  p {
+    @apply font-source-sans-pro;
+  }
+}
+
+.firebase-emulator-warning {
+  @apply hidden;
+}

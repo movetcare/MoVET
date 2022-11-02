@@ -84,7 +84,7 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
       emailHtml += "<p>Hey there!</p>";
       emailText += "Hey there! ";
     }
-    emailHtml += `<p>It looks like you haven't finished your appointment booking with MoVET.</p><p><b>Click on the link bellow to resume your appointment booking session:</b></p><p><a href='${
+    emailHtml += `<p>It looks like you haven't finished your appointment booking request with MoVET.</p><p><b>Click on the link bellow to resume your session:</b></p><p><a href='${
       authLink
         ? authLink
         : (environment.type === "production"
@@ -97,13 +97,19 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
             ? "https://movetcare.com"
             : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
     }</a></p>`;
-    emailText += ` It looks like you have not finished your appointment booking with MoVET. Click on the link bellow to resume your appointment booking session: https://movetcare.com/book-an-appointment/?email=${email}/`;
+    emailText += ` It looks like you have not finished your appointment booking request with MoVET. Click on the link bellow to resume your session: ${
+      authLink
+        ? authLink
+        : (environment.type === "production"
+            ? "https://movetcare.com"
+            : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
+    }`;
     const emailConfig: EmailConfiguration = {
       to: email,
       from: "info@movetcare.com",
       bcc: "info@movetcare.com",
       replyTo: "info@movetcare.com",
-      subject: "Incomplete appointment booking with MoVET (1 HOUR)",
+      subject: "Incomplete appointment booking request with MoVET",
       text: emailText,
       html: emailHtml,
     };
@@ -229,7 +235,7 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
       emailHtml += "<p>Hey there!</p>";
       emailText += "Hey there! ";
     }
-    emailHtml += `<p>It looks like you didn't finish booking your appointment with MoVET yesterday.</p><p><b>Click on the link bellow to resume your appointment booking session:</b></p><p><a href='${
+    emailHtml += `<p>It looks like you didn't finish booking your appointment with MoVET yesterday.</p><p><b>Click on the link bellow to resume your session:</b></p><p><a href='${
       authLink
         ? authLink
         : (environment.type === "production"
@@ -242,13 +248,13 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
             ? "https://movetcare.com"
             : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
     }</a></p>`;
-    emailText += ` It looks like you didn't finish booking your appointment with MoVET yesterday. Click on the link bellow to resume your appointment booking session: https://movetcare.com/book-an-appointment/?email=${email}`;
+    emailText += ` It looks like you didn't finish booking your appointment with MoVET yesterday. Click on the link bellow to resume your session: https://movetcare.com/book-an-appointment/?email=${email}`;
     const emailConfig: EmailConfiguration = {
       to: email,
       from: "info@movetcare.com",
       bcc: "info@movetcare.com",
       replyTo: "info@movetcare.com",
-      subject: "Incomplete appointment booking with MoVET (24 HOUR)",
+      subject: "Incomplete appointment booking request with MoVET",
       text: emailText,
       html: emailHtml,
     };
@@ -350,8 +356,8 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
       "SENDING SEVENTY TWO HOUR BOOKING RECOVERY NOTIFICATION",
       booking
     );
-  const {isActive, client, id} = booking;
-  const {uid, email} = client;
+  const { isActive, client, id } = booking;
+  const { uid, email } = client;
   if (isActive && id && email) {
     const authLink = await sendSignInByEmailLink({
       email,
@@ -372,14 +378,14 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
       smsMessage += "Hey there!\n\n";
       smsString += "Hey There!";
     }
-    smsMessage += `It looks like you haven't finished your appointment booking with MoVET from three days ago.\n\nTap the link bellow to resume your appointment booking session:\n\n${
+    smsMessage += `It looks like you haven't finished your appointment booking request with MoVET from three days ago.\n\nTap the link bellow to resume your session:\n\n${
       authLink
         ? authLink
         : (environment.type === "production"
             ? "https://movetcare.com"
             : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
     }`;
-    smsString += `It looks like you have not finished your appointment booking with MoVET from three days ago. Tap the link bellow to resume your appointment booking session:${
+    smsString += `It looks like you have not finished your appointment booking request with MoVET from three days ago. Tap the link bellow to resume your session:${
       authLink
         ? authLink
         : (environment.type === "production"
@@ -416,7 +422,7 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
                 note: smsString,
               })
               .then(async (response: any) => {
-                const {data} = response;
+                const { data } = response;
                 if (DEBUG) console.log("API Response: POST /note/ => ", data);
                 await logEvent({
                   tag: "72-hour-booking-abandonment-sms",
@@ -452,7 +458,7 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
                 note: JSON.stringify(error),
               })
               .then(async (response: any) => {
-                const {data} = response;
+                const { data } = response;
                 if (DEBUG) console.log("API Response: POST /note/ => ", data);
               })
               .catch(async (error: any) => await throwError(error));
