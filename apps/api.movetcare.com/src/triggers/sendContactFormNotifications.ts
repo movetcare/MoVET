@@ -1,8 +1,8 @@
-import { formatPhoneNumber } from "utilities";
+import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { sendNotification } from "../notifications/sendNotification";
 import { admin, functions, throwError } from "./../config/config";
-import type { ContactForm } from "types";
-import { CONTACT_STATUS } from "constant";
+import { CONTACT_STATUS } from "../constant";
+import type { ContactForm } from "../types/forms";
 
 const DEBUG = true;
 export const sendContactFormNotifications = functions.firestore

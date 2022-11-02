@@ -10,7 +10,7 @@
     "target": "es2017",
     "skipLibCheck": true,
     "types": [],
-    "lib": ["ES2021.String", "dom"]
+    "lib": ["ES2021.String"]
   },
   "compileOnSave": true,
   "include": ["**/*.ts"],

@@ -35,7 +35,6 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.42.0
       '@typescript-eslint/parser': ^5.42.0
       axios: 0.27.2
-      constant: ../../packages/constant
       cors: ^2.8.5
       eslint: ^8.26.0
       eslint-config-google: ^0.14.0
@@ -53,9 +52,7 @@ importers:
       stripe: ^10.15.0
       trello-node-api: ^0.0.9
       twilio: ^3.83.1
-      types: ../../packages/types
       typescript: ^4.8.4
-      utilities: ../../packages/utilities
       uuid: ^9.0.0
     dependencies:
       '@sendgrid/client': 7.7.0
@@ -84,16 +81,13 @@ importers:
       '@types/uuid': 8.3.4
       '@typescript-eslint/eslint-plugin': 5.42.0_6xw5wg2354iw4zujk2f3vyfrzu
       '@typescript-eslint/parser': 5.42.0_wyqvi574yv7oiwfeinomdzmc3m
-      constant: link:../../packages/constant
       eslint: 8.26.0
       eslint-config-google: 0.14.0_eslint@8.26.0
       eslint-plugin-import: 2.26.0_5aea5dp4n23mfv4y2mmjxole3e
       eslint-plugin-node: 11.1.0_eslint@8.26.0
       eslint-plugin-prettier: 4.2.1_5t6g5rrqvlktilv3n3sw5svbdi
       prettier: 2.7.1
-      types: link:../../packages/types
       typescript: 4.8.4
-      utilities: link:../../packages/utilities
 
   apps/app.movetcare.com:
     specifiers:
@@ -317,39 +311,6 @@ importers:
       typescript: 4.8.4
       yup: 0.32.11
 
-  packages/tools:
-    specifiers:
-      '@types/lodash.isequal': ^4.5.6
-      '@types/node': ^18.11.9
-      axios: 0.27.2
-      csvtojson: ^2.0.10
-      dotenv: ^16.0.3
-      firebase: ^9.13.0
-      firebase-admin: ^11.2.0
-      firebase-functions: ^4.0.2
-      fs-extra: ^10.1.0
-      kill-port: ^2.0.1
-      lodash.isequal: ^4.5.0
-      ngrok: ^4.3.3
-      public-ip: 4.0.4
-      typescript: ^4.8.4
-    dependencies:
-      axios: 0.27.2
-      csvtojson: 2.0.10
-      dotenv: 16.0.3
-      firebase: 9.13.0
-      firebase-admin: 11.2.0
-      firebase-functions: 4.0.2_firebase-admin@11.2.0
-      fs-extra: 10.1.0
-      kill-port: 2.0.1
-      lodash.isequal: 4.5.0
-      ngrok: 4.3.3
-      public-ip: 4.0.4
-    devDependencies:
-      '@types/lodash.isequal': 4.5.6
-      '@types/node': 18.11.9
-      typescript: 4.8.4
-
   packages/tsconfig:
     specifiers: {}
 
@@ -411,6 +372,39 @@ importers:
       '@types/node': ^18.11.9
       typescript: ^4.8.4
     devDependencies:
+      '@types/node': 18.11.9
+      typescript: 4.8.4
+
+  tools/development:
+    specifiers:
+      '@types/lodash.isequal': ^4.5.6
+      '@types/node': ^18.11.9
+      axios: 0.27.2
+      csvtojson: ^2.0.10
+      dotenv: ^16.0.3
+      firebase: ^9.13.0
+      firebase-admin: ^11.2.0
+      firebase-functions: ^4.0.2
+      fs-extra: ^10.1.0
+      kill-port: ^2.0.1
+      lodash.isequal: ^4.5.0
+      ngrok: ^4.3.3
+      public-ip: 4.0.4
+      typescript: ^4.8.4
+    dependencies:
+      axios: 0.27.2
+      csvtojson: 2.0.10
+      dotenv: 16.0.3
+      firebase: 9.13.0
+      firebase-admin: 11.2.0
+      firebase-functions: 4.0.2_firebase-admin@11.2.0
+      fs-extra: 10.1.0
+      kill-port: 2.0.1
+      lodash.isequal: 4.5.0
+      ngrok: 4.3.3
+      public-ip: 4.0.4
+    devDependencies:
+      '@types/lodash.isequal': 4.5.6
       '@types/node': 18.11.9
       typescript: 4.8.4
 
