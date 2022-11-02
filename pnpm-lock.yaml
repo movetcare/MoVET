@@ -35,7 +35,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.42.0
       '@typescript-eslint/parser': ^5.42.0
       axios: 0.27.2
-      constant: workspace:*
+      constant: ../../packages/constant
       cors: ^2.8.5
       eslint: ^8.26.0
       eslint-config-google: ^0.14.0
@@ -53,9 +53,9 @@ importers:
       stripe: ^10.15.0
       trello-node-api: ^0.0.9
       twilio: ^3.83.1
-      types: workspace:*
+      types: ../../packages/types
       typescript: ^4.8.4
-      utilities: workspace:*
+      utilities: ../../packages/utilities
       uuid: ^9.0.0
     dependencies:
       '@sendgrid/client': 7.7.0
@@ -130,7 +130,7 @@ importers:
       react-firebase-hooks: ^5.0.3
       react-google-places-autocomplete: ^3.4.0
       react-google-recaptcha-v3: ^1.10.0
-      react-hook-form: ^7.38.0
+      react-hook-form: ^7.39.1
       react-hot-toast: ^2.4.0
       react-number-format: ^5.1.1
       react-select: ^5.5.9
@@ -150,7 +150,7 @@ importers:
       '@fortawesome/free-solid-svg-icons': 6.2.0
       '@fortawesome/react-fontawesome': 0.2.0_6j2wdqxompc6mcokhxkpep2gqu
       '@headlessui/react': 1.7.3_biqbaboplfbrettd7655fr4n2y
-      '@hookform/resolvers': 2.9.10_react-hook-form@7.38.0
+      '@hookform/resolvers': 2.9.10_react-hook-form@7.39.1
       firebase: 9.13.0
       lodash.kebabcase: 4.1.1
       lottie-web: 5.9.6
@@ -163,7 +163,7 @@ importers:
       react-firebase-hooks: 5.0.3_ldr2ntcns7yrhgxmhisk4aijfi
       react-google-places-autocomplete: 3.4.0_ovnpmkgfyand75et73pnqceycy
       react-google-recaptcha-v3: 1.10.0_biqbaboplfbrettd7655fr4n2y
-      react-hook-form: 7.38.0_react@18.2.0
+      react-hook-form: 7.39.1_react@18.2.0
       react-hot-toast: 2.4.0_owo25xnefcwdq3zjgtohz6dbju
       react-number-format: 5.1.1_biqbaboplfbrettd7655fr4n2y
       react-select: 5.5.9_ovnpmkgfyand75et73pnqceycy
@@ -372,7 +372,7 @@ importers:
       qrcode.react: ^3.1.0
       react: ^18.2.0
       react-dom: 18.2.0
-      react-hook-form: ^7.38.0
+      react-hook-form: ^7.39.1
       react-number-format: ^5.1.1
       react-swipeable: ^7.0.0
       schemas: workspace:*
@@ -387,7 +387,7 @@ importers:
       '@fortawesome/free-solid-svg-icons': 6.2.0
       '@fortawesome/react-fontawesome': 0.2.0_6j2wdqxompc6mcokhxkpep2gqu
       '@headlessui/react': 1.7.3_biqbaboplfbrettd7655fr4n2y
-      '@hookform/resolvers': 2.9.10_react-hook-form@7.38.0
+      '@hookform/resolvers': 2.9.10_react-hook-form@7.39.1
       '@types/react': 18.0.24
       '@types/react-dom': 18.0.8
       constant: link:../constant
@@ -396,7 +396,7 @@ importers:
       qrcode.react: 3.1.0_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-hook-form: 7.38.0_react@18.2.0
+      react-hook-form: 7.39.1_react@18.2.0
       react-number-format: 5.1.1_biqbaboplfbrettd7655fr4n2y
       react-swipeable: 7.0.0_react@18.2.0
       schemas: link:../schemas
@@ -1395,12 +1395,12 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
 
-  /@hookform/resolvers/2.9.10_react-hook-form@7.38.0:
+  /@hookform/resolvers/2.9.10_react-hook-form@7.39.1:
     resolution: {integrity: sha512-JIL1DgJIlH9yuxcNGtyhsWX/PgNltz+5Gr6+8SX9fhXc/hPbEIk6wPI82nhgvp3uUb6ZfAM5mqg/x7KR7NAb+A==}
     peerDependencies:
       react-hook-form: ^7.0.0
     dependencies:
-      react-hook-form: 7.38.0_react@18.2.0
+      react-hook-form: 7.39.1_react@18.2.0
 
   /@humanwhocodes/config-array/0.11.7:
     resolution: {integrity: sha512-kBbPWzN8oVMLb0hOUYXhmxggL/1cJE6ydvjDIGi9EnAGUyA7cLVKQg+d/Dsm+KZwx2czGHrCmMVLiyg8s5JPKw==}
@@ -4571,7 +4571,7 @@ packages:
       klaw: 3.0.0
       markdown-it: 12.3.2
       markdown-it-anchor: 8.6.5_2zb4u3vubltivolgu556vv4aom
-      marked: 4.2.0
+      marked: 4.2.1
       mkdirp: 1.0.4
       requizzle: 0.2.3
       strip-json-comments: 3.1.1
@@ -4987,8 +4987,8 @@ packages:
       uc.micro: 1.0.6
     optional: true
 
-  /marked/4.2.0:
-    resolution: {integrity: sha512-1qWHjHlBKwjnDfrkxd0L3Yx4LTad/WO7+d13YsXAC/ZfKj7p0xkLV3sDXJzfWgL7GfW4IBZwMAYWaz+ifyQouQ==}
+  /marked/4.2.1:
+    resolution: {integrity: sha512-VK1/jNtwqDLvPktNpL0Fdg3qoeUZhmRsuiIjPEy/lHwXW4ouLoZfO4XoWd4ClDt+hupV1VLpkZhEovjU0W/kqA==}
     engines: {node: '>= 12'}
     hasBin: true
     optional: true
@@ -5929,8 +5929,8 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /react-hook-form/7.38.0_react@18.2.0:
-    resolution: {integrity: sha512-gxWW1kMeru9xR1GoR+Iw4hA+JBOM3SHfr4DWCUKY0xc7Vv1MLsF109oHtBeWl9shcyPFx67KHru44DheN0XY5A==}
+  /react-hook-form/7.39.1_react@18.2.0:
+    resolution: {integrity: sha512-MiF9PCILN5KulhSGbnjohMiTOrB47GerDTichMNP0y2cPUu1GTRFqbunOxCE9N1499YTLMV/ne4gFzqCp1rxrQ==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
