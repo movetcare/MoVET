@@ -1,4 +1,5 @@
 import {admin, DEBUG, throwError} from "../../../../config/config";
+import type { ReasonGroup } from "../../../../types/reason";
 import {deleteCollection} from "../../../../utils/deleteCollection";
 import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
 import {fetchEntity} from "../fetchEntity";

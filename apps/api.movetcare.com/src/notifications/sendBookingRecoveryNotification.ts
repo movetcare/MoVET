@@ -7,6 +7,8 @@ import {
   request,
   smsClient,
 } from "../config/config";
+import type { Booking } from "../types/booking";
+import type { EmailConfiguration } from "../types/email";
 import {sendSignInByEmailLink} from "../utils/auth/sendSignInByEmailLink";
 import {
   getClientNotificationSettings,

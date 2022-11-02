@@ -4,10 +4,11 @@ import {
   proVetApiUrl,
   DEBUG,
 } from "../../../../config/config";
-import {capitalizeFirstLetter} from "../../../../utils/capitalizeFirstLetter";
-import {savePatient} from "./savePatient";
+import type { Patient } from "../../../../types/patient";
+import { capitalizeFirstLetter } from "../../../../utils/capitalizeFirstLetter";
+import { savePatient } from "./savePatient";
 
-export const updateProVetPatient = async (data: PatientType): Promise<any> => {
+export const updateProVetPatient = async (data: Patient): Promise<any> => {
   if (DEBUG) console.log("updateProVetPatient -> ", data);
   // const {weight} = data;
   const requestPayload: any = {};
@@ -18,7 +19,7 @@ export const updateProVetPatient = async (data: PatientType): Promise<any> => {
         requestPayload.client = `${proVetApiUrl}/client/${value}/`;
         break;
       case "name":
-        requestPayload.name = capitalizeFirstLetter(value);
+        requestPayload.name = capitalizeFirstLetter(value as string);
         break;
       case "species":
         requestPayload.species = `${value === "Dog" ? "1445" : "1443"}001`;
@@ -45,7 +46,7 @@ export const updateProVetPatient = async (data: PatientType): Promise<any> => {
   const proVetPatientData = await request
     .patch(`/patient/${data?.id}`, requestPayload)
     .then(async (response: any) => {
-      const {data} = response;
+      const { data } = response;
       // const patientId = data?.id;
       // let updatedWeightHistory = null;
       // if (DEBUG) console.log('API Response: POST /patient/ => ', data);

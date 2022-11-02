@@ -1,12 +1,13 @@
 import {admin, DEBUG, request, throwError} from "../../../../../config/config";
+import type { Breed } from "../../../../../types/breed";
 import {addMinutesToDateObject} from "../../../../../utils/addMinutesToDateObject";
 import {sliceArrayIntoChunks} from "../../../../../utils/sliceArrayIntoChunks";
 
 export const fetchBreedData = async (
   breedIds: Array<string>,
-  breed: BreedType
-): Promise<Array<{value: number; label: string}>> => {
-  const breedsData: Array<{value: number; label: string}> = [];
+  breed: Breed
+): Promise<Array<{ value: number; label: string }>> => {
+  const breedsData: Array<{ value: number; label: string }> = [];
   if (breedIds.length > 50) {
     if (DEBUG)
       console.log(
@@ -33,7 +34,7 @@ export const fetchBreedData = async (
               performAt: addMinutesToDateObject(new Date(), index),
               createdOn: new Date(),
             },
-            {merge: true}
+            { merge: true }
           )
           .then(
             async () =>
@@ -70,7 +71,7 @@ export const fetchBreedData = async (
                   performAt: addMinutesToDateObject(new Date(), 1),
                   createdOn: new Date(),
                 },
-                {merge: true}
+                { merge: true }
               )
               .then(
                 async () =>
@@ -84,7 +85,7 @@ export const fetchBreedData = async (
           });
         if (DEBUG) console.log("initialBreedData", initialBreedData);
         if (initialBreedData)
-          breedsData.push(initialBreedData as {value: number; label: string});
+          breedsData.push(initialBreedData as { value: number; label: string });
       })
     );
     if (DEBUG) console.log("breedsData", breedsData);
@@ -115,7 +116,7 @@ export const fetchBreedData = async (
                   performAt: addMinutesToDateObject(new Date(), 1),
                   createdOn: new Date(),
                 },
-                {merge: true}
+                { merge: true }
               )
               .then(
                 async () =>
@@ -129,7 +130,7 @@ export const fetchBreedData = async (
           });
         if (DEBUG) console.log("breedData", breedData);
         if (breedData)
-          breedsData.push(breedData as {value: number; label: string});
+          breedsData.push(breedData as { value: number; label: string });
       })
     );
     if (DEBUG) console.log("breedsData", breedsData);

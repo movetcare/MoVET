@@ -3,7 +3,6 @@ import { getAnnouncement } from "server";
 // import { useRouter } from "next/router";
 // import { useEffect, useState } from "react";
 import {
-  Announcement,
   Hero,
   BookAnAppointmentForm,
   AppLinks,
@@ -16,6 +15,8 @@ import {
   CallToAction,
 } from "ui";
 
+import type { Announcement as AnnouncementType } from "types";
+
 export async function getStaticProps() {
   return {
     props: {
@@ -24,7 +25,11 @@ export async function getStaticProps() {
   };
 }
 
-export default function Home({ announcement }: { announcement: Announcement }) {
+export default function Home({
+  announcement,
+}: {
+  announcement: AnnouncementType;
+}) {
   // const router = useRouter();
   // const [isLoading, setIsLoading] = useState<boolean>(false);
   // const { link } = router.query;

@@ -3,17 +3,18 @@ import {fetchBreedIds} from "./fetchBreedIds";
 import {fetchBreedData} from "./fetchBreedData";
 import {supportedBreeds} from "./supportedBreeds";
 import {saveBreeds} from "./saveBreeds";
+import type { Breed } from "../../../../../types/breed";
 
 export const configureBreeds = async (): Promise<boolean> => {
   console.log("STARTING BREEDS CONFIGURATION");
   let breedsConfigured = 0;
   return await Promise.all(
-    supportedBreeds.map(async (breed: BreedType) => {
+    supportedBreeds.map(async (breed: Breed) => {
       const breedIds: Array<string> | boolean = await fetchBreedIds(
         breed.listId
       );
       if (breedIds) {
-        const breedData: Array<{value: number; label: string}> =
+        const breedData: Array<{ value: number; label: string }> =
           await fetchBreedData(breedIds as Array<string>, breed);
         if (breedData) {
           const didSaveBreedData: boolean = await saveBreeds(

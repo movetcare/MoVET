@@ -1,4 +1,5 @@
 import {admin, DEBUG, throwError} from "../../../../config/config";
+import type { Shift } from "../../../../types/shift";
 import {deleteCollection} from "../../../../utils/deleteCollection";
 import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
 import {logEvent} from "../../../../utils/logging/logEvent";

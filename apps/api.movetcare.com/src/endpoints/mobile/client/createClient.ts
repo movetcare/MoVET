@@ -5,6 +5,7 @@ import {
   mobileClientApiKey,
 } from "../../../config/config";
 import {createProVetClient} from "../../../integrations/provet/entities/client/createProVetClient";
+import type { NewClientPayload } from "../../../types/client";
 
 export const createClient = functions
   .runWith(defaultRuntimeOptions)

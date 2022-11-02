@@ -1,6 +1,7 @@
 import {getProVetIdFromUrl} from "./../../../../utils/getProVetIdFromUrl";
 import {throwError, admin, DEBUG} from "./../../../../config/config";
 import {fetchEntity} from "./../fetchEntity";
+import type { ProVetUser } from "../../../../types/user";
 
 export const configureProVetUsers = async () => {
   if (DEBUG) console.log("configureProVetUsers");

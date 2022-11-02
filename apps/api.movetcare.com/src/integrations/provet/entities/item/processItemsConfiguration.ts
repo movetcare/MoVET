@@ -1,6 +1,6 @@
 import {DEBUG} from "../../../../config/config";
-import {fetchItemsData} from "./fetchItemsData";
-import {saveItems} from "./saveItems";
+import { fetchItemsData } from "./fetchItemsData";
+import { saveItems } from "./saveItems";
 
 export const processItemsConfiguration = async ({
   itemIds,
@@ -9,11 +9,9 @@ export const processItemsConfiguration = async ({
 }) => {
   if (DEBUG) console.log("PROCESSING ITEMS CONFIGURATION => ", itemIds);
   if (itemIds) {
-    const itemData: Array<Item> | null = await fetchItemsData(
-      itemIds as Array<string>
-    );
+    const itemData: any | null = await fetchItemsData(itemIds as Array<string>);
     if (itemData)
-      await saveItems(itemData).then(
+      await saveItems(itemData as any).then(
         () => DEBUG && console.log("SUCCESSFULLY CONFIGURED ITEMS", itemIds)
       );
     else if (DEBUG)

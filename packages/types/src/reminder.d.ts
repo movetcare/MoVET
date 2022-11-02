@@ -1,0 +1,25 @@
+export type Reminder = {
+  department: string;
+  reminder_template: string;
+  patient: string;
+  client: string;
+  email_address: string;
+  phone_number: string;
+  email_subject: string;
+  email_text: string;
+  sms_text: string;
+  post_text: string;
+  text_manually: boolean;
+  send_before: number;
+  send_method: number;
+  expiry_date: string;
+  planned_sending_date: string;
+  status: number;
+  created_by: string;
+  created: string;
+  modified_by: null | string;
+  modified: string;
+  recurring_type: number;
+  recurring_times: number;
+  external_url: null | string;
+};

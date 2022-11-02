@@ -1,5 +1,5 @@
 export * from "./Amenities";
-export * from "./AnnouncementBanner";
+export * from "./Announcement";
 export * from "./Hero";
 export * from "./ServiceTypes";
 export * from "./Services";

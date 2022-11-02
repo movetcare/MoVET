@@ -1,4 +1,5 @@
-import {admin, throwError} from "../../../../config/config";
+import { admin, throwError } from "../../../../config/config";
+import type { Item } from "../../../../types/item";
 
 export const saveItems = async (itemsData: Array<Item>): Promise<boolean> =>
   await Promise.all(
@@ -8,7 +9,7 @@ export const saveItems = async (itemsData: Array<Item>): Promise<boolean> =>
           .firestore()
           .collection("items")
           .doc(`${item.id}`)
-          .set({...item, updatedOn: new Date()}, {merge: true})
+          .set({ ...item, updatedOn: new Date() }, { merge: true })
           .then(() => true)
           .catch(async (error: any) => await throwError(error))
     )

@@ -8,6 +8,7 @@ import {logAuthEvent} from "../../utils/logging/logAuthEvent";
 import {syncFromProVetClientData} from "../../integrations/provet/entities/client/syncFromProVetClientData";
 import {logServiceRequest} from "../../utils/logging/logServiceRequest";
 import {logEvent} from "../../utils/logging/logEvent";
+import type { EventLogPayload } from "../../types/event";
 
 export const event = functions
   .runWith(defaultRuntimeOptions)

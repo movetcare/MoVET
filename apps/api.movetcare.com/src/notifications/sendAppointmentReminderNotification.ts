@@ -20,6 +20,7 @@ import {getDateStringFromDate} from '../utils/getDateStringFromDate';
 import {getCustomerId} from '../utils/getCustomerId';
 import {verifyValidPaymentSource} from '../utils/verifyValidPaymentSource';
 import {fetchEntity} from '../integrations/provet/entities/fetchEntity';
+import type { EmailConfiguration } from "../types/email";
 const DEBUG = false;
 interface AppointmentDetails {
   active: boolean;

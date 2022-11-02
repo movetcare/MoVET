@@ -1,4 +1,5 @@
 import {admin, throwError} from "../../../../config/config";
+import type { ReasonGroup } from "../../../../types/reason";
 import {fetchEntity} from "../fetchEntity";
 
 export const configureCancellationReasons = async (): Promise<boolean> => {

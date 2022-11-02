@@ -1,6 +1,7 @@
 import {admin, DEBUG, throwError} from "../../../../../config/config";
-import {fetchEntity} from "../../fetchEntity";
-import {saveAppointment} from "../saveAppointment";
+import type { Appointment } from "../../../../../types/appointment";
+import { fetchEntity } from "../../fetchEntity";
+import { saveAppointment } from "../saveAppointment";
 
 export const configureAppointments = async (): Promise<boolean> => {
   const alreadyHasConfiguration = await admin
@@ -20,9 +21,7 @@ export const configureAppointments = async (): Promise<boolean> => {
     return true;
   } else {
     console.log("STARTING APPOINTMENTS CONFIGURATION");
-    const appointments: Array<AppointmentType> = await fetchEntity(
-      "appointment"
-    );
+    const appointments: Array<Appointment> = await fetchEntity("appointment");
     if (appointments) {
       const didSaveAppointments: boolean = await saveAppointments(appointments);
       return didSaveAppointments;
@@ -31,11 +30,11 @@ export const configureAppointments = async (): Promise<boolean> => {
 };
 
 const saveAppointments = async (
-  appointments: Array<AppointmentType>
+  appointments: Array<Appointment>
 ): Promise<boolean> => {
   let appointmentsConfigured = 0;
   return await Promise.all(
-    appointments.map(async (appointment: AppointmentType) => {
+    appointments.map(async (appointment: Appointment) => {
       if (new Date(appointment?.start) >= new Date()) {
         await saveAppointment(appointment)
           .then(() => {

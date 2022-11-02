@@ -1,4 +1,5 @@
 import {admin, throwError} from "../config/config";
+import type { Staff } from "../types/staff";
 import {isObject} from "../utils/isObject";
 import {logEvent} from "../utils/logging/logEvent";
 

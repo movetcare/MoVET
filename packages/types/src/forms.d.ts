@@ -1,4 +1,4 @@
-export declare type ContactForm = {
+export type ContactForm = {
   reason: { id: string; name: string };
   firstName: string;
   lastName: string;
@@ -11,7 +11,7 @@ export declare type ContactForm = {
   status?: string;
 };
 
-export declare type ContactFormSources =
+export type ContactFormSources =
   | "movetcare.com"
   | "app.movetcare.com"
   | "belleviewstation.movetcare.com"

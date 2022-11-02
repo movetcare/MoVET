@@ -1,6 +1,7 @@
-import {fetchEntity} from "./../fetchEntity";
-import {fetchItemsData} from "./fetchItemsData";
-import {saveItems} from "./saveItems";
+import type { Item } from "../../../../types/item";
+import { fetchEntity } from "./../fetchEntity";
+import { fetchItemsData } from "./fetchItemsData";
+import { saveItems } from "./saveItems";
 
 export const configureItems = async (): Promise<boolean> => {
   console.log("STARTING ITEMS CONFIGURATION");

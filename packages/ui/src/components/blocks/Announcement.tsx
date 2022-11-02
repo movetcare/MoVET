@@ -12,21 +12,13 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { Announcement as AnnouncementType } from "types";
 
-export interface Announcement {
-  isActive: boolean;
-  color: string;
-  link: string;
-  icon: string;
-  title: string;
-  message: string;
-}
-
-export const AnnouncementBanner = ({
+export const Announcement = ({
   announcement,
   layout,
 }: {
-  announcement: Announcement;
+  announcement: AnnouncementType;
   layout: "top" | "bottom";
 }) => {
   const router = useRouter();

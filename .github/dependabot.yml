@@ -13,17 +13,17 @@ updates:
     versioning-strategy: increase
     target-branch: "development"
   - package-ecosystem: "npm"
-    directory: "packages/tools/"
+    directory: "tools/development/"
     schedule:
       interval: "weekly"
     versioning-strategy: increase
   - package-ecosystem: "npm"
-    directory: "apps/movetcare.com"
+    directory: "apps/movetcare.com/"
     schedule:
       interval: "weekly"
     versioning-strategy: increase
   - package-ecosystem: "npm"
-    directory: "apps/app.movetcare.com"
+    directory: "apps/app.movetcare.com/"
     schedule:
       interval: "weekly"
     versioning-strategy: increase
@@ -32,31 +32,31 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "npm"
-    directory: "packages/eslint-config-custom"
+    directory: "packages/eslint-config-custom/"
     schedule:
       interval: "weekly"
   - package-ecosystem: "npm"
-    directory: "packages/schemas"
-    schedule:
-      interval: "weekly"
-    versioning-strategy: increase
-  - package-ecosystem: "npm"
-    directory: "packages/server"
+    directory: "packages/schemas/"
     schedule:
       interval: "weekly"
     versioning-strategy: increase
   - package-ecosystem: "npm"
-    directory: "packages/types"
+    directory: "packages/server/"
     schedule:
       interval: "weekly"
     versioning-strategy: increase
   - package-ecosystem: "npm"
-    directory: "packages/ui"
+    directory: "packages/types/"
     schedule:
       interval: "weekly"
     versioning-strategy: increase
   - package-ecosystem: "npm"
-    directory: "packages/utilities"
+    directory: "packages/ui/"
+    schedule:
+      interval: "weekly"
+    versioning-strategy: increase
+  - package-ecosystem: "npm"
+    directory: "packages/utilities/"
     schedule:
       interval: "weekly"
     versioning-strategy: increase

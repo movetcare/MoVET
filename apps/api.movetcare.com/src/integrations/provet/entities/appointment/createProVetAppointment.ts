@@ -4,15 +4,16 @@ import {
   proVetApiUrl,
   DEBUG,
 } from "../../../../config/config";
+import type { Appointment } from "../../../../types/appointment";
 import {createVirtualAppointment} from "./createVirtualAppointment";
 import {saveAppointment} from "./saveAppointment";
 
 export const createProVetAppointment = async (
-  proVetData: AppointmentType,
+  proVetData: Appointment,
   movetData: any
 ): Promise<boolean | string> => {
   if (DEBUG)
-    console.log("createProVetAppointment -> ", {proVetData, movetData});
+    console.log("createProVetAppointment -> ", { proVetData, movetData });
   if (incomingDataIsValid(proVetData)) {
     const {
       client,
@@ -67,7 +68,7 @@ export const createProVetAppointment = async (
         }/`,
       })
       .then(async (response: any) => {
-        const {data} = response;
+        const { data } = response;
         if (DEBUG) console.log("API Response: POST /appointment/ => ", data);
         return data;
       })
@@ -92,7 +93,7 @@ export const createProVetAppointment = async (
         return await saveAppointment(appointmentData, movetData);
       } else if (
         await saveAppointment(
-          {...appointmentData, telemedicine_url: virtualAppointmentUrl},
+          { ...appointmentData, telemedicine_url: virtualAppointmentUrl },
           movetData
         )
       ) {
@@ -103,7 +104,7 @@ export const createProVetAppointment = async (
   } else return false;
 };
 
-const incomingDataIsValid = (data: AppointmentType): Promise<false> | true => {
+const incomingDataIsValid = (data: Appointment): Promise<false> | true => {
   if (
     !(typeof data?.client === "string") ||
     data?.client.length === 0 ||
@@ -124,5 +125,5 @@ const incomingDataIsValid = (data: AppointmentType): Promise<false> | true => {
     !(typeof data?.duration === "number")
   )
     return true;
-  else return throwError({message: "INVALID_PAYLOAD"});
+  else return throwError({ message: "INVALID_PAYLOAD" });
 };

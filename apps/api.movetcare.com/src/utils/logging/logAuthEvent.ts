@@ -4,6 +4,7 @@ import {fetchEntity} from "../../integrations/provet/entities/fetchEntity";
 import {savePatient} from "../../integrations/provet/entities/patient/savePatient";
 import {timestampString} from "../timestampString";
 import {saveClient} from "../../integrations/provet/entities/client/saveClient";
+import type { EventLogPayload } from "../../types/event";
 
 export const logAuthEvent = async (payload: EventLogPayload) => {
   if (payload?.data?.email) {

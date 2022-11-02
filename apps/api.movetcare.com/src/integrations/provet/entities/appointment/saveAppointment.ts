@@ -4,11 +4,12 @@ import {admin, throwError, DEBUG, environment} from "../../../../config/config";
 import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
 import {deleteAppointmentNotifications} from "./notifications/deleteAppointmentNotifications";
 import {generateNewAppointmentNotifications} from "./notifications/generateNewAppointmentNotifications";
+import type { Appointment } from "../../../../types/appointment";
 // import {getAuthUserById} from '../../../../utils/auth/getAuthUserById';
 // import {getDateStringFromDate} from '../../../../utils/getDateStringFromDate';
 
 export const saveAppointment = async (
-  proVetAppointmentData: AppointmentType,
+  proVetAppointmentData: Appointment,
   movetAppointmentData?: any
 ): Promise<boolean> => {
   const data: any = {};
@@ -55,7 +56,7 @@ export const saveAppointment = async (
         proVetAppointmentData?.patients.map(async (patientUrl: string) => {
           const id = getProVetIdFromUrl(patientUrl);
           const patientData = await fetchEntity("patient", id);
-          const {name, species, gender} = patientData;
+          const { name, species, gender } = patientData;
           let complaintsJson = null;
           let minorIllness = null;
 
@@ -409,7 +410,7 @@ export const saveAppointment = async (
                             performAt: new Date(),
                             createdOn: new Date(),
                           },
-                          {merge: true}
+                          { merge: true }
                         )
                         .then(
                           async () =>

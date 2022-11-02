@@ -1,19 +1,20 @@
 import {admin, DEBUG, throwError} from "../../../../config/config";
-import {deleteCollection} from "../../../../utils/deleteCollection";
-import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
-import {fetchEntity} from "../fetchEntity";
+import type { Reason } from "../../../../types/reason";
+import { deleteCollection } from "../../../../utils/deleteCollection";
+import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
+import { fetchEntity } from "../fetchEntity";
 
 export const configureReasons = async (): Promise<boolean> => {
   console.log("STARTING REASONS CONFIGURATION");
   await deleteCollection("reasons").then(
     () => DEBUG && console.log("DELETED ALL REASONS!")
   );
-  const reasons: Array<ReasonType> = await fetchEntity("reason");
+  const reasons: Array<Reason> = await fetchEntity("reason");
   if (reasons) return await saveReasonsData(reasons);
   else return await throwError("Failed to Process Reasons");
 };
 
-const saveReasonsData = async (reasons: Array<ReasonType>): Promise<boolean> =>
+const saveReasonsData = async (reasons: Array<Reason>): Promise<boolean> =>
   await Promise.all(
     reasons.map(
       async (reason: any) =>
@@ -72,8 +73,8 @@ const saveReasonsData = async (reasons: Array<ReasonType>): Promise<boolean> =>
                 getProVetIdFromUrl(specie)
               ),
               updatedOn: new Date(),
-            } as ReasonType,
-            {merge: true}
+            } as Reason,
+            { merge: true }
           )
           .then(() => true)
           .catch(async (error: any) => await throwError(error))

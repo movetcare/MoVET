@@ -1,7 +1,9 @@
 // import {environment} from '../../../../../config/config';
 
+import type { Breed } from "../../../../../types/breed";
+
 // SOURCE: https://us.provetcloud.com/4285/organization/administration/lists/
-export const supportedBreeds: Array<BreedType> = [
+export const supportedBreeds: Array<Breed> = [
   {
     name: "canine",
     listId: "17",

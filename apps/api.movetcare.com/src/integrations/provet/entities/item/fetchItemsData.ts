@@ -1,6 +1,7 @@
-import {DEBUG, admin, throwError, request} from "../../../../config/config";
-import {addMinutesToDateObject} from "../../../../utils/addMinutesToDateObject";
-import {sliceArrayIntoChunks} from "../../../../utils/sliceArrayIntoChunks";
+import type { Item } from "@slack/web-api/dist/response/PinsListResponse";
+import { DEBUG, admin, throwError, request } from "../../../../config/config";
+import { addMinutesToDateObject } from "../../../../utils/addMinutesToDateObject";
+import { sliceArrayIntoChunks } from "../../../../utils/sliceArrayIntoChunks";
 
 export const fetchItemsData = async (
   itemIds: Array<string>
@@ -31,7 +32,7 @@ export const fetchItemsData = async (
               performAt: addMinutesToDateObject(new Date(), index),
               createdOn: new Date(),
             },
-            {merge: true}
+            { merge: true }
           )
           .then(
             async () =>

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "types": "index.d.ts",
   "scripts": {
-    "lint": "eslint *.ts*"
+    "lint": "eslint *.ts*",
+    "build": "cp -a  ./src/. ../../apps/api.movetcare.com/src/types"
   },
   "private": true,
   "license": "NONE"

@@ -1,3 +1,4 @@
+import type { EmailConfiguration } from "./../../../../packages/types/src/email";
 import { environment, emailClient, throwError } from "../config/config";
 import { findSlackChannel } from "../utils/logging/findSlackChannel";
 import { sendSlackMessage } from "../utils/logging/sendSlackMessage";
@@ -58,7 +59,7 @@ export const sendNotification = async ({
       break;
     case "email":
       // eslint-disable-next-line no-case-declarations
-      const emailConfig: any = {
+      const emailConfig: EmailConfiguration = {
         to: payload?.to || "info@movetcare.com",
         from: payload?.from || "info@movetcare.com",
         bcc: payload?.bcc || "support@movetcare.com",
@@ -78,6 +79,7 @@ export const sendNotification = async ({
             if (DEBUG) console.error(error?.response?.body?.errors);
             await throwError(error);
           });
+      else if (DEBUG) console.log("SIMULATED SENDING EMAIL", emailConfig);
       break;
     default:
       break;
