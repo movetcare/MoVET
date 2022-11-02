@@ -4,6 +4,7 @@ const withTM = require("next-transpile-modules")([
   "types",
   "schemas",
   "constant",
+  "server",
 ]);
 
 module.exports = withTM({

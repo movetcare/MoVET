@@ -131,6 +131,7 @@ importers:
       react-swipeable: ^7.0.0
       react-time-picker: ^5.0.0
       schemas: workspace:*
+      server: workspace:*
       tailwindcss: ^3.2.1
       tsconfig: workspace:*
       types: workspace:*
@@ -181,6 +182,7 @@ importers:
       next-transpile-modules: 10.0.0
       postcss: 8.4.18
       schemas: link:../../packages/schemas
+      server: link:../../packages/server
       tailwindcss: 3.2.1_postcss@8.4.18
       tsconfig: link:../../packages/tsconfig
       types: link:../../packages/types

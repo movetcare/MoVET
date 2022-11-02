@@ -31,6 +31,7 @@ export const initProVetConfig = async (
     const entities: Array<string> = [
       "breeds",
       "shifts",
+      "invoices",
       "appointments",
       "items",
     ];
@@ -46,7 +47,6 @@ export const initProVetConfig = async (
             (await configureCancellationReasons()) &&
             (await configureAppointmentEstimates()) &&
             (await configureAppointmentOptionDetails()) &&
-            // (await configureInvoices()) &&
             (await configureTelehealthStatus()) &&
             (await admin
               .firestore()
@@ -63,7 +63,7 @@ export const initProVetConfig = async (
                   performAt: new Date(),
                   createdOn: new Date(),
                 },
-                {merge: true}
+                { merge: true }
               )
               .then(async () => {
                 console.log("APP CONFIGURATION TASK ADDED TO QUEUE!");

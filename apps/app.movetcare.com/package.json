@@ -58,6 +58,7 @@
     "types": "workspace:*",
     "typescript": "^4.8.4",
     "ui": "workspace:*",
-    "utilities": "workspace:*"
+    "utilities": "workspace:*",
+    "server": "workspace:*"
   }
 }

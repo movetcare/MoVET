@@ -13,13 +13,13 @@ export const sendNotification = async ({
 }): Promise<void> => {
   if (DEBUG) {
     console.log(
-      `sendNotifications => NOTIFICATION OF TYPE "${type.toUpperCase()}" TRIGGERED`
+      `sendNotification => NOTIFICATION OF TYPE "${type.toUpperCase()}" TRIGGERED`
     );
-    console.log("sendNotifications => PAYLOAD", payload);
+    console.log("sendNotification => PAYLOAD", payload);
   }
   switch (type) {
     case "slack":
-      if (payload) {
+      if (payload && environment.type === "production") {
         if (DEBUG) console.log("payload?.channel", payload?.channel);
         const channelId: any = await findSlackChannel(
           payload?.channel ||
@@ -27,13 +27,13 @@ export const sendNotification = async ({
               ? "production-logs"
               : "development-feed")
         );
-        if (DEBUG) console.log("sendNotifications => channelId", channelId);
+        if (DEBUG) console.log("sendNotification => channelId", channelId);
         if (Array.isArray(payload?.data?.message)) {
           await sendSlackMessage(channelId, null, payload?.data?.message).then(
             () =>
               DEBUG &&
               console.log(
-                `sendNotifications => SLACK MESSAGE SENT:"${JSON.stringify(
+                `sendNotification => SLACK MESSAGE SENT:"${JSON.stringify(
                   payload?.data?.message
                 )}"`
               )
@@ -45,7 +45,7 @@ export const sendNotification = async ({
               () =>
                 DEBUG &&
                 console.log(
-                  `sendNotifications => SLACK MESSAGE SENT:"${message}"`
+                  `sendNotification => SLACK MESSAGE SENT:"${message}"`
                 )
             );
           }
@@ -69,7 +69,7 @@ export const sendNotification = async ({
         html: payload?.message,
       };
       if (DEBUG) console.log("emailConfig =>", emailConfig);
-      if (environment?.type === "production")
+      if (payload && environment?.type === "production")
         await emailClient
           .send(emailConfig)
           .then(async () => {
@@ -79,7 +79,7 @@ export const sendNotification = async ({
             if (DEBUG) console.error(error?.response?.body?.errors);
             await throwError(error);
           });
-      else if (DEBUG) console.log("SIMULATED SENDING EMAIL", emailConfig);
+      else console.log("sendNotification => SIMULATED EMAIL:", emailConfig);
       break;
     default:
       break;

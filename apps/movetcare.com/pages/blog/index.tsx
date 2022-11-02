@@ -32,7 +32,7 @@ const posts = [
     imageUrl: "/images/blog/howl-o-ween.png",
     readingTime: "3 min",
     author: {
-      name: "Dr. Abramson",
+      name: "Dr. A",
       href: "#",
       imageUrl: null,
     },
