@@ -52,6 +52,7 @@ export const Hero = ({
                   className="rounded-full"
                   width={340}
                   height={340}
+                  priority
                 />
               </div>
             </div>
@@ -71,6 +72,7 @@ export const Hero = ({
                 className="rounded-md invisible"
                 width={340}
                 height={340}
+                priority
               />
             </div>
           </>
@@ -85,6 +87,7 @@ export const Hero = ({
               className="rounded-full"
               width={260}
               height={260}
+              priority
             />
           </div>
         </div>

@@ -94,11 +94,11 @@ export default function BookingSuccess() {
                   }
                 />
                 <p className="text-xs italic text-center mt-4">
-                  Please allow 1 business day for a response. All messages are
-                  responded to in the order they are received. You will hear
-                  from us. We promise. We are working hard to give everyone the
-                  same service we are known for and can&apos;t wait to give you
-                  the love and attention you deserve!
+                  Please allow 1 business day for a response. All appointment
+                  requests are responded to in the order they are received. You
+                  will hear from us. We promise. We are working hard to give
+                  everyone the same service we are known for and can&apos;t wait
+                  to give you the love and attention you deserve!
                 </p>
               </>
             )}

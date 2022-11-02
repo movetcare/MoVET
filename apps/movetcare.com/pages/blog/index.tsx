@@ -2,23 +2,8 @@ import Layout from "components/Layout";
 import Image from "next/image";
 import Link from "next/link";
 import { classNames } from "utilities";
+import { BlogPost } from "types";
 
-interface BlogPost {
-  isFeatured: boolean;
-  title: string;
-  href: string;
-  category: { name: string; href: string; color: string };
-  description: string;
-  date: string;
-  datetime: string;
-  imageUrl: string;
-  readingTime: string;
-  author: {
-    name: string;
-    href: string;
-    imageUrl: string | null;
-  };
-}
 const posts = [
   {
     isFeatured: true,
@@ -127,7 +112,7 @@ export default function Blog() {
             {posts.map((post: BlogPost, index: number) =>
               post.isFeatured && (index === 0 || index === 1) ? (
                 <div
-                  key={post.title}
+                  key={index}
                   className="flex flex-col lg:flex-row overflow-hidden rounded-lg shadow-lg col-span-3"
                 >
                   <div className="flex-shrink-0 -mb-2">
@@ -207,7 +192,7 @@ export default function Blog() {
                   </div>
                 </div>
               ) : (
-                <></>
+                <div key={index}></div>
               )
             )}
           </div>

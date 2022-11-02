@@ -17,7 +17,7 @@ export const configureBooking = async () => {
     console.log(
       "DELETE THE configuration/booking/ COLLECTION AND RESTART TO REFRESH THE BOOKING CONFIGURATION"
     );
-    return true;
+    return await generateTestBookingData();
   } else {
     console.log("STARTING BOOKING CONFIGURATION");
     return await admin
@@ -36,27 +36,138 @@ export const configureBooking = async () => {
       )
       .then(async () => {
         console.log("BOOKING CONFIGURATION COMPLETE");
-        return await admin
-          .firestore()
-          .collection("contact")
-          .add({
-            email: "alex.rodriguez+test@movetcare.com",
-            firstName: "Alex",
-            lastName: "Rodriguez",
-            message:
-              "TESTING 123... THIS IS JUST A TEST THAT IS AUTOMAGICALLY GENERATED WHEN THE DEV ENVIRONMENT IS SPUN UP!",
-            phone: "3147360856",
-            reason: { id: "general-inquiry", name: "General Inquiry" },
-            source: "app.movetcare.com",
-            status: CONTACT_STATUS.NEEDS_PROCESSING,
-            createdOn: new Date(),
-          })
-          .then(async () => {
-            console.log("TEST BOOKING SUBMISSION COMPLETE");
-            return true;
-          })
-          .catch(async (error: any) => await throwError(error));
+        return await generateTestBookingData();
       })
       .catch(async (error: any) => await throwError(error));
   }
 };
+
+const generateTestBookingData = async () =>
+  await admin
+    .firestore()
+    .collection("contact")
+    .add({
+      email: "alex.rodriguez+test@movetcare.com",
+      firstName: "Alex",
+      lastName: "Rodriguez",
+      message:
+        "TESTING 123... THIS IS JUST A TEST THAT IS AUTOMAGICALLY GENERATED WHEN THE DEV ENVIRONMENT IS SPUN UP!",
+      phone: "3147360856",
+      reason: { id: "appointment-request", name: "Appointment Request" },
+      source: "app.movetcare.com",
+      status: CONTACT_STATUS.NEEDS_PROCESSING,
+      createdOn: new Date(),
+    })
+    .then(async () => {
+      console.log("TEST CONTACT FORM BOOKING REQUEST COMPLETE");
+      return await admin
+        .firestore()
+        .collection("booking")
+        .add({
+          createdAt: new Date(),
+          client: {
+            uid: "5125",
+            phoneNumber: "+1314 7360856",
+            displayName: "Alex Rodriguez",
+            email: "alex.rodriguez+test@movetcare.com",
+          },
+          vcprRequired: true,
+          id: "T565UH1WjK7qN5gW6WH5",
+          illPatients: ["5585", "5586"],
+          nextPatient: null,
+          illnessDetails: null,
+          patients: [
+            {
+              gender: "Female, neutered",
+              species: "Dog (Canine - Domestic)",
+              vcprRequired: true,
+              illnessDetails: {
+                symptoms: ["Eye Infection"],
+                notes: "Test Illness #2",
+              },
+              name: "TESTTESTTEST1",
+              hasMinorIllness: true,
+              value: "5585",
+            },
+            {
+              gender: "Female, neutered",
+              species: "Dog (Canine - Domestic)",
+              vcprRequired: true,
+              illnessDetails: {
+                symptoms: ["Coughing", "Minor Cuts / Scrapes"],
+                notes: "Test Illness #1",
+              },
+              name: "TESTTEST2",
+              hasMinorIllness: true,
+              value: "5586",
+            },
+            {
+              gender: "Female, neutered",
+              species: "Cat (Feline - Domestic)",
+              vcprRequired: true,
+              name: "VCPR TEST CAT 22",
+              hasMinorIllness: false,
+              value: "5587",
+            },
+          ],
+          address: {
+            zipcode: "80237",
+            parts: [
+              "4912",
+              "South Newport Street",
+              "Southeast",
+              "Denver",
+              "Denver County",
+              "Colorado",
+              "United States",
+              "80237",
+            ],
+            placeId: "ChIJrfSG_-KGbIcRRls6Rip0HmM",
+            full: "4912 S Newport St, Denver, CO 80237, USA",
+            info: "Apartment #2A",
+          },
+          location: "Home",
+          reason: {
+            label: "Annual Exam - VCPR / Rabies (DVM)",
+            value: 30,
+          },
+          requestedDateTime: {
+            date: {
+              seconds: 1770962400,
+              nanoseconds: 0,
+            },
+            time: "09:00",
+          },
+          step: "complete",
+          isActive: false,
+          updatedOn: new Date(),
+        })
+        .then(async () => {
+          console.log("TEST BOOKING FLOW SUBMISSION COMPLETE");
+          return await admin
+            .firestore()
+            .collection("alerts")
+            .doc("banner")
+            .set(
+              {
+                color: "#DAAA00",
+                message:
+                  "This is your own personal local development environment...",
+                title: "Welcome!",
+                link: "/contact",
+                isActive: true,
+                icon: "info-circle",
+              },
+              { merge: true }
+            )
+            .then(async () => {
+              console.log("ALERT BANNER SETUP COMPLETE");
+              return true;
+            });
+        })
+        .catch(async (error: any) => await throwError(error));
+    })
+    .catch(async (error: any) => await throwError(error));
+
+
+  

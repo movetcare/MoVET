@@ -63,7 +63,7 @@ export default function SignIn() {
         <title>Signing You In to MoVET...</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="w-full flex-1 overflow-hidden">
+      <div className="w-full flex-1 overflow-hidden">
         <AppHeader />
         <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8 py-8">
           {isLoading ? (
@@ -87,7 +87,7 @@ export default function SignIn() {
             </div>
           )}
         </section>
-      </main>
+      </div>
     </div>
   );
 }

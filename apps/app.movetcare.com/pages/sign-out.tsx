@@ -19,14 +19,14 @@ export default function SignOut() {
         <title>Signing Out of MoVET...</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="w-full flex-1 overflow-hidden">
+      <div className="w-full flex-1 overflow-hidden">
         <AppHeader />
         <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8 text-center">
           <div className="overflow-hidden">
             <Loader message="Signing Out of MoVET..." />
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 }

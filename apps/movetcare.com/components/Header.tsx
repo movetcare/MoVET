@@ -108,6 +108,7 @@ export const Header = () => {
                   alt="MoVET Logo"
                   width={250}
                   height={70}
+                  priority
                 />
               </div>
             </Link>

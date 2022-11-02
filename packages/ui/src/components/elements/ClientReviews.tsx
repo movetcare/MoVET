@@ -23,7 +23,7 @@ export const ClientReviews = ({
           )
         }
       >
-        <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75 group-hover:opacity-75">
+        <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
           <FontAwesomeIcon icon={faStar} />
           <FontAwesomeIcon icon={faStar} />
           <FontAwesomeIcon icon={faStar} />
@@ -111,7 +111,9 @@ export const ClientReviews = ({
           <FontAwesomeIcon icon={faStar} />
           <FontAwesomeIcon icon={faStar} />
         </div>
-        <p className="text-xl text-center mb-4 group-hover:opacity-75">Best veterinarian</p>
+        <p className="text-xl text-center mb-4 group-hover:opacity-75">
+          Best veterinarian
+        </p>
         <i className="group-hover:opacity-75">
           &quot;This app give you access to the best vet hands down!!! Easy to
           use and easy to set up appointments!&quot;
@@ -144,7 +146,9 @@ export const ClientReviews = ({
           <FontAwesomeIcon icon={faStar} />
           <FontAwesomeIcon icon={faStar} />
         </div>
-        <p className="text-xl text-center mb-4 group-hover:opacity-75">Highly recommend!</p>
+        <p className="text-xl text-center mb-4 group-hover:opacity-75">
+          Highly recommend!
+        </p>
         <i className="group-hover:opacity-75">
           &quot;Wonderfully positive experience for our family and our pet.
           Staff is smart, kind, clear, empathetic and patient. Highly
@@ -282,7 +286,9 @@ export const ClientReviews = ({
               <FontAwesomeIcon icon={faStar} />
               <FontAwesomeIcon icon={faStar} />
             </div>
-            <p className="text-xl text-center mb-4 group-hover:opacity-75">WOW</p>
+            <p className="text-xl text-center mb-4 group-hover:opacity-75">
+              WOW
+            </p>
             <i className="group-hover:opacity-75">
               &quot;WOW. Doctor A is a GODSEND. I don&apos;t know how people
               navigate the veterinary healthcare system without a service like
