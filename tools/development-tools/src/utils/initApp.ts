@@ -1,6 +1,6 @@
 const config = require('./firebase.json');
 const dotenv = require('dotenv');
-dotenv.config({path: '../../.env'});
+dotenv.config({ path: "../../.env" });
 
 const initializeApp = (
   mode: string,

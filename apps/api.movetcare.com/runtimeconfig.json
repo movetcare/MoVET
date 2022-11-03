@@ -1,0 +1,50 @@
+{
+  "slack": {
+    "staging_webhook": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/SLACK_STAGING_WEBHOOK",
+    "production_webhook": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/SLACK_PRODUCTION_WEBHOOK",
+    "o_auth_bot_token": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/SLACK_O_AUTH_BOT_TOKEN"
+  },
+  "environment": {
+    "type": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/ENVIRONMENT_TYPE",
+    "client_email": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/ENVIRONMENT_CLIENT_EMAIL",
+    "project_id": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/ENVIRONMENT_PROJECT_ID",
+    "private_key": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/ENVIRONMENT_PRIVATE_KEY"
+  },
+  "sentry": {
+    "dsn": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/SENTRY_DSN"
+  },
+  "provet_cloud": {
+    "app_url": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/PROVET_CLOUD_APP_URL",
+    "auth_token": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/PROVET_CLOUD_AUTH_TOKEN",
+    "api_base": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/PROVET_CLOUD_API_BASE"
+  },
+  "expo": {
+    "webhook_secret": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/EXPO_WEBHOOK_SECRET",
+    "access_token": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/EXPO_ACCESS_TOKEN"
+  },
+  "events": {
+    "api_key": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/EVENTS_API_KEY"
+  },
+  "project": {
+    "api_key": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/PROJECT_API_KEY"
+  },
+  "stripe": {
+    "api_version": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/STRIPE_API_VERSION",
+    "secret_key": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/STRIPE_SECRET_KEY",
+    "webhook_secret": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/STRIPE_WEBHOOK_SECRET"
+  },
+  "sendgrid": {
+    "api_key": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/SENDGRID_API_KEY"
+  },
+  "twilio": {
+    "account_sid": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/TWILIO_ACCOUNT_SID",
+    "auth_token": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/TWILIO_AUTH_TOKEN"
+  },
+  "recaptcha": {
+    "secret_key": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/RECAPTCHA_SECRET_KEY"
+  },
+  "trello": {
+    "api_key": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/TRELLO_API_KEY",
+    "o_auth": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/TRELLO_O_AUTH"
+  }
+}

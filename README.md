@@ -30,11 +30,20 @@
 
 ## Developer Onboarding, Process & Workflows
 
-### Install Dependencies
+### Install System Tools & 3rd Party Dependencies
 
 Follow the installation guide for each.
 
-- [Firebase CLI](https://firebase.google.com/docs/cli#install-cli-windows)
+- [VS Code](https://code.visualstudio.com/docs/setup/mac)
+- [Brew](https://brew.sh/) `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+- [1Password CLI](https://developer.1password.com/docs/cli) `brew install --cask 1password/tap/1password-cli`
+- [OpenJDK](https://formulae.brew.sh/formula/openjdk) `brew install openjdk`
+- [NodeJS](https://formulae.brew.sh/formula/node) `brew install node`
+- [PNPM](https://formulae.brew.sh/formula/pnpm) `brew install pnpm`
+- [Firebase CLI](https://firebase.google.com/docs/cli#mac-linux-npm) `pnpm i -g firebase-tools`
+- [Gitmoji CLI](https://www.npmjs.com/package/gitmoji-cli) `pnpm i -g gitmoji-cli`
+- [NPM Check Updates](https://www.npmjs.com/package/npm-check-updates) `pnpm i -g npm-check-updates`
+- [Kill Port](https://www.npmjs.com/package/kill-port) `pnpm i -g kill-port`
 
 ### Clone Git Repository
 
@@ -44,29 +53,21 @@ git clone https://github.com/movetcare/movet.git
 
 ### Setup Environment Variables
 
-Reach out to Alex for the environment files and move them to the corresponding directories:
-
-- `.env`
-- `apps/movetcare.com/.env.local`
-- `apps/api.movetcare.com/.runtimeconfig.json`
+Read access to the "Developer" vault in 1Password is required in order to use any/all of the platforms private environemnt variables. Be sure to [sign in](https://developer.1password.com/docs/cli/get-started#sign-in) before you start up the devlopment environment for the first time.
 
 ### Install Mono Repo Dependencies
 
 ```sh
-npm install -g pnpm
-pnpm add firebase-tools gitmoji-cli 
 pnpm i
 ```
 
 ### Log into Firebase CLI with your authorized account
 
 ```sh
-firebase login --interactive
+firebase login
 ```
 
-## Local Development
-
-Run the development server from the root directory
+## Start Local Development Environment
 
 ```sh
 pnpm start
@@ -87,7 +88,7 @@ Tests are run automagically when you commit and push code via [Husky](https://gi
 
 ## Deployment
 
-Production and staging deployments happen automatically from the `production` and `development` branches respectively, via [GitHub Actions](https://github.com/movetcare/movet-platform/actions).
+Production and staging deployments happen automatically from the `main` and `development` branches respectively, via [GitHub Actions](https://github.com/movetcare/movet-platform/actions).
 
 <!-- CONTRIBUTING -->
 

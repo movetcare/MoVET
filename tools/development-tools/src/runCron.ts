@@ -2,7 +2,7 @@ import {webhookHeartbeat} from './utils/webhookHeartbeat';
 const request = require('axios');
 const config = require('./utils/firebase.json');
 const dotenv = require('dotenv');
-dotenv.config({path: __dirname + '/../.env'});
+dotenv.config({ path: "../.env" });
 const interval = 1 * 60 * 1000;
 let runs = 0;
 

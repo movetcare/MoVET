@@ -27,12 +27,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
 # turbo
 .turbo
+
+apps/movetcare.com/.env
+apps/app.movetcare.com/.env
+apps/admin.movetcare.com/.env
+
+.runtimeconfig.json
