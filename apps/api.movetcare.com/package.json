@@ -11,7 +11,7 @@
     "lint": "eslint src/",
     "fix": "eslint src/ --fix",
     "build": "pnpm run config:env && tsc",
-    "config:env": "op inject -if runtimeconfig.json -o .runtimeconfig.json",
+    "config:env": "op inject -i runtimeconfig.json -o .runtimeconfig.json --force",
     "dev": "pnpm run config:env && pnpm run emulate",
     "watch": "tsc --watch --preserveWatchOutput",
     "webhooks": "cd ../../packages/tools && pnpm run webhooks",
@@ -39,7 +39,7 @@
     "format-json": "^1.0.3",
     "json2csv": "^5.0.7",
     "semver": "^7.3.8",
-    "stripe": "^10.15.0",
+    "stripe": "^10.16.0",
     "trello-node-api": "^0.0.9",
     "twilio": "^3.83.1",
     "uuid": "^9.0.0"

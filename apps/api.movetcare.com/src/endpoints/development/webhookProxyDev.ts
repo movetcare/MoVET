@@ -13,7 +13,7 @@ export const webhookProxyDev: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {
     if (
-      environment.type === "staging" &&
+      (environment.type === "staging" || environment.type === "development") &&
       request.headers.host ===
         "us-central1-movet-care-staging.cloudfunctions.net"
     ) {
