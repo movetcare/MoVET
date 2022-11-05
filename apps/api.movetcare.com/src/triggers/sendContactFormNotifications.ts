@@ -1,8 +1,15 @@
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { sendNotification } from "../notifications/sendNotification";
-import { admin, functions, throwError } from "./../config/config";
+import {
+  admin,
+  functions,
+  proVetApiUrl,
+  request,
+  throwError,
+} from "./../config/config";
 import { CONTACT_STATUS } from "../constant";
 import type { ContactForm } from "../types/forms";
+import { getAuthUserByEmail } from "../utils/auth/getAuthUserByEmail";
 
 const DEBUG = true;
 export const sendContactFormNotifications = functions.firestore
@@ -105,7 +112,7 @@ export const sendContactFormNotifications = functions.firestore
             success: true,
             id,
             ...snapshot.data(),
-            to: "alex.rodriguez@movetcare.com",
+            to: "info@movetcare.com",
             replyTo: email,
             subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName}`,
             message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
@@ -118,6 +125,24 @@ export const sendContactFormNotifications = functions.firestore
           status: CONTACT_STATUS.NEEDS_REPLY,
           id,
         });
+        const isClient = await getAuthUserByEmail(email);
+        if (DEBUG) console.log("isClient", isClient);
+        if (isClient)
+          await request
+            .post("/note/", {
+              title: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName} @ ${source}`,
+              type: 1,
+              client: proVetApiUrl + `/client/${isClient.uid}/`,
+              patients: [],
+              note: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
+                phone
+              )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
+            })
+            .then(async (response: any) => {
+              const { data } = response;
+              if (DEBUG) console.log("API Response: POST /note/ => ", data);
+            })
+            .catch(async (error: any) => await throwError(error));
       } catch (error: any) {
         await updateContactStatus({
           status: CONTACT_STATUS.ERROR_PROCESSING,

@@ -5,7 +5,7 @@ export const configureBooking = async () => {
   const alreadyHasConfiguration = await admin
     .firestore()
     .collection("configuration")
-    .doc("booking")
+    .doc("bookings")
     .get()
     .then((document: any) => (document.data() ? true : false))
     .catch(() => false);
@@ -23,7 +23,7 @@ export const configureBooking = async () => {
     return await admin
       .firestore()
       .collection("configuration")
-      .doc("booking")
+      .doc("bookings")
       .set(
         {
           clinicMinorIllnessVcprReason: 30,
@@ -62,7 +62,7 @@ const generateTestBookingData = async () =>
       console.log("TEST CONTACT FORM BOOKING REQUEST COMPLETE");
       return await admin
         .firestore()
-        .collection("booking")
+        .collection("bookings")
         .add({
           createdAt: new Date(),
           client: {

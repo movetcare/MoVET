@@ -1,9 +1,10 @@
-import {handleFailedBooking} from "../handleFailedBooking";
-import {getAuthUserByEmail} from "./../../utils/auth/getAuthUserByEmail";
-import {admin} from "../../config/config";
-import {getActiveBookingSession} from "./getActiveBookingSession";
-import {createAuthClient} from "../../integrations/provet/entities/client/createAuthClient";
-import {createProVetClient} from "../../integrations/provet/entities/client/createProVetClient";
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { handleFailedBooking } from "../handleFailedBooking";
+import { getAuthUserByEmail } from "./../../utils/auth/getAuthUserByEmail";
+import { admin } from "../../config/config";
+import { getActiveBookingSession } from "./getActiveBookingSession";
+import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
+import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
 import type { Booking, BookingError } from "../../types/booking";
 const DEBUG = true;
 export const handleUnauthenticatedBookingVerification = async (
@@ -49,7 +50,7 @@ export const handleUnauthenticatedBookingVerification = async (
         return {
           isNewClient: true,
           ...((await getActiveBookingSession(
-            await getAuthUserByEmail(email)
+            (await getAuthUserByEmail(email)) as UserRecord
           )) as Booking),
         };
     }
@@ -62,7 +63,7 @@ export const handleUnauthenticatedBookingVerification = async (
   } else {
     const authUser = await getAuthUserByEmail(email);
     if (DEBUG) console.log(`${email}'s USER ID = ${authUser?.uid}`);
-    if (authUser.disabled) {
+    if (authUser && authUser.disabled) {
       return await handleFailedBooking(
         {
           email,
@@ -70,6 +71,6 @@ export const handleUnauthenticatedBookingVerification = async (
         "BOOKING FAILED: CLIENT DISABLED"
       );
     }
-    return await getActiveBookingSession(authUser);
+    return await getActiveBookingSession(authUser as UserRecord);
   }
 };

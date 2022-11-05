@@ -14,8 +14,6 @@
     "config:env": "op inject -i runtimeconfig.json -o .runtimeconfig.json --force",
     "dev": "pnpm run config:env && pnpm run emulate",
     "watch": "tsc --watch --preserveWatchOutput",
-    "webhooks": "cd ../../packages/tools && pnpm run webhooks",
-    "cron": "cd ../../packages/tools && pnpm run cron",
     "emulate": "firebase emulators:start --only auth,functions,firestore,pubsub,storage",
     "start": "pnpm run dev",
     "init:config:dev": "curl -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/app/config/ && curl -v POST http://localhost:5001/movet-care-staging/us-central1/initTestUser",

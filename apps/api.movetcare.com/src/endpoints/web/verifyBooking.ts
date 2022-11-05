@@ -1,9 +1,10 @@
-import {functions, defaultRuntimeOptions} from "../../config/config";
-import {recaptchaIsVerified} from "../../utils/recaptchaIsVerified";
-import {handleFailedBooking} from "../../booking/handleFailedBooking";
-import {handleUnauthenticatedBookingVerification} from "../../booking/verification/handleUnauthenticatedBookingVerification";
-import {getActiveBookingSession} from "../../booking/verification/getActiveBookingSession";
-import {getAuthUserByEmail} from "../../utils/auth/getAuthUserByEmail";
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { functions, defaultRuntimeOptions } from "../../config/config";
+import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
+import { handleFailedBooking } from "../../booking/handleFailedBooking";
+import { handleUnauthenticatedBookingVerification } from "../../booking/verification/handleUnauthenticatedBookingVerification";
+import { getActiveBookingSession } from "../../booking/verification/getActiveBookingSession";
+import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
 import type { Booking, BookingError } from "../../types/booking";
 const DEBUG = true;
 export const verifyBooking = functions
@@ -20,12 +21,12 @@ export const verifyBooking = functions
         );
         console.log("verifyBooking => context.auth", context.auth);
       }
-      const {token, email} = data || {};
+      const { token, email } = data || {};
       if (token) {
         if (await recaptchaIsVerified(token)) {
           if (context?.auth?.uid)
             return await getActiveBookingSession(
-              await getAuthUserByEmail(context.auth.token.email)
+              (await getAuthUserByEmail(context.auth.token.email)) as UserRecord
             );
           else if (email) {
             return await handleUnauthenticatedBookingVerification(

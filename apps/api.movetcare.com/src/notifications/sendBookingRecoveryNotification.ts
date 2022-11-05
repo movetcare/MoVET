@@ -15,6 +15,7 @@ import {
   UserNotificationSettings,
 } from "../utils/getClientNotificationSettings";
 import {logEvent} from "../utils/logging/logEvent";
+import { sendNotification } from "./sendNotification";
 
 const DEBUG = true;
 export const sendBookingRecoveryNotification = async ({
@@ -31,7 +32,7 @@ export const sendBookingRecoveryNotification = async ({
       .doc(id)
       .get()
       .then((doc: any) => {
-        return {id, ...doc.data()} as Booking;
+        return { id, ...doc.data() } as Booking;
       });
     switch (type) {
       case "1_HOUR":
@@ -39,9 +40,11 @@ export const sendBookingRecoveryNotification = async ({
         break;
       case "24_HOUR":
         await sendTwentyFourHourBookingRecoveryNotification(booking);
+        await sendAdminBookingRecoveryNotification(booking, type);
         break;
       case "72_HOUR":
         await sendSeventyTwoHourBookingRecoveryNotification(booking);
+        await sendAdminBookingRecoveryNotification(booking, type);
         break;
       default:
         if (DEBUG)
@@ -54,9 +57,89 @@ export const sendBookingRecoveryNotification = async ({
     }
   } else if (DEBUG)
     console.log(
-      "FAILED TO SEND BOOKING ABANDONMENT RECOVERY NOTIFICATION - MISSING \"ID\" AND/OR \"TYPE\"",
-      {id, type}
+      // eslint-disable-next-line quotes
+      'FAILED TO SEND BOOKING ABANDONMENT RECOVERY NOTIFICATION - MISSING "ID" AND/OR "TYPE"',
+      { id, type }
     );
+};
+
+const sendAdminBookingRecoveryNotification = async (
+  booking: Booking,
+  type: "24_HOUR" | "72_HOUR"
+) => {
+  const {
+    client,
+    id,
+    createdAt,
+    patients,
+    reason,
+    requestedDateTime,
+    vcprRequired,
+    location,
+    address,
+    illPatients,
+    step,
+  }: any = booking;
+  const { email, displayName, phoneNumber } = client;
+  const patientNames =
+    patients.length > 1
+      ? patients.map((patient: any, index: number) =>
+          index !== patients.length - 1
+            ? `${patient?.name} `
+            : ` and ${patient?.name}`
+        )
+      : patients[0].name;
+  if (id && email)
+    await sendNotification({
+      type: "email",
+      payload: {
+        tag: "admin-booking-request-recovery",
+        origin: "api",
+        success: true,
+        ...booking,
+        to: "info@movetcare.com",
+        bcc: "support@movetcare.com",
+        replyTo: email,
+        subject:
+          type === "24_HOUR"
+            ? `${
+                displayName ? displayName : email ? email : ""
+              } abandoned their appointment booking request yesterday at step "${step}"`
+            : `${
+                displayName ? displayName : email ? email : ""
+              } abandoned their appointment booking request three days ago at step "${step}"`,
+        message: `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
+          ?.toDate()
+          ?.toString()}</p>${
+          displayName ? `<p><b>Client Name:</b> ${displayName}</p>` : ""
+        }<p><b>Client Email:</b> ${email}</p>${
+          phoneNumber ? `<p><b>Client Phone:</b> ${phoneNumber}</p>` : ""
+        }${
+          patientNames ? `<p><b>Patient Name(s):</b>${patientNames}</p>` : ""
+        }${
+          illPatients
+            ? `<p><b>Patient(s) w/ Minor Illness:</b> ${illPatients?.length}</p>`
+            : ""
+        }${vcprRequired ? `<p><b>VCPR Required:</b> ${vcprRequired}</p>` : ""}${
+          reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""
+        }${
+          requestedDateTime?.date
+            ? `<p><b>Requested Date:</b> ${requestedDateTime.date.seconds}</p>`
+            : ""
+        }${
+          requestedDateTime?.time
+            ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
+            : ""
+        }${
+          location
+            ? `<p><b>Location:</b> ${location} ${
+                address ? `- ${address?.full} (${address?.info})` : ""
+              }</p>`
+            : ""
+        }`,
+        updatedOn: new Date(),
+      },
+    });
 };
 
 const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
@@ -88,27 +171,27 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
       authLink
         ? authLink
         : (environment.type === "production"
-            ? "https://movetcare.com"
+            ? "https://app.movetcare.com"
             : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
     }'>${
       authLink
         ? authLink
         : (environment.type === "production"
-            ? "https://movetcare.com"
+            ? "https://app.movetcare.com"
             : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
     }</a></p>`;
     emailText += ` It looks like you have not finished your appointment booking request with MoVET. Click on the link bellow to resume your session: ${
       authLink
         ? authLink
         : (environment.type === "production"
-            ? "https://movetcare.com"
+            ? "https://app.movetcare.com"
             : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
     }`;
     const emailConfig: EmailConfiguration = {
       to: email,
       from: "info@movetcare.com",
-      bcc: "info@movetcare.com",
       replyTo: "info@movetcare.com",
+      bcc: "support@movetcare.com",
       subject: "Incomplete appointment booking request with MoVET",
       text: emailText,
       html: emailHtml,
@@ -239,20 +322,20 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
       authLink
         ? authLink
         : (environment.type === "production"
-            ? "https://movetcare.com"
+            ? "https://app.movetcare.com"
             : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
     }'>${
       authLink
         ? authLink
         : (environment.type === "production"
-            ? "https://movetcare.com"
+            ? "https://app.movetcare.com"
             : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
     }</a></p>`;
-    emailText += ` It looks like you didn't finish booking your appointment with MoVET yesterday. Click on the link bellow to resume your session: https://movetcare.com/book-an-appointment/?email=${email}`;
+    emailText += ` It looks like you didn't finish booking your appointment with MoVET yesterday. Click on the link bellow to resume your session: https://app.movetcare.com/book-an-appointment/?email=${email}`;
     const emailConfig: EmailConfiguration = {
       to: email,
       from: "info@movetcare.com",
-      bcc: "info@movetcare.com",
+      bcc: "support@movetcare.com",
       replyTo: "info@movetcare.com",
       subject: "Incomplete appointment booking request with MoVET",
       text: emailText,
@@ -382,14 +465,14 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
       authLink
         ? authLink
         : (environment.type === "production"
-            ? "https://movetcare.com"
+            ? "https://app.movetcare.com"
             : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
     }`;
     smsString += `It looks like you have not finished your appointment booking request with MoVET from three days ago. Tap the link bellow to resume your session:${
       authLink
         ? authLink
         : (environment.type === "production"
-            ? "https://movetcare.com"
+            ? "https://app.movetcare.com"
             : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
     }`;
     const userNotificationSettings: UserNotificationSettings | false =

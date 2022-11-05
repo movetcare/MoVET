@@ -14,7 +14,7 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "config:env": "yes | cp -rf apps/.env apps/movetcare.com && source apps/movetcare.com/.env && yes | cp -rf apps/.env apps/app.movetcare.com && source apps/app.movetcare.com/.env && yes | cp -rf apps/.env apps/admin.movetcare.com && source apps/admin.movetcare.com/.env",
+    "config:env": "yes | cp -rf apps/.env apps/movetcare.com/.env.local && source apps/movetcare.com/.env.local && yes | cp -rf apps/.env apps/app.movetcare.com/.env.local && source apps/app.movetcare.com/.env.local && yes | cp -rf apps/.env apps/admin.movetcare.com/.env.local && source apps/admin.movetcare.com/.env.local",
     "update": "pnpm -r run update && pnpm install && pnpm build --force",
     "clean": "pnpm run clean:logs && pnpm run clean:modules && pnpm run clean:builds && pnpm run clean:lock && pnpm run clean:turbo && pnpm install && pnpm build --force",
     "clean:builds": "find ./ -name .next -type d -exec rm -rf {} + && find ./ -name dist -type d -exec rm -rf {} + && find ./ -name build -type d -exec rm -rf {} + && find ./ -name lib -type d -exec rm -rf {} +",

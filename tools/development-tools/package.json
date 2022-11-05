@@ -4,7 +4,7 @@
   "description": "MoVET Platform Tools",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint *.ts",
+    "lint": "eslint src/*.ts",
     "update": "ncu -u --reject 'axios,public-ip'",
     "build": "pnpm build:tools && pnpm run build:api:package:constant && pnpm run build:api:package:types",
     "build:tools": "cd ../../ && cp -a firebase.json ./tools/development-tools/src/utils/ && cd tools/development-tools && tsc",

@@ -30,8 +30,6 @@ yarn-error.log*
 # turbo
 .turbo
 
-apps/movetcare.com/.env
-apps/app.movetcare.com/.env
-apps/admin.movetcare.com/.env
-
+# environment variables
+.env.local
 .runtimeconfig.json
