@@ -2,22 +2,24 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
 
-    function fileIsValid() {
-      return request.resource.size < 50 * 1024 * 1024 // < 50MB
-                   && (request.resource.contentType.matches('image/.*') || request.resource.contentType.matches('video/.*'))
-    }
-
     function userIsVerified() {
       return request.auth.uid != null && (request.auth.token.isSuperAdmin == true || request.auth.token.isAdmin == true || request.auth.token.isStaff == true);
     }
 
+    function clientOwnsBucket(clientId) {
+      return request.auth != null && request.auth.uid == clientId;
+    }
+
     match /report_a_bug/{fileId} {
-      allow write: if fileIsValid();
+      allow write: if request.auth.uid != null;
     }
     
     match /report_a_bug_internal/{fileId} {
-      allow write: if fileIsValid();
-      allow read: if userIsVerified();
+      allow read, write: if userIsVerified();
+    }
+    
+    match /clients/{clientId}/{allPaths=**} {
+      allow read, write: if clientOwnsBucket(clientId);
     }
   }
 }

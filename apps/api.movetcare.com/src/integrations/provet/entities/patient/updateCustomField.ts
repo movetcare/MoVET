@@ -1,12 +1,18 @@
-import {admin, request} from "../../../../config/config";
+import { admin, request } from "../../../../config/config";
 
 const DEBUG = true;
 
-export const updateVcprStatus = async (
+export const updateCustomField = async (
   patient: string,
-  status: boolean
+  id: number,
+  value: any
 ): Promise<boolean> => {
-  const vcprCustomFieldId = await admin
+  if (DEBUG) {
+    console.log("updateCustomField Patient", patient);
+    console.log("updateCustomField Id", patient);
+    console.log("updateCustomField Value", value);
+  }
+  const customFieldValue = await admin
     .firestore()
     .collection("patients")
     .doc(`${patient}`)
@@ -17,38 +23,38 @@ export const updateVcprStatus = async (
             .data()
             ?.customFields.filter(
               (customField: { field_id: number; id: number }) => {
-                if (customField.field_id === 2) return customField.id;
+                if (customField.field_id === id) return customField.id;
                 else return;
               }
             )
         : null
     )
-    .catch((error: any) => console.log("updateVcprStatus => ERROR: ", error));
+    .catch((error: any) => console.log("updateCustomField => ERROR: ", error));
   if (DEBUG) {
-    console.log("updateVcprStatus => vcprCustomFieldId", vcprCustomFieldId);
+    console.log("updateCustomField => customFieldValue", customFieldValue);
     console.log(
-      "updateVcprStatus => vcprCustomFieldId.length ",
-      vcprCustomFieldId?.length
+      "updateCustomField => customFieldValue.length ",
+      customFieldValue?.length
     );
     console.log(
-      "updateVcprStatus => vcprCustomFieldId.length < 1",
-      vcprCustomFieldId?.length < 1
+      "updateCustomField => customFieldValue.length < 1",
+      customFieldValue?.length < 1
     );
     console.log(
-      "updateVcprStatus => Array.isArray(vcprCustomFieldId) ",
-      Array.isArray(vcprCustomFieldId)
+      "updateCustomField => Array.isArray(customFieldValue) ",
+      Array.isArray(customFieldValue)
     );
   }
   if (
-    vcprCustomFieldId === null ||
-    vcprCustomFieldId === false ||
-    vcprCustomFieldId === undefined ||
-    (Array.isArray(vcprCustomFieldId) && vcprCustomFieldId?.length < 1)
+    customFieldValue === null ||
+    customFieldValue === false ||
+    customFieldValue === undefined ||
+    (Array.isArray(customFieldValue) && customFieldValue?.length < 1)
   )
     return await request
       .post("/custom_field_values/", {
-        field: 2,
-        value: status ? "True" : "False",
+        field: id,
+        value: value,
         object_id: patient,
       })
       .then(
@@ -63,16 +69,16 @@ export const updateVcprStatus = async (
       .catch((error: any) => (console.log("ERROR: ", error) as any) && false);
   else
     return await request
-      .patch(`/custom_field_values/${vcprCustomFieldId}`, {
-        field: 2,
-        value: status ? "True" : "False",
+      .patch(`/custom_field_values/${customFieldValue}`, {
+        field: id,
+        value: value,
         object_id: patient,
       })
       .then(
         async (response: any) =>
           DEBUG &&
           console.log(
-            `API Response: PATCH /custom_field_values/${vcprCustomFieldId} => `,
+            `API Response: PATCH /custom_field_values/${customFieldValue} => `,
             response.data
           )
       )

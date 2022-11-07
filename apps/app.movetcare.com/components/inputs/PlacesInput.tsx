@@ -49,16 +49,23 @@ export const PlacesInput = ({
             )}
             <GooglePlacesAutocomplete
               apiKey="AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
-              apiOptions={{ language: "en", region: "en" }}
               autocompletionRequest={
                 types
                   ? {
+                      bounds: [
+                        { lat: 19.50139, lng: -161.75583 },
+                        { lat: 64.85694, lng: -68.01197 },
+                      ],
                       componentRestrictions: {
                         country: ["us"],
                       },
                       types,
                     }
                   : {
+                      bounds: [
+                        { lat: 19.50139, lng: -161.75583 },
+                        { lat: 64.85694, lng: -68.01197 },
+                      ],
                       componentRestrictions: {
                         country: ["us"],
                       },

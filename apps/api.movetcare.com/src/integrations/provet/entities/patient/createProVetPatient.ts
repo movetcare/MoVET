@@ -7,7 +7,7 @@ import {
 } from "../../../../config/config";
 import {toIsoString} from "../../../../utils/toIsoString";
 import {capitalizeFirstLetter} from "../../../../utils/capitalizeFirstLetter";
-import {updateVcprStatus} from "./updateVcprStatus";
+import { updateCustomField } from "./updateCustomField";
 const DEBUG = false;
 export const createProVetPatient = async (data: {
   client: string;
@@ -50,7 +50,7 @@ export const createProVetPatient = async (data: {
     !(typeof gender === "string") ||
     gender.length === 0
   )
-    return await throwError({message: "INVALID_PAYLOAD"});
+    return await throwError({ message: "INVALID_PAYLOAD" });
 
   if (DEBUG)
     console.log("REQUEST PAYLOAD =>", {
@@ -93,7 +93,7 @@ export const createProVetPatient = async (data: {
       critical_notes: notes || "",
     })
     .then(async (response: any) => {
-      await updateVcprStatus(`${response.data.id}`, true);
+      await updateCustomField(`${response.data.id}`, 2, "True");
       return await updatePatientWeight(response.data, weight as string);
     })
     .catch(async (error: any) => await throwError(error));

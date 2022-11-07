@@ -45,10 +45,12 @@ export const DateInput = ({
               defaultValue={defaultValue}
               value={value}
             />
+            {value !== "" && errors[name]?.message && (
+              <ErrorMessage errorMessage={errors[name]?.message} />
+            )}
           </>
         )}
       />
-      <ErrorMessage errorMessage={errors[name]?.message} />
     </div>
   );
 };

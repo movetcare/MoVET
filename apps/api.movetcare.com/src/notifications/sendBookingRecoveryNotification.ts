@@ -77,18 +77,10 @@ const sendAdminBookingRecoveryNotification = async (
     vcprRequired,
     location,
     address,
-    illPatients,
     step,
   }: any = booking;
   const { email, displayName, phoneNumber } = client;
-  const patientNames =
-    patients.length > 1
-      ? patients.map((patient: any, index: number) =>
-          index !== patients.length - 1
-            ? `${patient?.name} `
-            : ` and ${patient?.name}`
-        )
-      : patients[0].name;
+
   if (id && email)
     await sendNotification({
       type: "email",
@@ -114,15 +106,33 @@ const sendAdminBookingRecoveryNotification = async (
           displayName ? `<p><b>Client Name:</b> ${displayName}</p>` : ""
         }<p><b>Client Email:</b> ${email}</p>${
           phoneNumber ? `<p><b>Client Phone:</b> ${phoneNumber}</p>` : ""
-        }${
-          patientNames ? `<p><b>Patient Name(s):</b>${patientNames}</p>` : ""
-        }${
-          illPatients
-            ? `<p><b>Patient(s) w/ Minor Illness:</b> ${illPatients?.length}</p>`
-            : ""
         }${vcprRequired ? `<p><b>VCPR Required:</b> ${vcprRequired}</p>` : ""}${
-          reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""
-        }${
+          patients &&
+          patients.map(
+            (patient: any) =>
+              `<p><b>Patient Name:</b> ${
+                patient?.name
+              }</p><p><b>Patient Species:</b> ${
+                patient?.species
+              }</p><p><b>Patient Gender:</b> ${
+                patient?.gender
+              }</p><p><b>Patient Minor Illness:</b>${
+                patient?.hasMinorIllness
+                  ? `${JSON.stringify(patient?.illnessDetail?.symptoms)} - ${
+                      patient?.illnessDetail?.notes
+                    }`
+                  : " NONE"
+              }</p><p><b>Aggression Status:</b> ${
+                patient?.aggressionStatus?.name.includes(
+                  "no history of aggression"
+                )
+                  ? "NOT Aggressive"
+                  : "AGGRESSIVE"
+              }</p><p><b>VCPR Required:</b> ${
+                patient?.vcprRequired ? "Yes" : "No"
+              }</p>`
+          )
+        }${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
           requestedDateTime?.date
             ? `<p><b>Requested Date:</b> ${requestedDateTime.date.seconds}</p>`
             : ""

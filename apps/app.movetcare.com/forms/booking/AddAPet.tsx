@@ -26,6 +26,8 @@ import { NumberInput } from "components/inputs/NumberInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { BookingHeader } from "components/booking/BookingHeader";
 import { Transition } from "@headlessui/react";
+import { RadioInput } from "components/inputs/RadioInput";
+import { FileUploadInput } from "components/inputs/FileUploadInput";
 
 addMethod(string, "isBeforeToday", function (errorMessage: string) {
   return (this as any).test(
@@ -146,6 +148,15 @@ export const AddAPet = ({
           .isValidDay("Please enter valid day")
           .isValidMonth("Please enter a valid month")
           .required("A birthday is required"),
+        aggressionStatus: lazy((value: any) =>
+          typeof value === "object" && !Array.isArray(value) && value !== null
+            ? object().shape({
+                name: string().trim().min(1, "A selection is required"),
+              })
+            : string()
+                .matches(/.*\d/, "A selection is required")
+                .required("A selection is required")
+        ),
       })
     ),
     defaultValues: {
@@ -153,6 +164,7 @@ export const AddAPet = ({
       type: "",
       gender: "",
       spayedOrNeutered: false,
+      aggressionStatus: "",
       breed: "",
       birthday: "",
       weight: "",
@@ -160,6 +172,7 @@ export const AddAPet = ({
       notes: "",
     },
   });
+  const name = watch("name");
   const specie = watch("type");
   const isNonReproductive = watch("spayedOrNeutered");
   const gender = watch("gender");
@@ -331,30 +344,67 @@ export const AddAPet = ({
             enterFrom="opacity-0"
             enterTo="opacity-100"
           >
-            <p className="text-movet-yellow text-center font-extrabold -mb-4 px-4 mt-4">
-              * Please contact your previous vet and have them forward your
-              pet&apos;s medical records to{" "}
-              <span className="text-movet-red">info@movetcare.com</span>
-            </p>
+            <>
+              <p className="text-movet-yellow text-center font-extrabold px-4 mt-4">
+                * Please contact your previous vet and have them forward your
+                pet&apos;s medical records to{" "}
+                <span className="text-movet-red font-extrabold">
+                  info@movetcare.com
+                </span>
+              </p>
+              <h2 className="text-center">OR</h2>
+            </>
           </Transition>
+          <FileUploadInput
+            isAppMode={isAppMode}
+            label="Previous Vet Records"
+            fileName={
+              vet
+                ? `${name}s Previous Vet Records - ${vet}`
+                : `${name}s Previous Vet Records`
+            }
+            uploadPath={`/clients/${session?.client?.uid}/patients/${
+              vet
+                ? `${name}s Previous Vet Records - ${vet}`
+                : `${name}s Previous Vet Records`
+            }`}
+          />
         </div>
+        <RadioInput
+          name="aggressionStatus"
+          errors={errors}
+          control={control}
+          label="Aggression Status"
+          description="Aggression is defined as the threat of harm to another individual involving snarling, growling, snapping, biting, barking or lunging. Please select one:"
+          items={[
+            {
+              name: "I agree, to my knowledge, this pet has no history of aggression or aggressive tendencies.",
+            },
+            {
+              name: "This pet DOES have had a history of aggression or aggressive tendencies.",
+            },
+          ]}
+          required
+        />
+        <p className="text-xs text-center italic px-4 sm:px-8">
+          Please note, this may not disqualify your pet from being seen. This
+          information helps our team stay safe and prepare you and your pet for
+          a successful appointment.
+        </p>
         <div className="my-4">
           <TextInput
             multiline
-            numberOfLines={2}
+            numberOfLines={6}
             label="Notes"
             name="notes"
             control={control}
             errors={errors}
-            placeholder="What else should we know about your pet?"
-          />
-        </div>
-        <p className="text-sm text-center italic mb-8">
-          * Please let us know in advance of any favorite treat, scratching
+            placeholder="* Please let us know in advance of any favorite treat, scratching
           spot, or any behavioral issues you may have encountered with your pet
           previously. Are they food motivated, territorial, or aggressive
-          towards humans or other pets?
-        </p>
+          towards humans or other pets?"
+          />
+        </div>
         <div className="flex flex-col sm:flex-row mt-8">
           <Button
             type="submit"
@@ -366,23 +416,6 @@ export const AddAPet = ({
             onClick={handleSubmit(onSubmit)}
           />
         </div>
-        {vet === "" && (
-          <p className="text-center -mt-4 italic text-sm">
-            * Please email (or have your previous vet email) your pet&apos;s
-            medical records to{" "}
-            {!isAppMode ? (
-              <a
-                href="mailto://info@movetcare.com"
-                target="_blank"
-                rel="noreferrer"
-              >
-                info@movetcare.com
-              </a>
-            ) : (
-              "info@movetcare.com"
-            )}
-          </p>
-        )}
         {isSubmitted && errors && (
           <p className="text-movet-red text-center mt-4 italic text-sm">
             Please fix the errors highlighted above...

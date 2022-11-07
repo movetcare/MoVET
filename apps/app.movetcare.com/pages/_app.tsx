@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import { environment } from "utilities";
 import dynamic from "next/dynamic";
 import Layout from "components/Layout";
+import { Toaster } from "react-hot-toast";
 
 const AnalyticsTracker = dynamic(() =>
   import("ui").then((mod) => mod.AnalyticsTracker)
@@ -27,6 +28,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
       <Layout>
         <Component {...pageProps} />
       </Layout>
+      <Toaster position="top-center" reverseOrder={false} />
     </>
   );
 };

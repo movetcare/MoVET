@@ -1,4 +1,5 @@
 import { admin, throwError } from "../config/config";
+import { updateCustomField } from "../integrations/provet/entities/patient/updateCustomField";
 import { logEvent } from "../utils/logging/logEvent";
 import { reverseDateStringMDY } from "../utils/reverseDateStringMDY";
 import { createProVetPatient } from "./../integrations/provet/entities/patient/createProVetPatient";
@@ -13,7 +14,7 @@ export const addNewPatient = async (
     console.log("client", client);
     console.log("patient", patient);
   }
-  const didCreateNewPatient = await createProVetPatient({
+  const newPatientId = await createProVetPatient({
     client,
     name: patient?.name,
     species: patient?.type,
@@ -22,19 +23,39 @@ export const addNewPatient = async (
     birthday: reverseDateStringMDY(patient?.birthday),
     weight: patient?.weight,
     notes: `${
-      patient?.weight ? `Initial Weight: ${patient?.weight} lbs.\n\n` : ""
-    }${patient?.notes ? `Client Comments: ${patient?.notes}\n\n` : ""}${
-      patient?.vet?.label
-        ? `Previous Vet: ${patient?.vet?.label}${
-            patient?.vet?.value?.place_id
-              ? `- https://www.google.com/maps/place/?q=place_id:${patient?.vet?.value?.place_id}`
-              : ""
-          }`
+      patient?.aggressionStatus?.name
+        ? `${
+            patient?.aggressionStatus?.name.includes("no history of aggression")
+              ? ""
+              : "BE CAREFUL - PATIENT IS AGGRESSIVE!"
+          }\n\n`
         : ""
     }`,
     vcprRequired: true,
     spayedOrNeutered: patient?.spayedOrNeutered,
   });
+  if (newPatientId) {
+    if (patient?.aggressionStatus?.name)
+      await updateCustomField(
+        newPatientId,
+        4,
+        patient?.aggressionStatus?.name.includes("no history of aggression")
+          ? "False"
+          : "True"
+      );
+    if (patient?.notes)
+      await updateCustomField(newPatientId, 6, patient?.notes);
+    if (patient?.vet?.label)
+      await updateCustomField(
+        newPatientId,
+        5,
+        `${patient?.vet?.label}${
+          patient?.vet?.value?.place_id
+            ? ` - https://www.google.com/maps/place/?q=place_id:${patient?.vet?.value?.place_id}`
+            : ""
+        }`
+      );
+  }
   // if (patient?.vet?.label)
   //   await request
   //     .post("/task/", {
@@ -55,7 +76,7 @@ export const addNewPatient = async (
   //           : ""
   //       }`,
   //       client: `${proVetApiUrl}/client/${client}/`,
-  //       patients: [`${proVetApiUrl}/patient/${didCreateNewPatient}/`],
+  //       patients: [`${proVetApiUrl}/patient/${newPatientId}/`],
   //       user: `${proVetApiUrl}/user/7/`,
   //       created_user: `${proVetApiUrl}/user/7/`,
   //       due: toIsoString(new Date()),
@@ -65,8 +86,8 @@ export const addNewPatient = async (
   //     })
   //     .catch(async (error: any) => await throwError(error));
 
-  if (DEBUG) console.log("didCreateNewPatient", didCreateNewPatient);
-  if (didCreateNewPatient)
+  console.log("newPatientId", newPatientId);
+  if (newPatientId)
     return await admin
       .firestore()
       .collection("bookings")

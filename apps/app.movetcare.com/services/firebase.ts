@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { environment } from "utilities";
 
 const isProduction = environment === "production";
@@ -18,6 +19,9 @@ const firebase = initializeApp({
   authDomain: isProduction
     ? "movet-care.firebaseapp.com"
     : "movet-care-staging.firebaseapp.com",
+  storageBucket: isProduction
+    ? "movet-care.appspot.com"
+    : "movet-care-staging.appspot.com",
 } as object);
 
 // self.FIREBASE_APPCHECK_DEBUG_TOKEN = 'true';
@@ -30,9 +34,11 @@ const firebase = initializeApp({
 export const auth = getAuth(firebase);
 export const functions = getFunctions(firebase);
 export const firestore = getFirestore(firebase);
+export const storage = getStorage(firebase);
 
 if (environment === "development") {
   connectFunctionsEmulator(functions, "localhost", 5001);
   connectAuthEmulator(auth, "http://localhost:9099");
   connectFirestoreEmulator(firestore, "localhost", 8080);
+  connectStorageEmulator(storage, "localhost", 9199);
 }

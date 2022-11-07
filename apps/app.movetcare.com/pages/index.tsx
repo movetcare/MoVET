@@ -22,7 +22,7 @@ import { ClientDataContext } from "contexts/ClientDataContext";
 
 export default function Home() {
   const router = useRouter();
-  const { email, id, mode } = router.query || {};
+  const { email, id, mode, link } = router.query || {};
   const isAppMode = mode === "app";
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
@@ -43,6 +43,29 @@ export default function Home() {
         new URL(window.location.href).search;
     }
   }, [mode]);
+  useEffect(() => {
+    if (router && link) {
+      const params = Object.fromEntries(
+        new URLSearchParams(window.location.search).entries()
+      );
+      const linkParams = Object.fromEntries(
+        new URLSearchParams(
+          params.link
+            .replaceAll("http://localhost:3001/account/", "")
+            .replaceAll("https://app.movetcare.com/account/", "")
+        ).entries()
+      );
+      alert(
+        `https://app.movetcare.com/account/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
+      );
+      linkParams?.mode === "signIn"
+        ? (window.location.href =
+            "http://" +
+            window.location.host +
+            `/account/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`)
+        : setIsLoading(false);
+    }
+  }, [router, link]);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user: any) => {
       if (user) {

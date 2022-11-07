@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",
-    "@react-google-maps/api": "^2.13.1",
+    "@react-google-maps/api": "^2.16.0",
     "@tailwindcss/forms": "^0.5.3",
     "@types/lodash.kebabcase": "^4.1.7",
     "@types/node": "^18.11.9",
@@ -48,7 +48,7 @@
     "autoprefixer": "^10.4.13",
     "constant": "workspace:*",
     "csstype": "^3.1.1",
-    "eslint": "8.26.0",
+    "eslint": "8.27.0",
     "eslint-config-custom": "workspace:*",
     "next-transpile-modules": "10.0.0",
     "postcss": "^8.4.18",
