@@ -38,7 +38,7 @@
     "format-json": "^1.0.3",
     "json2csv": "^5.0.7",
     "semver": "^7.3.8",
-    "stripe": "^10.16.0",
+    "stripe": "^10.17.0",
     "trello-node-api": "^0.0.9",
     "twilio": "^3.83.1",
     "uuid": "^9.0.0"
