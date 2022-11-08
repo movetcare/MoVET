@@ -75,6 +75,7 @@ if (environment.type === "development") {
       databaseURL: `https://${
         func.config()?.environment.project_id
       }.firebaseio.com`,
+      storageBucket: "movet-care-staging.appspot.com",
     },
     "staging"
   );

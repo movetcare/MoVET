@@ -23,10 +23,11 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
+    "@google-cloud/storage": "^6.7.0",
     "@sendgrid/client": "^7.7.0",
     "@sendgrid/eventwebhook": "^7.7.0",
     "@sendgrid/mail": "^7.7.0",
-    "@sentry/node": "^7.17.4",
+    "@sentry/node": "^7.18.0",
     "@slack/web-api": "^6.7.2",
     "axios": "0.27.2",
     "cors": "^2.8.5",

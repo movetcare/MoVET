@@ -39,11 +39,11 @@
   "devDependencies": {
     "concurrently": "^7.5.0",
     "eslint-config-custom": "workspace:0.0.0",
-    "husky": "^8.0.1",
+    "git-branch-is": "^4.0.0",
+    "husky": "^8.0.2",
     "lint-staged": "^13.0.3",
     "prettier": "latest",
-    "turbo": "latest",
-    "git-branch-is": "^4.0.0"
+    "turbo": "latest"
   },
   "engines": {
     "node": ">=18.11.0"

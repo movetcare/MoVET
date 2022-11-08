@@ -1,18 +1,20 @@
 import { admin, throwError } from "../config/config";
 import { updateCustomField } from "../integrations/provet/entities/patient/updateCustomField";
 import { logEvent } from "../utils/logging/logEvent";
+import { moveFile } from "../utils/moveFile";
 import { reverseDateStringMDY } from "../utils/reverseDateStringMDY";
 import { createProVetPatient } from "./../integrations/provet/entities/patient/createProVetPatient";
 const DEBUG = true;
+
 export const addNewPatient = async (
   booking: string,
   client: string,
   patient: any
 ): Promise<boolean> => {
   if (DEBUG) {
-    console.log("booking", booking);
-    console.log("client", client);
-    console.log("patient", patient);
+    console.log("addNewPatient booking", booking);
+    console.log("addNewPatient client", client);
+    console.log("addNewPatient patient", patient);
   }
   const newPatientId = await createProVetPatient({
     client,
@@ -55,6 +57,18 @@ export const addNewPatient = async (
             : ""
         }`
       );
+    if (patient?.photo) {
+      await moveFile(
+        `clients/${client}/patients/new/photo/${patient?.photo.name}`,
+        `clients/${client}/patients/${newPatientId}/photo/${patient?.photo.name}`
+      );
+    }
+    if (patient?.records) {
+      await moveFile(
+        `clients/${client}/patients/new/records/${patient?.records.name}`,
+        `clients/${client}/patients/${newPatientId}/records/${patient?.records.name}`
+      );
+    }
   }
   // if (patient?.vet?.label)
   //   await request

@@ -112,6 +112,8 @@ export const AddAPet = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
   const [breedsList, setBreedsList] = useState<Array<Breed>>();
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [records, setRecords] = useState<string | null>(null);
   const {
     control,
     handleSubmit,
@@ -202,7 +204,7 @@ export const AddAPet = ({
       doc(firestore, "bookings", `${session.id}`),
       {
         step: "add-pet",
-        newPatient: data,
+        newPatient: { ...data, photo, records },
         updatedOn: serverTimestamp(),
       },
       { merge: true }
@@ -292,6 +294,26 @@ export const AddAPet = ({
             autoComplete="given-name"
             required
           />
+          <Transition
+            show={name !== ""}
+            enter="transition ease-in duration-500"
+            leave="transition ease-out duration-300"
+            leaveTo="opacity-10"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leaveFrom="opacity-100"
+          >
+            <FileUploadInput
+              previewImage
+              setValue={setPhoto}
+              isAppMode={isAppMode}
+              label="Photo"
+              fileTypes="PNG or JPG"
+              fileName={`photo`}
+              successMessage="Photo Upload Complete!"
+              uploadPath={`/clients/${session?.client?.uid}/patients/new/photo`}
+            />
+          </Transition>
         </div>
         {specie !== undefined &&
           specie !== null &&
@@ -352,22 +374,17 @@ export const AddAPet = ({
                   info@movetcare.com
                 </span>
               </p>
-              <h2 className="text-center">OR</h2>
+              <h2 className="text-center -mb-6">OR</h2>
             </>
           </Transition>
           <FileUploadInput
+            fileTypes="PDF"
+            setValue={setRecords}
             isAppMode={isAppMode}
             label="Previous Vet Records"
-            fileName={
-              vet
-                ? `${name}s Previous Vet Records - ${vet}`
-                : `${name}s Previous Vet Records`
-            }
-            uploadPath={`/clients/${session?.client?.uid}/patients/${
-              vet
-                ? `${name}s Previous Vet Records - ${vet}`
-                : `${name}s Previous Vet Records`
-            }`}
+            fileName={`previous-records`}
+            uploadPath={`/clients/${session?.client?.uid}/patients/new/records`}
+            successMessage="Previous Vet Record Uploaded!"
           />
         </div>
         <RadioInput
