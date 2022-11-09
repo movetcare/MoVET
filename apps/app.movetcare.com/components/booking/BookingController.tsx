@@ -15,6 +15,7 @@ import { firestore } from "services/firebase";
 import { Booking } from "types/Booking";
 import { environment } from "utilities";
 import { PaymentConfirmation } from "forms/booking/PaymentConfirmation";
+import { LoadScript } from "@react-google-maps/api";
 
 export const BookingController = ({
   id,
@@ -65,7 +66,16 @@ export const BookingController = ({
       case "illness-assignment":
         return <IllnessAssignment session={session} isAppMode={isAppMode} />;
       case "choose-location":
-        return <ChooseLocation session={session} isAppMode={isAppMode} />;
+        return (
+          <LoadScript
+            googleMapsApiKey="AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
+            language="en"
+            region="en"
+            libraries={["places"]}
+          >
+            <ChooseLocation session={session} isAppMode={isAppMode} />
+          </LoadScript>
+        );
       case "choose-reason":
         return <ChooseService session={session} isAppMode={isAppMode} />;
       case "choose-staff":

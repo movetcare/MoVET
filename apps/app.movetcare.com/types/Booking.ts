@@ -24,7 +24,8 @@ export interface Booking {
     | "complete"
     | "restart";
   staff: Array<Staff>;
-  location?: "home" | "clinic" | "virtual";
+  location?: "Home" | "Clinic" | "Virtual";
+  locationId: number;
   datetime?: Date;
   paymentMethodRequired?: boolean;
   checkoutUrl?: string;

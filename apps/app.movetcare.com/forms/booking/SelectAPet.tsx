@@ -50,6 +50,10 @@ export const SelectAPet = ({
     useState<boolean>(false);
   const [disableClose, setDisableClose] = useState<boolean>(false);
   const [showExplainer, setShowExplainer] = useState<boolean>(false);
+  // const [petPhotos, setPetPhotos] = useState<Array<{
+  //   url: string;
+  //   patient: number;
+  // }> | null>(null);
   const {
     register,
     handleSubmit,
@@ -127,6 +131,7 @@ export const SelectAPet = ({
               value: `${doc.data().id}`,
               vcprRequired: doc.data().vcprRequired,
               species: doc.data().species,
+              client: doc.data().client,
             });
         });
         if (activePets.length === 0) {
@@ -140,6 +145,29 @@ export const SelectAPet = ({
     );
     return () => unsubscribe();
   }, [reset, session.client.uid]);
+
+  // useEffect(() => {
+  //   if (pets) {
+  //     const petPhotos: Array<{
+  //       url: string;
+  //       patient: number;
+  //     }> = [];
+  //     pets.forEach((pet: any) => {
+  //       if (pet.client && pet.value)
+  //         getDownloadURL(
+  //           ref(
+  //             storage,
+  //             `clients/${pet.client}/patients/${pet.value}/photo/image`
+  //           )
+  //         )
+  //           .then((url: string) => petPhotos.push({ patient: pet.value, url }))
+  //           .catch(() => null);
+  //     });
+  //     console.log("petPhotos", petPhotos);
+  //     setPetPhotos(petPhotos);
+  //   }
+  // }, [pets]);
+
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     await setDoc(
@@ -202,6 +230,25 @@ export const SelectAPet = ({
                   htmlFor={`${pet.name}`}
                   className="text-lg select-none font-source-sans-pro flex flex-row items-center py-2 w-full"
                 >
+                  {/* {petPhotos &&
+                      petPhotos.map(
+                        ({ patient, url }: { url: string; patient: number }) =>
+                          `${patient}` === pet.value ? (
+                            <Image
+                              src={`${url}`}
+                              height={20}
+                              width={20}
+                              alt={`${pet.names} Photo`}
+                              className="mr-2 h-8 w-8 text-movet-brown flex-none"
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={pet.species.includes("Dog") ? faDog : faCat}
+                              size={"lg"}
+                              className="mr-2 h-8 w-8 text-movet-brown flex-none"
+                            />
+                          )
+                      )} */}
                   <FontAwesomeIcon
                     icon={pet.species.includes("Dog") ? faDog : faCat}
                     size={"lg"}

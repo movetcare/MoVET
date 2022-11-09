@@ -13,7 +13,6 @@ import { Error } from "components/Error";
 import { SearchInput } from "components/inputs/SearchInput";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "ui";
-import { Transition } from "@headlessui/react";
 
 export const ChooseService = ({
   session,
@@ -25,32 +24,18 @@ export const ChooseService = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
   const [reasons, setReasons] = useState<any>(false);
-  const [reasonGroups, setReasonGroups] = useState<any>(false);
-  const [reasonGroupsData, loadingReasonGroups, errorReasonGroups] =
-    useCollection(collection(firestore, "reason_groups"));
   const [reasonsData, loadingReasons, errorReasons] = useCollection(
     collection(firestore, "reasons")
   );
   const {
     control,
     handleSubmit,
-    watch,
     setValue,
     formState: { errors, isDirty, isValid },
   } = useForm({
     mode: "all",
     resolver: yupResolver(
       object().shape({
-        reasonGroup: lazy((value: any) =>
-          typeof value === "object" && !Array.isArray(value) && value !== null
-            ? object().shape({
-                label: string().trim().min(1, "A selection is required"),
-                value: string().trim().min(1, "A selection is required"),
-              })
-            : string()
-                .matches(/.*\d/, "A selection selection is required")
-                .required("A selection selection is required")
-        ),
         reason: lazy((value: any) =>
           typeof value === "object" && !Array.isArray(value) && value !== null
             ? object().shape({
@@ -64,36 +49,15 @@ export const ChooseService = ({
       })
     ),
     defaultValues: {
-      reasonGroup: "",
       reason: "",
     },
   });
 
-  const reasonGroup: { label: string; value: number } = watch(
-    "reasonGroup"
-  ) as any;
-
   useEffect(() => {
-    if (reasonGroupsData) {
-      const reasonGroups: any = [];
-      reasonGroupsData.docs.map((doc: any) =>
-        doc.data()?.isVisible
-          ? reasonGroups.push({
-              label: doc.data()?.name,
-              value: doc.data()?.id,
-            })
-          : null
-      );
-      setReasonGroups(reasonGroups);
-    }
-  }, [reasonGroupsData]);
-
-  useEffect(() => {
-    if (reasonGroup?.value && reasonsData) {
-      setValue("reason", "");
+    if (session.locationId && reasonsData) {
       const reasons: any = [];
       reasonsData.docs.map((doc: any) =>
-        doc.data()?.isVisible && doc?.data()?.group === reasonGroup?.value
+        doc.data()?.isVisible && doc?.data()?.group === session.locationId
           ? reasons.push({
               label: doc.data()?.name,
               value: doc.data()?.id,
@@ -102,7 +66,7 @@ export const ChooseService = ({
       );
       setReasons(reasons);
     }
-  }, [reasonsData, reasonGroup, setValue]);
+  }, [reasonsData, setValue, session]);
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
@@ -121,13 +85,10 @@ export const ChooseService = ({
 
   return (
     <>
-      {isLoading || loadingReasonGroups || loadingReasons ? (
+      {isLoading || loadingReasons ? (
         <Loader />
-      ) : error || errorReasonGroups || errorReasons ? (
-        <Error
-          error={error || errorReasonGroups || errorReasons}
-          isAppMode={isAppMode}
-        />
+      ) : error || errorReasons ? (
+        <Error error={error || errorReasons} isAppMode={isAppMode} />
       ) : (
         <>
           <BookingHeader
@@ -138,34 +99,14 @@ export const ChooseService = ({
           <div className="mt-8 px-1">
             <form className="grid grid-cols-1 gap-y-8 text-left mt-8 z-50 relative mb-8 overflow-visible">
               <SearchInput
-                label="Reason Type"
-                options={reasonGroups || []}
+                label="Service"
+                options={reasons || []}
                 control={control}
                 errors={errors}
-                name="reasonGroup"
-                placeholder="Select a Reason Type"
+                name="reason"
+                placeholder="Select a Service Type"
                 required
               />
-              <Transition
-                show={
-                  reasonGroup !== undefined &&
-                  reasons !== undefined &&
-                  reasons.length > 0
-                }
-                enter="transition ease-in duration-500"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-              >
-                <SearchInput
-                  label="Service"
-                  options={reasons || []}
-                  control={control}
-                  errors={errors}
-                  name="reason"
-                  placeholder="Select a Service"
-                  required
-                />
-              </Transition>
               <Button
                 disabled={!isDirty || !isValid}
                 type="submit"
@@ -173,7 +114,7 @@ export const ChooseService = ({
                 iconSize={"sm"}
                 color="black"
                 text="Continue"
-                className={"w-full mx-auto mt-4 sm:mt-0"}
+                className={"w-full mx-auto mt-12"}
                 onClick={handleSubmit(onSubmit)}
               />
             </form>

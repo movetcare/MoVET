@@ -22,6 +22,22 @@ export const ChooseStaff = ({
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
+  // useEffect(() => {
+  //   const advanceToNextStep = async () =>
+  //     await setDoc(
+  //       doc(firestore, "bookings", `${session.id}`),
+  //       {
+  //         selectedStaff: null,
+  //         updatedOn: serverTimestamp(),
+  //       },
+  //       { merge: true }
+  //     ).catch((error: any) => {
+  //       setIsLoading(false);
+  //       setError(error);
+  //     });
+  //   if (session.staff && session.staff.length < 1) advanceToNextStep();
+  //   else setIsLoading(false);
+  // }, [session]);
   const onSubmit = async (selectedStaff: Staff | string) => {
     setIsLoading(true);
     await setDoc(
@@ -54,8 +70,8 @@ export const ChooseStaff = ({
               {session?.staff &&
                 session?.staff.map((expert: Staff, index: number) =>
                   expert?.isActive && expert?.isStaff ? (
-                    <>
-                      <div key={index}>
+                    <div key={index}>
+                      <div>
                         <div className="">
                           {expert?.picture ? (
                             <Image
@@ -108,9 +124,9 @@ export const ChooseStaff = ({
                       {index !== session?.staff?.length - 1 && (
                         <hr className="text-movet-gray border rounded-full my-8" />
                       )}
-                    </>
+                    </div>
                   ) : (
-                    <></>
+                    <div key={index}></div>
                   )
                 )}
               <hr className="text-movet-gray border rounded-full my-8" />

@@ -3,7 +3,7 @@ export const getBookingConfiguration = async () =>
   await admin
     .firestore()
     .collection("configuration")
-    .doc("booking")
+    .doc("bookings")
     .get()
     .then((doc: any) => doc.data())
     .catch(async (error: any) => await throwError(error));

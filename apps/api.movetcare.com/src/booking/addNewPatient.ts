@@ -100,7 +100,6 @@ export const addNewPatient = async (
   //     })
   //     .catch(async (error: any) => await throwError(error));
 
-  console.log("newPatientId", newPatientId);
   if (newPatientId)
     return await admin
       .firestore()

@@ -27,7 +27,6 @@ export const handleBookingUpdate = functions.firestore
       illPatients,
       illnessDetails,
       location,
-      reasonGroup,
       reason,
       selectedStaff,
       requestedDateTime,
@@ -64,8 +63,8 @@ export const handleBookingUpdate = functions.firestore
         await updateBookingPatientsWithSymptoms(id, patients, illnessDetails);
       else if (step === "choose-location" && location)
         await updateBookingLocation(id, location, vcprRequired, illPatients);
-      else if (step === "choose-reason" && reasonGroup && reason)
-        await updateBookingReason(id, reason, reasonGroup);
+      else if (step === "choose-reason" && reason)
+        await updateBookingReason(id, reason);
       else if (step === "choose-staff" && selectedStaff)
         await updateBookingStaff(id, selectedStaff);
       else if (step === "choose-datetime" && requestedDateTime)

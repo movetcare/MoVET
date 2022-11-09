@@ -309,7 +309,7 @@ export const AddAPet = ({
               isAppMode={isAppMode}
               label="Photo"
               fileTypes="PNG or JPG"
-              fileName={`photo`}
+              fileName="image"
               successMessage="Photo Upload Complete!"
               uploadPath={`/clients/${session?.client?.uid}/patients/new/photo`}
             />

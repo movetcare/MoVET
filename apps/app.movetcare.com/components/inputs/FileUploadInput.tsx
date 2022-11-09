@@ -12,7 +12,7 @@ import { Loader } from "ui";
 import toast from "react-hot-toast";
 import { Transition } from "@headlessui/react";
 import kebabCase from "lodash.kebabcase";
-let fileType: string | any = null;
+
 export const FileUploadInput = ({
   label = "",
   isAppMode = false,
@@ -46,24 +46,8 @@ export const FileUploadInput = ({
   const uploadFiles = (file: any) => {
     if (!file) return;
     setSourceFileName(file?.name);
-    switch (file?.type) {
-      case "image/png":
-        fileType = ".png";
-        break;
-      case "image/jpeg":
-        fileType = ".jpeg";
-        break;
-      case "image/jpg":
-        fileType = ".jpg";
-        break;
-      case "application/pdf":
-        fileType = ".pdf";
-        break;
-      default:
-        break;
-    }
     const uploadTask = uploadBytesResumable(
-      ref(storage, `/${uploadPath}/${kebabCase(fileName)}${fileType}`),
+      ref(storage, `/${uploadPath}/${kebabCase(fileName)}`),
       file,
       {
         contentType: file?.type,
@@ -95,7 +79,7 @@ export const FileUploadInput = ({
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL: string) => {
           setValue({
             url: downloadURL,
-            name: `${kebabCase(fileName)}${fileType}`,
+            name: `${kebabCase(fileName)}`,
           });
           setPhotoUrl(downloadURL);
           toast(successMessage, {
@@ -124,7 +108,11 @@ export const FileUploadInput = ({
         onClick={onBtnClick}
         className="flex flex-col justify-center items-center w-full group hover:bg-movet-gray hover:bg-opacity-10 ease-in-out duration-500 h-38 bg-white rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
       >
-        <div className="flex flex-col justify-center items-center pt-5 pb-6">
+        <div
+          className={`flex flex-col justify-center items-center w-full py-6 px-4 text-center${
+            photoUrl ? " bg-movet-gray bg-opacity-10" : ""
+          }`}
+        >
           {isLoading ? (
             <>
               <Loader message={`Upload ${progress}% Complete`} />

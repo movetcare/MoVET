@@ -3,8 +3,7 @@ import {logEvent} from "../utils/logging/logEvent";
 const DEBUG = true;
 export const updateBookingReason = async (
   id: string,
-  reason: {label: string; value: string},
-  reasonGroup: {label: string; value: string}
+  reason: { label: string; value: string }
 ) => {
   const proficientStaff = await admin
     .firestore()
@@ -49,12 +48,17 @@ export const updateBookingReason = async (
     .collection("bookings")
     .doc(id)
     .set(
-      {
-        step: "choose-staff",
-        staff,
-        updatedOn: new Date(),
-      },
-      {merge: true}
+      staff.length > 0
+        ? {
+            step: "choose-staff",
+            staff,
+            updatedOn: new Date(),
+          }
+        : {
+            step: "choose-datetime",
+            updatedOn: new Date(),
+          },
+      { merge: true }
     )
     .then(
       async () =>
@@ -89,14 +93,6 @@ export const updateBookingReason = async (
                   {
                     type: "plain_text",
                     text: "Choose Reason",
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*Selected Reason Group*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: reasonGroup?.label,
                   },
                   {
                     type: "mrkdwn",
