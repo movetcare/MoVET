@@ -34,11 +34,9 @@ export const TimeInput = ({
           mask={["H", "H", "M", "M"]}
           onValueChange={(values: any) => onChange(values.formattedValue)}
           isAllowed={(values) => {
-            console.log("values:", values);
             const hours = values?.formattedValue.split(":")[0];
             if (!hours.includes("H") && Number(hours) < 9) return false;
             const minutes = values?.formattedValue.split(":")[1];
-            console.log("Minutes", Number(minutes));
             if (!minutes.includes("M") && Number(minutes) >= 60) return false;
             return Number(values?.floatValue) <= 1630;
           }}

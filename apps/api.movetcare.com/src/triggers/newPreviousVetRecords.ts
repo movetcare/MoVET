@@ -10,7 +10,7 @@ export const newPreviousVetRecords = functions.storage
       console.log("newPreviousVetRecords object", object);
       console.log("newPreviousVetRecords pathParts", pathParts);
     }
-    if (pathParts[0] === "clients") {
+    if (pathParts[0] === "clients" && pathParts[3] !== "new") {
       if (pathParts[4] === "records") {
         await request
           .post("/note/", {
@@ -37,7 +37,7 @@ export const newPreviousVetRecords = functions.storage
               origin: "api",
               success: false,
               data: {
-                message: `Previous Clinical History Provided by Client - ${pathParts[5]}`,
+                message: "Previous Clinical History Provided by Client",
               },
               sendToSlack: true,
             });

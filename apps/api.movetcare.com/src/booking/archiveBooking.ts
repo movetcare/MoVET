@@ -1,5 +1,6 @@
 import { throwError, admin } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
+import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { logEvent } from "../utils/logging/logEvent";
 
 const DEBUG = true;
@@ -108,8 +109,12 @@ export const archiveBooking = async (id: string) => {
         ?.toString()}</p>${
         displayName ? `<p><b>Client Name:</b> ${displayName}</p>` : ""
       }<p><b>Client Email:</b> ${email}</p>${
-        phoneNumber ? `<p><b>Client Phone:</b> ${phoneNumber}</p>` : ""
-      }${patientNames ? `<p><b>Patient Name(s):</b>${patientNames}</p>` : ""}${
+        phoneNumber
+          ? `<p><b>Client Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
+              phoneNumber?.replaceAll("+1", "")
+            )}</a></p>`
+          : ""
+      }${patientNames ? `<p><b>Patient Name(s):</b> ${patientNames}</p>` : ""}${
         illPatients
           ? `<p><b>Patient(s) w/ Minor Illness:</b> ${illPatients?.length}</p>`
           : ""
@@ -117,7 +122,9 @@ export const archiveBooking = async (id: string) => {
         reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""
       }${
         requestedDateTime?.date
-          ? `<p><b>Requested Date:</b> ${requestedDateTime.date.seconds}</p>`
+          ? `<p><b>Requested Date:</b> ${requestedDateTime.date
+              ?.toDate()
+              ?.toString()}</p>`
           : ""
       }${
         requestedDateTime?.time
@@ -216,7 +223,9 @@ export const archiveBooking = async (id: string) => {
                 text: requestedDateTime
                   ? `${
                       requestedDateTime?.date
-                        ? `DATE: ${requestedDateTime?.date}`
+                        ? `DATE: ${requestedDateTime?.date
+                            ?.toDate()
+                            ?.toString()}`
                         : ""
                     }${
                       requestedDateTime?.time

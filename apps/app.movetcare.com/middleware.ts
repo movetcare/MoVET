@@ -8,11 +8,7 @@ export function middleware(request: NextRequest) {
     );
     if (DEBUG) console.log("params", params);
     const linkParams = Object.fromEntries(
-      new URLSearchParams(
-        params.link
-          .replaceAll("http://localhost:3001/account/", "")
-          .replaceAll("https://app.movetcare.com/account/", "")
-      ).entries()
+      new URLSearchParams(params.link).entries()
     );
     if (DEBUG) console.log("linkParams", linkParams);
     if (linkParams?.mode === "signIn")
