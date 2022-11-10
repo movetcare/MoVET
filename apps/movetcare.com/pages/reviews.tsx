@@ -9,7 +9,7 @@ const Reviews = () => {
   return (
     <Layout>
       <Head>
-        <title>Client Reviews</title>
+        <title>Client Reviews - MoVET</title>
       </Head>
       <section className="relative px-4 md:px-0">
         <div className="relative z-40">

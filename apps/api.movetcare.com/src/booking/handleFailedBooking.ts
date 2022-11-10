@@ -1,6 +1,6 @@
 import {throwError} from "../config/config";
 import type { BookingError } from "../types/booking";
-const DEBUG = true;
+const DEBUG = false;
 export const handleFailedBooking = async (
   data: any,
   message: string

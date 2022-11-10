@@ -1,10 +1,10 @@
-import { throwError, admin } from "../config/config";
+import { throwError, admin, proVetApiUrl, request } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
 import { formatDateToMMDDYY } from "../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { logEvent } from "../utils/logging/logEvent";
 
-const DEBUG = true;
+const DEBUG = false;
 
 export const archiveBooking = async (id: string) => {
   if (DEBUG) console.log("archiveBooking", id);
@@ -83,6 +83,68 @@ export const archiveBooking = async (id: string) => {
             : ` and ${patient?.name}`
         )
       : patients[0].name;
+  const subject = `${
+    displayName ? displayName : email ? email : ""
+  } has submitted a new appointment booking request`;
+  const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
+    ?.toDate()
+    ?.toString()}</p>${
+    displayName ? `<p><b>Client Name:</b> ${displayName}</p>` : ""
+  }<p><b>Client Email:</b> ${email}</p>${
+    phoneNumber
+      ? `<p><b>Client Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
+          phoneNumber?.replaceAll("+1", "")
+        )}</a></p>`
+      : ""
+  }${patients.map(
+    (patient: any) =>
+      `<p><b>Patient Name:</b> ${patient?.name}</p><p><b>Patient Species:</b> ${
+        patient?.species
+      }</p><p><b>Patient Gender:</b> ${
+        patient?.gender
+      }</p><p><b>Patient Minor Illness:</b> ${
+        patient?.hasMinorIllness
+          ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+              patient?.illnessDetails?.notes
+            }`
+          : " NONE"
+      }</p><p><b>Aggression Status:</b> ${
+        patient?.aggressionStatus?.name.includes("no history of aggression")
+          ? "NOT Aggressive"
+          : "AGGRESSIVE"
+      }</p><p><b>VCPR Required:</b> ${patient?.vcprRequired ? "Yes" : "No"}</p>`
+  )}${
+    requestedDateTime?.date
+      ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(
+          requestedDateTime.date?.toDate()
+        )}</p>`
+      : ""
+  }${
+    requestedDateTime?.time
+      ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
+      : ""
+  }${
+    location
+      ? `<p><b>Location:</b> ${location} ${
+          address ? `- ${address?.full} (${address?.info})` : ""
+        }</p>`
+      : ""
+  }`;
+  await request
+    .post("/note/", {
+      title: subject,
+      type: 10,
+      client: proVetApiUrl + `/client/${client.uid}/`,
+      patients: patients.map(
+        (patient: any) => proVetApiUrl + `/patient/${patient.value}/`
+      ),
+      note: message,
+    })
+    .then(async (response: any) => {
+      const { data } = response;
+      if (DEBUG) console.log("API Response: POST /note/ => ", data);
+    })
+    .catch(async (error: any) => await throwError(error));
   await sendNotification({
     type: "email",
     payload: {
@@ -102,62 +164,8 @@ export const archiveBooking = async (id: string) => {
       to: "info@movetcare.com",
       bcc: "support@movetcare.com",
       replyTo: email,
-      subject: `${
-        displayName ? displayName : email ? email : ""
-      } has submitted a new appointment booking request`,
-      message: `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
-        ?.toDate()
-        ?.toString()}</p>${
-        displayName ? `<p><b>Client Name:</b> ${displayName}</p>` : ""
-      }<p><b>Client Email:</b> ${email}</p>${
-        phoneNumber
-          ? `<p><b>Client Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
-              phoneNumber?.replaceAll("+1", "")
-            )}</a></p>`
-          : ""
-      }${
-        patients &&
-        patients.map(
-          (patient: any) =>
-            `<p><b>Patient Name:</b> ${
-              patient?.name
-            }</p><p><b>Patient Species:</b> ${
-              patient?.species
-            }</p><p><b>Patient Gender:</b> ${
-              patient?.gender
-            }</p><p><b>Patient Minor Illness:</b> ${
-              patient?.hasMinorIllness
-                ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                    patient?.illnessDetails?.notes
-                  }`
-                : " NONE"
-            }</p><p><b>Aggression Status:</b> ${
-              patient?.aggressionStatus?.name.includes(
-                "no history of aggression"
-              )
-                ? "NOT Aggressive"
-                : "AGGRESSIVE"
-            }</p><p><b>VCPR Required:</b> ${
-              patient?.vcprRequired ? "Yes" : "No"
-            }</p>`
-        )
-      }${
-        requestedDateTime?.date
-          ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(
-              requestedDateTime.date?.toDate()
-            )}</p>`
-          : ""
-      }${
-        requestedDateTime?.time
-          ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
-          : ""
-      }${
-        location
-          ? `<p><b>Location:</b> ${location} ${
-              address ? `- ${address?.full} (${address?.info})` : ""
-            }</p>`
-          : ""
-      }`,
+      subject,
+      message,
       updatedOn: new Date(),
     },
   });

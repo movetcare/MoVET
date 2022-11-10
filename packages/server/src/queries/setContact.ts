@@ -1,7 +1,7 @@
 import admin from "../firebase";
 import type { ContactForm } from "types";
 import { CONTACT_STATUS } from "constant";
-const DEBUG = true;
+const DEBUG = false;
 export const setContact = async (payload: ContactForm) => {
   try {
     return await admin

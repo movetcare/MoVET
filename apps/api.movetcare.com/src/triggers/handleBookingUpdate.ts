@@ -11,7 +11,7 @@ import {updateBookingReason} from "../booking/updateBookingReason";
 import {updateBookingStaff} from "../booking/updateBookingStaff";
 import { updateBookingRequestedDateTime } from "../booking/updateBookingRequestedDateTime";
 import { archiveBooking } from "../booking/archiveBooking";
-const DEBUG = true;
+const DEBUG = false;
 export const handleBookingUpdate = functions.firestore
   .document("bookings/{id}")
   .onWrite(async (change: any, context: any) => {

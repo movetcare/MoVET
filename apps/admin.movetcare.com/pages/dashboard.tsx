@@ -8,10 +8,8 @@ export default function Dashboard() {
   return (
     <section>
       <Head>
-        <title>Admin Dashboard</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Dashboard</title>
       </Head>
-
       <AnnouncementBannerControls />
       <div className="grid lg:grid-cols-2 gap-4">
         <Waitlist />

@@ -15,8 +15,7 @@ export default function SignOut() {
   return (
     <section className="flex flex-col items-center justify-center">
       <Head>
-        <title> Sign Out</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Sign Out</title>
       </Head>
       <div className="bg-white rounded-lg">
         <Loader />

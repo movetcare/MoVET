@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { classNames } from "utilities";
 import { BlogPost } from "types";
+import Head from "next/head";
 
 const posts = [
   {
@@ -101,6 +102,9 @@ const posts = [
 export default function Blog() {
   return (
     <Layout>
+      <Head>
+        <title>Blog</title>
+      </Head>
       <section className="px-4 md:px-0px-4 md:px-0 pb-16 sm:pb-20">
         <div className="relative mx-auto max-w-7xl">
           <div className="text-center">

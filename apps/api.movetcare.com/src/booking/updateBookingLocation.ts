@@ -1,7 +1,7 @@
 import {admin, throwError} from "../config/config";
 import {getBookingConfiguration} from "../utils/getBookingConfiguration";
 import {logEvent} from "../utils/logging/logEvent";
-const DEBUG = true;
+const DEBUG = false;
 export const updateBookingLocation = async (
   id: string,
   location: string,

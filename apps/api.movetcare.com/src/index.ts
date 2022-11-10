@@ -9,8 +9,8 @@ export { refreshBreeds } from "./cron/refreshBreeds";
 export { updateTelehealthChatStatusToOffline } from "./cron/updateTelehealthChatStatusToOffline";
 
 export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
-export { sendContactFormNotifications } from "./triggers/sendContactFormNotifications";
-export { newPreviousVetRecords } from "./triggers/newPreviousVetRecords";
+export { handleContactSubmission } from "./triggers/handleContactSubmission";
+export { handleFileUpload } from "./triggers/handleFileUpload";
 
 export { sendgridWebhook } from "./endpoints/webhooks/sendgridWebhook";
 export { incomingWebhook } from "./endpoints/webhooks/incomingWebhook";

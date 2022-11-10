@@ -6,18 +6,18 @@ import {
   proVetApiUrl,
   request,
   throwError,
-} from "./../config/config";
+} from "../config/config";
 import { CONTACT_STATUS } from "../constant";
 import type { ContactForm } from "../types/forms";
 import { getAuthUserByEmail } from "../utils/auth/getAuthUserByEmail";
 
-const DEBUG = true;
-export const sendContactFormNotifications = functions.firestore
+const DEBUG = false;
+export const handleContactSubmission = functions.firestore
   .document("contact/{id}")
   .onCreate(async (snapshot: any, context: any) => {
     const { id } = context.params || {};
     if (DEBUG)
-      console.log("sendContactFormNotifications => DATA", {
+      console.log("handleContactSubmission => DATA", {
         id,
         data: snapshot.data(),
       });

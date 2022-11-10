@@ -17,7 +17,6 @@ export default function Custom404() {
     <Layout>
       <Head>
         <title>404 - Not Found</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <section className="relative w-full sm:max-w-xl mx-auto bg-white rounded-xl p-4 m-4 sm:m-8 text-center">
         <h1>404 - Not Found</h1>

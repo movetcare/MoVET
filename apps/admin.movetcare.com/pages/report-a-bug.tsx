@@ -5,8 +5,7 @@ export default function BugReport() {
   return (
     <section>
       <Head>
-        <title> Report a Bug</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Report a Bug</title>
       </Head>
       <ReportABug type="bug" />
     </section>

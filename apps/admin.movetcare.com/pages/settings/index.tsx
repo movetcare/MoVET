@@ -6,8 +6,7 @@ export default function Dashboard() {
   return (
     <main>
       <Head>
-        <title> Settings</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Settings</title>
       </Head>
       <AdminCheck>
         <SettingsNavigation />

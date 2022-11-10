@@ -1,4 +1,4 @@
-import {admin, throwError} from "../config/config";
+import { admin, environment, throwError } from "../config/config";
 import { CONTACT_STATUS } from "../constant";
 
 export const configureBooking = async () => {
@@ -17,7 +17,9 @@ export const configureBooking = async () => {
     console.log(
       "DELETE THE configuration/booking/ COLLECTION AND RESTART TO REFRESH THE BOOKING CONFIGURATION"
     );
-    return await generateTestBookingData();
+    return environment.type === "production"
+      ? true
+      : await generateTestBookingData();
   } else {
     console.log("STARTING BOOKING CONFIGURATION");
     return await admin
@@ -48,7 +50,9 @@ export const configureBooking = async () => {
       )
       .then(async () => {
         console.log("BOOKING CONFIGURATION COMPLETE");
-        return await generateTestBookingData();
+        return environment.type === "production"
+          ? true
+          : await generateTestBookingData();
       })
       .catch(async (error: any) => await throwError(error));
   }
@@ -180,6 +184,3 @@ const generateTestBookingData = async () =>
         .catch(async (error: any) => await throwError(error));
     })
     .catch(async (error: any) => await throwError(error));
-
-
-  

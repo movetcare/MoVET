@@ -16,8 +16,7 @@ export default function Custom404() {
   return (
     <div className="bg-transparent flex flex-col items-center justify-center min-py-2">
       <Head>
-        <title>Not Found</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>404 - Not Found</title>
       </Head>
       <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center md:min-h-screen">
         <div className="mb-16 text-movet-white">

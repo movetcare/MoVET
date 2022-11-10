@@ -3,7 +3,7 @@ import { environment, emailClient, throwError } from "../config/config";
 import { findSlackChannel } from "../utils/logging/findSlackChannel";
 import { sendSlackMessage } from "../utils/logging/sendSlackMessage";
 import { getPayloadSummary } from "../utils/logging/getPayloadSummary";
-const DEBUG = true;
+const DEBUG = false;
 export const sendNotification = async ({
   type,
   payload,

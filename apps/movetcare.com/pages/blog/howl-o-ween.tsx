@@ -7,7 +7,6 @@ export default function HowlOWeen() {
     <Layout>
       <Head>
         <title>HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 30th @ 1pm</title>
-        <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
           content="Come one come all! Join us, Oct 30th at 1pm in the Belleview Station Dog Park to show off your Halloween Best! We'll have a fall themed photo booth to capture this once-a-year attire! Come as a couple, or just in an awesome-sauce costume! We hope to see you there! Free treats and belly rubs included for all who come. Best of all, all entry photos will be posted on Instagram and Facebook -- make sure to campaign your friends to vote by LIKING your picture. Winning photo (the one with the most likes) will be announced on Halloween and be featured as MoVET's November PET OF THE MONTH!"

@@ -77,7 +77,6 @@ export default function RecoverEmail() {
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
       <Head>
         <title>Recover Your Account...</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="w-full flex-1 overflow-hidden">
         <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8">

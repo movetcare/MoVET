@@ -46,13 +46,12 @@ export default function Account() {
   return (
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
       <Head>
-        <title>Loading...</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Loading You Account...</title>
       </Head>
       <main className="w-full flex-1 overflow-hidden">
         <AppHeader />
         <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8">
-          <Loader />
+          <Loader message="Loading Your Account..." />
         </section>
       </main>
     </div>

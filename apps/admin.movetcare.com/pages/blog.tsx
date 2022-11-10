@@ -4,8 +4,7 @@ export default function Dashboard() {
   return (
     <section>
       <Head>
-        <title>Blog - COMING SOON!</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>COMING SOON!</title>
       </Head>
       <h2>COMING SOON!</h2>
     </section>

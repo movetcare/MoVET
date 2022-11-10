@@ -3,7 +3,7 @@ import { getCustomerId } from "../utils/getCustomerId";
 import { logEvent } from "../utils/logging/logEvent";
 import { verifyValidPaymentSource } from "../utils/verifyValidPaymentSource";
 
-const DEBUG = true;
+const DEBUG = false;
 
 export const updateBookingRequestedDateTime = async (
   id: string,

@@ -1,6 +1,6 @@
 import {admin, throwError} from "../config/config";
 import {logEvent} from "../utils/logging/logEvent";
-const DEBUG = true;
+const DEBUG = false;
 export const updateBookingReason = async (
   id: string,
   reason: { label: string; value: string }

@@ -198,16 +198,6 @@ export const Footer = () => {
             Emergency Care
           </p>
         </Link>
-        <p className="mx-1">|</p>
-        <a
-          href="https://movetcare.vetsfirstchoice.com/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <p className="ease-in-out duration-500 hover:underline cursor-pointer mx-1">
-            Shop
-          </p>
-        </a>
       </div>
     </footer>
   );

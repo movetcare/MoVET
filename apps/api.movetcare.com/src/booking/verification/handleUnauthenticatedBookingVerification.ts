@@ -6,7 +6,7 @@ import { getActiveBookingSession } from "./getActiveBookingSession";
 import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
 import type { Booking, BookingError } from "../../types/booking";
-const DEBUG = true;
+const DEBUG = false;
 export const handleUnauthenticatedBookingVerification = async (
   email: string
 ): Promise<Booking | BookingError | false> => {

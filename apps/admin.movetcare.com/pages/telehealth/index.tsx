@@ -5,8 +5,7 @@ export default function Telehealth() {
   return (
     <section>
       <Head>
-        <title> Telehealth</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Telehealth</title>
       </Head>
       <TelehealthChatSummary />
     </section>

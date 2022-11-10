@@ -4,7 +4,7 @@ import { setContact } from "../../queries/setContact";
 import { sendResponse } from "../sendResponse";
 import { ContactFormSources } from "types";
 
-const DEBUG = true;
+const DEBUG = false;
 const logSource = "(API) /contact -> processContactRequest()";
 const allowedMethods = ["POST"];
 export const processContactRequest = (

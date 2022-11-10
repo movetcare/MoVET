@@ -26,7 +26,6 @@ const Home = () => {
     <section className="flex flex-col items-center justify-center min-py-2">
       <Head>
         <title>MoVET</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <SignIn />
     </section>

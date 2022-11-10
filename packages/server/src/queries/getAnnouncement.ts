@@ -1,5 +1,5 @@
 import admin from "../firebase";
-const DEBUG = true;
+const DEBUG = false;
 export const getAnnouncement = async () => {
   try {
     const announcement = await admin

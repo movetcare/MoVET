@@ -10,7 +10,6 @@ export default function MoreThanPinkWalk() {
           Think Pink: Walk to find a cure at the Susan G. Komen &quot;More Than
           Pink&quot; Walk
         </title>
-        <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
           content=" October is National Breast Cancer Awareness Month, and here at MoVET

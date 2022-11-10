@@ -1,6 +1,6 @@
 import { environment, throwError } from "../config/config";
 import { Storage } from "@google-cloud/storage";
-const DEBUG = true;
+const DEBUG = false;
 export const moveFile = async (srcFileName: string, destFileName: string) => {
   const bucketName =
     environment.type === "production"

@@ -3,7 +3,7 @@ import {admin, throwError} from "../../config/config";
 import type { Booking } from "../../types/booking";
 import {startNewBooking} from "../startNewBooking";
 import {enforceOnlyOneActiveAppointmentBooking} from "./enforceOnlyOneActiveAppointmentBooking";
-const DEBUG = true;
+const DEBUG = false;
 export const getActiveBookingSession = async (
   user: UserRecord
 ): Promise<Booking | false> =>

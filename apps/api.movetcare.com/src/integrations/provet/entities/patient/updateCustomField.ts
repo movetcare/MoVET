@@ -1,7 +1,6 @@
+// PROVET CUSTOM FIELDS MAPPING - https://us.provetcloud.com/4285/api/0.1/custom_fields/
 import { admin, request } from "../../../../config/config";
-
-const DEBUG = true;
-
+const DEBUG = false;
 export const updateCustomField = async (
   patient: string,
   id: number,

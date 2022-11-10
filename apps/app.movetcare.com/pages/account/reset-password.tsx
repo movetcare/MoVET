@@ -81,7 +81,6 @@ export default function ResetPassword() {
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
       <Head>
         <title>Reset Password</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="w-full flex-1 overflow-hidden">
         <AppHeader />

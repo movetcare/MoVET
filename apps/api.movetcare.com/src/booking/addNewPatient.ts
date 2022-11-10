@@ -4,7 +4,7 @@ import { logEvent } from "../utils/logging/logEvent";
 import { moveFile } from "../utils/moveFile";
 import { reverseDateStringMDY } from "../utils/reverseDateStringMDY";
 import { createProVetPatient } from "./../integrations/provet/entities/patient/createProVetPatient";
-const DEBUG = true;
+const DEBUG = false;
 
 export const addNewPatient = async (
   booking: string,

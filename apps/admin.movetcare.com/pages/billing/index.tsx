@@ -70,7 +70,6 @@ export default function Billing() {
     <section>
       <Head>
         <title>Billing</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Terminal />
       <div className="grid lg:grid-cols-2 gap-4">

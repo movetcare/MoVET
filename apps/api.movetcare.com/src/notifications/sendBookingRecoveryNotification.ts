@@ -17,7 +17,7 @@ import {
 import {logEvent} from "../utils/logging/logEvent";
 import { sendNotification } from "./sendNotification";
 
-const DEBUG = true;
+const DEBUG = false;
 export const sendBookingRecoveryNotification = async ({
   id,
   type,
