@@ -182,20 +182,23 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
-            : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
+            : "http://localhost:3000") +
+          `/request-an-appointment/?email=${email}/`
     }'>${
       authLink
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
-            : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
+            : "http://localhost:3000") +
+          `/request-an-appointment/?email=${email}/`
     }</a></p>`;
     emailText += ` It looks like you have not finished your appointment booking request with MoVET. Click on the link bellow to resume your session: ${
       authLink
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
-            : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
+            : "http://localhost:3000") +
+          `/request-an-appointment/?email=${email}/`
     }`;
     const emailConfig: EmailConfiguration = {
       to: email,
@@ -333,15 +336,17 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
-            : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
+            : "http://localhost:3000") +
+          `/request-an-appointment/?email=${email}/`
     }'>${
       authLink
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
-            : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
+            : "http://localhost:3000") +
+          `/request-an-appointment/?email=${email}/`
     }</a></p>`;
-    emailText += ` It looks like you didn't finish booking your appointment with MoVET yesterday. Click on the link bellow to resume your session: https://app.movetcare.com/book-an-appointment/?email=${email}`;
+    emailText += ` It looks like you didn't finish booking your appointment with MoVET yesterday. Click on the link bellow to resume your session: https://app.movetcare.com/request-an-appointment/?email=${email}`;
     const emailConfig: EmailConfiguration = {
       to: email,
       from: "info@movetcare.com",
@@ -476,14 +481,16 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
-            : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
+            : "http://localhost:3000") +
+          `/request-an-appointment/?email=${email}/`
     }`;
     smsString += `It looks like you have not finished your appointment booking request with MoVET from three days ago. Tap the link bellow to resume your session:${
       authLink
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
-            : "http://localhost:3000") + `/book-an-appointment/?email=${email}/`
+            : "http://localhost:3000") +
+          `/request-an-appointment/?email=${email}/`
     }`;
     const userNotificationSettings: UserNotificationSettings | false =
       await getClientNotificationSettings(uid);

@@ -53,7 +53,7 @@ export default function SignIn() {
     if (router && verificationSuccessful)
       router.replace(
         (continueUrl as any)?.replaceAll("3000", "3001")?.toString() ||
-          "/book-an-appointment"
+          "/request-an-appointment"
       );
   }, [verificationSuccessful, continueUrl, router]);
 

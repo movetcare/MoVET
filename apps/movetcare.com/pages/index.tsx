@@ -84,7 +84,7 @@ export default function Home({
           }
           callToAction={
             <>
-              <p className="mb-3 font-abside text-sm">BOOK AN APPOINTMENT</p>
+              <p className="mb-3 font-abside text-sm">REQUEST AN APPOINTMENT</p>
               <BookAnAppointmentForm autoFocus />
               <div className="flex justify-center">
                 <p className="text-sm font-abside my-3">OR</p>

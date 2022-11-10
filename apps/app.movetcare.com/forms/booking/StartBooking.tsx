@@ -52,9 +52,9 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
       if (user) {
         if (
           window.location.href !==
-          window.location.origin + `/book-an-appointment/?id=${user.uid}`
+          window.location.origin + `/request-an-appointment/?id=${user.uid}`
         )
-          router.push(`/book-an-appointment/?id=${user.uid}`);
+          router.push(`/request-an-appointment/?id=${user.uid}`);
       } else setIsLoading(false);
     });
     return () => unsubscribe();
@@ -88,8 +88,8 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
                   : "http://localhost:3001") +
                 `${
                   result.id !== null && result.id !== undefined
-                    ? `/book-an-appointment?id=${result.id}`
-                    : "/book-an-appointment"
+                    ? `/request-an-appointment?id=${result.id}`
+                    : "/request-an-appointment"
                 }`,
               handleCodeInApp: true,
               iOS: {
@@ -135,11 +135,11 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
         <>
           {!isAppMode && (
             <h2 className="text-2xl font-extrabold tracking-tight text-center">
-              Book an Appointment
+              Request an Appointment
             </h2>
           )}
           <p className="text-center mb-4 w-full sm:w-2/3 mx-auto">
-            Start booking an appointment by providing your email address below
+            Start an appointment request by providing your email address below
           </p>
           <form className="group grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 pb-4 mb-4 w-full sm:w-2/3 mx-auto">
             <div className="sm:col-span-2 my-2">

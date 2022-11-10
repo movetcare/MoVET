@@ -66,10 +66,11 @@ export const SignInWithEmailLinkRequired = ({
 
           if (email)
             (router.replace(
-              `/book-an-appointment?email=${email?.replaceAll("+", "%2B")}`
+              `/request-an-appointment?email=${email?.replaceAll("+", "%2B")}`
             ) as any) && router.reload();
           else
-            (router.replace("/book-an-appointment") as any) && router.reload();
+            (router.replace("/request-an-appointment") as any) &&
+              router.reload();
         }}
       >
         <FontAwesomeIcon icon={faRedo} className="text-movet-brown mr-2" />{" "}

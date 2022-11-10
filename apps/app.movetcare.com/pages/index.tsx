@@ -35,7 +35,6 @@ export default function Home() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const clientData = useClientData();
   useEffect(() => {
-    console.log("Mode:", mode);
     if (mode === "signIn") {
       window.location.href =
         "http://" +
@@ -44,30 +43,26 @@ export default function Home() {
         new URL(window.location.href).search;
     }
   }, [mode]);
-  useEffect(() => {
-    console.log("link:", link);
-    if (router && link) {
-      const params = Object.fromEntries(
-        new URLSearchParams(window.location.search).entries()
-      );
-      const linkParams = Object.fromEntries(
-        new URLSearchParams(
-          params.link
-            .replaceAll("http://localhost:3001/account/", "")
-            .replaceAll("https://app.movetcare.com/account/", "")
-        ).entries()
-      );
-      alert(
-        `https://app.movetcare.com/account/mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
-      );
-      linkParams?.mode === "signIn"
-        ? (window.location.href =
-            "http://" +
-            window.location.host +
-            `/account/mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`)
-        : setIsLoading(false);
-    }
-  }, [router, link]);
+  // useEffect(() => {
+  //   if (router && link) {
+  //     const params = Object.fromEntries(
+  //       new URLSearchParams(window.location.search).entries()
+  //     );
+  //     const linkParams = Object.fromEntries(
+  //       new URLSearchParams(
+  //         params.link
+  //           .replaceAll("http://localhost:3001/account/", "")
+  //           .replaceAll("https://app.movetcare.com/account/", "")
+  //       ).entries()
+  //     );
+  //     linkParams?.mode === "signIn"
+  //       ? (window.location.href =
+  //           "http://" +
+  //           window.location.host +
+  //           `/account/?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`)
+  //       : setIsLoading(false);
+  //   }
+  // }, [router, link]);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user: any) => {
       if (user) {
@@ -155,7 +150,7 @@ export default function Home() {
                   (environment === "production"
                     ? "https://app.movetcare.com"
                     : "http://localhost:3001") +
-                  `/book-an-appointment?id=${result.id}`,
+                  `/request-an-appointment?id=${result.id}`,
                 handleCodeInApp: true,
                 iOS: {
                   bundleId: "com.movet.inc",
@@ -200,7 +195,7 @@ export default function Home() {
             value={
               (window.location.hostname === "localhost"
                 ? "http://localhost:3000"
-                : "https://movetcare.com") + "/book-an-appointment"
+                : "https://movetcare.com") + "/request-an-appointment"
             }
           />
           <p className="mt-4 text-lg leading-6 text-movet-black text-center">
