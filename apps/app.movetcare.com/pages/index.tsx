@@ -35,6 +35,7 @@ export default function Home() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const clientData = useClientData();
   useEffect(() => {
+    console.log("Mode:", mode);
     if (mode === "signIn") {
       window.location.href =
         "http://" +
@@ -44,6 +45,7 @@ export default function Home() {
     }
   }, [mode]);
   useEffect(() => {
+    console.log("link:", link);
     if (router && link) {
       const params = Object.fromEntries(
         new URLSearchParams(window.location.search).entries()
@@ -56,13 +58,13 @@ export default function Home() {
         ).entries()
       );
       alert(
-        `https://app.movetcare.com/account/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
+        `https://app.movetcare.com/account/mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
       );
       linkParams?.mode === "signIn"
         ? (window.location.href =
             "http://" +
             window.location.host +
-            `/account/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`)
+            `/account/mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`)
         : setIsLoading(false);
     }
   }, [router, link]);
