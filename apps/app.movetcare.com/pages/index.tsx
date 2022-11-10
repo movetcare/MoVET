@@ -43,26 +43,6 @@ export default function Home() {
         new URL(window.location.href).search;
     }
   }, [mode]);
-  // useEffect(() => {
-  //   if (router && link) {
-  //     const params = Object.fromEntries(
-  //       new URLSearchParams(window.location.search).entries()
-  //     );
-  //     const linkParams = Object.fromEntries(
-  //       new URLSearchParams(
-  //         params.link
-  //           .replaceAll("http://localhost:3001/account/", "")
-  //           .replaceAll("https://app.movetcare.com/account/", "")
-  //       ).entries()
-  //     );
-  //     linkParams?.mode === "signIn"
-  //       ? (window.location.href =
-  //           "http://" +
-  //           window.location.host +
-  //           `/account/?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`)
-  //       : setIsLoading(false);
-  //   }
-  // }, [router, link]);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user: any) => {
       if (user) {
