@@ -45,7 +45,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0
       react-firebase-hooks: ^5.1.0
-      react-hook-form: ^7.39.1
+      react-hook-form: ^7.39.2
       react-hot-toast: ^2.4.0
       react-json-formatter: ^0.3.2
       react-number-format: ^5.1.1
@@ -53,7 +53,7 @@ importers:
       remark: ^14.0.2
       remark-html: ^15.0.1
       schemas: workspace:*
-      tailwindcss: ^3.2.2
+      tailwindcss: ^3.2.3
       tsconfig: workspace:*
       types: workspace:*
       typescript: ^4.8.4
@@ -73,7 +73,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-firebase-hooks: 5.1.0_ldr2ntcns7yrhgxmhisk4aijfi
-      react-hook-form: 7.39.1_react@18.2.0
+      react-hook-form: 7.39.2_react@18.2.0
       react-hot-toast: 2.4.0_owo25xnefcwdq3zjgtohz6dbju
       react-json-formatter: 0.3.2_react@18.2.0
       react-number-format: 5.1.1_biqbaboplfbrettd7655fr4n2y
@@ -94,7 +94,7 @@ importers:
       next-transpile-modules: 10.0.0
       postcss: 8.4.18
       schemas: link:../../packages/schemas
-      tailwindcss: 3.2.2_postcss@8.4.18
+      tailwindcss: 3.2.3_postcss@8.4.18
       tsconfig: link:../../packages/tsconfig
       types: link:../../packages/types
       typescript: 4.8.4
@@ -207,7 +207,7 @@ importers:
       react-firebase-hooks: ^5.1.0
       react-google-places-autocomplete: ^3.4.0
       react-google-recaptcha-v3: ^1.10.0
-      react-hook-form: ^7.39.1
+      react-hook-form: ^7.39.2
       react-hot-toast: ^2.4.0
       react-number-format: ^5.1.1
       react-select: ^5.6.0
@@ -215,7 +215,7 @@ importers:
       react-time-picker: ^5.1.0
       schemas: workspace:*
       server: workspace:*
-      tailwindcss: ^3.2.2
+      tailwindcss: ^3.2.3
       tsconfig: workspace:*
       types: workspace:*
       typescript: ^4.8.4
@@ -228,7 +228,7 @@ importers:
       '@fortawesome/free-solid-svg-icons': 6.2.0
       '@fortawesome/react-fontawesome': 0.2.0_6j2wdqxompc6mcokhxkpep2gqu
       '@headlessui/react': 1.7.4_biqbaboplfbrettd7655fr4n2y
-      '@hookform/resolvers': 2.9.10_react-hook-form@7.39.1
+      '@hookform/resolvers': 2.9.10_react-hook-form@7.39.2
       firebase: 9.13.0
       lodash.kebabcase: 4.1.1
       lottie-web: 5.9.6
@@ -241,7 +241,7 @@ importers:
       react-firebase-hooks: 5.1.0_ldr2ntcns7yrhgxmhisk4aijfi
       react-google-places-autocomplete: 3.4.0_o6ujcdmwt6ni5mv4wdf5n6tg3y
       react-google-recaptcha-v3: 1.10.0_biqbaboplfbrettd7655fr4n2y
-      react-hook-form: 7.39.1_react@18.2.0
+      react-hook-form: 7.39.2_react@18.2.0
       react-hot-toast: 2.4.0_owo25xnefcwdq3zjgtohz6dbju
       react-number-format: 5.1.1_biqbaboplfbrettd7655fr4n2y
       react-select: 5.6.0_o6ujcdmwt6ni5mv4wdf5n6tg3y
@@ -251,7 +251,7 @@ importers:
     devDependencies:
       '@babel/core': 7.20.2
       '@react-google-maps/api': 2.16.1_biqbaboplfbrettd7655fr4n2y
-      '@tailwindcss/forms': 0.5.3_tailwindcss@3.2.2
+      '@tailwindcss/forms': 0.5.3_tailwindcss@3.2.3
       '@types/lodash.kebabcase': 4.1.7
       '@types/node': 18.11.9
       '@types/react': 18.0.25
@@ -266,7 +266,7 @@ importers:
       postcss: 8.4.18
       schemas: link:../../packages/schemas
       server: link:../../packages/server
-      tailwindcss: 3.2.2_postcss@8.4.18
+      tailwindcss: 3.2.3_postcss@8.4.18
       tsconfig: link:../../packages/tsconfig
       types: link:../../packages/types
       typescript: 4.8.4
@@ -297,7 +297,7 @@ importers:
       react-dom: 18.2.0
       schemas: workspace:*
       server: workspace:*
-      tailwindcss: ^3.2.2
+      tailwindcss: ^3.2.3
       tsconfig: workspace:*
       types: workspace:*
       typescript: ^4.8.4
@@ -315,7 +315,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
       '@babel/core': 7.20.2
-      '@tailwindcss/forms': 0.5.3_tailwindcss@3.2.2
+      '@tailwindcss/forms': 0.5.3_tailwindcss@3.2.3
       '@types/lodash.kebabcase': 4.1.7
       '@types/node': 18.11.9
       '@types/react': 18.0.25
@@ -327,7 +327,7 @@ importers:
       postcss: 8.4.18
       schemas: link:../../packages/schemas
       server: link:../../packages/server
-      tailwindcss: 3.2.2_postcss@8.4.18
+      tailwindcss: 3.2.3_postcss@8.4.18
       tsconfig: link:../../packages/tsconfig
       types: link:../../packages/types
       typescript: 4.8.4
@@ -418,7 +418,7 @@ importers:
       qrcode.react: ^3.1.0
       react: ^18.2.0
       react-dom: 18.2.0
-      react-hook-form: ^7.39.1
+      react-hook-form: ^7.39.2
       react-number-format: ^5.1.1
       react-swipeable: ^7.0.0
       schemas: workspace:*
@@ -433,7 +433,7 @@ importers:
       '@fortawesome/free-solid-svg-icons': 6.2.0
       '@fortawesome/react-fontawesome': 0.2.0_6j2wdqxompc6mcokhxkpep2gqu
       '@headlessui/react': 1.7.4_biqbaboplfbrettd7655fr4n2y
-      '@hookform/resolvers': 2.9.10_react-hook-form@7.39.1
+      '@hookform/resolvers': 2.9.10_react-hook-form@7.39.2
       '@types/react': 18.0.25
       '@types/react-dom': 18.0.8
       constant: link:../constant
@@ -442,7 +442,7 @@ importers:
       qrcode.react: 3.1.0_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-hook-form: 7.39.1_react@18.2.0
+      react-hook-form: 7.39.2_react@18.2.0
       react-number-format: 5.1.1_biqbaboplfbrettd7655fr4n2y
       react-swipeable: 7.0.0_react@18.2.0
       schemas: link:../schemas
@@ -1473,12 +1473,12 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
 
-  /@hookform/resolvers/2.9.10_react-hook-form@7.39.1:
+  /@hookform/resolvers/2.9.10_react-hook-form@7.39.2:
     resolution: {integrity: sha512-JIL1DgJIlH9yuxcNGtyhsWX/PgNltz+5Gr6+8SX9fhXc/hPbEIk6wPI82nhgvp3uUb6ZfAM5mqg/x7KR7NAb+A==}
     peerDependencies:
       react-hook-form: ^7.0.0
     dependencies:
-      react-hook-form: 7.39.1_react@18.2.0
+      react-hook-form: 7.39.2_react@18.2.0
 
   /@humanwhocodes/config-array/0.11.7:
     resolution: {integrity: sha512-kBbPWzN8oVMLb0hOUYXhmxggL/1cJE6ydvjDIGi9EnAGUyA7cLVKQg+d/Dsm+KZwx2czGHrCmMVLiyg8s5JPKw==}
@@ -1866,13 +1866,13 @@ packages:
       defer-to-connect: 2.0.1
     dev: false
 
-  /@tailwindcss/forms/0.5.3_tailwindcss@3.2.2:
+  /@tailwindcss/forms/0.5.3_tailwindcss@3.2.3:
     resolution: {integrity: sha512-y5mb86JUoiUgBjY/o6FJSFZSEttfb3Q5gllE4xoKjAAD+vBrnIhE4dViwUuow3va8mpH4s9jyUbUbrRGoRdc2Q==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1'
     dependencies:
       mini-svg-data-uri: 1.4.4
-      tailwindcss: 3.2.2_postcss@8.4.18
+      tailwindcss: 3.2.3_postcss@8.4.18
     dev: true
 
   /@tootallnate/once/2.0.0:
@@ -6392,8 +6392,8 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /react-hook-form/7.39.1_react@18.2.0:
-    resolution: {integrity: sha512-MiF9PCILN5KulhSGbnjohMiTOrB47GerDTichMNP0y2cPUu1GTRFqbunOxCE9N1499YTLMV/ne4gFzqCp1rxrQ==}
+  /react-hook-form/7.39.2_react@18.2.0:
+    resolution: {integrity: sha512-rCeCa1+sIcgI9PjgGmev9bVqHCwYwhjkbsXitr+giQ/P0mf/AGwUBtCdKC1lRu7egrxbLwqO9cWNWpXW4FrsHA==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
@@ -7152,8 +7152,8 @@ packages:
     resolution: {integrity: sha512-y3JaeRSplks6NYQuCOj3ZFMO3j60rTwbuKCvZxsAraGYH2epusatvZ0baZYA01WsGqJBq/Dl6vOrMUJqyMj8kA==}
     optional: true
 
-  /tailwindcss/3.2.2_postcss@8.4.18:
-    resolution: {integrity: sha512-c2GtSdqg+harR4QeoTmex0Ngfg8IIHNeLQH5yr2B9uZbZR1Xt1rYbjWOWTcj3YLTZhrmZnPowoQDbSRFyZHQ5Q==}
+  /tailwindcss/3.2.3_postcss@8.4.18:
+    resolution: {integrity: sha512-Xt9D4PK4zuuQCEB8bwK9JUCKmTgUwyac/6b0/42Vqhgl6YJkep+Wf5wq+5uXYfmrupdAD0YY2NY1hyZp1HjRrg==}
     engines: {node: '>=12.13.0'}
     hasBin: true
     peerDependencies:

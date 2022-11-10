@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "op run --env-file='./.env.local' -- next dev --port 3002",
     "build": "op run --env-file='./.env.local' -- next build",
+    "build:prod": "next build",
     "start": "next start",
     "lint": "next lint",
     "update": "ncu -u"
@@ -22,7 +23,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-firebase-hooks": "^5.1.0",
-    "react-hook-form": "^7.39.1",
+    "react-hook-form": "^7.39.2",
     "react-hot-toast": "^2.4.0",
     "react-json-formatter": "^0.3.2",
     "react-number-format": "^5.1.1",
@@ -44,7 +45,7 @@
     "next-transpile-modules": "10.0.0",
     "postcss": "^8.4.18",
     "schemas": "workspace:*",
-    "tailwindcss": "^3.2.2",
+    "tailwindcss": "^3.2.3",
     "tsconfig": "workspace:*",
     "types": "workspace:*",
     "typescript": "^4.8.4",
