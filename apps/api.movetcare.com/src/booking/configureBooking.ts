@@ -26,10 +26,22 @@ export const configureBooking = async () => {
       .doc("bookings")
       .set(
         {
-          clinicMinorIllnessVcprReason: 30,
-          clinicStandardVcprReason: 30,
-          housecallMinorIllnessVcprReason: 30,
-          housecallStandardVcprReason: 30,
+          clinicMinorIllnessVcprReason: {
+            value: 106,
+            label: "Establish Care Exam",
+          },
+          clinicStandardVcprReason: {
+            value: 106,
+            label: "Establish Care Exam",
+          },
+          housecallMinorIllnessVcprReason: {
+            value: 105,
+            label: "Establish Care Exam",
+          },
+          housecallStandardVcprReason: {
+            value: 105,
+            label: "Establish Care Exam",
+          },
           updatedOn: new Date(),
         },
         { merge: true }

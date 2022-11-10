@@ -68,9 +68,14 @@ const ClinicSettings = () => {
         doc(firestore, 'configuration', 'booking'),
         (doc: any) => {
           reasons.docs.forEach((reason: any) => {
-            if (reason.data()?.id === doc.data()?.clinicStandardVcprReason)
+            if (
+              reason.data()?.id === doc.data()?.clinicStandardVcprReason?.value
+            )
               setSelectedStandardVcprReason(reason.data()?.name);
-            if (reason.data()?.id === doc.data()?.clinicMinorIllnessVcprReason)
+            if (
+              reason.data()?.id ===
+              doc.data()?.clinicMinorIllnessVcprReason?.value
+            )
               setSelectedMinorIllnessVcprReason(reason.data()?.name);
             if (doc.data()?.clinicLunchTime)
               setSelectedLunchTime(doc.data()?.clinicLunchTime);

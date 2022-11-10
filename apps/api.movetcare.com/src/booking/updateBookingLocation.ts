@@ -40,11 +40,13 @@ export const updateBookingLocation = async (
       );
     }
     if (illPatients && illPatients?.length > 0) {
-      if (location === "Clinic") vcprReason = clinicMinorIllnessVcprReason;
-      if (location === "Home") vcprReason = housecallMinorIllnessVcprReason;
+      if (location === "Clinic")
+        vcprReason = clinicMinorIllnessVcprReason?.value;
+      if (location === "Home")
+        vcprReason = housecallMinorIllnessVcprReason?.value;
     } else {
-      if (location === "Clinic") vcprReason = clinicStandardVcprReason;
-      if (location === "Home") vcprReason = housecallStandardVcprReason;
+      if (location === "Clinic") vcprReason = clinicStandardVcprReason?.value;
+      if (location === "Home") vcprReason = housecallStandardVcprReason?.value;
     }
   }
   if (DEBUG) console.log("updateBookingLocation => vcprReason", vcprReason);

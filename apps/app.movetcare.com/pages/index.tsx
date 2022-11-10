@@ -19,6 +19,7 @@ import { SignInWithEmailLinkRequired } from "components/SignInWithEmailLinkRequi
 import { Error } from "components/Error";
 import { useClientData } from "hooks/useClientData";
 import { ClientDataContext } from "contexts/ClientDataContext";
+import { LoadScript } from "@react-google-maps/api";
 
 export default function Home() {
   const router = useRouter();
@@ -198,7 +199,14 @@ export default function Home() {
                 <>
                   {booking !== null ? (
                     <ClientDataContext.Provider value={clientData as any}>
-                      <BookingController id={booking} isAppMode={isAppMode} />
+                      <LoadScript
+                        googleMapsApiKey="AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
+                        language="en"
+                        region="en"
+                        libraries={["places"]}
+                      >
+                        <BookingController id={booking} isAppMode={isAppMode} />
+                      </LoadScript>
                     </ClientDataContext.Provider>
                   ) : verificationSuccess === null ? (
                     <StartBooking isAppMode={isAppMode} />

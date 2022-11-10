@@ -66,16 +66,7 @@ export const BookingController = ({
       case "illness-assignment":
         return <IllnessAssignment session={session} isAppMode={isAppMode} />;
       case "choose-location":
-        return (
-          <LoadScript
-            googleMapsApiKey="AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
-            language="en"
-            region="en"
-            libraries={["places"]}
-          >
-            <ChooseLocation session={session} isAppMode={isAppMode} />
-          </LoadScript>
-        );
+        return <ChooseLocation session={session} isAppMode={isAppMode} />;
       case "choose-reason":
         return <ChooseService session={session} isAppMode={isAppMode} />;
       case "choose-staff":

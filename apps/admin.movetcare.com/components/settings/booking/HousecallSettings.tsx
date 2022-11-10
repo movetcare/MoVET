@@ -78,10 +78,14 @@ const HousecallSettings = () => {
         doc(firestore, 'configuration', 'booking'),
         (doc: any) => {
           reasons.docs.forEach((reason: any) => {
-            if (reason.data()?.id === doc.data()?.housecallStandardVcprReason)
+            if (
+              reason.data()?.id ===
+              doc.data()?.housecallStandardVcprReason?.value
+            )
               setSelectedStandardVcprReason(reason.data()?.name);
             if (
-              reason.data()?.id === doc.data()?.housecallMinorIllnessVcprReason
+              reason.data()?.id ===
+              doc.data()?.housecallMinorIllnessVcprReason?.value
             )
               setSelectedMinorIllnessVcprReason(reason.data()?.name);
             if (doc.data()?.housecallLunchTime)
