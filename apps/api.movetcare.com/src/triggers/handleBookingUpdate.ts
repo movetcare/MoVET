@@ -69,7 +69,7 @@ export const handleBookingUpdate = functions.firestore
         await updateBookingStaff(id, selectedStaff);
       else if (step === "choose-datetime" && requestedDateTime)
         await updateBookingRequestedDateTime(id, client.uid, requestedDateTime);
-      else if (step === "complete") await archiveBooking(id);
+      else if (step === "complete" && isActive) await archiveBooking(id);
       else if (step === "restart") await restartBooking(id);
     } else {
       if (DEBUG)

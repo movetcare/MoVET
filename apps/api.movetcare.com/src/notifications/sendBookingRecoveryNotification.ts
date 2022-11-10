@@ -116,7 +116,7 @@ const sendAdminBookingRecoveryNotification = async (
                 patient?.species
               }</p><p><b>Patient Gender:</b> ${
                 patient?.gender
-              }</p><p><b>Patient Minor Illness:</b>${
+              }</p><p><b>Patient Minor Illness:</b> ${
                 patient?.hasMinorIllness
                   ? `${JSON.stringify(patient?.illnessDetail?.symptoms)} - ${
                       patient?.illnessDetail?.notes

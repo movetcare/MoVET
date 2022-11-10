@@ -1,5 +1,6 @@
 import { throwError, admin } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
+import { formatDateToMMDDYY } from "../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { logEvent } from "../utils/logging/logEvent";
 
@@ -85,7 +86,7 @@ export const archiveBooking = async (id: string) => {
   await sendNotification({
     type: "email",
     payload: {
-      tag: "admin-booking-request-recovery",
+      tag: "admin-booking-request-alert",
       origin: "api",
       success: true,
       client,
@@ -114,17 +115,37 @@ export const archiveBooking = async (id: string) => {
               phoneNumber?.replaceAll("+1", "")
             )}</a></p>`
           : ""
-      }${patientNames ? `<p><b>Patient Name(s):</b> ${patientNames}</p>` : ""}${
-        illPatients
-          ? `<p><b>Patient(s) w/ Minor Illness:</b> ${illPatients?.length}</p>`
-          : ""
-      }${vcprRequired ? `<p><b>VCPR Required:</b> ${vcprRequired}</p>` : ""}${
-        reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""
+      }${
+        patients &&
+        patients.map(
+          (patient: any) =>
+            `<p><b>Patient Name:</b> ${
+              patient?.name
+            }</p><p><b>Patient Species:</b> ${
+              patient?.species
+            }</p><p><b>Patient Gender:</b> ${
+              patient?.gender
+            }</p><p><b>Patient Minor Illness:</b> ${
+              patient?.hasMinorIllness
+                ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                    patient?.illnessDetails?.notes
+                  }`
+                : " NONE"
+            }</p><p><b>Aggression Status:</b> ${
+              patient?.aggressionStatus?.name.includes(
+                "no history of aggression"
+              )
+                ? "NOT Aggressive"
+                : "AGGRESSIVE"
+            }</p><p><b>VCPR Required:</b> ${
+              patient?.vcprRequired ? "Yes" : "No"
+            }</p>`
+        )
       }${
         requestedDateTime?.date
-          ? `<p><b>Requested Date:</b> ${requestedDateTime.date
-              ?.toDate()
-              ?.toString()}</p>`
+          ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(
+              requestedDateTime.date?.toDate()
+            )}</p>`
           : ""
       }${
         requestedDateTime?.time
@@ -223,9 +244,9 @@ export const archiveBooking = async (id: string) => {
                 text: requestedDateTime
                   ? `${
                       requestedDateTime?.date
-                        ? `DATE: ${requestedDateTime?.date
-                            ?.toDate()
-                            ?.toString()}`
+                        ? `DATE: ${formatDateToMMDDYY(
+                            requestedDateTime?.date?.toDate()
+                          )}`
                         : ""
                     }${
                       requestedDateTime?.time

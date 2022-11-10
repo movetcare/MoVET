@@ -177,6 +177,7 @@ export default function Booking() {
                       language="en"
                       region="en"
                       libraries={["places"]}
+                      loadingElement={<Loader />}
                     >
                       <BookingController id={booking} isAppMode={isAppMode} />
                     </LoadScript>
