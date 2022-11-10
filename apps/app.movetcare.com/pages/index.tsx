@@ -22,7 +22,7 @@ import { ClientDataContext } from "contexts/ClientDataContext";
 
 export default function Home() {
   const router = useRouter();
-  const { email, id, mode, link } = router.query || {};
+  const { email, id, mode } = router.query || {};
   const isAppMode = mode === "app";
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);

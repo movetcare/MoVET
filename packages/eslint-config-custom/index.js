@@ -12,7 +12,7 @@ module.exports = {
     "@next/next/no-html-link-for-pages": "off",
     "react/jsx-key": "off",
     "turbo/no-undeclared-env-vars": "off",
-    "@typescript-eslint/no-unused-vars": 2,
+    "@typescript-eslint/no-unused-vars": 1,
     "@typescript-eslint/no-var-requires": 0,
     "@typescript-eslint/no-explicit-any": 0,
   },
