@@ -24,7 +24,7 @@
     "axios": "0.27.2",
     "csvtojson": "^2.0.10",
     "dotenv": "^16.0.3",
-    "firebase": "^9.13.0",
+    "firebase": "^9.14.0",
     "firebase-admin": "^11.2.1",
     "firebase-functions": "^4.0.2",
     "fs-extra": "^10.1.0",
