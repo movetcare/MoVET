@@ -200,7 +200,7 @@ importers:
       firebase: ^9.14.0
       lodash.kebabcase: ^4.1.1
       lottie-web: ^5.9.6
-      next: ^13.0.3
+      next: ^13.0.2
       next-transpile-modules: 10.0.0
       postcss: ^8.4.19
       qrcode.react: ^3.1.0
@@ -254,7 +254,7 @@ importers:
       yup: 0.32.11
     devDependencies:
       '@babel/core': 7.20.2
-      '@react-google-maps/api': 2.16.1_biqbaboplfbrettd7655fr4n2y
+      '@react-google-maps/api': 2.17.0_biqbaboplfbrettd7655fr4n2y
       '@tailwindcss/forms': 0.5.3_tailwindcss@3.2.4
       '@types/lodash.kebabcase': 4.1.7
       '@types/node': 18.11.9
@@ -1750,8 +1750,8 @@ packages:
   /@protobufjs/utf8/1.1.0:
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
 
-  /@react-google-maps/api/2.16.1_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-fqTV6PjX6NwalrnYo5ZmhM0W0iMrRainAL8CCnSVG0Ny5A/To+fZq500KQKcjXHNM8I/zb3a7ZuXZLZG1cpe8Q==}
+  /@react-google-maps/api/2.17.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-b4HYlWsS6w3B9QXNWoQd6pfc7eUyAOyBNu+Z10u2ouBTeWkKw5kTCDhjsPc9prhg1o+eS3UC3raJVBg88XbUtQ==}
     peerDependencies:
       react: ^16.8 || ^17 || ^18
       react-dom: ^16.8 || ^17 || ^18
