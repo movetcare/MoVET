@@ -252,13 +252,13 @@ export const archiveBooking = async (id: string) => {
                 text: requestedDateTime
                   ? `${
                       requestedDateTime?.date
-                        ? `DATE: ${formatDateToMMDDYY(
+                        ? `${formatDateToMMDDYY(
                             requestedDateTime?.date?.toDate()
                           )}`
                         : ""
                     }${
                       requestedDateTime?.time
-                        ? `DATE: ${requestedDateTime?.time}`
+                        ? ` @ ${requestedDateTime?.time}`
                         : ""
                     }`
                   : "",

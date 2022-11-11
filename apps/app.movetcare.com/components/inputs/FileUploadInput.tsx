@@ -101,7 +101,7 @@ export const FileUploadInput = ({
     <div className="mt-8 w-full flex flex-col justify-center mx-auto">
       {label !== "" && (
         <label className="block text-sm font-medium text-movet-black font-abside mb-2">
-          {label} {progress ? `- Uploaded ${progress}%` : ""}
+          {label} {progress === 100 ? `- ${sourceFileName}` : ""}
         </label>
       )}
       <div

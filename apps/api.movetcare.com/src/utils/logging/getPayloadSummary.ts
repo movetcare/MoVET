@@ -207,7 +207,9 @@ export const getPayloadSummary = async (payload: {
     tag === "30-min-appointment-notification-update" ||
     tag === "create-new-account" ||
     tag === "customer-already-exists" ||
-    tag === "create-new-customer"
+    tag === "create-new-customer" ||
+    tag === "patient-photo-received" ||
+    tag === "previous-clinical-history-received"
   ) {
     summary = data.message;
   } else

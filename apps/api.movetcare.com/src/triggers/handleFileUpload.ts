@@ -38,7 +38,7 @@ export const handleFileUpload = functions.storage
               origin: "api",
               success: false,
               data: {
-                message: "Previous Clinical History Provided by Client",
+                message: `:notebook: Previous Clinical History Provided by Client ${object.mediaLink}`,
               },
               sendToSlack: true,
             });
@@ -115,7 +115,7 @@ export const handleFileUpload = functions.storage
               origin: "api",
               success: false,
               data: {
-                message: `Patient Photo Uploaded by Client - ${object.mediaLink}`,
+                message: `:frame_with_picture: Patient Photo Uploaded by Client - ${object.mediaLink}`,
               },
               sendToSlack: true,
             });
