@@ -159,7 +159,9 @@ export const checkIn = functions
                 if (DEBUG) console.log("proVetClientData", proVetClientData);
                 if (proVetClientData) {
                   const didCreateNewClient = await createAuthClient(
-                    proVetClientData
+                    proVetClientData,
+                    null,
+                    false
                   );
                   if (didCreateNewClient) {
                     await admin

@@ -5,7 +5,8 @@ import {sendWelcomeEmail} from "../../../../notifications/sendWelcomeEmail";
 
 export const createAuthClient = async (
   proVetClientData: any,
-  movetClientData?: any
+  movetClientData?: any,
+  withResetLink?: boolean
 ): Promise<boolean> =>
   await admin
     .auth()
@@ -33,7 +34,10 @@ export const createAuthClient = async (
         console.log("Custom claims added:", user);
       }
       // await sendVerificationEmail(userRecord);'
-      if (
+      if (withResetLink === false) {
+        if (DEBUG) console.log("ATTEMPTING TO SEND WELCOME EMAIL WITHOUT LINK");
+        await sendWelcomeEmail(proVetClientData?.email, false);
+      } else if (
         proVetClientData?.password === null ||
         proVetClientData?.password === undefined
       ) {

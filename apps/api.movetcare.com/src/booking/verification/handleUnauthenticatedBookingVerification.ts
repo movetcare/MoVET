@@ -45,7 +45,11 @@ export const handleUnauthenticatedBookingVerification = async (
         proVetClientData
       );
     if (proVetClientData) {
-      const didCreateNewClient = await createAuthClient(proVetClientData);
+      const didCreateNewClient = await createAuthClient(
+        proVetClientData,
+        null,
+        false
+      );
       if (didCreateNewClient)
         return {
           isNewClient: true,
