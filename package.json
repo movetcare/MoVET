@@ -28,14 +28,16 @@
     "push:stage": "git push origin development",
     "push:all": "pnpm run push:stage && pnpm run push:prod",
     "prepare": "husky install",
-    "deploy:prod": "firebase use movet-care && firebase deploy --only functions --non-interactive -f && firebase use movet-care-staging && git checkout development",
-    "deploy:stage": "firebase use movet-care-staging && firebase deploy --only functions --non-interactive -f",
+    "deploy:prod": "firebase use movet-care && firebase deploy --non-interactive -f && firebase use movet-care-staging && git checkout development && pnpm run ping:deploy:success:prod",
+    "deploy:stage": "firebase use movet-care-staging && firebase deploy --non-interactive -f && pnpm run ping:deploy:success:stage",
     "init:config:dev": "cd apps/api.movetcare.com/ && pnpm run init:config:dev",
     "init:config:stage": "cd apps/api.movetcare.com/ && pnpm run init:config:stage",
     "init:config:prod": "cd apps/api.movetcare.com/ && pnpm run init:config:prod",
     "init:config:local:prod": "cd apps/api.movetcare.com/ && pnpm run init:config:local:prod",
     "backup:production": "gcloud config set project movet-care && gcloud firestore export gs://movet-care-backups && gcloud config set project movet-care-staging",
-    "firestore:indexes": "firebase firestore:indexes"
+    "firestore:indexes": "firebase firestore:indexes",
+    "ping:deploy:success:stage": "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\":tada: *Firebase STAGING Deployment Complete!*\"}' https://hooks.slack.com/services/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",
+    "ping:deploy:success:prod": "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\":tada: *Firebase STAGING Deployment Complete!*\"}' https://hooks.slack.com/services/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"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",

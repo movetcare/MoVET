@@ -63,6 +63,8 @@ pnpm i
 
 ### Log into Firebase CLI with your authorized account
 
+"Developer" access to the [staging](https://console.firebase.google.com/u/0/project/movet-care-staging/overview) and [production](https://console.firebase.google.com/u/0/project/movet-care/overview) environments in Firebase is required. Once authorized, run:
+
 ```sh
 firebase login
 ```
