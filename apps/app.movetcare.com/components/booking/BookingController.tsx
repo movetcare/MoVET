@@ -15,7 +15,6 @@ import { firestore } from "services/firebase";
 import { Booking } from "types/Booking";
 import { environment } from "utilities";
 import { PaymentConfirmation } from "forms/booking/PaymentConfirmation";
-import { LoadScript } from "@react-google-maps/api";
 
 export const BookingController = ({
   id,

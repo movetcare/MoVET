@@ -65,7 +65,7 @@ pnpm i
 
 "Developer" access to the [staging](https://console.firebase.google.com/u/0/project/movet-care-staging/overview) and [production](https://console.firebase.google.com/u/0/project/movet-care/overview) environments in Firebase is required. Once authorized, run:
 
-```sh
+```sh 
 firebase login
 ```
 
@@ -81,12 +81,18 @@ pnpm start
 - [app.movetcare.com](http://localhost:3001)
 - [admin.movetcare.com](http://localhost:3002)
 
+### Staging App URLs
+- [stage.movetcare.com](https://stage.movetcare.com/)
+- [stage.api.movetcare.com](https://console.firebase.google.com/u/0/project/movet-care-staging/overview)
+- [stage.app.movetcare.com](https://stage.app.movetcare.com/)
+- [stage.admin.movetcare.com](https://stage.admin.movetcare.com/)
+
 ## Testing
 
 Tests are run automagically when you commit and push code via [Husky](https://github.com/typicode/husky).
 
-- End to end client application testing is performed via the [Cypress](https://cypress.io) library. Tests can be found inside of `__TESTS__/e2e`.
-- Security rules are tested using [Jest](https://jestjs.io/). Tests can be found inside of `__TESTS__/rules`.
+- End to end client application testing is performed via the [Cypress](https://cypress.io) library. Tests can be found inside of `cypress/e2e`.
+- Security rules are tested using [Jest](https://jestjs.io/). Tests can be found inside of `cypress/rules`.
 
 ## Deployment
 
