@@ -26,7 +26,7 @@ export default function Verify() {
         pathname: "/404",
         query: router.query,
       });
-  }, [router, mode, oobCode, apiKey, auth]);
+  }, [router, mode, oobCode, apiKey]);
 
   useEffect(() => {
     if (verificationSuccessful)
