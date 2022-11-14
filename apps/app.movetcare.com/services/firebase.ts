@@ -36,7 +36,7 @@ export const functions = getFunctions(firebase);
 export const firestore = getFirestore(firebase);
 export const storage = getStorage(firebase);
 
-if (environment === "development") {
+if (typeof window !== "undefined" && window.location.hostname === "localhost") {
   connectFunctionsEmulator(functions, "localhost", 5001);
   connectAuthEmulator(auth, "http://localhost:9099");
   connectFirestoreEmulator(firestore, "localhost", 8080);
