@@ -96,9 +96,16 @@ Tests are run automagically when you commit and push code via [Husky](https://gi
 
 ### Core Feature & Functionality Testing Check List
 
-Currently ALL these items must be MANUALLY tested after each deployment. As you work on various setions of the app, please ensure you wrtie new Cypress e2e tests to test as much of the core functionality as possible!
+Currently ALL these items must be MANUALLY tested after each deployment. 
+BEFORE you start your testing, be sure to log into Firebase, ProVet and Stripe and manaully delete all the test user data within each service.
+As you work on various setions of the app, please ensure you wrtie new Cypress e2e tests to test as much of the core functionality as possible!
 
 #### iOS/Android App
+
+Test Clients Email Addresses to Use: 
+- support+test_ios@movetcare.com
+- support+test_android@movetcare.com
+
 - Non-Authuthenticated
 - - [ ] Create New Client via Sign Up Screen
 - - [ ] Reset Password to Existing Account via Password Reset Screen
@@ -146,6 +153,10 @@ Currently ALL these items must be MANUALLY tested after each deployment. As you 
 - - - [ ] Delete My Account
 
 #### Web App
+
+Test Client Email Addresses to Use: 
+- support+test_web@movetcare.com
+
 - Non-Authenticated
 - - [ ] Start Appointment Booking Request via Email Address
 - - [ ] Emails Auth Link to Clients Email
@@ -168,6 +179,8 @@ Currently ALL these items must be MANUALLY tested after each deployment. As you 
 - - - [ ] Submission Success
 
 #### Admin App
+Test Client Email Addresses to Use: 
+- support@movetcare.com
 - Non-Authenticated
 - [ ] Sign In via Google O-Auth
 - [ ] Block Non-Approved Sign Up/In Requests

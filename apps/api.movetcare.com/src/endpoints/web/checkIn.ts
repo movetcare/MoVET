@@ -332,17 +332,18 @@ export const checkIn = functions
                       },
                       success_url:
                         (environment?.type === "development"
-                          ? "http://localhost:3000"
+                          ? "http://localhost:3001"
                           : environment.type === "staging"
-                          ? "https://staging.movetcare.com"
-                          : "https://movetcare.com") +
+                          ? "https://stage.app.movetcare.com"
+                          : "https://app.movetcare.com") +
                         "/appointment-check-in/success/",
                       cancel_url:
                         (environment?.type === "development"
-                          ? "http://localhost:3000"
+                          ? "http://localhost:3001"
                           : environment.type === "staging"
-                          ? "https://staging.movetcare.com"
-                          : "https://movetcare.com") + "/appointment-check-in/",
+                          ? "https://stage.app.movetcare.com"
+                          : "https://app.movetcare.com") +
+                        "/appointment-check-in/",
                     });
 
                     return await saveClient(proVetClientData?.id, null, {
@@ -671,17 +672,18 @@ export const checkIn = functions
                     },
                     success_url:
                       (environment?.type === "development"
-                        ? "http://localhost:3000"
+                        ? "http://localhost:3001"
                         : environment.type === "staging"
-                        ? "https://staging.movetcare.com"
-                        : "https://movetcare.com") +
+                        ? "https://stage.app.movetcare.com"
+                        : "https://app.movetcare.com") +
                       "/appointment-check-in/success/",
                     cancel_url:
                       (environment?.type === "development"
-                        ? "http://localhost:3000"
+                        ? "http://localhost:3001"
                         : environment.type === "staging"
-                        ? "https://staging.movetcare.com"
-                        : "https://movetcare.com") + "/appointment-check-in/",
+                        ? "https://stage.app.movetcare.com"
+                        : "https://app.movetcare.com") +
+                      "/appointment-check-in/",
                   });
                   await admin
                     .firestore()

@@ -17,7 +17,7 @@ export default function CheckIn() {
               value={
                 (window.location.hostname === "localhost"
                   ? "http://localhost:3001"
-                  : "https://movetcare.com") + "/appointment-check-in/"
+                  : "https://app.movetcare.com") + "/appointment-check-in/"
               }
             />
             <p className="text-center mt-8 italic text-xl">
