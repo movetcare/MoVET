@@ -20,7 +20,7 @@
     "firebase": "^9.14.0",
     "lodash.kebabcase": "^4.1.1",
     "lottie-web": "^5.9.6",
-    "next": "^13.0.2",
+    "next": "^13.0.3",
     "qrcode.react": "^3.1.0",
     "react": "18.2.0",
     "react-calendar": "^4.0.0",
@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",
-    "@react-google-maps/api": "^2.16.1",
+    "@react-google-maps/api": "^2.17.0",
     "@tailwindcss/forms": "^0.5.3",
     "@types/lodash.kebabcase": "^4.1.7",
     "@types/node": "^18.11.9",

@@ -13,8 +13,9 @@ export function middleware(request: NextRequest) {
     if (DEBUG) console.log("linkParams", linkParams);
     if (linkParams?.mode === "signIn")
       return NextResponse.redirect(
-        "http://" +
-          request.nextUrl.host +
+        (request.nextUrl.hostname === "localhost"
+          ? "http://localhost:3001"
+          : "https://app.movetcare.com") +
           `/account/?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
       );
   }
