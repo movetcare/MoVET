@@ -33,7 +33,7 @@ export const simulatePayment = functions
               {
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded",
-                  "Stripe-Version": "2020-08-27;terminal_server_driven_beta=v1",
+                  "Stripe-Version": functions.config()?.stripe?.api_version,
                   Authorization: `Bearer ${
                     functions.config()?.stripe?.secret_key
                   }`,
@@ -41,7 +41,7 @@ export const simulatePayment = functions
               }
             )
             .then(async (response: any) => {
-              const {data} = response;
+              const { data } = response;
               if (DEBUG)
                 console.log(
                   `RESPONSE: https://api.stripe.com/v1/test_helpers/terminal/readers/${reader}/present_payment_method => `,

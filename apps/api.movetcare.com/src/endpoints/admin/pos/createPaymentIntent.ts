@@ -98,7 +98,7 @@ export const createPaymentIntent = functions
           //       headers: {
           //         'Content-Type': 'application/x-www-form-urlencoded',
           //         'Stripe-Version':
-          //           '2020-08-27; terminal_server_driven_beta=v1',
+          //           functions.config()?.stripe?.api_version,
           //         Authorization: `Bearer ${
           //           functions.config()?.stripe?.secret_key
           //         }`,
@@ -131,7 +131,7 @@ export const createPaymentIntent = functions
           //   .catch(async (error: any) => await throwError(error));
           const paymentIntentConfig: any = {
             currency: "usd",
-            metadata: {invoice},
+            metadata: { invoice },
           };
           if (DEBUG) {
             console.log(
@@ -192,8 +192,7 @@ export const createPaymentIntent = functions
                   {
                     headers: {
                       "Content-Type": "application/x-www-form-urlencoded",
-                      "Stripe-Version":
-                        "2020-08-27; terminal_server_driven_beta=v1",
+                      "Stripe-Version": functions.config()?.stripe?.api_version,
                       Authorization: `Bearer ${
                         functions.config()?.stripe?.secret_key
                       }`,
@@ -201,7 +200,7 @@ export const createPaymentIntent = functions
                   }
                 )
                 .then(async (response: any) => {
-                  const {data} = response;
+                  const { data } = response;
                   if (DEBUG)
                     console.log(
                       `RESPONSE: https://api.stripe.com/v1/terminal/readers/${reader}/process_payment_intent =>`,
@@ -218,7 +217,7 @@ export const createPaymentIntent = functions
                         ...data,
                         updatedOn: new Date(),
                       },
-                      {merge: true}
+                      { merge: true }
                     )
                     .then(() => true)
                     .catch(async (error: any) => await throwError(error));
@@ -237,7 +236,7 @@ export const createPaymentIntent = functions
                         failureMessage: data?.action?.failure_message,
                         updatedOn: new Date(),
                       },
-                      {merge: true}
+                      { merge: true }
                     )
                     .then(async () =>
                       mode === "client"
@@ -259,7 +258,7 @@ export const createPaymentIntent = functions
                                 failureMessage: data?.action?.failure_message,
                                 updatedOn: new Date(),
                               },
-                              {merge: true}
+                              { merge: true }
                             )
                             .catch(
                               async (error: any) => await throwError(error)
@@ -283,7 +282,7 @@ export const createPaymentIntent = functions
                     paymentIntentObject: paymentIntent,
                     updatedOn: new Date(),
                   },
-                  {merge: true}
+                  { merge: true }
                 )
                 .then(async () =>
                   mode === "client"
@@ -299,7 +298,7 @@ export const createPaymentIntent = functions
                             paymentIntentObject: paymentIntent,
                             updatedOn: new Date(),
                           },
-                          {merge: true}
+                          { merge: true }
                         )
                         .then(() => true)
                         .catch(async (error: any) => await throwError(error))

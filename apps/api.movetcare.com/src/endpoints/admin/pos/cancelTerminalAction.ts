@@ -30,7 +30,7 @@ export const cancelTerminalAction = functions
             {
               headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
-                "Stripe-Version": "2020-08-27; terminal_server_driven_beta=v1",
+                "Stripe-Version": functions.config()?.stripe?.api_version,
                 Authorization: `Bearer ${
                   functions.config()?.stripe?.secret_key
                 }`,
@@ -73,7 +73,7 @@ export const cancelTerminalAction = functions
                             ...canceledPaymentIntent,
                             updatedOn: new Date(),
                           },
-                          {merge: true}
+                          { merge: true }
                         )
                         .catch(async (error: any) => await throwError(error));
                       await admin
@@ -86,7 +86,7 @@ export const cancelTerminalAction = functions
                             paymentIntentObject: canceledPaymentIntent,
                             updatedOn: new Date(),
                           },
-                          {merge: true}
+                          { merge: true }
                         )
                         .catch(async (error: any) => await throwError(error));
                     });
@@ -116,7 +116,7 @@ export const cancelTerminalAction = functions
                                   ...canceledPaymentIntent,
                                   updatedOn: new Date(),
                                 },
-                                {merge: true}
+                                { merge: true }
                               )
                               .catch(
                                 async (error: any) => await throwError(error)
@@ -131,7 +131,7 @@ export const cancelTerminalAction = functions
                                   paymentIntentObject: canceledPaymentIntent,
                                   updatedOn: new Date(),
                                 },
-                                {merge: true}
+                                { merge: true }
                               )
                               .catch(
                                 async (error: any) => await throwError(error)
@@ -159,7 +159,7 @@ export const cancelTerminalAction = functions
                   display: null,
                   updatedOn: new Date(),
                 },
-                {merge: true}
+                { merge: true }
               )
               .then(() => true)
               .catch(async (error: any) => await throwError(error));
