@@ -2,6 +2,7 @@
 // import lottie from "lottie-web";
 // import Image from "next/image";
 import "../../animations/dog-w-ball.css";
+// import { Corgi } from "../../animations/corgi/Corgi";
 // https://codepen.io/stivaliserna/pen/jObPyKe
 // https://codepen.io/JayJay89/pen/aNmoYR
 // https://codepen.io/narendrashetty/pen/YwypNo
@@ -13,11 +14,11 @@ interface LottieProps {
   // height?: number;
 }
 
-// const getRandomInt = (min: number, max: number) => {
-//   const minRange = Math.ceil(min);
-//   const maxRange = Math.floor(max);
-//   return Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
-// };
+const getRandomInt = (min: number, max: number) => {
+  const minRange = Math.ceil(min);
+  const maxRange = Math.floor(max);
+  return Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
+};
 
 // const randomRandomAnimation = () => {
 //   const randomNumber = getRandomInt(1, 5);
@@ -61,10 +62,10 @@ LottieProps) => {
   //     });
   //   }
   // }, [animationData]);
-
+  // const randomNumber = getRandomInt(1, 2);
   return (
     <>
-      <div className="flex flex-grow justify-center items-center overflow-hidden -mt-8">
+      <div className="flex flex-grow justify-center items-center overflow-hidden">
         {/* <div style={{ width, height }} ref={element}></div> */}
         <svg
           className="sausage-dog-animation"
@@ -386,6 +387,9 @@ LottieProps) => {
             </g>
           </g>
         </svg>
+        {/* ) : (
+        <Corgi />
+      )} */}
       </div>
       <h2 className="text-2xl font-extrabold tracking-tight text-center -mt-10 mb-8">
         {message}
