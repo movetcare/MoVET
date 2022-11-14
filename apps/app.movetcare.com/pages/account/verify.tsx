@@ -1,12 +1,12 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { applyActionCode, getAuth } from "firebase/auth";
+import { applyActionCode } from "firebase/auth";
 import { environment } from "utilities";
+import { auth } from "services/firebase";
 
 export default function Verify() {
   const router = useRouter();
-  const auth = getAuth();
   const { mode, oobCode, apiKey, continueUrl } = router.query;
   const [isLoading, setLoading] = useState<boolean>(true);
   const [verificationSuccessful, setVerificationSuccessful] =

@@ -2,6 +2,10 @@
 // import lottie from "lottie-web";
 // import Image from "next/image";
 import "../../animations/dog-w-ball.css";
+// https://codepen.io/stivaliserna/pen/jObPyKe
+// https://codepen.io/JayJay89/pen/aNmoYR
+// https://codepen.io/narendrashetty/pen/YwypNo
+// https://codepen.io/brad482/pen/MGwXyW
 interface LottieProps {
   message?: string;
   // animationData?: any;
