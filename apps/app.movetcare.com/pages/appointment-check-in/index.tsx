@@ -1,5 +1,6 @@
 import { AppHeader } from "components/AppHeader";
 import { ClientCheckIn } from "forms/checkin/clientCheckIn";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -8,6 +9,13 @@ export default function CheckIn() {
   const { mode } = router.query || {};
   return (
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
+      <Head>
+        <title>Appointment Check In</title>
+        <meta
+          name="description"
+          content="Check in for your MoVET appointment!"
+        />
+      </Head>
       <main className="w-full flex-1 overflow-hidden">
         <AppHeader />
         {mode === "kiosk" ? (

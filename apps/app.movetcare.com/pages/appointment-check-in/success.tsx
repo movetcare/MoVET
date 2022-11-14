@@ -12,6 +12,7 @@ import router from "next/router";
 import { useState, useEffect } from "react";
 import { functions } from "services/firebase";
 import { formatPhoneNumber } from "utilities";
+import Head from "next/head";
 
 export default function Success() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -36,6 +37,9 @@ export default function Success() {
   }, []);
   return (
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
+      <Head>
+        <title>Success - Appointment Check In</title>
+      </Head>
       <main className="w-full flex-1 overflow-hidden">
         <AppHeader />
         <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 sm:p-8">

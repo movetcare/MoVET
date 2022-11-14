@@ -69,7 +69,7 @@ const createNewCustomer = async (
       },
       name:
         document.data()?.firstName && document.data()?.lastName
-          ? `${document.data()?.firstname} ${document.data()?.lastName}`
+          ? `${document.data()?.firstName} ${document.data()?.lastName}`
           : document.data()?.firstName
           ? document.data()?.firstName
           : document.data()?.lastName
@@ -83,5 +83,19 @@ const createNewCustomer = async (
     })
     .catch(async (error: any) => await throwError(error));
   if (DEBUG) console.log("NEW STRIPE CUSTOMER DATA", customer);
+  await admin
+    .firestore()
+    .collection("clients")
+    .doc(id)
+    .set(
+      { customer: { id: customer?.id }, updatedOn: new Date() },
+      { merge: true }
+    )
+    .then(
+      () =>
+        DEBUG &&
+        console.log("SUCCESSFULLY SAVED NEW CLIENT CUSTOMER ID", customer?.id)
+    )
+    .catch(async (error: any) => await throwError(error));
   return customer?.id;
 };
