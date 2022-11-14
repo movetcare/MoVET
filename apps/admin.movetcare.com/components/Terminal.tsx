@@ -95,21 +95,21 @@ const Terminal = () => {
         onClick={() => {
           if (isAdmin) setShowReaderDetails(!showReaderDetails);
         }}
-        className={`bg-white bg-opacity-50 shadow overflow-hidden flex flex-col justify-between items-center px-6 hover:cursor-pointer rounded-full${
-          reader?.status === 'online'
-            ? ' bg-movet-green bg-opacity-100 text-movet-white'
-            : reader?.status === 'offline' ||
+        className={`bg-opacity-50 shadow overflow-hidden flex flex-col justify-between items-center px-6 hover:cursor-pointer rounded-full${
+          reader?.status === "online"
+            ? " bg-movet-green bg-opacity-100 text-movet-white"
+            : reader?.status === "offline" ||
               (!reader?.status && !loadingTerminals)
-            ? ' bg-movet-red bg-opacity-100 text-movet-white'
-            : ''
+            ? " bg-movet-red bg-opacity-100 text-movet-white"
+            : ""
         }`}
       >
         <div
           className={`flex flex-row justify-between items-center w-full${
-            errorTerminals ? ' bg-movet-red' : ''
+            errorTerminals ? " bg-movet-red" : ""
           }`}
         >
-          <div className={'flex flex-row items-center justify-center w-full'}>
+          <div className={"flex flex-row items-center justify-center w-full"}>
             {errorTerminals || readerError ? (
               <div className="text-center text-sm cursor-pointer hover:text-movet-red">
                 <Error error={errorTerminals || readerError} />
@@ -127,23 +127,23 @@ const Terminal = () => {
                   />
                   <span className="ml-2">
                     {loadingTerminals
-                      ? 'Loading...'
-                      : reader?.status === 'online'
-                      ? 'Ready to Accept Payments'
+                      ? "Loading..."
+                      : reader?.status === "online"
+                      ? "Ready to Accept Payments"
                       : !reader
-                      ? 'Configuration Required'
+                      ? "Configuration Required"
                       : `Reader Status: ${reader?.status
-                          ?.replace('_', ' ')
+                          ?.replace("_", " ")
                           .toUpperCase()}`}
                   </span>
                 </h2>
                 {reader?.action?.status && (
                   <h2 className="italic text-sm font-bold -mt-2">
-                    {reader?.action?.status === 'in_progress'
-                      ? 'Transaction In Progress...'
-                      : reader?.action?.status === 'failed'
-                      ? 'Transaction Failed...'
-                      : ''}
+                    {reader?.action?.status === "in_progress"
+                      ? "Transaction In Progress..."
+                      : reader?.action?.status === "failed"
+                      ? "Transaction Failed..."
+                      : ""}
                   </h2>
                 )}
                 {readerError && (
@@ -162,14 +162,14 @@ const Terminal = () => {
       {showReaderDetails && !loadingTerminals && (
         <div
           className={
-            'mt-4 bg-white shadow overflow-hidden flex flex-col justify-between items-center rounded-lg'
+            "mt-4 bg-white shadow overflow-hidden flex flex-col justify-between items-center rounded-lg"
           }
         >
           <div className="flex flex-col w-full">
             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div className="overflow-hidden sm:rounded-lg">
-                  {reader?.status === 'online' ? (
+                  {reader?.status === "online" ? (
                     <table className="min-w-full divide-y divide-movet-gray">
                       <thead className="bg-movet-white bg-opacity-50">
                         <tr>
@@ -249,8 +249,8 @@ const Terminal = () => {
                             Device Version
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.device_sw_version === ''
-                              ? 'virtual_terminal_simulator'
+                            {reader?.device_sw_version === ""
+                              ? "virtual_terminal_simulator"
                               : reader?.device_sw_version}
                           </td>
                         </tr>
@@ -267,7 +267,7 @@ const Terminal = () => {
                             Live Mode
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.livemode?.toString() || ''}
+                            {reader?.livemode?.toString() || ""}
                           </td>
                         </tr>
                         {reader?.action?.failure_code && (
@@ -325,17 +325,17 @@ const Terminal = () => {
                       <button
                         onClick={() => {
                           setReader({
-                            status: 'Resetting Card Reader...',
+                            status: "Resetting Card Reader...",
                           });
                           const resetTerminal = httpsCallable(
                             functions,
-                            'resetTerminal'
+                            "resetTerminal"
                           );
                           resetTerminal()
                             .then((result: any) => {
                               if (result.data)
                                 setReader({
-                                  status: 'online',
+                                  status: "online",
                                 });
                             })
                             .catch((error: any) => setReaderError(error));
@@ -360,7 +360,7 @@ const Terminal = () => {
                       </a>
                     </div>
                   )}
-                  {environment !== 'production' && (
+                  {environment !== "production" && (
                     <>
                       <h3 className="text-center uppercase italic text-base my-4 hover:text-movet-red hover:underline ease-in-out duration-500">
                         <a
@@ -466,15 +466,15 @@ const Terminal = () => {
           </div>
         </div>
       )}
-      {reader?.display && environment !== 'production' && (
+      {reader?.display && environment !== "production" && (
         <div
-          className={`mt-4 p-4 bg-white bg-opacity-50 shadow overflow-hidden flex flex-col justify-between items-center px-6 hover:cursor-pointer rounded-lg${
-            reader?.status === 'online'
-              ? ' bg-movet-green bg-opacity-100 text-movet-white'
-              : reader?.status === 'offline' ||
+          className={`mt-4 p-4 bg-opacity-50 shadow overflow-hidden flex flex-col justify-between items-center px-6 hover:cursor-pointer rounded-lg${
+            reader?.status === "online"
+              ? " bg-movet-green bg-opacity-100 text-movet-white"
+              : reader?.status === "offline" ||
                 (!reader?.status && !loadingTerminals)
-              ? ' bg-movet-red bg-opacity-100 text-movet-white'
-              : ''
+              ? " bg-movet-red bg-opacity-100 text-movet-white"
+              : ""
           }`}
         >
           <h3 className="mb-2 -mt-2 text-lg font-medium">SIMULATOR DISPLAY</h3>
