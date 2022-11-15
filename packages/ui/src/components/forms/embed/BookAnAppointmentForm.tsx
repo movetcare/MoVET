@@ -32,7 +32,9 @@ export const BookAnAppointmentForm = ({
     window.open(
       (environment === "production"
         ? "https://app.movetcare.com"
-        : `http://localhost:3001`) +
+        : window.location.hostname === "localhost"
+        ? `http://localhost:3001`
+        : "https://stage.app.movetcare.com") +
         `?email=${data.email?.toLowerCase()?.replaceAll("+", "%2B")}`,
       "_blank"
     );
