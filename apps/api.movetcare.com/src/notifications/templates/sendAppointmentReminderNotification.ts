@@ -1,26 +1,29 @@
 /* eslint-disable quotes */
-import {getProVetIdFromUrl} from './../utils/getProVetIdFromUrl';
-import {getAuthUserById} from '../utils/auth/getAuthUserById';
+import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
+import { getAuthUserById } from "../../utils/auth/getAuthUserById";
 import {
   admin,
   emailClient,
   environment,
-  proVetApiUrl,
-  request,
-  smsClient,
   throwError,
+  functions,
   // DEBUG,
-} from '../config/config';
-import {logEvent} from '../utils/logging/logEvent';
+} from "../../config/config";
+const sms = require("twilio")(
+  functions.config()?.twilio.account_sid,
+  functions.config()?.twilio.auth_token
+);
 import {
   getClientNotificationSettings,
   UserNotificationSettings,
-} from '../utils/getClientNotificationSettings';
-import {getDateStringFromDate} from '../utils/getDateStringFromDate';
-import {getCustomerId} from '../utils/getCustomerId';
-import {verifyValidPaymentSource} from '../utils/verifyValidPaymentSource';
-import {fetchEntity} from '../integrations/provet/entities/fetchEntity';
-import type { EmailConfiguration } from "../types/email";
+} from "../../utils/getClientNotificationSettings";
+import { getDateStringFromDate } from "../../utils/getDateStringFromDate";
+import { getCustomerId } from "../../utils/getCustomerId";
+import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
+import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
+import type { EmailConfiguration } from "../../types/email";
+import { createProVetNote } from "../../integrations/provet/entities/note/createProVetNote";
+import { sendNotification } from "../sendNotification";
 const DEBUG = false;
 interface AppointmentDetails {
   active: boolean;
@@ -60,16 +63,16 @@ export const sendAppointmentReminderNotification = async (
     patients,
   } = appointmentDetails;
   if (DEBUG) {
-    console.log('appointmentDetails', appointmentDetails);
-    console.log('start', start?.toDate());
-    console.log('start.toDate() > new Date()', start?.toDate() > new Date());
-    console.log('active', active);
+    console.log("appointmentDetails", appointmentDetails);
+    console.log("start", start?.toDate());
+    console.log("start.toDate() > new Date()", start?.toDate() > new Date());
+    console.log("active", active);
   }
   if (active && start?.toDate() > new Date()) {
     const userDetails: UserDetails = await getAuthUserById(`${client}`, [
-      'email',
-      'phoneNumber',
-      'displayName',
+      "email",
+      "phoneNumber",
+      "displayName",
     ]);
     const customerId = await getCustomerId(`${client}`);
     let doesHaveValidPaymentOnFile: false | Array<any> = false;
@@ -80,7 +83,7 @@ export const sendAppointmentReminderNotification = async (
       );
     const userNotificationSettings: UserNotificationSettings | false =
       await getClientNotificationSettings(`${client}`);
-    const clientProvetRecord = await fetchEntity('client', client);
+    const clientProvetRecord = await fetchEntity("client", client);
     const petNames =
       patients.length > 1
         ? patients.map((patient: any, index: number) =>
@@ -90,10 +93,10 @@ export const sendAppointmentReminderNotification = async (
           )
         : patients[0].name;
     if (DEBUG) {
-      console.log('clientProvetRecord', clientProvetRecord);
-      console.log('petNames -> ', petNames);
-      console.log('send24HourReminder', send24HourReminder);
-      console.log('send30MinReminder', send30MinReminder);
+      console.log("clientProvetRecord", clientProvetRecord);
+      console.log("petNames -> ", petNames);
+      console.log("send24HourReminder", send24HourReminder);
+      console.log("send30MinReminder", send30MinReminder);
     }
     if (send24HourReminder)
       await send24HourAppointmentNotification(
@@ -118,37 +121,24 @@ export const sendAppointmentReminderNotification = async (
       console.log(
         `${
           appointmentDetails?.active
-            ? 'Appointment Archived'
+            ? "Appointment Archived"
             : appointmentDetails?.start.toDate() < new Date()
-            ? 'Appointment Passed'
-            : 'UNKNOWN APPOINTMENT ISSUE'
+            ? "Appointment Passed"
+            : "UNKNOWN APPOINTMENT ISSUE"
         } - DID NOT send appointment reminder...`,
         appointmentDetails
       );
-    await logEvent({
-      tag: 'appointment_reminder',
-      origin: 'api',
-      success: true,
-      data: {
-        active: appointmentDetails?.active,
-        id: appointmentDetails?.id,
-        client: appointmentDetails?.client,
-        send30MinReminder: appointmentDetails?.send30MinReminder,
-        send24HourReminder: appointmentDetails?.send24HourReminder,
-        user: appointmentDetails?.user,
-        start: appointmentDetails?.start.toDate(),
-        instructions: appointmentDetails?.instructions,
-        patients: appointmentDetails?.patients,
-        reason: appointmentDetails?.reason,
+    sendNotification({
+      type: "slack",
+      payload: {
         message: `:x: ${
           appointmentDetails?.active
-            ? 'Appointment Archived'
+            ? "Appointment Archived"
             : appointmentDetails?.start.toDate() < new Date()
-            ? 'Appointment Passed'
-            : 'UNKNOWN APPOINTMENT ISSUE'
+            ? "Appointment Passed"
+            : "UNKNOWN APPOINTMENT ISSUE"
         } - DID NOT send appointment reminder...`,
       },
-      sendToSlack: true,
     });
   }
 };
@@ -264,29 +254,13 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
         .send(emailConfig)
         .then(async () => {
           if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-          await request
-            .post("/note/", {
-              title: `24 Hour Appointment Reminder Notification`,
-              type: 1,
-              client: proVetApiUrl + `/client/${client}/`,
-              patients: [],
-              note: emailConfig.html,
-            })
-            .then(async (response: any) => {
-              const { data } = response;
-              if (DEBUG) console.log("API Response: POST /note/ => ", data);
-              await logEvent({
-                tag: "24-hour-appointment-notification-email",
-                origin: "api",
-                success: true,
-                data: {
-                  message: "Synced 24 Hour Appointment Notification w/ ProVet",
-                  ...emailConfig,
-                },
-                sendToSlack: true,
-              });
-            })
-            .catch(async (error: any) => await throwError(error));
+          createProVetNote({
+            type: 1,
+            subject: `24 Hour Appointment Reminder Notification`,
+            message: emailConfig.html,
+            client: `${client}`,
+            patients: [],
+          });
           await admin
             .firestore()
             .collection("clients")
@@ -297,11 +271,11 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
               ...emailConfig,
               createdOn: new Date(),
             })
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
         })
         .catch(async (error: any) => {
           if (DEBUG) console.error(error?.response?.body?.errors);
-          await throwError(error);
+          throwError(error);
         });
     else console.log("SIMULATING APPOINTMENT NOTIFICATION CONFIRMATION EMAIL");
   } else if (DEBUG)
@@ -362,7 +336,7 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
     }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     if (DEBUG) console.log("smsText -> ", smsText);
     if (environment?.type === "production") {
-      await smsClient.messages
+      await sms.messages
         .create({
           body: smsText,
           from: "+17206775047",
@@ -375,67 +349,29 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
               from: "+17206775047",
               to: phoneNumber,
             });
-          await request
-            .post("/note/", {
-              title: `24 Hour Appointment Reminder Notification`,
-              type: 0,
-              client: proVetApiUrl + `/client/${client}/`,
-              patients: [],
-              note: smsText,
-            })
-            .then(async (response: any) => {
-              const { data } = response;
-              if (DEBUG) console.log("API Response: POST /note/ => ", data);
-              await logEvent({
-                tag: "24-hour-appointment-notification-sms",
-                origin: "api",
-                success: true,
-                data: {
-                  message: "Synced 24 Hour Appointment Notification w/ ProVet",
-                  body: smsText,
-                  from: "+17206775047",
-                  to: phoneNumber,
-                },
-                sendToSlack: true,
-              });
-            })
-            .catch(async (error: any) => await throwError(error));
+          createProVetNote({
+            type: 0,
+            subject: `24 Hour Appointment Reminder Notification (SMS)`,
+            message: smsText,
+            client: `${client}`,
+            patients: [],
+          });
         })
         .catch(async (error: any) => {
           console.error(error);
           if (DEBUG)
-            console.log("SMS FAILED TO SEND!", {
+            console.error("SMS FAILED TO SEND!", {
               body: smsText,
               from: "+17206775047",
               to: phoneNumber,
             });
-          await request
-            .post("/note/", {
-              title: `FAILED TO SEND 24 Hour Appointment Reminder Notification`,
-              type: 0,
-              client: proVetApiUrl + `/client/${client}/`,
-              patients: [],
-              note: smsText + "\n\n" + error.message,
-            })
-            .then(async (response: any) => {
-              const { data } = response;
-              if (DEBUG) console.log("API Response: POST /note/ => ", data);
-              await logEvent({
-                tag: "24-hour-appointment-notification-sms",
-                origin: "api",
-                success: false,
-                data: {
-                  message: `FAILED TO SEND 24 Hour Appointment Reminder Notification ${
-                    error.message ? `: ${error.message}` : ""
-                  }`,
-                  body: smsText,
-                  from: "+17206775047",
-                  to: phoneNumber,
-                },
-                sendToSlack: true,
-              });
-            })
-            .catch(async (error: any) => await throwError(error));
+          createProVetNote({
+            type: 0,
+            subject: `FAILED TO SEND 24 Hour Appointment Reminder Notification (SMS)`,
+            message: smsText + "\n\n" + error.message,
+            client: `${client}`,
+            patients: [],
+          });
         });
       await admin
         .firestore()
@@ -449,7 +385,7 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
           to: phoneNumber,
           createdOn: new Date(),
         })
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
     } else console.log("SIMULATING APPOINTMENT NOTIFICATION CONFIRMATION SMS");
   } else if (DEBUG)
     console.log("DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION SMS", {
@@ -569,29 +505,13 @@ const send30MinAppointmentNotification = async (
         .send(emailConfig)
         .then(async () => {
           if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-          await request
-            .post("/note/", {
-              title: `30 Min Appointment Reminder Notification`,
-              type: 1,
-              client: proVetApiUrl + `/client/${client}/`,
-              patients: [],
-              note: emailConfig.html,
-            })
-            .then(async (response: any) => {
-              const { data } = response;
-              if (DEBUG) console.log("API Response: POST /note/ => ", data);
-              await logEvent({
-                tag: "30-min-appointment-notification-email",
-                origin: "api",
-                success: true,
-                data: {
-                  message: "Synced 30 Min Appointment Notification w/ ProVet",
-                  ...emailConfig,
-                },
-                sendToSlack: true,
-              });
-            })
-            .catch(async (error: any) => await throwError(error));
+          createProVetNote({
+            type: 1,
+            subject: `30 Min Appointment Reminder Notification (EMAIL)`,
+            message: emailConfig.html,
+            client: `${client}`,
+            patients: [],
+          });
           await admin
             .firestore()
             .collection("clients")
@@ -602,11 +522,11 @@ const send30MinAppointmentNotification = async (
               ...emailConfig,
               createdOn: new Date(),
             })
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
         })
         .catch(async (error: any) => {
           if (DEBUG) console.error(error?.response?.body?.errors);
-          await throwError(error);
+          throwError(error);
         });
     else console.log("SIMULATING 30 MIN APPOINTMENT NOTIFICATION EMAIL");
   } else if (DEBUG)
@@ -676,7 +596,7 @@ and medical records to info@movetcare.com prior to your appointment.\n`
     }\nPlease email info@movetcare.com, text (720) 507-7387 us, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     if (DEBUG) console.log("smsText -> ", smsText);
     if (environment?.type === "production") {
-      await smsClient.messages
+      await sms.messages
         .create({
           body: smsText,
           from: "+17206775047",
@@ -689,31 +609,13 @@ and medical records to info@movetcare.com prior to your appointment.\n`
               from: "+17206775047",
               to: phoneNumber,
             });
-          await request
-            .post("/note/", {
-              title: `24 Hour Appointment Reminder Notification`,
-              type: 0,
-              client: proVetApiUrl + `/client/${client}/`,
-              patients: [],
-              note: smsText,
-            })
-            .then(async (response: any) => {
-              const { data } = response;
-              if (DEBUG) console.log("API Response: POST /note/ => ", data);
-              await logEvent({
-                tag: "30-min-appointment-notification-sms",
-                origin: "api",
-                success: true,
-                data: {
-                  message: "Synced 24 Hour Appointment Notification w/ ProVet",
-                  body: smsText,
-                  from: "+17206775047",
-                  to: phoneNumber,
-                },
-                sendToSlack: true,
-              });
-            })
-            .catch(async (error: any) => await throwError(error));
+          createProVetNote({
+            type: 0,
+            subject: `30 Min Appointment Reminder Notification (SMS)`,
+            message: smsText,
+            client: `${client}`,
+            patients: [],
+          });
         })
         .catch(async (error: any) => {
           console.error(error);
@@ -723,33 +625,13 @@ and medical records to info@movetcare.com prior to your appointment.\n`
               from: "+17206775047",
               to: phoneNumber,
             });
-          await request
-            .post("/note/", {
-              title: `FAILED TO 30 MIN Hour Appointment Reminder Notification`,
-              type: 0,
-              client: proVetApiUrl + `/client/${client}/`,
-              patients: [],
-              note: smsText + "\n\n" + error.message,
-            })
-            .then(async (response: any) => {
-              const { data } = response;
-              if (DEBUG) console.log("API Response: POST /note/ => ", data);
-              await logEvent({
-                tag: "30-min-appointment-notification-sms",
-                origin: "api",
-                success: false,
-                data: {
-                  message: `FAILED TO 30 MIN Hour Appointment Reminder Notification ${
-                    error.message ? `: ${error.message}` : ""
-                  }`,
-                  body: smsText,
-                  from: "+17206775047",
-                  to: phoneNumber,
-                },
-                sendToSlack: true,
-              });
-            })
-            .catch(async (error: any) => await throwError(error));
+          createProVetNote({
+            type: 0,
+            subject: `FAILED TO 30 MIN Hour Appointment Reminder Notification (SMS)`,
+            message: smsText + "\n\n" + error.message,
+            client: `${client}`,
+            patients: [],
+          });
         });
       await admin
         .firestore()
@@ -763,7 +645,7 @@ and medical records to info@movetcare.com prior to your appointment.\n`
           to: phoneNumber,
           createdOn: new Date(),
         })
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
     } else console.log("SIMULATING 30 MIN APPOINTMENT NOTIFICATION SMS");
   } else if (DEBUG)
     console.log("DID NOT 30 MIN HOUR APPOINTMENT NOTIFICATION SMS", {
@@ -775,19 +657,19 @@ and medical records to info@movetcare.com prior to your appointment.\n`
 const getReasonName = async (reason: string) =>
   await admin
     .firestore()
-    .collection('reasons')
-    .where('id', '==', getProVetIdFromUrl(reason))
+    .collection("reasons")
+    .where("id", "==", getProVetIdFromUrl(reason))
     .limit(1)
     .get()
     .then(async (querySnapshot: any) => {
       if (DEBUG)
-        console.log('querySnapshot?.docs?.length', querySnapshot?.docs?.length);
+        console.log("querySnapshot?.docs?.length", querySnapshot?.docs?.length);
       let reason = null;
       if (querySnapshot?.docs?.length > 0)
         querySnapshot.forEach(async (doc: any) => {
           reason = doc.data()?.name;
-          if (DEBUG) console.log('REASON NAME: ', reason);
+          if (DEBUG) console.log("REASON NAME: ", reason);
         });
       return reason;
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

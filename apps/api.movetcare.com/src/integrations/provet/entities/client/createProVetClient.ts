@@ -24,10 +24,10 @@ export const createProVetClient = async (data: {
     return await request
       .post("/client/", requestBody)
       .then(async (response: any) => {
-        const {data} = response;
+        const { data } = response;
         if (DEBUG) console.log("API Response: POST /client/ => ", data);
         return data;
       })
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
   } else return false;
 };

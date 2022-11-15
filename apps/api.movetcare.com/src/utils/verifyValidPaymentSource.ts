@@ -59,4 +59,4 @@ const getInvoicePaymentMethods = async (client: string): Promise<any> =>
     .doc(client)
     .collection("payment_methods")
     .get()
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

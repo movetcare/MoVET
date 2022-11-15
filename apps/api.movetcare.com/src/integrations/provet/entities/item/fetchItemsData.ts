@@ -42,7 +42,7 @@ export const fetchItemsData = async (
                 `configure_items_${index}`
               )
           )
-          .catch(async (error: any) => await throwError(error)))
+          .catch(async (error: any) => throwError(error)))
     );
     await Promise.all(
       itemIdChunks[0].map(async (itemId: string) => {
@@ -89,7 +89,7 @@ export const fetchItemsData = async (
                   result.data?.hide_on_consultation_search,
               } as Item)
           )
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
         if (DEBUG) console.log("initialItemData", initialItemData);
         if (initialItemData) itemsData.push(initialItemData as any);
       })
@@ -142,7 +142,7 @@ export const fetchItemsData = async (
                   result.data?.hide_on_consultation_search,
               } as Item)
           )
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
         if (DEBUG) console.log("itemData", itemData);
         if (itemData) itemsData.push(itemData as any);
       })

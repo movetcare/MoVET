@@ -1,7 +1,7 @@
-import {logEvent} from "../utils/logging/logEvent";
-import {admin, throwError} from "../config/config";
-import {updateProVetClient} from "../integrations/provet/entities/client/updateProVetClient";
-import {capitalizeFirstLetter} from "../utils/capitalizeFirstLetter";
+import { sendNotification } from "./../notifications/sendNotification";
+import { admin, throwError } from "../config/config";
+import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
+import { capitalizeFirstLetter } from "../utils/capitalizeFirstLetter";
 const DEBUG = false;
 export const updateBookingClient = async (
   id: string,
@@ -11,7 +11,7 @@ export const updateBookingClient = async (
     lastName: string;
     phone: string;
   }
-): Promise<boolean> => {
+): Promise<void> => {
   if (DEBUG)
     console.log("UPDATING CLIENT", {
       id,
@@ -30,7 +30,7 @@ export const updateBookingClient = async (
         id,
         client,
       });
-    return await admin
+    admin
       .firestore()
       .collection("bookings")
       .doc(id)
@@ -44,27 +44,17 @@ export const updateBookingClient = async (
             phoneNumber: client.phone,
           },
         },
-        {merge: true}
+        { merge: true }
       )
-      .then(async () => {
+      .then(() => {
         if (DEBUG)
           console.log("SUCCESSFULLY UPDATED BOOKING W/ CLIENT DATA", {
             id,
             client,
           });
-        return await logEvent({
-          tag: "appointment-booking",
-          origin: "api",
-          success: true,
-          sendToSlack: true,
-          data: {
-            id,
-            status: "patient-selection",
-            updatedOn: new Date(),
-            client: {
-              displayName: client.firstName,
-              phoneNumber: client.phone,
-            },
+        sendNotification({
+          type: "slack",
+          payload: {
             message: [
               {
                 type: "section",
@@ -113,7 +103,6 @@ export const updateBookingClient = async (
           },
         });
       })
-      .catch(async (error: any) => await throwError(error));
-  } else
-    return await throwError({message: "FAILED TO UPDATE CLIENT IN PROVET"});
+      .catch((error: any) => throwError(error));
+  } else throwError({ message: "FAILED TO UPDATE CLIENT IN PROVET" });
 };

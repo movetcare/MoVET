@@ -70,7 +70,7 @@ export const updateProVetPatient = async (data: Patient): Promise<any> => {
       //         );
       //       return data?.results;
       //     })
-      //     .catch(async (error: any) => await throwError(error));
+      //      .catch((error: any) => throwError(error));
       // }
       // return {
       //   ...data,
@@ -78,7 +78,7 @@ export const updateProVetPatient = async (data: Patient): Promise<any> => {
       // };
       return data;
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
   return await savePatient(proVetPatientData);
 };

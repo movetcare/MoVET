@@ -26,7 +26,7 @@ export const refundPaymentIntent = functions
           .create({
             payment_intent: data?.paymentIntent,
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
         if (DEBUG) console.log("refund", refund);
         if (refund) {
           await admin
@@ -42,9 +42,9 @@ export const refundPaymentIntent = functions
                 ...refund,
                 updatedOn: new Date(),
               },
-              {merge: true}
+              { merge: true }
             )
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
           if (refund?.status === "succeeded")
             return await admin
               .firestore()
@@ -57,10 +57,10 @@ export const refundPaymentIntent = functions
                   paymentStatus: "partially-refunded",
                   updatedOn: new Date(),
                 },
-                {merge: true}
+                { merge: true }
               )
               .then(async () => true)
-              .catch(async (error: any) => await throwError(error));
+              .catch((error: any) => throwError(error));
           else return false;
         }
       } else return false;

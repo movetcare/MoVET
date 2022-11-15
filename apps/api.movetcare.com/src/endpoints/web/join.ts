@@ -6,9 +6,9 @@ import {
   DEBUG,
 } from "../../config/config";
 import {createProVetClient} from "../../integrations/provet/entities/client/createProVetClient";
-import {updateSendGridContact} from "../../integrations/sendgrid/updateSendGridContact";
-import {logEvent} from "../../utils/logging/logEvent";
-import {recaptchaIsVerified} from "../../utils/recaptchaIsVerified";
+import { updateSendGridContact } from "../../integrations/sendgrid/updateSendGridContact";
+import { sendNotification } from "../../notifications/sendNotification";
+import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 
 interface JoinRequest {
   token: string;
@@ -50,25 +50,23 @@ export const join = functions
                 ...payload,
                 createdOn: new Date(),
               });
-            const sendGridPayload: any = {email};
+            const sendGridPayload: any = { email };
             if (source === "grand-opening") {
-              sendGridPayload.customFields = {e2_N: 1, e1_T: "join"};
-            } else sendGridPayload.customFields = {e1_T: "join"};
+              sendGridPayload.customFields = { e2_N: 1, e1_T: "join" };
+            } else sendGridPayload.customFields = { e1_T: "join" };
             await updateSendGridContact(sendGridPayload);
             if (createClient) {
               await createProVetClient({
                 email,
                 zip_code: null,
               });
-              await logEvent({
-                tag: "join",
-                origin: "api",
-                success: true,
-                data: {message: `:tada: ${email} joined MoVET!`},
+              sendNotification({
+                type: "slack",
+                payload: { message: `:tada: ${email} joined MoVET!` },
               });
             }
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       } else return false;
     }
   );

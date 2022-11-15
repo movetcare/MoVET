@@ -4,7 +4,7 @@ import {
   admin,
   throwError,
 } from "../config/config";
-import {logEvent} from "../utils/logging/logEvent";
+import { sendNotification } from "../notifications/sendNotification";
 
 export const updateTelehealthChatStatusToOffline: Promise<void> = functions
   .runWith(defaultRuntimeOptions)
@@ -22,23 +22,15 @@ export const updateTelehealthChatStatusToOffline: Promise<void> = functions
             waitTime: 5,
             updatedOn: new Date(),
           },
-          {merge: true}
+          { merge: true }
         )
-        .then(
-          async () =>
-            await logEvent({
-              tag: "force-telehealth-chat-offline",
-              origin: "api",
-              success: true,
-              data: {
-                message: "Telehealth Chat Status Updated to \"OFFLINE\"",
-                isOnline: false,
-                queueSize: 0,
-                waitTime: 5,
-                updatedOn: new Date(),
-              },
-              sendToSlack: true,
-            })
+        .then(() =>
+          sendNotification({
+            type: "slack",
+            payload: {
+              message: ":robot_face: Telehealth status changed to OFFLINE",
+            },
+          })
         )
-        .catch(async (error: any) => await throwError(error))
+        .catch(async (error: any) => throwError(error))
   );

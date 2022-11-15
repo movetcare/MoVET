@@ -11,22 +11,21 @@ import {configureAppointmentOptionDetails} from "../integrations/provet/entities
 import {configureCancellationReasons} from "../integrations/provet/entities/reason/configureCancellationReasons";
 import {configureTelehealthStatus} from "../integrations/provet/entities/appointment/configure/configureTelehealthStatus";
 import {configureInvoices} from "../integrations/provet/entities/invoice/configureInvoices";
-import {configureUsers} from "./configureUsers";
-import {logEvent} from "../utils/logging/logEvent";
-import {configureItems} from "../integrations/provet/entities/item/configureItems";
-import {configureBooking} from "../booking/configureBooking";
+import { configureUsers } from "./configureUsers";
+import { configureItems } from "../integrations/provet/entities/item/configureItems";
+import { configureBooking } from "../booking/configureBooking";
+import { sendNotification } from "../notifications/sendNotification";
 
 export const initProVetConfig = async (
-  {body: {apiKey, type}}: Request<{body: any}>,
+  { body: { apiKey, type } }: Request<{ body: any }>,
   response: Response
 ): Promise<Response> => {
-  if (apiKey === mobileClientApiKey || environment.type === "development") {
-    await logEvent({
-      tag: "provet-webhook",
-      origin: "api",
-      success: true,
-      data: {message: "APP CONFIG RESET TRIGGERED!"},
-      sendToSlack: true,
+  if (apiKey === mobileClientApiKey) {
+    sendNotification({
+      type: "slack",
+      payload: {
+        message: `:warning: Platform Configuration "${type?.toUpperCase()}" Triggered!`,
+      },
     });
     const entities: Array<string> = [
       "breeds",
@@ -76,7 +75,7 @@ export const initProVetConfig = async (
                 return response.status(200).send();
               })
               .catch(async (error: any) => {
-                await throwError(error);
+                throwError(error);
                 return response.status(500).send();
               }))
           );

@@ -18,7 +18,7 @@ export const saveBreeds = async (
   );
 
   const didUpdateOldBreedsList = await Promise.all(
-    breeds.map(async (breed: {id: string; title: string}) => {
+    breeds.map(async (breed: { id: string; title: string }) => {
       if (DEBUG) console.log("BREED", breed);
       await admin
         .firestore()
@@ -29,16 +29,16 @@ export const saveBreeds = async (
             record: FieldValue.arrayUnion(breed),
             updatedOn: new Date(),
           },
-          {merge: true}
+          { merge: true }
         )
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
     })
   )
     .then(() => true)
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
   const didUpdateNewBreedsList = await Promise.all(
-    newBreeds.map(async (breed: {value: string; label: string}) => {
+    newBreeds.map(async (breed: { value: string; label: string }) => {
       if (DEBUG) console.log("BREED", breed);
       await admin
         .firestore()
@@ -49,14 +49,14 @@ export const saveBreeds = async (
             options: FieldValue.arrayUnion(breed),
             updatedOn: new Date(),
           },
-          {merge: true}
+          { merge: true }
         )
         .then(() => true)
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
     })
   )
     .then(() => true)
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
   if (didUpdateOldBreedsList && didUpdateNewBreedsList) return true;
   else return false;
 };

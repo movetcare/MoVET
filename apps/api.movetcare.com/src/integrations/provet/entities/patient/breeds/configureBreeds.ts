@@ -34,5 +34,5 @@ export const configureBreeds = async (): Promise<boolean> => {
         );
       return false;
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

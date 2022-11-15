@@ -27,7 +27,7 @@ export const checkoutSessionCompleted = async (event: any) =>
           onboardingComplete: true,
           isClient: true,
         })
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
     })
     .then(async () => {
       await admin
@@ -53,18 +53,18 @@ export const checkoutSessionCompleted = async (event: any) =>
                     paymentMethod: (
                       (await stripe.customers.listPaymentMethods(
                         event?.data?.object?.customer,
-                        {type: "card", limit: 1}
+                        { type: "card", limit: 1 }
                       )) as any
                     )?.data[0],
                     status: "complete",
                     isActive: true,
                     updatedOn: new Date(),
                   },
-                  {merge: true}
+                  { merge: true }
                 )
-                .catch(async (error: any) => await throwError(error));
+                .catch((error: any) => throwError(error));
             });
         })
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
     })
     .catch(async (error: any) => throwError(error));

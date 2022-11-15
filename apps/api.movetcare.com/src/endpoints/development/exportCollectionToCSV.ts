@@ -16,12 +16,12 @@ export const exportCollectionToCSV = functions.pubsub
       .firestore()
       .collection(`${message}`)
       .get()
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
     const data = snapshot.docs.map((doc: any) => doc.data());
     if (DEBUG) console.log("data", data);
     const output: any = await parseAsync(data, {
       fields: JSON.parse(fields),
-    }).catch(async (error: any) => await throwError(error));
+    }).catch((error: any) => throwError(error));
     if (DEBUG) console.log("output", output);
     const dateTime = new Date().toISOString().replace(/\W/g, "");
     const filename = `${collection}_${dateTime}.csv`;

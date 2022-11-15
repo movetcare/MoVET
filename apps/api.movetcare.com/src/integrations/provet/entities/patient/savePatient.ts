@@ -96,8 +96,8 @@ export const savePatient = async (
               );
             return proVetPatientData.id;
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       }
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

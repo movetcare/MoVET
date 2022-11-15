@@ -67,16 +67,13 @@ export default function BookingSuccess() {
   };
   return (
     <section className="w-full flex-1">
-      <AppHeader />
       <div
-        className={`flex items-center justify-center bg-white rounded-xl max-w-lg mx-auto${
-          !isAppMode ? " p-4 mb-8 sm:p-8" : ""
-        }`}
+        className={`flex items-center justify-center bg-white rounded-xl max-w-lg mx-auto`}
       >
-        <div className={isAppMode ? "px-8 mb-8" : "p-8"}>
+        <div className={isAppMode ? "px-4 mb-8" : "p-4 sm:p-8"}>
           <section className="relative mx-auto">
             {isLoading ? (
-              <Loader message="Confirming Booking Request..." />
+              <Loader message="Loading Confirmation..." />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (

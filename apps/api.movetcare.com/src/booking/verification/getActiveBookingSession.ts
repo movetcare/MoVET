@@ -16,7 +16,7 @@ export const getActiveBookingSession = async (
     .then(
       async (snapshot: any) => await getActiveAppointmentBooking(user, snapshot)
     )
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
 const getActiveAppointmentBooking = async (user: UserRecord, snapshot: any) => {
   const activeBookings: Array<any> = [];
@@ -50,13 +50,13 @@ const getActiveAppointmentBooking = async (user: UserRecord, snapshot: any) => {
                   "getActiveAppointmentBooking => BOOKING DOCUMENT",
                   document.data()
                 );
-              return {id: bookingDocument?.id, ...document.data()};
+              return { id: bookingDocument?.id, ...document.data() };
             } else
               return {
                 id: (await startNewBooking(user))?.id,
               };
           })
-          .catch(async (error: any) => await throwError(error))),
+          .catch(async (error: any) => throwError(error))),
       };
     } else
       return {

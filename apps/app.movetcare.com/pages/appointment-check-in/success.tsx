@@ -41,7 +41,6 @@ export default function Success() {
         <title>Success - Appointment Check In</title>
       </Head>
       <main className="w-full flex-1 overflow-hidden">
-        <AppHeader />
         <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 sm:p-8">
           {isLoading ? (
             <Loader />

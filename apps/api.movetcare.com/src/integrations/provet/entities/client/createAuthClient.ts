@@ -1,7 +1,7 @@
 import {admin, DEBUG} from "../../../../config/config";
 // import {sendVerificationEmail} from '../../../../utils/auth/sendVerificationEmail';
 import {saveClient} from "./saveClient";
-import {sendWelcomeEmail} from "../../../../notifications/sendWelcomeEmail";
+import { sendWelcomeEmail } from "../../../../notifications/templates/sendWelcomeEmail";
 
 export const createAuthClient = async (
   proVetClientData: any,
@@ -36,16 +36,16 @@ export const createAuthClient = async (
       // await sendVerificationEmail(userRecord);'
       if (withResetLink === false) {
         if (DEBUG) console.log("ATTEMPTING TO SEND WELCOME EMAIL WITHOUT LINK");
-        await sendWelcomeEmail(proVetClientData?.email, false);
+        sendWelcomeEmail(proVetClientData?.email, false);
       } else if (
         proVetClientData?.password === null ||
         proVetClientData?.password === undefined
       ) {
         if (DEBUG) console.log("ATTEMPTING TO SEND WELCOME EMAIL WITH LINK");
-        await sendWelcomeEmail(proVetClientData?.email, true);
+        sendWelcomeEmail(proVetClientData?.email, true);
       } else {
         if (DEBUG) console.log("ATTEMPTING TO SEND WELCOME EMAIL WITHOUT LINK");
-        await sendWelcomeEmail(proVetClientData?.email, false);
+        sendWelcomeEmail(proVetClientData?.email, false);
       }
       return await saveClient(
         proVetClientData?.id,

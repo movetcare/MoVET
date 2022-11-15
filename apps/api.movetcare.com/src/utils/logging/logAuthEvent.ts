@@ -50,7 +50,7 @@ export const logAuthEvent = async (payload: EventLogPayload) => {
           timestamp: new Date(),
         })
         .then(() => true)
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
     }
   }
   return false;

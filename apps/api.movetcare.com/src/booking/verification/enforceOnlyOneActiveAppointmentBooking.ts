@@ -9,12 +9,12 @@ export const enforceOnlyOneActiveAppointmentBooking = async (
           .firestore()
           .collection("bookings")
           .doc(bookingId)
-          .set({isActive: false, updatedOn: new Date()}, {merge: true})
-          .catch(async (error: any) => await throwError(error))
+          .set({ isActive: false, updatedOn: new Date() }, { merge: true })
+          .catch(async (error: any) => throwError(error))
       : await admin
           .firestore()
           .collection("bookings")
           .doc(bookingId)
-          .set({isActive: true, updatedOn: new Date()}, {merge: true})
-          .catch(async (error: any) => await throwError(error))
+          .set({ isActive: true, updatedOn: new Date() }, { merge: true })
+          .catch(async (error: any) => throwError(error))
   );

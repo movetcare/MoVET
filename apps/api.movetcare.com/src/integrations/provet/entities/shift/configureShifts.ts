@@ -1,9 +1,9 @@
-import {admin, DEBUG, throwError} from "../../../../config/config";
+import { sendNotification } from "./../../../../notifications/sendNotification";
+import { admin, DEBUG, throwError } from "../../../../config/config";
 import type { Shift } from "../../../../types/shift";
-import {deleteCollection} from "../../../../utils/deleteCollection";
-import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
-import {logEvent} from "../../../../utils/logging/logEvent";
-import {fetchEntity} from "../fetchEntity";
+import { deleteCollection } from "../../../../utils/deleteCollection";
+import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
+import { fetchEntity } from "../fetchEntity";
 
 export const configureShifts = async (): Promise<boolean> => {
   await deleteCollection("shifts").then(
@@ -39,17 +39,16 @@ export const configureShifts = async (): Promise<boolean> => {
       telehealthShifts && (await updateShiftDocuments(telehealthShifts));
 
     if (clinic || mobile || telehealth) {
-      await logEvent({
-        tag: "provet-shifts",
-        origin: "api",
-        success: true,
-        data: {message: "ProVET Shifts Successfully Synced"},
-        sendToSlack: true,
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: ":spiral_calendar_pad: ProVET Shifts Successfully Synced",
+        },
       });
       return true;
     }
   } catch (error) {
-    await throwError(error);
+    throwError(error);
   }
   return false;
 };
@@ -78,21 +77,21 @@ const updateShiftDocuments = async (shifts: Array<Shift>): Promise<boolean> => {
             end: new Date(shift?.end),
             updatedOn: new Date(),
           } as Shift,
-          {merge: true}
+          { merge: true }
         )
         .then(() => {
           shiftsConfigured++;
           return true;
         })
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
     })
   )
     .then(async () => {
       if (shiftsConfigured === shifts.length) return true;
       else
-        return await throwError(
+        return throwError(
           `ERROR: ${shiftsConfigured} Out of ${shifts.length} Shifts Configured`
         );
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

@@ -23,7 +23,7 @@ export const refreshCustomerToken = functions
       | false
     > => {
       if (!context.auth || data?.apiKey !== mobileClientApiKey)
-        return await throwError({message: "MISSING AUTHENTICATION"});
+        return throwError({ message: "MISSING AUTHENTICATION" });
       else {
         if (DEBUG)
           console.log("INCOMING REQUEST PAYLOAD => ", context.auth?.uid);
@@ -33,7 +33,7 @@ export const refreshCustomerToken = functions
           .doc(context.auth?.uid)
           .get()
           .then((document: any) => document.data()?.customer?.id)
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
 
         if (DEBUG) console.log("Customer ID Found:", customerId);
 
@@ -49,7 +49,7 @@ export const refreshCustomerToken = functions
             .create({
               customer: customerId,
             })
-            .catch(async (error: any) => (await throwError(error)) as any);
+            .catch(async (error: any) => throwError(error) as any);
 
           if (DEBUG) console.log("Setup Intent Created:", setupIntent);
           return {

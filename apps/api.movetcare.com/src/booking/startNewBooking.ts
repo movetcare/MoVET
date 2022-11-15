@@ -1,6 +1,6 @@
-import {admin, throwError} from "../config/config";
-import {logEvent} from "../utils/logging/logEvent";
-import {createBookingAbandonmentNotifications} from "./abandonment/createBookingAbandonmentNotifications";
+import { admin, throwError } from "../config/config";
+import { sendNotification } from "../notifications/sendNotification";
+import { createBookingAbandonmentNotifications } from "./abandonment/createBookingAbandonmentNotifications";
 const DEBUG = false;
 export const startNewBooking = async (client: any): Promise<any> => {
   const newBookingSession = await admin
@@ -17,27 +17,15 @@ export const startNewBooking = async (client: any): Promise<any> => {
       isActive: true,
       step: "started",
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
   if (DEBUG)
     console.log(
       `ADDING BOOKING ABANDONMENT AUTOMATION TASK TO QUEUE FOR ${newBookingSession?.id}`
     );
-  await createBookingAbandonmentNotifications(newBookingSession?.id);
-  await logEvent({
-    tag: "appointment-booking",
-    origin: "api",
-    success: true,
-    sendToSlack: true,
-    data: {
-      client: {
-        uid: client?.uid,
-        email: client?.email,
-        displayName: client?.displayName,
-        phoneNumber: client?.phoneNumber,
-      },
-      createdAt: new Date(),
-      isActive: true,
-      step: "started",
+  createBookingAbandonmentNotifications(newBookingSession?.id);
+  sendNotification({
+    type: "slack",
+    payload: {
       message: [
         {
           type: "section",
@@ -68,11 +56,13 @@ export const startNewBooking = async (client: any): Promise<any> => {
             },
             {
               type: "plain_text",
-              text: `${client.uid ? `ID: ${client.uid}` : ""}${
-                client.email ? ` - Email: ${client.email}` : ""
-              }
-          ${client.displayName ? ` - Name: ${client.displayName}` : ""}
-           ${client.phoneNumber ? ` -  Phone: ${client.phoneNumber}` : ""}`,
+              text: `${client.uid ? `ID: ${client.uid}\n\n` : ""}${
+                client.email ? ` - Email: ${client.email}\n\n` : ""
+              }${
+                client.displayName ? ` - Name: ${client.displayName}\n\n` : ""
+              }${
+                client.phoneNumber ? ` -  Phone: ${client.phoneNumber}\n\n` : ""
+              }`,
             },
           ],
         },

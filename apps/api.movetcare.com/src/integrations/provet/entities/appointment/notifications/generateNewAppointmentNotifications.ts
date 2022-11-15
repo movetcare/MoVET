@@ -1,6 +1,6 @@
-import {admin} from "../../../../../config/config";
-import {logEvent} from "../../../../../utils/logging/logEvent";
-import {subtractMinutesFromDate} from "../../../../../utils/subtractMinutesFromDate";
+import { admin } from "../../../../../config/config";
+import { sendNotification } from "../../../../../notifications/sendNotification";
+import { subtractMinutesFromDate } from "../../../../../utils/subtractMinutesFromDate";
 
 const DEBUG = false;
 export const generateNewAppointmentNotifications = async (
@@ -63,7 +63,7 @@ export const generateNewAppointmentNotifications = async (
             performAt: subtractMinutesFromDate(appointmentData.start, 30),
             createdOn: new Date(),
           },
-          {merge: true}
+          { merge: true }
         )
         .then(async () => {
           if (DEBUG)
@@ -71,15 +71,11 @@ export const generateNewAppointmentNotifications = async (
               "UPDATED 30 MIN APPOINTMENT NOTIFICATION FOR ",
               appointmentData.id
             );
-          await logEvent({
-            tag: "30-min-appointment-notification-update",
-            origin: "api",
-            success: true,
-            data: {
+          sendNotification({
+            type: "slack",
+            payload: {
               message: `:bell: Update 30 Minute Appointment Notifications for Appointment ${appointmentData.id}`,
-              ...appointmentData,
             },
-            sendToSlack: true,
           });
         })
         .catch(async (error: any) => {
@@ -88,15 +84,11 @@ export const generateNewAppointmentNotifications = async (
               `COULD NOT CREATE 30 MIN APPOINTMENT NOTIFICATION FOR ${appointmentData.id}`,
               error?.message
             );
-          await logEvent({
-            tag: "30-min-appointment-notification-update",
-            origin: "api",
-            success: false,
-            data: {
+          sendNotification({
+            type: "slack",
+            payload: {
               message: `:bell: ERROR Updating 30 Minute Appointment Notification for Appointment ${appointmentData.id} - "${error.message}"`,
-              ...error,
             },
-            sendToSlack: true,
           });
         });
     else {
@@ -105,11 +97,9 @@ export const generateNewAppointmentNotifications = async (
           `DID NOT CREATE 30 MIN APPOINTMENT NOTIFICATION FOR ${appointmentData.id}`,
           appointmentData
         );
-      await logEvent({
-        tag: "30-min-appointment-notification-update",
-        origin: "api",
-        success: true,
-        data: {
+      sendNotification({
+        type: "slack",
+        payload: {
           message: `:bell: SKIPPED Updating 30 Minute Appointment Notification for Appointment ${
             appointmentData.id
           }\nReason: ${
@@ -119,9 +109,7 @@ export const generateNewAppointmentNotifications = async (
                 : "Reminder disabled"
               : "Already sent reminder"
           }`,
-          ...appointmentData,
         },
-        sendToSlack: true,
       });
     }
   if (appointmentData?.send24HourReminder)
@@ -140,7 +128,7 @@ export const generateNewAppointmentNotifications = async (
             performAt: subtractMinutesFromDate(appointmentData.start, 1440),
             createdOn: new Date(),
           },
-          {merge: true}
+          { merge: true }
         )
         .then(async () => {
           if (DEBUG)
@@ -148,15 +136,11 @@ export const generateNewAppointmentNotifications = async (
               "UPDATED 24 HOUR APPOINTMENT NOTIFICATION FOR ",
               appointmentData.id
             );
-          await logEvent({
-            tag: "24-hour-appointment-notification-update",
-            origin: "api",
-            success: true,
-            data: {
+          sendNotification({
+            type: "slack",
+            payload: {
               message: `:bell: Updated 24 Hour Appointment Notification for Appointment ${appointmentData.id}`,
-              ...appointmentData,
             },
-            sendToSlack: true,
           });
         })
         .catch(async (error: any) => {
@@ -165,15 +149,11 @@ export const generateNewAppointmentNotifications = async (
               `COULD NOT CREATE 24 HOUR APPOINTMENT NOTIFICATION FOR ${appointmentData.id}`,
               error?.message
             );
-          await logEvent({
-            tag: "24-hour-appointment-notification-update",
-            origin: "api",
-            success: false,
-            data: {
+          sendNotification({
+            type: "slack",
+            payload: {
               message: `:bell: ERROR Updating 24 Hour Appointment Notification for Appointment ${appointmentData.id} - "${error.message}"`,
-              ...error,
             },
-            sendToSlack: true,
           });
         });
     else {
@@ -182,11 +162,9 @@ export const generateNewAppointmentNotifications = async (
           `DID NOT CREATE 24 HOUR APPOINTMENT NOTIFICATION FOR ${appointmentData.id}`,
           appointmentData
         );
-      await logEvent({
-        tag: "24-hour-appointment-notification-update",
-        origin: "api",
-        success: true,
-        data: {
+      sendNotification({
+        type: "slack",
+        payload: {
           message: `:bell: SKIPPED Updating 24 Hour Appointment Notification for Appointment ${
             appointmentData.id
           }\nReason:  ${
@@ -196,9 +174,7 @@ export const generateNewAppointmentNotifications = async (
                 : "Reminder disabled"
               : "Already sent reminder"
           }`,
-          ...appointmentData,
         },
-        sendToSlack: true,
       });
     }
 };

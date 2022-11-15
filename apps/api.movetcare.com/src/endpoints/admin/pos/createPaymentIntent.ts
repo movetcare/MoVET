@@ -40,7 +40,7 @@ export const createPaymentIntent = functions
             .doc(`${invoice}`)
             .get()
             .then(async (document: any) => document.data())
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
           if (DEBUG) console.log("invoiceDetails", invoiceDetails);
           // const displayParams = new URLSearchParams();
           // displayParams.append('type', 'cart');
@@ -88,7 +88,7 @@ export const createPaymentIntent = functions
           //       }
           //     });
           //   })
-          //   .catch(async (error: any) => await throwError(error));
+          //    .catch((error: any) => throwError(error));
           // if (reader)
           // await request
           //   .post(
@@ -126,9 +126,9 @@ export const createPaymentIntent = functions
           //         {merge: true}
           //       )
           //       .then(() => true)
-          //       .catch(async (error: any) => await throwError(error));
+          //        .catch((error: any) => throwError(error));
           //   })
-          //   .catch(async (error: any) => await throwError(error));
+          //    .catch((error: any) => throwError(error));
           const paymentIntentConfig: any = {
             currency: "usd",
             metadata: { invoice },
@@ -220,7 +220,7 @@ export const createPaymentIntent = functions
                       { merge: true }
                     )
                     .then(() => true)
-                    .catch(async (error: any) => await throwError(error));
+                    .catch((error: any) => throwError(error));
                   await admin
                     .firestore()
                     .collection(
@@ -260,15 +260,13 @@ export const createPaymentIntent = functions
                               },
                               { merge: true }
                             )
-                            .catch(
-                              async (error: any) => await throwError(error)
-                            )
+                            .catch(async (error: any) => throwError(error))
                         : null
                     )
-                    .catch(async (error: any) => await throwError(error));
+                    .catch((error: any) => throwError(error));
                   return data?.action || null;
                 })
-                .catch(async (error: any) => await throwError(error))
+                .catch(async (error: any) => throwError(error))
             : await admin
                 .firestore()
                 .collection(
@@ -301,13 +299,13 @@ export const createPaymentIntent = functions
                           { merge: true }
                         )
                         .then(() => true)
-                        .catch(async (error: any) => await throwError(error))
+                        .catch(async (error: any) => throwError(error))
                     : null
                 )
                 .then(() => true)
-                .catch(async (error: any) => await throwError(error));
+                .catch((error: any) => throwError(error));
         } else
-          return await throwError(
+          return throwError(
             `UNABLE TO CREATE PAYMENT INTENT -> ${JSON.stringify(data)}`
           );
       }

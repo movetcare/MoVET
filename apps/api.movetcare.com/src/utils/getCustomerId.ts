@@ -29,7 +29,7 @@ export const getCustomerId = async (id: string): Promise<string> =>
         ? await createNewCustomer(id, document)
         : document.data()?.customer?.id;
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
 const createNewCustomer = async (
   id: string,
@@ -81,7 +81,7 @@ const createNewCustomer = async (
         clientId: id,
       },
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
   if (DEBUG) console.log("NEW STRIPE CUSTOMER DATA", customer);
   await admin
     .firestore()
@@ -96,6 +96,6 @@ const createNewCustomer = async (
         DEBUG &&
         console.log("SUCCESSFULLY SAVED NEW CLIENT CUSTOMER ID", customer?.id)
     )
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
   return customer?.id;
 };

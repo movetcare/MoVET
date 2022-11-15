@@ -45,7 +45,7 @@ export const configureTerminals = async (): Promise<boolean> => {
       }),
     ];
     if (readers?.length === 0)
-      await throwError("FAILED TO CREATE TERMINAL SIMULATOR...");
+      throwError("FAILED TO CREATE TERMINAL SIMULATOR...");
   } else {
     readers = await stripe.terminal.readers.list();
     if (DEBUG) console.log("readers.data", readers.data);
@@ -59,7 +59,7 @@ export const configureTerminals = async (): Promise<boolean> => {
     });
     readers = await stripe.terminal.readers.list();
     if (readers === undefined || readers?.length === 0)
-      await throwError("NO PRODUCTION TERMINALS FOUND...");
+      throwError("NO PRODUCTION TERMINALS FOUND...");
   }
 
   if (DEBUG) console.log("readers", readers);
@@ -74,7 +74,7 @@ export const configureTerminals = async (): Promise<boolean> => {
           .collection("terminals")
           .doc(`${reader?.id}`)
           .set({ ...reader, updatedOn: new Date() }, { merge: true })
-          .catch(async (error: any) => await throwError(error))
+          .catch(async (error: any) => throwError(error))
     );
   else
     readers.forEach(
@@ -86,7 +86,7 @@ export const configureTerminals = async (): Promise<boolean> => {
           .collection("terminals")
           .doc(`${reader?.id}`)
           .set({ ...reader, updatedOn: new Date() }, { merge: true })
-          .catch(async (error: any) => await throwError(error))
+          .catch(async (error: any) => throwError(error))
     );
 
   return await admin
@@ -101,5 +101,5 @@ export const configureTerminals = async (): Promise<boolean> => {
       { merge: true }
     )
     .then(() => true)
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

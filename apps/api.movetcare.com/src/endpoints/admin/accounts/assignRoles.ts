@@ -1,6 +1,6 @@
 import {UserRecord} from "firebase-admin/lib/auth/user-record";
-import {functions, admin, throwError, DEBUG} from "../../../config/config";
-import {logEvent} from "../../../utils/logging/logEvent";
+import { functions, admin, throwError, DEBUG } from "../../../config/config";
+import { sendNotification } from "../../../notifications/sendNotification";
 
 export const assignRoles = functions.auth
   .user()
@@ -16,7 +16,7 @@ export const assignRoles = functions.auth
         });
         return admins;
       })
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
     if (DEBUG) console.log("ADMIN USERS => ", adminUsers);
     let isMoVETStaff = false;
     if (adminUsers && adminUsers.length > 0) {
@@ -51,7 +51,7 @@ export const assignRoles = functions.auth
             user?.providerData.length > 0
           )
             user?.providerData.forEach(
-              async (provider: {providerId: string}) => {
+              async (provider: { providerId: string }) => {
                 if (
                   provider?.providerId === "google.com" ||
                   provider?.providerId === "phone"
@@ -63,7 +63,7 @@ export const assignRoles = functions.auth
         }
       );
     } else if (user?.providerData && user?.providerData.length > 0)
-      user?.providerData.forEach(async (provider: {providerId: string}) => {
+      user?.providerData.forEach(async (provider: { providerId: string }) => {
         if (DEBUG)
           if (
             provider?.providerId === "google.com" ||
@@ -89,21 +89,19 @@ const disableAuthAccount = async (user: UserRecord) => {
           `DISABLED "${user?.email || user?.phoneNumber}" AUTH ACCOUNT!`
         )
     )
-    .then(
-      async () =>
-        await logEvent({
-          tag: "create-admin-error",
-          origin: "api",
-          success: true,
-          data: {
-            email: user?.email,
-            phoneNumber: user?.phoneNumber,
-            provider: user?.providerData,
-          },
-          sendToSlack: true,
-        })
+    .then(() =>
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: `:interrobang: ADMIN APP ACCESS FAILED!\n\nEmail: ${
+            user?.email
+          }\n\nPhone: ${user?.phoneNumber}\n\nProvider: ${JSON.stringify(
+            user?.providerData
+          )}`,
+        },
+      })
     )
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };
 
 const assignMoVETStaffRoles = async ({
@@ -146,30 +144,17 @@ const assignMoVETStaffRoles = async ({
           }`
         )
     )
-    .then(
-      async () =>
-        await logEvent({
-          tag: "create-admin",
-          origin: "api",
-          success: true,
-          data: {
-            email: user?.email,
-            phoneNumber: user?.phoneNumber,
-            provider: user?.providerData,
-            roles: userRoles,
-          },
-          sendToSlack: true,
-        })
-          .then(
-            () =>
-              DEBUG &&
-              console.log(
-                `SUCCESSFULLY PROMOTED ${
-                  user?.email || user?.phoneNumber
-                } TO MOVET STAFF!`
-              )
-          )
-          .catch(async (error: any) => await throwError(error))
+    .then(() =>
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: `:white_check_mark: ADMIN APP ACCESS GRANTED!\n\nEmail: ${
+            user?.email
+          }\n\nPhone: ${user?.phoneNumber}\n\nProvider: ${JSON.stringify(
+            user?.providerData
+          )}\n\nRoles: ${JSON.stringify(userRoles)}`,
+        },
+      })
     )
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

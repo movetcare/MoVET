@@ -77,6 +77,6 @@ export const fetchEntity = async (
         if (resultsCount === resultsAdded) return allResults;
         else return throwError("Failed to Complete Paginated Query") as any;
       })
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
   }
 };

@@ -32,7 +32,7 @@ export const paymentIntentUpdated = async (event: any) => {
             paymentIntentObject: object,
             updatedOn: new Date(),
           },
-          {merge: true}
+          { merge: true }
         )
         .then(
           async () =>
@@ -60,11 +60,11 @@ export const paymentIntentUpdated = async (event: any) => {
                   }/`,
               })
               .then((response: any) => {
-                const {data} = response;
+                const { data } = response;
                 if (DEBUG)
                   console.log("API Response: POST /invoicepayment/ => ", data);
               })
-              .catch(async (error: any) => await throwError(error))
+              .catch(async (error: any) => throwError(error))
         )
         .catch(async (error: any) => console.error(error));
     else {
@@ -87,7 +87,7 @@ export const paymentIntentUpdated = async (event: any) => {
               paymentIntentObject: object,
               updatedOn: new Date(),
             },
-            {merge: true}
+            { merge: true }
           )
           .then(
             async () =>
@@ -115,7 +115,7 @@ export const paymentIntentUpdated = async (event: any) => {
                     }/`,
                 })
                 .then((response: any) => {
-                  const {data} = response;
+                  const { data } = response;
                   if (DEBUG)
                     console.log(
                       "API Response: POST /invoicepayment/ => ",
@@ -137,7 +137,7 @@ export const paymentIntentUpdated = async (event: any) => {
                           paymentIntentObject: object,
                           updatedOn: new Date(),
                         },
-                        {merge: true}
+                        { merge: true }
                       )
                 )
                 .then(async () => {
@@ -178,18 +178,18 @@ export const paymentIntentUpdated = async (event: any) => {
                             updatedOn: new Date(),
                             isActive: false,
                           },
-                          {merge: true}
+                          { merge: true }
                         )
                         .catch((error: any) => console.error(error));
                     } else if (DEBUG)
                       console.log("CLIENT WAS NOT ON WAITLIST", user?.email);
                   }
                 })
-                .catch(async (error: any) => await throwError(error))
+                .catch(async (error: any) => throwError(error))
           )
           .catch(async (error: any) => console.error(error));
       else
-        await throwError(
+        throwError(
           `FAILED TO CLOSE PROVET INVOICE - UNABLE TO LOCATE CLIENT ID ON INVOICE ${invoice}`
         );
     }

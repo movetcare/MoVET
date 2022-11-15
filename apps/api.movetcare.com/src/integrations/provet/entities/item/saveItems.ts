@@ -11,8 +11,8 @@ export const saveItems = async (itemsData: Array<Item>): Promise<boolean> =>
           .doc(`${item.id}`)
           .set({ ...item, updatedOn: new Date() }, { merge: true })
           .then(() => true)
-          .catch(async (error: any) => await throwError(error))
+          .catch(async (error: any) => throwError(error))
     )
   )
     .then(() => true)
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

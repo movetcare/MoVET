@@ -90,7 +90,7 @@ export const saveClient = async (
       "email",
       "uid",
     ]);
-    const {email, uid} = clientAuthUser;
+    const { email, uid } = clientAuthUser;
     if (DEBUG) {
       console.log(`saveClient => CLIENT AUTH USER EMAIL => ${email}`);
       console.log(`saveClient => CLIENT AUTH USER UID => ${uid}`);
@@ -121,7 +121,7 @@ export const saveClient = async (
         `saveClient => CLIENT #${clientId} DOES NOT HAVE AN EMAIL ADDRESS IN PROVET - SKIPPING AUTH USER CREATION`
       );
     else {
-      const {firstName, lastName, phone, email, uid} = data;
+      const { firstName, lastName, phone, email, uid } = data;
       if (firstName || lastName || email)
         await updateSendGridContact({
           firstName: firstName || "",
@@ -197,7 +197,7 @@ export const saveClient = async (
               ...data,
               updatedOn: new Date(),
             },
-            {merge: true}
+            { merge: true }
           )
           .then(async () => {
             if (DEBUG)
@@ -206,7 +206,7 @@ export const saveClient = async (
               );
             return true;
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       } else if (proVetClientData.email) {
         if (DEBUG)
           console.log(
@@ -221,10 +221,10 @@ export const saveClient = async (
               ...data,
               createdOn: new Date(),
             },
-            {merge: true}
+            { merge: true }
           )
           .then(() => true)
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       } else {
         console.error(
           `PROVET CLOUD INTEGRATION FAILURE:\n\nFailed to Generate a MoVET Account for Client #${clientId} \n\nREASON: No Email Address Provided. Please login to PROVET Cloud and save an email address to Client #${clientId} to retry this action - ${
@@ -236,7 +236,7 @@ export const saveClient = async (
         return false;
       }
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };
 
 const updateStripeCustomerData = async (proVetClientData: any) => {
@@ -298,7 +298,7 @@ const updateStripeCustomerData = async (proVetClientData: any) => {
         // eslint-disable-next-line quotes
         error?.message?.includes("No such customer: 'cus_LYg1C7Et5ySQKC'")
           ? console.log(error)
-          : await throwError(error)
+          : throwError(error)
       );
   } else if (DEBUG) {
     console.log("updateStripeCustomerData => SKIPPING STRIPE CUSTOMER UPDATE");
@@ -308,7 +308,7 @@ const updateStripeCustomerData = async (proVetClientData: any) => {
       proVetClientData?.id_number !== ""
     )
       console.log(
-        "updateStripeCustomerData => SKIP REASON -  MISSING \"id_number\" in PROVET"
+        "updateStripeCustomerData => SKIP REASON -  MISSING id_number in PROVET"
       );
     if (environment?.type !== "production")
       console.log(

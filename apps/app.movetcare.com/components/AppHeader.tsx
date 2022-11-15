@@ -9,16 +9,16 @@ export const AppHeader = () => {
       <div className="flex flex-col justify-center py-8 mx-auto text-center">
         <Image
           src="/images/logos/logo.png"
-          className="mx-auto -mt-4"
-          width={290}
-          height={80}
+          className="mx-auto"
+          width={190}
+          height={60}
           alt="MoVET Logo"
           priority
         />
-        <h3 className="first-letter:tracking-wide text-xl  sm:text-2xl mb-1.5 mt-4">
+        <h3 className="first-letter:tracking-wide text-lg sm:text-xl my-1">
           Your neighborhood vet,
         </h3>
-        <h3 className="text-xl sm:text-2xl text-movet-red">Delivered</h3>
+        <h3 className="text-lg sm:text-xl text-movet-red">Delivered</h3>
       </div>
     </section>
   ) : (

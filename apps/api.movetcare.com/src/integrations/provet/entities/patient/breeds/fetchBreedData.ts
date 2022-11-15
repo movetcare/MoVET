@@ -44,7 +44,7 @@ export const fetchBreedData = async (
                 `configure_breeds_${index}`
               )
           )
-          .catch(async (error: any) => await throwError(error)))
+          .catch(async (error: any) => throwError(error)))
     );
     await Promise.all(
       breedIdChunks[0].map(async (breedId: string) => {
@@ -81,7 +81,7 @@ export const fetchBreedData = async (
                     `configure_breeds_${breedId}`
                   )
               )
-              .catch(async (error: any) => await throwError(error));
+              .catch((error: any) => throwError(error));
           });
         if (DEBUG) console.log("initialBreedData", initialBreedData);
         if (initialBreedData)
@@ -126,7 +126,7 @@ export const fetchBreedData = async (
                     `configure_breeds_${breedId}`
                   )
               )
-              .catch(async (error: any) => await throwError(error));
+              .catch((error: any) => throwError(error));
           });
         if (DEBUG) console.log("breedData", breedData);
         if (breedData)

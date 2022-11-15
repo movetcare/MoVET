@@ -1,5 +1,8 @@
-import {environment, sendGridAPI} from "../../config/config";
-import {logEvent} from "../../utils/logging/logEvent";
+import * as client from "@sendgrid/client";
+import { sendNotification } from "./../../notifications/sendNotification";
+import { environment, functions } from "../../config/config";
+client.setApiKey(functions.config()?.sendgrid.api_key);
+const sendGridAPI = client;
 const DEBUG = false;
 export const updateSendGridContact = async ({
   email,
@@ -10,7 +13,7 @@ export const updateSendGridContact = async ({
   email: string;
   firstName?: string;
   lastName?: string;
-  customFields?: {e1_T?: "mobile" | "contact" | "join"; e2_N?: 1 | 0};
+  customFields?: { e1_T?: "mobile" | "contact" | "join"; e2_N?: 1 | 0 };
 }): Promise<boolean> => {
   if (DEBUG) {
     console.log("updateSendGridContact", {
@@ -60,16 +63,14 @@ export const updateSendGridContact = async ({
             console.log("SENDGRID RESPONSE STATUS: ", response.statusCode);
             console.log("SENDGRID RESPONSE BODY: ", response.body);
           }
-          await logEvent({
-            tag: "sendgrid",
-            origin: "api",
-            success: true,
-            data: {message: `:tada: ${email} has bee updated in SendGrid`},
+          sendNotification({
+            type: "email",
+            payload: { message: `:tada: ${email} has bee updated in SendGrid` },
           });
           return true;
         })
         .catch(async (error: any) => DEBUG && console.error(error))
-    : true &&
+    : DEBUG &&
         (console.log("SIMULATED updateSendGridContact REQUEST", {
           url: "/v3/marketing/contacts",
           method: "PUT",

@@ -21,7 +21,7 @@ export const getAppointmentOptions = functions
           .doc("appointment_options")
           .get()
           .then((document: any) => document.data())
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       else return false;
     }
   );

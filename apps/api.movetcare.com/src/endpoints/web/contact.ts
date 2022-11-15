@@ -9,13 +9,12 @@ import {
 } from "../../config/config";
 // import {createAuthClient} from '../../integrations/provet/entities/client/createAuthClient';
 import {createProVetClient} from "../../integrations/provet/entities/client/createProVetClient";
-import {updateProVetClient} from "../../integrations/provet/entities/client/updateProVetClient";
-import {logEvent} from "../../utils/logging/logEvent";
-import {recaptchaIsVerified} from "../../utils/recaptchaIsVerified";
+import { updateProVetClient } from "../../integrations/provet/entities/client/updateProVetClient";
+import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 
 interface ContactRequest {
   token: string;
-  reason: {id: string; name: string};
+  reason: { id: string; name: string };
   email: string;
   message?: string;
   firstName?: string;
@@ -114,31 +113,12 @@ export const contact = functions
                   .send(emailConfig)
                   .then(async () => {
                     if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-                    return await logEvent({
-                      tag: "contact",
-                      origin: "api",
-                      success: true,
-                      data: {
-                        reference: `forms/contact/${
-                          isApp ? "app" : "web"
-                        }/${new Date().toString()}`,
-                        message: emailText,
-                      },
-                      sendToSlack: true,
-                    })
-                      .then(() => true)
-                      .catch(async (error: any) => await throwError(error));
+                    return true;
                   })
-                  .catch(async (error: any) => await throwError(error));
-              else
-                return await logEvent({
-                  tag: "notification",
-                  origin: "api",
-                  success: true,
-                  data: emailConfig,
-                });
+                  .catch((error: any) => throwError(error));
+              else return true;
             })
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
         } else return false;
       } else return false;
     }

@@ -1,5 +1,5 @@
-import {sendCancellationEmail} from "./../../../../notifications/sendCancellationEmail";
-import {saveAppointment} from "./saveAppointment";
+import { sendCancellationEmail } from "../../../../notifications/templates/sendCancellationEmail";
+import { saveAppointment } from "./saveAppointment";
 import {
   DEBUG,
   proVetApiUrl,
@@ -64,11 +64,11 @@ export const updateProVetAppointment = async (data: any): Promise<any> => {
   const proVetAppointmentData = await request
     .patch(`/appointment/${data?.id}`, requestPayload)
     .then(async (response: any) => {
-      const {data} = response;
+      const { data } = response;
       if (DEBUG) console.log("API Response: PATCH /appointment/ => ", data);
       return data;
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
   if (proVetAppointmentData && requestPayload.cancellation_reason)
     await sendCancellationEmail(`${data?.client}`, `${data?.id}`);

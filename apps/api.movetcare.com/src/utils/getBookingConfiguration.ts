@@ -6,4 +6,4 @@ export const getBookingConfiguration = async () =>
     .doc("bookings")
     .get()
     .then((doc: any) => doc.data())
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

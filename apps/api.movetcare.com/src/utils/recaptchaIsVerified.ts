@@ -6,7 +6,7 @@ export const recaptchaIsVerified = async (token: string) =>
       `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecretKey}&response=${token}`
     )
     .then(async (response: any) => {
-      const {data} = response;
+      const { data } = response;
       if (DEBUG)
         console.log(
           `API RESPONSE: https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecretKey}&response=${token} =>`,
@@ -14,4 +14,4 @@ export const recaptchaIsVerified = async (token: string) =>
         );
       return data?.success;
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

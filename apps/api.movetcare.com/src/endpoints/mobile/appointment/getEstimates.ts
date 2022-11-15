@@ -21,7 +21,7 @@ export const getEstimates = functions
           .doc("estimates")
           .get()
           .then((document: any) => document.data())
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       else return false;
     }
   );

@@ -27,11 +27,11 @@ export const configureCancellationReasons = async (): Promise<boolean> => {
     const activeCancellationReasons: Array<any> = [];
     cancellationReasons.forEach((reason: any) => {
       if (reason.archived === false)
-        activeCancellationReasons.push({id: reason.id, title: reason.name});
+        activeCancellationReasons.push({ id: reason.id, title: reason.name });
     });
     if (activeCancellationReasons.length)
       return await saveCancellationReasonsData(activeCancellationReasons);
-    else return await throwError("Failed to Process Reason Groups");
+    else return throwError("Failed to Process Reason Groups");
   }
 };
 
@@ -45,7 +45,7 @@ const saveCancellationReasonsData = async (cancellationReasons: any) =>
         record: cancellationReasons,
         updatedOn: new Date(),
       },
-      {merge: true}
+      { merge: true }
     )
     .then(() => true)
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

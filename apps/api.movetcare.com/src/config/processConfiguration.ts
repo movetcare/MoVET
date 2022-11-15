@@ -3,7 +3,6 @@ import { configureUsers } from "./configureUsers";
 import { configureTelehealthStatus } from "../integrations/provet/entities/appointment/configure/configureTelehealthStatus";
 import { configureShifts } from "../integrations/provet/entities/shift/configureShifts";
 import { configureAppointments } from "../integrations/provet/entities/appointment/configure/configureAppointments";
-import { logEvent } from "../utils/logging/logEvent";
 import { configureAppointmentEstimates } from "../integrations/provet/entities/appointment/configure/configureAppointmentEstimates";
 import { configureAppointmentOptionDetails } from "../integrations/provet/entities/appointment/configure/configureAppointmentOptionDetails";
 import { configureBreeds } from "../integrations/provet/entities/patient/breeds/configureBreeds";
@@ -11,6 +10,7 @@ import { configureCancellationReasons } from "../integrations/provet/entities/re
 import { configureReasons } from "../integrations/provet/entities/reason/configureReasons";
 import { admin, DEBUG, throwError } from "./config";
 import { configureItems } from "../integrations/provet/entities/item/configureItems";
+import { sendNotification } from "../notifications/sendNotification";
 
 export const processConfiguration = async (options: {
   status: "scheduled" | "error" | "complete";
@@ -114,19 +114,20 @@ export const processConfiguration = async (options: {
             entities.length * 1.5
           } MINUTES FOR THE TASK QUEUE TO FINISH PROCESSING...`
         );
-        await logEvent({
-          tag: "app-config",
-          origin: "api",
-          success: true,
-          data: `FINISHED INITIALIZING CONFIGURATION FOR APP ENTITY: ${entity.toUpperCase()}`,
+        sendNotification({
+          type: "slack",
+          payload: {
+            message: `:white_check_mark: FINISHED INITIALIZING CONFIGURATION FOR APP ENTITY: ${entity.toUpperCase()}`,
+          },
         });
       })
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
   else
-    await logEvent({
-      tag: "app-config",
-      origin: "api",
-      success: true,
-      data: "FINISHED INITIALIZING CONFIGURATION FOR ALL APP ENTITIES!",
+    sendNotification({
+      type: "slack",
+      payload: {
+        message:
+          ":white_check_mark: FINISHED INITIALIZING CONFIGURATION FOR ALL APP ENTITIES!",
+      },
     });
 };

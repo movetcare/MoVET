@@ -23,9 +23,8 @@ export const processConsultationWebhook = async (
         proVetConsultationData
       );
     if (proVetConsultationData?.status === 9) {
-      proVetConsultationData.patients.map(
-        async (patient: string) =>
-          await updateCustomField(`${getProVetIdFromUrl(patient)}`, 2, "False")
+      proVetConsultationData.patients.map((patient: string) =>
+        updateCustomField(`${getProVetIdFromUrl(patient)}`, 2, "False")
       );
     }
     return response.status(200).send({ received: true });

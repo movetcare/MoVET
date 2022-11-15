@@ -4,13 +4,12 @@ import {
   emailClient,
   throwError,
   DEBUG,
-} from "../config/config";
-import {logEvent} from "../utils/logging/logEvent";
+} from "../../config/config";
 
 export const sendWelcomeEmail = async (
   email: string,
   withResetLink = false
-): Promise<boolean | void> => {
+): Promise<void> => {
   let emailText = `
       <p>Hi there!</p>
       <p>I'm Lexi, CEO and founder of MoVET Pet Care Services. I am pleased to welcome you to MoVET and I will do my best to make sure your experience with us exceeds your expectations.</p>`;
@@ -19,7 +18,7 @@ export const sendWelcomeEmail = async (
     const link = await admin
       .auth()
       .generatePasswordResetLink(email)
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
     if (DEBUG) console.log("PASSWORD RESET LINK", link);
     emailText += `
       ${
@@ -63,64 +62,49 @@ export const sendWelcomeEmail = async (
     text: emailText.replace(/(<([^>]+)>)/gi, ""),
     html: emailText,
   };
-  return environment?.type !== "production"
-    ? await logEvent({
-        tag: "welcome",
-        origin: "api",
-        success: true,
-        data: emailConfig,
-        sendToSlack: true,
-      })
-        .then(async () => {
-          const clientId = await admin
-            .auth()
-            .getUserByEmail(email)
-            .then((userRecord: any) => userRecord?.uid)
-            .catch(async () => false);
-          if (clientId)
-            await admin
-              .firestore()
-              .collection("clients")
-              .doc(`${clientId}`)
-              .collection("notifications")
-              .add({
-                type: "email",
-                ...emailConfig,
-                createdOn: new Date(),
-              })
-              .catch(async (error: any) => await throwError(error));
+  if (environment?.type !== "production") {
+    const clientId = await admin
+      .auth()
+      .getUserByEmail(email)
+      .then((userRecord: any) => userRecord?.uid)
+      .catch(async () => false);
+    if (clientId)
+      return await admin
+        .firestore()
+        .collection("clients")
+        .doc(`${clientId}`)
+        .collection("notifications")
+        .add({
+          type: "email",
+          ...emailConfig,
+          createdOn: new Date(),
         })
         .then(() => true)
-    : await emailClient
-        .send(emailConfig)
-        .then(async () => {
-          if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-          const clientId = await admin
-            .auth()
-            .getUserByEmail(email)
-            .then((userRecord: any) => userRecord?.uid)
-            .catch(async () => false);
-          if (clientId)
-            await admin
-              .firestore()
-              .collection("clients")
-              .doc(`${clientId}`)
-              .collection("notifications")
-              .add({
-                type: "email",
-                ...emailConfig,
-                createdOn: new Date(),
-              })
-              .catch(async (error: any) => await throwError(error));
-          await logEvent({
-            tag: "welcome",
-            origin: "api",
-            success: true,
-            data: emailConfig,
-            sendToSlack: true,
-          })
+        .catch((error: any) => throwError(error));
+  } else {
+    return await emailClient
+      .send(emailConfig)
+      .then(async () => {
+        if (DEBUG) console.log("EMAIL SENT!", emailConfig);
+        const clientId = await admin
+          .auth()
+          .getUserByEmail(email)
+          .then((userRecord: any) => userRecord?.uid)
+          .catch(async () => false);
+        if (clientId)
+          return await admin
+            .firestore()
+            .collection("clients")
+            .doc(`${clientId}`)
+            .collection("notifications")
             .then(() => true)
-            .catch(async (error: any) => await throwError(error));
-        })
-        .catch(async (error: any) => await throwError(error));
+            .add({
+              type: "email",
+              ...emailConfig,
+              createdOn: new Date(),
+            })
+            .catch((error: any) => throwError(error));
+      })
+      .catch((error: any) => throwError(error));
+  }
 };

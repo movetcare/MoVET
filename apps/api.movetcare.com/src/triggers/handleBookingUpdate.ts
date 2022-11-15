@@ -14,7 +14,7 @@ import { archiveBooking } from "../booking/archiveBooking";
 const DEBUG = false;
 export const handleBookingUpdate = functions.firestore
   .document("bookings/{id}")
-  .onWrite(async (change: any, context: any) => {
+  .onWrite((change: any, context: any) => {
     const { id } = context.params || {};
     const data = change.after.data();
     const {
@@ -38,7 +38,7 @@ export const handleBookingUpdate = functions.firestore
           console.log(
             `REMOVING BOOKING ABANDONMENT AUTOMATION TASK FROM QUEUE FOR ${id}`
           );
-        await removeBookingAbandonmentNotifications(id);
+        removeBookingAbandonmentNotifications(id);
       }
       if (
         step === "started" &&
@@ -48,35 +48,36 @@ export const handleBookingUpdate = functions.firestore
         client.lastName &&
         client.phone
       )
-        await updateBookingClient(id, client);
+        updateBookingClient(id, client);
       else if (
         (step === "started" || step === "patient-selection") &&
         patients &&
         vcprRequired !== undefined
       )
-        await updateBookingPatients(id, patients, vcprRequired);
+        updateBookingPatients(id, patients, vcprRequired);
       else if (step === "add-pet" && newPatient && client.uid)
-        await addNewPatient(id, client.uid, newPatient);
+        addNewPatient(id, client.uid, newPatient);
       else if (step === "wellness-check" && illPatients && patients)
-        await updateBookingPatientsWithIllness(id, patients, illPatients);
+        updateBookingPatientsWithIllness(id, patients, illPatients);
       else if (step === "illness-assignment" && illnessDetails)
-        await updateBookingPatientsWithSymptoms(id, patients, illnessDetails);
+        updateBookingPatientsWithSymptoms(id, patients, illnessDetails);
       else if (step === "choose-location" && location)
-        await updateBookingLocation(id, location, vcprRequired, illPatients);
+        updateBookingLocation(id, location, vcprRequired, illPatients);
       else if (step === "choose-reason" && reason)
-        await updateBookingReason(id, reason);
+        updateBookingReason(id, reason);
       else if (step === "choose-staff" && selectedStaff)
-        await updateBookingStaff(id, selectedStaff);
+        updateBookingStaff(id, selectedStaff);
       else if (step === "choose-datetime" && requestedDateTime)
-        await updateBookingRequestedDateTime(id, client.uid, requestedDateTime);
-      else if (step === "complete" && isActive) await archiveBooking(id);
-      else if (step === "restart") await restartBooking(id);
+        updateBookingRequestedDateTime(id, client.uid, requestedDateTime);
+      else if (step === "complete" && isActive) archiveBooking(id);
+      else if (step === "restart") restartBooking(id);
     } else {
       if (DEBUG)
         console.log(
           `CAN NOT UPDATE AN ARCHIVED (OR DELETED) BOOKING: ${id}`,
           data
         );
-      await removeBookingAbandonmentNotifications(id);
+      removeBookingAbandonmentNotifications(id);
     }
+    return true;
   });

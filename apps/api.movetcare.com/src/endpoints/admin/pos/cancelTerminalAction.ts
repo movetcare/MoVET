@@ -75,7 +75,7 @@ export const cancelTerminalAction = functions
                           },
                           { merge: true }
                         )
-                        .catch(async (error: any) => await throwError(error));
+                        .catch((error: any) => throwError(error));
                       await admin
                         .firestore()
                         .collection("counter_sales")
@@ -88,7 +88,7 @@ export const cancelTerminalAction = functions
                           },
                           { merge: true }
                         )
-                        .catch(async (error: any) => await throwError(error));
+                        .catch((error: any) => throwError(error));
                     });
                   else
                     await admin
@@ -118,9 +118,7 @@ export const cancelTerminalAction = functions
                                 },
                                 { merge: true }
                               )
-                              .catch(
-                                async (error: any) => await throwError(error)
-                              );
+                              .catch(async (error: any) => throwError(error));
                             await admin
                               .firestore()
                               .collection("client_invoices")
@@ -133,19 +131,17 @@ export const cancelTerminalAction = functions
                                 },
                                 { merge: true }
                               )
-                              .catch(
-                                async (error: any) => await throwError(error)
-                              );
+                              .catch(async (error: any) => throwError(error));
                           });
                         else
-                          await throwError({
+                          throwError({
                             message: "FAILED TO UPDATE FAILED INVOICE PAYMENT",
                             paymentIntent: data?.paymentIntent,
                           });
                       })
-                      .catch(async (error: any) => await throwError(error));
+                      .catch((error: any) => throwError(error));
                 })
-                .catch(async (error: any) => await throwError(error));
+                .catch((error: any) => throwError(error));
             }
             return await admin
               .firestore()
@@ -162,9 +158,9 @@ export const cancelTerminalAction = functions
                 { merge: true }
               )
               .then(() => true)
-              .catch(async (error: any) => await throwError(error));
+              .catch((error: any) => throwError(error));
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       }
     }
   );

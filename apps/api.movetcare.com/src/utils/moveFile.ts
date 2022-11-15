@@ -1,7 +1,7 @@
 import { environment, throwError } from "../config/config";
 import { Storage } from "@google-cloud/storage";
 const DEBUG = false;
-export const moveFile = async (srcFileName: string, destFileName: string) => {
+export const moveFile = (srcFileName: string, destFileName: string) => {
   const bucketName =
     environment.type === "production"
       ? "gs://movet-care.appspot.com"
@@ -12,16 +12,16 @@ export const moveFile = async (srcFileName: string, destFileName: string) => {
     console.log("moveFile bucketName", bucketName);
   }
   const storage = new Storage();
-  await storage
-    .bucket(bucketName)
-    .file(srcFileName)
-    .move(destFileName)
-    .then(
-      () =>
-        DEBUG &&
-        console.log(
-          `gs://${bucketName}/${srcFileName} moved to gs://${bucketName}/${destFileName}`
-        )
-    )
-    .catch(async (error: any) => await throwError(error));
+  storage
+     .bucket(bucketName)
+     .file(srcFileName)
+     .move(destFileName)
+     .then(
+       () =>
+         DEBUG &&
+         console.log(
+           `gs://${bucketName}/${srcFileName} moved to gs://${bucketName}/${destFileName}`
+         )
+     )
+     .catch((error: any) => throwError(error));
 };

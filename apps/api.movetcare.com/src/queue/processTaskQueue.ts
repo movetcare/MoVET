@@ -1,8 +1,8 @@
 import {admin, throwError, environment, DEBUG} from "../config/config";
+import { sendNotification } from "../notifications/sendNotification";
 // import {configureReminders} from '../integrations/provet/entities/reminder/configureReminders';
-import {logEvent} from "../utils/logging/logEvent";
-import {timestampString} from "../utils/timestampString";
-import {workers} from "./workers";
+import { timestampString } from "../utils/timestampString";
+import { workers } from "./workers";
 
 export const processTaskQueue = async (): Promise<any> => {
   if (DEBUG) console.log("*** PROCESSING TASK QUEUE ***");
@@ -11,9 +11,7 @@ export const processTaskQueue = async (): Promise<any> => {
     .collection("tasks_queue")
     .where("performAt", "<=", new Date())
     .where("status", "==", "scheduled");
-  const tasks = await query
-    .get()
-    .catch(async (error: any) => await throwError(error));
+  const tasks = await query.get().catch((error: any) => throwError(error));
   const failedTaskQuery = admin
     .firestore()
     .collection("tasks_queue")
@@ -21,12 +19,12 @@ export const processTaskQueue = async (): Promise<any> => {
     .where("status", "==", "error");
   const failedTasks = await failedTaskQuery
     .get()
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
   const jobs: Promise<any>[] = [];
   if (tasks.docs.length > 0) {
     tasks.forEach((task: any) => {
       if (DEBUG) console.log("TASK => ", task.data());
-      const {worker, options} = task.data();
+      const { worker, options } = task.data();
       const job = workers[worker](options)
         .then(async () => {
           if (DEBUG) {
@@ -46,7 +44,7 @@ export const processTaskQueue = async (): Promise<any> => {
                     status: "complete",
                     markedCompleteOn: new Date(),
                   },
-                  {merge: true}
+                  { merge: true }
                 );
             return;
             //  return await configureReminders();
@@ -61,24 +59,14 @@ export const processTaskQueue = async (): Promise<any> => {
                   status: "complete",
                   markedCompleteOn: new Date(),
                 },
-                {merge: true}
+                { merge: true }
               )
               .then(() =>
                 task.ref
                   .delete()
-                  .then(
-                    async () =>
-                      environment.type !== "development" &&
-                      (await logEvent({
-                        tag: "queue",
-                        origin: "api",
-                        success: true,
-                        data: task.data(),
-                      }))
-                  )
                   .catch((error: any) => DEBUG && console.error(error))
               )
-              .catch(async (error: any) => await throwError(error));
+              .catch((error: any) => throwError(error));
         })
         .catch(async (error: any) => {
           if (DEBUG) {
@@ -87,16 +75,14 @@ export const processTaskQueue = async (): Promise<any> => {
             console.error(`OPTIONS: ${JSON.stringify(options)}`);
           }
           await task.ref
-            .update({status: "scheduled", error: error?.message || "UNKNOWN"})
-            .then(
-              async () =>
-                environment.type !== "development" &&
-                (await logEvent({
-                  tag: "queue",
-                  origin: "api",
-                  success: false,
-                  data: task.data(),
-                }))
+            .update({ status: "scheduled", error: error?.message || "UNKNOWN" })
+            .then(() =>
+              sendNotification({
+                type: "slack",
+                payload: {
+                  message: JSON.stringify(task.data()),
+                },
+              })
             )
             .catch((error: any) => console.error(error));
           return throwError(error);
@@ -107,7 +93,7 @@ export const processTaskQueue = async (): Promise<any> => {
   if (failedTasks.docs.length > 0) {
     failedTasks.forEach((task: any) => {
       if (DEBUG) console.log("TASK => ", task.data());
-      const {worker, options} = task.data();
+      const { worker, options } = task.data();
       const job = workers[worker](options)
         .then(async () => {
           if (DEBUG) {
@@ -125,24 +111,14 @@ export const processTaskQueue = async (): Promise<any> => {
                 status: "complete",
                 markedCompleteOn: new Date(),
               },
-              {merge: true}
+              { merge: true }
             )
             .then(() =>
               task.ref
                 .delete()
-                .then(
-                  async () =>
-                    environment.type !== "development" &&
-                    (await logEvent({
-                      tag: "queue",
-                      origin: "api",
-                      success: true,
-                      data: task.data(),
-                    }))
-                )
                 .catch((error: any) => DEBUG && console.error(error))
             )
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
         })
         .catch(async (error: any) => {
           if (DEBUG) {
@@ -151,16 +127,14 @@ export const processTaskQueue = async (): Promise<any> => {
             console.error(`OPTIONS: ${JSON.stringify(options)}`);
           }
           await task.ref
-            .update({status: "scheduled", ...error})
-            .then(
-              async () =>
-                environment.type !== "development" &&
-                (await logEvent({
-                  tag: "queue",
-                  origin: "api",
-                  success: false,
-                  data: task.data(),
-                }))
+            .update({ status: "scheduled", ...error })
+            .then(() =>
+              sendNotification({
+                type: "slack",
+                payload: {
+                  message: JSON.stringify(task.data()),
+                },
+              })
             )
             .catch((error: any) => DEBUG && console.error(error));
           return throwError(error);
@@ -168,7 +142,5 @@ export const processTaskQueue = async (): Promise<any> => {
       jobs.push(job);
     });
   } else if (DEBUG) console.log("*** NO FAILED TASKS FOUND IN QUEUE ***");
-  return await Promise.all(jobs).catch(
-    async (error: any) => await throwError(error)
-  );
+  return await Promise.all(jobs).catch(async (error: any) => throwError(error));
 };

@@ -23,7 +23,7 @@ export const resetTerminal = functions
       if (isAuthorized) {
         return await configureTerminals();
       } else
-        return await throwError(
+        return throwError(
           `UNABLE TO RESET TERMINAL -> ${JSON.stringify(data)}`
         );
     }

@@ -34,9 +34,9 @@ export const paymentMethodUpdated = async (event: any) => {
                   eventIds: event?.id,
                   updatedOn: new Date(),
                 },
-                {merge: true}
+                { merge: true }
               )
-              .catch(async (error: any) => await throwError(error));
+              .catch((error: any) => throwError(error));
           else if (event?.type === "payment_method.detached")
             await admin
               .firestore()
@@ -50,9 +50,9 @@ export const paymentMethodUpdated = async (event: any) => {
                   eventIds: event?.id,
                   updatedOn: new Date(),
                 },
-                {merge: true}
+                { merge: true }
               )
-              .catch(async (error: any) => await throwError(error));
+              .catch((error: any) => throwError(error));
         });
     });
 };

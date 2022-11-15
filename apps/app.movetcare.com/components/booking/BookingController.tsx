@@ -44,7 +44,7 @@ export const BookingController = ({
   useEffect(() => {
     if (session?.step === "checkout" && session?.checkout?.url && !isAppMode)
       window.location.href = session?.checkout?.url;
-    if (session?.step === "complete")
+    if (session?.step === "needs-scheduling")
       window.location.href =
         window.location.origin + "/request-an-appointment/success?id=" + id;
   }, [session, isAppMode, id]);
@@ -78,6 +78,8 @@ export const BookingController = ({
         return <Confirmation session={session} isAppMode={isAppMode} />;
       case "complete":
         return <Loader message="Confirming Booking Request..." />;
+      case "needs-scheduling":
+        return <Loader message="Almost Finished..." />;
       case "checkout":
         return <Loader message="Taking you to Stripe..." />;
       case "add-pet":

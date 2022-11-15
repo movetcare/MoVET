@@ -28,10 +28,10 @@ export const sendSignInByEmailLink = async ({
           requestType: "EMAIL_SIGNIN",
           email,
         },
-        {headers: {"Content-Type": "application/json", Authorization: ""}}
+        { headers: { "Content-Type": "application/json", Authorization: "" } }
       )
       .then((response: any) => response.data)
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
     if (DEBUG)
       console.log(
         `sendSignInByEmailLink => RESUME BOOKING LINK SENT TO: ${response.email}`,

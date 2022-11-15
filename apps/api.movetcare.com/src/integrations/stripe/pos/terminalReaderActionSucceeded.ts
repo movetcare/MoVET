@@ -21,10 +21,10 @@ export const terminalReaderActionSucceeded = async (event: any) => {
         display: null,
         updatedOn: new Date(),
       },
-      {merge: true}
+      { merge: true }
     )
     .then(() => true)
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
   await admin
     .firestore()
     .collection("counter_sales")
@@ -54,7 +54,7 @@ export const terminalReaderActionSucceeded = async (event: any) => {
                 event?.data?.object?.action?.process_payment_intent
                   ?.payment_intent
               )
-              .catch(async (error: any) => await throwError(error));
+              .catch((error: any) => throwError(error));
           }
           if (DEBUG) console.log("didCapturePayment", didCapturePayment);
           // await admin
@@ -110,7 +110,7 @@ export const terminalReaderActionSucceeded = async (event: any) => {
           //           console.error('error.response.data', error.response.data)
           //       )
           // )
-          // .catch(async (error: any) => await throwError(error));
+          //  .catch((error: any) => throwError(error));
         });
       else
         await admin
@@ -146,7 +146,7 @@ export const terminalReaderActionSucceeded = async (event: any) => {
                       event?.data?.object?.action?.process_payment_intent
                         ?.payment_intent
                     )
-                    .catch(async (error: any) => await throwError(error));
+                    .catch((error: any) => throwError(error));
                 }
                 if (DEBUG) console.log("didCapturePayment", didCapturePayment);
                 // await admin
@@ -206,14 +206,14 @@ export const terminalReaderActionSucceeded = async (event: any) => {
                 //           )
                 //       )
                 // )
-                // .catch(async (error: any) => await throwError(error));
+                //  .catch((error: any) => throwError(error));
               });
             else
               await throwError({
                 message: `FAILED TO COMPLETE TRANSACTION => ${event?.data?.object?.action?.process_payment_intent?.payment_intent}`,
               });
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

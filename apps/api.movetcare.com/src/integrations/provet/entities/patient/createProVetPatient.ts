@@ -50,7 +50,7 @@ export const createProVetPatient = async (data: {
     !(typeof gender === "string") ||
     gender.length === 0
   )
-    return await throwError({ message: "INVALID_PAYLOAD" });
+    return throwError({ message: "INVALID_PAYLOAD" });
 
   if (DEBUG)
     console.log("REQUEST PAYLOAD =>", {
@@ -93,10 +93,10 @@ export const createProVetPatient = async (data: {
       critical_notes: notes || "",
     })
     .then(async (response: any) => {
-      await updateCustomField(`${response.data.id}`, 2, "True");
+      updateCustomField(`${response.data.id}`, 2, "True");
       return await updatePatientWeight(response.data, weight as string);
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
   return await savePatient(proVetPatientData, vcprRequired);
 };
 
@@ -115,7 +115,7 @@ const updatePatientWeight = async (data: any, weight: string) => {
         weight: parseFloat(weight).toFixed(1), // Required by PROVET API
       })
       .then(async (response: any) => {
-        const {data} = response;
+        const { data } = response;
         if (DEBUG)
           console.log(
             `API Response: POST /patient/${data?.id}/weight/ => `,
@@ -123,8 +123,8 @@ const updatePatientWeight = async (data: any, weight: string) => {
           );
         return data;
       })
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
   } else if (DEBUG)
     console.log("SKIPPING WEIGHT UPDATE - NO VALUE PROVIDED", data);
-  return {...data, weight: updatedWeightHistory};
+  return { ...data, weight: updatedWeightHistory };
 };

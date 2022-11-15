@@ -30,9 +30,9 @@ export const createCustomer = functions
           .doc(context.auth?.uid)
           .get()
           .then((document: any) => document.data())
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
 
-        const {data: matchingCustomers} = await stripe.customers.list({
+        const { data: matchingCustomers } = await stripe.customers.list({
           email,
         });
         if (DEBUG) {
@@ -90,7 +90,7 @@ export const createCustomer = functions
                 clientId: context.auth.uid,
               },
             })
-            .catch(async (error: any) => (await throwError(error)) as any);
+            .catch(async (error: any) => throwError(error) as any);
         } else {
           let matchedCustomer = null;
           matchingCustomers.forEach((customerData: any) => {
@@ -138,7 +138,7 @@ export const createCustomer = functions
                   clientId: context.auth.uid,
                 },
               })
-              .catch(async (error: any) => (await throwError(error)) as any);
+              .catch(async (error: any) => throwError(error) as any);
           } else {
             customer = matchedCustomer;
             if (DEBUG)
@@ -154,8 +154,8 @@ export const createCustomer = functions
         });
 
         const ephemeralKey = await stripe.ephemeralKeys.create(
-          {customer: customer?.id},
-          {apiVersion: "2020-03-02"}
+          { customer: customer?.id },
+          { apiVersion: "2020-03-02" }
         );
 
         if (DEBUG) console.log("Ephemeral Key Generated:", ephemeralKey);
@@ -164,7 +164,7 @@ export const createCustomer = functions
           .create({
             customer: customer?.id,
           })
-          .catch(async (error: any) => (await throwError(error)) as any);
+          .catch(async (error: any) => throwError(error) as any);
 
         if (DEBUG) console.log("Setup Intent Created:", setupIntent);
 
@@ -198,7 +198,7 @@ export const createCustomer = functions
                 validPaymentMethods !== false ? validPaymentMethods.length : 0,
             };
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       } else return throwError({message: "ACCOUNT NOT VERIFIED"});
     } else return throwError({message: "INVALID API KEY"});
   });

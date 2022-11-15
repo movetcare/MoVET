@@ -1,8 +1,8 @@
 import {admin, throwError} from "../config/config";
-import {logEvent} from "../utils/logging/logEvent";
+import { sendNotification } from "../notifications/sendNotification";
 
 const DEBUG = false;
-export const updateBookingPatientsWithSymptoms = async (
+export const updateBookingPatientsWithSymptoms = (
   id: string,
   allPatients: Array<any>,
   illnessDetails: any
@@ -32,86 +32,80 @@ export const updateBookingPatientsWithSymptoms = async (
     console.log("updatedPatients", updatedPatients);
     console.log("nextPatient", nextPatient);
   }
-  await admin
-    .firestore()
-    .collection("bookings")
-    .doc(id)
-    .set(
-      {
-        nextPatient,
-        step: nextPatient ? "illness-assignment" : "choose-location",
-        updatedOn: new Date(),
-        patients: updatedPatients,
-        illnessDetails: null,
-      },
-      {merge: true}
-    )
-    .then(async () => {
-      if (DEBUG)
-        console.log("SUCCESSFULLY UPDATED BOOKING W/ PATIENT SYMPTOM DATA", {
-          id,
-          illnessDetails,
-          updatedPatients,
-        });
-      return await logEvent({
-        tag: "appointment-booking",
-        origin: "api",
-        success: true,
-        sendToSlack: true,
-        data: {
-          id,
-          status: "illness-assignment",
-          updatedOn: new Date(),
-          illnessDetails,
-          updatedPatients,
-          message: [
-            {
-              type: "section",
-              text: {
-                text: ":book: _Appointment Booking_ *UPDATE*",
-                type: "mrkdwn",
-              },
-              fields: [
-                {
-                  type: "mrkdwn",
-                  text: "*Session ID*",
-                },
-                {
-                  type: "plain_text",
-                  text: id,
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*Step*",
-                },
-                {
-                  type: "plain_text",
-                  text: "Illness Assignment",
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*Selected Illness*",
-                },
-                {
-                  type: "plain_text",
-                  text: `${
-                    updatedPatients && updatedPatients.length > 0
-                      ? ` ${updatedPatients.map(
-                          (patient: any) =>
-                            `${patient.name}${
-                              patient.illnessDetails
-                                ? ` - ${JSON.stringify(patient.illnessDetails)}`
-                                : ""
-                            }`
-                        )}`
-                      : ""
-                  }`,
-                },
-              ],
-            },
-          ],
-        },
-      });
-    })
-    .catch(async (error: any) => await throwError(error));
+  admin
+     .firestore()
+     .collection("bookings")
+     .doc(id)
+     .set(
+       {
+         nextPatient,
+         step: nextPatient ? "illness-assignment" : "choose-location",
+         updatedOn: new Date(),
+         patients: updatedPatients,
+         illnessDetails: null,
+       },
+       { merge: true }
+     )
+     .then(async () => {
+       if (DEBUG)
+         console.log("SUCCESSFULLY UPDATED BOOKING W/ PATIENT SYMPTOM DATA", {
+           id,
+           illnessDetails,
+           updatedPatients,
+         });
+       sendNotification({
+         type: "slack",
+         payload: {
+           message: [
+             {
+               type: "section",
+               text: {
+                 text: ":book: _Appointment Booking_ *UPDATE*",
+                 type: "mrkdwn",
+               },
+               fields: [
+                 {
+                   type: "mrkdwn",
+                   text: "*Session ID*",
+                 },
+                 {
+                   type: "plain_text",
+                   text: id,
+                 },
+                 {
+                   type: "mrkdwn",
+                   text: "*Step*",
+                 },
+                 {
+                   type: "plain_text",
+                   text: "Illness Assignment",
+                 },
+                 {
+                   type: "mrkdwn",
+                   text: "*Selected Illness*",
+                 },
+                 {
+                   type: "plain_text",
+                   text: `${
+                     updatedPatients && updatedPatients.length > 0
+                       ? ` ${updatedPatients.map(
+                           (patient: any) =>
+                             `${patient.name}${
+                               patient.illnessDetails
+                                 ? ` - ${JSON.stringify(
+                                     patient.illnessDetails
+                                   )}`
+                                 : ""
+                             }`
+                         )}`
+                       : ""
+                   }`,
+                 },
+               ],
+             },
+           ],
+         },
+       });
+     })
+     .catch((error: any) => throwError(error));
 };

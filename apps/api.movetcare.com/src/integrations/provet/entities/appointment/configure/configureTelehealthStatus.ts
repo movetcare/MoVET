@@ -36,9 +36,9 @@ export const configureTelehealthStatus = async (): Promise<boolean> => {
             "(AUTO REPLY) Thanks for reaching out! We are currently offline, but we promise to get back to you ASAP.",
           updatedOn: new Date(),
         },
-        {merge: true}
+        { merge: true }
       )
       .then(() => true)
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
   }
 };

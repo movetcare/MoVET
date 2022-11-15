@@ -20,6 +20,6 @@ export const logServiceRequest = (data: {
         addedOn: new Date(),
         zipcode: data.zipcode,
       },
-      {merge: true}
+      { merge: true }
     )
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

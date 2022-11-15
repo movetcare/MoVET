@@ -39,9 +39,9 @@ export const configureAppointmentEstimates = async (): Promise<boolean> => {
           },
           updatedOn: new Date(),
         },
-        {merge: true}
+        { merge: true }
       )
       .then(() => true)
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
   }
 };

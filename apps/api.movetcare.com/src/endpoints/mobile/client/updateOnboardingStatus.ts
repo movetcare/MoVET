@@ -20,7 +20,7 @@ export const updateOnboardingStatus = functions
           .setCustomUserClaims(context.auth.uid, {
             onboardingComplete: data.onboardingComplete,
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       }
       return false;
     }

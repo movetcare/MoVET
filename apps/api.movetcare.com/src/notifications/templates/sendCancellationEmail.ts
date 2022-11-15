@@ -4,10 +4,9 @@ import {
   environment,
   emailClient,
   throwError,
-} from "../config/config";
-import {logEvent} from "../utils/logging/logEvent";
-import {getAuthUserById} from "../utils/auth/getAuthUserById";
-import {getDateStringFromDate} from "../utils/getDateStringFromDate";
+} from "../../config/config";
+import { getAuthUserById } from "../../utils/auth/getAuthUserById";
+import { getDateStringFromDate } from "../../utils/getDateStringFromDate";
 
 export const sendCancellationEmail = async (
   clientId: string,
@@ -18,7 +17,7 @@ export const sendCancellationEmail = async (
       `sendCancellationEmail -> clientId: ${clientId}, appointmentId: ${appointmentId}`
     );
 
-  const {email, displayName} = await getAuthUserById(clientId, [
+  const { email, displayName } = await getAuthUserById(clientId, [
     "email",
     "displayName",
   ]);
@@ -34,7 +33,7 @@ export const sendCancellationEmail = async (
     .doc(appointmentId)
     .get()
     .then((appointment: any) => appointment.data())
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
   if (DEBUG) console.log("appointment -> ", appointment);
 
@@ -81,18 +80,11 @@ export const sendCancellationEmail = async (
               ...emailConfig,
               createdOn: new Date(),
             })
-            .catch(async (error: any) => await throwError(error));
-        await logEvent({
-          tag: "cancel-appointment",
-          origin: "api",
-          success: true,
-          data: emailConfig,
-          sendToSlack: true,
-        }).catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
       })
       .catch(async (error: any) => {
         if (DEBUG) console.error(error?.response?.body?.errors);
-        await throwError(error);
+        throwError(error);
       });
   else {
     if (clientId)
@@ -106,12 +98,6 @@ export const sendCancellationEmail = async (
           ...emailConfig,
           createdOn: new Date(),
         })
-        .catch(async (error: any) => await throwError(error));
-    await logEvent({
-      tag: "notification",
-      origin: "api",
-      success: true,
-      data: emailConfig,
-    });
+        .catch((error: any) => throwError(error));
   }
 };

@@ -1,15 +1,10 @@
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { sendNotification } from "../notifications/sendNotification";
-import {
-  admin,
-  functions,
-  proVetApiUrl,
-  request,
-  throwError,
-} from "../config/config";
+import { admin, functions, throwError } from "../config/config";
 import { CONTACT_STATUS } from "../constant";
 import type { ContactForm } from "../types/forms";
 import { getAuthUserByEmail } from "../utils/auth/getAuthUserByEmail";
+import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
 
 const DEBUG = false;
 export const handleContactSubmission = functions.firestore
@@ -34,84 +29,69 @@ export const handleContactSubmission = functions.firestore
 
     if (status === CONTACT_STATUS.NEEDS_PROCESSING) {
       try {
-        await updateContactStatus({
+        updateContactStatus({
           status: CONTACT_STATUS.STARTED_PROCESSING,
           id,
         });
-        await sendNotification({
+        sendNotification({
           type: "slack",
           payload: {
-            tag: "contact-form",
-            origin: "api",
-            success: true,
-            channel: reason.id,
-            data: {
-              id,
-              ...snapshot.data(),
-              updatedOn: new Date(),
-              message: [
-                {
-                  type: "section",
-                  text: {
-                    text: `:speech_balloon: _New "${reason.name}" Contact Form Submission @ ${source}_`,
-                    type: "mrkdwn",
-                  },
-                  fields: [
-                    {
-                      type: "mrkdwn",
-                      text: "*Name:*",
-                    },
-                    {
-                      type: "plain_text",
-                      text: firstName + "" + lastName,
-                    },
-                    {
-                      type: "mrkdwn",
-                      text: "*Email:*",
-                    },
-                    {
-                      type: "plain_text",
-                      text: email,
-                    },
-                    {
-                      type: "mrkdwn",
-                      text: "*Phone:*",
-                    },
-                    {
-                      type: "plain_text",
-                      text: phone,
-                    },
-                    {
-                      type: "mrkdwn",
-                      text: "*Message:*",
-                    },
-                    {
-                      type: "plain_text",
-                      text: message,
-                    },
-                    {
-                      type: "mrkdwn",
-                      text: "*Source*",
-                    },
-                    {
-                      type: "plain_text",
-                      text: source,
-                    },
-                  ],
+            message: [
+              {
+                type: "section",
+                text: {
+                  text: `:speech_balloon: _New "${reason.name}" Contact Form Submission @ ${source}_`,
+                  type: "mrkdwn",
                 },
-              ],
-            },
-            sendToSlack: true,
+                fields: [
+                  {
+                    type: "mrkdwn",
+                    text: "*Name:*",
+                  },
+                  {
+                    type: "plain_text",
+                    text: firstName + "" + lastName,
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*Email:*",
+                  },
+                  {
+                    type: "plain_text",
+                    text: email,
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*Phone:*",
+                  },
+                  {
+                    type: "plain_text",
+                    text: phone,
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*Message:*",
+                  },
+                  {
+                    type: "plain_text",
+                    text: message,
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*Source*",
+                  },
+                  {
+                    type: "plain_text",
+                    text: source,
+                  },
+                ],
+              },
+            ],
           },
         });
-        await sendNotification({
+        sendNotification({
           type: "email",
           payload: {
-            tag: "contact-form",
-            origin: "api",
-            success: true,
-            id,
-            ...snapshot.data(),
             to: "info@movetcare.com",
             replyTo: email,
             subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName}`,
@@ -121,50 +101,45 @@ export const handleContactSubmission = functions.firestore
             updatedOn: new Date(),
           },
         });
-        await updateContactStatus({
+        updateContactStatus({
           status: CONTACT_STATUS.NEEDS_REPLY,
           id,
         });
         const isClient = await getAuthUserByEmail(email);
         if (DEBUG) console.log("isClient", isClient);
         if (isClient)
-          await request
-            .post("/note/", {
-              title: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName} @ ${source}`,
-              type: 1,
-              client: proVetApiUrl + `/client/${isClient.uid}/`,
-              patients: [],
-              note: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
-                phone
-              )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
-            })
-            .then(async (response: any) => {
-              const { data } = response;
-              if (DEBUG) console.log("API Response: POST /note/ => ", data);
-            })
-            .catch(async (error: any) => await throwError(error));
+          createProVetNote({
+            type: 1,
+            subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName} @ ${source}`,
+            message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
+              phone
+            )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
+            client: isClient?.uid,
+            patients: [],
+          });
       } catch (error: any) {
-        await updateContactStatus({
+        updateContactStatus({
           status: CONTACT_STATUS.ERROR_PROCESSING,
           id,
         });
-        await throwError(error);
+        throwError(error);
       }
     }
+    return true;
   });
 
-const updateContactStatus = async ({
+const updateContactStatus = ({
   id,
   status,
 }: {
   id: string;
   status: ContactForm["status"];
-}) => {
-  await admin
+}) =>
+  admin
     .firestore()
     .collection("contact")
     .doc(id)
     .set({ status, updatedOn: new Date() }, { merge: true })
     .then(() => DEBUG && console.log("CONTACT_STATUS CHANGED", status))
-    .catch(async (error: any) => await throwError(error));
-};
+    .catch((error: any) => throwError(error));
+

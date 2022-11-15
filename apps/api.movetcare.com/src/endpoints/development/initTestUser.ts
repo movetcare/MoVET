@@ -67,10 +67,10 @@ const deleteDefaultUsers = async () =>
         deleteUsersResult.errors.forEach((error: any) => {
           if (DEBUG) console.error(error.error.toJSON());
         });
-        return await throwError(deleteUsersResult.errors);
+        return throwError(deleteUsersResult.errors);
       } else return true;
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
 const importDefaultUsers = async (): Promise<boolean> =>
   await admin
@@ -82,7 +82,7 @@ const importDefaultUsers = async (): Promise<boolean> =>
         email: "alex@movetcare.com",
         emailVerified: true,
         phoneNumber: "+3147360856",
-        customClaims: {isSuperAdmin: true, isAdmin: true, isStaff: true},
+        customClaims: { isSuperAdmin: true, isAdmin: true, isStaff: true },
         providerData: [
           {
             uid: "0",
@@ -97,7 +97,7 @@ const importDefaultUsers = async (): Promise<boolean> =>
         displayName: "Lexi",
         email: "lexi@movetcare.com",
         emailVerified: true,
-        customClaims: {isAdmin: true},
+        customClaims: { isAdmin: true },
         providerData: [
           {
             uid: "1",
@@ -112,7 +112,7 @@ const importDefaultUsers = async (): Promise<boolean> =>
         displayName: "MoVET Staff",
         email: "info@movetcare.com",
         emailVerified: true,
-        customClaims: {isStaff: true},
+        customClaims: { isStaff: true },
         providerData: [
           {
             uid: "2",
@@ -133,7 +133,7 @@ const importDefaultUsers = async (): Promise<boolean> =>
             );
           }
         });
-        return await throwError(results.errors);
+        return throwError(results.errors);
       } else {
         if (DEBUG) {
           if (results.successCount > 0)
@@ -150,7 +150,7 @@ const importDefaultUsers = async (): Promise<boolean> =>
         return true;
       }
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
 const importTestUser = async (email: string): Promise<boolean> => {
   const testUserAlreadyExists = await verifyExistingClient(email);
@@ -191,11 +191,11 @@ const importPatientData = async () => {
     .then(async () => {
       if (patientsConfigured === patientIds.length) return true;
       else
-        return await throwError(
+        return throwError(
           `ERROR: ${patientsConfigured} Out of ${patientIds.length} Patients Imported`
         );
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };
 
 const importCustomerData = async (stripeCustomerData: any) =>
@@ -208,9 +208,9 @@ const importCustomerData = async (stripeCustomerData: any) =>
         customer: stripeCustomerData,
         updatedOn: new Date(),
       },
-      {merge: true}
+      { merge: true }
     )
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
 const importCustomerPaymentMethod = async (paymentMethod: any) =>
   await admin
@@ -219,8 +219,8 @@ const importCustomerPaymentMethod = async (paymentMethod: any) =>
     .doc("5125")
     .collection("payment_methods")
     .doc(`${paymentMethod?.id}`)
-    .set({...paymentMethod, active: true}, {merge: true})
-    .catch(async (error: any) => await throwError(error));
+    .set({ ...paymentMethod, active: true }, { merge: true })
+    .catch((error: any) => throwError(error));
 
 const importTelehealthChat = async () =>
   await admin
@@ -240,7 +240,7 @@ const importTelehealthChat = async () =>
         lastSlackThread: "12345",
         createdAt: new Date(),
       },
-      {merge: true}
+      { merge: true }
     )
     .then(
       async () =>
@@ -260,18 +260,18 @@ const importTelehealthChat = async () =>
             },
             createdAt: new Date(),
           })
-          .catch(async (error: any) => await throwError(error))
+          .catch(async (error: any) => throwError(error))
     )
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
 const importCheckIn = async (): Promise<boolean> => {
-  const {firstName, lastName, phone} = await admin
+  const { firstName, lastName, phone } = await admin
     .firestore()
     .collection("clients")
     .doc("5125")
     .get()
     .then((doc: any) => doc?.data())
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
   return await admin
     .firestore()
     .collection("waitlist")
@@ -295,8 +295,8 @@ const importCheckIn = async (): Promise<boolean> => {
         status: "complete",
         updatedOn: new Date(),
       },
-      {merge: true}
+      { merge: true }
     )
     .then(() => true)
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

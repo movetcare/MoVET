@@ -49,9 +49,9 @@ export const simulatePayment = functions
                 );
               return data?.action || null;
             })
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
         } else
-          return await throwError(
+          return throwError(
             `UNABLE TO COMPLETE SIMULATED PAYMENT -> ${JSON.stringify(data)}`
           );
       }

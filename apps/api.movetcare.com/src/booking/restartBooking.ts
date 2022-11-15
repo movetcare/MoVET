@@ -1,12 +1,12 @@
 import {DEBUG, admin, throwError} from "../config/config";
-import {logEvent} from "../utils/logging/logEvent";
+import { sendNotification } from "../notifications/sendNotification";
 
-export const restartBooking = async (id: string) => {
+export const restartBooking = (id: string) => {
   if (DEBUG)
     console.log("ARCHIVING BOOKING DATA", {
       id,
     });
-  return await admin
+  return admin
     .firestore()
     .collection("bookings")
     .doc(id)
@@ -15,22 +15,16 @@ export const restartBooking = async (id: string) => {
         isActive: false,
         updatedOn: new Date(),
       },
-      {merge: true}
+      { merge: true }
     )
     .then(async () => {
       if (DEBUG)
         console.log("SUCCESSFULLY ARCHIVED BOOKING", {
           id,
         });
-      return await logEvent({
-        tag: "appointment-booking",
-        origin: "api",
-        success: true,
-        sendToSlack: true,
-        data: {
-          id,
-          status: "restart",
-          updatedOn: new Date(),
+      sendNotification({
+        type: "slack",
+        payload: {
           message: [
             {
               type: "section",
@@ -61,5 +55,5 @@ export const restartBooking = async (id: string) => {
         },
       });
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

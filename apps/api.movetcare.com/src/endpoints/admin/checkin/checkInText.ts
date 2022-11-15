@@ -3,12 +3,14 @@ import {
   defaultRuntimeOptions,
   environment,
   functions,
-  smsClient,
   throwError,
   DEBUG,
 } from "../../../config/config";
-import {requestIsAuthorized} from "../../admin/pos/requestIsAuthorized";
-
+import { requestIsAuthorized } from "../../admin/pos/requestIsAuthorized";
+const sms = require("twilio")(
+  functions.config()?.twilio.account_sid,
+  functions.config()?.twilio.auth_token
+);
 export const checkInText = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async ({id}: {id: string}, context: any): Promise<boolean> => {
@@ -28,11 +30,11 @@ export const checkInText = functions
             .replace("-", "")
             .replace(" ", "")
         )
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
       const message =
         "This is MoVET checking in to let you know that we are ready to start your appointment! Please meet us at the front desk.";
       if (environment?.type === "production" && phone) {
-        await smsClient.messages
+        await sms.messages
           .create({
             body: message,
             from: "+17206775047",
@@ -61,7 +63,7 @@ export const checkInText = functions
             to: `+1${phone}`,
             createdOn: new Date(),
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       } else return false;
       return true;
     } else return false;

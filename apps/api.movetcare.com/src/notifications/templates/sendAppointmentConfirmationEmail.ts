@@ -1,15 +1,14 @@
-import {fetchEntity} from "./../integrations/provet/entities/fetchEntity";
+import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
 import {
   DEBUG,
   admin,
   environment,
   emailClient,
   throwError,
-} from "../config/config";
-import {logEvent} from "../utils/logging/logEvent";
-import {getAuthUserById} from "../utils/auth/getAuthUserById";
-import {getDateStringFromDate} from "../utils/getDateStringFromDate";
-import {getProVetIdFromUrl} from "../utils/getProVetIdFromUrl";
+} from "../../config/config";
+import { getAuthUserById } from "../../utils/auth/getAuthUserById";
+import { getDateStringFromDate } from "../../utils/getDateStringFromDate";
+import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 
 export const sendAppointmentConfirmationEmail = async (
   clientId: string,
@@ -20,7 +19,7 @@ export const sendAppointmentConfirmationEmail = async (
       `sendAppointmentConfirmationEmail -> clientId: ${clientId}, appointmentId: ${appointmentId}`
     );
 
-  const {email, displayName, phoneNumber} = await getAuthUserById(clientId, [
+  const { email, displayName, phoneNumber } = await getAuthUserById(clientId, [
     "email",
     "displayName",
     "phoneNumber",
@@ -38,7 +37,7 @@ export const sendAppointmentConfirmationEmail = async (
     .doc(appointmentId)
     .get()
     .then((appointment: any) => appointment.data())
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
   if (DEBUG) console.log("appointment -> ", appointment);
 
@@ -154,7 +153,8 @@ ${
         clientProvetRecord?.state || "STATE UNKNOWN"
       } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
     : appointment?.user === 7
-    ? "<p><b>Appointment Location</b>: MoVET Clinic @ <a href=\"https://goo.gl/maps/GxPDfsCfdXhbmZVe9\" target=\"_blank\">4912 S Newport St Denver, CO 80237</a></p>"
+    ? // eslint-disable-next-line quotes
+      '<p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
     : appointment?.user === 9
     ? "<p><b>Appointment Location</b>: Virtual</p>"
     : "<p><b>Appointment Location</b>: Walk In</p>"
@@ -211,18 +211,12 @@ ${
               ...emailConfig,
               createdOn: new Date(),
             })
-            .catch(async (error: any) => await throwError(error));
-        return await logEvent({
-          tag: "notification",
-          origin: "api",
-          success: true,
-          data: emailConfig,
-          sendToSlack: true,
-        }).catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
+        return true;
       })
       .catch(async (error: any) => {
         if (DEBUG) console.error(error?.response?.body?.errors);
-        return await throwError(error);
+        return throwError(error);
       });
   else {
     if (clientId)
@@ -236,12 +230,7 @@ ${
           ...emailConfig,
           createdOn: new Date(),
         })
-        .catch(async (error: any) => await throwError(error));
-    return await logEvent({
-      tag: "notification",
-      origin: "api",
-      success: true,
-      data: emailConfig,
-    });
+        .catch((error: any) => throwError(error));
+    return true;
   }
 };

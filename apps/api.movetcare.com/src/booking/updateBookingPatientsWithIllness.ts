@@ -1,7 +1,7 @@
-import {admin, throwError, DEBUG} from "../config/config";
-import {logEvent} from "../utils/logging/logEvent";
+import { admin, throwError, DEBUG } from "../config/config";
+import { sendNotification } from "../notifications/sendNotification";
 
-export const updateBookingPatientsWithIllness = async (
+export const updateBookingPatientsWithIllness = (
   id: string,
   allPatients: Array<any>,
   illPatients: Array<string>
@@ -12,15 +12,15 @@ export const updateBookingPatientsWithIllness = async (
     let didMarkPatientAsIll = false;
     illPatients.forEach((illPatient: string) => {
       if (illPatient === patient.value) {
-        updatedPatients.push({...patient, hasMinorIllness: true});
+        updatedPatients.push({ ...patient, hasMinorIllness: true });
         didMarkPatientAsIll = true;
       }
     });
     if (!didMarkPatientAsIll)
-      updatedPatients.push({...patient, hasMinorIllness: false});
+      updatedPatients.push({ ...patient, hasMinorIllness: false });
   });
   if (DEBUG) console.log("updatedPatients", updatedPatients);
-  return await admin
+  admin
     .firestore()
     .collection("bookings")
     .doc(id)
@@ -30,26 +30,18 @@ export const updateBookingPatientsWithIllness = async (
         updatedOn: new Date(),
         patients: updatedPatients,
       },
-      {merge: true}
+      { merge: true }
     )
-    .then(async () => {
+    .then(() => {
       if (DEBUG)
         console.log("SUCCESSFULLY UPDATED BOOKING W/ PATIENT ILLNESS DATA", {
           id,
           illPatients,
           updatedPatients,
         });
-      return await logEvent({
-        tag: "appointment-booking",
-        origin: "api",
-        success: true,
-        sendToSlack: true,
-        data: {
-          id,
-          status: "wellness-check",
-          updatedOn: new Date(),
-          illPatients,
-          updatedPatients,
+      sendNotification({
+        type: "slack",
+        payload: {
           message: [
             {
               type: "section",
@@ -99,5 +91,5 @@ export const updateBookingPatientsWithIllness = async (
         },
       });
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

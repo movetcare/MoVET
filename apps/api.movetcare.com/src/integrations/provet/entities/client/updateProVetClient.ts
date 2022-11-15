@@ -81,12 +81,12 @@ export const updateProVetClient = async (payload: any): Promise<boolean> => {
     const allPhoneNumberIds = await request
       .get(`/client/${payload?.id}/`)
       .then(async (response: any) => {
-        const {data} = response;
+        const { data } = response;
         if (DEBUG)
           console.log(`API Response: GET /client/${payload?.id}/ => `, data);
         return data?.phone_numbers.map((phone: any) => phone?.id);
       })
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
     if (allPhoneNumberIds.length > 0)
       allPhoneNumberIds.forEach(
         async (phoneId: string) =>
@@ -114,21 +114,21 @@ export const updateProVetClient = async (payload: any): Promise<boolean> => {
         description: "Default Phone Number - Used for SMS Alerts",
       })
       .then(async (response: any) => {
-        const {data} = response;
+        const { data } = response;
         if (DEBUG) console.log("API Response: POST /phonenumber/ => ", data);
       })
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
   }
 
   const proVetClientData = await request
     .patch(`/client/${payload?.id}`, data)
     .then(async (response: any) => {
-      const {data} = response;
+      const { data } = response;
       if (DEBUG)
         console.log(`API Response: PATCH /client/${payload?.id} => `, data);
       return data;
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
   return await saveClient(
     `${proVetClientData.id}`,

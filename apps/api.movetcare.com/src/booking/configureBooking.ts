@@ -54,7 +54,7 @@ export const configureBooking = async () => {
           ? true
           : await generateTestBookingData();
       })
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
   }
 };
 
@@ -148,10 +148,7 @@ const generateTestBookingData = async () =>
             value: 30,
           },
           requestedDateTime: {
-            date: {
-              seconds: 1770962400,
-              nanoseconds: 0,
-            },
+            date: new Date(),
             time: "09:00",
           },
           step: "complete",
@@ -181,6 +178,6 @@ const generateTestBookingData = async () =>
               return true;
             });
         })
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

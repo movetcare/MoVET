@@ -4,7 +4,7 @@ import {deleteCollection} from "../../../../utils/deleteCollection";
 import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
 import {fetchEntity} from "../fetchEntity";
 
-const visibleReasonGroupsInApp = [19, 20, 23, 25, 29, 30, 31, 32];
+const visibleReasonGroupsInApp = [35, 36, 37];
 
 export const configureReasonGroups = async (): Promise<boolean> => {
   console.log("STARTING REASONS CONFIGURATION");
@@ -13,7 +13,7 @@ export const configureReasonGroups = async (): Promise<boolean> => {
   );
   const reasonGroups: Array<ReasonGroup> = await fetchEntity("reason_group");
   if (reasonGroups) return await saveReasonsData(reasonGroups);
-  else return await throwError("Failed to Process Reason Groups");
+  else return throwError("Failed to Process Reason Groups");
 };
 
 const saveReasonsData = async (reasons: Array<ReasonGroup>): Promise<boolean> =>
@@ -35,8 +35,8 @@ const saveReasonsData = async (reasons: Array<ReasonGroup>): Promise<boolean> =>
             { merge: true }
           )
           .then(() => true)
-          .catch(async (error: any) => await throwError(error))
+          .catch(async (error: any) => throwError(error))
     )
   )
     .then(async () => true)
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

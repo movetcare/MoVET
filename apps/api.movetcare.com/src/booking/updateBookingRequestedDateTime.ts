@@ -1,6 +1,6 @@
 import { throwError, admin, environment, stripe } from "../config/config";
+import { sendNotification } from "../notifications/sendNotification";
 import { getCustomerId } from "../utils/getCustomerId";
-import { logEvent } from "../utils/logging/logEvent";
 import { verifyValidPaymentSource } from "../utils/verifyValidPaymentSource";
 
 const DEBUG = false;
@@ -37,71 +37,64 @@ export const updateBookingRequestedDateTime = async (
         })
       : null;
   if (DEBUG) console.log("STRIPE CHECKOUT SESSION", session);
-  await admin
-    .firestore()
-    .collection("bookings")
-    .doc(id)
-    .set(
-      session !== null
-        ? {
-            step: "payment-confirmation",
-            checkout: session,
-            updatedOn: new Date(),
-          }
-        : {
-            step: "complete",
-            updatedOn: new Date(),
-          },
-      { merge: true }
-    )
-    .then(
-      async () =>
-        await logEvent({
-          tag: "appointment-booking",
-          origin: "api",
-          success: true,
-          sendToSlack: true,
-          data: {
-            id,
-            step: "choose-datetime",
-            updatedOn: new Date(),
-            message: [
-              {
-                type: "section",
-                text: {
-                  text: ":book: _Appointment Booking_ *UPDATE*",
-                  type: "mrkdwn",
-                },
-                fields: [
-                  {
-                    type: "mrkdwn",
-                    text: "*Session ID*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: id,
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*Step*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: "Request Date / Time",
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*Selected Date & Time*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: JSON.stringify(requestedDateTime),
-                  },
-                ],
-              },
-            ],
-          },
-        })
-    )
-    .catch(async (error: any) => await throwError(error));
+   admin
+     .firestore()
+     .collection("bookings")
+     .doc(id)
+     .set(
+       session !== null
+         ? {
+             step: "payment-confirmation",
+             checkout: session,
+             updatedOn: new Date(),
+           }
+         : {
+             step: "complete",
+             updatedOn: new Date(),
+           },
+       { merge: true }
+     )
+     .then(() =>
+       sendNotification({
+         type: "slack",
+         payload: {
+           message: [
+             {
+               type: "section",
+               text: {
+                 text: ":book: _Appointment Booking_ *UPDATE*",
+                 type: "mrkdwn",
+               },
+               fields: [
+                 {
+                   type: "mrkdwn",
+                   text: "*Session ID*",
+                 },
+                 {
+                   type: "plain_text",
+                   text: id,
+                 },
+                 {
+                   type: "mrkdwn",
+                   text: "*Step*",
+                 },
+                 {
+                   type: "plain_text",
+                   text: "Request Date / Time",
+                 },
+                 {
+                   type: "mrkdwn",
+                   text: "*Selected Date & Time*",
+                 },
+                 {
+                   type: "plain_text",
+                   text: JSON.stringify(requestedDateTime),
+                 },
+               ],
+             },
+           ],
+         },
+       })
+     )
+     .catch((error: any) => throwError(error));
 };

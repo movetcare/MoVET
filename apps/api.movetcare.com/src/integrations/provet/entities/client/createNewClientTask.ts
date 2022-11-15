@@ -1,14 +1,14 @@
+import { sendNotification } from "./../../../../notifications/sendNotification";
 import Stripe from "stripe";
-import {admin, stripe, throwError} from "../../../../config/config";
-import {sendWelcomeEmail} from "../../../../notifications/sendWelcomeEmail";
-import {getAuthUserById} from "../../../../utils/auth/getAuthUserById";
-import {logEvent} from "../../../../utils/logging/logEvent";
-import {fetchEntity} from "../fetchEntity";
-import {saveClient} from "./saveClient";
-import {updateProVetClient} from "./updateProVetClient";
+import { admin, stripe, throwError } from "../../../../config/config";
+import { sendWelcomeEmail } from "../../../../notifications/templates/sendWelcomeEmail";
+import { getAuthUserById } from "../../../../utils/auth/getAuthUserById";
+import { fetchEntity } from "../fetchEntity";
+import { saveClient } from "./saveClient";
+import { updateProVetClient } from "./updateProVetClient";
 const DEBUG = false;
-export const createNewClientTask = async (options: {clientId: number}) => {
-  const {clientId} = options;
+export const createNewClientTask = async (options: { clientId: number }) => {
+  const { clientId } = options;
   if (clientId) {
     const client = await fetchEntity("client", clientId);
     if (client && client?.email) {
@@ -28,22 +28,16 @@ export const createNewClientTask = async (options: {clientId: number}) => {
         .then(async (userRecord: any) => {
           if (DEBUG)
             console.log("SUCCESSFULLY CREATED NEW USER => ", userRecord);
-          await sendWelcomeEmail(userRecord?.email, true);
-          await createNewCustomer(userRecord);
+          sendWelcomeEmail(userRecord?.email, true);
+          createNewCustomer(userRecord);
         })
-        .then(
-          async () =>
-            await logEvent({
-              tag: "create-new-account",
-              origin: "tasks_queue",
-              success: true,
-              sendToSlack: true,
-              data: {
-                client,
-                clientId,
-                message: `:person_in_lotus_position: SUCCESSFULLY CREATED NEW MOVET ACCOUNT FOR PROVET CLIENT #${clientId}!`,
-              },
-            })
+        .then(() =>
+          sendNotification({
+            type: "slack",
+            payload: {
+              message: `:person_in_lotus_position: SUCCESSFULLY CREATED NEW MOVET ACCOUNT FOR PROVET CLIENT #${clientId}!`,
+            },
+          })
         )
         .catch(async (error: any) => {
           if (DEBUG) console.log("ERROR", error);
@@ -51,15 +45,16 @@ export const createNewClientTask = async (options: {clientId: number}) => {
             if (DEBUG)
               console.log(`${client?.email} IS ALREADY A FIREBASE AUTH USER!`);
             const authUser = await getAuthUserById(`${clientId}`);
-            await createNewCustomer(authUser);
-            await logEvent({
-              tag: "create-new-account",
-              origin: "tasks_queue",
-              success: false,
-              sendToSlack: true,
-              data: {
-                error,
-                client,
+            createNewCustomer(authUser);
+            sendNotification({
+              type: "slack",
+              payload: {
+                message: `:person_in_lotus_position: SUCCESSFULLY CREATED NEW MOVET ACCOUNT FOR PROVET CLIENT #${clientId}!`,
+              },
+            });
+            sendNotification({
+              type: "slack",
+              payload: {
                 message: `:person_frowning: FAILED TO CREATE NEW MOVET ACCOUNT FOR PROVET CLIENT #${clientId}\nREASON: CLIENT ALREADY HAS A FIREBASE AUTH USER!`,
               },
             });
@@ -70,26 +65,18 @@ export const createNewClientTask = async (options: {clientId: number}) => {
         console.log(
           "createNewClientTask FAILED! UNABLE TO FIND CLIENT`s EMAIL ADDRESS IN PROVET"
         );
-      await logEvent({
-        tag: "create-new-account",
-        origin: "tasks_queue",
-        success: false,
-        sendToSlack: true,
-        data: {
-          ...client,
+      sendNotification({
+        type: "slack",
+        payload: {
           message: `:person_frowning: FAILED TO CREATE NEW MOVET ACCOUNT FOR PROVET CLIENT #${clientId}\nREASON: UNABLE TO FIND CLIENT's EMAIL ADDRESS IN PROVET`,
         },
       });
     }
   } else {
     if (DEBUG) console.log("createNewClientTask FAILED! NO CLIENT ID PROVIDED");
-    await logEvent({
-      tag: "create-new-account",
-      origin: "tasks_queue",
-      success: false,
-      sendToSlack: true,
-      data: {
-        clientId,
+    sendNotification({
+      type: "slack",
+      payload: {
         message: `:person_frowning: FAILED TO CREATE NEW MOVET ACCOUNT FOR PROVET CLIENT #${clientId}\nREASON: CLIENT ALREADY HAS A FIREBASE AUTH USER!`,
       },
     });
@@ -103,9 +90,9 @@ const createNewCustomer = async (user: any) => {
     .doc(user?.uid)
     .get()
     .then((document: any) => document.data())
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 
-  const {data: matchingCustomers} = await stripe.customers.list({
+  const { data: matchingCustomers } = await stripe.customers.list({
     email: user?.email,
   });
   if (DEBUG) {
@@ -163,22 +150,17 @@ const createNewCustomer = async (user: any) => {
           clientId: user?.uid,
         },
       })
-      .then(
-        async () =>
-          await logEvent({
-            tag: "create-new-customer",
-            origin: "tasks_queue",
-            success: true,
-            sendToSlack: true,
-            data: {
-              client,
-              message: `:ok_hand: Created New Stripe Customer\n\n${JSON.stringify(
-                customer
-              )}`,
-            },
-          })
+      .then(() =>
+        sendNotification({
+          type: "slack",
+          payload: {
+            message: `:ok_hand: Created New Stripe Customer\n\n${JSON.stringify(
+              customer
+            )}`,
+          },
+        })
       )
-      .catch(async (error: any) => (await throwError(error)) as any);
+      .catch(async (error: any) => throwError(error) as any);
   } else {
     let matchedCustomer = null;
     matchingCustomers.forEach((customerData: any) => {
@@ -223,34 +205,25 @@ const createNewCustomer = async (user: any) => {
             clientId: user?.uid,
           },
         })
-        .then(
-          async (client: any) =>
-            await logEvent({
-              tag: "create-new-customer",
-              origin: "tasks_queue",
-              success: true,
-              sendToSlack: true,
-              data: {
-                client,
-                message: `:ok_hand: Created New Stripe Customer\n\n${JSON.stringify(
-                  customer
-                )}`,
-              },
-            })
+        .then((client: any) =>
+          sendNotification({
+            type: "slack",
+            payload: {
+              message: `:ok_hand: Created New Stripe Customer\n\n${JSON.stringify(
+                { customer, client }
+              )}`,
+            },
+          })
         )
-        .catch(async (error: any) => (await throwError(error)) as any);
+        .catch(async (error: any) => throwError(error) as any);
     } else {
       customer = matchedCustomer;
       if (DEBUG) console.log("Matched an existing customer ID => ", customer);
-      await logEvent({
-        tag: "customer-already-exists",
-        origin: "tasks_queue",
-        success: true,
-        sendToSlack: true,
-        data: {
-          client,
+      sendNotification({
+        type: "slack",
+        payload: {
           message: `:ok_hand: Existing Stripe Customer Found: \n\n${JSON.stringify(
-            customer
+            { customer, client }
           )}`,
         },
       });
@@ -273,5 +246,5 @@ const createNewCustomer = async (user: any) => {
           customer,
         });
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

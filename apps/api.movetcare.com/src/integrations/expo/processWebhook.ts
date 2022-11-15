@@ -1,6 +1,6 @@
-import {Request, Response} from "express";
-import {throwError, DEBUG} from "../../config/config";
-import {logEvent} from "../../utils/logging/logEvent";
+import { sendNotification } from "./../../notifications/sendNotification";
+import { Request, Response } from "express";
+import { throwError, DEBUG } from "../../config/config";
 
 export const processExpoWebhook = async (
   request: Request,
@@ -14,19 +14,20 @@ export const processExpoWebhook = async (
   if (request.headers["expo-signature"]) {
     if (DEBUG) console.log("EXPO WEBHOOK RECEIVED => ", request.body);
     try {
-      const {platform, status, artifacts, error, metadata} = request.body;
-      return (await logEvent({
-        platform,
-        status,
-        artifacts,
-        error,
-        metadata,
-        sendToSlack: true,
-      }))
-        ? response.status(200).send()
-        : response.status(500).send();
+      const { platform, status, artifacts, error, metadata } = request.body;
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: `:building_construction: Expo Build Update!\n\nPlatform: ${platform}\n\nStatus: ${status}\n\nArtifacts: ${JSON.stringify(
+            artifacts
+          )}\n\nMetadata: ${JSON.stringify(
+            metadata
+          )}\n\nError: ${JSON.stringify(error)}\n\n`,
+        },
+      });
+      return response.status(200).send();
     } catch (error: any) {
-      await throwError(error);
+      throwError(error);
       return response.status(500).send();
     }
   }

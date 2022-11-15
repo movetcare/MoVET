@@ -25,7 +25,7 @@ export const configureAppointments = async (): Promise<boolean> => {
     if (appointments) {
       const didSaveAppointments: boolean = await saveAppointments(appointments);
       return didSaveAppointments;
-    } else return await throwError("Failed to Process Appointments");
+    } else return throwError("Failed to Process Appointments");
   }
 };
 
@@ -40,7 +40,7 @@ const saveAppointments = async (
           .then(() => {
             appointmentsConfigured++;
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       }
     })
   )
@@ -48,5 +48,5 @@ const saveAppointments = async (
       if (DEBUG) console.log(`SUCCESSFULLY UPDATED ${appointmentsConfigured}`);
       return true;
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

@@ -36,7 +36,7 @@
     "init:config:local:prod": "cd apps/api.movetcare.com/ && pnpm run init:config:local:prod",
     "backup:production": "gcloud config set project movet-care && gcloud firestore export gs://movet-care-backups && gcloud config set project movet-care-staging",
     "firestore:indexes": "firebase firestore:indexes",
-    "ping:deploy:success:stage": "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\":tada: *Firebase STAGING Deployment Complete!*\n\n*Updated:*\n\n:building_construction: Cloud Functions\n\n:closed_lock_with_key: Firestore Security Rules\n\n:file_cabinet: Storage Security Rules\n\n:card_file_box: Firestore Indexes\n\n\"}' https://hooks.slack.com/services/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",
+    "ping:deploy:success:stage": "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\":tada: *Firebase STAGING Deployment Complete!*\n\n*Updated:*\n\n:building_construction: Cloud Functions\n\n:closed_lock_with_key: Firestore Security Rules\n\n:file_cabinet: Storage Security Rules\n\n:card_file_box: Firestore Indexes\n\n\"}' https://hooks.slack.com/services/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",
     "ping:deploy:success:prod": "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\":tada: *Firebase PRODUCTION Deployment Complete!*\n\n*Updated:*\n\n:building_construction: Cloud Functions\n\n:closed_lock_with_key: Firestore Security Rules\n\n:file_cabinet: Storage Security Rules\n\n:card_file_box: Firestore Indexes\n\n\"}' https://hooks.slack.com/services/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"
   },
   "devDependencies": {

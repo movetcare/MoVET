@@ -21,6 +21,7 @@ export interface Booking {
     | "payment-confirmation"
     | "checkout"
     | "confirmation"
+    | "needs-scheduling"
     | "complete"
     | "restart";
   staff: Array<Staff>;

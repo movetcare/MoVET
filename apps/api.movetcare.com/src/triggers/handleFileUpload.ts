@@ -1,11 +1,11 @@
-import { functions, proVetApiUrl, request, throwError } from "../config/config";
+import { functions } from "../config/config";
+import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
 import { updateCustomField } from "../integrations/provet/entities/patient/updateCustomField";
-import { logEvent } from "../utils/logging/logEvent";
 // import { Storage } from "@google-cloud/storage";
 const DEBUG = false;
 export const handleFileUpload = functions.storage
   .object()
-  .onFinalize(async (object: any) => {
+  .onFinalize((object: any) => {
     const pathParts = object.name.split("/");
     if (DEBUG) {
       console.log("handleFileUpload object", object);
@@ -13,37 +13,22 @@ export const handleFileUpload = functions.storage
     }
     if (pathParts[0] === "clients" && pathParts[3] !== "new") {
       if (pathParts[4] === "records") {
-        await request
-          .post("/note/", {
-            title: "Previous Clinical History Provided by Client",
-            type: 10,
-            client: proVetApiUrl + `/client/${pathParts[1]}/`,
-            patients: [proVetApiUrl + `/patient/${pathParts[3]}/`],
-            note:
-              object.mediaLink.includes("127.0.0.1") ||
-              object.mediaLink.includes("localhost")
-                ? `<a href="${object.mediaLink
-                    .replaceAll("127.0.0.1", "movetcare.com")
-                    .replaceAll(
-                      "localhost",
-                      "movetcare.com"
-                    )}">Click Here to View PDF (LINK IS BROKEN)</a>`
-                : `<a href="${object.mediaLink}">Click Here to View PDF</a>`,
-          })
-          .then(async (response: any) => {
-            const { data } = response;
-            if (DEBUG) console.log("API Response: POST /note/ => ", data);
-            await logEvent({
-              tag: "previous-clinical-history-received",
-              origin: "api",
-              success: false,
-              data: {
-                message: `:notebook: Previous Clinical History Provided by Client ${object.mediaLink}`,
-              },
-              sendToSlack: true,
-            });
-          })
-          .catch(async (error: any) => await throwError(error));
+        createProVetNote({
+          type: 10,
+          subject: "Previous Clinical History Provided by Client",
+          message:
+            object.mediaLink.includes("127.0.0.1") ||
+            object.mediaLink.includes("localhost")
+              ? `<a href="${object.mediaLink
+                  .replaceAll("127.0.0.1", "movetcare.com")
+                  .replaceAll(
+                    "localhost",
+                    "movetcare.com"
+                  )}">Click Here to View PDF (LINK IS BROKEN)</a>`
+              : `<a href="${object.mediaLink}">Click Here to View PDF</a>`,
+          client: pathParts[1],
+          patients: [pathParts[3]],
+        });
         // await admin
         //   .storage()
         //   .bucket(object.bucket)
@@ -65,22 +50,12 @@ export const handleFileUpload = functions.storage
         //         .then(async (response: any) => {
         //           const { data } = response;
         //           if (DEBUG) console.log("API Response: POST /note/ => ", data);
-        //           await logEvent({
-        //             tag: "1-hour-booking-abandonment-email",
-        //             origin: "api",
-        //             success: false,
-        //             data: {
-        //               message:
-        //                 "FAILED TO SEND 1 Hour Booking Abandonment Recovery Email Notification",
-        //             },
-        //             sendToSlack: true,
-        //           });
         //         })
-        //         .catch(async (error: any) => await throwError(error))
+        //         .catch(async (error: any) => throwError(error))
         //   )
-        //   .catch(async (error: any) => await throwError(error));
+        //    .catch((error: any) => throwError(error));
       } else if (pathParts[4] === "photo") {
-        await updateCustomField(
+        updateCustomField(
           pathParts[3],
           7,
           object.mediaLink.includes("127.0.0.1") ||
@@ -90,37 +65,22 @@ export const handleFileUpload = functions.storage
                 .replaceAll("localhost", "movetcare.com")
             : object.mediaLink
         );
-        await request
-          .post("/note/", {
-            title: "Patient Photo Uploaded by Client",
-            type: 9,
-            client: proVetApiUrl + `/client/${pathParts[1]}/`,
-            patients: [proVetApiUrl + `/patient/${pathParts[3]}/`],
-            note:
-              object.mediaLink.includes("127.0.0.1") ||
-              object.mediaLink.includes("localhost")
-                ? `<a href="${object.mediaLink
-                    .replaceAll("127.0.0.1", "movetcare.com")
-                    .replaceAll(
-                      "localhost",
-                      "movetcare.com"
-                    )}">Click Here to View PDF (LINK IS BROKEN)</a>`
-                : `<a href="${object.mediaLink}">Click Here to View Image</a>`,
-          })
-          .then(async (response: any) => {
-            const { data } = response;
-            if (DEBUG) console.log("API Response: POST /note/ => ", data);
-            await logEvent({
-              tag: "patient-photo-received",
-              origin: "api",
-              success: false,
-              data: {
-                message: `:frame_with_picture: Patient Photo Uploaded by Client - ${object.mediaLink}`,
-              },
-              sendToSlack: true,
-            });
-          })
-          .catch(async (error: any) => await throwError(error));
+        createProVetNote({
+          type: 9,
+          subject: "Patient Photo Uploaded by Client",
+          message:
+            object.mediaLink.includes("127.0.0.1") ||
+            object.mediaLink.includes("localhost")
+              ? `<a href="${object.mediaLink
+                  .replaceAll("127.0.0.1", "movetcare.com")
+                  .replaceAll(
+                    "localhost",
+                    "movetcare.com"
+                  )}">Click Here to View PDF (LINK IS BROKEN)</a>`
+              : `<a href="${object.mediaLink}">Click Here to View Image</a>`,
+          client: pathParts[1],
+          patients: [pathParts[3]],
+        });
         // await admin
         //   .storage()
         //   .bucket(object.bucket)
@@ -142,20 +102,11 @@ export const handleFileUpload = functions.storage
         //         .then(async (response: any) => {
         //           const { data } = response;
         //           if (DEBUG) console.log("API Response: POST /note/ => ", data);
-        //           await logEvent({
-        //             tag: "1-hour-booking-abandonment-email",
-        //             origin: "api",
-        //             success: false,
-        //             data: {
-        //               message:
-        //                 "FAILED TO SEND 1 Hour Booking Abandonment Recovery Email Notification",
-        //             },
-        //             sendToSlack: true,
-        //           });
         //         })
-        //         .catch(async (error: any) => await throwError(error))
+        //         .catch(async (error: any) => throwError(error))
         //   )
-        //   .catch(async (error: any) => await throwError(error));
+        //    .catch((error: any) => throwError(error));
       }
     }
+    return true;
   });

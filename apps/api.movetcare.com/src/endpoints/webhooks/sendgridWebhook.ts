@@ -68,7 +68,7 @@ export const sendgridWebhook: Promise<Response> = functions
                 timestamp,
                 createdOn: new Date(),
               })
-              .catch(async (error: any) => await throwError(error));
+              .catch((error: any) => throwError(error));
             await sendSlackMessage(channelId, null, [
               {
                 type: "section",
@@ -111,18 +111,7 @@ export const sendgridWebhook: Promise<Response> = functions
                   },
                 ],
               },
-            ]).then(
-              () =>
-                DEBUG &&
-                console.log(
-                  `SLACK MESSAGE SENT:"${JSON.stringify({
-                    email,
-                    event,
-                    sg_event_id,
-                    sg_message_id,
-                  })}"`
-                )
-            );
+            ]);
           }
         }
         return response.sendStatus(204);
@@ -130,7 +119,7 @@ export const sendgridWebhook: Promise<Response> = functions
         return response.sendStatus(403);
       }
     } catch (error) {
-      await throwError(error);
+      throwError(error);
       return response.status(500).send(error);
     }
   });

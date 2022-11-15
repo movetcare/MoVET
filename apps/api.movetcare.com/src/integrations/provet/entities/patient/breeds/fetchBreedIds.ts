@@ -6,7 +6,7 @@ export const fetchBreedIds = async (
   await request
     .get(`/list/${breedListId}/`)
     .then(async (response: any) => {
-      const {data} = response;
+      const { data } = response;
       if (data.is_active) {
         const breeds: Array<string> = [];
         data.items.forEach((value: any) => {
@@ -20,4 +20,4 @@ export const fetchBreedIds = async (
           message: `Breeds List Unavailable => ${JSON.stringify(data)}`,
         });
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

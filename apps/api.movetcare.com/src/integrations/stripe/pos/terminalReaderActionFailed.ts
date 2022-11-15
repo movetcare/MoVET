@@ -15,10 +15,10 @@ export const terminalReaderActionFailed = async (event: any) => {
         display: null,
         updatedOn: new Date(),
       },
-      {merge: true}
+      { merge: true }
     )
     .then(() => true)
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
   await admin
     .firestore()
     .collection("counter_sales")
@@ -57,9 +57,9 @@ export const terminalReaderActionFailed = async (event: any) => {
                 ...canceledPaymentIntent,
                 updatedOn: new Date(),
               },
-              {merge: true}
+              { merge: true }
             )
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
           await admin
             .firestore()
             .collection("counter_sales")
@@ -73,9 +73,9 @@ export const terminalReaderActionFailed = async (event: any) => {
                   paymentIntent?.charges?.data[0]?.failure_message,
                 updatedOn: new Date(),
               },
-              {merge: true}
+              { merge: true }
             )
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
         });
       else
         await admin
@@ -122,9 +122,9 @@ export const terminalReaderActionFailed = async (event: any) => {
                       ...canceledPaymentIntent,
                       updatedOn: new Date(),
                     },
-                    {merge: true}
+                    { merge: true }
                   )
-                  .catch(async (error: any) => await throwError(error));
+                  .catch((error: any) => throwError(error));
                 await admin
                   .firestore()
                   .collection("client_invoices")
@@ -139,19 +139,19 @@ export const terminalReaderActionFailed = async (event: any) => {
                         paymentIntent?.charges?.data[0]?.failure_message,
                       updatedOn: new Date(),
                     },
-                    {merge: true}
+                    { merge: true }
                   )
-                  .catch(async (error: any) => await throwError(error));
+                  .catch((error: any) => throwError(error));
               });
             else
-              await throwError({
+              throwError({
                 message: "FAILED TO UPDATE FAILED INVOICE PAYMENT",
                 paymentIntent:
                   event?.data?.object?.action?.process_payment_intent
                     ?.payment_intent,
               });
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

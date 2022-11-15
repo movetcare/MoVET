@@ -1,5 +1,5 @@
 import {admin, throwError} from "../config/config";
-import {logEvent} from "../utils/logging/logEvent";
+import { sendNotification } from "../notifications/sendNotification";
 const DEBUG = false;
 export const updateBookingReason = async (
   id: string,
@@ -18,7 +18,7 @@ export const updateBookingReason = async (
         );
       return doc.data()?.proficientStaff || false;
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
   const staff = await Promise.all(
     proficientStaff.map(
       async (staffId: number) =>
@@ -40,73 +40,67 @@ export const updateBookingReason = async (
               title: doc.data().title,
             };
           })
-          .catch(async (error: any) => await throwError(error))
+          .catch(async (error: any) => throwError(error))
     )
   );
-  await admin
-    .firestore()
-    .collection("bookings")
-    .doc(id)
-    .set(
-      staff.length > 0
-        ? {
-            step: "choose-staff",
-            staff,
-            updatedOn: new Date(),
-          }
-        : {
-            step: "choose-datetime",
-            updatedOn: new Date(),
-          },
-      { merge: true }
-    )
-    .then(
-      async () =>
-        await logEvent({
-          tag: "appointment-booking",
-          origin: "api",
-          success: true,
-          sendToSlack: true,
-          data: {
-            status: "choose-reason",
-            updatedOn: new Date(),
-            message: [
-              {
-                type: "section",
-                text: {
-                  text: ":book: _Appointment Booking_ *UPDATE*",
-                  type: "mrkdwn",
-                },
-                fields: [
-                  {
-                    type: "mrkdwn",
-                    text: "*Session ID*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: id,
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*Step*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: "Choose Reason",
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*Selected Reason*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: reason?.label,
-                  },
-                ],
-              },
-            ],
-          },
-        })
-    )
-    .catch(async (error: any) => await throwError(error));
+  admin
+     .firestore()
+     .collection("bookings")
+     .doc(id)
+     .set(
+       staff.length > 0
+         ? {
+             step: "choose-staff",
+             staff,
+             updatedOn: new Date(),
+           }
+         : {
+             step: "choose-datetime",
+             updatedOn: new Date(),
+           },
+       { merge: true }
+     )
+     .then(() =>
+       sendNotification({
+         type: "slack",
+         payload: {
+           message: [
+             {
+               type: "section",
+               text: {
+                 text: ":book: _Appointment Booking_ *UPDATE*",
+                 type: "mrkdwn",
+               },
+               fields: [
+                 {
+                   type: "mrkdwn",
+                   text: "*Session ID*",
+                 },
+                 {
+                   type: "plain_text",
+                   text: id,
+                 },
+                 {
+                   type: "mrkdwn",
+                   text: "*Step*",
+                 },
+                 {
+                   type: "plain_text",
+                   text: "Choose Reason",
+                 },
+                 {
+                   type: "mrkdwn",
+                   text: "*Selected Reason*",
+                 },
+                 {
+                   type: "plain_text",
+                   text: reason?.label,
+                 },
+               ],
+             },
+           ],
+         },
+       })
+     )
+     .catch((error: any) => throwError(error));
 };

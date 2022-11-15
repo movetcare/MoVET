@@ -10,7 +10,7 @@ export const createAppointment = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any, context: any): Promise<boolean> => {
     if (!context.auth)
-      return await throwError({message: "MISSING AUTHENTICATION"});
+      return throwError({ message: "MISSING AUTHENTICATION" });
     if (data?.apiKey === mobileClientApiKey) {
       return Boolean(
         await createProVetAppointment(

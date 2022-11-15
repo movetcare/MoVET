@@ -1,6 +1,6 @@
-import {logEvent} from "./../../utils/logging/logEvent";
 import * as TrelloNodeAPI from "trello-node-api";
-import {DEBUG, functions, throwError} from "../../config/config";
+import { DEBUG, functions, throwError } from "../../config/config";
+import { sendNotification } from "../../notifications/sendNotification";
 
 const Trello = new TrelloNodeAPI();
 Trello.setApiKey(functions.config()?.trello?.api_key);
@@ -54,7 +54,7 @@ export const createCard = async ({
     idLabels: labels,
     idMembers: ["5bef0f649676801d5504c130"],
     idList: "625edeb5117ed038a4a1cdd2",
-    pos: "top",
+    pos: "bottom",
   };
   if (DEBUG) console.log("TRELLO CREATE CARD PAYLOAD", payload);
   let response;
@@ -62,20 +62,17 @@ export const createCard = async ({
     response = await Trello.card.create(payload);
   } catch (error) {
     if (error) {
-      return await throwError(error);
+      return throwError(error);
     }
   }
   if (DEBUG) console.log("API RESPONSE FROM TRELLO", response);
-  await logEvent({
-    tag: "new-internal-request",
-    origin: "api",
-    success: true,
-    sendToSlack: true,
-    data: {
-      message: `New ${type === "bug" ? "Bug Report" : "Feature Request"} - ${
-        response.shortUrl
-      }`,
+  sendNotification({
+    type: "slack",
+    payload: {
+      message: `:${type === "bug" ? "bug" : "star2"}: New ${
+        type === "bug" ? "Bug Report" : "Feature Request"
+      } - ${response.shortUrl}`,
     },
   });
-  return true;
+  return response ? true : false;
 };

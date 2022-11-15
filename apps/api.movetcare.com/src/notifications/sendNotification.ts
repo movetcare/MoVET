@@ -1,8 +1,8 @@
 import type { EmailConfiguration } from "./../../../../packages/types/src/email";
-import { environment, emailClient, throwError } from "../config/config";
+import { emailClient, environment, throwError } from "../config/config";
 import { findSlackChannel } from "../utils/logging/findSlackChannel";
 import { sendSlackMessage } from "../utils/logging/sendSlackMessage";
-import { getPayloadSummary } from "../utils/logging/getPayloadSummary";
+
 const DEBUG = false;
 export const sendNotification = async ({
   type,
@@ -19,43 +19,20 @@ export const sendNotification = async ({
   }
   switch (type) {
     case "slack":
-      if (payload && environment.type === "production") {
-        if (DEBUG) console.log("payload?.channel", payload?.channel);
+      if (payload) {
         const channelId: any = await findSlackChannel(
-          payload?.channel ||
-            (environment.type === "production"
-              ? "production-logs"
-              : "development-feed")
+          environment.type === "production" && payload?.channel
+            ? payload?.channel
+            : environment.type === "production"
+            ? "production-logs"
+            : "development-feed"
         );
         if (DEBUG) console.log("sendNotification => channelId", channelId);
-        if (Array.isArray(payload?.data?.message)) {
-          await sendSlackMessage(channelId, null, payload?.data?.message).then(
-            () =>
-              DEBUG &&
-              console.log(
-                `sendNotification => SLACK MESSAGE SENT:"${JSON.stringify(
-                  payload?.data?.message
-                )}"`
-              )
-          );
-        } else {
-          const message = await getPayloadSummary(payload);
-          if (message !== null) {
-            await sendSlackMessage(channelId, message).then(
-              () =>
-                DEBUG &&
-                console.log(
-                  `sendNotification => SLACK MESSAGE SENT:"${message}"`
-                )
-            );
-          }
-        }
-      } else
-        console.log(
-          `sendNotifications => SIMULATED SLACK MESSAGE:"${JSON.stringify(
-            payload
-          )}"`
-        );
+        if (Array.isArray(payload?.message))
+          sendSlackMessage(channelId, null, payload?.message);
+        else if (payload?.message !== null)
+          sendSlackMessage(channelId, payload?.message);
+      }
       break;
     case "email":
       // eslint-disable-next-line no-case-declarations
@@ -64,21 +41,18 @@ export const sendNotification = async ({
         from: payload?.from || "info@movetcare.com",
         bcc: payload?.bcc || "support@movetcare.com",
         replyTo: payload?.replyTo || "info@movetcare.com",
-        subject: payload?.subject || "UNKNOWN SYSTEM EMAIL",
+        subject: payload?.subject || "WHOOPS! Something Went Wrong...",
         text: payload?.message?.replace(/(<([^>]+)>)/gi, ""),
         html: payload?.message,
       };
       if (DEBUG) console.log("emailConfig =>", emailConfig);
       if (payload && environment?.type === "production")
-        await emailClient
+        emailClient
           .send(emailConfig)
-          .then(async () => {
+          .then(() => {
             if (DEBUG) console.log("EMAIL SENT!", emailConfig);
           })
-          .catch(async (error: any) => {
-            if (DEBUG) console.error(error?.response?.body?.errors);
-            await throwError(error);
-          });
+          .catch((error: any) => throwError(error));
       else console.log("sendNotification => SIMULATED EMAIL:", emailConfig);
       break;
     default:

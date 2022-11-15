@@ -61,10 +61,10 @@ export const configureUsers = async (): Promise<boolean> => {
               if (DEBUG) console.log("NEW ADMIN USER CONFIGURED => ", user);
               return true;
             })
-            .catch(async (error: any) => await throwError(error))
+            .catch(async (error: any) => throwError(error))
       )
     )
       .then(() => true)
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
   }
 };

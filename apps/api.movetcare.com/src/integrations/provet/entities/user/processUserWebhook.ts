@@ -50,17 +50,16 @@ export const processUserWebhook = async (
           isCabinetUser: userDetails.is_cabinet_user,
           updatedOn: new Date(),
         },
-        {merge: true}
+        { merge: true }
       )
-      .then(() => response.status(200).send({received: true}))
+      .then(() => response.status(200).send({ received: true }))
       .catch(
         async (error: any) =>
-          (await throwError(error)) &&
-          response.status(500).send({received: false})
+          throwError(error) && response.status(500).send({ received: false })
       );
   else
     return (
-      (await throwError({message: "INVALID PAYLOAD"})) &&
-      response.status(500).send({received: false})
+      throwError({ message: "INVALID PAYLOAD" }) &&
+      response.status(500).send({ received: false })
     );
 };

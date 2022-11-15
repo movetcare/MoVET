@@ -72,7 +72,7 @@ export const createProVetAppointment = async (
         if (DEBUG) console.log("API Response: POST /appointment/ => ", data);
         return data;
       })
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
 
     if (movetData?.locationType === "Virtually") {
       if (DEBUG) console.log("VIRTUAL APPOINTMENT DETECTED");
@@ -104,7 +104,7 @@ export const createProVetAppointment = async (
   } else return false;
 };
 
-const incomingDataIsValid = (data: Appointment): Promise<false> | true => {
+const incomingDataIsValid = (data: Appointment): boolean => {
   if (
     !(typeof data?.client === "string") ||
     data?.client.length === 0 ||

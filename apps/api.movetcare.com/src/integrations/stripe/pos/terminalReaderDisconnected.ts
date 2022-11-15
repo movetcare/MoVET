@@ -12,7 +12,7 @@ export const terminalReaderDisconnected = async (event: any) =>
         ...event?.data?.object,
         updatedOn: new Date(),
       },
-      {merge: true}
+      { merge: true }
     )
     .then(() => {
       if (DEBUG)
@@ -22,4 +22,4 @@ export const terminalReaderDisconnected = async (event: any) =>
         });
       return true;
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

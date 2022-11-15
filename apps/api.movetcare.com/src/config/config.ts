@@ -1,11 +1,11 @@
+import { sendNotification } from "./../notifications/sendNotification";
 import * as firebase from "firebase-admin";
 import * as func from "firebase-functions";
 const axios = require("axios").default;
 import Stripe from "stripe";
 import * as email from "@sendgrid/mail";
 import * as client from "@sendgrid/client";
-import {logEvent} from "../utils/logging/logEvent";
-import {WebClient, LogLevel} from "@slack/web-api";
+import { WebClient, LogLevel } from "@slack/web-api";
 const Sentry = require("@sentry/node");
 
 let stagingInstance: any = null;
@@ -19,14 +19,15 @@ if (environment.type !== "development") {
   console.debug = func.logger.debug;
 } else process.env.FUNCTIONS_EMULATOR_TIMEOUT_SECONDS = "1500s";
 
-export const throwError = async (error: any): Promise<false> => {
+export const throwError = (error: any): false => {
   if (error && error !== undefined && error !== null)
-    await logEvent({
-      tag: "error",
-      origin: "api",
-      success: false,
-      sendToSlack: true,
-      data: JSON.stringify(error),
+    sendNotification({
+      type: "slack",
+      payload: {
+        message: `:interrobang: PLATFORM ERROR:\`\`\`${JSON.stringify(
+          error || error?.message
+        )}\`\`\``,
+      },
     });
   else console.error("UNKNOWN ERROR", error);
   console.error("FULL ERROR", error);
@@ -79,9 +80,9 @@ if (environment.type === "development") {
     },
     "staging"
   );
-  stagingInstance.firestore().settings({ignoreUndefinedProperties: true});
+  stagingInstance.firestore().settings({ ignoreUndefinedProperties: true });
 } else if (environment.type === "production") {
-  productionInstance.firestore().settings({ignoreUndefinedProperties: true});
+  productionInstance.firestore().settings({ ignoreUndefinedProperties: true });
 }
 
 axios.defaults.baseURL = func.config()?.provet_cloud?.api_base;

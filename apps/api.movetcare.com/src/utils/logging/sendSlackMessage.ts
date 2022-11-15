@@ -1,16 +1,24 @@
-import {slackClient, slackBotToken} from "../../config/config";
+import { slackClient, slackBotToken } from "../../config/config";
 
-export const sendSlackMessage = async (
+const DEBUG = false;
+export const sendSlackMessage = (
   id: string,
   text: string | null,
   blocks?: null | Array<any>
-) => {
+): void => {
+  if (DEBUG)
+    console.log("sendSlackMessage DATA", {
+      id,
+      text,
+      blocks: JSON.stringify(blocks),
+    });
   try {
-    const result = await slackClient.chat.postMessage(
+    slackClient.chat.postMessage(
       blocks
         ? {
             token: slackBotToken,
             channel: id,
+            text: text || "EMPTY",
             blocks,
           }
         : {
@@ -19,9 +27,7 @@ export const sendSlackMessage = async (
             text: text as string,
           }
     );
-    return result;
   } catch (error) {
     console.error(error);
-    return error;
   }
 };

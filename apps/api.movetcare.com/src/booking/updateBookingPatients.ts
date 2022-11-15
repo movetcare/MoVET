@@ -1,11 +1,11 @@
-import {admin, throwError} from "../config/config";
-import {logEvent} from "../utils/logging/logEvent";
+import { admin, throwError } from "../config/config";
+import { sendNotification } from "../notifications/sendNotification";
 const DEBUG = false;
 export const updateBookingPatients = async (
   id: string,
   patients: Array<string>,
   vcprRequired: boolean
-): Promise<boolean> => {
+): Promise<void> => {
   if (DEBUG)
     console.log("UPDATING PATIENT BOOKING DATA", {
       id,
@@ -30,7 +30,7 @@ export const updateBookingPatients = async (
                   species: doc.data().species,
                 };
               })
-              .catch(async (error: any) => await throwError(error))
+              .catch(async (error: any) => throwError(error))
         )
       )
     : await admin
@@ -47,12 +47,10 @@ export const updateBookingPatients = async (
             species: doc.data().species,
           };
         })
-        .catch(async (error: any) => await throwError(error));
-  if (DEBUG) {
-    console.log("fullPatientData", fullPatientData);
-    // console.log('vcprRequired', vcprRequired);
-  }
-  return await admin
+        .catch((error: any) => throwError(error));
+  if (DEBUG) console.log("fullPatientData", fullPatientData);
+
+  admin
     .firestore()
     .collection("bookings")
     .doc(id)
@@ -70,7 +68,7 @@ export const updateBookingPatients = async (
           ? fullPatientData
           : [fullPatientData],
       },
-      {merge: true}
+      { merge: true }
     )
     .then(async () => {
       if (DEBUG)
@@ -78,16 +76,9 @@ export const updateBookingPatients = async (
           id,
           patients,
         });
-      return await logEvent({
-        tag: "appointment-booking",
-        origin: "api",
-        success: true,
-        sendToSlack: true,
-        data: {
-          id,
-          status: "patient-selection",
-          updatedOn: new Date(),
-          patients,
+      sendNotification({
+        type: "slack",
+        payload: {
           message: [
             {
               type: "section",
@@ -140,5 +131,5 @@ export const updateBookingPatients = async (
         },
       });
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));
 };

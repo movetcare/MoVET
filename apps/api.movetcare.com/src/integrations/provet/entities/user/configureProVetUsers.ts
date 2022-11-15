@@ -41,9 +41,9 @@ const fetchAllUserDetails = async (users: any) => {
               is_cabinet_user: response.is_cabinet_user,
             };
           })
-          .catch(async (error: any) => await throwError(error))
+          .catch(async (error: any) => throwError(error))
     )
-  ).catch(async (error: any) => await throwError(error));
+  ).catch((error: any) => throwError(error));
   if (DEBUG) console.log("allUsers", allUsers);
   return allUsers;
 };
@@ -92,9 +92,9 @@ const saveProVetUserData = async (users: Array<ProVetUser>) =>
               isCabinetUser: user.is_cabinet_user,
               updatedOn: new Date(),
             } as ProVetUser,
-            {merge: true}
+            { merge: true }
           )
           .then(() => DEBUG && console.log("PROVET USER UPDATED ", user))
-          .catch(async (error: any) => await throwError(error))
+          .catch(async (error: any) => throwError(error))
     )
-  ).catch(async (error: any) => await throwError(error));
+  ).catch((error: any) => throwError(error));

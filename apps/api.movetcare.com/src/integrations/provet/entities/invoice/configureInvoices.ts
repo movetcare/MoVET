@@ -43,8 +43,8 @@ export const configureInvoices = async (): Promise<boolean> => {
               .firestore()
               .collection("client_invoices")
               .doc(`${invoice?.id}`),
-            {...invoice, updatedOn: new Date()},
-            {merge: true}
+            { ...invoice, updatedOn: new Date() },
+            { merge: true }
           );
           batch.set(
             admin
@@ -53,14 +53,14 @@ export const configureInvoices = async (): Promise<boolean> => {
               .doc(`${getProVetIdFromUrl(invoice?.client)}`)
               .collection("invoices")
               .doc(`${invoice?.id}`),
-            {...invoice, updatedOn: new Date()},
-            {merge: true}
+            { ...invoice, updatedOn: new Date() },
+            { merge: true }
           );
         } else {
           batch.set(
             admin.firestore().collection("counter_sales").doc(`${invoice?.id}`),
-            {...invoice, updatedOn: new Date()},
-            {merge: true}
+            { ...invoice, updatedOn: new Date() },
+            { merge: true }
           );
         }
       });
@@ -70,7 +70,7 @@ export const configureInvoices = async (): Promise<boolean> => {
           if (DEBUG) console.log("SUCCESSFULLY IMPORTED ALL INVOICES");
           return true;
         })
-        .catch(async (error: any) => await throwError(error));
-    } else return await throwError("Failed to Process invoices");
+        .catch((error: any) => throwError(error));
+    } else return throwError("Failed to Process invoices");
   }
 };

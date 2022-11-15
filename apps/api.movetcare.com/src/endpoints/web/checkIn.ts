@@ -14,15 +14,15 @@ import {createAuthClient} from "../../integrations/provet/entities/client/create
 import {createProVetClient} from "../../integrations/provet/entities/client/createProVetClient";
 import {saveClient} from "../../integrations/provet/entities/client/saveClient";
 import {updateProVetClient} from "../../integrations/provet/entities/client/updateProVetClient";
-import {logEvent} from "../../utils/logging/logEvent";
-import {recaptchaIsVerified} from "../../utils/recaptchaIsVerified";
-import {verifyValidPaymentSource} from "../../utils/verifyValidPaymentSource";
+import { sendNotification } from "../../notifications/sendNotification";
+import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
+import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 
 export const checkIn = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<any> => {
     if (DEBUG) console.log("INCOMING REQUEST PAYLOAD checkIn => ", data);
-    const {token, phone, firstName, lastName, id} = data || {};
+    const { token, phone, firstName, lastName, id } = data || {};
     const email = data?.email?.toLowerCase();
     if (DEBUG) console.log("EMAIL ADDRESS", email);
     if (token) {
@@ -47,7 +47,7 @@ export const checkIn = functions
             .doc(`${id}`)
             .get()
             .then((doc: any) => doc.data())
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
           await stripe.customers
             .update(`${client?.customer?.id}`, {
               name:
@@ -60,7 +60,7 @@ export const checkIn = functions
                   : null,
               phone: phone || null,
             })
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
           await admin
             .firestore()
             .collection("waitlist")
@@ -71,7 +71,7 @@ export const checkIn = functions
                 isActive: true,
                 updatedOn: new Date(),
               },
-              {merge: true}
+              { merge: true }
             );
           if (didUpdateProVetClient)
             return {
@@ -104,21 +104,14 @@ export const checkIn = functions
               updatedOn: new Date(),
             })
             .then(async () => {
-              await logEvent({
-                tag: "checkin",
-                origin: "api",
-                success: true,
-                data: {
-                  token,
-                  phone,
-                  firstName,
-                  lastName,
-                  id,
-                  email,
-                  status: "started",
+              sendNotification({
+                type: "slack",
+                payload: {
+                  message: `:ballot_box_with_check: Appointment Check In Update - Status: Started - ${
+                    email ? email : ""
+                  } ${firstName ? firstName : ""} ${lastName ? lastName : ""} `,
                 },
-                sendToSlack: true,
-              }).catch(async (error: any) => await throwError(error));
+              });
             })
             .then(async () => {
               if (DEBUG)
@@ -146,9 +139,9 @@ export const checkIn = functions
                       status: "creating-client",
                       updatedOn: new Date(),
                     },
-                    {merge: true}
+                    { merge: true }
                   )
-                  .catch(async (error: any) => await throwError(error));
+                  .catch((error: any) => throwError(error));
                 if (DEBUG) console.log("CREATING NEW CLIENT");
                 const proVetClientData: any = await createProVetClient({
                   email,
@@ -173,9 +166,9 @@ export const checkIn = functions
                           id: proVetClientData?.id,
                           updatedOn: new Date(),
                         },
-                        {merge: true}
+                        { merge: true }
                       )
-                      .catch(async (error: any) => await throwError(error));
+                      .catch((error: any) => throwError(error));
                     if (phone) {
                       if (DEBUG) console.log("SAVING CLIENT PHONE NUMBER");
                       await request
@@ -191,14 +184,14 @@ export const checkIn = functions
                             "Default Phone Number - Used for SMS Alerts",
                         })
                         .then(async (response: any) => {
-                          const {data} = response;
+                          const { data } = response;
                           if (DEBUG)
                             console.log(
                               "API Response: POST /phonenumber/ => ",
                               data
                             );
                         })
-                        .catch(async (error: any) => await throwError(error));
+                        .catch((error: any) => throwError(error));
                       await admin
                         .firestore()
                         .collection("waitlist")
@@ -208,12 +201,12 @@ export const checkIn = functions
                             phone,
                             updatedOn: new Date(),
                           },
-                          {merge: true}
+                          { merge: true }
                         )
-                        .catch(async (error: any) => await throwError(error));
+                        .catch((error: any) => throwError(error));
                     }
                     if (DEBUG) console.log("CREATING CUSTOMER");
-                    const {data: matchingCustomers} =
+                    const { data: matchingCustomers } =
                       await stripe.customers.list({
                         email,
                       });
@@ -252,9 +245,7 @@ export const checkIn = functions
                             clientId: proVetClientData?.id,
                           },
                         })
-                        .catch(
-                          async (error: any) => (await throwError(error)) as any
-                        );
+                        .catch(async (error: any) => throwError(error) as any);
                     } else {
                       let matchedCustomer = null;
                       matchingCustomers.forEach((customerData: any) => {
@@ -295,8 +286,7 @@ export const checkIn = functions
                             },
                           })
                           .catch(
-                            async (error: any) =>
-                              (await throwError(error)) as any
+                            async (error: any) => throwError(error) as any
                           );
                       } else {
                         customer = matchedCustomer;
@@ -319,9 +309,9 @@ export const checkIn = functions
                           customerId: customer?.id,
                           updatedOn: new Date(),
                         },
-                        {merge: true}
+                        { merge: true }
                       )
-                      .catch(async (error: any) => await throwError(error));
+                      .catch((error: any) => throwError(error));
                     const session = await stripe.checkout.sessions.create({
                       payment_method_types: ["card"],
                       mode: "setup",
@@ -365,27 +355,21 @@ export const checkIn = functions
                           .catch(async (error: any) => throwError(error));
                         if (DEBUG)
                           console.log("FINAL RESULT => ", {
-                            client: {...client, id: client?.uid},
+                            client: { ...client, id: client?.uid },
                             session,
                             isNewClient,
                           });
-                        await logEvent({
-                          tag: "checkin",
-                          origin: "api",
-                          success: true,
-                          data: {
-                            client: {
-                              firstName: client?.firstName,
-                              lastName: client?.lastName,
-                              phone: client?.phone,
-                              id: client?.uid,
-                              updatedOn: new Date(),
-                            },
-                            session,
-                            isNewClient,
+                        sendNotification({
+                          type: "slack",
+                          payload: {
+                            message: `:ballot_box_with_check: Appointment Check In Update - Status: Client Info - ${
+                              email ? email : ""
+                            } ${firstName ? firstName : ""} ${
+                              lastName ? lastName : ""
+                            } `,
                           },
-                          sendToSlack: true,
-                        }).catch(async (error: any) => await throwError(error));
+                        });
+
                         await admin
                           .firestore()
                           .collection("waitlist")
@@ -398,9 +382,9 @@ export const checkIn = functions
                               id: client?.uid,
                               updatedOn: new Date(),
                             },
-                            {merge: true}
+                            { merge: true }
                           )
-                          .catch(async (error: any) => await throwError(error));
+                          .catch((error: any) => throwError(error));
                         return {
                           client: {
                             email: client?.email,
@@ -413,7 +397,7 @@ export const checkIn = functions
                           isNewClient,
                         };
                       })
-                      .catch(async (error: any) => await throwError(error));
+                      .catch((error: any) => throwError(error));
                   }
                 } else {
                   if (DEBUG)
@@ -423,10 +407,10 @@ export const checkIn = functions
                     .collection("waitlist")
                     .doc(email)
                     .set(
-                      {status: "error", updatedOn: new Date()},
-                      {merge: true}
+                      { status: "error", updatedOn: new Date() },
+                      { merge: true }
                     )
-                    .catch(async (error: any) => await throwError(error));
+                    .catch((error: any) => throwError(error));
                 }
               } else {
                 if (DEBUG) console.log("HANDLING EXISTING CLIENT CHECK IN");
@@ -439,9 +423,9 @@ export const checkIn = functions
                       status: "processing-client",
                       updatedOn: new Date(),
                     },
-                    {merge: true}
+                    { merge: true }
                   )
-                  .catch(async (error: any) => await throwError(error));
+                  .catch((error: any) => throwError(error));
                 const clientId = await admin
                   .auth()
                   .getUserByEmail(email)
@@ -459,19 +443,21 @@ export const checkIn = functions
                       id: clientId,
                       updatedOn: new Date(),
                     },
-                    {merge: true}
+                    { merge: true }
                   )
-                  .catch(async (error: any) => await throwError(error));
+                  .catch((error: any) => throwError(error));
                 const client = await admin
                   .firestore()
                   .collection("clients")
                   .doc(clientId)
                   .get()
                   .then((doc: any) => doc.data())
-                  .catch(async (error: any) => await throwError(error));
-                const {data: matchingCustomers} = await stripe.customers.list({
-                  email,
-                });
+                  .catch((error: any) => throwError(error));
+                const { data: matchingCustomers } = await stripe.customers.list(
+                  {
+                    email,
+                  }
+                );
                 if (DEBUG) {
                   console.log("client", client);
                   console.log("Existing Customers => ", matchingCustomers);
@@ -526,7 +512,7 @@ export const checkIn = functions
                         clientId,
                       },
                     })
-                    .catch(async (error: any) => await throwError(error));
+                    .catch((error: any) => throwError(error));
                 } else {
                   let matchedCustomer = null;
                   matchingCustomers.forEach((customerData: any) => {
@@ -581,7 +567,7 @@ export const checkIn = functions
                           clientId,
                         },
                       })
-                      .catch(async (error: any) => await throwError(error));
+                      .catch((error: any) => throwError(error));
                   } else {
                     customer = matchedCustomer;
                     if (DEBUG)
@@ -621,32 +607,24 @@ export const checkIn = functions
                         paymentMethod: paymentMethods?.data[0],
                         updatedOn: new Date(),
                       },
-                      {merge: true}
+                      { merge: true }
                     )
-                    .catch(async (error: any) => await throwError(error));
+                    .catch((error: any) => throwError(error));
                   if (DEBUG)
                     console.log("FINAL RESULT => ", {
                       isNewClient,
                       client,
                     });
-                  await logEvent({
-                    tag: "checkin",
-                    origin: "api",
-                    success: true,
-                    data: {
-                      isNewClient,
-                      id: clientId,
-                      firstName: client?.firstName,
-                      lastName: client?.lastName,
-                      phone: client?.phone,
-                      status: "complete",
-                      isActive: true,
-                      customerId: customer?.id,
-                      paymentMethod: paymentMethods?.data[0],
-                      updatedOn: new Date(),
+                  sendNotification({
+                    type: "slack",
+                    payload: {
+                      message: `:ballot_box_with_check: Appointment Check In Update - Status: Complete - ${
+                        email ? email : ""
+                      } ${firstName ? firstName : ""} ${
+                        lastName ? lastName : ""
+                      } `,
                     },
-                    sendToSlack: true,
-                  }).catch(async (error: any) => await throwError(error));
+                  });
                   return {
                     isNewClient,
                     client: {
@@ -699,34 +677,25 @@ export const checkIn = functions
                         customerId: customer?.id,
                         updatedOn: new Date(),
                       },
-                      {merge: true}
+                      { merge: true }
                     )
-                    .catch(async (error: any) => await throwError(error));
+                    .catch((error: any) => throwError(error));
                   if (DEBUG)
                     console.log("FINAL RESULT => ", {
                       session,
                       isNewClient,
-                      client: {...client, id: clientId},
+                      client: { ...client, id: clientId },
                     });
-                  await logEvent({
-                    tag: "checkin",
-                    origin: "api",
-                    success: true,
-                    data: {
-                      client: {
-                        status: "checkout",
-                        id: clientId,
-                        firstName: client?.firstName,
-                        lastName: client?.lastName,
-                        phone: client?.phone,
-                        customerId: customer?.id,
-                        updatedOn: new Date(),
-                      },
-                      session,
-                      isNewClient,
+                  sendNotification({
+                    type: "slack",
+                    payload: {
+                      message: `:ballot_box_with_check: Appointment Check In Update - Status: Checkout - ${
+                        email ? email : ""
+                      } ${firstName ? firstName : ""} ${
+                        lastName ? lastName : ""
+                      } `,
                     },
-                    sendToSlack: true,
-                  }).catch(async (error: any) => await throwError(error));
+                  });
                   return {
                     session,
                     isNewClient,
@@ -742,7 +711,7 @@ export const checkIn = functions
               }
               return false;
             })
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
         }
       } else if (id) {
         if (DEBUG) console.log("FETCHING EXISTING CLIENT RECORDS", id);
@@ -759,27 +728,29 @@ export const checkIn = functions
               phone: doc.data()?.phone,
             };
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       } else {
         if (DEBUG) console.log("FAILED TO PASS CAPTCHA");
-        await logEvent({
-          tag: "checkin",
-          origin: "api",
-          success: false,
-          data: {...data, message: "FAILED TO PASS CAPTCHA"},
-          sendToSlack: true,
-        }).catch(async (error: any) => await throwError(error));
+        sendNotification({
+          type: "slack",
+          payload: {
+            message: `:ballot_box_with_check: Appointment Check In Update - Status: FAILED TO PASS CAPTCHA - ${
+              email ? email : ""
+            } ${firstName ? firstName : ""} ${lastName ? lastName : ""} `,
+          },
+        });
         return false;
       }
     } else {
       if (DEBUG) console.log("MISSING TOKEN");
-      await logEvent({
-        tag: "checkin",
-        origin: "api",
-        success: false,
-        data: {...data, message: "MISSING TOKEN"},
-        sendToSlack: true,
-      }).catch(async (error: any) => await throwError(error));
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: `:ballot_box_with_check: Appointment Check In Update - Status: MISSING TOKEN - ${
+            email ? email : ""
+          } ${firstName ? firstName : ""} ${lastName ? lastName : ""} `,
+        },
+      });
       return false;
     }
   });

@@ -67,9 +67,9 @@ export const newClientTelehealthMessage = functions.firestore
                 lastSlackThread: result?.message?.ts,
                 status: "active",
               },
-              {merge: true}
+              { merge: true }
             )
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
       }
       const {onlineAutoReply, offlineAutoReply, isOnline} = await admin
         .firestore()
@@ -104,12 +104,12 @@ export const newClientTelehealthMessage = functions.firestore
             updatedOn: new Date(),
             status: "active",
           },
-          {merge: true}
+          { merge: true }
         )
         .then(
           () => DEBUG && console.log("Updated Client Info on Telehealth Chat")
         )
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
       await admin
         .firestore()
         .collection("telehealth_chat")
@@ -139,7 +139,7 @@ export const newClientTelehealthMessage = functions.firestore
               createdAt: new Date(),
             })
         )
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
     }
     return null;
   });

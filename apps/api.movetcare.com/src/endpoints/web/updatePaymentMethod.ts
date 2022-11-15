@@ -90,7 +90,7 @@ export const updatePaymentMethod = functions
                     clientId: client.uid,
                   },
                 })
-                .catch(async (error: any) => (await throwError(error)) as any);
+                .catch(async (error: any) => throwError(error) as any);
             } else {
               let matchedCustomer = null;
               matchingCustomers.forEach((customerData: any) => {
@@ -127,9 +127,7 @@ export const updatePaymentMethod = functions
                       clientId: client.uid,
                     },
                   })
-                  .catch(
-                    async (error: any) => (await throwError(error)) as any
-                  );
+                  .catch(async (error: any) => throwError(error) as any);
               } else {
                 customer = matchedCustomer;
                 if (DEBUG)

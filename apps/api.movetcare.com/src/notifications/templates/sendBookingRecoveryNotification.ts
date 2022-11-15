@@ -1,22 +1,23 @@
 import {
   environment,
   emailClient,
-  proVetApiUrl,
   throwError,
   admin,
-  request,
-  smsClient,
-} from "../config/config";
-import type { Booking } from "../types/booking";
-import type { EmailConfiguration } from "../types/email";
-import {sendSignInByEmailLink} from "../utils/auth/sendSignInByEmailLink";
+  functions,
+} from "../../config/config";
+import { createProVetNote } from "../../integrations/provet/entities/note/createProVetNote";
+import type { Booking } from "../../types/booking";
+import type { EmailConfiguration } from "../../types/email";
+import { sendSignInByEmailLink } from "../../utils/auth/sendSignInByEmailLink";
 import {
   getClientNotificationSettings,
   UserNotificationSettings,
-} from "../utils/getClientNotificationSettings";
-import {logEvent} from "../utils/logging/logEvent";
-import { sendNotification } from "./sendNotification";
-
+} from "../../utils/getClientNotificationSettings";
+import { sendNotification } from "../sendNotification";
+const sms = require("twilio")(
+  functions.config()?.twilio.account_sid,
+  functions.config()?.twilio.auth_token
+);
 const DEBUG = false;
 export const sendBookingRecoveryNotification = async ({
   id,
@@ -226,30 +227,14 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
               "BOOKING RECOVERY NOTIFICATION EMAIL SENT!",
               emailConfig
             );
-          await request
-            .post("/note/", {
-              title: "1 Hour Booking Abandonment Recovery Email Notification",
-              type: 1,
-              client: proVetApiUrl + `/client/${uid}/`,
-              patients: [],
-              note: emailText,
-            })
-            .then(async (response: any) => {
-              const { data } = response;
-              if (DEBUG) console.log("API Response: POST /note/ => ", data);
-              await logEvent({
-                tag: "1-hour-booking-abandonment-email",
-                origin: "api",
-                success: true,
-                data: {
-                  message:
-                    "Synced 1 Hour Booking Abandonment Recovery Email Notification w/ ProVet",
-                  ...emailConfig,
-                },
-                sendToSlack: true,
-              });
-            })
-            .catch(async (error: any) => await throwError(error));
+          createProVetNote({
+            type: 1,
+            subject:
+              "1 Hour Booking Abandonment Recovery Email Notification (EMAIL)",
+            message: emailText,
+            client: `${client}`,
+            patients: [],
+          });
           await admin
             .firestore()
             .collection("clients")
@@ -260,37 +245,19 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
               ...emailConfig,
               createdOn: new Date(),
             })
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
         })
-        .catch(async (error: any) => {
-          if (DEBUG) console.error(error?.response?.body?.errors);
-          await request
-            .post("/note/", {
-              title:
-                "FAILED TO SEND 1 Hour Booking Abandonment Recovery Email Notification",
-              type: 1,
-              client: proVetApiUrl + `/client/${uid}/`,
-              patients: [],
-              note: JSON.stringify(error),
-            })
-            .then(async (response: any) => {
-              const { data } = response;
-              if (DEBUG) console.log("API Response: POST /note/ => ", data);
-              await logEvent({
-                tag: "1-hour-booking-abandonment-email",
-                origin: "api",
-                success: false,
-                data: {
-                  message:
-                    "FAILED TO SEND 1 Hour Booking Abandonment Recovery Email Notification",
-                  ...emailConfig,
-                  error,
-                },
-                sendToSlack: true,
-              });
-            })
-            .catch(async (error: any) => await throwError(error));
-          await throwError(error);
+        .catch((error: any) => {
+          console.error(error);
+          createProVetNote({
+            type: 1,
+            subject:
+              "FAILED TO SEND 1 Hour Booking Abandonment Recovery Email Notification (EMAIL)",
+            message: JSON.stringify(error),
+            client: `${client}`,
+            patients: [],
+          });
+          throwError(error);
         });
     else
       console.log("SIMULATING BOOKING ABANDONMENT RECOVERY NOTIFICATION EMAIL");
@@ -371,30 +338,13 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
               "BOOKING RECOVERY NOTIFICATION EMAIL SENT!",
               emailConfig
             );
-          await request
-            .post("/note/", {
-              title: "24 Hour Booking Abandonment Recovery Email Notification",
-              type: 1,
-              client: proVetApiUrl + `/client/${uid}/`,
-              patients: [],
-              note: emailText,
-            })
-            .then(async (response: any) => {
-              const { data } = response;
-              if (DEBUG) console.log("API Response: POST /note/ => ", data);
-              await logEvent({
-                tag: "24-hour-booking-abandonment-email",
-                origin: "api",
-                success: true,
-                data: {
-                  message:
-                    "Synced 24 Hour Booking Abandonment Recovery Email Notification w/ ProVet",
-                  ...emailConfig,
-                },
-                sendToSlack: true,
-              });
-            })
-            .catch(async (error: any) => await throwError(error));
+          createProVetNote({
+            type: 1,
+            subject: "24 Hour Booking Abandonment Recovery Email Notification",
+            message: emailText,
+            client: `${client}`,
+            patients: [],
+          });
           await admin
             .firestore()
             .collection("clients")
@@ -405,37 +355,19 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
               ...emailConfig,
               createdOn: new Date(),
             })
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
         })
-        .catch(async (error: any) => {
+        .catch((error: any) => {
           if (DEBUG) console.error(error?.response?.body?.errors);
-          await request
-            .post("/note/", {
-              title:
-                "FAILED TO SEND 24 Hour Booking Abandonment Recovery Email Notification",
-              type: 1,
-              client: proVetApiUrl + `/client/${uid}/`,
-              patients: [],
-              note: JSON.stringify(error),
-            })
-            .then(async (response: any) => {
-              const { data } = response;
-              if (DEBUG) console.log("API Response: POST /note/ => ", data);
-              await logEvent({
-                tag: "24-hour-booking-abandonment-email",
-                origin: "api",
-                success: false,
-                data: {
-                  message:
-                    "FAILED TO SEND 24 Hour Booking Abandonment Recovery Email Notification",
-                  ...emailConfig,
-                  error,
-                },
-                sendToSlack: true,
-              });
-            })
-            .catch(async (error: any) => await throwError(error));
-          await throwError(error);
+          createProVetNote({
+            type: 1,
+            subject:
+              "FAILED TO SEND 24 Hour Booking Abandonment Recovery Email Notification",
+            message: JSON.stringify(error),
+            client: `${client}`,
+            patients: [],
+          });
+          throwError(error);
         });
     else
       console.log("SIMULATING BOOKING ABANDONMENT RECOVERY NOTIFICATION EMAIL");
@@ -500,7 +432,7 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
       client?.phoneNumber
     ) {
       if (environment?.type === "production") {
-        await smsClient.messages
+        await sms.messages
           .create({
             body: smsMessage,
             from: "+17206775047",
@@ -513,32 +445,13 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
                 from: "+17206775047",
                 to: client?.phoneNumber,
               });
-            await request
-              .post("/note/", {
-                title: "72 Hour Booking Abandonment Recovery SMS Notification",
-                type: 0,
-                client: proVetApiUrl + `/client/${uid}/`,
-                patients: [],
-                note: smsString,
-              })
-              .then(async (response: any) => {
-                const { data } = response;
-                if (DEBUG) console.log("API Response: POST /note/ => ", data);
-                await logEvent({
-                  tag: "72-hour-booking-abandonment-sms",
-                  origin: "api",
-                  success: true,
-                  data: {
-                    message:
-                      "Synced 72 Hour Booking Abandonment Recovery SMS Notification w/ ProVet",
-                    body: smsMessage,
-                    from: "+17206775047",
-                    to: client?.phoneNumber,
-                  },
-                  sendToSlack: true,
-                });
-              })
-              .catch(async (error: any) => await throwError(error));
+            createProVetNote({
+              type: 0,
+              subject: "72 Hour Booking Abandonment Recovery SMS Notification",
+              message: smsString,
+              client: uid,
+              patients: [],
+            });
           })
           .catch(async (error: any) => {
             console.error(error);
@@ -548,35 +461,15 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
                 from: "+17206775047",
                 to: client?.phoneNumber,
               });
-            await request
-              .post("/note/", {
-                title:
-                  "FAILED TO SEND 72 HOUR BOOKING ABANDONMENT RECOVERY NOTIFICATION SMS",
-                type: 0,
-                client: proVetApiUrl + `/client/${uid}/`,
-                patients: [],
-                note: JSON.stringify(error),
-              })
-              .then(async (response: any) => {
-                const { data } = response;
-                if (DEBUG) console.log("API Response: POST /note/ => ", data);
-              })
-              .catch(async (error: any) => await throwError(error));
-            await logEvent({
-              tag: "72-hour-booking-abandonment-sms",
-              origin: "api",
-              success: false,
-              data: {
-                message: `FAILED TO SEND 72 HOUR BOOKING ABANDONMENT RECOVERY NOTIFICATION SMS ${
-                  error.message ? `: ${error.message}` : ""
-                }`,
-                body: smsMessage,
-                from: "+17206775047",
-                to: client?.phoneNumber,
-              },
-              sendToSlack: true,
+            createProVetNote({
+              type: 0,
+              subject:
+                "FAILED TO SEND 72 HOUR BOOKING ABANDONMENT RECOVERY NOTIFICATION SMS",
+              message: smsMessage + "\n\n" + JSON.stringify(error),
+              client: uid,
+              patients: [],
             });
-            await throwError(error);
+            throwError(error);
           });
         await admin
           .firestore()
@@ -590,7 +483,7 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
             to: client?.phoneNumber,
             createdOn: new Date(),
           })
-          .catch(async (error: any) => await throwError(error));
+          .catch((error: any) => throwError(error));
       } else
         console.log(
           "SIMULATING 72 HOUR BOOKING ABANDONMENT RECOVERY NOTIFICATION SMS"

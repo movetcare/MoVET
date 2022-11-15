@@ -23,18 +23,18 @@ export const sendVerificationEmail = async (user: any) => {
     const customToken = await admin
       .auth()
       .createCustomToken(user?.uid)
-      .catch(async (error: any) => await throwError(error));
-    const {idToken}: any = await request
+      .catch((error: any) => throwError(error));
+    const { idToken }: any = await request
       .post(
         exchangeCustomTokenEndpoint,
         {
           token: customToken,
           returnSecureToken: true,
         },
-        {headers: {"Content-Type": "application/json", Authorization: ""}}
+        { headers: { "Content-Type": "application/json", Authorization: "" } }
       )
       .then((response: any) => response.data)
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
     if (idToken) {
       const response = await request
         .post(
@@ -43,10 +43,10 @@ export const sendVerificationEmail = async (user: any) => {
             requestType: "VERIFY_EMAIL",
             idToken: idToken,
           },
-          {headers: {"Content-Type": "application/json", Authorization: ""}}
+          { headers: { "Content-Type": "application/json", Authorization: "" } }
         )
         .then((response: any) => response.data)
-        .catch(async (error: any) => await throwError(error));
+        .catch((error: any) => throwError(error));
       if (DEBUG) console.log(`Sent email verification to ${response.email}`);
     }
   }

@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Loader } from "ui";
@@ -156,13 +155,12 @@ export default function Booking() {
   };
   return (
     <section className="w-full flex-1">
-      <AppHeader />
       <div
         className={`flex items-center justify-center bg-white rounded-xl max-w-xl mx-auto${
-          !isAppMode ? " p-4 mb-8 sm:p-8" : ""
+          !isAppMode ? " p-4 my-8 sm:p-8" : ""
         }`}
       >
-        <div className={isAppMode ? "px-8 mb-8" : "p-8"}>
+        <div className={isAppMode ? "px-4 mb-8" : "p-4 sm:p-8"}>
           <section className="relative mx-auto">
             {isLoading ? (
               <Loader />

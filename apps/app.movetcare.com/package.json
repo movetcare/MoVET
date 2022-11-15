@@ -11,9 +11,9 @@
     "update": "ncu -u"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.2.0",
-    "@fortawesome/free-brands-svg-icons": "^6.2.0",
-    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-brands-svg-icons": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.4",
     "@hookform/resolvers": "^2.9.10",
@@ -26,13 +26,13 @@
     "react-calendar": "^4.0.0",
     "react-clock": "^4.0.0",
     "react-dom": "18.2.0",
-    "react-firebase-hooks": "^5.1.0",
+    "react-firebase-hooks": "^5.1.1",
     "react-google-places-autocomplete": "^3.4.0",
     "react-google-recaptcha-v3": "^1.10.0",
-    "react-hook-form": "^7.39.3",
+    "react-hook-form": "^7.39.4",
     "react-hot-toast": "^2.4.0",
     "react-number-format": "^5.1.1",
-    "react-select": "^5.6.0",
+    "react-select": "^5.6.1",
     "react-swipeable": "^7.0.0",
     "react-time-picker": "^5.1.0",
     "yup": "^0.32.11"
@@ -57,7 +57,7 @@
     "tailwindcss": "^3.2.4",
     "tsconfig": "workspace:*",
     "types": "workspace:*",
-    "typescript": "^4.8.4",
+    "typescript": "^4.9.3",
     "ui": "workspace:*",
     "utilities": "workspace:*",
     "server": "workspace:*"

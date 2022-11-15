@@ -5,8 +5,8 @@ import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { fetchEntity } from "../fetchEntity";
 
 const visibleReasonsInApp = [
-  30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 46, 47, 51, 58, 73,
-  74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86,
+  99, 98, 97, 96, 95, 94, 93, 92, 91, 89, 88, 87, 81, 121, 119, 118, 117, 116,
+  115, 114, 113, 108, 107, 104, 103, 102, 101, 100,
 ];
 export const configureReasons = async (): Promise<boolean> => {
   console.log("STARTING REASONS CONFIGURATION");
@@ -15,7 +15,7 @@ export const configureReasons = async (): Promise<boolean> => {
   );
   const reasons: Array<Reason> = await fetchEntity("reason");
   if (reasons) return await saveReasonsData(reasons);
-  else return await throwError("Failed to Process Reasons");
+  else return throwError("Failed to Process Reasons");
 };
 
 const saveReasonsData = async (reasons: Array<Reason>): Promise<boolean> =>
@@ -81,8 +81,8 @@ const saveReasonsData = async (reasons: Array<Reason>): Promise<boolean> =>
             { merge: true }
           )
           .then(() => true)
-          .catch(async (error: any) => await throwError(error))
+          .catch(async (error: any) => throwError(error))
     )
   )
     .then(async () => true)
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

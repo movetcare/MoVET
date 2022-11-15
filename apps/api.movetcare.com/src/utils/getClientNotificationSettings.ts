@@ -24,4 +24,4 @@ export const getClientNotificationSettings = async (
         sendSms: document.data()?.sendSms,
       };
     })
-    .catch(async (error: any) => await throwError(error));
+    .catch((error: any) => throwError(error));

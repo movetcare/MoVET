@@ -1,9 +1,14 @@
-import {sendAppointmentConfirmationEmail} from "./../../../../notifications/sendAppointmentConfirmationEmail";
-import {fetchEntity} from "./../fetchEntity";
-import {admin, throwError, DEBUG, environment} from "../../../../config/config";
-import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
-import {deleteAppointmentNotifications} from "./notifications/deleteAppointmentNotifications";
-import {generateNewAppointmentNotifications} from "./notifications/generateNewAppointmentNotifications";
+import { sendAppointmentConfirmationEmail } from "../../../../notifications/templates/sendAppointmentConfirmationEmail";
+import { fetchEntity } from "./../fetchEntity";
+import {
+  admin,
+  throwError,
+  DEBUG,
+  environment,
+} from "../../../../config/config";
+import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
+import { deleteAppointmentNotifications } from "./notifications/deleteAppointmentNotifications";
+import { generateNewAppointmentNotifications } from "./notifications/generateNewAppointmentNotifications";
 import type { Appointment } from "../../../../types/appointment";
 // import {getAuthUserById} from '../../../../utils/auth/getAuthUserById';
 // import {getDateStringFromDate} from '../../../../utils/getDateStringFromDate';
@@ -103,7 +108,7 @@ export const saveAppointment = async (
             minorIllness,
           };
         })
-      ).catch(async (error: any) => await throwError(error));
+      ).catch((error: any) => throwError(error));
       data.patients = proVetPatientData;
     }
   }
@@ -180,7 +185,7 @@ export const saveAppointment = async (
     //   .doc(`${data?.client}`)
     //   .get()
     //   .then((document: any) => document.data()?.sendSms)
-    //   .catch(async (error: any) => await throwError(error));
+    //    .catch((error: any) => throwError(error));
     // const wasCreatedInProvet = getProVetIdFromUrl(data?.reason) !== null;
     // let petDetails = null;
     // if (wasCreatedInProvet)
@@ -306,7 +311,7 @@ export const saveAppointment = async (
     //       DEBUG &&
     //       console.log(`GENERATED ${proVetAppointmentData?.id}_email`)
     //   )
-    //   .catch(async (error: any) => await throwError(error));
+    //    .catch((error: any) => throwError(error));
     // if (sendSms) {
     //   await admin
     //     .firestore()
@@ -334,7 +339,7 @@ export const saveAppointment = async (
     //         DEBUG &&
     //         console.log(`GENERATED ${proVetAppointmentData?.id}_sms`)
     //     )
-    //     .catch(async (error: any) => await throwError(error));
+    //      .catch((error: any) => throwError(error));
     // }
     // }
     // }
@@ -364,7 +369,7 @@ export const saveAppointment = async (
                   )
                 : true;
             })
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
         } else {
           if (DEBUG)
             console.log(
@@ -384,7 +389,8 @@ export const saveAppointment = async (
                   `Successfully Generated Firestore Document for Appointment #${proVetAppointmentData.id}`
                 );
                 console.log(
-                  "Setting \"onboardingComplete\" to \"true\" for Client #",
+                  // eslint-disable-next-line quotes
+                  'Setting "onboardingComplete" to "true" for Client #',
                   String(data?.client)
                 );
               }
@@ -420,17 +426,17 @@ export const saveAppointment = async (
                               `create_new_client_${data?.client}`
                             )
                         )
-                        .catch(async (error: any) => await throwError(error));
-                  } else await throwError(error);
+                        .catch((error: any) => throwError(error));
+                  } else throwError(error);
                 });
               return await sendAppointmentConfirmationEmail(
                 `${data?.client}`,
                 `${proVetAppointmentData.id}`
               );
             })
-            .catch(async (error: any) => await throwError(error));
+            .catch((error: any) => throwError(error));
         }
       })
-      .catch(async (error: any) => await throwError(error));
+      .catch((error: any) => throwError(error));
   } else return false;
 };

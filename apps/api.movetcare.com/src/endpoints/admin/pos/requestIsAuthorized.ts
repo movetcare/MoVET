@@ -1,5 +1,5 @@
-import {DEBUG, functions} from "../../../config/config";
-import {logEvent} from "../../../utils/logging/logEvent";
+import { DEBUG, functions } from "../../../config/config";
+import { sendNotification } from "../../../notifications/sendNotification";
 
 export const requestIsAuthorized = async (context: any): Promise<boolean> => {
   if (DEBUG) {
@@ -23,13 +23,12 @@ export const requestIsAuthorized = async (context: any): Promise<boolean> => {
         context.auth.token.firebase.sign_in_provider
       );
     }
-    await logEvent({
-      tag: "error-auth",
-      origin: "api",
-      success: false,
-      sendToSlack: true,
-      data: {
-        ...context.auth,
+    sendNotification({
+      type: "slack",
+      payload: {
+        message: `:interrobang: Cloud Functions Auth Error\n\n\`\`\`${JSON.stringify(
+          context.auth
+        )}\`\`\`\n\n`,
       },
     });
     throw new functions.https.HttpsError("failed-precondition", "FAILED AUTH");
