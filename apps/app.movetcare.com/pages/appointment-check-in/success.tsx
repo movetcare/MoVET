@@ -5,7 +5,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, AppLinks } from "ui";
-import { AppHeader } from "components/AppHeader";
 import { Loader } from "ui";
 import { httpsCallable } from "firebase/functions";
 import router from "next/router";

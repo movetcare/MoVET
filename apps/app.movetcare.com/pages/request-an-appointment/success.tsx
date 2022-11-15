@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AppLinks, Loader } from "ui";
