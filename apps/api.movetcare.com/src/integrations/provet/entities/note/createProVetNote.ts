@@ -5,7 +5,7 @@ import {
   throwError,
 } from "../../../../config/config";
 import { sendNotification } from "../../../../notifications/sendNotification";
-const DEBUG = true;
+const DEBUG = false;
 export const createProVetNote = ({
   subject,
   message,

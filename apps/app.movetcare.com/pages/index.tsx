@@ -130,7 +130,9 @@ export default function Home() {
                 url:
                   (environment === "production"
                     ? "https://app.movetcare.com"
-                    : "http://localhost:3001") +
+                    : window.location.hostname === "localhost"
+                    ? "http://localhost:3001"
+                    : "https://stage.app.movetcare.com") +
                   `/request-an-appointment?id=${result.id}`,
                 handleCodeInApp: true,
                 iOS: {
@@ -141,7 +143,12 @@ export default function Home() {
                   installApp: true,
                   minimumVersion: "16",
                 },
-                dynamicLinkDomain: "movetcare.com",
+                dynamicLinkDomain:
+                  environment === "production"
+                    ? "app.movetcare.com"
+                    : window.location.hostname === "localhost"
+                    ? "localhost"
+                    : "stage.app.movetcare.com",
               })
                 .then(() => {
                   window.localStorage.setItem(

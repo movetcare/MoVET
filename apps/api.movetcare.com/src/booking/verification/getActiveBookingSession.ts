@@ -21,7 +21,8 @@ export const getActiveBookingSession = async (
 const getActiveAppointmentBooking = async (user: UserRecord, snapshot: any) => {
   const activeBookings: Array<any> = [];
   snapshot.forEach((doc: any) => {
-    console.log("getActiveAppointmentBooking => BOOKING FOUND: ", doc.data());
+    if (DEBUG)
+      console.log("getActiveAppointmentBooking => BOOKING FOUND: ", doc.data());
     if (doc.data()?.isActive) activeBookings.push(doc.id);
   });
   if (activeBookings.length > 0) {

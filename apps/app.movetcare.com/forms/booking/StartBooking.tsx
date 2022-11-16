@@ -85,7 +85,9 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
               url:
                 (environment === "production"
                   ? "https://app.movetcare.com"
-                  : "http://localhost:3001") +
+                  : window.location.hostname === "localhost"
+                  ? "http://localhost:3001"
+                  : "https://stage.app.movetcare.com") +
                 `${
                   result.id !== null && result.id !== undefined
                     ? `/request-an-appointment?id=${result.id}`
@@ -100,7 +102,12 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
                 installApp: true,
                 minimumVersion: "16",
               },
-              dynamicLinkDomain: "movetcare.com",
+              dynamicLinkDomain:
+                environment === "production"
+                  ? "app.movetcare.com"
+                  : window.location.hostname === "localhost"
+                  ? "localhost"
+                  : "stage.app.movetcare.com",
             })
               .then(() => {
                 window.localStorage.setItem("email", data.email?.toLowerCase());

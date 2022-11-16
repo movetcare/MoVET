@@ -118,7 +118,10 @@ export default function Booking() {
                 url:
                   (environment === "production"
                     ? "https://app.movetcare.com"
-                    : "http://localhost:3001") + `/booking?id=${result.id}`,
+                    : window.location.hostname === "localhost"
+                    ? "http://localhost:3001"
+                    : "https://stage.app.movetcare.com") +
+                  `/booking?id=${result.id}`,
                 handleCodeInApp: true,
                 iOS: {
                   bundleId: "com.movet.inc",
@@ -128,7 +131,12 @@ export default function Booking() {
                   installApp: true,
                   minimumVersion: "16",
                 },
-                dynamicLinkDomain: "movetcare.com",
+                dynamicLinkDomain:
+                  environment === "production"
+                    ? "app.movetcare.com"
+                    : window.location.hostname === "localhost"
+                    ? "localhost"
+                    : "stage.app.movetcare.com",
               })
                 .then(() => {
                   window.localStorage.setItem(
