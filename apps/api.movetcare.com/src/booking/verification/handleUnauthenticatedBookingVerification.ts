@@ -1,12 +1,12 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { handleFailedBooking } from "../handleFailedBooking";
 import { getAuthUserByEmail } from "./../../utils/auth/getAuthUserByEmail";
-import { admin } from "../../config/config";
+import { admin, DEBUG } from "../../config/config";
 import { getActiveBookingSession } from "./getActiveBookingSession";
 import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
 import type { Booking, BookingError } from "../../types/booking";
-const DEBUG = false;
+
 export const handleUnauthenticatedBookingVerification = async (
   email: string
 ): Promise<Booking | BookingError | false> => {

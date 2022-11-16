@@ -175,7 +175,7 @@ export default function Home() {
   };
   return (
     <section className="w-full flex-1">
-      <AppHeader />
+      {!isLoading && <AppHeader />}
       {mode === "kiosk" ? (
         <section className="flex flex-col justify-center items-center max-w-xl mx-auto bg-white rounded-xl p-8">
           <QRCodeSVG

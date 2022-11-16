@@ -63,7 +63,7 @@ export const IllnessAssignment = ({
     control,
     register,
     reset,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isSubmitting },
   } = useForm({
     mode: "all",
     resolver: yupResolver(
@@ -111,7 +111,13 @@ export const IllnessAssignment = ({
   return (
     <>
       {isLoading ? (
-        <Loader />
+        <Loader
+          message={
+            isSubmitting
+              ? "Saving Illness Selection..."
+              : "Loading Illness Selection..."
+          }
+        />
       ) : error ? (
         <Error error={error} isAppMode={isAppMode} />
       ) : (

@@ -1,12 +1,12 @@
 import { sendNotification } from "./../../../../notifications/sendNotification";
 import Stripe from "stripe";
-import { admin, stripe, throwError } from "../../../../config/config";
+import { admin, stripe, throwError, DEBUG } from "../../../../config/config";
 import { sendWelcomeEmail } from "../../../../notifications/templates/sendWelcomeEmail";
 import { getAuthUserById } from "../../../../utils/auth/getAuthUserById";
 import { fetchEntity } from "../fetchEntity";
 import { saveClient } from "./saveClient";
 import { updateProVetClient } from "./updateProVetClient";
-const DEBUG = false;
+
 export const createNewClientTask = async (options: { clientId: number }) => {
   const { clientId } = options;
   if (clientId) {

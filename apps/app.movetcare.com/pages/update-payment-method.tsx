@@ -90,7 +90,7 @@ export default function UpdatePaymentMethod() {
   return (
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
       <main className="w-full flex-1 overflow-hidden">
-        <AppHeader />
+        {!isLoading && <AppHeader />}
         {mode === "kiosk" ? (
           <section className="flex flex-col justify-center items-center max-w-xl mx-auto bg-white rounded-xl mb-8 p-8">
             <QRCodeSVG

@@ -1,7 +1,7 @@
-import {admin, throwError} from "../../../../config/config";
-import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
-import {modifyDateString} from "../../../../utils/modifyStringDate";
-const DEBUG = false;
+import { admin, throwError, DEBUG } from "../../../../config/config";
+import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
+import { modifyDateString } from "../../../../utils/modifyStringDate";
+
 export const savePatient = async (
   proVetPatientData: any,
   vcprRequired?: boolean

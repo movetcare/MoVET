@@ -1,12 +1,11 @@
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { sendNotification } from "../notifications/sendNotification";
-import { admin, functions, throwError } from "../config/config";
+import { admin, functions, throwError, DEBUG } from "../config/config";
 import { CONTACT_STATUS } from "../constant";
 import type { ContactForm } from "../types/forms";
 import { getAuthUserByEmail } from "../utils/auth/getAuthUserByEmail";
 import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
 
-const DEBUG = false;
 export const handleContactSubmission = functions.firestore
   .document("contact/{id}")
   .onCreate(async (snapshot: any, context: any) => {
@@ -89,24 +88,24 @@ export const handleContactSubmission = functions.firestore
             ],
           },
         });
-        sendNotification({
-          type: "email",
-          payload: {
-            to: "info@movetcare.com",
-            replyTo: email,
-            subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName}`,
-            message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
-              phone
-            )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
-            updatedOn: new Date(),
-          },
-        });
         updateContactStatus({
           status: CONTACT_STATUS.NEEDS_REPLY,
           id,
         });
         const isClient = await getAuthUserByEmail(email);
         if (DEBUG) console.log("isClient", isClient);
+        sendNotification({
+          type: "email",
+          payload: {
+            client: isClient?.uid || null,
+            to: "info@movetcare.com",
+            replyTo: email,
+            subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName}`,
+            message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
+              phone
+            )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
+          },
+        });
         if (isClient)
           createProVetNote({
             type: 1,

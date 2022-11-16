@@ -54,19 +54,19 @@ export const ChooseStaff = ({
   };
   return (
     <>
-      <BookingHeader
-        isAppMode={isAppMode}
-        title={"Choose an Expert"}
-        description={"Which MoVET Expert would you like to meet with?"}
-      />
-      <div className="mt-8 px-1">
-        <form className="grid grid-cols-1 gap-y-8 text-left mt-8 z-10 relative mb-8 overflow-visible">
-          {isLoading ? (
-            <Loader />
-          ) : error ? (
-            <Error error={error.message} />
-          ) : (
-            <>
+      {isLoading ? (
+        <Loader message="Saving Staff Selection" />
+      ) : error ? (
+        <Error error={error.message} />
+      ) : (
+        <>
+          <BookingHeader
+            isAppMode={isAppMode}
+            title={"Choose an Expert"}
+            description={"Which MoVET Expert would you like to meet with?"}
+          />
+          <div className="mt-8 px-1">
+            <form className="grid grid-cols-1 gap-y-8 text-left mt-8 z-10 relative mb-8 overflow-visible">
               {session?.staff &&
                 session?.staff.map((expert: Staff, index: number) =>
                   expert?.isActive && expert?.isStaff ? (
@@ -139,11 +139,11 @@ export const ChooseStaff = ({
                 className={"w-full sm:w-2/3 mx-auto mt-4 sm:mt-0"}
                 onClick={() => onSubmit("none")}
               />
-            </>
-          )}
-        </form>
-      </div>
-      <BookingFooter session={session} />
+            </form>
+          </div>
+          <BookingFooter session={session} />
+        </>
+      )}
     </>
   );
 };

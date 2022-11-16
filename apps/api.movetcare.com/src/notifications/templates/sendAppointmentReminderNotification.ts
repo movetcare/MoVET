@@ -1,18 +1,8 @@
 /* eslint-disable quotes */
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getAuthUserById } from "../../utils/auth/getAuthUserById";
-import {
-  admin,
-  emailClient,
-  environment,
-  throwError,
-  functions,
-  // DEBUG,
-} from "../../config/config";
-const sms = require("twilio")(
-  functions.config()?.twilio.account_sid,
-  functions.config()?.twilio.auth_token
-);
+import { admin, throwError, DEBUG } from "../../config/config";
+
 import {
   getClientNotificationSettings,
   UserNotificationSettings,
@@ -21,10 +11,9 @@ import { getDateStringFromDate } from "../../utils/getDateStringFromDate";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
-import type { EmailConfiguration } from "../../types/email";
-import { createProVetNote } from "../../integrations/provet/entities/note/createProVetNote";
+import type { EmailConfiguration } from "../../types/email.d";
 import { sendNotification } from "../sendNotification";
-const DEBUG = false;
+
 interface AppointmentDetails {
   active: boolean;
   id: number;
@@ -238,46 +227,14 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
     if (DEBUG) console.log("emailText -> ", emailText);
     const emailConfig: EmailConfiguration = {
       to: email,
-      from: "info@movetcare.com",
-      bcc: "info@movetcare.com",
-      replyTo: "info@movetcare.com",
       subject: `${petNames}'s Appointment Reminder: ${getDateStringFromDate(
         start?.toDate(),
         "dateOnly"
       )} @ ${getDateStringFromDate(start?.toDate(), "timeOnly")}`,
-      text: emailText.replace(/(<([^>]+)>)/gi, ""),
-      html: emailText,
+      message: emailText,
     };
     if (DEBUG) console.log("SENDING EMAIL APPOINTMENT NOTIFICATION");
-    if (environment?.type === "production")
-      await emailClient
-        .send(emailConfig)
-        .then(async () => {
-          if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-          createProVetNote({
-            type: 1,
-            subject: `24 Hour Appointment Reminder Notification`,
-            message: emailConfig.html,
-            client: `${client}`,
-            patients: [],
-          });
-          await admin
-            .firestore()
-            .collection("clients")
-            .doc(`${client}`)
-            .collection("notifications")
-            .add({
-              type: "email",
-              ...emailConfig,
-              createdOn: new Date(),
-            })
-            .catch((error: any) => throwError(error));
-        })
-        .catch(async (error: any) => {
-          if (DEBUG) console.error(error?.response?.body?.errors);
-          throwError(error);
-        });
-    else console.log("SIMULATING APPOINTMENT NOTIFICATION CONFIRMATION EMAIL");
+    sendNotification({ type: "email", payload: { ...emailConfig, client } });
   } else if (DEBUG)
     console.log("DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION EMAIL", {
       sendEmail:
@@ -335,58 +292,14 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
           )?.replaceAll("+", "%2B")}`}\n`
     }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     if (DEBUG) console.log("smsText -> ", smsText);
-    if (environment?.type === "production") {
-      await sms.messages
-        .create({
-          body: smsText,
-          from: "+17206775047",
-          to: phoneNumber,
-        })
-        .then(async () => {
-          if (DEBUG)
-            console.log("SMS SENT!", {
-              body: smsText,
-              from: "+17206775047",
-              to: phoneNumber,
-            });
-          createProVetNote({
-            type: 0,
-            subject: `24 Hour Appointment Reminder Notification (SMS)`,
-            message: smsText,
-            client: `${client}`,
-            patients: [],
-          });
-        })
-        .catch(async (error: any) => {
-          console.error(error);
-          if (DEBUG)
-            console.error("SMS FAILED TO SEND!", {
-              body: smsText,
-              from: "+17206775047",
-              to: phoneNumber,
-            });
-          createProVetNote({
-            type: 0,
-            subject: `FAILED TO SEND 24 Hour Appointment Reminder Notification (SMS)`,
-            message: smsText + "\n\n" + error.message,
-            client: `${client}`,
-            patients: [],
-          });
-        });
-      await admin
-        .firestore()
-        .collection("clients")
-        .doc(`${client}`)
-        .collection("notifications")
-        .add({
-          type: "sms",
-          body: smsText,
-          from: "+17206775047",
-          to: phoneNumber,
-          createdOn: new Date(),
-        })
-        .catch((error: any) => throwError(error));
-    } else console.log("SIMULATING APPOINTMENT NOTIFICATION CONFIRMATION SMS");
+    sendNotification({
+      type: "sms",
+      payload: {
+        message: smsText,
+        subject: "24 Hour Appointment Reminder Notification (SMS)",
+        client,
+      },
+    });
   } else if (DEBUG)
     console.log("DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION SMS", {
       sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
@@ -492,43 +405,11 @@ const send30MinAppointmentNotification = async (
     if (DEBUG) console.log("emailText -> ", emailText);
     const emailConfig: EmailConfiguration = {
       to: email,
-      from: "info@movetcare.com",
-      bcc: "info@movetcare.com",
-      replyTo: "info@movetcare.com",
       subject: "It's almost time for your appointment w/ MoVET!",
-      text: emailText.replace(/(<([^>]+)>)/gi, ""),
-      html: emailText,
+      message: emailText,
     };
     if (DEBUG) console.log("SENDING EMAIL APPOINTMENT NOTIFICATION");
-    if (environment?.type === "production")
-      await emailClient
-        .send(emailConfig)
-        .then(async () => {
-          if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-          createProVetNote({
-            type: 1,
-            subject: `30 Min Appointment Reminder Notification (EMAIL)`,
-            message: emailConfig.html,
-            client: `${client}`,
-            patients: [],
-          });
-          await admin
-            .firestore()
-            .collection("clients")
-            .doc(`${client}`)
-            .collection("notifications")
-            .add({
-              type: "email",
-              ...emailConfig,
-              createdOn: new Date(),
-            })
-            .catch((error: any) => throwError(error));
-        })
-        .catch(async (error: any) => {
-          if (DEBUG) console.error(error?.response?.body?.errors);
-          throwError(error);
-        });
-    else console.log("SIMULATING 30 MIN APPOINTMENT NOTIFICATION EMAIL");
+    sendNotification({ type: "email", payload: { ...emailConfig, client } });
   } else if (DEBUG)
     console.log("DID NOT SEND 30 MIN APPOINTMENT NOTIFICATION EMAIL", {
       sendEmail:
@@ -595,58 +476,14 @@ and medical records to info@movetcare.com prior to your appointment.\n`
           )?.replaceAll("+", "%2B")}\n\n`
     }\nPlease email info@movetcare.com, text (720) 507-7387 us, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     if (DEBUG) console.log("smsText -> ", smsText);
-    if (environment?.type === "production") {
-      await sms.messages
-        .create({
-          body: smsText,
-          from: "+17206775047",
-          to: phoneNumber,
-        })
-        .then(async () => {
-          if (DEBUG)
-            console.log("SMS SENT!", {
-              body: smsText,
-              from: "+17206775047",
-              to: phoneNumber,
-            });
-          createProVetNote({
-            type: 0,
-            subject: `30 Min Appointment Reminder Notification (SMS)`,
-            message: smsText,
-            client: `${client}`,
-            patients: [],
-          });
-        })
-        .catch(async (error: any) => {
-          console.error(error);
-          if (DEBUG)
-            console.log("SMS FAILED TO SEND!", {
-              body: smsText,
-              from: "+17206775047",
-              to: phoneNumber,
-            });
-          createProVetNote({
-            type: 0,
-            subject: `FAILED TO 30 MIN Hour Appointment Reminder Notification (SMS)`,
-            message: smsText + "\n\n" + error.message,
-            client: `${client}`,
-            patients: [],
-          });
-        });
-      await admin
-        .firestore()
-        .collection("clients")
-        .doc(`${client}`)
-        .collection("notifications")
-        .add({
-          type: "sms",
-          body: smsText,
-          from: "+17206775047",
-          to: phoneNumber,
-          createdOn: new Date(),
-        })
-        .catch((error: any) => throwError(error));
-    } else console.log("SIMULATING 30 MIN APPOINTMENT NOTIFICATION SMS");
+    sendNotification({
+      type: "sms",
+      payload: {
+        client,
+        subject: "30 Min Appointment Reminder Notification (SMS)",
+        message: smsText,
+      },
+    });
   } else if (DEBUG)
     console.log("DID NOT 30 MIN HOUR APPOINTMENT NOTIFICATION SMS", {
       sendSms: userNotificationSettings && userNotificationSettings?.sendSms,

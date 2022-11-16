@@ -59,7 +59,7 @@ export const SelectAPet = ({
     handleSubmit,
     reset,
     watch,
-    formState: { isDirty, isValid, errors },
+    formState: { isDirty, isValid, errors, isSubmitting },
   } = useForm({
     mode: "all",
     resolver: yupResolver(
@@ -186,7 +186,13 @@ export const SelectAPet = ({
   return (
     <>
       {isLoading ? (
-        <Loader />
+        <Loader
+          message={
+            isSubmitting
+              ? "Saving Pet Selection(s)..."
+              : "Loading Your Pet(s)..."
+          }
+        />
       ) : error ? (
         <Error error={error} isAppMode={isAppMode} />
       ) : showAddAPet ? (

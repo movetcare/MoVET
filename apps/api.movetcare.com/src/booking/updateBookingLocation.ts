@@ -1,7 +1,7 @@
-import {admin, throwError} from "../config/config";
+import { admin, throwError, DEBUG } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
 import { getBookingConfiguration } from "../utils/getBookingConfiguration";
-const DEBUG = false;
+
 export const updateBookingLocation = async (
   id: string,
   location: string,
@@ -50,73 +50,73 @@ export const updateBookingLocation = async (
     }
   }
   if (DEBUG) console.log("updateBookingLocation => vcprReason", vcprReason);
-   admin
-     .firestore()
-     .collection("bookings")
-     .doc(id)
-     .set(
-       vcprReason === null
-         ? {
-             step: "choose-reason",
-             updatedOn: new Date(),
-           }
-         : {
-             step: "choose-datetime",
-             reason: {
-               label: await admin
-                 .firestore()
-                 .collection("reasons")
-                 .doc(`${vcprReason}`)
-                 .get()
-                 .then((doc: any) => doc.data()?.name)
-                 .catch(async (error: any) => throwError(error)),
-               value: vcprReason,
-             },
-             updatedOn: new Date(),
-           },
-       { merge: true }
-     )
-     .then(() =>
-       sendNotification({
-         type: "slack",
-         payload: {
-           message: [
-             {
-               type: "section",
-               text: {
-                 text: ":book: _Appointment Booking_ *UPDATE*",
-                 type: "mrkdwn",
-               },
-               fields: [
-                 {
-                   type: "mrkdwn",
-                   text: "*Session ID*",
-                 },
-                 {
-                   type: "plain_text",
-                   text: id,
-                 },
-                 {
-                   type: "mrkdwn",
-                   text: "*Step*",
-                 },
-                 {
-                   type: "plain_text",
-                   text: "Choose Location",
-                 },
-                 {
-                   type: "mrkdwn",
-                   text: "*Selected Location*",
-                 },
-                 {
-                   type: "plain_text",
-                   text: location,
-                 },
-               ],
-             },
-           ],
-         },
-       })
-     )
-     .catch((error: any) => throwError(error));
+  admin
+    .firestore()
+    .collection("bookings")
+    .doc(id)
+    .set(
+      vcprReason === null
+        ? {
+            step: "choose-reason",
+            updatedOn: new Date(),
+          }
+        : {
+            step: "choose-datetime",
+            reason: {
+              label: await admin
+                .firestore()
+                .collection("reasons")
+                .doc(`${vcprReason}`)
+                .get()
+                .then((doc: any) => doc.data()?.name)
+                .catch(async (error: any) => throwError(error)),
+              value: vcprReason,
+            },
+            updatedOn: new Date(),
+          },
+      { merge: true }
+    )
+    .then(() =>
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: [
+            {
+              type: "section",
+              text: {
+                text: ":book: _Appointment Booking_ *UPDATE*",
+                type: "mrkdwn",
+              },
+              fields: [
+                {
+                  type: "mrkdwn",
+                  text: "*Session ID*",
+                },
+                {
+                  type: "plain_text",
+                  text: id,
+                },
+                {
+                  type: "mrkdwn",
+                  text: "*Step*",
+                },
+                {
+                  type: "plain_text",
+                  text: "Choose Location",
+                },
+                {
+                  type: "mrkdwn",
+                  text: "*Selected Location*",
+                },
+                {
+                  type: "plain_text",
+                  text: location,
+                },
+              ],
+            },
+          ],
+        },
+      })
+    )
+    .catch((error: any) => throwError(error));
 };

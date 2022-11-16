@@ -1,14 +1,14 @@
 import {updateSendGridContact} from "./../../../sendgrid/updateSendGridContact";
 import {
   admin,
-  //DEBUG,
+  DEBUG,
   environment,
   stripe,
   throwError,
 } from "../../../../config/config";
-import {createAuthClient} from "./createAuthClient";
-import {getAuthUserById} from "../../../../utils/auth/getAuthUserById";
-const DEBUG = false;
+import { createAuthClient } from "./createAuthClient";
+import { getAuthUserById } from "../../../../utils/auth/getAuthUserById";
+
 export const saveClient = async (
   clientId: number | string,
   proVetClientData: any,

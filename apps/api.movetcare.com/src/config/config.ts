@@ -11,7 +11,7 @@ const Sentry = require("@sentry/node");
 let stagingInstance: any = null;
 let productionInstance: any = null;
 export const environment: any = func.config()?.environment;
-export const DEBUG = false;
+export const DEBUG = environment.type !== "production";
 
 if (environment.type !== "development") {
   console.log = func.logger.log;
@@ -30,13 +30,14 @@ export const throwError = (error: any): false => {
       },
     });
   else console.error("UNKNOWN ERROR", error);
-  console.error("FULL ERROR", error);
+  console.error("FULL ERROR", JSON.stringify(error));
   if (error.response) {
-    console.error("ERROR HEADERS", error.response.headers);
-    console.error("ERROR STATUS", error.response.status);
-    console.error("ERROR DATA", error.response.data);
-    console.error("ERROR BODY", error.response.body);
-  } else if (error.request) console.error("ERROR REQUEST", error.request);
+    console.error("ERROR HEADERS", JSON.stringify(error.response.headers));
+    console.error("ERROR STATUS", JSON.stringify(error.response.status));
+    console.error("ERROR DATA", JSON.stringify(error.response.data));
+    console.error("ERROR BODY", JSON.stringify(error.response.body));
+  } else if (error.request)
+    console.error("ERROR REQUEST", JSON.stringify(error.request));
   else console.error("ERROR MESSAGE", error.message);
   return false;
 };

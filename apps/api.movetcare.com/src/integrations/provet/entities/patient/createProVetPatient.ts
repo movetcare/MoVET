@@ -3,12 +3,12 @@ import {
   request,
   throwError,
   proVetApiUrl,
-  // DEBUG,
+  DEBUG,
 } from "../../../../config/config";
-import {toIsoString} from "../../../../utils/toIsoString";
-import {capitalizeFirstLetter} from "../../../../utils/capitalizeFirstLetter";
+import { toIsoString } from "../../../../utils/toIsoString";
+import { capitalizeFirstLetter } from "../../../../utils/capitalizeFirstLetter";
 import { updateCustomField } from "./updateCustomField";
-const DEBUG = false;
+
 export const createProVetPatient = async (data: {
   client: string;
   name: string;

@@ -52,7 +52,7 @@ export const ChooseDateTime = ({
   return (
     <>
       {isLoading ? (
-        <Loader />
+        <Loader message="Saving Date & Time Selection..." />
       ) : error ? (
         <Error errorMessage={error?.message || "Unknown Error"} />
       ) : (

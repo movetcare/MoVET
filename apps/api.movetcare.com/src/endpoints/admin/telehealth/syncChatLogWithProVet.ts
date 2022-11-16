@@ -1,15 +1,8 @@
-import {
-  throwError,
-  functions,
-  admin,
-  // DEBUG,
-  emailClient,
-  environment,
-} from "./../../../config/config";
+import { sendNotification } from "./../../../notifications/sendNotification";
+import { throwError, functions, admin, DEBUG } from "./../../../config/config";
 import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { createProVetNote } from "../../../integrations/provet/entities/note/createProVetNote";
 
-const DEBUG = false;
 export const syncChatLogWithProVet = functions.firestore
   .document("/telehealth_chat/{clientId}")
   .onWrite(async (change: any, context: any) => {
@@ -86,30 +79,19 @@ export const syncChatLogWithProVet = functions.firestore
       }<p>Thank you for reaching out to MoVET today!<p><p>Please find your chat log summary below:</p>\n\n${chatLog}\n\n<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>- The MoVET Team</p>`;
       const emailConfig: any = {
         to: email,
-        from: "info@movetcare.com",
-        bcc: ["support@movetcare.com", "info@movetcare.com"],
-        replyTo: "info@movetcare.com",
-        subject: "Chat Summary w/ MoVET",
-        text: emailText.replace(/(<([^>]+)>)/gi, ""),
-        html: emailText,
+        subject: "Your MoVET Telehealth Chat Summary",
+        message: emailText,
       };
-      if (environment?.type === "production")
-        await emailClient
-          .send(emailConfig)
-          .then(async () => {
-            if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-            createProVetNote({
-              type: 1,
-              subject: "Chat Summary w/ MoVET",
-              message: emailConfig.html
-                .replaceAll("client", displayName || "You")
-                .replaceAll("Client", displayName || "You"),
-              client: context.params.clientId,
-              patients: [],
-            });
-          })
-          .catch((error: any) => throwError(error));
-      else if (DEBUG) console.log("SIMULATING EMAIL NOTIFICATION", emailConfig);
+      sendNotification({ type: "email", payload: emailConfig });
+      createProVetNote({
+        type: 1,
+        subject: emailConfig.subject,
+        message: emailConfig.message
+          .replaceAll("client", displayName || "You")
+          .replaceAll("Client", displayName || "You"),
+        client: context.params.clientId,
+        patients: [],
+      });
     }
     return null;
   });

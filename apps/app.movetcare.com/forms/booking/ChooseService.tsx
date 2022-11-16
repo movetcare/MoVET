@@ -86,7 +86,11 @@ export const ChooseService = ({
   return (
     <>
       {isLoading || loadingReasons ? (
-        <Loader />
+        <Loader
+          message={
+            isLoading ? "Saving Service Selection..." : "Loading Services..."
+          }
+        />
       ) : error || errorReasons ? (
         <Error error={error || errorReasons} isAppMode={isAppMode} />
       ) : (

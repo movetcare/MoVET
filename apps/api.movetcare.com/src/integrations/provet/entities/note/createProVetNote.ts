@@ -3,9 +3,10 @@ import {
   proVetAppUrl,
   request,
   throwError,
+  DEBUG,
 } from "../../../../config/config";
 import { sendNotification } from "../../../../notifications/sendNotification";
-const DEBUG = false;
+
 export const createProVetNote = ({
   subject,
   message,

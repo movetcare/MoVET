@@ -1,24 +1,13 @@
-import {
-  environment,
-  emailClient,
-  throwError,
-  admin,
-  functions,
-} from "../../config/config";
-import { createProVetNote } from "../../integrations/provet/entities/note/createProVetNote";
+import { environment, admin, DEBUG } from "../../config/config";
 import type { Booking } from "../../types/booking";
-import type { EmailConfiguration } from "../../types/email";
+import type { EmailConfiguration } from "../../types/email.d";
 import { sendSignInByEmailLink } from "../../utils/auth/sendSignInByEmailLink";
 import {
   getClientNotificationSettings,
   UserNotificationSettings,
 } from "../../utils/getClientNotificationSettings";
 import { sendNotification } from "../sendNotification";
-const sms = require("twilio")(
-  functions.config()?.twilio.account_sid,
-  functions.config()?.twilio.auth_token
-);
-const DEBUG = false;
+
 export const sendBookingRecoveryNotification = async ({
   id,
   type,
@@ -83,15 +72,11 @@ const sendAdminBookingRecoveryNotification = async (
   const { email, displayName, phoneNumber } = client;
 
   if (id && email)
-    await sendNotification({
+    sendNotification({
       type: "email",
       payload: {
-        tag: "admin-booking-request-recovery",
-        origin: "api",
-        success: true,
-        ...booking,
+        client: client.uid,
         to: "info@movetcare.com",
-        bcc: "support@movetcare.com",
         replyTo: email,
         subject:
           type === "24_HOUR"
@@ -148,7 +133,6 @@ const sendAdminBookingRecoveryNotification = async (
               }</p>`
             : ""
         }`,
-        updatedOn: new Date(),
       },
     });
 };
@@ -170,19 +154,16 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
         authLink
       );
     let emailHtml = "";
-    let emailText = "";
-    if (client?.displayName) {
-      emailHtml += `<p>Hey ${client?.displayName}!</p>`;
-      emailText += `Hey ${client?.displayName}!`;
-    } else {
-      emailHtml += "<p>Hey there!</p>";
-      emailText += "Hey there! ";
-    }
+    if (client?.displayName) emailHtml += `<p>Hey ${client?.displayName}!</p>`;
+    else emailHtml += "<p>Hey there!</p>";
+
     emailHtml += `<p>It looks like you haven't finished your appointment booking request with MoVET.</p><p><b>Click on the link bellow to resume your session:</b></p><p><a href='${
       authLink
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
+            : environment.type === "staging"
+            ? "https://stage.app.movetcare.com"
             : "http://localhost:3000") +
           `/request-an-appointment/?email=${email}/`
     }'>${
@@ -190,80 +171,30 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
+            : environment.type === "staging"
+            ? "https://stage.app.movetcare.com"
             : "http://localhost:3000") +
           `/request-an-appointment/?email=${email}/`
     }</a></p>`;
-    emailText += ` It looks like you have not finished your appointment booking request with MoVET. Click on the link bellow to resume your session: ${
-      authLink
-        ? authLink
-        : (environment.type === "production"
-            ? "https://app.movetcare.com"
-            : "http://localhost:3000") +
-          `/request-an-appointment/?email=${email}/`
-    }`;
     const emailConfig: EmailConfiguration = {
       to: email,
-      from: "info@movetcare.com",
-      replyTo: "info@movetcare.com",
-      bcc: "support@movetcare.com",
       subject: "Incomplete appointment booking request with MoVET",
-      text: emailText,
-      html: emailHtml,
+      message: emailHtml,
+      bcc: "support@movetcare.com",
     };
     if (DEBUG)
       console.log("BOOKING RECOVERY NOTIFICATION EMAIL READY", emailConfig);
     const userNotificationSettings: UserNotificationSettings | false =
       await getClientNotificationSettings(uid);
-    if (
-      environment?.type === "production" &&
-      userNotificationSettings &&
-      userNotificationSettings?.sendEmail
-    )
-      await emailClient
-        .send(emailConfig)
-        .then(async () => {
-          if (DEBUG)
-            console.log(
-              "BOOKING RECOVERY NOTIFICATION EMAIL SENT!",
-              emailConfig
-            );
-          createProVetNote({
-            type: 1,
-            subject:
-              "1 Hour Booking Abandonment Recovery Email Notification (EMAIL)",
-            message: emailText,
-            client: `${client}`,
-            patients: [],
-          });
-          await admin
-            .firestore()
-            .collection("clients")
-            .doc(`${client}`)
-            .collection("notifications")
-            .add({
-              type: "email",
-              ...emailConfig,
-              createdOn: new Date(),
-            })
-            .catch((error: any) => throwError(error));
-        })
-        .catch((error: any) => {
-          console.error(error);
-          createProVetNote({
-            type: 1,
-            subject:
-              "FAILED TO SEND 1 Hour Booking Abandonment Recovery Email Notification (EMAIL)",
-            message: JSON.stringify(error),
-            client: `${client}`,
-            patients: [],
-          });
-          throwError(error);
-        });
-    else
-      console.log("SIMULATING BOOKING ABANDONMENT RECOVERY NOTIFICATION EMAIL");
+    if (userNotificationSettings && userNotificationSettings?.sendEmail) {
+      sendNotification({
+        type: "email",
+        payload: { ...emailConfig, client: client.uid },
+      });
+    }
   } else if (DEBUG)
     console.log(
-      "FAILED TO SEND ONE HOUR BOOKING RECOVERY NOTIFICATION",
+      "FAILED TO SEND ONE HOUR BOOKING RECOVERY NOTIFICATION EMAIL",
       booking
     );
 };
@@ -290,19 +221,16 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
         authLink
       );
     let emailHtml = "";
-    let emailText = "";
-    if (client?.displayName) {
-      emailHtml += `<p>Hey ${client?.displayName}!</p>`;
-      emailText += `Hey ${client?.displayName}! `;
-    } else {
-      emailHtml += "<p>Hey there!</p>";
-      emailText += "Hey there! ";
-    }
+    if (client?.displayName) emailHtml += `<p>Hey ${client?.displayName}!</p>`;
+    else emailHtml += "<p>Hey there!</p>";
+
     emailHtml += `<p>It looks like you didn't finish booking your appointment with MoVET yesterday.</p><p><b>Click on the link bellow to resume your session:</b></p><p><a href='${
       authLink
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
+            : environment.type === "staging"
+            ? "https://stage.app.movetcare.com"
             : "http://localhost:3000") +
           `/request-an-appointment/?email=${email}/`
     }'>${
@@ -310,67 +238,25 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
+            : environment.type === "staging"
+            ? "https://stage.app.movetcare.com"
             : "http://localhost:3000") +
           `/request-an-appointment/?email=${email}/`
     }</a></p>`;
-    emailText += ` It looks like you didn't finish booking your appointment with MoVET yesterday. Click on the link bellow to resume your session: https://app.movetcare.com/request-an-appointment/?email=${email}`;
     const emailConfig: EmailConfiguration = {
       to: email,
-      from: "info@movetcare.com",
       bcc: "support@movetcare.com",
-      replyTo: "info@movetcare.com",
       subject: "Incomplete appointment booking request with MoVET",
-      text: emailText,
-      html: emailHtml,
+      message: emailHtml,
     };
     const userNotificationSettings: UserNotificationSettings | false =
       await getClientNotificationSettings(uid);
-    if (
-      environment?.type === "production" &&
-      userNotificationSettings &&
-      userNotificationSettings?.sendEmail
-    )
-      await emailClient
-        .send(emailConfig)
-        .then(async () => {
-          if (DEBUG)
-            console.log(
-              "BOOKING RECOVERY NOTIFICATION EMAIL SENT!",
-              emailConfig
-            );
-          createProVetNote({
-            type: 1,
-            subject: "24 Hour Booking Abandonment Recovery Email Notification",
-            message: emailText,
-            client: `${client}`,
-            patients: [],
-          });
-          await admin
-            .firestore()
-            .collection("clients")
-            .doc(`${client}`)
-            .collection("notifications")
-            .add({
-              type: "email",
-              ...emailConfig,
-              createdOn: new Date(),
-            })
-            .catch((error: any) => throwError(error));
-        })
-        .catch((error: any) => {
-          if (DEBUG) console.error(error?.response?.body?.errors);
-          createProVetNote({
-            type: 1,
-            subject:
-              "FAILED TO SEND 24 Hour Booking Abandonment Recovery Email Notification",
-            message: JSON.stringify(error),
-            client: `${client}`,
-            patients: [],
-          });
-          throwError(error);
-        });
-    else
-      console.log("SIMULATING BOOKING ABANDONMENT RECOVERY NOTIFICATION EMAIL");
+    if (userNotificationSettings && userNotificationSettings?.sendEmail) {
+      sendNotification({
+        type: "email",
+        payload: { ...emailConfig, client: client.uid },
+      });
+    }
   } else if (DEBUG)
     console.log(
       "FAILED TO SEND TWENTY FOUR HOUR BOOKING RECOVERY NOTIFICATION",
@@ -400,103 +286,27 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
         authLink
       );
     let smsMessage = "";
-    let smsString = "";
-    if (client?.displayName) {
-      smsMessage += `Hey ${client?.displayName}!\n\n`;
-      smsString += `Hey ${client?.displayName}!`;
-    } else {
-      smsMessage += "Hey there!\n\n";
-      smsString += "Hey There!";
-    }
+    if (client?.displayName) smsMessage += `Hey ${client?.displayName}!\n\n`;
+    else smsMessage += "Hey there!\n\n";
     smsMessage += `It looks like you haven't finished your appointment booking request with MoVET from three days ago.\n\nTap the link bellow to resume your session:\n\n${
       authLink
         ? authLink
         : (environment.type === "production"
             ? "https://app.movetcare.com"
+            : environment.type === "staging"
+            ? "https://stage.app.movetcare.com"
             : "http://localhost:3000") +
           `/request-an-appointment/?email=${email}/`
     }`;
-    smsString += `It looks like you have not finished your appointment booking request with MoVET from three days ago. Tap the link bellow to resume your session:${
-      authLink
-        ? authLink
-        : (environment.type === "production"
-            ? "https://app.movetcare.com"
-            : "http://localhost:3000") +
-          `/request-an-appointment/?email=${email}/`
-    }`;
-    const userNotificationSettings: UserNotificationSettings | false =
-      await getClientNotificationSettings(uid);
-    if (
-      userNotificationSettings &&
-      userNotificationSettings?.sendSms &&
-      client?.phoneNumber
-    ) {
-      if (environment?.type === "production") {
-        await sms.messages
-          .create({
-            body: smsMessage,
-            from: "+17206775047",
-            to: client?.phoneNumber,
-          })
-          .then(async () => {
-            if (DEBUG)
-              console.log("BOOKING RECOVERY NOTIFICATION SMS SENT!", {
-                body: smsMessage,
-                from: "+17206775047",
-                to: client?.phoneNumber,
-              });
-            createProVetNote({
-              type: 0,
-              subject: "72 Hour Booking Abandonment Recovery SMS Notification",
-              message: smsString,
-              client: uid,
-              patients: [],
-            });
-          })
-          .catch(async (error: any) => {
-            console.error(error);
-            if (DEBUG)
-              console.log("SMS FAILED TO SEND!", {
-                body: smsMessage,
-                from: "+17206775047",
-                to: client?.phoneNumber,
-              });
-            createProVetNote({
-              type: 0,
-              subject:
-                "FAILED TO SEND 72 HOUR BOOKING ABANDONMENT RECOVERY NOTIFICATION SMS",
-              message: smsMessage + "\n\n" + JSON.stringify(error),
-              client: uid,
-              patients: [],
-            });
-            throwError(error);
-          });
-        await admin
-          .firestore()
-          .collection("clients")
-          .doc(`${client}`)
-          .collection("notifications")
-          .add({
-            type: "sms",
-            body: smsMessage,
-            from: "+17206775047",
-            to: client?.phoneNumber,
-            createdOn: new Date(),
-          })
-          .catch((error: any) => throwError(error));
-      } else
-        console.log(
-          "SIMULATING 72 HOUR BOOKING ABANDONMENT RECOVERY NOTIFICATION SMS"
-        );
-    } else if (DEBUG)
-      console.log(
-        "DID NOT SEND 72 HOUR BOOKING ABANDONMENT RECOVERY NOTIFICATION SMS",
-        {
-          sendSms:
-            userNotificationSettings && userNotificationSettings?.sendSms,
-          phoneNumber: client?.phoneNumber,
-        }
-      );
+
+    sendNotification({
+      type: "sms",
+      payload: {
+        client: uid,
+        subject: "Incomplete appointment booking request with MoVET",
+        message: smsMessage,
+      },
+    });
   } else if (DEBUG)
     console.log(
       "FAILED TO SEND SEVENTY TWO HOUR BOOKING RECOVERY NOTIFICATION",

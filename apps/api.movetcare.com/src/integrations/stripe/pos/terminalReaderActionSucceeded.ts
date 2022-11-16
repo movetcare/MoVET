@@ -1,4 +1,5 @@
 import {
+  DEBUG,
   admin,
   // request,
   stripe,
@@ -6,7 +7,7 @@ import {
   // proVetApiUrl,
   // environment,
 } from "../../../config/config";
-const DEBUG = false;
+
 export const terminalReaderActionSucceeded = async (event: any) => {
   if (DEBUG) console.log("terminalReaderActionSucceeded EVENT => ", event);
   await admin

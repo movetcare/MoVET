@@ -1,10 +1,6 @@
-import {
-  admin,
-  environment,
-  emailClient,
-  throwError,
-  DEBUG,
-} from "../../config/config";
+import { admin, throwError, DEBUG } from "../../config/config";
+import { EmailConfiguration } from "../../types/email.d";
+import { sendNotification } from "../sendNotification";
 
 export const sendWelcomeEmail = async (
   email: string,
@@ -23,7 +19,7 @@ export const sendWelcomeEmail = async (
     emailText += `
       ${
         withResetLink
-          ? `<p>If you haven't already, you can download the app for <a href="https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556">iOS</a> and <a href="https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US">Android</a>.</p><p>You may start using MoVET's services once you confirm your account and set a password via the link below:</p><p><b>${link}</b></p>`
+          ? `<p>If you haven't already, you can download our mobile app for <a href="https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556">iOS</a> and <a href="https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US">Android</a>.</p><p>You may start using MoVET's services once you confirm your account and set a password via the link below:</p><p><b>${link}</b></p>`
           : ""
       }`;
   }
@@ -52,59 +48,25 @@ export const sendWelcomeEmail = async (
       </ul>
     <p>I invite you to become part of our family and grow with us! Should you have any questions, concerns, or recommendations for us to improve your experience with MoVET, please email me directly at lexi.abramson@movetcare.com.</p><p>- Dr. A</p>`;
 
-  const emailConfig: any = {
+  const emailConfig: EmailConfiguration = {
     to: email,
-    from: "info@movetcare.com",
-    replyTo: "lexi.abramson@movetcare.com",
+    bcc: "support@movetcare.com",
     subject: withResetLink
       ? "Welcome to MoVET Pet Care - Please Verify Your Account"
       : "Welcome to MoVET Pet Care!",
-    text: emailText.replace(/(<([^>]+)>)/gi, ""),
-    html: emailText,
+    message: emailText,
   };
-  if (environment?.type !== "production") {
-    const clientId = await admin
-      .auth()
-      .getUserByEmail(email)
-      .then((userRecord: any) => userRecord?.uid)
-      .catch(async () => false);
-    if (clientId)
-      return await admin
-        .firestore()
-        .collection("clients")
-        .doc(`${clientId}`)
-        .collection("notifications")
-        .add({
-          type: "email",
-          ...emailConfig,
-          createdOn: new Date(),
-        })
-        .then(() => true)
-        .catch((error: any) => throwError(error));
-  } else {
-    return await emailClient
-      .send(emailConfig)
-      .then(async () => {
-        if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-        const clientId = await admin
-          .auth()
-          .getUserByEmail(email)
-          .then((userRecord: any) => userRecord?.uid)
-          .catch(async () => false);
-        if (clientId)
-          return await admin
-            .firestore()
-            .collection("clients")
-            .doc(`${clientId}`)
-            .collection("notifications")
-            .then(() => true)
-            .add({
-              type: "email",
-              ...emailConfig,
-              createdOn: new Date(),
-            })
-            .catch((error: any) => throwError(error));
-      })
-      .catch((error: any) => throwError(error));
-  }
+
+  const clientId = await admin
+    .auth()
+    .getUserByEmail(email)
+    .then((userRecord: any) => userRecord?.uid)
+    .catch(async () => false);
+  sendNotification({
+    type: "email",
+    payload: {
+      client: clientId,
+      ...emailConfig,
+    },
+  });
 };

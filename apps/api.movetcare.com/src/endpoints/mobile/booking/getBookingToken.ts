@@ -4,8 +4,9 @@ import {
   mobileClientApiKey,
   throwError,
   admin,
+  DEBUG,
 } from "../../../config/config";
-const DEBUG = false;
+
 export const getBookingToken = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any, context: any): Promise<boolean> => {

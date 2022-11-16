@@ -1,5 +1,5 @@
-import {admin} from "../../config/config";
-const DEBUG = false;
+import { admin, DEBUG } from "../../config/config";
+
 export const removeBookingAbandonmentNotifications = (id: string) =>
   admin
     .firestore()

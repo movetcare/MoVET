@@ -5,13 +5,13 @@ import {updateBookingClient} from "../booking/updateBookingClient";
 import {updateBookingPatients} from "../booking/updateBookingPatients";
 import {updateBookingPatientsWithIllness} from "../booking/updateBookingPatientsWithIllness";
 import {updateBookingPatientsWithSymptoms} from "../booking/updateBookingPatientsWithSymptoms";
-import {functions} from "./../config/config";
-import {updateBookingLocation} from "../booking/updateBookingLocation";
-import {updateBookingReason} from "../booking/updateBookingReason";
-import {updateBookingStaff} from "../booking/updateBookingStaff";
+import { functions, DEBUG } from "./../config/config";
+import { updateBookingLocation } from "../booking/updateBookingLocation";
+import { updateBookingReason } from "../booking/updateBookingReason";
+import { updateBookingStaff } from "../booking/updateBookingStaff";
 import { updateBookingRequestedDateTime } from "../booking/updateBookingRequestedDateTime";
 import { archiveBooking } from "../booking/archiveBooking";
-const DEBUG = false;
+
 export const handleBookingUpdate = functions.firestore
   .document("bookings/{id}")
   .onWrite((change: any, context: any) => {

@@ -4,9 +4,9 @@ import {
   throwError,
   admin,
   DEBUG,
-  emailClient,
-  environment,
 } from "../../config/config";
+import { sendNotification } from "../../notifications/sendNotification";
+import { EmailConfiguration } from "../../types/email.d";
 
 export const reportABug = functions
   .runWith(defaultRuntimeOptions)
@@ -114,25 +114,25 @@ export const reportABug = functions
             photoURL,
             providerData,
           });
-          const emailConfig: any = {
+          const emailConfig: EmailConfiguration = {
             to: "support@movetcare.com",
-            from: "info@movetcare.com",
             subject: `New Bug Report: ${errorMessage}`,
-            text: jsonString.replace(/(<([^>]+)>)/gi, ""),
-            html: jsonString,
+            message: jsonString,
           };
-          if (environment?.type === "production")
-            return await emailClient
-              .send(emailConfig)
-              .then(async () => {
-                if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-                return true;
-              })
-              .catch(async (error: any) => {
-                if (DEBUG) console.error(error?.response?.body?.errors);
-                return throwError(error);
-              });
-          else return true;
+          sendNotification({
+            type: "email",
+            payload: {
+              client: uid,
+              ...emailConfig,
+            },
+          });
+          sendNotification({
+            type: "slack",
+            payload: {
+              message: `:interrobang: PLATFORM ERROR \`\`\`${jsonString}\`\`\``,
+            },
+          });
+          return true;
         })
         .catch((error: any) => throwError(error));
     }

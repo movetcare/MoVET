@@ -1,6 +1,6 @@
 import {Stripe} from "stripe";
-import {admin, stripe, throwError} from "../config/config";
-const DEBUG = false;
+import { admin, stripe, throwError, DEBUG } from "../config/config";
+
 export interface UserNotificationSettings {
   sendEmail: boolean;
   sendSms: boolean;

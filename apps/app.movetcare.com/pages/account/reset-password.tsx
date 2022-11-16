@@ -83,7 +83,7 @@ export default function ResetPassword() {
         <title>Reset Password</title>
       </Head>
       <main className="w-full flex-1 overflow-hidden">
-        <AppHeader />
+        {!isLoading && <AppHeader />}
         <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8">
           {isLoading ? (
             <Loader />

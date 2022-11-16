@@ -1,12 +1,8 @@
-import {
-  DEBUG,
-  admin,
-  environment,
-  emailClient,
-  throwError,
-} from "../../config/config";
+import { DEBUG, admin, throwError } from "../../config/config";
+import { EmailConfiguration } from "../../types/email.d";
 import { getAuthUserById } from "../../utils/auth/getAuthUserById";
 import { getDateStringFromDate } from "../../utils/getDateStringFromDate";
+import { sendNotification } from "../sendNotification";
 
 export const sendCancellationEmail = async (
   clientId: string,
@@ -55,49 +51,16 @@ export const sendCancellationEmail = async (
 
   if (DEBUG) console.log("emailText -> ", emailText);
 
-  const emailConfig: any = {
+  const emailConfig: EmailConfiguration = {
     to: email,
-    from: "info@movetcare.com",
-    bcc: "info@movetcare.com",
-    replyTo: "info@movetcare.com",
     subject: "Your MoVET appointment has been cancelled",
-    text: emailText.replace(/(<([^>]+)>)/gi, ""),
-    html: emailText,
+    message: emailText,
   };
-  if (environment?.type === "production")
-    await emailClient
-      .send(emailConfig)
-      .then(async () => {
-        if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-        if (clientId)
-          await admin
-            .firestore()
-            .collection("clients")
-            .doc(`${clientId}`)
-            .collection("notifications")
-            .add({
-              type: "email",
-              ...emailConfig,
-              createdOn: new Date(),
-            })
-            .catch((error: any) => throwError(error));
-      })
-      .catch(async (error: any) => {
-        if (DEBUG) console.error(error?.response?.body?.errors);
-        throwError(error);
-      });
-  else {
-    if (clientId)
-      await admin
-        .firestore()
-        .collection("clients")
-        .doc(`${clientId}`)
-        .collection("notifications")
-        .add({
-          type: "email",
-          ...emailConfig,
-          createdOn: new Date(),
-        })
-        .catch((error: any) => throwError(error));
-  }
+  sendNotification({
+    type: "email",
+    payload: {
+      client: clientId,
+      ...emailConfig,
+    },
+  });
 };

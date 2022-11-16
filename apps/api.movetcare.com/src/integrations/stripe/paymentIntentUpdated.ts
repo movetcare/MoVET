@@ -1,6 +1,12 @@
 import {getProVetIdFromUrl} from "./../../utils/getProVetIdFromUrl";
-import {admin, proVetApiUrl, request, throwError} from "../../config/config";
-const DEBUG = false;
+import {
+  admin,
+  proVetApiUrl,
+  request,
+  throwError,
+  DEBUG,
+} from "../../config/config";
+
 export const paymentIntentUpdated = async (event: any) => {
   const {object} = event?.data || {};
   const {id, status, amount, charges} = object || {};

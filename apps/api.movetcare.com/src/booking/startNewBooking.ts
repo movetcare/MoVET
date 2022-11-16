@@ -1,7 +1,7 @@
-import { admin, throwError } from "../config/config";
+import { admin, throwError, DEBUG } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
 import { createBookingAbandonmentNotifications } from "./abandonment/createBookingAbandonmentNotifications";
-const DEBUG = false;
+
 export const startNewBooking = async (client: any): Promise<any> => {
   const newBookingSession = await admin
     .firestore()

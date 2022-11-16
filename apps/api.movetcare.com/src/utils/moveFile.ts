@@ -1,6 +1,6 @@
-import { environment, throwError } from "../config/config";
+import { environment, throwError, DEBUG } from "../config/config";
 import { Storage } from "@google-cloud/storage";
-const DEBUG = false;
+
 export const moveFile = (srcFileName: string, destFileName: string) => {
   const bucketName =
     environment.type === "production"
@@ -13,15 +13,15 @@ export const moveFile = (srcFileName: string, destFileName: string) => {
   }
   const storage = new Storage();
   storage
-     .bucket(bucketName)
-     .file(srcFileName)
-     .move(destFileName)
-     .then(
-       () =>
-         DEBUG &&
-         console.log(
-           `gs://${bucketName}/${srcFileName} moved to gs://${bucketName}/${destFileName}`
-         )
-     )
-     .catch((error: any) => throwError(error));
+    .bucket(bucketName)
+    .file(srcFileName)
+    .move(destFileName)
+    .then(
+      () =>
+        DEBUG &&
+        console.log(
+          `gs://${bucketName}/${srcFileName} moved to gs://${bucketName}/${destFileName}`
+        )
+    )
+    .catch((error: any) => throwError(error));
 };

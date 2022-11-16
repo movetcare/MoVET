@@ -30,9 +30,7 @@ export { updateOnboardingStatus } from "./endpoints/mobile/client/updateOnboardi
 export { refreshCustomerToken } from "./endpoints/mobile/client/refreshCustomerToken";
 export { getBookingToken } from "./endpoints/mobile/booking/getBookingToken";
 
-export { contact } from "./endpoints/web/contact";
 export { reportABug } from "./endpoints/web/reportABug";
-export { join } from "./endpoints/web/join";
 export { updatePaymentMethod } from "./endpoints/web/updatePaymentMethod";
 export { verifyBooking } from "./endpoints/web/verifyBooking";
 

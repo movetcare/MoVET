@@ -27,7 +27,7 @@ export const SignInWithEmailLinkRequired = ({
       <p className="mx-auto text-center text-xs mb-6 italic">
         Your booking session will resume once you sign in
       </p>
-      <div className="border border-movet-gray rounded-xl bg-white mt-4 text-left flex flex-row items-center w-full px-4 py-3">
+      <div className="border border-movet-gray rounded-xl bg-white mt-4 text-left flex flex-row items-center px-4 py-3 mx-8">
         <FontAwesomeIcon
           icon={faEnvelopeSquare}
           size={"2x"}

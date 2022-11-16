@@ -1,9 +1,9 @@
 import * as client from "@sendgrid/client";
 import { sendNotification } from "./../../notifications/sendNotification";
-import { environment, functions } from "../../config/config";
+import { environment, functions, DEBUG } from "../../config/config";
 client.setApiKey(functions.config()?.sendgrid.api_key);
 const sendGridAPI = client;
-const DEBUG = false;
+
 export const updateSendGridContact = async ({
   email,
   firstName,
@@ -64,7 +64,7 @@ export const updateSendGridContact = async ({
             console.log("SENDGRID RESPONSE BODY: ", response.body);
           }
           sendNotification({
-            type: "email",
+            type: "slack",
             payload: { message: `:tada: ${email} has bee updated in SendGrid` },
           });
           return true;

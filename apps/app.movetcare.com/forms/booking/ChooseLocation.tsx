@@ -198,7 +198,11 @@ export const ChooseLocation = ({
   return (
     <>
       {isLoading || loadingReasonGroups ? (
-        <Loader />
+        <Loader
+          message={
+            isLoading ? "Saving Location Selection..." : "Loading Locations..."
+          }
+        />
       ) : error || errorReasonGroups || errorMessage ? (
         <Error
           error={error || errorReasonGroups || errorMessage}

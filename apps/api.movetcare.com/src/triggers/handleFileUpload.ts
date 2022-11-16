@@ -1,8 +1,8 @@
-import { functions } from "../config/config";
+import { functions, DEBUG } from "../config/config";
 import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
 import { updateCustomField } from "../integrations/provet/entities/patient/updateCustomField";
 // import { Storage } from "@google-cloud/storage";
-const DEBUG = false;
+
 export const handleFileUpload = functions.storage
   .object()
   .onFinalize((object: any) => {

@@ -61,7 +61,7 @@ export const ClientInfo = ({
   return (
     <>
       {isLoading ? (
-        <Loader />
+        <Loader message="Saving Contact Info..." />
       ) : error ? (
         <Error error={error} isAppMode={isAppMode} />
       ) : (

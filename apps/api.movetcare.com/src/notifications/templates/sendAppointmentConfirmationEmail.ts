@@ -1,19 +1,15 @@
+import { sendNotification } from "./../sendNotification";
 import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
-import {
-  DEBUG,
-  admin,
-  environment,
-  emailClient,
-  throwError,
-} from "../../config/config";
+import { DEBUG, admin, throwError } from "../../config/config";
 import { getAuthUserById } from "../../utils/auth/getAuthUserById";
 import { getDateStringFromDate } from "../../utils/getDateStringFromDate";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
+import { EmailConfiguration } from "../../types/email.d";
 
 export const sendAppointmentConfirmationEmail = async (
   clientId: string,
   appointmentId: string
-): Promise<boolean> => {
+): Promise<void> => {
   if (DEBUG)
     console.log(
       `sendAppointmentConfirmationEmail -> clientId: ${clientId}, appointmentId: ${appointmentId}`
@@ -182,55 +178,20 @@ ${
     console.log("htmlText -> ", emailText.replace(/(<([^>]+)>)/gi, ""));
   }
 
-  const emailConfig: any = {
+  const emailConfig: EmailConfiguration = {
     to: "info@movetcare.com",
-    from: "info@movetcare.com",
-    replyTo: "support@movetcare.com",
     subject: `ADMIN ALERT - CLIENT APPOINTMENT - ${
       appointment?.start
         ? getDateStringFromDate(appointment?.start?.toDate())
         : ""
     }`,
-    text: emailText.replace(/(<([^>]+)>)/gi, ""),
-    html: emailText,
+    message: emailText,
   };
-
-  if (environment?.type === "production")
-    return await emailClient
-      .send(emailConfig)
-      .then(async () => {
-        if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-        if (clientId)
-          await admin
-            .firestore()
-            .collection("clients")
-            .doc(`${clientId}`)
-            .collection("notifications")
-            .add({
-              type: "email",
-              ...emailConfig,
-              createdOn: new Date(),
-            })
-            .catch((error: any) => throwError(error));
-        return true;
-      })
-      .catch(async (error: any) => {
-        if (DEBUG) console.error(error?.response?.body?.errors);
-        return throwError(error);
-      });
-  else {
-    if (clientId)
-      await admin
-        .firestore()
-        .collection("clients")
-        .doc(`${clientId}`)
-        .collection("notifications")
-        .add({
-          type: "email",
-          ...emailConfig,
-          createdOn: new Date(),
-        })
-        .catch((error: any) => throwError(error));
-    return true;
-  }
+  sendNotification({
+    type: "email",
+    payload: {
+      ...emailConfig,
+      client: clientId,
+    },
+  });
 };

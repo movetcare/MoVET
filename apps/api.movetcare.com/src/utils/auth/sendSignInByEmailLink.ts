@@ -4,8 +4,9 @@ import {
   throwError,
   environment,
   admin,
+  DEBUG,
 } from "../../config/config";
-const DEBUG = false;
+
 const API_URL =
   environment.type === "development"
     ? `http://localhost:9099/identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${projectApiKey}`

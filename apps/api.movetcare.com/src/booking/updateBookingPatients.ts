@@ -1,6 +1,6 @@
-import { admin, throwError } from "../config/config";
+import { admin, throwError, DEBUG } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
-const DEBUG = false;
+
 export const updateBookingPatients = async (
   id: string,
   patients: Array<string>,

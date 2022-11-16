@@ -1,8 +1,8 @@
 import { updateCustomField } from "./../patient/updateCustomField";
-import { throwError } from "../../../../config/config";
+import { throwError, DEBUG } from "../../../../config/config";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { fetchEntity } from "../fetchEntity";
-const DEBUG = false;
+
 export const processConsultationWebhook = async (
   request: any,
   response: any

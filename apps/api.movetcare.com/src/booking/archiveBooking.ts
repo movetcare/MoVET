@@ -1,7 +1,6 @@
 import { sendBookingRequestAdminNotification } from "./../notifications/templates/sendBookingRequestAdminNotification";
-import { throwError, admin } from "../config/config";
-
-const DEBUG = false;
+import { throwError, admin, DEBUG } from "../config/config";
+import { sendBookingRequestClientNotification } from "../notifications/templates/sendBookingRequestClientNotification";
 
 export const archiveBooking = (id: string) => {
   if (DEBUG) console.log("archiveBooking", id);
@@ -17,4 +16,5 @@ export const archiveBooking = (id: string) => {
     )
     .catch((error: any) => throwError(error));
   sendBookingRequestAdminNotification({ id, bookingRef });
+  sendBookingRequestClientNotification({ id, bookingRef });
 };

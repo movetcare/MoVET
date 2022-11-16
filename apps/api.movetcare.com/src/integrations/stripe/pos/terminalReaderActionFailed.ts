@@ -1,5 +1,5 @@
-import {admin, stripe, throwError} from "../../../config/config";
-const DEBUG = false;
+import { admin, stripe, throwError, DEBUG } from "../../../config/config";
+
 export const terminalReaderActionFailed = async (event: any) => {
   if (DEBUG)
     console.log("terminalReaderActionFailed EVENT:", event?.data?.action);
@@ -34,7 +34,7 @@ export const terminalReaderActionFailed = async (event: any) => {
         console.log("querySnapshot?.docs?.length", querySnapshot?.docs?.length);
       if (querySnapshot?.docs?.length > 0)
         querySnapshot.forEach(async (doc: any) => {
-          const paymentIntent = await stripe.paymentIntents.retrieve(
+          const paymentIntent: any = await stripe.paymentIntents.retrieve(
             event?.data?.object?.action?.process_payment_intent?.payment_intent
           );
           if (DEBUG) {
@@ -96,7 +96,7 @@ export const terminalReaderActionFailed = async (event: any) => {
               );
             if (querySnapshot?.docs?.length > 0)
               querySnapshot.forEach(async (doc: any) => {
-                const paymentIntent = await stripe.paymentIntents.retrieve(
+                const paymentIntent: any = await stripe.paymentIntents.retrieve(
                   event?.data?.object?.action?.process_payment_intent
                     ?.payment_intent
                 );

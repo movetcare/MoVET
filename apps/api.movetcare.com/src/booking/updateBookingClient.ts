@@ -1,8 +1,8 @@
 import { sendNotification } from "./../notifications/sendNotification";
-import { admin, throwError } from "../config/config";
+import { admin, throwError, DEBUG } from "../config/config";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
 import { capitalizeFirstLetter } from "../utils/capitalizeFirstLetter";
-const DEBUG = false;
+
 export const updateBookingClient = async (
   id: string,
   client: {

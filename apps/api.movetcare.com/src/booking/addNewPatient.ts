@@ -1,10 +1,10 @@
-import { admin, throwError } from "../config/config";
+import { admin, throwError, DEBUG } from "../config/config";
 import { updateCustomField } from "../integrations/provet/entities/patient/updateCustomField";
 import { sendNotification } from "../notifications/sendNotification";
 import { moveFile } from "../utils/moveFile";
 import { reverseDateStringMDY } from "../utils/reverseDateStringMDY";
 import { createProVetPatient } from "./../integrations/provet/entities/patient/createProVetPatient";
-const DEBUG = false;
+
 export const addNewPatient = async (
   booking: string,
   client: string,
@@ -131,6 +131,6 @@ export const addNewPatient = async (
       .catch((error: any) => throwError(error));
   else
     throwError({
-       message: "FAILED TO CREATE NEW PATIENT IN PROVET",
-     });
+      message: "FAILED TO CREATE NEW PATIENT IN PROVET",
+    });
 };

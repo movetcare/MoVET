@@ -1,6 +1,6 @@
-import {admin, throwError} from "../config/config";
+import { admin, throwError, DEBUG } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
-const DEBUG = false;
+
 export const updateBookingReason = async (
   id: string,
   reason: { label: string; value: string }
@@ -44,63 +44,63 @@ export const updateBookingReason = async (
     )
   );
   admin
-     .firestore()
-     .collection("bookings")
-     .doc(id)
-     .set(
-       staff.length > 0
-         ? {
-             step: "choose-staff",
-             staff,
-             updatedOn: new Date(),
-           }
-         : {
-             step: "choose-datetime",
-             updatedOn: new Date(),
-           },
-       { merge: true }
-     )
-     .then(() =>
-       sendNotification({
-         type: "slack",
-         payload: {
-           message: [
-             {
-               type: "section",
-               text: {
-                 text: ":book: _Appointment Booking_ *UPDATE*",
-                 type: "mrkdwn",
-               },
-               fields: [
-                 {
-                   type: "mrkdwn",
-                   text: "*Session ID*",
-                 },
-                 {
-                   type: "plain_text",
-                   text: id,
-                 },
-                 {
-                   type: "mrkdwn",
-                   text: "*Step*",
-                 },
-                 {
-                   type: "plain_text",
-                   text: "Choose Reason",
-                 },
-                 {
-                   type: "mrkdwn",
-                   text: "*Selected Reason*",
-                 },
-                 {
-                   type: "plain_text",
-                   text: reason?.label,
-                 },
-               ],
-             },
-           ],
-         },
-       })
-     )
-     .catch((error: any) => throwError(error));
+    .firestore()
+    .collection("bookings")
+    .doc(id)
+    .set(
+      staff.length > 0
+        ? {
+            step: "choose-staff",
+            staff,
+            updatedOn: new Date(),
+          }
+        : {
+            step: "choose-datetime",
+            updatedOn: new Date(),
+          },
+      { merge: true }
+    )
+    .then(() =>
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: [
+            {
+              type: "section",
+              text: {
+                text: ":book: _Appointment Booking_ *UPDATE*",
+                type: "mrkdwn",
+              },
+              fields: [
+                {
+                  type: "mrkdwn",
+                  text: "*Session ID*",
+                },
+                {
+                  type: "plain_text",
+                  text: id,
+                },
+                {
+                  type: "mrkdwn",
+                  text: "*Step*",
+                },
+                {
+                  type: "plain_text",
+                  text: "Choose Reason",
+                },
+                {
+                  type: "mrkdwn",
+                  text: "*Selected Reason*",
+                },
+                {
+                  type: "plain_text",
+                  text: reason?.label,
+                },
+              ],
+            },
+          ],
+        },
+      })
+    )
+    .catch((error: any) => throwError(error));
 };

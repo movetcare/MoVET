@@ -1,18 +1,18 @@
-import {admin, throwError} from "../../../../config/config";
-import {Request, Response} from "express";
-import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
-import {fetchEntity} from "../fetchEntity";
-const DEBUG = false;
+import { admin, throwError, DEBUG } from "../../../../config/config";
+import { Request, Response } from "express";
+import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
+import { fetchEntity } from "../fetchEntity";
+
 export const processInvoicePaymentWebhook = async (
   request: Request,
   response: Response
 ): Promise<any> => {
-  const {invoicepayment_id} = request.body;
+  const { invoicepayment_id } = request.body;
   if (
     !(typeof invoicepayment_id === "string") ||
     invoicepayment_id.length === 0
   )
-    throwError({message: "INVALID_PAYLOAD"});
+    throwError({ message: "INVALID_PAYLOAD" });
   try {
     if (DEBUG)
       console.log(`processInvoicePaymentWebhook ID: ${invoicepayment_id}`);
@@ -237,6 +237,6 @@ export const processInvoicePaymentWebhook = async (
           .catch((error: any) => throwError(error));
   } catch (error: any) {
     if (DEBUG) console.error(error);
-    return response.status(500).send({received: false});
+    return response.status(500).send({ received: false });
   }
 };

@@ -1,8 +1,9 @@
 import { throwError } from "../../config/config";
+import { createProVetNote } from "../../integrations/provet/entities/note/createProVetNote";
 import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { sendNotification } from "../sendNotification";
-export const sendBookingRequestAdminNotification = async ({
+export const sendBookingRequestClientNotification = async ({
   id,
   bookingRef,
 }: {
@@ -24,8 +25,8 @@ export const sendBookingRequestAdminNotification = async ({
     .get()
     .then((doc: any) => doc.data())
     .catch((error: any) => throwError(error));
-  const { email, displayName, phoneNumber } = client;
-  const { subject, message } = createAdminMessage({
+  const { email, displayName, phoneNumber, uid } = client;
+  const { subject, message } = createClientMessage({
     messageTemplate: "email",
     vcprRequired,
     reason,
@@ -39,15 +40,21 @@ export const sendBookingRequestAdminNotification = async ({
     email,
     requestedDateTime,
     location,
-    selectedStaff,
     address,
+    selectedStaff,
+  });
+
+  createProVetNote({
+    type: 10,
+    subject,
+    message,
+    client: uid,
+    patients: patients.map((patient: { value: string }) => patient.value),
   });
 
   sendNotification({
     type: "email",
     payload: {
-      to: "info@movetcare.com",
-      replyTo: email,
       subject,
       message,
     },
@@ -57,11 +64,10 @@ export const sendBookingRequestAdminNotification = async ({
     type: "slack",
     payload: {
       channel: "appointment-request",
-      message: createAdminMessage({
+      message: createClientMessage({
         messageTemplate: "slack",
         vcprRequired,
         reason,
-        selectedStaff,
         client,
         illPatients,
         patients,
@@ -73,21 +79,20 @@ export const sendBookingRequestAdminNotification = async ({
         requestedDateTime,
         location,
         address,
+        selectedStaff,
       }),
     },
   });
 };
 
-const createAdminMessage = ({
+const createClientMessage = ({
   messageTemplate,
   client,
   illPatients,
   reason,
   vcprRequired,
   patients,
-  id,
   displayName,
-  createdAt,
   phoneNumber,
   email,
   requestedDateTime,
@@ -96,25 +101,23 @@ const createAdminMessage = ({
   selectedStaff,
 }: any): any => {
   if (messageTemplate === "email") {
-    const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
-      ?.toDate()
-      ?.toString()}</p>${
-      displayName ? `<p><b>Client Name:</b> ${displayName}</p>` : ""
-    }<p><b>Client Email:</b> ${email}</p>${
+    const message = `<p>Hi ${
+      client?.displayName
+    },</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request bellow and let us know (by replying to this email) if anything needs to be changed.</p>${
+      displayName ? `<p><b>Name:</b> ${displayName}</p>` : ""
+    }<p><b>Email:</b> ${email}</p>${
       phoneNumber
-        ? `<p><b>Client Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
+        ? `<p><b>Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
             phoneNumber?.replaceAll("+1", "")
           )}</a></p>`
         : ""
     }${patients.map(
       (patient: any) =>
-        `<p><b>Patient Name:</b> ${
-          patient?.name
-        }</p><p><b>Patient Species:</b> ${
+        `<p><b>Pet Name:</b> ${patient?.name}</p><p><b>Pet Species:</b> ${
           patient?.species
-        }</p><p><b>Patient Gender:</b> ${
+        }</p><p><b>Pet Gender:</b> ${
           patient?.gender
-        }</p><p><b>Patient Minor Illness:</b> ${
+        }</p><p><b>Pet Minor Illness:</b> ${
           patient?.hasMinorIllness
             ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
                 patient?.illnessDetails?.notes
@@ -124,8 +127,6 @@ const createAdminMessage = ({
           patient?.aggressionStatus?.name.includes("no history of aggression")
             ? "NOT Aggressive"
             : "AGGRESSIVE"
-        }</p><p><b>VCPR Required:</b> ${
-          patient?.vcprRequired ? "Yes" : "No"
         }</p>`
     )}${
       requestedDateTime?.date
@@ -147,12 +148,10 @@ const createAdminMessage = ({
       selectedStaff
         ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
         : ""
-    }`;
+    }<p>We look forward to seeing you soon!</p><p>- The MoVET Team</p>`;
 
     return {
-      subject: `${
-        displayName ? displayName : email ? email : ""
-      } has submitted a new appointment request`,
+      subject: "We have received your appointment request!",
       message,
     };
   } else {

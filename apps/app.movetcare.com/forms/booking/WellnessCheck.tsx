@@ -48,7 +48,7 @@ export const WellnessCheck = ({
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     mode: "all",
     resolver: yupResolver(
@@ -100,7 +100,13 @@ export const WellnessCheck = ({
   return (
     <>
       {isLoading ? (
-        <Loader />
+        <Loader
+          message={
+            isSubmitting
+              ? `Saving Your Selection(s)...`
+              : `Loading Wellness Check...`
+          }
+        />
       ) : error ? (
         <Error error={error} isAppMode={isAppMode} />
       ) : (

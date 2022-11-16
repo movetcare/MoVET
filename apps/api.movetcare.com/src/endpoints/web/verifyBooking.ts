@@ -1,12 +1,12 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-import { functions, defaultRuntimeOptions } from "../../config/config";
+import { functions, defaultRuntimeOptions, DEBUG } from "../../config/config";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 import { handleFailedBooking } from "../../booking/handleFailedBooking";
 import { handleUnauthenticatedBookingVerification } from "../../booking/verification/handleUnauthenticatedBookingVerification";
 import { getActiveBookingSession } from "../../booking/verification/getActiveBookingSession";
 import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
 import type { Booking, BookingError } from "../../types/booking";
-const DEBUG = false;
+
 export const verifyBooking = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
