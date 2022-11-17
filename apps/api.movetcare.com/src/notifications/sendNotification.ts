@@ -243,7 +243,11 @@ export const sendNotification = async ({
                   client: payload?.client,
                   patients: [],
                 });
-                throwError(error);
+                if (
+                  error?.message.includes("is not a valid phone number") ===
+                  false
+                )
+                  throwError(error);
               });
           } else {
             if (DEBUG)
