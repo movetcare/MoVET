@@ -43,25 +43,25 @@ export const processStripeWebhook = async (
     event.type.includes("payment_intent.")
   ) {
     let message = null;
-    if (request.body?.data?.object?.object === "terminal.reader") {
+    if (event?.data?.object?.object === "terminal.reader") {
       message = `:desktop_computer:  ${
-        request.body?.data?.object?.label
-      }: ${request.body?.data?.type.toUpperCase()} - ${
-        request.body?.data?.object?.action?.type
-      }: ${request.body?.data?.object?.action?.status}`;
-    } else if (request.body?.data?.object?.object === "payment_intent") {
-      message = `:moneybag: ${request.body?.type.toUpperCase()} $${
-        request.body?.data?.object?.amount_received / 100
-      } of $${request.body?.data?.object?.amount / 100} received via ${
-        request.body?.data?.object?.payment_method_types[0]
+        event?.data?.object?.label
+      }: ${event?.type?.toUpperCase()} - ${
+        event?.data?.object?.action?.type
+      }: ${event?.data?.object?.action?.status}`;
+    } else if (event?.data?.object?.object === "payment_intent") {
+      message = `:moneybag: ${event?.type?.toUpperCase()} $${
+        event?.data?.object?.amount_received / 100
+      } of $${event?.data?.object?.amount / 100} received via ${
+        event?.data?.object?.payment_method_types[0]
       }`;
-    } else if (request.body?.data?.object?.object === "payment_method") {
-      message = `:credit_card: ${request.body?.type.toUpperCase()} - ${request.body?.data?.object?.card?.brand.toUpperCase()} : ${
-        request.body?.data?.object?.card?.exp_month
-      }/${request.body?.data?.object?.card?.exp_year}`;
-    } else if (request.body?.data?.object?.object === "checkout.session") {
-      message = `:shopping_trolley: ${request.body?.type.toUpperCase()} - ${request.body?.data?.object?.payment_method_types[0].toUpperCase()} - ${
-        request.body?.data?.object?.client_reference_id
+    } else if (event?.data?.object?.object === "payment_method") {
+      message = `:credit_card: ${event?.type?.toUpperCase()} - ${event?.data?.object?.card?.brand?.toUpperCase()} : ${
+        event?.data?.object?.card?.exp_month
+      }/${event?.data?.object?.card?.exp_year}`;
+    } else if (event?.data?.object?.object === "checkout.session") {
+      message = `:shopping_trolley: ${event?.type?.toUpperCase()} - ${event?.data?.object?.payment_method_types[0]?.toUpperCase()} - ${
+        event?.data?.object?.client_reference_id
       }`;
     }
     message += `\n\nhttps://dashboard.stripe.com/events/${request.body?.id}\n\n`;
