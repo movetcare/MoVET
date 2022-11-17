@@ -7,7 +7,7 @@ export const resyncProVetUsers = functions
   .https.onCall(async (data: any, context: any): Promise<boolean> => {
     if (DEBUG) console.log("resyncProVetUsers DATA =>", data);
     if (await requestIsAuthorized(context)) {
-      await configureProVetUsers();
+       configureProVetUsers();
       return true;
     } else return false;
   });

@@ -105,29 +105,23 @@ export const deleteMoVETAccount = functions
     if (DEBUG) console.log("customerId", customerId);
 
     if (customerId)
-      await stripe.customers
-        .del(customerId)
-        .then(
-          (result) => DEBUG && console.log("STRIPE CUSTOMER DELETED: ", result)
-        );
+       stripe.customers
+         .del(customerId)
+         .then(
+           (result) => DEBUG && console.log("STRIPE CUSTOMER DELETED: ", result)
+         );
 
-    await sendNotification({
-      type: "slack",
-      payload: {
-        tag: "delete-account",
-        origin: "api",
-        success: true,
-        data: {
-          message: `MoVET Account and Data Archived for ${
-            user?.email
-          } => ${JSON.stringify({
-            proVetClientIds,
-            proVetPatientIds,
-            proVetAppointmentIds,
-            customerId,
-          })}`,
-        },
-        sendToSlack: true,
-      },
-    });
+     sendNotification({
+       type: "slack",
+       payload: {
+         message: `MoVET Account and Data Archived for ${
+           user?.email
+         } => ${JSON.stringify({
+           proVetClientIds,
+           proVetPatientIds,
+           proVetAppointmentIds,
+           customerId,
+         })}`,
+       },
+     });
   });

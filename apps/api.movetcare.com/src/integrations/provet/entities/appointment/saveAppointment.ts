@@ -126,22 +126,22 @@ export const saveAppointment = async (
     if (DEBUG) console.log("appointmentIsToday", appointmentIsToday);
 
     if (data?.active === 0)
-      await deleteAppointmentNotifications(proVetAppointmentData?.id);
+      deleteAppointmentNotifications(proVetAppointmentData?.id);
     else if (data.client && !appointmentIsToday) {
-      await deleteAppointmentNotifications(proVetAppointmentData?.id);
-      await generateNewAppointmentNotifications({
+      deleteAppointmentNotifications(proVetAppointmentData?.id);
+      generateNewAppointmentNotifications({
         ...data,
         send24HourReminder: true,
         id: proVetAppointmentData?.id,
       });
-      await generateNewAppointmentNotifications({
+      generateNewAppointmentNotifications({
         ...data,
         send30MinReminder: true,
         id: proVetAppointmentData?.id,
       });
     } else if (data.client && appointmentIsToday) {
-      await deleteAppointmentNotifications(proVetAppointmentData?.id);
-      await generateNewAppointmentNotifications({
+      deleteAppointmentNotifications(proVetAppointmentData?.id);
+      generateNewAppointmentNotifications({
         ...data,
         send30MinReminder: true,
         id: proVetAppointmentData?.id,
@@ -394,15 +394,15 @@ export const saveAppointment = async (
                   String(data?.client)
                 );
               }
-              await admin
+              admin
                 .auth()
                 .setCustomUserClaims(String(data?.client), {
                   onboardingComplete: true,
                 })
-                .catch(async (error: any) => {
+                .catch((error: any) => {
                   if (error.code === "auth/user-not-found") {
                     if (data?.client && environment.type !== "development")
-                      await admin
+                      admin
                         .firestore()
                         .collection("tasks_queue")
                         .doc(`create_new_client_${data?.client}`)

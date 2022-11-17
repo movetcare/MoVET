@@ -8,6 +8,23 @@ import Head from "next/head";
 const posts = [
   {
     isFeatured: true,
+    title: "Black Friday Deal - Free Exam w/ Purchase",
+    href: "/blog/black-friday-deal-2022",
+    category: { name: "Deals", href: "#", color: "bg-movet-green" },
+    description:
+      "Spend $30 or more in the boutique on November 25th and get a FREE veterinary exam!",
+    date: "Nov 17th, 2022",
+    datetime: "2022-11-17",
+    imageUrl: "/images/blog/black-friday-deal-2022.png",
+    readingTime: "1 min",
+    author: {
+      name: "Dr. A",
+      href: "#",
+      imageUrl: null,
+    },
+  },
+  {
+    isFeatured: true,
     title: "HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 30th @ 1pm",
     href: "/blog/howl-o-ween",
     category: { name: "Community", href: "#", color: "bg-movet-magenta" },
@@ -114,7 +131,7 @@ export default function Blog() {
           </div>
           <div className="mx-auto mt-8 sm:pb-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
             {posts.map((post: BlogPost, index: number) =>
-              post.isFeatured && (index === 0 || index === 1) ? (
+              post.isFeatured ? (
                 <div
                   key={index}
                   className="flex flex-col lg:flex-row overflow-hidden rounded-lg shadow-lg col-span-3"

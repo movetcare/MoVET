@@ -93,14 +93,14 @@ export const updateProVetClient = async (payload: any): Promise<boolean> => {
           await request
             .delete(`/phonenumber/${phoneId}/`)
             .then(async (response: any) => {
-              const {data} = response;
+              const { data } = response;
               if (DEBUG)
                 console.log(
                   `API Response: DELETE /phonenumber/${phoneId} => `,
                   data
                 );
             })
-            .catch(async (error: any) => throwError(error))
+            .catch((error: any) => throwError(error))
       );
     await request
       .post("/phonenumber/", {

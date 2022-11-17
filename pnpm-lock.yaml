@@ -129,8 +129,8 @@ importers:
       eslint-plugin-prettier: ^4.2.1
       expo-server-sdk: ^3.7.0
       express: ^4.18.2
-      firebase-admin: ^11.2.1
-      firebase-functions: ^4.0.2
+      firebase-admin: ^11.3.0
+      firebase-functions: ^4.1.0
       format-json: ^1.0.3
       json2csv: ^5.0.7
       prettier: ^2.7.1
@@ -151,8 +151,8 @@ importers:
       cors: 2.8.5
       expo-server-sdk: 3.7.0
       express: 4.18.2
-      firebase-admin: 11.2.1
-      firebase-functions: 4.0.2_firebase-admin@11.2.1
+      firebase-admin: 11.3.0
+      firebase-functions: 4.1.0_firebase-admin@11.3.0
       format-json: 1.0.3
       json2csv: 5.0.7
       semver: 7.3.8
@@ -377,7 +377,7 @@ importers:
       '@firebase/app-types': ^0.8.1
       '@types/node': ^18.11.9
       constant: workspace:*
-      firebase-admin: ^11.2.1
+      firebase-admin: ^11.3.0
       next: 13.0.3
       react: ^18.2.0
       react-dom: 18.2.0
@@ -390,7 +390,7 @@ importers:
       '@firebase/app-types': 0.8.1
       '@types/node': 18.11.9
       constant: link:../constant
-      firebase-admin: 11.2.1_@firebase+app-types@0.8.1
+      firebase-admin: 11.3.0_@firebase+app-types@0.8.1
       next: 13.0.3_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -472,8 +472,8 @@ importers:
       csvtojson: ^2.0.10
       dotenv: ^16.0.3
       firebase: ^9.14.0
-      firebase-admin: ^11.2.1
-      firebase-functions: ^4.0.2
+      firebase-admin: ^11.3.0
+      firebase-functions: ^4.1.0
       fs-extra: ^10.1.0
       kill-port: ^2.0.1
       lodash.isequal: ^4.5.0
@@ -486,8 +486,8 @@ importers:
       csvtojson: 2.0.10
       dotenv: 16.0.3
       firebase: 9.14.0
-      firebase-admin: 11.2.1
-      firebase-functions: 4.0.2_firebase-admin@11.2.1
+      firebase-admin: 11.3.0
+      firebase-functions: 4.1.0_firebase-admin@11.3.0
       fs-extra: 10.1.0
       kill-port: 2.0.1
       lodash.isequal: 4.5.0
@@ -4165,8 +4165,8 @@ packages:
       path-exists: 4.0.0
     dev: true
 
-  /firebase-admin/11.2.1:
-    resolution: {integrity: sha512-Tz1GiZXjXAWyTFjzHXvj6KKoT45FraimYCQ1tIUkXXBKSJRCNb6utnQX14EEH/M1IzTM1dEbeMOiUc1RMil1qg==}
+  /firebase-admin/11.3.0:
+    resolution: {integrity: sha512-8ENXUu9Lm6YTc5zzOqlF222M/KwsV/EDZ5UwwPPEU5XfCa1Ebj7K/SgLFdinjGu1NxkSnqu07UDpPhmAtW3b5w==}
     engines: {node: '>=14'}
     dependencies:
       '@fastify/busboy': 1.1.0
@@ -4186,8 +4186,8 @@ packages:
       - supports-color
     dev: false
 
-  /firebase-admin/11.2.1_@firebase+app-types@0.8.1:
-    resolution: {integrity: sha512-Tz1GiZXjXAWyTFjzHXvj6KKoT45FraimYCQ1tIUkXXBKSJRCNb6utnQX14EEH/M1IzTM1dEbeMOiUc1RMil1qg==}
+  /firebase-admin/11.3.0_@firebase+app-types@0.8.1:
+    resolution: {integrity: sha512-8ENXUu9Lm6YTc5zzOqlF222M/KwsV/EDZ5UwwPPEU5XfCa1Ebj7K/SgLFdinjGu1NxkSnqu07UDpPhmAtW3b5w==}
     engines: {node: '>=14'}
     dependencies:
       '@fastify/busboy': 1.1.0
@@ -4207,8 +4207,8 @@ packages:
       - supports-color
     dev: true
 
-  /firebase-functions/4.0.2_firebase-admin@11.2.1:
-    resolution: {integrity: sha512-y2JEMVRQfKQyib/wRMn6qSEg1kfJhl0nBOPHbcvrWN3cFakOssTVfq78GEQe3m9PPE8toF9ysabsetTUi4vkSg==}
+  /firebase-functions/4.1.0_firebase-admin@11.3.0:
+    resolution: {integrity: sha512-brbww5lGQVm8+d4KFmHF+O8wJBthws1NGXgphy7UDguMbUoW0fq6bL0NI442w+3nDE8IYUbnR4p3U8/cLAhnOA==}
     engines: {node: '>=14.10.0'}
     hasBin: true
     peerDependencies:
@@ -4218,7 +4218,7 @@ packages:
       '@types/express': 4.17.3
       cors: 2.8.5
       express: 4.18.2
-      firebase-admin: 11.2.1
+      firebase-admin: 11.3.0
       node-fetch: 2.6.7
     transitivePeerDependencies:
       - encoding

@@ -1,20 +1,21 @@
 import {admin, throwError} from "../../config/config";
 
-export const enforceOnlyOneActiveAppointmentBooking = async (
+export const enforceOnlyOneActiveAppointmentBooking = (
   activeBookings: Array<any>
-): Promise<any> =>
-  activeBookings.map(async (bookingId: string, index: number) =>
+): void => {
+  activeBookings.map((bookingId: string, index: number) =>
     index !== 0
-      ? await admin
+      ? admin
           .firestore()
           .collection("bookings")
           .doc(bookingId)
           .set({ isActive: false, updatedOn: new Date() }, { merge: true })
-          .catch(async (error: any) => throwError(error))
-      : await admin
+          .catch((error: any) => throwError(error))
+      : admin
           .firestore()
           .collection("bookings")
           .doc(bookingId)
           .set({ isActive: true, updatedOn: new Date() }, { merge: true })
-          .catch(async (error: any) => throwError(error))
+          .catch((error: any) => throwError(error))
   );
+};

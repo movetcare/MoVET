@@ -51,7 +51,7 @@ export const handleFileUpload = functions.storage
         //           const { data } = response;
         //           if (DEBUG) console.log("API Response: POST /note/ => ", data);
         //         })
-        //         .catch(async (error: any) => throwError(error))
+        //         .catch( (error: any) => throwError(error))
         //   )
         //    .catch((error: any) => throwError(error));
       } else if (pathParts[4] === "photo") {
@@ -103,7 +103,7 @@ export const handleFileUpload = functions.storage
         //           const { data } = response;
         //           if (DEBUG) console.log("API Response: POST /note/ => ", data);
         //         })
-        //         .catch(async (error: any) => throwError(error))
+        //         .catch( (error: any) => throwError(error))
         //   )
         //    .catch((error: any) => throwError(error));
       }

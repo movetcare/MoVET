@@ -49,7 +49,7 @@ export const refreshCustomerToken = functions
             .create({
               customer: customerId,
             })
-            .catch(async (error: any) => throwError(error) as any);
+            .catch((error: any) => throwError(error) as any);
 
           if (DEBUG) console.log("Setup Intent Created:", setupIntent);
           return {

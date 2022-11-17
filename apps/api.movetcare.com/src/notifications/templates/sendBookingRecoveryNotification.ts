@@ -14,7 +14,7 @@ export const sendBookingRecoveryNotification = async ({
 }: {
   id: string;
   type: "1_HOUR" | "24_HOUR" | "72_HOUR";
-}) => {
+}): Promise<void> => {
   if (id && type) {
     const booking = await admin
       .firestore()
@@ -26,15 +26,15 @@ export const sendBookingRecoveryNotification = async ({
       });
     switch (type) {
       case "1_HOUR":
-        await sendOneHourBookingRecoveryNotification(booking);
+        sendOneHourBookingRecoveryNotification(booking);
         break;
       case "24_HOUR":
-        await sendTwentyFourHourBookingRecoveryNotification(booking);
-        await sendAdminBookingRecoveryNotification(booking, type);
+        sendTwentyFourHourBookingRecoveryNotification(booking);
+        sendAdminBookingRecoveryNotification(booking, type);
         break;
       case "72_HOUR":
-        await sendSeventyTwoHourBookingRecoveryNotification(booking);
-        await sendAdminBookingRecoveryNotification(booking, type);
+        sendSeventyTwoHourBookingRecoveryNotification(booking);
+        sendAdminBookingRecoveryNotification(booking, type);
         break;
       default:
         if (DEBUG)

@@ -90,7 +90,7 @@ export const createCustomer = functions
                 clientId: context.auth.uid,
               },
             })
-            .catch(async (error: any) => throwError(error) as any);
+            .catch((error: any) => throwError(error) as any);
         } else {
           let matchedCustomer = null;
           matchingCustomers.forEach((customerData: any) => {
@@ -138,7 +138,7 @@ export const createCustomer = functions
                   clientId: context.auth.uid,
                 },
               })
-              .catch(async (error: any) => throwError(error) as any);
+              .catch((error: any) => throwError(error) as any);
           } else {
             customer = matchedCustomer;
             if (DEBUG)
@@ -148,10 +148,10 @@ export const createCustomer = functions
 
         if (DEBUG) console.log("CUSTOMER -> ", customer);
 
-        await updateProVetClient({
-          customer: customer?.id,
-          id: context.auth.uid,
-        });
+         updateProVetClient({
+           customer: customer?.id,
+           id: context.auth.uid,
+         });
 
         const ephemeralKey = await stripe.ephemeralKeys.create(
           { customer: customer?.id },
@@ -164,7 +164,7 @@ export const createCustomer = functions
           .create({
             customer: customer?.id,
           })
-          .catch(async (error: any) => throwError(error) as any);
+          .catch((error: any) => throwError(error) as any);
 
         if (DEBUG) console.log("Setup Intent Created:", setupIntent);
 

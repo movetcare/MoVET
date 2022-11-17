@@ -4,10 +4,11 @@ import { admin, stripe, throwError, DEBUG } from "../../../../config/config";
 import { sendWelcomeEmail } from "../../../../notifications/templates/sendWelcomeEmail";
 import { getAuthUserById } from "../../../../utils/auth/getAuthUserById";
 import { fetchEntity } from "../fetchEntity";
-import { saveClient } from "./saveClient";
 import { updateProVetClient } from "./updateProVetClient";
 
-export const createNewClientTask = async (options: { clientId: number }) => {
+export const createNewClientTask = async (options: {
+  clientId: number;
+}): Promise<void> => {
   const { clientId } = options;
   if (clientId) {
     const client = await fetchEntity("client", clientId);
@@ -18,7 +19,7 @@ export const createNewClientTask = async (options: { clientId: number }) => {
             client?.email
           }`
         );
-      await admin
+      admin
         .auth()
         .createUser({
           email: client?.email?.toLowerCase(),
@@ -160,7 +161,7 @@ const createNewCustomer = async (user: any) => {
           },
         })
       )
-      .catch(async (error: any) => throwError(error) as any);
+      .catch((error: any) => throwError(error) as any);
   } else {
     let matchedCustomer = null;
     matchingCustomers.forEach((customerData: any) => {
@@ -215,7 +216,7 @@ const createNewCustomer = async (user: any) => {
             },
           })
         )
-        .catch(async (error: any) => throwError(error) as any);
+        .catch((error: any) => throwError(error) as any);
     } else {
       customer = matchedCustomer;
       if (DEBUG) console.log("Matched an existing customer ID => ", customer);
@@ -232,19 +233,8 @@ const createNewCustomer = async (user: any) => {
 
   if (DEBUG) console.log("CUSTOMER -> ", customer);
 
-  await updateProVetClient({
+  updateProVetClient({
     customer: customer?.id,
     id: user?.uid,
   });
-
-  await saveClient(user?.uid, null, {
-    customer,
-  })
-    .then(async () => {
-      if (DEBUG)
-        console.log("Updated Client Document w/ Customer Data:", {
-          customer,
-        });
-    })
-    .catch((error: any) => throwError(error));
 };

@@ -48,31 +48,31 @@ export const checkIn = functions
             .get()
             .then((doc: any) => doc.data())
             .catch((error: any) => throwError(error));
-          await stripe.customers
-            .update(`${client?.customer?.id}`, {
-              name:
-                firstName && lastName
-                  ? `${firstName} ${lastName}`
-                  : firstName
-                  ? firstName
-                  : lastName
-                  ? lastName
-                  : null,
-              phone: phone || null,
-            })
-            .catch((error: any) => throwError(error));
-          await admin
-            .firestore()
-            .collection("waitlist")
-            .doc(client?.email)
-            .set(
-              {
-                ...data,
-                isActive: true,
-                updatedOn: new Date(),
-              },
-              { merge: true }
-            );
+           stripe.customers
+             .update(`${client?.customer?.id}`, {
+               name:
+                 firstName && lastName
+                   ? `${firstName} ${lastName}`
+                   : firstName
+                   ? firstName
+                   : lastName
+                   ? lastName
+                   : null,
+               phone: phone || null,
+             })
+             .catch((error: any) => throwError(error));
+           admin
+             .firestore()
+             .collection("waitlist")
+             .doc(client?.email)
+             .set(
+               {
+                 ...data,
+                 isActive: true,
+                 updatedOn: new Date(),
+               },
+               { merge: true }
+             );
           if (didUpdateProVetClient)
             return {
               client: {
@@ -130,584 +130,587 @@ export const checkIn = functions
                 });
               if (DEBUG) console.log("isNewClient", isNewClient);
               if (isNewClient) {
-                await admin
-                  .firestore()
-                  .collection("waitlist")
-                  .doc(email)
-                  .set(
-                    {
-                      status: "creating-client",
-                      updatedOn: new Date(),
-                    },
-                    { merge: true }
-                  )
-                  .catch((error: any) => throwError(error));
-                if (DEBUG) console.log("CREATING NEW CLIENT");
-                const proVetClientData: any = await createProVetClient({
-                  email,
-                  zip_code: null,
-                  firstname: firstName,
-                  lastname: lastName,
-                });
-                if (DEBUG) console.log("proVetClientData", proVetClientData);
-                if (proVetClientData) {
-                  const didCreateNewClient = await createAuthClient(
-                    proVetClientData,
-                    null,
-                    false
-                  );
-                  if (didCreateNewClient) {
-                    await admin
-                      .firestore()
-                      .collection("waitlist")
-                      .doc(email)
-                      .set(
-                        {
-                          id: proVetClientData?.id,
-                          updatedOn: new Date(),
-                        },
-                        { merge: true }
-                      )
-                      .catch((error: any) => throwError(error));
-                    if (phone) {
-                      if (DEBUG) console.log("SAVING CLIENT PHONE NUMBER");
-                      await request
-                        .post("/phonenumber/", {
-                          client: `${proVetApiUrl}/client/${proVetClientData?.id}/`,
-                          type_code: 1,
-                          phone_number: `+1${(phone as string)
-                            .replace("-", "")
-                            .replace("(", "")
-                            .replace(")", "")}`,
-                          preferred_reminders: true,
-                          description:
-                            "Default Phone Number - Used for SMS Alerts",
-                        })
-                        .then(async (response: any) => {
-                          const { data } = response;
-                          if (DEBUG)
-                            console.log(
-                              "API Response: POST /phonenumber/ => ",
-                              data
-                            );
-                        })
-                        .catch((error: any) => throwError(error));
-                      await admin
-                        .firestore()
-                        .collection("waitlist")
-                        .doc(email)
-                        .set(
-                          {
-                            phone,
-                            updatedOn: new Date(),
-                          },
-                          { merge: true }
-                        )
-                        .catch((error: any) => throwError(error));
-                    }
-                    if (DEBUG) console.log("CREATING CUSTOMER");
-                    const { data: matchingCustomers } =
-                      await stripe.customers.list({
-                        email,
-                      });
-                    if (DEBUG) {
-                      console.log("Existing Customers => ", matchingCustomers);
-                      console.log(
-                        "Number of Existing Customers w/ Same Email",
-                        matchingCustomers.length
-                      );
-                    }
-                    let customer: Stripe.Customer | any = null;
-                    if (matchingCustomers.length === 0) {
-                      if (DEBUG)
-                        console.log("Creating NEW Customer: ", {
-                          address: {
-                            line1: "UNKNOWN - WALK IN",
-                            city: "DENVER",
-                            state: "CO",
-                            country: "US",
-                          },
-                          email,
-                          metadata: {
-                            clientId: proVetClientData?.id,
-                          },
-                        });
-                      customer = await stripe.customers
-                        .create({
-                          address: {
-                            line1: "UNKNOWN - WALK IN",
-                            city: "DENVER",
-                            state: "CO",
-                            country: "US",
-                          },
-                          email,
-                          metadata: {
-                            clientId: proVetClientData?.id,
-                          },
-                        })
-                        .catch(async (error: any) => throwError(error) as any);
-                    } else {
-                      let matchedCustomer = null;
-                      matchingCustomers.forEach((customerData: any) => {
-                        if (
-                          customerData.metadata?.clientId ===
-                          proVetClientData?.id
-                        )
-                          matchedCustomer = customerData;
-                      });
-                      if (matchedCustomer === null) {
-                        if (DEBUG)
-                          console.log(
-                            "No Matching clientIds Found. Creating NEW Customer: ",
-                            {
-                              address: {
-                                line1: "UNKNOWN - WALK IN",
-                                city: "DENVER",
-                                state: "CO",
-                                country: "US",
-                              },
-                              email,
-                              metadata: {
-                                clientId: proVetClientData?.id,
-                              },
-                            }
-                          );
-                        customer = await stripe.customers
-                          .create({
-                            address: {
-                              line1: "UNKNOWN - WALK IN",
-                              city: "DENVER",
-                              state: "CO",
-                              country: "US",
-                            },
-                            email,
-                            metadata: {
-                              clientId: proVetClientData?.id,
-                            },
-                          })
-                          .catch(
-                            async (error: any) => throwError(error) as any
-                          );
-                      } else {
-                        customer = matchedCustomer;
-                        if (DEBUG)
-                          console.log(
-                            "Matched an existing customer ID => ",
-                            customer
-                          );
-                      }
-                    }
+                 admin
+                   .firestore()
+                   .collection("waitlist")
+                   .doc(email)
+                   .set(
+                     {
+                       status: "creating-client",
+                       updatedOn: new Date(),
+                     },
+                     { merge: true }
+                   )
+                   .catch((error: any) => throwError(error));
+                 if (DEBUG) console.log("CREATING NEW CLIENT");
+                 const proVetClientData: any = await createProVetClient({
+                   email,
+                   zip_code: null,
+                   firstname: firstName,
+                   lastname: lastName,
+                 });
+                 if (DEBUG) console.log("proVetClientData", proVetClientData);
+                 if (proVetClientData) {
+                   const didCreateNewClient = await createAuthClient(
+                     proVetClientData,
+                     null,
+                     false
+                   );
+                   if (didCreateNewClient) {
+                     admin
+                       .firestore()
+                       .collection("waitlist")
+                       .doc(email)
+                       .set(
+                         {
+                           id: proVetClientData?.id,
+                           updatedOn: new Date(),
+                         },
+                         { merge: true }
+                       )
+                       .catch((error: any) => throwError(error));
+                     if (phone) {
+                       if (DEBUG) console.log("SAVING CLIENT PHONE NUMBER");
+                       request
+                         .post("/phonenumber/", {
+                           client: `${proVetApiUrl}/client/${proVetClientData?.id}/`,
+                           type_code: 1,
+                           phone_number: `+1${(phone as string)
+                             .replace("-", "")
+                             .replace("(", "")
+                             .replace(")", "")}`,
+                           preferred_reminders: true,
+                           description:
+                             "Default Phone Number - Used for SMS Alerts",
+                         })
+                         .then((response: any) => {
+                           const { data } = response;
+                           if (DEBUG)
+                             console.log(
+                               "API Response: POST /phonenumber/ => ",
+                               data
+                             );
+                         })
+                         .catch((error: any) => throwError(error));
+                       admin
+                         .firestore()
+                         .collection("waitlist")
+                         .doc(email)
+                         .set(
+                           {
+                             phone,
+                             updatedOn: new Date(),
+                           },
+                           { merge: true }
+                         )
+                         .catch((error: any) => throwError(error));
+                     }
+                     if (DEBUG) console.log("CREATING CUSTOMER");
+                     const { data: matchingCustomers } =
+                       await stripe.customers.list({
+                         email,
+                       });
+                     if (DEBUG) {
+                       console.log("Existing Customers => ", matchingCustomers);
+                       console.log(
+                         "Number of Existing Customers w/ Same Email",
+                         matchingCustomers.length
+                       );
+                     }
+                     let customer: Stripe.Customer | any = null;
+                     if (matchingCustomers.length === 0) {
+                       if (DEBUG)
+                         console.log("Creating NEW Customer: ", {
+                           address: {
+                             line1: "UNKNOWN - WALK IN",
+                             city: "DENVER",
+                             state: "CO",
+                             country: "US",
+                           },
+                           email,
+                           metadata: {
+                             clientId: proVetClientData?.id,
+                           },
+                         });
+                       customer = await stripe.customers
+                         .create({
+                           address: {
+                             line1: "UNKNOWN - WALK IN",
+                             city: "DENVER",
+                             state: "CO",
+                             country: "US",
+                           },
+                           email,
+                           metadata: {
+                             clientId: proVetClientData?.id,
+                           },
+                         })
+                         .catch((error: any) => throwError(error) as any);
+                     } else {
+                       let matchedCustomer = null;
+                       matchingCustomers.forEach((customerData: any) => {
+                         if (
+                           customerData.metadata?.clientId ===
+                           proVetClientData?.id
+                         )
+                           matchedCustomer = customerData;
+                       });
+                       if (matchedCustomer === null) {
+                         if (DEBUG)
+                           console.log(
+                             "No Matching clientIds Found. Creating NEW Customer: ",
+                             {
+                               address: {
+                                 line1: "UNKNOWN - WALK IN",
+                                 city: "DENVER",
+                                 state: "CO",
+                                 country: "US",
+                               },
+                               email,
+                               metadata: {
+                                 clientId: proVetClientData?.id,
+                               },
+                             }
+                           );
+                         customer = await stripe.customers
+                           .create({
+                             address: {
+                               line1: "UNKNOWN - WALK IN",
+                               city: "DENVER",
+                               state: "CO",
+                               country: "US",
+                             },
+                             email,
+                             metadata: {
+                               clientId: proVetClientData?.id,
+                             },
+                           })
+                           .catch(
+                             async (error: any) => throwError(error) as any
+                           );
+                       } else {
+                         customer = matchedCustomer;
+                         if (DEBUG)
+                           console.log(
+                             "Matched an existing customer ID => ",
+                             customer
+                           );
+                       }
+                     }
 
-                    if (DEBUG) console.log("CUSTOMER -> ", customer);
-                    await admin
-                      .firestore()
-                      .collection("waitlist")
-                      .doc(email)
-                      .set(
-                        {
-                          status: "checkout",
-                          customerId: customer?.id,
-                          updatedOn: new Date(),
-                        },
-                        { merge: true }
-                      )
-                      .catch((error: any) => throwError(error));
-                    const session = await stripe.checkout.sessions.create({
-                      payment_method_types: ["card"],
-                      mode: "setup",
-                      customer: customer?.id,
-                      client_reference_id: proVetClientData?.id,
-                      metadata: {
-                        clientId: proVetClientData?.id,
-                      },
-                      success_url:
-                        (environment?.type === "development"
-                          ? "http://localhost:3001"
-                          : environment.type === "staging"
-                          ? "https://stage.app.movetcare.com"
-                          : "https://app.movetcare.com") +
-                        "/appointment-check-in/success/",
-                      cancel_url:
-                        (environment?.type === "development"
-                          ? "http://localhost:3001"
-                          : environment.type === "staging"
-                          ? "https://stage.app.movetcare.com"
-                          : "https://app.movetcare.com") +
-                        "/appointment-check-in/",
-                    });
+                     if (DEBUG) console.log("CUSTOMER -> ", customer);
+                     updateProVetClient({
+                       customer: customer?.id,
+                       id: proVetClientData?.id,
+                     });
+                     admin
+                       .firestore()
+                       .collection("waitlist")
+                       .doc(email)
+                       .set(
+                         {
+                           status: "checkout",
+                           customerId: customer?.id,
+                           updatedOn: new Date(),
+                         },
+                         { merge: true }
+                       )
+                       .catch((error: any) => throwError(error));
+                     const session = await stripe.checkout.sessions.create({
+                       payment_method_types: ["card"],
+                       mode: "setup",
+                       customer: customer?.id,
+                       client_reference_id: proVetClientData?.id,
+                       metadata: {
+                         clientId: proVetClientData?.id,
+                       },
+                       success_url:
+                         (environment?.type === "development"
+                           ? "http://localhost:3001"
+                           : environment.type === "staging"
+                           ? "https://stage.app.movetcare.com"
+                           : "https://app.movetcare.com") +
+                         "/appointment-check-in/success/",
+                       cancel_url:
+                         (environment?.type === "development"
+                           ? "http://localhost:3001"
+                           : environment.type === "staging"
+                           ? "https://stage.app.movetcare.com"
+                           : "https://app.movetcare.com") +
+                         "/appointment-check-in/",
+                     });
 
-                    return await saveClient(proVetClientData?.id, null, {
-                      customer,
-                      session,
-                    })
-                      .then(async () => {
-                        if (DEBUG)
-                          console.log("Updated Client Document:", {
-                            customer,
-                          });
-                        const client = await admin
-                          .auth()
-                          .getUserByEmail(email)
-                          .then((userRecord: any) => {
-                            if (DEBUG) console.log("userRecord", userRecord);
-                            return userRecord;
-                          })
-                          .catch(async (error: any) => throwError(error));
-                        if (DEBUG)
-                          console.log("FINAL RESULT => ", {
-                            client: { ...client, id: client?.uid },
-                            session,
-                            isNewClient,
-                          });
-                        sendNotification({
-                          type: "slack",
-                          payload: {
-                            message: `:ballot_box_with_check: Appointment Check In Update - Status: Client Info - ${
-                              email ? email : ""
-                            } ${firstName ? firstName : ""} ${
-                              lastName ? lastName : ""
-                            } `,
-                          },
-                        });
+                     return await saveClient(proVetClientData?.id, null, {
+                       customer,
+                       session,
+                     })
+                       .then(async () => {
+                         if (DEBUG)
+                           console.log("Updated Client Document:", {
+                             customer,
+                           });
+                         const client = await admin
+                           .auth()
+                           .getUserByEmail(email)
+                           .then((userRecord: any) => {
+                             if (DEBUG) console.log("userRecord", userRecord);
+                             return userRecord;
+                           })
+                           .catch((error: any) => throwError(error));
+                         if (DEBUG)
+                           console.log("FINAL RESULT => ", {
+                             client: { ...client, id: client?.uid },
+                             session,
+                             isNewClient,
+                           });
+                         sendNotification({
+                           type: "slack",
+                           payload: {
+                             message: `:ballot_box_with_check: Appointment Check In Update - Status: Client Info - ${
+                               email ? email : ""
+                             } ${firstName ? firstName : ""} ${
+                               lastName ? lastName : ""
+                             } `,
+                           },
+                         });
 
-                        await admin
-                          .firestore()
-                          .collection("waitlist")
-                          .doc(client?.email)
-                          .set(
-                            {
-                              firstName: client?.firstName,
-                              lastName: client?.lastName,
-                              phone: client?.phone,
-                              id: client?.uid,
-                              updatedOn: new Date(),
-                            },
-                            { merge: true }
-                          )
-                          .catch((error: any) => throwError(error));
-                        return {
-                          client: {
-                            email: client?.email,
-                            firstName: client?.firstName,
-                            lastName: client?.lastName,
-                            phone: client?.phone,
-                            id: client?.uid,
-                          },
-                          session,
-                          isNewClient,
-                        };
-                      })
-                      .catch((error: any) => throwError(error));
-                  }
-                } else {
-                  if (DEBUG)
-                    console.log("ERROR: proVetClientData", proVetClientData);
-                  await admin
-                    .firestore()
-                    .collection("waitlist")
-                    .doc(email)
-                    .set(
-                      { status: "error", updatedOn: new Date() },
-                      { merge: true }
-                    )
-                    .catch((error: any) => throwError(error));
-                }
+                         admin
+                           .firestore()
+                           .collection("waitlist")
+                           .doc(client?.email)
+                           .set(
+                             {
+                               firstName: client?.firstName,
+                               lastName: client?.lastName,
+                               phone: client?.phone,
+                               id: client?.uid,
+                               updatedOn: new Date(),
+                             },
+                             { merge: true }
+                           )
+                           .catch((error: any) => throwError(error));
+                         return {
+                           client: {
+                             email: client?.email,
+                             firstName: client?.firstName,
+                             lastName: client?.lastName,
+                             phone: client?.phone,
+                             id: client?.uid,
+                           },
+                           session,
+                           isNewClient,
+                         };
+                       })
+                       .catch((error: any) => throwError(error));
+                   }
+                 } else {
+                   if (DEBUG)
+                     console.log("ERROR: proVetClientData", proVetClientData);
+                   admin
+                     .firestore()
+                     .collection("waitlist")
+                     .doc(email)
+                     .set(
+                       { status: "error", updatedOn: new Date() },
+                       { merge: true }
+                     )
+                     .catch((error: any) => throwError(error));
+                 }
               } else {
                 if (DEBUG) console.log("HANDLING EXISTING CLIENT CHECK IN");
-                await admin
-                  .firestore()
-                  .collection("waitlist")
-                  .doc(email)
-                  .set(
-                    {
-                      status: "processing-client",
-                      updatedOn: new Date(),
-                    },
-                    { merge: true }
-                  )
-                  .catch((error: any) => throwError(error));
-                const clientId = await admin
-                  .auth()
-                  .getUserByEmail(email)
-                  .then((userRecord: any) => {
-                    if (DEBUG) console.log("userRecord", userRecord);
-                    return userRecord?.uid;
-                  })
-                  .catch(async (error: any) => throwError(error));
-                await admin
-                  .firestore()
-                  .collection("waitlist")
-                  .doc(email)
-                  .set(
-                    {
-                      id: clientId,
-                      updatedOn: new Date(),
-                    },
-                    { merge: true }
-                  )
-                  .catch((error: any) => throwError(error));
-                const client = await admin
-                  .firestore()
-                  .collection("clients")
-                  .doc(clientId)
-                  .get()
-                  .then((doc: any) => doc.data())
-                  .catch((error: any) => throwError(error));
-                const { data: matchingCustomers } = await stripe.customers.list(
-                  {
-                    email,
-                  }
-                );
-                if (DEBUG) {
-                  console.log("client", client);
-                  console.log("Existing Customers => ", matchingCustomers);
-                  console.log(
-                    "Number of Existing Customers w/ Same Email",
-                    matchingCustomers.length
-                  );
-                }
-                let customer: Stripe.Customer | any = null;
-                if (matchingCustomers.length === 0) {
-                  if (DEBUG)
-                    console.log("Creating NEW Customer: ", {
-                      address: {
-                        line1: "UNKNOWN - WALK IN",
-                        city: "DENVER",
-                        state: "CO",
-                        country: "US",
-                      },
-                      name:
-                        client?.firstName && client?.lastName
-                          ? `${client?.firstname} ${client?.lastName}`
-                          : client?.firstName
-                          ? client?.firstName
-                          : client?.lastName
-                          ? client?.lastName
-                          : null,
-                      email: client?.email ? client?.email : "UNKNOWN",
-                      phone: client?.phone ? client?.phone : "UNKNOWN",
-                      metadata: {
-                        clientId,
-                      },
-                    });
-                  customer = await stripe.customers
-                    .create({
-                      address: {
-                        line1: "UNKNOWN - WALK IN",
-                        city: "DENVER",
-                        state: "CO",
-                        country: "US",
-                      },
-                      name:
-                        client?.firstName && client?.lastName
-                          ? `${client?.firstname} ${client?.lastName}`
-                          : client?.firstName
-                          ? client?.firstName
-                          : client?.lastName
-                          ? client?.lastName
-                          : null,
-                      email: client?.email ? client?.email : "UNKNOWN",
-                      phone: client?.phone ? client?.phone : "UNKNOWN",
-                      metadata: {
-                        clientId,
-                      },
-                    })
-                    .catch((error: any) => throwError(error));
-                } else {
-                  let matchedCustomer = null;
-                  matchingCustomers.forEach((customerData: any) => {
-                    if (customerData.metadata?.clientId === clientId)
-                      matchedCustomer = customerData;
-                  });
-                  if (matchedCustomer === null) {
-                    if (DEBUG)
-                      console.log(
-                        "No Matching clientIds Found. Creating NEW Customer: ",
-                        {
-                          address: {
-                            line1: "UNKNOWN - WALK IN",
-                            city: "DENVER",
-                            state: "CO",
-                            country: "US",
-                          },
-                          name:
-                            client?.firstName && client?.lastName
-                              ? `${client?.firstname} ${client?.lastName}`
-                              : client?.firstName
-                              ? client?.firstName
-                              : client?.lastName
-                              ? client?.lastName
-                              : null,
-                          email: client?.email ? client?.email : "UNKNOWN",
-                          phone: client?.phone ? client?.phone : "UNKNOWN",
-                          metadata: {
-                            clientId,
-                          },
-                        }
-                      );
-                    customer = await stripe.customers
-                      .create({
-                        address: {
-                          line1: "UNKNOWN - WALK IN",
-                          city: "DENVER",
-                          state: "CO",
-                          country: "US",
-                        },
-                        name:
-                          client?.firstName && client?.lastName
-                            ? `${client?.firstname} ${client?.lastName}`
-                            : client?.firstName
-                            ? client?.firstName
-                            : client?.lastName
-                            ? client?.lastName
-                            : null,
-                        email: client?.email ? client?.email : "UNKNOWN",
-                        phone: client?.phone ? client?.phone : "UNKNOWN",
-                        metadata: {
-                          clientId,
-                        },
-                      })
-                      .catch((error: any) => throwError(error));
-                  } else {
-                    customer = matchedCustomer;
-                    if (DEBUG)
-                      console.log(
-                        "Matched an existing customer ID => ",
-                        customer
-                      );
-                  }
-                }
-                if (DEBUG) console.log("CUSTOMER -> ", customer);
-                const paymentMethods =
-                  await stripe.customers.listPaymentMethods(customer?.id, {
-                    type: "card",
-                  });
-                const validPaymentMethods = await verifyValidPaymentSource(
-                  clientId,
-                  customer.id
-                );
-                if (DEBUG) {
-                  console.log("paymentMethods", paymentMethods);
-                  console.log("validPaymentMethods", validPaymentMethods);
-                }
-                if (validPaymentMethods !== false) {
-                  await admin
-                    .firestore()
-                    .collection("waitlist")
-                    .doc(email)
-                    .set(
-                      {
-                        id: clientId,
-                        firstName: client?.firstName,
-                        lastName: client?.lastName,
-                        phone: client?.phone,
-                        status: "complete",
-                        isActive: true,
-                        customerId: customer?.id,
-                        paymentMethod: paymentMethods?.data[0],
-                        updatedOn: new Date(),
-                      },
-                      { merge: true }
-                    )
-                    .catch((error: any) => throwError(error));
-                  if (DEBUG)
-                    console.log("FINAL RESULT => ", {
-                      isNewClient,
-                      client,
-                    });
-                  sendNotification({
-                    type: "slack",
-                    payload: {
-                      message: `:ballot_box_with_check: Appointment Check In Update - Status: Complete - ${
-                        email ? email : ""
-                      } ${firstName ? firstName : ""} ${
-                        lastName ? lastName : ""
-                      } `,
-                    },
-                  });
-                  return {
-                    isNewClient,
-                    client: {
-                      email: client?.email,
-                      firstName: client?.firstName,
-                      lastName: client?.lastName,
-                      phone: client?.phone,
-                      id: clientId,
-                    },
-                  };
-                } else {
-                  if (DEBUG)
-                    console.log(
-                      "NO VALID PAYMENT METHODS FOUND FOR EXISTING CUSTOMER - STARTING NEW CHECKOUT SESSION"
-                    );
-                  const session = await stripe.checkout.sessions.create({
-                    payment_method_types: ["card"],
-                    mode: "setup",
-                    customer: customer?.id,
-                    client_reference_id: clientId,
-                    metadata: {
-                      clientId,
-                    },
-                    success_url:
-                      (environment?.type === "development"
-                        ? "http://localhost:3001"
-                        : environment.type === "staging"
-                        ? "https://stage.app.movetcare.com"
-                        : "https://app.movetcare.com") +
-                      "/appointment-check-in/success/",
-                    cancel_url:
-                      (environment?.type === "development"
-                        ? "http://localhost:3001"
-                        : environment.type === "staging"
-                        ? "https://stage.app.movetcare.com"
-                        : "https://app.movetcare.com") +
-                      "/appointment-check-in/",
-                  });
-                  await admin
-                    .firestore()
-                    .collection("waitlist")
-                    .doc(email)
-                    .set(
-                      {
-                        status: "checkout",
-                        id: clientId,
-                        firstName: client?.firstName,
-                        lastName: client?.lastName,
-                        phone: client?.phone,
-                        customerId: customer?.id,
-                        updatedOn: new Date(),
-                      },
-                      { merge: true }
-                    )
-                    .catch((error: any) => throwError(error));
-                  if (DEBUG)
-                    console.log("FINAL RESULT => ", {
-                      session,
-                      isNewClient,
-                      client: { ...client, id: clientId },
-                    });
-                  sendNotification({
-                    type: "slack",
-                    payload: {
-                      message: `:ballot_box_with_check: Appointment Check In Update - Status: Checkout - ${
-                        email ? email : ""
-                      } ${firstName ? firstName : ""} ${
-                        lastName ? lastName : ""
-                      } `,
-                    },
-                  });
-                  return {
-                    session,
-                    isNewClient,
-                    client: {
-                      email: client?.email,
-                      firstName: client?.firstName,
-                      lastName: client?.lastName,
-                      phone: client?.phone,
-                      id: clientId,
-                    },
-                  };
-                }
+                 admin
+                   .firestore()
+                   .collection("waitlist")
+                   .doc(email)
+                   .set(
+                     {
+                       status: "processing-client",
+                       updatedOn: new Date(),
+                     },
+                     { merge: true }
+                   )
+                   .catch((error: any) => throwError(error));
+                 const clientId = await admin
+                   .auth()
+                   .getUserByEmail(email)
+                   .then((userRecord: any) => {
+                     if (DEBUG) console.log("userRecord", userRecord);
+                     return userRecord?.uid;
+                   })
+                   .catch((error: any) => throwError(error));
+                 admin
+                   .firestore()
+                   .collection("waitlist")
+                   .doc(email)
+                   .set(
+                     {
+                       id: clientId,
+                       updatedOn: new Date(),
+                     },
+                     { merge: true }
+                   )
+                   .catch((error: any) => throwError(error));
+                 const client = await admin
+                   .firestore()
+                   .collection("clients")
+                   .doc(clientId)
+                   .get()
+                   .then((doc: any) => doc.data())
+                   .catch((error: any) => throwError(error));
+                 const { data: matchingCustomers } =
+                   await stripe.customers.list({
+                     email,
+                   });
+                 if (DEBUG) {
+                   console.log("client", client);
+                   console.log("Existing Customers => ", matchingCustomers);
+                   console.log(
+                     "Number of Existing Customers w/ Same Email",
+                     matchingCustomers.length
+                   );
+                 }
+                 let customer: Stripe.Customer | any = null;
+                 if (matchingCustomers.length === 0) {
+                   if (DEBUG)
+                     console.log("Creating NEW Customer: ", {
+                       address: {
+                         line1: "UNKNOWN - WALK IN",
+                         city: "DENVER",
+                         state: "CO",
+                         country: "US",
+                       },
+                       name:
+                         client?.firstName && client?.lastName
+                           ? `${client?.firstname} ${client?.lastName}`
+                           : client?.firstName
+                           ? client?.firstName
+                           : client?.lastName
+                           ? client?.lastName
+                           : null,
+                       email: client?.email ? client?.email : "UNKNOWN",
+                       phone: client?.phone ? client?.phone : "UNKNOWN",
+                       metadata: {
+                         clientId,
+                       },
+                     });
+                   customer = await stripe.customers
+                     .create({
+                       address: {
+                         line1: "UNKNOWN - WALK IN",
+                         city: "DENVER",
+                         state: "CO",
+                         country: "US",
+                       },
+                       name:
+                         client?.firstName && client?.lastName
+                           ? `${client?.firstname} ${client?.lastName}`
+                           : client?.firstName
+                           ? client?.firstName
+                           : client?.lastName
+                           ? client?.lastName
+                           : null,
+                       email: client?.email ? client?.email : "UNKNOWN",
+                       phone: client?.phone ? client?.phone : "UNKNOWN",
+                       metadata: {
+                         clientId,
+                       },
+                     })
+                     .catch((error: any) => throwError(error));
+                 } else {
+                   let matchedCustomer = null;
+                   matchingCustomers.forEach((customerData: any) => {
+                     if (customerData.metadata?.clientId === clientId)
+                       matchedCustomer = customerData;
+                   });
+                   if (matchedCustomer === null) {
+                     if (DEBUG)
+                       console.log(
+                         "No Matching clientIds Found. Creating NEW Customer: ",
+                         {
+                           address: {
+                             line1: "UNKNOWN - WALK IN",
+                             city: "DENVER",
+                             state: "CO",
+                             country: "US",
+                           },
+                           name:
+                             client?.firstName && client?.lastName
+                               ? `${client?.firstname} ${client?.lastName}`
+                               : client?.firstName
+                               ? client?.firstName
+                               : client?.lastName
+                               ? client?.lastName
+                               : null,
+                           email: client?.email ? client?.email : "UNKNOWN",
+                           phone: client?.phone ? client?.phone : "UNKNOWN",
+                           metadata: {
+                             clientId,
+                           },
+                         }
+                       );
+                     customer = await stripe.customers
+                       .create({
+                         address: {
+                           line1: "UNKNOWN - WALK IN",
+                           city: "DENVER",
+                           state: "CO",
+                           country: "US",
+                         },
+                         name:
+                           client?.firstName && client?.lastName
+                             ? `${client?.firstname} ${client?.lastName}`
+                             : client?.firstName
+                             ? client?.firstName
+                             : client?.lastName
+                             ? client?.lastName
+                             : null,
+                         email: client?.email ? client?.email : "UNKNOWN",
+                         phone: client?.phone ? client?.phone : "UNKNOWN",
+                         metadata: {
+                           clientId,
+                         },
+                       })
+                       .catch((error: any) => throwError(error));
+                   } else {
+                     customer = matchedCustomer;
+                     if (DEBUG)
+                       console.log(
+                         "Matched an existing customer ID => ",
+                         customer
+                       );
+                   }
+                 }
+                 if (DEBUG) console.log("CUSTOMER -> ", customer);
+                 const paymentMethods =
+                   await stripe.customers.listPaymentMethods(customer?.id, {
+                     type: "card",
+                   });
+                 const validPaymentMethods = await verifyValidPaymentSource(
+                   clientId,
+                   customer.id
+                 );
+                 if (DEBUG) {
+                   console.log("paymentMethods", paymentMethods);
+                   console.log("validPaymentMethods", validPaymentMethods);
+                 }
+                 if (validPaymentMethods !== false) {
+                   admin
+                     .firestore()
+                     .collection("waitlist")
+                     .doc(email)
+                     .set(
+                       {
+                         id: clientId,
+                         firstName: client?.firstName,
+                         lastName: client?.lastName,
+                         phone: client?.phone,
+                         status: "complete",
+                         isActive: true,
+                         customerId: customer?.id,
+                         paymentMethod: paymentMethods?.data[0],
+                         updatedOn: new Date(),
+                       },
+                       { merge: true }
+                     )
+                     .catch((error: any) => throwError(error));
+                   if (DEBUG)
+                     console.log("FINAL RESULT => ", {
+                       isNewClient,
+                       client,
+                     });
+                   sendNotification({
+                     type: "slack",
+                     payload: {
+                       message: `:ballot_box_with_check: Appointment Check In Update - Status: Complete - ${
+                         email ? email : ""
+                       } ${firstName ? firstName : ""} ${
+                         lastName ? lastName : ""
+                       } `,
+                     },
+                   });
+                   return {
+                     isNewClient,
+                     client: {
+                       email: client?.email,
+                       firstName: client?.firstName,
+                       lastName: client?.lastName,
+                       phone: client?.phone,
+                       id: clientId,
+                     },
+                   };
+                 } else {
+                   if (DEBUG)
+                     console.log(
+                       "NO VALID PAYMENT METHODS FOUND FOR EXISTING CUSTOMER - STARTING NEW CHECKOUT SESSION"
+                     );
+                   const session = await stripe.checkout.sessions.create({
+                     payment_method_types: ["card"],
+                     mode: "setup",
+                     customer: customer?.id,
+                     client_reference_id: clientId,
+                     metadata: {
+                       clientId,
+                     },
+                     success_url:
+                       (environment?.type === "development"
+                         ? "http://localhost:3001"
+                         : environment.type === "staging"
+                         ? "https://stage.app.movetcare.com"
+                         : "https://app.movetcare.com") +
+                       "/appointment-check-in/success/",
+                     cancel_url:
+                       (environment?.type === "development"
+                         ? "http://localhost:3001"
+                         : environment.type === "staging"
+                         ? "https://stage.app.movetcare.com"
+                         : "https://app.movetcare.com") +
+                       "/appointment-check-in/",
+                   });
+                   admin
+                     .firestore()
+                     .collection("waitlist")
+                     .doc(email)
+                     .set(
+                       {
+                         status: "checkout",
+                         id: clientId,
+                         firstName: client?.firstName,
+                         lastName: client?.lastName,
+                         phone: client?.phone,
+                         customerId: customer?.id,
+                         updatedOn: new Date(),
+                       },
+                       { merge: true }
+                     )
+                     .catch((error: any) => throwError(error));
+                   if (DEBUG)
+                     console.log("FINAL RESULT => ", {
+                       session,
+                       isNewClient,
+                       client: { ...client, id: clientId },
+                     });
+                   sendNotification({
+                     type: "slack",
+                     payload: {
+                       message: `:ballot_box_with_check: Appointment Check In Update - Status: Checkout - ${
+                         email ? email : ""
+                       } ${firstName ? firstName : ""} ${
+                         lastName ? lastName : ""
+                       } `,
+                     },
+                   });
+                   return {
+                     session,
+                     isNewClient,
+                     client: {
+                       email: client?.email,
+                       firstName: client?.firstName,
+                       lastName: client?.lastName,
+                       phone: client?.phone,
+                       id: clientId,
+                     },
+                   };
+                 }
               }
               return false;
             })

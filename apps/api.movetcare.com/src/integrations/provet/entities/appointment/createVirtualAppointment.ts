@@ -33,7 +33,7 @@ export const createVirtualAppointment = async (
       request_hash,
     })
     .then((response: any) => {
-      const {data} = response;
+      const { data } = response;
       if (DEBUG)
         console.log(
           `API Response: POST /appointment/${id}/create_telemedicine_room/ => `,
@@ -41,7 +41,7 @@ export const createVirtualAppointment = async (
         );
       return data?.telemedicine_url;
     })
-    .catch(async (error: any) => {
+    .catch((error: any) => {
       console.error("ERROR", JSON.stringify(error));
       return true;
     });

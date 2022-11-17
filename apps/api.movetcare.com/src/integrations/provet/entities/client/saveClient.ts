@@ -1,4 +1,3 @@
-import {updateSendGridContact} from "./../../../sendgrid/updateSendGridContact";
 import {
   admin,
   DEBUG,
@@ -8,6 +7,7 @@ import {
 } from "../../../../config/config";
 import { createAuthClient } from "./createAuthClient";
 import { getAuthUserById } from "../../../../utils/auth/getAuthUserById";
+import { sendNotification } from "../../../../notifications/sendNotification";
 
 export const saveClient = async (
   clientId: number | string,
@@ -17,7 +17,7 @@ export const saveClient = async (
   const data: any = {};
   if (proVetClientData) {
     if (environment.type === "production")
-      await updateStripeCustomerData(proVetClientData);
+      updateStripeCustomerData(proVetClientData);
     if (proVetClientData?.archived) data.archived = proVetClientData?.archived;
     if (proVetClientData?.email)
       data.email = proVetClientData?.email?.toLowerCase();
@@ -105,7 +105,7 @@ export const saveClient = async (
         console.log(
           `saveClient => ATTEMPTING TO CREATE NEW AUTH USER FOR CLIENT #${clientId}`
         );
-      await createAuthClient(
+      createAuthClient(
         {
           id: `${clientId}`,
           ...proVetClientData,
@@ -122,13 +122,7 @@ export const saveClient = async (
       );
     else {
       const { firstName, lastName, phone, email, uid } = data;
-      if (firstName || lastName || email)
-        await updateSendGridContact({
-          firstName: firstName || "",
-          lastName: lastName || "",
-          email,
-        });
-      if (firstName || phone || email || uid) {
+      if (firstName || lastName || phone || email || uid) {
         if (DEBUG) console.log("saveClient => STARTING AUTH USER DATA UPDATE");
         const newAuthData: any = {};
         if (phone) {
@@ -145,7 +139,18 @@ export const saveClient = async (
         if (firstName) {
           newAuthData.displayName = firstName;
           if (DEBUG)
-            console.log("saveClient => CLIENT NAME DETECTED => ", firstName);
+            console.log(
+              "saveClient => CLIENT FIRST NAME DETECTED => ",
+              firstName
+            );
+        }
+        if (lastName) {
+          newAuthData.displayName += " " + lastName;
+          if (DEBUG)
+            console.log(
+              "saveClient => CLIENT LAST NAME DETECTED => ",
+              lastName
+            );
         }
         if (email) {
           newAuthData.email = email;
@@ -160,7 +165,7 @@ export const saveClient = async (
           console.log("saveClient => AUTH USER DATA UPDATES =>", newAuthData);
           console.log("saveClient => USER ID =>", clientId);
         }
-        await admin
+        admin
           .auth()
           .updateUser(`${clientId}`, newAuthData)
           .then((userRecord: any) => {
@@ -170,7 +175,7 @@ export const saveClient = async (
                 userRecord.toJSON()
               );
           })
-          .catch(async (error: any) => DEBUG && console.error(error.message));
+          .catch((error: any) => DEBUG && console.error(error.message));
       }
     }
   } else if (DEBUG)
@@ -239,7 +244,7 @@ export const saveClient = async (
     .catch((error: any) => throwError(error));
 };
 
-const updateStripeCustomerData = async (proVetClientData: any) => {
+const updateStripeCustomerData = (proVetClientData: any) => {
   if (
     proVetClientData?.id_number !== undefined &&
     proVetClientData?.id_number !== null &&
@@ -272,7 +277,7 @@ const updateStripeCustomerData = async (proVetClientData: any) => {
           phone: proVetClientData?.phone_numbers[0]?.number || "",
         }
       );
-    await stripe.customers
+    stripe.customers
       .update(proVetClientData?.id_number, {
         email: proVetClientData?.email,
         address: {
@@ -294,7 +299,15 @@ const updateStripeCustomerData = async (proVetClientData: any) => {
             : null,
         phone: proVetClientData?.phone_numbers[0]?.number || "",
       })
-      .catch(async (error: any) =>
+      .then(() =>
+        sendNotification({
+          type: "slack",
+          payload: {
+            message: `:money_mouth_face: Customer Information Updated in Stripe\n\nhttps://dashboard.stripe.com/customers/${proVetClientData?.id_number}\n\n`,
+          },
+        })
+      )
+      .catch((error: any) =>
         // eslint-disable-next-line quotes
         error?.message?.includes("No such customer: 'cus_LYg1C7Et5ySQKC'")
           ? console.log(error)

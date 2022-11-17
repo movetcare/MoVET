@@ -4,12 +4,11 @@ import {
   DEBUG,
   throwError,
   environment,
-  admin,
 } from "../../config/config";
-import {Response} from "express";
-import {EventWebhook, EventWebhookHeader} from "@sendgrid/eventwebhook";
-import {findSlackChannel} from "../../utils/logging/findSlackChannel";
-import {sendSlackMessage} from "../../utils/logging/sendSlackMessage";
+import { Response } from "express";
+import { EventWebhook, EventWebhookHeader } from "@sendgrid/eventwebhook";
+import { findSlackChannel } from "../../utils/logging/findSlackChannel";
+import { sendSlackMessage } from "../../utils/logging/sendSlackMessage";
 
 const verifyRequest = function (
   publicKey: string,
@@ -48,28 +47,14 @@ export const sendgridWebhook: Promise<Response> = functions
         );
         for (const [key, value] of Object.entries(request?.body)) {
           if (DEBUG) console.log(`${key}: ${JSON.stringify(value)}`);
-          const {email, event, sg_event_id, sg_message_id, timestamp} =
+          const { email, event, sg_event_id, sg_message_id } =
             request.body[key];
           if (
             email !== "support@movetcare.com" &&
             email !== "info@movetcare.com" &&
             email !== "dev@movetcare.com"
           ) {
-            await admin
-              .firestore()
-              .collection("events")
-              .doc("sendgrid")
-              .collection("logs")
-              .add({
-                email,
-                event,
-                sg_event_id,
-                sg_message_id,
-                timestamp,
-                createdOn: new Date(),
-              })
-              .catch((error: any) => throwError(error));
-            await sendSlackMessage(channelId, null, [
+            sendSlackMessage(channelId, null, [
               {
                 type: "section",
                 text: {

@@ -20,16 +20,16 @@ export const logAuthEvent = async (payload: EventLogPayload) => {
           payload?.data?.email.toLowerCase()
         );
       const proVetClientData = await fetchEntity("client", parseInt(uid));
-      await saveClient(uid, proVetClientData);
-      if (proVetClientData?.patients) {
-        proVetClientData?.patients.map(async (patient: any) => {
-          const proVetPatientData = await fetchEntity(
-            "patient",
-            getProVetIdFromUrl(patient)
-          );
-          await savePatient(proVetPatientData);
-        });
-      }
+       saveClient(uid, proVetClientData);
+       if (proVetClientData?.patients) {
+         proVetClientData?.patients.map(async (patient: any) => {
+           const proVetPatientData = await fetchEntity(
+             "patient",
+             getProVetIdFromUrl(patient)
+           );
+           savePatient(proVetPatientData);
+         });
+       }
 
       return await admin
         .firestore()

@@ -4,9 +4,9 @@ import {processTaskQueue} from "../../queue/processTaskQueue";
 
 export const taskRunnerDev: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
-  .https.onRequest(async (request: any, response: any) => {
+  .https.onRequest((request: any, response: any) => {
     if (request.headers.host === "localhost:5001") {
-      await processTaskQueue();
+      processTaskQueue();
       return response.status(200).send();
     }
     return response.status(400).send();

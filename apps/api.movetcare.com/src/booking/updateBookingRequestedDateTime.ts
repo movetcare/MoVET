@@ -32,13 +32,17 @@ export const updateBookingRequestedDateTime = async (
           success_url:
             (environment?.type === "development"
               ? "http://localhost:3001"
-              : "https://app.movetcare.com") +
+              : environment?.type === "production"
+              ? "https://app.movetcare.com"
+              : "https://stage.app.movetcare.com") +
             "/request-an-appointment/success?id=" +
             id,
           cancel_url:
             (environment?.type === "development"
               ? "http://localhost:3001"
-              : "https://app.movetcare.com") + "/request-an-appointment",
+              : environment?.type === "production"
+              ? "https://app.movetcare.com"
+              : "https://stage.app.movetcare.com") + "/request-an-appointment",
         })
       : null;
   if (DEBUG) console.log("STRIPE CHECKOUT SESSION", session);

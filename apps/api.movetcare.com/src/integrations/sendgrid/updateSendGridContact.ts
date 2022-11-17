@@ -23,16 +23,16 @@ export const updateSendGridContact = async ({
       customFields,
     });
     if (environment.type !== "production")
-      await sendGridAPI
-        .request({
-          url: "/v3/marketing/field_definitions",
-          method: "GET",
-        })
-        .then(([response]) => {
-          console.log("SENDGRID RESPONSE STATUS: ", response.statusCode);
-          console.log("SENDGRID RESPONSE BODY: ", response.body);
-        })
-        .catch(async (error: any) => DEBUG && console.error(error));
+       sendGridAPI
+         .request({
+           url: "/v3/marketing/field_definitions",
+           method: "GET",
+         })
+         .then(([response]) => {
+           console.log("SENDGRID RESPONSE STATUS: ", response.statusCode);
+           console.log("SENDGRID RESPONSE BODY: ", response.body);
+         })
+         .catch((error: any) => DEBUG && console.error(error));
   }
   return environment.type === "production"
     ? await sendGridAPI
@@ -69,7 +69,7 @@ export const updateSendGridContact = async ({
           });
           return true;
         })
-        .catch(async (error: any) => DEBUG && console.error(error))
+        .catch((error: any) => DEBUG && console.error(error))
     : DEBUG &&
         (console.log("SIMULATED updateSendGridContact REQUEST", {
           url: "/v3/marketing/contacts",

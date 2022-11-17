@@ -4,12 +4,13 @@ import {
   throwError,
   stripeWebhookSecret,
   environment,
+  DEBUG,
 } from "../../config/config";
-import {Response} from "express";
-import {terminalReaderActionSucceeded} from "./pos/terminalReaderActionSucceeded";
-import {terminalReaderActionFailed} from "./pos/terminalReaderActionFailed";
-import {terminalReaderConnected} from "./pos/terminalReaderConnected";
-import {terminalReaderDisconnected} from "./pos/terminalReaderDisconnected";
+import { Response } from "express";
+import { terminalReaderActionSucceeded } from "./pos/terminalReaderActionSucceeded";
+import { terminalReaderActionFailed } from "./pos/terminalReaderActionFailed";
+import { terminalReaderConnected } from "./pos/terminalReaderConnected";
+import { terminalReaderDisconnected } from "./pos/terminalReaderDisconnected";
 import { checkoutSessionCompleted } from "./checkout/checkoutSessionCompleted";
 import { paymentMethodUpdated } from "./paymentMethodUpdated";
 import { paymentIntentUpdated } from "./paymentIntentUpdated";
@@ -19,7 +20,7 @@ export const processStripeWebhook = async (
   request: any,
   response: Response
 ) => {
-  console.log("INCOMING REQUEST PAYLOAD => ", request.body);
+  if (DEBUG) console.log("INCOMING REQUEST PAYLOAD => ", request.body);
   const sig: any = request.headers["stripe-signature"];
   let event: Stripe.Event | any;
   if (environment.type !== "development") {
@@ -121,6 +122,7 @@ export const processStripeWebhook = async (
         throwError({ ...event, message: "Stripe Event Type Missing!" });
         break;
     }
+    return response.status(200).send({ received: true });
   } else
     sendNotification({
       type: "slack",
@@ -128,5 +130,5 @@ export const processStripeWebhook = async (
         message: `:interrobang: UNSUPPORTED SLACK WEBHOOK TRIGGERED\n\nhttps://dashboard.stripe.com/events/${request.body?.id}\n\n`,
       },
     });
-  return response.status(200).send({ received: true });
+  return response.status(400).send({ received: false });
 };

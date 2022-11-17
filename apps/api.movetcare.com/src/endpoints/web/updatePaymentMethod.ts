@@ -51,7 +51,7 @@ export const updatePaymentMethod = functions
                 if (DEBUG) console.log("userRecord", userRecord);
                 return userRecord;
               })
-              .catch(async (error: any) => throwError(error));
+              .catch((error: any) => throwError(error));
             const {data: matchingCustomers} = await stripe.customers.list({
               email,
             });
@@ -90,7 +90,7 @@ export const updatePaymentMethod = functions
                     clientId: client.uid,
                   },
                 })
-                .catch(async (error: any) => throwError(error) as any);
+                .catch((error: any) => throwError(error) as any);
             } else {
               let matchedCustomer = null;
               matchingCustomers.forEach((customerData: any) => {
@@ -127,7 +127,7 @@ export const updatePaymentMethod = functions
                       clientId: client.uid,
                     },
                   })
-                  .catch(async (error: any) => throwError(error) as any);
+                  .catch((error: any) => throwError(error) as any);
               } else {
                 customer = matchedCustomer;
                 if (DEBUG)

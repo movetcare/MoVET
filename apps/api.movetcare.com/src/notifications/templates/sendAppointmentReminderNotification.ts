@@ -42,7 +42,7 @@ interface UserDetails {
 
 export const sendAppointmentReminderNotification = async (
   appointmentDetails: AppointmentDetails
-) => {
+): Promise<void> => {
   const {
     active,
     send24HourReminder,
@@ -234,7 +234,14 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
       message: emailText,
     };
     if (DEBUG) console.log("SENDING EMAIL APPOINTMENT NOTIFICATION");
-    sendNotification({ type: "email", payload: { ...emailConfig, client } });
+    sendNotification({
+      type: "email",
+      payload: {
+        ...emailConfig,
+        client: `${client}`,
+        patients: patients.map((patient: any) => `${patient?.id}`),
+      },
+    });
   } else if (DEBUG)
     console.log("DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION EMAIL", {
       sendEmail:
@@ -296,8 +303,9 @@ another day/time if any of the above is true.</i> No cancellation charge will ap
       type: "sms",
       payload: {
         message: smsText,
-        subject: "24 Hour Appointment Reminder Notification (SMS)",
-        client,
+        subject: "24 Hour Appointment Reminder Notification",
+        client: `${client}`,
+        patients: patients.map((patient: any) => `${patient?.id}`),
       },
     });
   } else if (DEBUG)
@@ -409,7 +417,10 @@ const send30MinAppointmentNotification = async (
       message: emailText,
     };
     if (DEBUG) console.log("SENDING EMAIL APPOINTMENT NOTIFICATION");
-    sendNotification({ type: "email", payload: { ...emailConfig, client } });
+    sendNotification({
+      type: "email",
+      payload: { ...emailConfig, client: `${client}` },
+    });
   } else if (DEBUG)
     console.log("DID NOT SEND 30 MIN APPOINTMENT NOTIFICATION EMAIL", {
       sendEmail:
@@ -479,8 +490,8 @@ and medical records to info@movetcare.com prior to your appointment.\n`
     sendNotification({
       type: "sms",
       payload: {
-        client,
-        subject: "30 Min Appointment Reminder Notification (SMS)",
+        client: `${client}`,
+        subject: "30 Min Appointment Reminder Notification",
         message: smsText,
       },
     });

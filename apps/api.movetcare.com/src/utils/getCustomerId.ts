@@ -1,5 +1,6 @@
 import {Stripe} from "stripe";
 import { admin, stripe, throwError, DEBUG } from "../config/config";
+import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
 
 export interface UserNotificationSettings {
   sendEmail: boolean;
@@ -83,19 +84,9 @@ const createNewCustomer = async (
     })
     .catch((error: any) => throwError(error));
   if (DEBUG) console.log("NEW STRIPE CUSTOMER DATA", customer);
-  await admin
-    .firestore()
-    .collection("clients")
-    .doc(id)
-    .set(
-      { customer: { id: customer?.id }, updatedOn: new Date() },
-      { merge: true }
-    )
-    .then(
-      () =>
-        DEBUG &&
-        console.log("SUCCESSFULLY SAVED NEW CLIENT CUSTOMER ID", customer?.id)
-    )
-    .catch((error: any) => throwError(error));
+  updateProVetClient({
+    customer: customer?.id,
+    id,
+  });
   return customer?.id;
 };

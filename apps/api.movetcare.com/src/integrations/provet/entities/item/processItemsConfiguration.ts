@@ -6,12 +6,12 @@ export const processItemsConfiguration = async ({
   itemIds,
 }: {
   itemIds: Array<string>;
-}) => {
+}): Promise<void> => {
   if (DEBUG) console.log("PROCESSING ITEMS CONFIGURATION => ", itemIds);
   if (itemIds) {
     const itemData: any | null = await fetchItemsData(itemIds as Array<string>);
     if (itemData)
-      await saveItems(itemData as any).then(
+      saveItems(itemData as any).then(
         () => DEBUG && console.log("SUCCESSFULLY CONFIGURED ITEMS", itemIds)
       );
     else if (DEBUG)

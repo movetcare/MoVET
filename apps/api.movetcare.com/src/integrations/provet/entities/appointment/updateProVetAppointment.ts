@@ -71,7 +71,7 @@ export const updateProVetAppointment = async (data: any): Promise<any> => {
     .catch((error: any) => throwError(error));
 
   if (proVetAppointmentData && requestPayload.cancellation_reason)
-    await sendCancellationEmail(`${data?.client}`, `${data?.id}`);
+     sendCancellationEmail(`${data?.client}`, `${data?.id}`);
 
   return await saveAppointment(proVetAppointmentData, data.movetData);
 };

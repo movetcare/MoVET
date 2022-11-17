@@ -1,7 +1,7 @@
 import { admin, throwError, DEBUG } from "../../../config/config";
 
-export const terminalReaderConnected = async (event: any) =>
-  await admin
+export const terminalReaderConnected = (event: any): void =>
+  admin
     .firestore()
     .collection("configuration")
     .doc("pos")
@@ -20,6 +20,5 @@ export const terminalReaderConnected = async (event: any) =>
           ...event?.data?.object,
           updatedOn: new Date(),
         });
-      return true;
     })
     .catch((error: any) => throwError(error));

@@ -12,5 +12,5 @@ export const refreshBreeds: Promise<void> = functions
     await deleteCollection("breeds_canine").then(
       () => DEBUG && console.log("DELETED ALL CANINE BREEDS!")
     );
-    await configureBreeds();
+     configureBreeds();
   });

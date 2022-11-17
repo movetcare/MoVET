@@ -1,14 +1,14 @@
-import {admin, DEBUG} from "../../../../config/config";
+import { admin, DEBUG, throwError } from "../../../../config/config";
 // import {sendVerificationEmail} from '../../../../utils/auth/sendVerificationEmail';
-import {saveClient} from "./saveClient";
+import { saveClient } from "./saveClient";
 import { sendWelcomeEmail } from "../../../../notifications/templates/sendWelcomeEmail";
 
-export const createAuthClient = async (
+export const createAuthClient = (
   proVetClientData: any,
   movetClientData?: any,
   withResetLink?: boolean
 ): Promise<boolean> =>
-  await admin
+  admin
     .auth()
     .createUser(
       proVetClientData?.password
@@ -28,7 +28,7 @@ export const createAuthClient = async (
         onboardingComplete: false,
         isClient: true,
       };
-      await admin.auth().setCustomUserClaims(userRecord.uid, customClaims);
+      admin.auth().setCustomUserClaims(userRecord.uid, customClaims);
       if (DEBUG) {
         const user = await admin.auth().getUser(userRecord.uid);
         console.log("Custom claims added:", user);
@@ -47,10 +47,11 @@ export const createAuthClient = async (
         if (DEBUG) console.log("ATTEMPTING TO SEND WELCOME EMAIL WITHOUT LINK");
         sendWelcomeEmail(proVetClientData?.email, false);
       }
+
       return await saveClient(
         proVetClientData?.id,
         proVetClientData,
         movetClientData
       );
     })
-    .catch((error: any) => console.error(error));
+    .catch((error: any) => throwError(error));

@@ -21,8 +21,7 @@ export const cancelTerminalAction = functions
         console.log("cancelTerminalAction context.auth => ", context.auth);
         console.log("cancelTerminalAction DATA => ", data);
       }
-      const isAuthorized = await requestIsAuthorized(context);
-      if (isAuthorized) {
+      if (await requestIsAuthorized(context)) {
         return await request
           .post(
             `https://api.stripe.com/v1/terminal/readers/${data?.reader}/cancel_action`,
@@ -118,7 +117,7 @@ export const cancelTerminalAction = functions
                                 },
                                 { merge: true }
                               )
-                              .catch(async (error: any) => throwError(error));
+                              .catch((error: any) => throwError(error));
                             await admin
                               .firestore()
                               .collection("client_invoices")
@@ -131,7 +130,7 @@ export const cancelTerminalAction = functions
                                 },
                                 { merge: true }
                               )
-                              .catch(async (error: any) => throwError(error));
+                              .catch((error: any) => throwError(error));
                           });
                         else
                           throwError({

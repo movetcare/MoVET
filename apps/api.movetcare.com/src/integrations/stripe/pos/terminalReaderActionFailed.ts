@@ -1,9 +1,9 @@
 import { admin, stripe, throwError, DEBUG } from "../../../config/config";
 
-export const terminalReaderActionFailed = async (event: any) => {
+export const terminalReaderActionFailed = (event: any): void => {
   if (DEBUG)
     console.log("terminalReaderActionFailed EVENT:", event?.data?.action);
-  await admin
+  admin
     .firestore()
     .collection("configuration")
     .doc("pos")
@@ -19,7 +19,7 @@ export const terminalReaderActionFailed = async (event: any) => {
     )
     .then(() => true)
     .catch((error: any) => throwError(error));
-  await admin
+  admin
     .firestore()
     .collection("counter_sales")
     .where(
@@ -29,7 +29,7 @@ export const terminalReaderActionFailed = async (event: any) => {
     )
     .limit(1)
     .get()
-    .then(async (querySnapshot: any) => {
+    .then((querySnapshot: any) => {
       if (DEBUG)
         console.log("querySnapshot?.docs?.length", querySnapshot?.docs?.length);
       if (querySnapshot?.docs?.length > 0)
@@ -46,7 +46,7 @@ export const terminalReaderActionFailed = async (event: any) => {
           );
           if (DEBUG)
             console.log("canceledPaymentIntent", canceledPaymentIntent);
-          await admin
+          admin
             .firestore()
             .collection("counter_sales")
             .doc(doc.id)
@@ -60,7 +60,7 @@ export const terminalReaderActionFailed = async (event: any) => {
               { merge: true }
             )
             .catch((error: any) => throwError(error));
-          await admin
+          admin
             .firestore()
             .collection("counter_sales")
             .doc(doc.id)
@@ -78,7 +78,7 @@ export const terminalReaderActionFailed = async (event: any) => {
             .catch((error: any) => throwError(error));
         });
       else
-        await admin
+        admin
           .firestore()
           .collection("client_invoices")
           .where(
@@ -111,7 +111,7 @@ export const terminalReaderActionFailed = async (event: any) => {
                   );
                 if (DEBUG)
                   console.log("canceledPaymentIntent", canceledPaymentIntent);
-                await admin
+                admin
                   .firestore()
                   .collection("client_invoices")
                   .doc(doc.id)
@@ -125,23 +125,23 @@ export const terminalReaderActionFailed = async (event: any) => {
                     { merge: true }
                   )
                   .catch((error: any) => throwError(error));
-                await admin
-                  .firestore()
-                  .collection("client_invoices")
-                  .doc(doc.id)
-                  .set(
-                    {
-                      paymentStatus: event?.data?.object?.action?.status,
-                      paymentIntentObject: paymentIntent,
-                      failureCode:
-                        paymentIntent?.charges?.data[0]?.failure_code,
-                      failureMessage:
-                        paymentIntent?.charges?.data[0]?.failure_message,
-                      updatedOn: new Date(),
-                    },
-                    { merge: true }
-                  )
-                  .catch((error: any) => throwError(error));
+                admin
+                   .firestore()
+                   .collection("client_invoices")
+                   .doc(doc.id)
+                   .set(
+                     {
+                       paymentStatus: event?.data?.object?.action?.status,
+                       paymentIntentObject: paymentIntent,
+                       failureCode:
+                         paymentIntent?.charges?.data[0]?.failure_code,
+                       failureMessage:
+                         paymentIntent?.charges?.data[0]?.failure_message,
+                       updatedOn: new Date(),
+                     },
+                     { merge: true }
+                   )
+                   .catch((error: any) => throwError(error));
               });
             else
               throwError({

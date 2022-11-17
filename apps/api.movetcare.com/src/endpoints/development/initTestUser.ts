@@ -260,7 +260,7 @@ const importTelehealthChat = async () =>
             },
             createdAt: new Date(),
           })
-          .catch(async (error: any) => throwError(error))
+          .catch((error: any) => throwError(error))
     )
     .catch((error: any) => throwError(error));
 

@@ -10,6 +10,6 @@ export const syncFromProVetClientData = async (email: string) => {
       .then((userRecord: any) => userRecord?.uid)
       .catch(() => false);
     const proVetClientData = await fetchEntity("client", parseInt(uid));
-    await saveClient(uid, proVetClientData);
+     saveClient(uid, proVetClientData);
   }
 };

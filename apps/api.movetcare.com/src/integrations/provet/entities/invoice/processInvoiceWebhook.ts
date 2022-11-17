@@ -59,10 +59,10 @@ export const processInvoiceWebhook = async (
             },
             { merge: true }
           )
-          .then(async () => {
+          .then(() => {
             if (invoiceItemDetails && invoiceItemDetails.length > 0) {
               for (let i = 0; i < invoiceItemDetails.length; i++) {
-                await admin
+                admin
                   .firestore()
                   .collection("client_invoices")
                   .doc(`${invoice_id}`)
@@ -86,10 +86,10 @@ export const processInvoiceWebhook = async (
               }
             }
           })
-          .then(async () => {
+          .then(() => {
             if (invoicePaymentDetails && invoicePaymentDetails.length > 0) {
               for (let i = 0; i < invoicePaymentDetails.length; i++) {
-                await admin
+                admin
                   .firestore()
                   .collection("client_invoices")
                   .doc(`${invoice_id}`)
@@ -120,7 +120,7 @@ export const processInvoiceWebhook = async (
             );
             if (DEBUG) console.log("client", client);
             await saveClient(client?.id, client);
-            return await admin
+            admin
               .firestore()
               .collection("clients")
               .doc(`${getProVetIdFromUrl(invoice?.client)}`)
@@ -137,10 +137,10 @@ export const processInvoiceWebhook = async (
               )
               .catch((error: any) => throwError(error));
           })
-          .then(async () => {
+          .then(() => {
             if (invoiceItemDetails && invoiceItemDetails.length > 0) {
               for (let i = 0; i < invoiceItemDetails.length; i++) {
-                await admin
+                admin
                   .firestore()
                   .collection("clients")
                   .doc(`${getProVetIdFromUrl(invoice?.client)}`)
@@ -166,10 +166,10 @@ export const processInvoiceWebhook = async (
               }
             }
           })
-          .then(async () => {
+          .then(() => {
             if (invoicePaymentDetails && invoicePaymentDetails.length > 0) {
               for (let i = 0; i < invoicePaymentDetails.length; i++) {
-                await admin
+                admin
                   .firestore()
                   .collection("clients")
                   .doc(`${getProVetIdFromUrl(invoice?.client)}`)
@@ -195,14 +195,14 @@ export const processInvoiceWebhook = async (
               }
             }
           })
-          .then(async () => {
+          .then(() => {
             if (invoice?.credit_note_original_invoice) {
               if (DEBUG)
                 console.log(
                   "invoice?.credit_note_original_invoice",
                   invoice?.credit_note_original_invoice
                 );
-              await admin
+              admin
                 .firestore()
                 .collection("client_invoices")
                 .doc(
@@ -212,32 +212,31 @@ export const processInvoiceWebhook = async (
                   { updatedOn: new Date(), paymentStatus: "fully-refunded" },
                   { merge: true }
                 )
-                .then(
-                  async () =>
-                    await admin
-                      .firestore()
-                      .collection("clients")
-                      .doc(`${getProVetIdFromUrl(invoice?.client)}`)
-                      .collection("invoices")
-                      .doc(
-                        `${getProVetIdFromUrl(
-                          invoice?.credit_note_original_invoice
-                        )}`
-                      )
-                      .set(
-                        {
-                          updatedOn: new Date(),
-                          paymentStatus: "fully-refunded",
-                        },
-                        { merge: true }
-                      )
-                      .catch(async (error: any) => throwError(error))
+                .then(() =>
+                  admin
+                    .firestore()
+                    .collection("clients")
+                    .doc(`${getProVetIdFromUrl(invoice?.client)}`)
+                    .collection("invoices")
+                    .doc(
+                      `${getProVetIdFromUrl(
+                        invoice?.credit_note_original_invoice
+                      )}`
+                    )
+                    .set(
+                      {
+                        updatedOn: new Date(),
+                        paymentStatus: "fully-refunded",
+                      },
+                      { merge: true }
+                    )
+                    .catch((error: any) => throwError(error))
                 )
                 .catch((error: any) => throwError(error));
             }
           })
           .then(() => response.status(200).send({ received: true }))
-          .catch(async (error: any) => throwError(error))
+          .catch((error: any) => throwError(error))
       : await admin
           .firestore()
           .collection("counter_sales")
@@ -251,10 +250,10 @@ export const processInvoiceWebhook = async (
             },
             { merge: true }
           )
-          .then(async () => {
+          .then(() => {
             if (invoiceItemDetails && invoiceItemDetails.length > 0) {
               for (let i = 0; i < invoiceItemDetails.length; i++) {
-                await admin
+                admin
                   .firestore()
                   .collection("counter_sales")
                   .doc(`${invoice?.id}`)
@@ -278,10 +277,10 @@ export const processInvoiceWebhook = async (
               }
             }
           })
-          .then(async () => {
+          .then(() => {
             if (invoicePaymentDetails && invoicePaymentDetails.length > 0) {
               for (let i = 0; i < invoicePaymentDetails.length; i++) {
-                await admin
+                admin
                   .firestore()
                   .collection("counter_sales")
                   .doc(`${invoice?.id}`)
@@ -305,14 +304,14 @@ export const processInvoiceWebhook = async (
               }
             }
           })
-          .then(async () => {
+          .then(() => {
             if (invoice?.credit_note_original_invoice) {
               if (DEBUG)
                 console.log(
                   "invoice?.credit_note_original_invoice",
                   invoice?.credit_note_original_invoice
                 );
-              await admin
+              admin
                 .firestore()
                 .collection("counter_sales")
                 .doc(

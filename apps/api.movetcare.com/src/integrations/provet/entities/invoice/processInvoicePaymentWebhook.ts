@@ -58,10 +58,10 @@ export const processInvoicePaymentWebhook = async (
             },
             { merge: true }
           )
-          .then(async () => {
+          .then(() => {
             if (invoicePaymentDetails && invoicePaymentDetails.length > 0) {
               for (let i = 0; i < invoicePaymentDetails.length; i++) {
-                await admin
+                admin
                   .firestore()
                   .collection("client_invoices")
                   .doc(`${invoice?.id}`)
@@ -85,61 +85,57 @@ export const processInvoicePaymentWebhook = async (
               }
             }
           })
-          .then(
-            async () =>
-              await admin
-                .firestore()
-                .collection("clients")
-                .doc(`${getProVetIdFromUrl(invoice?.client)}`)
-                .collection("invoices")
-                .doc(`${invoice?.id}`)
-                .set(
-                  {
-                    ...invoice,
-                    updatedOn: new Date(),
-                  },
-                  { merge: true }
-                )
-                .then(async () => {
-                  if (
-                    invoicePaymentDetails &&
-                    invoicePaymentDetails.length > 0
-                  ) {
-                    for (let i = 0; i < invoicePaymentDetails.length; i++) {
-                      await admin
-                        .firestore()
-                        .collection("client_invoices")
-                        .doc(`${invoice?.id}`)
-                        .collection("payments")
-                        .doc(`${invoicePaymentDetails[i]?.id}`)
-                        .set(
-                          {
-                            updatedOn: new Date(),
-                            ...invoicePaymentDetails[i],
-                          },
-                          { merge: true }
-                        )
-                        .then(
-                          () =>
-                            DEBUG &&
-                            console.log(
-                              `SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`
-                            )
-                        )
-                        .catch((error: any) => throwError(error));
-                    }
+          .then(() =>
+            admin
+              .firestore()
+              .collection("clients")
+              .doc(`${getProVetIdFromUrl(invoice?.client)}`)
+              .collection("invoices")
+              .doc(`${invoice?.id}`)
+              .set(
+                {
+                  ...invoice,
+                  updatedOn: new Date(),
+                },
+                { merge: true }
+              )
+              .then(() => {
+                if (invoicePaymentDetails && invoicePaymentDetails.length > 0) {
+                  for (let i = 0; i < invoicePaymentDetails.length; i++) {
+                    admin
+                      .firestore()
+                      .collection("client_invoices")
+                      .doc(`${invoice?.id}`)
+                      .collection("payments")
+                      .doc(`${invoicePaymentDetails[i]?.id}`)
+                      .set(
+                        {
+                          updatedOn: new Date(),
+                          ...invoicePaymentDetails[i],
+                        },
+                        { merge: true }
+                      )
+                      .then(
+                        () =>
+                          DEBUG &&
+                          console.log(
+                            `SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`
+                          )
+                      )
+                      .catch((error: any) => throwError(error));
                   }
-                })
-                .catch(async (error: any) => throwError(error))
+                }
+              })
+              .catch((error: any) => throwError(error))
           )
-          .then(async () => {
+          .then(() => {
             if (invoice?.credit_note_original_invoice) {
               if (DEBUG)
                 console.log(
                   "invoice?.credit_note_original_invoice",
                   invoice?.credit_note_original_invoice
                 );
-              await admin
+              admin
                 .firestore()
                 .collection("client_invoices")
                 .doc(
@@ -149,32 +145,31 @@ export const processInvoicePaymentWebhook = async (
                   { updatedOn: new Date(), paymentStatus: "fully-refunded" },
                   { merge: true }
                 )
-                .then(
-                  async () =>
-                    await admin
-                      .firestore()
-                      .collection("clients")
-                      .doc(`${getProVetIdFromUrl(invoice?.client)}`)
-                      .collection("invoices")
-                      .doc(
-                        getProVetIdFromUrl(
-                          `${invoice?.credit_note_original_invoice}`
-                        )
+                .then(() =>
+                  admin
+                    .firestore()
+                    .collection("clients")
+                    .doc(`${getProVetIdFromUrl(invoice?.client)}`)
+                    .collection("invoices")
+                    .doc(
+                      getProVetIdFromUrl(
+                        `${invoice?.credit_note_original_invoice}`
                       )
-                      .set(
-                        {
-                          updatedOn: new Date(),
-                          paymentStatus: "fully-refunded",
-                        },
-                        { merge: true }
-                      )
-                      .catch(async (error: any) => throwError(error))
+                    )
+                    .set(
+                      {
+                        updatedOn: new Date(),
+                        paymentStatus: "fully-refunded",
+                      },
+                      { merge: true }
+                    )
+                    .catch((error: any) => throwError(error))
                 )
                 .catch((error: any) => throwError(error));
             }
           })
           .then(() => response.status(200).send({ received: true }))
-          .catch(async (error: any) => throwError(error))
+          .catch((error: any) => throwError(error))
       : await admin
           .firestore()
           .collection("counter_sales")
@@ -186,10 +181,10 @@ export const processInvoicePaymentWebhook = async (
             },
             { merge: true }
           )
-          .then(async () => {
+          .then(() => {
             if (invoicePaymentDetails && invoicePaymentDetails.length > 0) {
               for (let i = 0; i < invoicePaymentDetails.length; i++) {
-                await admin
+                admin
                   .firestore()
                   .collection("counter_sales")
                   .doc(`${invoice?.id}`)
@@ -213,24 +208,26 @@ export const processInvoicePaymentWebhook = async (
               }
             }
           })
-          .then(async () => {
+          .then(() => {
             if (invoice?.credit_note_original_invoice) {
               if (DEBUG)
                 console.log(
                   "invoice?.credit_note_original_invoice",
                   invoice?.credit_note_original_invoice
                 );
-              await admin
-                .firestore()
-                .collection("counter_sales")
-                .doc(
-                  `${getProVetIdFromUrl(invoice?.credit_note_original_invoice)}`
-                )
-                .set(
-                  { updatedOn: new Date(), paymentStatus: "fully-refunded" },
-                  { merge: true }
-                )
-                .catch((error: any) => throwError(error));
+              admin
+                 .firestore()
+                 .collection("counter_sales")
+                 .doc(
+                   `${getProVetIdFromUrl(
+                     invoice?.credit_note_original_invoice
+                   )}`
+                 )
+                 .set(
+                   { updatedOn: new Date(), paymentStatus: "fully-refunded" },
+                   { merge: true }
+                 )
+                 .catch((error: any) => throwError(error));
             }
           })
           .then(() => response.status(200).send({ received: true }))

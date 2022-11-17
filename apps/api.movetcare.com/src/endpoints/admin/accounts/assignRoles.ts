@@ -21,7 +21,7 @@ export const assignRoles = functions.auth
     let isMoVETStaff = false;
     if (adminUsers && adminUsers.length > 0) {
       adminUsers.forEach(
-        async (
+        (
           adminUser: {
             id: string;
             roles: Array<"superAdmin" | "admin" | "staff">;
@@ -39,7 +39,7 @@ export const assignRoles = functions.auth
             adminUser?.id === user?.phoneNumber?.replace("+1", "")
           ) {
             isMoVETStaff = true;
-            await assignMoVETStaffRoles({
+            assignMoVETStaffRoles({
               user,
               adminUser,
             });
@@ -56,28 +56,28 @@ export const assignRoles = functions.auth
                   provider?.providerId === "google.com" ||
                   provider?.providerId === "phone"
                 ) {
-                  await disableAuthAccount(user);
+                  disableAuthAccount(user);
                 }
               }
             );
         }
       );
     } else if (user?.providerData && user?.providerData.length > 0)
-      user?.providerData.forEach(async (provider: { providerId: string }) => {
+      user?.providerData.forEach((provider: { providerId: string }) => {
         if (DEBUG)
           if (
             provider?.providerId === "google.com" ||
             provider?.providerId === "password" ||
             provider?.providerId === "phone"
           ) {
-            await disableAuthAccount(user);
+            disableAuthAccount(user);
           }
       });
     return null;
   });
 
-const disableAuthAccount = async (user: UserRecord) => {
-  await admin
+const disableAuthAccount = (user: UserRecord): void => {
+  admin
     .auth()
     .updateUser(user?.uid, {
       disabled: true,
@@ -104,7 +104,7 @@ const disableAuthAccount = async (user: UserRecord) => {
     .catch((error: any) => throwError(error));
 };
 
-const assignMoVETStaffRoles = async ({
+const assignMoVETStaffRoles = ({
   user,
   adminUser,
 }: {
@@ -113,7 +113,7 @@ const assignMoVETStaffRoles = async ({
     id: string;
     roles: Array<"superAdmin" | "admin" | "staff">;
   };
-}): Promise<void> => {
+}): void => {
   if (DEBUG) console.log(`ADMIN MATCH FOR ${adminUser?.id})!`);
   const userRoles: any = {};
   adminUser?.roles?.forEach((role: string) => {
@@ -132,7 +132,7 @@ const assignMoVETStaffRoles = async ({
     }
   });
   if (DEBUG) console.log("ROLES MATCHED =>", userRoles);
-  await admin
+  admin
     .auth()
     .setCustomUserClaims(user?.uid, userRoles)
     .then(

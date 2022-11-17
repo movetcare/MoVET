@@ -1,7 +1,7 @@
 import { admin, environment, throwError } from "../config/config";
 import { CONTACT_STATUS } from "../constant";
 
-export const configureBooking = async () => {
+export const configureBooking = async (): Promise<boolean> => {
   const alreadyHasConfiguration = await admin
     .firestore()
     .collection("configuration")
@@ -9,7 +9,6 @@ export const configureBooking = async () => {
     .get()
     .then((document: any) => (document.data() ? true : false))
     .catch(() => false);
-
   if (alreadyHasConfiguration) {
     console.log(
       "configuration/booking/ COLLECTION DETECTED - SKIPPING BOOKING CONFIGURATION..."
@@ -17,12 +16,10 @@ export const configureBooking = async () => {
     console.log(
       "DELETE THE configuration/booking/ COLLECTION AND RESTART TO REFRESH THE BOOKING CONFIGURATION"
     );
-    return environment.type === "production"
-      ? true
-      : await generateTestBookingData();
+    if (environment.type !== "production") generateTestBookingData();
   } else {
     console.log("STARTING BOOKING CONFIGURATION");
-    return await admin
+    admin
       .firestore()
       .collection("configuration")
       .doc("bookings")
@@ -50,16 +47,15 @@ export const configureBooking = async () => {
       )
       .then(async () => {
         console.log("BOOKING CONFIGURATION COMPLETE");
-        return environment.type === "production"
-          ? true
-          : await generateTestBookingData();
+        if (environment.type === "production") generateTestBookingData();
       })
       .catch((error: any) => throwError(error));
   }
+  return true;
 };
 
-const generateTestBookingData = async () =>
-  await admin
+const generateTestBookingData = () =>
+  admin
     .firestore()
     .collection("contact")
     .add({
@@ -74,9 +70,9 @@ const generateTestBookingData = async () =>
       status: CONTACT_STATUS.NEEDS_PROCESSING,
       createdOn: new Date(),
     })
-    .then(async () => {
+    .then(() => {
       console.log("TEST CONTACT FORM BOOKING REQUEST COMPLETE");
-      return await admin
+      admin
         .firestore()
         .collection("bookings")
         .add({
@@ -155,9 +151,9 @@ const generateTestBookingData = async () =>
           isActive: false,
           updatedOn: new Date(),
         })
-        .then(async () => {
+        .then(() => {
           console.log("TEST BOOKING FLOW SUBMISSION COMPLETE");
-          return await admin
+          admin
             .firestore()
             .collection("alerts")
             .doc("banner")

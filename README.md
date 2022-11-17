@@ -35,11 +35,14 @@
 Follow the installation guide for each.
 
 - [VS Code](https://code.visualstudio.com/docs/setup/mac)
+- [Xcode](https://developer.apple.com/xcode/)
+- [Android Studio](https://developer.android.com/studio)
 - [Brew](https://brew.sh/) `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
 - [1Password CLI](https://developer.1password.com/docs/cli) `brew install --cask 1password/tap/1password-cli`
 - [OpenJDK](https://formulae.brew.sh/formula/openjdk) `brew install openjdk`
 - [NodeJS](https://formulae.brew.sh/formula/node) `brew install node`
 - [PNPM](https://formulae.brew.sh/formula/pnpm) `brew install pnpm`
+- [Expo CLI](https://docs.expo.dev/archived/expo-cli/)
 - [Firebase CLI](https://firebase.google.com/docs/cli#mac-linux-npm) `pnpm i -g firebase-tools`
 - [Gitmoji CLI](https://www.npmjs.com/package/gitmoji-cli) `pnpm i -g gitmoji-cli`
 - [NPM Check Updates](https://www.npmjs.com/package/npm-check-updates) `pnpm i -g npm-check-updates`
@@ -80,12 +83,24 @@ pnpm start
 - [api.movetcare.com](http://localhost:4000)
 - [app.movetcare.com](http://localhost:3001)
 - [admin.movetcare.com](http://localhost:3002)
+- [mobile.movetcare.com]()
 
 ### Staging App URLs
 - [stage.movetcare.com](https://stage.movetcare.com/)
 - [stage.api.movetcare.com](https://console.firebase.google.com/u/0/project/movet-care-staging/overview)
 - [stage.app.movetcare.com](https://stage.app.movetcare.com/)
 - [stage.admin.movetcare.com](https://stage.admin.movetcare.com/)
+- [mobile.ios.movetcare.com]()
+- [mobile.android.movetcare.com]()
+
+### Production App URLs
+- [stage.movetcare.com](https://stage.movetcare.com/)
+- [stage.api.movetcare.com](https://console.firebase.google.com/u/0/project/movet-care-staging/overview)
+- [stage.app.movetcare.com](https://stage.app.movetcare.com/)
+- [stage.admin.movetcare.com](https://stage.admin.movetcare.com/)
+- [mobile.ios.movetcare.com]()
+- [mobile.android.movetcare.com]()
+
 
 ## Testing
 
@@ -100,11 +115,18 @@ Currently ALL these items must be MANUALLY tested after each deployment.
 BEFORE you start your testing, be sure to log into Firebase, ProVet and Stripe and manaully delete all the test user data within each service.
 As you work on various setions of the app, please ensure you wrtie new Cypress e2e tests to test as much of the core functionality as possible!
 
-#### iOS/Android App
+#### iOS & Android App
 
-Test Clients Email Addresses to Use: 
+Test Email Addresses to Use: 
 - support+test_ios@movetcare.com
 - support+test_android@movetcare.com
+
+Esstential UX Flows to Test (on BOTH iOS & Android)
+- [ ] 1st Time Client Sign Up w/ NO Existing Records in ProVet and Stripe
+- [ ] Existing Client w/ ONE Patient REQUIRING VCPR AND Existing Records in ProVet and Stripe (BUT WITHOUT VALID CC ON FILE)
+- [ ] Existing Client w/ THREE Patients REQUIRING VCPR AND Existing Records in ProVet and Stripe
+- [ ] Existing Client w/ ONE Patient NOT REQUIRING VCPR AND Existing Records in ProVet and Stripe
+- [ ] Existing Client w/ THREE Patients NOT REQUIRING VCPR AND Existing Records in ProVet and Stripe (BUT WITHOUT VALID CC ON FILE)
 
 - Non-Authuthenticated
 - - [ ] Create New Client via Sign Up Screen
@@ -154,8 +176,15 @@ Test Clients Email Addresses to Use:
 
 #### Web App
 
-Test Client Email Addresses to Use: 
+Test Email Addresses to Use: 
 - support+test_web@movetcare.com
+
+Esstential UX Flows to Test
+- [ ] 1st Time Client Sign Up w/ NO Existing Records in ProVet and Stripe
+- [ ] Existing Client w/ ONE Patient REQUIRING VCPR AND Existing Records in ProVet and Stripe (BUT WITHOUT VALID CC ON FILE)
+- [ ] Existing Client w/ THREE Patients REQUIRING VCPR AND Existing Records in ProVet and Stripe
+- [ ] Existing Client w/ ONE Patient NOT REQUIRING VCPR AND Existing Records in ProVet and Stripe
+- [ ] Existing Client w/ THREE Patients NOT REQUIRING VCPR AND Existing Records in ProVet and Stripe (BUT WITHOUT VALID CC ON FILE)
 
 - Non-Authenticated
 - - [ ] Start Appointment Booking Request via Email Address
@@ -179,8 +208,18 @@ Test Client Email Addresses to Use:
 - - - [ ] Submission Success
 
 #### Admin App
-Test Client Email Addresses to Use: 
+
+Test STAFF Email Addresses to Use: 
 - support@movetcare.com
+
+Esstential UX Flows to Test
+- [ ] Can Recieve New Client Check Ins
+- [ ] Can Chat w/ Existing Clients
+- [ ] Can Update Website Announcement Banner
+- [ ] Can Report a Bug & Request a New Feature
+- [ ] Can Toggle All BOOKING Settings Without Error
+- [ ] Can Perform ALL "Billing" Functions Without Error
+
 - Non-Authenticated
 - [ ] Sign In via Google O-Auth
 - [ ] Block Non-Approved Sign Up/In Requests

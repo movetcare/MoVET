@@ -100,47 +100,49 @@ export const processProVetWebhook = async (
     }
   } else {
     if (request.body.email_log_id)
-      await fetchEntity("email", request.body.email_log_id)
-        .then((response: any) =>
-          sendNotification({
-            type: "slack",
-            payload: {
-              message: `:e-mail: email w/ subject "${
-                response?.subject
-              }" sent to ${response?.email_address} - ${
-                proVetAppUrl + "/client/" + getProVetIdFromUrl(response?.client)
-              }/tabs/?tab=communication`,
-            },
-          })
-        )
-        .catch((error: any) => console.log("ERROR: ", error));
+       fetchEntity("email", request.body.email_log_id)
+         .then((response: any) =>
+           sendNotification({
+             type: "slack",
+             payload: {
+               message: `:e-mail: email w/ subject "${
+                 response?.subject
+               }" sent to ${response?.email_address} - ${
+                 proVetAppUrl +
+                 "/client/" +
+                 getProVetIdFromUrl(response?.client)
+               }/tabs/?tab=communication`,
+             },
+           })
+         )
+         .catch((error: any) => console.log("ERROR: ", error));
     else if (request.body.reminder_id)
-      await fetchEntity("reminder", request.body.reminder_id)
-        .then((response: any) => {
-          let message = null;
-          if (response?.send_method === 1) {
-            if (response?.status === 4)
-              message = `:interrobang: Reminder email w/ subject "${response?.email_subject}" FAILED to send to ${response?.email_address}`;
-            else if (response?.status === 3)
-              message = `:alarm_clock: Reminder email w/ subject "${response?.email_subject}" sent to ${response?.email_address}`;
-            else if (response?.status === 2)
-              message = `:alarm_clock: Reminder email w/ subject "${response?.email_subject}" is being sent to ${response?.email_address}`;
-            else if (response?.status === 1)
-              message = `:alarm_clock: Reminder email w/ subject "${response?.email_subject}" for ${response?.email_address} has been added to the queue`;
-            else if (response?.status === 0)
-              message = `:alarm_clock: Reminder email w/ subject "${response?.email_subject}" for ${response?.email_address} has been created`;
-            message += ` - ${
-              proVetAppUrl + "/client/" + getProVetIdFromUrl(response?.client)
-            }/tabs/?tab=reminders`;
-          } else `:interrobang: UNSUPPORTED REMINDER UPDATED ${response?.url}`;
-          sendNotification({
-            type: "slack",
-            payload: {
-              message,
-            },
-          });
-        })
-        .catch((error: any) => console.log("ERROR: ", error));
+       fetchEntity("reminder", request.body.reminder_id)
+         .then((response: any) => {
+           let message = null;
+           if (response?.send_method === 1) {
+             if (response?.status === 4)
+               message = `:interrobang: Reminder email w/ subject "${response?.email_subject}" FAILED to send to ${response?.email_address}`;
+             else if (response?.status === 3)
+               message = `:alarm_clock: Reminder email w/ subject "${response?.email_subject}" sent to ${response?.email_address}`;
+             else if (response?.status === 2)
+               message = `:alarm_clock: Reminder email w/ subject "${response?.email_subject}" is being sent to ${response?.email_address}`;
+             else if (response?.status === 1)
+               message = `:alarm_clock: Reminder email w/ subject "${response?.email_subject}" for ${response?.email_address} has been added to the queue`;
+             else if (response?.status === 0)
+               message = `:alarm_clock: Reminder email w/ subject "${response?.email_subject}" for ${response?.email_address} has been created`;
+             message += ` - ${
+               proVetAppUrl + "/client/" + getProVetIdFromUrl(response?.client)
+             }/tabs/?tab=reminders`;
+           } else `:interrobang: UNSUPPORTED REMINDER UPDATED ${response?.url}`;
+           sendNotification({
+             type: "slack",
+             payload: {
+               message,
+             },
+           });
+         })
+         .catch((error: any) => console.log("ERROR: ", error));
     return response.status(200).send({ received: true });
   }
   return response.status(200).send({ received: true });

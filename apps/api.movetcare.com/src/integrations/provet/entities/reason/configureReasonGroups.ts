@@ -35,7 +35,7 @@ const saveReasonsData = async (reasons: Array<ReasonGroup>): Promise<boolean> =>
             { merge: true }
           )
           .then(() => true)
-          .catch(async (error: any) => throwError(error))
+          .catch((error: any) => throwError(error))
     )
   )
     .then(async () => true)

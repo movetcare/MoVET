@@ -9,7 +9,7 @@ export const getAuthUserByEmail = async (email: string): Promise<UserRecord | nu
       if (DEBUG) console.log(userRecord);
       return userRecord;
     })
-    .catch(async (error: any) => {
+    .catch((error: any) => {
       if (DEBUG) console.error(error);
       return null;
     });

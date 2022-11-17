@@ -28,9 +28,8 @@ export const createPaymentIntent = functions
         console.log("createPaymentIntent context.auth => ", context.auth);
         console.log("createPaymentIntent DATA =>", data);
       }
-      const isAuthorized = await requestIsAuthorized(context);
-      if (isAuthorized) {
-        const {mode, invoice, reader, paymentMethod} = data || {};
+      if (await requestIsAuthorized(context)) {
+        const { mode, invoice, reader, paymentMethod } = data || {};
         if (mode && invoice) {
           const invoiceDetails = await admin
             .firestore()
@@ -159,7 +158,7 @@ export const createPaymentIntent = functions
               paymentIntentConfig.off_session = false;
               paymentIntentConfig.setup_future_usage = "off_session";
             }
-            await admin
+            admin
               .firestore()
               .collection("clients")
               .doc(`${getProVetIdFromUrl(invoiceDetails?.client)}`)
@@ -260,13 +259,13 @@ export const createPaymentIntent = functions
                               },
                               { merge: true }
                             )
-                            .catch(async (error: any) => throwError(error))
+                            .catch((error: any) => throwError(error))
                         : null
                     )
                     .catch((error: any) => throwError(error));
                   return data?.action || null;
                 })
-                .catch(async (error: any) => throwError(error))
+                .catch((error: any) => throwError(error))
             : await admin
                 .firestore()
                 .collection(
@@ -299,7 +298,7 @@ export const createPaymentIntent = functions
                           { merge: true }
                         )
                         .then(() => true)
-                        .catch(async (error: any) => throwError(error))
+                        .catch((error: any) => throwError(error))
                     : null
                 )
                 .then(() => true)

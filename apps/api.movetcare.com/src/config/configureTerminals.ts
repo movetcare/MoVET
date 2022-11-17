@@ -74,7 +74,7 @@ export const configureTerminals = async (): Promise<boolean> => {
           .collection("terminals")
           .doc(`${reader?.id}`)
           .set({ ...reader, updatedOn: new Date() }, { merge: true })
-          .catch(async (error: any) => throwError(error))
+          .catch((error: any) => throwError(error))
     );
   else
     readers.forEach(
@@ -86,7 +86,7 @@ export const configureTerminals = async (): Promise<boolean> => {
           .collection("terminals")
           .doc(`${reader?.id}`)
           .set({ ...reader, updatedOn: new Date() }, { merge: true })
-          .catch(async (error: any) => throwError(error))
+          .catch((error: any) => throwError(error))
     );
 
   return await admin

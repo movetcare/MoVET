@@ -33,7 +33,7 @@ const getActiveAppointmentBooking = async (user: UserRecord, snapshot: any) => {
       );
     if (activeBookings) {
       if (activeBookings.length > 1)
-        await enforceOnlyOneActiveAppointmentBooking(activeBookings);
+         enforceOnlyOneActiveAppointmentBooking(activeBookings);
       const bookingDocument = await admin
         .firestore()
         .collection("bookings")
@@ -57,7 +57,7 @@ const getActiveAppointmentBooking = async (user: UserRecord, snapshot: any) => {
                 id: (await startNewBooking(user))?.id,
               };
           })
-          .catch(async (error: any) => throwError(error))),
+          .catch((error: any) => throwError(error))),
       };
     } else
       return {

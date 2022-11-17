@@ -1,6 +1,7 @@
 import {request, throwError, DEBUG} from "../../../../config/config";
 import {verifyExistingClient} from "../../../../utils/auth/verifyExistingClient";
 import {capitalizeFirstLetter} from "../../../../utils/capitalizeFirstLetter";
+import { updateSendGridContact } from "../../../sendgrid/updateSendGridContact";
 
 export const createProVetClient = async (data: {
   email: string;
@@ -8,9 +9,9 @@ export const createProVetClient = async (data: {
   firstname?: string;
   lastname?: string;
 }): Promise<any> => {
-  const {email, zip_code, firstname, lastname} = data || {};
+  const { email, zip_code, firstname, lastname } = data || {};
   if (!(typeof email === "string") || email.length === 0)
-    throwError({message: "INVALID_PAYLOAD"});
+    throwError({ message: "INVALID_PAYLOAD" });
   if ((await verifyExistingClient(email)) === false) {
     const requestBody: any = {
       email: email?.toLowerCase(),
@@ -21,6 +22,11 @@ export const createProVetClient = async (data: {
       city: "", // Required by PROVET API
       patients: [], // Required by PROVET API
     };
+    updateSendGridContact({
+      firstName: firstname || "",
+      lastName: lastname || "",
+      email: email?.toLowerCase(),
+    });
     return await request
       .post("/client/", requestBody)
       .then(async (response: any) => {

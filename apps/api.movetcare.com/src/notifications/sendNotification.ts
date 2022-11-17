@@ -1,4 +1,5 @@
 /* eslint-disable no-case-declarations */
+/* eslint-disable no-case-declarations */
 import {
   admin,
   emailClient,
@@ -104,7 +105,7 @@ export const sendNotification = async ({
                 subject: emailConfig.subject,
                 message: emailConfig.message,
                 client: `${payload?.client}`,
-                patients: [],
+                patients: payload?.patients || [],
               });
               admin
                 .firestore()
@@ -134,10 +135,14 @@ export const sendNotification = async ({
             if (payload?.client)
               createProVetNote({
                 type: 0,
-                subject: payload?.subject,
-                message: payload?.message + "\n\n" + JSON.stringify(error),
+                subject: "FAILED TO SEND: " + payload?.subject,
+                message:
+                  "ERROR MESSAGE: " +
+                  JSON.stringify(error) +
+                  "\n\nMESSAGE CONTENTS:\n" +
+                  payload?.message,
                 client: payload?.client,
-                patients: [],
+                patients: payload?.patients || [],
               });
             throwError(error);
           });
@@ -206,7 +211,7 @@ export const sendNotification = async ({
                   subject: payload?.subject,
                   message: payload?.message,
                   client: payload?.client,
-                  patients: [],
+                  patients: payload?.patients || [],
                 });
                 admin
                   .firestore()
@@ -222,7 +227,7 @@ export const sendNotification = async ({
                   })
                   .catch((error: any) => throwError(error));
               })
-              .catch(async (error: any) => {
+              .catch((error: any) => {
                 if (DEBUG)
                   console.log("SMS FAILED TO SEND!", {
                     body: payload?.message,
@@ -238,10 +243,14 @@ export const sendNotification = async ({
                 );
                 createProVetNote({
                   type: 0,
-                  subject: payload?.subject,
-                  message: payload?.message + "\n\n" + JSON.stringify(error),
+                  subject: "FAILED TO SEND: " + payload?.subject,
+                  message:
+                    "ERROR MESSAGE: " +
+                    JSON.stringify(error) +
+                    "\n\nMESSAGE CONTENTS:\n" +
+                    payload?.message,
                   client: payload?.client,
-                  patients: [],
+                  patients: payload?.patients || [],
                 });
                 if (
                   error?.message.includes("is not a valid phone number") ===

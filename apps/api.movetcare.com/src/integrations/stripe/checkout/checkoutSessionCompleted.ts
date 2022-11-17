@@ -1,16 +1,16 @@
 import {admin, stripe, throwError, DEBUG} from "../../../config/config";
 
-export const checkoutSessionCompleted = async (event: any) =>
-  await admin
+export const checkoutSessionCompleted = (event: any) =>
+  admin
     .firestore()
     .collection("clients")
     .doc(event?.data?.object?.client_reference_id)
     .set(
       {
         updatedOn: new Date(),
-        customer: {id: event?.data?.object?.customer},
+        customer: { id: event?.data?.object?.customer },
       },
-      {merge: true}
+      { merge: true }
     )
     .then(
       () =>
@@ -20,8 +20,8 @@ export const checkoutSessionCompleted = async (event: any) =>
           event?.data?.object?.client_reference_id
         )
     )
-    .then(async () => {
-      await admin
+    .then(() => {
+      admin
         .auth()
         .setCustomUserClaims(event?.data?.object?.client_reference_id, {
           onboardingComplete: true,
@@ -29,14 +29,14 @@ export const checkoutSessionCompleted = async (event: any) =>
         })
         .catch((error: any) => throwError(error));
     })
-    .then(async () => {
-      await admin
+    .then(() => {
+      admin
         .firestore()
         .collection("waitlist")
         .where("id", "==", event?.data?.object?.client_reference_id)
         .limit(1)
         .get()
-        .then(async (querySnapshot: any) => {
+        .then((querySnapshot: any) => {
           if (DEBUG)
             console.log(
               "querySnapshot?.docs?.length",
@@ -44,7 +44,7 @@ export const checkoutSessionCompleted = async (event: any) =>
             );
           if (querySnapshot?.docs?.length > 0)
             querySnapshot.forEach(async (doc: any) => {
-              await admin
+              admin
                 .firestore()
                 .collection("waitlist")
                 .doc(doc.data()?.email)
@@ -67,4 +67,4 @@ export const checkoutSessionCompleted = async (event: any) =>
         })
         .catch((error: any) => throwError(error));
     })
-    .catch(async (error: any) => throwError(error));
+    .catch((error: any) => throwError(error));

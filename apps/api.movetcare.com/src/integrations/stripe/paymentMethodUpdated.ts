@@ -1,25 +1,25 @@
 import { admin, throwError, DEBUG } from "./../../config/config";
 
-export const paymentMethodUpdated = async (event: any) => {
+export const paymentMethodUpdated = (event: any): void => {
   const { customer, card, id, type, billing_details } =
     event?.data?.object || {};
-  await admin
+  admin
     .firestore()
     .collection("clients")
     .where("customer.id", "==", customer)
     .limit(1)
     .get()
-    .then(async (querySnapshot: any) => {
+    .then((querySnapshot: any) => {
       if (DEBUG)
         console.log("querySnapshot?.docs?.length", querySnapshot?.docs?.length);
       if (querySnapshot?.docs?.length > 0)
-        querySnapshot.forEach(async (doc: any) => {
+        querySnapshot.forEach((doc: any) => {
           if (
             event?.type === "payment_method.attached" ||
             event?.type === "payment_method.updated" ||
             event?.type === "payment_method.automatically_updated"
           )
-            await admin
+            admin
               .firestore()
               .collection("clients")
               .doc(doc?.id)
@@ -39,7 +39,7 @@ export const paymentMethodUpdated = async (event: any) => {
               )
               .catch((error: any) => throwError(error));
           else if (event?.type === "payment_method.detached")
-            await admin
+            admin
               .firestore()
               .collection("clients")
               .doc(doc.id)

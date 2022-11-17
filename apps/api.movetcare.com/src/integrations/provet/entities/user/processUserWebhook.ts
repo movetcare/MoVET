@@ -53,13 +53,12 @@ export const processUserWebhook = async (
         { merge: true }
       )
       .then(() => response.status(200).send({ received: true }))
-      .catch(
-        async (error: any) =>
-          throwError(error) && response.status(500).send({ received: false })
-      );
-  else
-    return (
-      throwError({ message: "INVALID PAYLOAD" }) &&
-      response.status(500).send({ received: false })
-    );
+      .catch((error: any) => {
+        throwError(error);
+        return response.status(500).send({ received: false });
+      });
+  else {
+    throwError({ message: "INVALID PAYLOAD" });
+    return response.status(500).send({ received: false });
+  }
 };

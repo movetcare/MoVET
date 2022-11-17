@@ -40,7 +40,7 @@ export const updateBookingReason = async (
               title: doc.data().title,
             };
           })
-          .catch(async (error: any) => throwError(error))
+          .catch((error: any) => throwError(error))
     )
   );
   admin

@@ -28,43 +28,43 @@ export const processConfiguration = async (options: {
     | "users"
     | "items"
   >;
-}) => {
+}): Promise<void> => {
   const entity = options?.entities[0];
   if (DEBUG)
     console.log(`PROCESSING ${entity.toUpperCase()} APP CONFIGURATION TASK`);
   switch (entity) {
     case "telehealth":
-      await configureTelehealthStatus();
+      configureTelehealthStatus();
       break;
     case "breeds":
-      await configureBreeds();
+      configureBreeds();
       break;
     case "reasons":
-      await configureReasons();
+      configureReasons();
       break;
     case "appointments":
-      await configureAppointments();
+      configureAppointments();
       break;
     case "cancellation_reasons":
-      await configureCancellationReasons();
+      configureCancellationReasons();
       break;
     case "estimates":
-      await configureAppointmentEstimates();
+      configureAppointmentEstimates();
       break;
     case "options":
-      await configureAppointmentOptionDetails();
+      configureAppointmentOptionDetails();
       break;
     case "shifts":
-      await configureShifts();
+      configureShifts();
       break;
     case "users":
-      await configureUsers();
+      configureUsers();
       break;
     case "reason_groups":
-      await configureReasonGroups();
+      configureReasonGroups();
       break;
     case "items":
-      await configureItems();
+      configureItems();
       break;
     default:
       break;
@@ -87,7 +87,7 @@ export const processConfiguration = async (options: {
     ) => element !== entity
   );
   if (entities.length > 0)
-    await admin
+    admin
       .firestore()
       .collection("tasks_queue")
       .doc(`configure_app_${entities[0]}`)
@@ -104,7 +104,7 @@ export const processConfiguration = async (options: {
         },
         { merge: true }
       )
-      .then(async () => {
+      .then(() => {
         console.log(
           "APP CONFIGURATION TASK ADDED TO QUEUE => ",
           `tasks_queue/configure_app_${entities[0]}`

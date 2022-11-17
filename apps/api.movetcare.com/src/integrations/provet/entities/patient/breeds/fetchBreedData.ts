@@ -44,7 +44,7 @@ export const fetchBreedData = async (
                 `configure_breeds_${index}`
               )
           )
-          .catch(async (error: any) => throwError(error)))
+          .catch((error: any) => throwError(error)))
     );
     await Promise.all(
       breedIdChunks[0].map(async (breedId: string) => {
@@ -54,9 +54,9 @@ export const fetchBreedData = async (
             value: result?.data?.id,
             label: result?.data?.label,
           }))
-          .catch(async (error: any) => {
+          .catch((error: any) => {
             if (DEBUG) console.log(error);
-            await admin
+            admin
               .firestore()
               .collection("tasks_queue")
               .doc(`configure_breeds_${breed?.name}_${breedId}`)
@@ -74,7 +74,7 @@ export const fetchBreedData = async (
                 { merge: true }
               )
               .then(
-                async () =>
+                () =>
                   DEBUG &&
                   console.log(
                     "CONFIGURE BREEDS TASK ADDED TO QUEUE => ",
@@ -99,9 +99,9 @@ export const fetchBreedData = async (
             value: result?.data?.id,
             label: result?.data?.label,
           }))
-          .catch(async (error: any) => {
+          .catch((error: any) => {
             if (DEBUG) console.log(error);
-            await admin
+            admin
               .firestore()
               .collection("tasks_queue")
               .doc(`configure_breeds_${breed?.name}_${breedId}`)

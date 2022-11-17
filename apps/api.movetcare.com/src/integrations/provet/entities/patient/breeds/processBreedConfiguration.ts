@@ -2,13 +2,15 @@ import {DEBUG} from "../../../../../config/config";
 import {fetchBreedData} from "./fetchBreedData";
 import {saveBreeds} from "./saveBreeds";
 
-export const processBreedConfiguration = async (options: any) => {
+export const processBreedConfiguration = async (
+  options: any
+): Promise<void> => {
   if (DEBUG) console.log("PROCESSING BREED CONFIGURATION => ", options);
   if (options?.breedIds) {
-    const breedData: Array<{value: number; label: string}> | null =
+    const breedData: Array<{ value: number; label: string }> | null =
       await fetchBreedData(options?.breedIds as Array<string>, options?.breed);
     if (breedData)
-      await saveBreeds(breedData, options?.breed.name).then(
+      saveBreeds(breedData, options?.breed.name).then(
         () => DEBUG && console.log("SUCCESSFULLY CONFIGURED BREEDS", options)
       );
     else if (DEBUG)

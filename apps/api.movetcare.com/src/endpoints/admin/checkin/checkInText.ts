@@ -10,8 +10,7 @@ export const checkInText = functions
   .https.onCall(
     async ({ id }: { id: string }, context: any): Promise<boolean> => {
       if (DEBUG) console.log("checkInText DATA =>", id);
-      const isAuthorized = await requestIsAuthorized(context);
-      if (isAuthorized) {
+      if (await requestIsAuthorized(context)) {
         sendNotification({
           type: "sms",
           payload: {

@@ -42,7 +42,7 @@ export const fetchItemsData = async (
                 `configure_items_${index}`
               )
           )
-          .catch(async (error: any) => throwError(error)))
+          .catch((error: any) => throwError(error)))
     );
     await Promise.all(
       itemIdChunks[0].map(async (itemId: string) => {

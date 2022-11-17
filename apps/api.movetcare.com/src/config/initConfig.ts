@@ -74,7 +74,7 @@ export const initProVetConfig = async (
 
                 return response.status(200).send();
               })
-              .catch(async (error: any) => {
+              .catch((error: any) => {
                 throwError(error);
                 return response.status(500).send();
               }))

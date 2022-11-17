@@ -11,7 +11,7 @@ export const getClientNotificationSettings = async (
   await admin
     .firestore()
     .collection("clients")
-    .doc(id)
+    .doc(`${id}`)
     .get()
     .then((document: any) => {
       if (DEBUG)

@@ -57,15 +57,14 @@ export const sendWelcomeEmail = async (
     message: emailText,
   };
 
-  const clientId = await admin
-    .auth()
-    .getUserByEmail(email)
-    .then((userRecord: any) => userRecord?.uid)
-    .catch(async () => false);
   sendNotification({
     type: "email",
     payload: {
-      client: clientId,
+      client: await admin
+        .auth()
+        .getUserByEmail(email)
+        .then((userRecord: any) => userRecord?.uid)
+        .catch(() => false),
       ...emailConfig,
     },
   });

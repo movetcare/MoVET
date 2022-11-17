@@ -69,7 +69,7 @@ export const updateBookingLocation = async (
                 .doc(`${vcprReason}`)
                 .get()
                 .then((doc: any) => doc.data()?.name)
-                .catch(async (error: any) => throwError(error)),
+                .catch((error: any) => throwError(error)),
               value: vcprReason,
             },
             updatedOn: new Date(),

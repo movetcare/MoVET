@@ -30,7 +30,7 @@ export const updateBookingPatients = async (
                   species: doc.data().species,
                 };
               })
-              .catch(async (error: any) => throwError(error))
+              .catch((error: any) => throwError(error))
         )
       )
     : await admin

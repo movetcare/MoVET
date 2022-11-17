@@ -23,7 +23,7 @@ export const configureUsers = async (): Promise<boolean> => {
     return true;
   } else {
     console.log("STARTING PROVET USER SYNC");
-    await configureProVetUsers();
+     configureProVetUsers();
     const users = [
       {
         id: "alex.rodriguez@movetcare.com",
@@ -61,7 +61,7 @@ export const configureUsers = async (): Promise<boolean> => {
               if (DEBUG) console.log("NEW ADMIN USER CONFIGURED => ", user);
               return true;
             })
-            .catch(async (error: any) => throwError(error))
+            .catch((error: any) => throwError(error))
       )
     )
       .then(() => true)

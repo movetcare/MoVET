@@ -8,9 +8,9 @@ import {
   // environment,
 } from "../../../config/config";
 
-export const terminalReaderActionSucceeded = async (event: any) => {
+export const terminalReaderActionSucceeded = (event: any): void => {
   if (DEBUG) console.log("terminalReaderActionSucceeded EVENT => ", event);
-  await admin
+  admin
     .firestore()
     .collection("configuration")
     .doc("pos")
@@ -24,9 +24,8 @@ export const terminalReaderActionSucceeded = async (event: any) => {
       },
       { merge: true }
     )
-    .then(() => true)
     .catch((error: any) => throwError(error));
-  await admin
+  admin
     .firestore()
     .collection("counter_sales")
     .where(
@@ -36,7 +35,7 @@ export const terminalReaderActionSucceeded = async (event: any) => {
     )
     .limit(1)
     .get()
-    .then(async (querySnapshot: any) => {
+    .then((querySnapshot: any) => {
       if (DEBUG)
         console.log("querySnapshot?.docs?.length", querySnapshot?.docs?.length);
       if (querySnapshot?.docs?.length > 0)
@@ -114,7 +113,7 @@ export const terminalReaderActionSucceeded = async (event: any) => {
           //  .catch((error: any) => throwError(error));
         });
       else
-        await admin
+        admin
           .firestore()
           .collection("client_invoices")
           .where(
@@ -124,7 +123,7 @@ export const terminalReaderActionSucceeded = async (event: any) => {
           )
           .limit(1)
           .get()
-          .then(async (querySnapshot: any) => {
+          .then((querySnapshot: any) => {
             if (DEBUG)
               console.log(
                 "querySnapshot?.docs?.length",
@@ -210,7 +209,7 @@ export const terminalReaderActionSucceeded = async (event: any) => {
                 //  .catch((error: any) => throwError(error));
               });
             else
-              await throwError({
+              throwError({
                 message: `FAILED TO COMPLETE TRANSACTION => ${event?.data?.object?.action?.process_payment_intent?.payment_intent}`,
               });
           })
