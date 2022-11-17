@@ -7,7 +7,7 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { environment } from "utilities";
 
 const isProduction = environment === "production";
-console.log(environment);
+
 const firebase = initializeApp({
   projectId: isProduction ? "movet-care" : "movet-care-staging",
   appId: isProduction

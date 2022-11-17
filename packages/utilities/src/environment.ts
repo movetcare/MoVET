@@ -4,4 +4,11 @@ export const environment =
     window.location.hostname === "admin.movetcare.com" ||
     window.location.hostname === "app.movetcare.com")
     ? "production"
-    : "development";
+    : typeof window !== "undefined" &&
+      (window.location.hostname === "stage.movetcare.com" ||
+        window.location.hostname === "stage.admin.movetcare.com" ||
+        window.location.hostname === "stage.app.movetcare.com")
+    ? "staging"
+    : typeof window !== "undefined" && window.location.hostname === "localhost"
+    ? "development"
+    : "unknown";
