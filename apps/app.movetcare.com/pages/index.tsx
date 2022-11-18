@@ -126,37 +126,61 @@ export default function Home() {
                       : "Sign In Required!"
                   }`
                 );
-              sendSignInLinkToEmail(auth, (email as string)?.toLowerCase(), {
-                url:
-                  (environment === "production"
-                    ? "https://app.movetcare.com"
-                    : window.location.hostname === "localhost"
-                    ? "http://localhost:3001"
-                    : "https://stage.app.movetcare.com") +
-                  `/request-an-appointment?id=${result.id}`,
-                handleCodeInApp: false,
-                // iOS: {
-                //   bundleId: "com.movet.inc",
-                // },
-                // android: {
-                //   packageName: "com.movet",
-                //   installApp: true,
-                //   minimumVersion: "16",
-                // },
-                // dynamicLinkDomain:
-                //   environment === "production"
-                //     ? "app.movetcare.com"
-                //     : window.location.hostname === "localhost"
-                //     ? "localhost"
-                //     : "stage.app.movetcare.com",
-              })
-                .then(() => {
-                  window.localStorage.setItem(
-                    "email",
-                    (email as string)?.toLowerCase()
-                  );
+                console.log("sendSignInLinkToEmail", {
+                  url:
+                    (environment === "production"
+                      ? "https://app.movetcare.com"
+                      : window.location.hostname === "localhost"
+                      ? "http://localhost:3001"
+                      : "https://stage.app.movetcare.com") +
+                    `/request-an-appointment?id=${result.id}`,
+                  handleCodeInApp: true,
+                  iOS: {
+                    bundleId: "com.movet.inc",
+                  },
+                  android: {
+                    packageName: "com.movet",
+                    installApp: true,
+                    minimumVersion: "16",
+                  },
+                  dynamicLinkDomain:
+                    environment === "production"
+                      ? "app.movetcare.com"
+                      : window.location.hostname === "localhost"
+                      ? "localhost"
+                      : "stage.app.movetcare.com",
+                });
+                sendSignInLinkToEmail(auth, (email as string)?.toLowerCase(), {
+                  url:
+                    (environment === "production"
+                      ? "https://app.movetcare.com"
+                      : window.location.hostname === "localhost"
+                      ? "http://localhost:3001"
+                      : "https://stage.app.movetcare.com") +
+                    `/request-an-appointment?id=${result.id}`,
+                  handleCodeInApp: true,
+                  iOS: {
+                    bundleId: "com.movet.inc",
+                  },
+                  android: {
+                    packageName: "com.movet",
+                    installApp: true,
+                    minimumVersion: "16",
+                  },
+                  dynamicLinkDomain:
+                    environment === "production"
+                      ? "app.movetcare.com"
+                      : window.location.hostname === "localhost"
+                      ? "localhost"
+                      : "stage.app.movetcare.com",
                 })
-                .catch((error) => handleError(error));
+                  .then(() => {
+                    window.localStorage.setItem(
+                      "email",
+                      (email as string)?.toLowerCase()
+                    );
+                  })
+                  .catch((error) => handleError(error));
               setVerificationSuccess(true);
               setIsLoading(false);
             }

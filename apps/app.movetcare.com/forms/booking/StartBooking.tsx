@@ -81,38 +81,69 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
                     : "Sign In Required!"
                 }`
               );
-            sendSignInLinkToEmail(auth, data.email?.toLowerCase(), {
-              url:
-                (environment === "production"
-                  ? "https://app.movetcare.com"
-                  : window.location.hostname === "localhost"
-                  ? "http://localhost:3001"
-                  : "https://stage.app.movetcare.com") +
-                `${
-                  result.id !== null && result.id !== undefined
-                    ? `/request-an-appointment?id=${result.id}`
-                    : "/request-an-appointment"
-                }`,
-              handleCodeInApp: false,
-              // iOS: {
-              //   bundleId: "com.movet.inc",
-              // },
-              // android: {
-              //   packageName: "com.movet",
-              //   installApp: true,
-              //   minimumVersion: "16",
-              // },
-              // dynamicLinkDomain:
-              //   environment === "production"
-              //     ? "app.movetcare.com"
-              //     : window.location.hostname === "localhost"
-              //     ? "localhost"
-              //     : "stage.app.movetcare.com",
-            })
-              .then(() => {
-                window.localStorage.setItem("email", data.email?.toLowerCase());
+              console.log("sendSignInLinkToEmail", {
+                url:
+                  (environment === "production"
+                    ? "https://app.movetcare.com"
+                    : window.location.hostname === "localhost"
+                    ? "http://localhost:3001"
+                    : "https://stage.app.movetcare.com") +
+                  `${
+                    result.id !== null && result.id !== undefined
+                      ? `/request-an-appointment?id=${result.id}`
+                      : "/request-an-appointment"
+                  }`,
+                handleCodeInApp: true,
+                iOS: {
+                  bundleId: "com.movet.inc",
+                },
+                android: {
+                  packageName: "com.movet",
+                  installApp: true,
+                  minimumVersion: "16",
+                },
+                dynamicLinkDomain:
+                  environment === "production"
+                    ? "app.movetcare.com"
+                    : window.location.hostname === "localhost"
+                    ? "localhost"
+                    : "stage.app.movetcare.com",
+              });
+              sendSignInLinkToEmail(auth, data.email?.toLowerCase(), {
+                url:
+                  (environment === "production"
+                    ? "https://app.movetcare.com"
+                    : window.location.hostname === "localhost"
+                    ? "http://localhost:3001"
+                    : "https://stage.app.movetcare.com") +
+                  `${
+                    result.id !== null && result.id !== undefined
+                      ? `/request-an-appointment?id=${result.id}`
+                      : "/request-an-appointment"
+                  }`,
+                handleCodeInApp: true,
+                iOS: {
+                  bundleId: "com.movet.inc",
+                },
+                android: {
+                  packageName: "com.movet",
+                  installApp: true,
+                  minimumVersion: "16",
+                },
+                dynamicLinkDomain:
+                  environment === "production"
+                    ? "app.movetcare.com"
+                    : window.location.hostname === "localhost"
+                    ? "localhost"
+                    : "stage.app.movetcare.com",
               })
-              .catch((error) => handleError(error));
+                .then(() => {
+                  window.localStorage.setItem(
+                    "email",
+                    data.email?.toLowerCase()
+                  );
+                })
+                .catch((error) => handleError(error));
             setVerificationSuccess(true);
             setIsLoading(false);
           } else handleError(result);
