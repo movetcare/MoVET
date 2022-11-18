@@ -134,21 +134,21 @@ export default function Home() {
                     ? "http://localhost:3001"
                     : "https://stage.app.movetcare.com") +
                   `/request-an-appointment?id=${result.id}`,
-                handleCodeInApp: true,
-                iOS: {
-                  bundleId: "com.movet.inc",
-                },
-                android: {
-                  packageName: "com.movet",
-                  installApp: true,
-                  minimumVersion: "16",
-                },
-                dynamicLinkDomain:
-                  environment === "production"
-                    ? "app.movetcare.com"
-                    : window.location.hostname === "localhost"
-                    ? "localhost"
-                    : "stage.app.movetcare.com",
+                // handleCodeInApp: true,
+                // iOS: {
+                //   bundleId: "com.movet.inc",
+                // },
+                // android: {
+                //   packageName: "com.movet",
+                //   installApp: true,
+                //   minimumVersion: "16",
+                // },
+                // dynamicLinkDomain:
+                //   environment === "production"
+                //     ? "app.movetcare.com"
+                //     : window.location.hostname === "localhost"
+                //     ? "localhost"
+                //     : "stage.app.movetcare.com",
               })
                 .then(() => {
                   window.localStorage.setItem(

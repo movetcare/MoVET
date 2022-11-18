@@ -93,21 +93,21 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
                     ? `/request-an-appointment?id=${result.id}`
                     : "/request-an-appointment"
                 }`,
-              handleCodeInApp: true,
-              iOS: {
-                bundleId: "com.movet.inc",
-              },
-              android: {
-                packageName: "com.movet",
-                installApp: true,
-                minimumVersion: "16",
-              },
-              dynamicLinkDomain:
-                environment === "production"
-                  ? "app.movetcare.com"
-                  : window.location.hostname === "localhost"
-                  ? "localhost"
-                  : "stage.app.movetcare.com",
+              // handleCodeInApp: true,
+              // iOS: {
+              //   bundleId: "com.movet.inc",
+              // },
+              // android: {
+              //   packageName: "com.movet",
+              //   installApp: true,
+              //   minimumVersion: "16",
+              // },
+              // dynamicLinkDomain:
+              //   environment === "production"
+              //     ? "app.movetcare.com"
+              //     : window.location.hostname === "localhost"
+              //     ? "localhost"
+              //     : "stage.app.movetcare.com",
             })
               .then(() => {
                 window.localStorage.setItem("email", data.email?.toLowerCase());
