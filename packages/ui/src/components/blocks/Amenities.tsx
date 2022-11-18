@@ -53,7 +53,7 @@ export const Amenities = () => (
             className="w-full py-4 sm:py-0 sm:mx-8 text-center"
             key={service.name}
           >
-            <div className="w-36 h-32 sm:w-28 sm:h-24 mx-auto">
+            <div className="w-36 h-32 sm:w-28 sm:h-24 mx-auto hover:animate-bounce duration-500">
               <Image
                 width={112}
                 height={112}

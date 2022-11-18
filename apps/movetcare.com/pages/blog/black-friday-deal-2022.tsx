@@ -33,7 +33,7 @@ export default function BlackFridayDeal() {
           content="Spend more than $30 in the Boutique and receive a FREE veterinary exam, a $68 value!"
         />
         <meta name="twitter:site" content="https://movetcare.com" />
-        <meta name="twitter:creator" content="Rachel Bloch" />
+        <meta name="twitter:creator" content="Dr. A." />
         <link rel="icon" type="image/png" href="/static/images/favicon.ico" />
         <link rel="apple-touch-icon" href="/static/images/favicon.ico" />
         <meta
@@ -53,11 +53,12 @@ export default function BlackFridayDeal() {
           height={484}
           width={820}
         />
-        <p className="text-lg mt-8">
-          * Spend $30 or more in the MoVET boutique on November 25th, 2022 and
-          get a FREE veterinary exam!
-        </p>
-        <p className="text-lg">🎉🐾Happy Holidays!🐾🎉</p>
+        <h1 className="text-xl mt-8 w-full sm:w-2/3">
+          * Spend $30 or more in the MoVET boutique on November 25th and get a{" "}
+          <span className="underline">FREE</span> veterinary exam!
+        </h1>
+        <h2 className="text-2xl m-0">🎉 Happy Holidays! 🎉</h2>
+        <h2 className="text-lg mt-2">- The MoVET Team</h2>
       </section>
     </Layout>
   );
