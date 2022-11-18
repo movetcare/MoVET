@@ -4,7 +4,6 @@ import {
   throwError,
   stripeWebhookSecret,
   environment,
-  DEBUG,
 } from "../../config/config";
 import { Response } from "express";
 import { terminalReaderActionSucceeded } from "./pos/terminalReaderActionSucceeded";
@@ -20,7 +19,7 @@ export const processStripeWebhook = async (
   request: any,
   response: Response
 ) => {
-  if (DEBUG) console.log("INCOMING REQUEST PAYLOAD => ", request.body);
+  console.log("INCOMING STRIPE REQUEST PAYLOAD => ", request.body);
   const sig: any = request.headers["stripe-signature"];
   let event: Stripe.Event | any;
   if (environment.type !== "development") {
@@ -36,6 +35,7 @@ export const processStripeWebhook = async (
       return;
     }
   } else event = request.body;
+  console.log("STRIPE EVENT DATA", event);
   if (
     event.type.includes("terminal.reader.") ||
     event.type.includes("checkout.session.") ||

@@ -2,12 +2,12 @@ import {
   admin,
   DEBUG,
   environment,
-  stripe,
+  // stripe,
   throwError,
 } from "../../../../config/config";
 import { createAuthClient } from "./createAuthClient";
 import { getAuthUserById } from "../../../../utils/auth/getAuthUserById";
-import { sendNotification } from "../../../../notifications/sendNotification";
+// import { updateStripeCustomer } from "../../../stripe/updateStripeCustomer";
 
 export const saveClient = async (
   clientId: number | string,
@@ -16,8 +16,8 @@ export const saveClient = async (
 ): Promise<boolean> => {
   const data: any = {};
   if (proVetClientData) {
-    if (environment.type === "production")
-      updateStripeCustomerData(proVetClientData);
+    // if (environment.type === "production")
+    //   updateStripeCustomer(proVetClientData);
     if (proVetClientData?.archived) data.archived = proVetClientData?.archived;
     if (proVetClientData?.email)
       data.email = proVetClientData?.email?.toLowerCase();
@@ -242,90 +242,4 @@ export const saveClient = async (
       }
     })
     .catch((error: any) => throwError(error));
-};
-
-const updateStripeCustomerData = (proVetClientData: any) => {
-  if (
-    proVetClientData?.id_number !== undefined &&
-    proVetClientData?.id_number !== null &&
-    proVetClientData?.id_number !== "" &&
-    proVetClientData?.archived === false &&
-    environment?.type === "production"
-  ) {
-    if (DEBUG)
-      console.log(
-        "updateStripeCustomerData => UPDATING EXISTING STRIPE CUSTOMER",
-        {
-          email: proVetClientData?.email,
-          address: {
-            line1: proVetClientData?.street_address,
-            line2: proVetClientData?.street_address_2,
-            city: proVetClientData?.city,
-            state: proVetClientData?.state,
-            postal_code: proVetClientData?.zip_code,
-            country: proVetClientData?.country_region,
-          },
-          description: proVetClientData?.critical_notes,
-          name:
-            proVetClientData?.firstname && proVetClientData?.lastname
-              ? `${proVetClientData?.firstname} ${proVetClientData?.lastname}`
-              : proVetClientData?.firstname
-              ? proVetClientData?.firstname
-              : proVetClientData?.lastname
-              ? proVetClientData?.lastname
-              : null,
-          phone: proVetClientData?.phone_numbers[0]?.number || "",
-        }
-      );
-    stripe.customers
-      .update(proVetClientData?.id_number, {
-        email: proVetClientData?.email,
-        address: {
-          line1: proVetClientData?.street_address,
-          line2: proVetClientData?.street_address_2,
-          city: proVetClientData?.city,
-          state: proVetClientData?.state,
-          postal_code: proVetClientData?.zip_code,
-          country: proVetClientData?.country_region,
-        },
-        description: proVetClientData?.critical_notes,
-        name:
-          proVetClientData?.firstname && proVetClientData?.lastname
-            ? `${proVetClientData?.firstname} ${proVetClientData?.lastname}`
-            : proVetClientData?.firstname
-            ? proVetClientData?.firstname
-            : proVetClientData?.lastname
-            ? proVetClientData?.lastname
-            : null,
-        phone: proVetClientData?.phone_numbers[0]?.number || "",
-      })
-      .then(() =>
-        sendNotification({
-          type: "slack",
-          payload: {
-            message: `:money_mouth_face: Customer Information Updated in Stripe\n\nhttps://dashboard.stripe.com/customers/${proVetClientData?.id_number}\n\n`,
-          },
-        })
-      )
-      .catch((error: any) =>
-        // eslint-disable-next-line quotes
-        error?.message?.includes("No such customer: 'cus_LYg1C7Et5ySQKC'")
-          ? console.log(error)
-          : throwError(error)
-      );
-  } else if (DEBUG) {
-    console.log("updateStripeCustomerData => SKIPPING STRIPE CUSTOMER UPDATE");
-    if (
-      proVetClientData?.id_number !== undefined ||
-      proVetClientData?.id_number !== null ||
-      proVetClientData?.id_number !== ""
-    )
-      console.log(
-        "updateStripeCustomerData => SKIP REASON -  MISSING id_number in PROVET"
-      );
-    if (environment?.type !== "production")
-      console.log(
-        "updateStripeCustomerData => SKIP REASON -  ENVIRONMENT IS NOT PRODUCTION!"
-      );
-  }
 };

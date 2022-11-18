@@ -9,6 +9,7 @@ import {
   DEBUG,
 } from "../../../config/config";
 import {requestIsAuthorized} from "./requestIsAuthorized";
+import { getCustomerId } from "../../../utils/getCustomerId";
 
 export const createPaymentIntent = functions
   .runWith(defaultRuntimeOptions)
@@ -154,27 +155,15 @@ export const createPaymentIntent = functions
               paymentIntentConfig.payment_method_types = ["card"];
               paymentIntentConfig.confirm = true;
               paymentIntentConfig.off_session = true;
+              paymentIntentConfig.customer =
+                invoiceDetails?.payer_id_number ||
+                (await getCustomerId(
+                  `${getProVetIdFromUrl(invoiceDetails?.client)}`
+                ));
             } else {
               paymentIntentConfig.off_session = false;
               paymentIntentConfig.setup_future_usage = "off_session";
             }
-            admin
-              .firestore()
-              .collection("clients")
-              .doc(`${getProVetIdFromUrl(invoiceDetails?.client)}`)
-              .get()
-              .then((document: any) => {
-                paymentIntentConfig.customer = document?.data()?.customer?.id;
-              })
-              .catch(
-                () =>
-                  DEBUG &&
-                  console.log(
-                    `NO EXISTING CUSTOMER ID FOR CLIENT #${getProVetIdFromUrl(
-                      invoiceDetails?.client
-                    )}`
-                  )
-              );
           } else if (DEBUG)
             console.log(`COUNTER SALE DETECTED -> ${JSON.stringify(data)}`);
           const paymentIntent: any = await stripe.paymentIntents.create(

@@ -180,7 +180,6 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
       to: email,
       subject: "Incomplete appointment booking request with MoVET",
       message: emailHtml,
-      bcc: "support@movetcare.com",
     };
     if (DEBUG)
       console.log("BOOKING RECOVERY NOTIFICATION EMAIL READY", emailConfig);
@@ -245,7 +244,6 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
     }</a></p>`;
     const emailConfig: EmailConfiguration = {
       to: email,
-      bcc: "support@movetcare.com",
       subject: "Incomplete appointment booking request with MoVET",
       message: emailHtml,
     };

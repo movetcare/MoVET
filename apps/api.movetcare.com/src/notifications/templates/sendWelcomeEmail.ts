@@ -50,7 +50,6 @@ export const sendWelcomeEmail = async (
 
   const emailConfig: EmailConfiguration = {
     to: email,
-    bcc: "support@movetcare.com",
     subject: withResetLink
       ? "Welcome to MoVET Pet Care - Please Verify Your Account"
       : "Welcome to MoVET Pet Care!",
