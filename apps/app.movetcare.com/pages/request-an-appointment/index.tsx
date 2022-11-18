@@ -122,7 +122,7 @@ export default function Booking() {
                     ? "http://localhost:3001"
                     : "https://stage.app.movetcare.com") +
                   `/booking?id=${result.id}`,
-                // handleCodeInApp: true,
+                handleCodeInApp: false,
                 // iOS: {
                 //   bundleId: "com.movet.inc",
                 // },

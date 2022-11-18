@@ -93,7 +93,7 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
                     ? `/request-an-appointment?id=${result.id}`
                     : "/request-an-appointment"
                 }`,
-              // handleCodeInApp: true,
+              handleCodeInApp: false,
               // iOS: {
               //   bundleId: "com.movet.inc",
               // },

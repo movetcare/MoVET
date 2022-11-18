@@ -134,7 +134,7 @@ export default function Home() {
                     ? "http://localhost:3001"
                     : "https://stage.app.movetcare.com") +
                   `/request-an-appointment?id=${result.id}`,
-                // handleCodeInApp: true,
+                handleCodeInApp: false,
                 // iOS: {
                 //   bundleId: "com.movet.inc",
                 // },
