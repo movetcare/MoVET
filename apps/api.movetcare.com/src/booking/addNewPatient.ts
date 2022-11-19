@@ -112,7 +112,9 @@ export const addNewPatient = async (
                   },
                   {
                     type: "plain_text",
-                    text: `${patient?.name ? `${patient?.name}` : ""}`,
+                    text: `${
+                      patient?.name ? `${patient?.name}` : "Not Found?"
+                    }`,
                   },
                   {
                     type: "mrkdwn",
@@ -120,7 +122,9 @@ export const addNewPatient = async (
                   },
                   {
                     type: "plain_text",
-                    text: `${patient?.notes ? `${patient?.notes}` : ""}`,
+                    text: `${
+                      patient?.notes ? `${patient?.notes}` : "Not Found?"
+                    }`,
                   },
                 ],
               },

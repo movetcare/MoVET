@@ -95,7 +95,7 @@ export const updateBookingPatientsWithSymptoms = (
                                 : ""
                             }`
                         )}`
-                      : ""
+                      : "Not Found?"
                   }`,
                 },
               ],

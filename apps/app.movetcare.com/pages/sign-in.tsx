@@ -49,8 +49,10 @@ export default function SignIn() {
   useEffect(() => {
     if (router && verificationSuccessful)
       router.replace(
-        (continueUrl as any)?.replaceAll("3000", "3001")?.toString() ||
-          "/request-an-appointment"
+        (continueUrl as any)
+          ?.replaceAll("3000", "3001")
+          ?.replaceAll("movetcare.com", "app.movetcare.com")
+          ?.toString() || "/request-an-appointment"
       );
   }, [verificationSuccessful, continueUrl, router]);
 

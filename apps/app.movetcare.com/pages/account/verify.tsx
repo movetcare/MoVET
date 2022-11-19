@@ -32,7 +32,10 @@ export default function Verify() {
     if (verificationSuccessful)
       setTimeout(() => {
         window.location.href = (continueUrl as string)
-          ? `${continueUrl}`
+          ? (continueUrl as string)
+              ?.replaceAll("3000", "3001")
+              ?.replaceAll("movetcare.com", "app.movetcare.com")
+              ?.toString()
           : environment === "production"
           ? "movet://onboarding"
           : "exp://172.16.30.224:19000/--/onboarding";
