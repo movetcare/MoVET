@@ -1,6 +1,7 @@
 import Layout from "components/Layout";
 import Head from "next/head";
 import Image from "next/image";
+import { CallToAction } from "ui";
 
 export default function HowlOWeen() {
   return (
@@ -72,6 +73,7 @@ export default function HowlOWeen() {
         </p>
         <p className="text-lg">🎉🐾🤞 Good Luck! 🤞🐾🎉</p>
       </section>
+      <CallToAction />
     </Layout>
   );
 }

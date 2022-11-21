@@ -1,6 +1,7 @@
 import Layout from "components/Layout";
 import Head from "next/head";
 import Image from "next/image";
+import { CallToAction } from "ui";
 
 export default function WinterHeartworm() {
   return (
@@ -59,7 +60,7 @@ heartworm disease. It is important that your pet be protected."
           height={484}
           width={820}
         />
-        <h2 className="text-3xl mt-4 mb-4 text-center">
+        <h2 className="text-3xl mt-8 mb-4 text-center">
           Over Wintering – Heartworm Disease in Colorado
         </h2>
         <p className="-mb-2">By: Dr. Barbara Caldwell</p>
@@ -102,6 +103,7 @@ heartworm disease. It is important that your pet be protected."
           at risk.
         </p>
       </section>
+      <CallToAction />
     </Layout>
   );
 }

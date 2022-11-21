@@ -25,54 +25,10 @@ export async function getStaticProps() {
   };
 }
 
-export default function Home({
-  announcement,
-}: {
-  announcement: AnnouncementType;
-}) {
-  // const router = useRouter();
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const { link } = router.query;
-  // useEffect(() => {
-  //   if (router && link) {
-  //     setIsLoading(true);
-  //     const params = Object.fromEntries(
-  //       new URLSearchParams(window.location.search).entries()
-  //     );
-  //     const linkParams = Object.fromEntries(
-  //       new URLSearchParams(
-  //         params.link
-  //           .replaceAll("http://localhost:3000/account/", "")
-  //           .replaceAll("https://movetcare.com/account/", "")
-  //       ).entries()
-  //     );
-  //     if (environment === "development")
-  //     console.log(
-  //       "redirectUrl",
-  //       `http://localhost:3001/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
-  //     );
-  //     console.log(
-  //       "redirectUrl",
-  //       `https://app.movetcare.com/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
-  //     );
-  //     else
-  //       linkParams?.mode === "signIn"
-  //         ? (environment === "production"
-  //             ? (window.location.href = "https://app.movetcare.com")
-  //             : (window.location.href = `http://localhost:3001`)) +
-  //           `/sign-in?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
-  //         : setIsLoading(false);
-  //   }
-  // }, [router, link]);
+export default function Home({ announcement }: { announcement: AnnouncementType }) {
   return (
     <Layout announcement={announcement}>
       <div className="flex flex-col items-center justify-center min-py-2 bg-movet-white">
-        {/* {isLoading ? (
-          <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 m-8 sm:p-8 z-50">
-            <h1>Loading, please wait...</h1>
-          </section>
-        ) : (
-          <> */}
         <Hero
           title="Your neighborhood vet,"
           secondTitle="Delivered"
@@ -103,8 +59,6 @@ export default function Home({
         <Reviews />
         <Contact />
         <CallToAction />
-        {/* </>
-        )} */}
       </div>
     </Layout>
   );

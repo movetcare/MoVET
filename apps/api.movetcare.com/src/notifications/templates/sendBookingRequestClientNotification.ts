@@ -115,15 +115,13 @@ const createClientMessage = ({
       (patient: any) =>
         `<p><b>Pet Name:</b> ${patient?.name}</p><p><b>Pet Species:</b> ${
           patient?.species
-        }</p><p><b>Pet Gender:</b> ${
-          patient?.gender
-        }</p><p><b>Pet Minor Illness:</b> ${
-          patient?.hasMinorIllness
-            ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                patient?.illnessDetails?.notes
-              }`
-            : " NONE"
-        }</p><p><b>Aggression Status:</b> ${
+        }</p><p><b>Pet Gender:</b> ${patient?.gender}</p>${
+          patient?.hasMinorIllness && patient?.illnessDetails
+            ? `<p><b>Pet Minor Illness:</b> ${JSON.stringify(
+                patient?.illnessDetails?.symptoms
+              )} - ${patient?.illnessDetails?.notes}</p>`
+            : ""
+        }<p><b>Aggression Status:</b> ${
           patient?.aggressionStatus?.name.includes("no history of aggression")
             ? "NOT Aggressive"
             : "AGGRESSIVE"

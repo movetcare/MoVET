@@ -1,6 +1,7 @@
 import Layout from "components/Layout";
 import Head from "next/head";
 import Image from "next/image";
+import { CallToAction } from "ui";
 
 export default function BlackFridayDeal() {
   return (
@@ -60,6 +61,7 @@ export default function BlackFridayDeal() {
         <h2 className="text-2xl m-0">🎉 Happy Holidays! 🎉</h2>
         <h2 className="text-lg mt-2">- The MoVET Team</h2>
       </section>
+      <CallToAction />
     </Layout>
   );
 }

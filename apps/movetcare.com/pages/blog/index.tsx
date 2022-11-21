@@ -4,8 +4,27 @@ import Link from "next/link";
 import { classNames } from "utilities";
 import { BlogPost } from "types";
 import Head from "next/head";
+import { Fragment } from "react";
+import { CallToAction } from "ui";
 
 const posts = [
+  {
+    isFeatured: false,
+    title: "6 Reasons Why We're Thankful For Our Pets This Thanksgiving Season",
+    href: "/blog/six-reasons-we-are-thankful-for-our-pets",
+    category: { name: "Community", href: "#", color: "bg-movet-magenta" },
+    description:
+      "They are our fur-babies, what's not to love? Humans and their pets can develop such special bonds. It's often something not understood until you are lucky enough to experience it yourself. As we approach the busy season of the holidays, don't forget to take a few moments each day to show your pet some extra love!",
+    date: "Nov 21st, 2022",
+    datetime: "2022-11-21",
+    imageUrl: "/images/blog/six-reasons.jpg",
+    readingTime: "3 min",
+    author: {
+      name: "Dr. A",
+      href: "#",
+      imageUrl: "/images/blog/dr-a.png",
+    },
+  },
   {
     isFeatured: true,
     title: "Black Friday Deal - Free Exam w/ Purchase",
@@ -20,7 +39,7 @@ const posts = [
     author: {
       name: "Dr. A",
       href: "#",
-      imageUrl: null,
+      imageUrl: "/images/blog/dr-a.png",
     },
   },
   {
@@ -39,9 +58,9 @@ const posts = [
     imageUrl: "/images/blog/crop-winter-heartworm.png",
     readingTime: "2 min",
     author: {
-      name: "Dr. A",
+      name: "Dr. Barbra Caldwell",
       href: "#",
-      imageUrl: null,
+      imageUrl: "/images/blog/dr-barbara-caldwell.png",
     },
   },
   {
@@ -58,7 +77,7 @@ const posts = [
     author: {
       name: "Dr. A",
       href: "#",
-      imageUrl: null,
+      imageUrl: "/images/blog/dr-a.png",
     },
   },
   {
@@ -75,7 +94,7 @@ const posts = [
     author: {
       name: "Rachel Bloch",
       href: "#",
-      imageUrl: null,
+      imageUrl: "/icon-192x192.png",
     },
   },
 ];
@@ -182,7 +201,7 @@ export default function Blog() {
             )}
           </div>
           <div className="mx-auto sm:pb-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
-            {posts.map((post) =>
+            {posts.map((post, index) =>
               !post.isFeatured ? (
                 <div
                   key={post.title}
@@ -222,13 +241,13 @@ export default function Blog() {
                     <div className="mt-3 flex items-center">
                       <div className="flex-shrink-0 mt-3">
                         <span className="sr-only">{post.author.name}</span>
-                        {/* <Image
-                        className="rounded-full"
-                        height={40}
-                        width={40}
-                        src={post.author.imageUrl}
-                        alt=""
-                      /> */}
+                        <Image
+                          className="rounded-full"
+                          height={40}
+                          width={40}
+                          src={post.author.imageUrl}
+                          alt=""
+                        />
                       </div>
                       <div className="ml-3">
                         <p className="text-sm font-medium mb-0">
@@ -246,12 +265,13 @@ export default function Blog() {
                   </div>
                 </div>
               ) : (
-                <></>
+                <Fragment key={index}></Fragment>
               )
             )}
           </div>
         </div>
       </section>
+      <CallToAction />
     </Layout>
   );
 }

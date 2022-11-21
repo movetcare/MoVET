@@ -1,6 +1,7 @@
 import Layout from "components/Layout";
 import Head from "next/head";
 import Image from "next/image";
+import { CallToAction } from "ui";
 
 export default function MoreThanPinkWalk() {
   return (
@@ -119,6 +120,7 @@ export default function MoreThanPinkWalk() {
           .
         </p>
       </section>
+      <CallToAction />
     </Layout>
   );
 }
