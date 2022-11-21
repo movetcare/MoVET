@@ -1,17 +1,13 @@
 import Layout from "components/Layout";
 import Head from "next/head";
+import Router, { useRouter } from "next/router";
 import { useEffect } from "react";
 import { environment } from "utilities";
 
 export default function Custom404() {
+  const router = useRouter();
   useEffect(() => {
-    setTimeout(
-      () =>
-        environment === "production"
-          ? (window.location.href = "https://movetcare.com/")
-          : (window.location.href = `http://${window.location.host}`),
-      3000
-    );
+    setTimeout(() => router.replace("/"), 3000);
   }, []);
   return (
     <Layout>

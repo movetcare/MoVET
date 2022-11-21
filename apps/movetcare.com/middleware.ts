@@ -15,6 +15,8 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(
         (request.nextUrl.hostname === "localhost"
           ? "http://localhost:3001"
+          : request.nextUrl.hostname.includes("stage.")
+          ? "https://stage.app.mocetcare.com"
           : "https://app.movetcare.com") +
           `/account/?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`
       );
@@ -28,6 +30,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(
       request.nextUrl.hostname === "localhost"
         ? "http://localhost:3001/appointment-check-in"
+        : request.nextUrl.hostname.includes("stage.")
+        ? "https://stage.app.mocetcare.com/appointment-check-in"
         : "https://app.movetcare.com/appointment-check-in"
     );
   } else if (
@@ -38,7 +42,21 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(
       request.nextUrl.hostname === "localhost"
         ? "http://localhost:3001/update-payment-method"
+        : request.nextUrl.hostname.includes("stage.")
+        ? "https://stage.app.movetcare.com/update-payment-method"
         : "https://app.movetcare.com/update-payment-method"
+    );
+  } else if (
+    request.nextUrl.pathname === "/book-an-appointment/" ||
+    request.nextUrl.pathname === "/request-an-appointment/" ||
+    request.nextUrl.pathname === "/appointment-booking/"
+  ) {
+    return NextResponse.redirect(
+      request.nextUrl.hostname === "localhost"
+        ? "http://localhost:3001/request-an-appointment"
+        : request.nextUrl.hostname.includes("stage.")
+        ? "https://stage.app.movetcare.com/request-an-appointment"
+        : "https://app.movetcare.com/request-an-appointment"
     );
   }
 }
