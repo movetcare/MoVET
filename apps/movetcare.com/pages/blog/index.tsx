@@ -149,7 +149,7 @@ export default function Blog() {
                         className="mt-2 block hover:no-underline"
                         passHref
                       >
-                        <p className="text-xl font-semibold cursor-pointer text-movet-black">
+                        <p className="text-xl font-semibold cursor-pointer text-movet-black hover:no-underline">
                           {post.title}
                         </p>
                       </Link>
@@ -158,7 +158,7 @@ export default function Blog() {
                         className="mt-2 block hover:no-underline"
                         passHref
                       >
-                        <p className="mt-3 text-base cursor-pointer text-movet-black">
+                        <p className="mt-3 text-base cursor-pointer text-movet-black hover:no-underline">
                           {post.description}
                         </p>
                       </Link>
@@ -232,10 +232,14 @@ export default function Blog() {
                       </p>
                       <Link
                         href={post.href}
-                        className="mt-2 block text-movet-black no-underline"
+                        className="mt-2 block text-movet-black hover:no-underline"
                       >
-                        <p className="text-xl font-semibold">{post.title}</p>
-                        <p className="mt-3 text-base">{post.description}</p>
+                        <p className="text-xl font-semibold hover:no-underline">
+                          {post.title}
+                        </p>
+                        <p className="mt-3 text-base hover:no-underline">
+                          {post.description}
+                        </p>
                       </Link>
                     </div>
                     <div className="mt-3 flex items-center">

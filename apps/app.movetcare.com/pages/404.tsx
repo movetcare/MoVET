@@ -1,18 +1,13 @@
 import { Loader } from "ui";
 import Head from "next/head";
 import { useEffect } from "react";
-import { environment } from "utilities";
+import { useRouter } from "next/router";
 
 export default function Custom404() {
+  const router = useRouter();
   useEffect(() => {
-    setTimeout(
-      () =>
-        environment === "production"
-          ? (window.location.href = "https://app.movetcare.com/")
-          : (window.location.href = `http://${window.location.host}`),
-      3000
-    );
-  }, []);
+    setTimeout(() => router.replace("/"), 3000);
+  }, [router]);
   return (
     <div className="flex flex-col items-center justify-center min-py-2">
       <Head>
