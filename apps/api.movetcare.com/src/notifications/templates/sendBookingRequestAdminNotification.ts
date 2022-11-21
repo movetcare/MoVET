@@ -15,227 +15,76 @@ export const sendBookingRequestAdminNotification = async ({
     patients,
     reason,
     requestedDateTime,
-    vcprRequired,
     location,
     address,
-    illPatients,
     selectedStaff,
   }: any = await bookingRef
     .get()
     .then((doc: any) => doc.data())
     .catch((error: any) => throwError(error));
   const { email, displayName, phoneNumber } = client;
-  const { subject, message } = createAdminMessage({
-    messageTemplate: "email",
-    vcprRequired,
-    reason,
-    client,
-    illPatients,
-    patients,
-    id,
-    displayName,
-    createdAt,
-    phoneNumber,
-    email,
-    requestedDateTime,
-    location,
-    selectedStaff,
-    address,
-  });
+
+  const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
+    ?.toDate()
+    ?.toString()}</p>${
+    displayName ? `<p><b>Client Name:</b> ${displayName}</p>` : ""
+  }<p><b>Client Email:</b> ${email}</p>${
+    phoneNumber
+      ? `<p><b>Client Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
+          phoneNumber?.replaceAll("+1", "")
+        )}</a></p>`
+      : ""
+  }${patients.map(
+    (patient: any) =>
+      `<p><b>Patient Name:</b> ${patient?.name}</p><p><b>Patient Species:</b> ${
+        patient?.species
+      }</p><p><b>Patient Gender:</b> ${
+        patient?.gender
+      }</p><p><b>Patient Minor Illness:</b> ${
+        patient?.hasMinorIllness
+          ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+              patient?.illnessDetails?.notes
+            }`
+          : " NONE"
+      }</p><p><b>Aggression Status:</b> ${
+        patient?.aggressionStatus?.name.includes("no history of aggression")
+          ? "NOT Aggressive"
+          : "AGGRESSIVE"
+      }</p><p><b>VCPR Required:</b> ${patient?.vcprRequired ? "Yes" : "No"}</p>`
+  )}
+  ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
+    requestedDateTime?.date
+      ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(
+          requestedDateTime.date?.toDate()
+        )}</p>`
+      : ""
+  }${
+    requestedDateTime?.time
+      ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
+      : ""
+  }${
+    location
+      ? `<p><b>Requested Location:</b> ${location} ${
+          address ? `- ${address?.full} (${address?.info})` : ""
+        }</p>`
+      : ""
+  }${
+    selectedStaff
+      ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
+      : ""
+  }<p><a href="https://us.provetcloud.com/4285/client/${
+    client?.uid
+  }/tabs" style="border-radius: 40px; border: 2px solid rgb(255, 255, 255); display: inline-block; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; font-size: 16px; font-weight: bold; font-style: normal; padding: 18px; text-decoration: none; min-width: 30px; background-color: #E76159; color: rgb(255, 255, 255); --darkreader-inline-border-top:#D1CCBD; --darkreader-inline-border-right:#D1CCBD; --darkreader-inline-border-bottom:#D1CCBD; --darkreader-inline-border-left:#D1CCBD; --darkreader-inline-bgcolor:#E76159; --darkreader-inline-color:#e8e6e3;">Book Appointment</a></p>`;
 
   sendNotification({
     type: "email",
     payload: {
       to: "info@movetcare.com",
       replyTo: email,
-      subject,
-      message,
-    },
-  });
-
-  sendNotification({
-    type: "slack",
-    payload: {
-      channel: "appointment-request",
-      message: createAdminMessage({
-        messageTemplate: "slack",
-        vcprRequired,
-        reason,
-        selectedStaff,
-        client,
-        illPatients,
-        patients,
-        id,
-        displayName,
-        createdAt,
-        phoneNumber,
-        email,
-        requestedDateTime,
-        location,
-        address,
-      }),
-    },
-  });
-};
-
-const createAdminMessage = ({
-  messageTemplate,
-  client,
-  illPatients,
-  reason,
-  vcprRequired,
-  patients,
-  id,
-  displayName,
-  createdAt,
-  phoneNumber,
-  email,
-  requestedDateTime,
-  location,
-  address,
-  selectedStaff,
-}: any): any => {
-  if (messageTemplate === "email") {
-    const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
-      ?.toDate()
-      ?.toString()}</p>${
-      displayName ? `<p><b>Client Name:</b> ${displayName}</p>` : ""
-    }<p><b>Client Email:</b> ${email}</p>${
-      phoneNumber
-        ? `<p><b>Client Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
-            phoneNumber?.replaceAll("+1", "")
-          )}</a></p>`
-        : ""
-    }${patients.map(
-      (patient: any) =>
-        `<p><b>Patient Name:</b> ${
-          patient?.name
-        }</p><p><b>Patient Species:</b> ${
-          patient?.species
-        }</p><p><b>Patient Gender:</b> ${
-          patient?.gender
-        }</p><p><b>Patient Minor Illness:</b> ${
-          patient?.hasMinorIllness
-            ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                patient?.illnessDetails?.notes
-              }`
-            : " NONE"
-        }</p><p><b>Aggression Status:</b> ${
-          patient?.aggressionStatus?.name.includes("no history of aggression")
-            ? "NOT Aggressive"
-            : "AGGRESSIVE"
-        }</p><p><b>VCPR Required:</b> ${
-          patient?.vcprRequired ? "Yes" : "No"
-        }</p>`
-    )}${
-      requestedDateTime?.date
-        ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(
-            requestedDateTime.date?.toDate()
-          )}</p>`
-        : ""
-    }${
-      requestedDateTime?.time
-        ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
-        : ""
-    }${
-      location
-        ? `<p><b>Requested Location:</b> ${location} ${
-            address ? `- ${address?.full} (${address?.info})` : ""
-          }</p>`
-        : ""
-    }${
-      selectedStaff
-        ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
-        : ""
-    }<p><b><a href="https://us.provetcloud.com/4285/client/${
-      client?.uid
-    }/tabs">Book Appointment</></b></p>`;
-
-    return {
       subject: `${
         displayName ? displayName : email ? email : ""
       } has submitted a new appointment request`,
       message,
-    };
-  } else {
-    return [
-      {
-        type: "section",
-        text: {
-          text: ":exclamation: _New Appointment Request_ :exclamation:",
-          type: "mrkdwn",
-        },
-        fields: [
-          {
-            type: "mrkdwn",
-            text: "*Client:*",
-          },
-          {
-            type: "plain_text",
-            text: `${
-              client
-                ? `${client?.displayName ? client?.displayName : ""} (${
-                    client?.email ? client?.email : ""
-                  } - ${
-                    client?.phoneNumber ? client?.phoneNumber : ""
-                  }) - https://us.provetcloud.com/4285/client/${client?.uid}`
-                : "NOT PROVIDED"
-            }`,
-          },
-          {
-            type: "mrkdwn",
-            text: "*Patients:*",
-          },
-          {
-            type: "plain_text",
-            text:
-              patients.length > 1
-                ? JSON.stringify(
-                    patients.map((patient: any, index: number) =>
-                      index !== patients.length - 1
-                        ? `${patient?.name} `
-                        : ` and ${patient?.name}`
-                    )
-                  )
-                : patients[0].name +
-                  ` ${illPatients ? `${illPatients?.length} are ill` : ""} ${
-                    reason ? `Reason - ${reason?.label}` : ""
-                  } ${
-                    vcprRequired
-                      ? `VCPR ${vcprRequired ? "IS" : "IS NOT"} REQUIRED`
-                      : ""
-                  } `,
-          },
-          {
-            type: "mrkdwn",
-            text: "*Location:*",
-          },
-          {
-            type: "plain_text",
-            text:
-              location +
-              ` ${address ? address.full : ""} ${
-                address?.info ? address?.info : ""
-              }`,
-          },
-          {
-            type: "mrkdwn",
-            text: "*Requested Date / Time:*",
-          },
-          {
-            type: "plain_text",
-            text: requestedDateTime
-              ? `${
-                  requestedDateTime?.date
-                    ? `${formatDateToMMDDYY(requestedDateTime?.date?.toDate())}`
-                    : ""
-                }${
-                  requestedDateTime?.time ? ` @ ${requestedDateTime?.time}` : ""
-                }`
-              : "",
-          },
-        ],
-      },
-    ];
-  }
+    },
+  });
 };

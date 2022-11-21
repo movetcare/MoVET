@@ -188,9 +188,7 @@ export const SelectAPet = ({
       {isLoading ? (
         <Loader
           message={
-            isSubmitting
-              ? "Saving Pet Selection(s)..."
-              : "Loading Your Pet(s)..."
+            isSubmitting ? "Saving Pet Selection..." : "Loading, Please Wait..."
           }
         />
       ) : error ? (

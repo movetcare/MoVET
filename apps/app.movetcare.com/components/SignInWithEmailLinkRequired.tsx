@@ -16,11 +16,6 @@ export const SignInWithEmailLinkRequired = ({
       <h2 className="text-2xl font-extrabold tracking-tight text-center">
         {successMessage !== null ? successMessage : "You're almost there!"}
       </h2>
-      {!successMessage && (
-        <p className="text-center mb-4">
-          Please check in for your appointment by submitting your email below
-        </p>
-      )}
       <p className="mx-auto text-center text-movet-red">
         Please check your email for a sign in link
       </p>

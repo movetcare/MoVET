@@ -80,10 +80,9 @@ export const WellnessCheck = ({
           updatedOn: serverTimestamp(),
         },
         { merge: true }
-      ).catch((error: any) => {
-        setIsLoading(false);
-        setError(error);
-      });
+      )
+        .catch((error: any) => setError(error))
+        .finally(() => setIsLoading(false));
     else
       await setDoc(
         doc(firestore, "bookings", `${session.id}`),
@@ -92,10 +91,9 @@ export const WellnessCheck = ({
           updatedOn: serverTimestamp(),
         },
         { merge: true }
-      ).catch((error: any) => {
-        setIsLoading(false);
-        setError(error);
-      });
+      )
+        .catch((error: any) => setError(error))
+        .finally(() => setIsLoading(false));
   };
   return (
     <>
@@ -103,7 +101,7 @@ export const WellnessCheck = ({
         <Loader
           message={
             isSubmitting
-              ? `Saving Your Selection(s)...`
+              ? `Saving Your Selection...`
               : `Loading Wellness Check...`
           }
         />

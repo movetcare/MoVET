@@ -171,11 +171,9 @@ const createClientMessage = ({
             type: "plain_text",
             text: `${
               client
-                ? `${client?.displayName ? client?.displayName : ""} (${
+                ? `${client?.displayName ? client?.displayName : ""} ${
                     client?.email ? client?.email : ""
-                  } - ${
-                    client?.phoneNumber ? client?.phoneNumber : ""
-                  }) - https://us.provetcloud.com/4285/client/${client?.uid}`
+                  }`
                 : "NOT PROVIDED"
             }`,
           },
@@ -205,6 +203,23 @@ const createClientMessage = ({
           },
           {
             type: "mrkdwn",
+            text: "*Reason:*",
+          },
+          {
+            type: "plain_text",
+            text: `${reason.label}`,
+          },
+          {
+            type: "mrkdwn",
+            text: "*Selected Staff:*",
+          },
+          {
+            type: "plain_text",
+            text: `${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}`,
+          },
+
+          {
+            type: "mrkdwn",
             text: "*Location:*",
           },
           {
@@ -212,7 +227,7 @@ const createClientMessage = ({
             text:
               location +
               ` ${address ? address.full : ""} ${
-                address?.info ? address?.info : ""
+                address?.info ? ` - ${address?.info}` : ""
               }`,
           },
           {

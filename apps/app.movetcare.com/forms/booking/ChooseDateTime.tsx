@@ -33,7 +33,6 @@ export const ChooseDateTime = ({
   const onSubmit = async (event: any) => {
     event.preventDefault();
     setIsLoading(true);
-    console.log("selectedDate", selectedDate);
     await setDoc(
       doc(firestore, "bookings", `${session.id}`),
       {

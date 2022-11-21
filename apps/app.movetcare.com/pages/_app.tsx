@@ -21,7 +21,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
           content="Sign in to your MoVET account to manage and access your pet's data and schedule appointments!"
         />
       </Head>
-      {environment !== "development" && (
+      {environment === "production" && (
         <AnalyticsTracker trackerId="G-Y9896HXDFN" />
       )}
       <Layout>

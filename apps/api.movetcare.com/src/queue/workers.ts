@@ -4,6 +4,7 @@ import { createNewClientTask } from "../integrations/provet/entities/client/crea
 import { processItemsConfiguration } from "../integrations/provet/entities/item/processItemsConfiguration";
 import { processBreedConfiguration } from "../integrations/provet/entities/patient/breeds/processBreedConfiguration";
 import { sendAppointmentReminderNotification } from "../notifications/templates/sendAppointmentReminderNotification";
+import { environment } from "../config/config";
 
 interface Workers {
   [key: string]: (options: any) => Promise<any>;
@@ -15,7 +16,10 @@ export const workers: Workers = {
     await processBreedConfiguration(options),
   configure_items: async (options: any) =>
     await processItemsConfiguration(options),
-  create_new_client: async (options: any) => await createNewClientTask(options),
+  create_new_client: async (options: any) =>
+    environment.type === "production"
+      ? await createNewClientTask(options)
+      : true,
   "30_min_appointment_notification": async (options: any) =>
     await sendAppointmentReminderNotification({
       ...options,

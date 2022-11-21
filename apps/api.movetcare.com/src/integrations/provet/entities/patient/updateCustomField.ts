@@ -71,7 +71,7 @@ export const updateCustomField = async (
       .patch(
         `/custom_field_values/${
           typeof customFieldValue === "object"
-            ? `${customFieldValue.id}`
+            ? `${customFieldValue?.id}`
             : customFieldValue
         }`,
         {
