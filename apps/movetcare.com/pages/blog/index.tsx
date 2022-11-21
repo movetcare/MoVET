@@ -232,7 +232,7 @@ export default function Blog() {
                       </p>
                       <Link
                         href={post.href}
-                        className="mt-2 block text-movet-black"
+                        className="mt-2 block text-movet-black no-underline"
                       >
                         <p className="text-xl font-semibold">{post.title}</p>
                         <p className="mt-3 text-base">{post.description}</p>
