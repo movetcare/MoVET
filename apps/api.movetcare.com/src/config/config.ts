@@ -6,7 +6,6 @@ import Stripe from "stripe";
 import * as email from "@sendgrid/mail";
 import * as client from "@sendgrid/client";
 import { WebClient, LogLevel } from "@slack/web-api";
-const Sentry = require("@sentry/node");
 
 let stagingInstance: any = null;
 let productionInstance: any = null;
@@ -42,14 +41,6 @@ export const throwError = (error: any): false => {
   else console.error("ERROR MESSAGE", error.message);
   return false;
 };
-
-if (environment.type !== "development") {
-  Sentry.init({
-    dsn: func.config()?.sentry.dsn,
-    environment: environment.type,
-    tracesSampleRate: 1.0,
-  });
-}
 
 export const defaultRuntimeOptions = {
   timeoutSeconds: 180,

@@ -147,7 +147,9 @@ const createAdminMessage = ({
       selectedStaff
         ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
         : ""
-    }`;
+    }<p><b><a href="https://us.provetcloud.com/4285/client/${
+      client?.uid
+    }/tabs">Book Appointment</></b></p>`;
 
     return {
       subject: `${

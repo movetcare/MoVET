@@ -1,4 +1,4 @@
-import { faPaw } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faPaw } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import { EmailInput, SelectInput, TextInput } from "../inputs";
 import PhoneInput from "../inputs/PhoneInput";
 import type { ContactForm as ContactFormType, ServerResponse } from "types";
 import { CONTACT_REASONS } from "constant";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const ContactForm = () => {
   const router = useRouter();
@@ -93,6 +94,11 @@ export const ContactForm = () => {
         <>
           {submissionSuccess ? (
             <div className="text-center">
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                size="4x"
+                className="text-movet-green mx-auto w-full mb-4"
+              />
               <h2 className="text-3xl font-extrabold tracking-tight text-movet-black sm:text-4xl">
                 Success!
               </h2>

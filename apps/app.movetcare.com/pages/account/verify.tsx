@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { applyActionCode } from "firebase/auth";
 import { environment } from "utilities";
 import { auth } from "services/firebase";
+import { Loader } from "ui";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Verify() {
   const router = useRouter();
@@ -47,16 +50,14 @@ export default function Verify() {
       <main className="w-full flex-1 overflow-hidden">
         <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8">
           {isLoading ? (
-            <>
-              <h1 className="font-abside text-3xl mb-2">
-                Verifying Your Account
-              </h1>
-              <h1 className="font-source-sans-pro-italic text-3xl mb-8">
-                Please Wait...
-              </h1>
-            </>
+            <Loader />
           ) : verificationSuccessful ? (
             <div className="flex-col justify-center items-center">
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                size="4x"
+                className="text-movet-green mx-auto w-full mb-4"
+              />
               <h1 className="font-abside text-3xl mb-2">
                 Your Account is Verified!
               </h1>

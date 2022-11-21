@@ -2,6 +2,7 @@ import { environment, admin, DEBUG } from "../../config/config";
 import type { Booking } from "../../types/booking";
 import type { EmailConfiguration } from "../../types/email.d";
 import { sendSignInByEmailLink } from "../../utils/auth/sendSignInByEmailLink";
+import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
 import {
   getClientNotificationSettings,
   UserNotificationSettings,
@@ -64,7 +65,6 @@ const sendAdminBookingRecoveryNotification = async (
     patients,
     reason,
     requestedDateTime,
-    vcprRequired,
     location,
     address,
     step,
@@ -92,7 +92,7 @@ const sendAdminBookingRecoveryNotification = async (
           displayName ? `<p><b>Client Name:</b> ${displayName}</p>` : ""
         }<p><b>Client Email:</b> ${email}</p>${
           phoneNumber ? `<p><b>Client Phone:</b> ${phoneNumber}</p>` : ""
-        }${vcprRequired ? `<p><b>VCPR Required:</b> ${vcprRequired}</p>` : ""}${
+        }${
           patients &&
           patients.map(
             (patient: any) =>
@@ -104,8 +104,8 @@ const sendAdminBookingRecoveryNotification = async (
                 patient?.gender
               }</p><p><b>Patient Minor Illness:</b> ${
                 patient?.hasMinorIllness
-                  ? `${JSON.stringify(patient?.illnessDetail?.symptoms)} - ${
-                      patient?.illnessDetail?.notes
+                  ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                      patient?.illnessDetails?.notes
                     }`
                   : " NONE"
               }</p><p><b>Aggression Status:</b> ${
@@ -120,7 +120,9 @@ const sendAdminBookingRecoveryNotification = async (
           )
         }${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
           requestedDateTime?.date
-            ? `<p><b>Requested Date:</b> ${requestedDateTime.date.seconds}</p>`
+            ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(
+                requestedDateTime.date?.toDate()
+              )}</p>`
             : ""
         }${
           requestedDateTime?.time
@@ -157,7 +159,7 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
     if (client?.displayName) emailHtml += `<p>Hey ${client?.displayName}!</p>`;
     else emailHtml += "<p>Hey there!</p>";
 
-    emailHtml += `<p>It looks like you haven't finished your appointment booking request with MoVET.</p><p><b>Click on the link bellow to resume your session:</b></p><p><a href='${
+    emailHtml += `<p>It looks like you were in the process of submitting an appointment booking request with MoVET.</p><p><b>Click the button bellow to resume your session:</b></p><p><a href='${
       authLink
         ? authLink
         : (environment.type === "production"
@@ -166,19 +168,10 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
             ? "https://stage.app.movetcare.com"
             : "http://localhost:3000") +
           `/request-an-appointment/?email=${email}/`
-    }'>${
-      authLink
-        ? authLink
-        : (environment.type === "production"
-            ? "https://app.movetcare.com"
-            : environment.type === "staging"
-            ? "https://stage.app.movetcare.com"
-            : "http://localhost:3000") +
-          `/request-an-appointment/?email=${email}/`
-    }</a></p>`;
+    }'>Complete Booking</a></p><p>At MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!</p><p>We look forward to seeing you soon!</p><p>The MoVET Team</p>`;
     const emailConfig: EmailConfiguration = {
       to: email,
-      subject: "Incomplete appointment booking request with MoVET",
+      subject: "Finish Booking Your Appointment!",
       message: emailHtml,
     };
     if (DEBUG)
@@ -232,19 +225,10 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
             ? "https://stage.app.movetcare.com"
             : "http://localhost:3000") +
           `/request-an-appointment/?email=${email}/`
-    }'>${
-      authLink
-        ? authLink
-        : (environment.type === "production"
-            ? "https://app.movetcare.com"
-            : environment.type === "staging"
-            ? "https://stage.app.movetcare.com"
-            : "http://localhost:3000") +
-          `/request-an-appointment/?email=${email}/`
-    }</a></p>`;
+    }'>Complete Booking</a></p><p>At MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!</p><p>We look forward to seeing you soon!</p><p>The MoVET Team</p>`;
     const emailConfig: EmailConfiguration = {
       to: email,
-      subject: "Incomplete appointment booking request with MoVET",
+      subject: "Finish Booking Your Appointment!",
       message: emailHtml,
     };
     const userNotificationSettings: UserNotificationSettings | false =
@@ -295,13 +279,13 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
             ? "https://stage.app.movetcare.com"
             : "http://localhost:3000") +
           `/request-an-appointment/?email=${email}/`
-    }`;
+    }\n\nAt MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!\nWe look forward to seeing you soon!\nThe MoVET Team`;
 
     sendNotification({
       type: "sms",
       payload: {
         client: uid,
-        subject: "Incomplete appointment booking request with MoVET",
+        subject: "Finish Booking Your Appointment!",
         message: smsMessage,
       },
     });

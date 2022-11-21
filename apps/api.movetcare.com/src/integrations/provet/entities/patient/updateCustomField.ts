@@ -1,6 +1,6 @@
 // PROVET CUSTOM FIELDS MAPPING - https://us.provetcloud.com/4285/api/0.1/custom_fields/
-import { admin, request, DEBUG } from "../../../../config/config";
-
+import { admin, request } from "../../../../config/config";
+const DEBUG = true;
 export const updateCustomField = async (
   patient: string,
   id: number,
@@ -68,11 +68,18 @@ export const updateCustomField = async (
       .catch((error: any) => (console.log("ERROR: ", error) as any) && false);
   else
     return await request
-      .patch(`/custom_field_values/${customFieldValue}`, {
-        field: id,
-        value: value,
-        object_id: patient,
-      })
+      .patch(
+        `/custom_field_values/${
+          typeof customFieldValue === "object"
+            ? `${customFieldValue.id}`
+            : customFieldValue
+        }`,
+        {
+          field: id,
+          value: value,
+          object_id: patient,
+        }
+      )
       .then(
         async (response: any) =>
           DEBUG &&

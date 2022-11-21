@@ -146,8 +146,10 @@ export const paymentIntentUpdated = async (event: any): Promise<void> => {
                   .auth()
                   .getUser(`${userId}`)
                   .catch((error: any) => console.error(error));
-                console.log("`${userId}`", `${userId}`);
-                console.log("`${user.email}`", `${user.email}`);
+                if (DEBUG) {
+                  console.log("`${userId}`", `${userId}`);
+                  console.log("`${user.email}`", `${user.email}`);
+                }
                 if (user) {
                   const clientIsOnWaitlist = await admin
                     .firestore()
@@ -155,14 +157,16 @@ export const paymentIntentUpdated = async (event: any): Promise<void> => {
                     .doc(user?.email)
                     .get()
                     .then((doc: any) => {
-                      console.log("clientIsOnWaitlist DATA", doc.data());
+                      if (DEBUG)
+                        console.log("clientIsOnWaitlist DATA", doc.data());
                       return true;
                     })
                     .catch((error: any) => {
                       console.error(error);
                       return false;
                     });
-                  console.log("`clientIsOnWaitlist`", clientIsOnWaitlist);
+                  if (DEBUG)
+                    console.log("`clientIsOnWaitlist`", clientIsOnWaitlist);
                   if (clientIsOnWaitlist) {
                     if (DEBUG)
                       console.log(
