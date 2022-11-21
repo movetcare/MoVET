@@ -8,7 +8,8 @@ export default function SixReasons() {
     <Layout>
       <Head>
         <title>
-          6 Reasons Why We're Thankful For Our Pets This Thanksgiving Season
+          6 Reasons Why We&apos;re Thankful For Our Pets This Thanksgiving
+          Season
         </title>
         <meta
           name="description"
@@ -57,26 +58,27 @@ export default function SixReasons() {
           width={820}
         />
         <h2 className="text-3xl mt-8 mb-4 text-center">
-          6 Reasons Why We're Thankful For Our Pets This Thanksgiving Season
+          6 Reasons Why We&apos;re Thankful For Our Pets This Thanksgiving
+          Season
         </h2>
         <p className="-mb-2">By: Dr. A</p>
         <p className="mb-4 italic text-xs">November 21st, 2022</p>
         <p>
-          They are our fur-babies, what's not to love? Humans and their pets can
-          develop such special bonds. It's often something not understood until
-          you are lucky enough to experience it yourself. As we approach the
-          busy season of the holidays, don't forget to take a few moments each
-          day to show your pet some extra love! After all, they are there for
-          you all year round. Here are just a few of the reasons why we are
-          extra thankful for them!
+          They are our fur-babies, what&apos;s not to love? Humans and their
+          pets can develop such special bonds. It&apos;s often something not
+          understood until you are lucky enough to experience it yourself. As we
+          approach the busy season of the holidays, don&apos;t forget to take a
+          few moments each day to show your pet some extra love! After all, they
+          are there for you all year round. Here are just a few of the reasons
+          why we are extra thankful for them!
         </p>
         <ul>
           <li>
             <h2>1. They give us a purpose</h2>
             <p>
-              We've all experienced those days that are harder than others to
-              get out of bed. If all else fails, you can typically count on some
-              wet nose nuzzles and paw pats reminding you that someone is
+              We&apos;ve all experienced those days that are harder than others
+              to get out of bed. If all else fails, you can typically count on
+              some wet nose nuzzles and paw pats reminding you that someone is
               hungry! Having something so adorable that depends on you can
               always cheer you up.
             </p>
@@ -85,18 +87,19 @@ export default function SixReasons() {
             <h2>2. Unconditional Love</h2>
             <p>
               A human and their pet share an unbreakable bond. We are flawed and
-              imperfect, but our pets don't care. Every day they show us that we
-              are worthy of love!
+              imperfect, but our pets don&apos;t care. Every day they show us
+              that we are worthy of love!
             </p>
           </li>
           <li>
             <h2>3. They keep us active</h2>
             <p>
-              Whether it's taking your dog on their daily walk which they love
-              so much, or constantly searching your local pet stores for their
-              favorite toys and snacks, having pets keeps us moving! We might
-              rely on technology these days, but our furry friends certainly do
-              not! They are the perfect excuse to get up and move around.
+              Whether it&apos;s taking your dog on their daily walk which they
+              love so much, or constantly searching your local pet stores for
+              their favorite toys and snacks, having pets keeps us moving! We
+              might rely on technology these days, but our furry friends
+              certainly do not! They are the perfect excuse to get up and move
+              around.
             </p>
           </li>
           <li>
@@ -109,7 +112,7 @@ export default function SixReasons() {
             </p>
           </li>
           <li>
-            <h2>5. They're FUN!</h2>
+            <h2>5. They&apos;re FUN!</h2>
             <p>
               Caring for any pet is a big responsibly, but the fun and
               excitement they provide us with in return is more than worth it!
@@ -122,7 +125,7 @@ export default function SixReasons() {
           <li>
             <h2>6. They make us better</h2>
             <p>
-              It's no secret that our pets bring out the best in us. Their
+              It&apos;s no secret that our pets bring out the best in us. Their
               unconditional love makes us want to be gentler and kinder to them,
               which in turn can change our reactions to the outside world. They
               give us something to look forward to during the work day which can
