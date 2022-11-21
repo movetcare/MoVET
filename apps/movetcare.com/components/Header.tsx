@@ -136,7 +136,7 @@ export const Header = () => {
                   <a
                     className="text-center ease-in-out duration-500 w-full xl:w-72 flex justify-center items-center border border-transparent shadow-sm text-movet-white text-sm font-medium font-abside uppercase bg-movet-red group-hover:bg-movet-black hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red py-2 sm:px-6 xl:px-0 rounded-full"
                     target="_blank"
-                    href={`/request-an-appointment`}
+                    href={`${window.location.origin}/request-an-appointment`}
                     rel="noopener noreferrer"
                   >
                     <FontAwesomeIcon
@@ -229,7 +229,7 @@ export const Header = () => {
                 <a
                   className="w-full flex justify-center items-center border border-transparent shadow-sm text-movet-white text-base font-abside font-medium uppercase bg-movet-red group-hover:bg-movet-black hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red py-2 px-6 rounded-full ease-in-out duration-500"
                   target="_blank"
-                  href={`/request-an-appointment`}
+                  href={`${window.location.origin}/request-an-appointment`}
                   rel="noopener noreferrer"
                 >
                   <FontAwesomeIcon
