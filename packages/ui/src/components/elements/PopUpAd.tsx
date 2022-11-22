@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, Fragment, useEffect } from "react";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import { usePopper } from "react-popper";
+import { useRouter } from "next/router";
 
 export const PopUpAd = ({
   icon = faTags,
@@ -20,25 +21,29 @@ export const PopUpAd = ({
   adComponent: any;
   ignoreUrlPath?: string | null;
 }) => {
+  const router = useRouter();
+  const { mode } = router.query || {};
   const [referenceElement, setReferenceElement] = useState<any>();
   const [popperElement, setPopperElement] = useState<any>();
   const { styles, attributes } = usePopper(referenceElement, popperElement);
   const [showModal, setShowModal] = useState<boolean | null>(null);
   useEffect(() => {
-    if (window.location.pathname === ignoreUrlPath) setShowModal(false);
     if (
-      localStorage &&
-      localStorage.getItem("showPopUpAd") === "false" &&
-      showModal === null
+      (localStorage &&
+        localStorage.getItem("showPopUpAd") === "false" &&
+        showModal === null) ||
+      window.location.pathname === ignoreUrlPath ||
+      window.location.pathname.includes("contact") ||
+      (mode && mode === "app")
     ) {
       setShowModal(false);
     } else if (showModal === null) setShowModal(autoOpen);
-  }, [showModal, autoOpen, ignoreUrlPath]);
+  }, [showModal, autoOpen, ignoreUrlPath, mode]);
 
   useEffect(() => {
     if (showModal === false) localStorage.setItem("showPopUpAd", "false");
   }, [showModal]);
-  return (
+  return mode !== "app" ? (
     <>
       {showModal === false ? (
         <Popover>
@@ -130,5 +135,7 @@ export const PopUpAd = ({
         </Transition>
       )}
     </>
+  ) : (
+    <></>
   );
 };

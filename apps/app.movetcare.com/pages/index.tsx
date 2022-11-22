@@ -6,7 +6,6 @@ import { Loader } from "ui";
 import { httpsCallable } from "firebase/functions";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { auth, functions } from "services/firebase";
-import { QRCodeSVG } from "qrcode.react";
 import { environment } from "utilities";
 import {
   onAuthStateChanged,
@@ -126,37 +125,37 @@ export default function Home() {
                       : "Sign In Required!"
                   }`
                 );
-                sendSignInLinkToEmail(auth, (email as string)?.toLowerCase(), {
-                  url:
-                    (environment === "production"
-                      ? "https://app.movetcare.com"
-                      : window.location.hostname === "localhost"
-                      ? "http://localhost:3001"
-                      : "https://stage.app.movetcare.com") +
-                    `/request-an-appointment?id=${result.id}`,
-                  handleCodeInApp: true,
-                  iOS: {
-                    bundleId: "com.movet.inc",
-                  },
-                  android: {
-                    packageName: "com.movet",
-                    installApp: true,
-                    minimumVersion: "16",
-                  },
-                  dynamicLinkDomain:
-                    environment === "production"
-                      ? "app.movetcare.com"
-                      : window.location.hostname === "localhost"
-                      ? "localhost"
-                      : "stage.app.movetcare.com",
+              sendSignInLinkToEmail(auth, (email as string)?.toLowerCase(), {
+                url:
+                  (environment === "production"
+                    ? "https://app.movetcare.com"
+                    : window.location.hostname === "localhost"
+                    ? "http://localhost:3001"
+                    : "https://stage.app.movetcare.com") +
+                  `/request-an-appointment?id=${result.id}`,
+                handleCodeInApp: true,
+                iOS: {
+                  bundleId: "com.movet.inc",
+                },
+                android: {
+                  packageName: "com.movet",
+                  installApp: true,
+                  minimumVersion: "16",
+                },
+                dynamicLinkDomain:
+                  environment === "production"
+                    ? "app.movetcare.com"
+                    : window.location.hostname === "localhost"
+                    ? "localhost"
+                    : "stage.app.movetcare.com",
+              })
+                .then(() => {
+                  window.localStorage.setItem(
+                    "email",
+                    (email as string)?.toLowerCase()
+                  );
                 })
-                  .then(() => {
-                    window.localStorage.setItem(
-                      "email",
-                      (email as string)?.toLowerCase()
-                    );
-                  })
-                  .catch((error) => handleError(error));
+                .catch((error) => handleError(error));
               setVerificationSuccess(true);
               setIsLoading(false);
             }
@@ -175,61 +174,45 @@ export default function Home() {
   };
   return (
     <section className="w-full flex-1">
-      {!isLoading && <AppHeader />}
-      {mode === "kiosk" ? (
-        <section className="flex flex-col justify-center items-center max-w-xl mx-auto bg-white rounded-xl p-8">
-          <QRCodeSVG
-            size={250}
-            value={
-              (window.location.hostname === "localhost"
-                ? "http://localhost:3000"
-                : "https://movetcare.com") + "/request-an-appointment"
-            }
-          />
-          <p className="mt-4 text-lg leading-6 text-movet-black text-center">
-            Scan the QR code above to start booking an appointment with MoVET
-          </p>
-        </section>
-      ) : (
-        <div
-          className={`flex items-center justify-center bg-white rounded-xl ${
-            !isAppMode ? " p-4 mb-8 sm:p-8" : ""
-          }`}
-        >
-          <div className={isAppMode ? "px-4 mb-8" : "p-4 sm:p-8"}>
-            <section className="relative mx-auto">
-              {isLoading ? (
-                <Loader />
-              ) : error ? (
-                <Error error={error} isAppMode={isAppMode} />
-              ) : (
-                <>
-                  {booking !== null ? (
-                    <ClientDataContext.Provider value={clientData as any}>
-                      <LoadScript
-                        googleMapsApiKey="AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
-                        language="en"
-                        region="en"
-                        libraries={["places"]}
-                        loadingElement={<Loader />}
-                      >
-                        <BookingController id={booking} isAppMode={isAppMode} />
-                      </LoadScript>
-                    </ClientDataContext.Provider>
-                  ) : verificationSuccess === null ? (
-                    <StartBooking isAppMode={isAppMode} />
-                  ) : (
-                    <SignInWithEmailLinkRequired
-                      successMessage={successMessage}
-                      email={window.localStorage.getItem("email") || undefined}
-                    />
-                  )}
-                </>
-              )}
-            </section>
-          </div>
+      <AppHeader />
+      <div
+        className={`flex items-center justify-center bg-white rounded-xl ${
+          !isAppMode ? " p-4 mb-8 sm:p-8" : ""
+        }`}
+      >
+        <div className={isAppMode ? "px-4 mb-8" : "p-4 sm:p-8"}>
+          <section className="relative mx-auto">
+            {isLoading ? (
+              <Loader />
+            ) : error ? (
+              <Error error={error} isAppMode={isAppMode} />
+            ) : (
+              <>
+                {booking !== null ? (
+                  <ClientDataContext.Provider value={clientData as any}>
+                    <LoadScript
+                      googleMapsApiKey="AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
+                      language="en"
+                      region="en"
+                      libraries={["places"]}
+                      loadingElement={<Loader />}
+                    >
+                      <BookingController id={booking} isAppMode={isAppMode} />
+                    </LoadScript>
+                  </ClientDataContext.Provider>
+                ) : verificationSuccess === null ? (
+                  <StartBooking isAppMode={isAppMode} />
+                ) : (
+                  <SignInWithEmailLinkRequired
+                    successMessage={successMessage}
+                    email={window.localStorage.getItem("email") || undefined}
+                  />
+                )}
+              </>
+            )}
+          </section>
         </div>
-      )}
+      </div>
     </section>
   );
 }

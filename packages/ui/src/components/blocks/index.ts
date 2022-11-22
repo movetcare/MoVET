@@ -7,3 +7,5 @@ export * from "./Hours";
 export * from "./Reviews";
 export * from "./Contact";
 export * from "./CallToAction";
+export * from "./TermsAndConditions";
+export * from "./PrivacyPolicy";

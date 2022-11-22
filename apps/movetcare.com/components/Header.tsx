@@ -7,7 +7,6 @@ import kebabCase from "lodash.kebabcase";
 import { faCalendarPlus, faSms } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { environment } from "utilities";
 
 interface NavigationItem {
   text: string;

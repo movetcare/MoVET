@@ -18,6 +18,7 @@ import { Error } from "components/Error";
 import { useClientData } from "hooks/useClientData";
 import { ClientDataContext } from "contexts/ClientDataContext";
 import { LoadScript } from "@react-google-maps/api";
+import { AppHeader } from "components/AppHeader";
 
 export default function Booking() {
   const router = useRouter();
@@ -163,6 +164,7 @@ export default function Booking() {
   };
   return (
     <section className="w-full flex-1">
+      <AppHeader />
       <div
         className={`flex items-center justify-center bg-white rounded-xl max-w-xl mx-auto${
           !isAppMode ? " p-4 my-8 sm:p-8" : ""

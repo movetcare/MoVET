@@ -201,21 +201,12 @@ const createClientMessage = ({
           },
           {
             type: "mrkdwn",
-            text: "*Reason:*",
-          },
-          {
-            type: "plain_text",
-            text: `${reason.label}`,
-          },
-          {
-            type: "mrkdwn",
             text: "*Selected Staff:*",
           },
           {
             type: "plain_text",
             text: `${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}`,
           },
-
           {
             type: "mrkdwn",
             text: "*Location:*",
