@@ -20,9 +20,9 @@ const posts = [
     imageUrl: "/images/blog/six-reasons.jpg",
     readingTime: "3 min",
     author: {
-      name: "Dr. A",
+      name: "Rachel Bloch",
       href: "#",
-      imageUrl: "/images/blog/dr-a.png",
+      imageUrl: "/icon-192x192.png",
     },
   },
   {

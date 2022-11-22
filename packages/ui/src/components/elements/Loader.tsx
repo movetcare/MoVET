@@ -68,7 +68,8 @@ LottieProps) => {
   // const randomNumber = getRandomInt(1, 2);
 
   useEffect(() => {
-    setIndex(getRandomInt(1, 3));
+    //setIndex(getRandomInt(1, 3));
+    setIndex(3);
   });
   return (
     <>

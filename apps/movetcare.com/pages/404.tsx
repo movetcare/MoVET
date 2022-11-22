@@ -7,8 +7,8 @@ import { Loader } from "ui";
 export default function Custom404() {
   const router = useRouter();
   useEffect(() => {
-    setTimeout(() => router.replace("/"), 3000);
-  }, [router]);
+    // setTimeout(() => router.replace("/"), 3000);
+  }, []);
   return (
     <Layout>
       <Head>

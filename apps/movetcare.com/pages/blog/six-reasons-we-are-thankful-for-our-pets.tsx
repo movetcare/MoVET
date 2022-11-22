@@ -37,7 +37,7 @@ export default function SixReasons() {
           content="They are our fur-babies, what's not to love? Humans and their pets can develop such special bonds. It's often something not understood until you are lucky enough to experience it yourself. As we approach the busy season of the holidays, don't forget to take a few moments each day to show your pet some extra love!"
         />
         <meta name="twitter:site" content="https://movetcare.com" />
-        <meta name="twitter:creator" content="Dr. A." />
+        <meta name="twitter:creator" content="Rachel Bloch" />
         <link rel="icon" type="image/png" href="/static/images/favicon.ico" />
         <link rel="apple-touch-icon" href="/static/images/favicon.ico" />
         <meta
@@ -61,7 +61,7 @@ export default function SixReasons() {
           6 Reasons Why We&apos;re Thankful For Our Pets This Thanksgiving
           Season
         </h2>
-        <p className="-mb-2">By: Dr. A</p>
+        <p className="-mb-2">By: Rachel Bloch</p>
         <p className="mb-4 italic text-xs">November 21st, 2022</p>
         <p>
           They are our fur-babies, what&apos;s not to love? Humans and their

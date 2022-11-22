@@ -7,7 +7,7 @@ export const BlueDog = () => (
         <div className="eyes"></div>
         <div className="beard">
           <div className="mouth">
-            <div className="tongue"></div>
+            <div className="tongue-blue"></div>
           </div>
         </div>
         <div className="belt">
