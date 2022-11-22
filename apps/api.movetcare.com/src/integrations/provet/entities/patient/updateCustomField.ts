@@ -72,6 +72,8 @@ export const updateCustomField = async (
         `/custom_field_values/${
           typeof customFieldValue === "object"
             ? `${customFieldValue?.id}`
+            : Array.isArray(customFieldValue)
+            ? `${customFieldValue[0]?.id}`
             : customFieldValue
         }`,
         {
