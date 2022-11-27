@@ -21,11 +21,11 @@ export const Hours = () => (
         <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white -mt-4 mb-12">
           Hours of Operation
         </h2>
-        <h3 className="font-abside text-center mb-8 -mt-4 italic text-sm w-full sm:w-2/3 mx-auto">
+        {/* <h3 className="font-abside text-center mb-8 -mt-4 italic text-sm w-full sm:w-2/3 mx-auto">
           * We are CLOSED for the Thanksgiving holiday from noon on Tuesday,
           November 22 and will reopen Monday, November 28th. Our Boutique will
           be open for Black Friday, November 25th!
-        </h3>
+        </h3> */}
         <div className="grid sm:grid-cols-2 gap-y-12 gap-x-8 mb-12">
           <div className="w-full max-w-lg">
             <h3 className="text-xl text-center font-bold pt-2">

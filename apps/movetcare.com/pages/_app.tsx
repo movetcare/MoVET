@@ -2,11 +2,11 @@ import "styles";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import Head from "next/head";
 import type { AppProps } from "next/app";
-import Image from "next/image";
+// import Image from "next/image";
 import { environment } from "utilities";
 import dynamic from "next/dynamic";
-import { PopUpAd } from "ui";
-import Link from "next/link";
+// import { PopUpAd } from "ui";
+// import Link from "next/link";
 
 const AnalyticsTracker = dynamic(() =>
   import("ui").then((mod) => mod.AnalyticsTracker)
@@ -26,7 +26,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
         <AnalyticsTracker trackerId="G-Y9896HXDFN" />
       )}
       <Component {...pageProps} />
-      <PopUpAd
+      {/* <PopUpAd
         description="Spend $30 or more in the MoVET boutique on November 25th and get a FREE veterinary exam!"
         adComponent={
           <Link href="/blog/black-friday-deal-2022">
@@ -40,7 +40,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
           </Link>
         }
         ignoreUrlPath="/blog/black-friday-deal-2022/"
-      />
+      /> */}
     </>
   );
 };

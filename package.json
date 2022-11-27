@@ -64,6 +64,12 @@
     "packages/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix"
     ],
+    "tools/**/*.{js,ts,jsx,tsx}": [
+      "eslint --fix"
+    ],
+    "cypress/**/*.{js,ts,jsx,tsx}": [
+      "eslint --fix"
+    ],
     "*.json": [
       "prettier --write"
     ]
