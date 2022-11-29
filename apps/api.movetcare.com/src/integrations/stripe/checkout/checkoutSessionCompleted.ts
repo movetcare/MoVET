@@ -8,7 +8,7 @@ export const checkoutSessionCompleted = (event: any) =>
     .set(
       {
         updatedOn: new Date(),
-        customer: { id: event?.data?.object?.customer },
+        customer: event?.data?.object?.customer,
       },
       { merge: true }
     )

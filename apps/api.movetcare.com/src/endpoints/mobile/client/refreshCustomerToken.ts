@@ -39,8 +39,8 @@ export const refreshCustomerToken = functions
 
         if (customerId) {
           const ephemeralKey = await stripe.ephemeralKeys.create(
-            {customer: customerId},
-            {apiVersion: "2020-03-02"}
+            { customer: customerId },
+            { apiVersion: "2020-11-15" }
           );
 
           if (DEBUG) console.log("Ephemeral Key Generated:", ephemeralKey);

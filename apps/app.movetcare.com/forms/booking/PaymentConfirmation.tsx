@@ -1,13 +1,14 @@
-import { BookingFooter } from "components/booking/BookingFooter";
 import { Booking } from "types/Booking";
 import { useState } from "react";
 import { BookingHeader } from "components/booking/BookingHeader";
-import { faArrowRight, faCreditCard } from "@fortawesome/free-solid-svg-icons";
+import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "ui";
 import { Error } from "components/Error";
 import { Loader } from "ui";
 import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { firestore } from "services/firebase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 
 export const PaymentConfirmation = ({
   session,
@@ -41,22 +42,37 @@ export const PaymentConfirmation = ({
   return (
     <>
       {isLoading ? (
-        <Loader message="Taking you to Stripe..." />
+        <>
+          <Loader message="Loading Payment Information..." />
+          <Image
+            src="/images/icons/powered-by-stripe.svg"
+            alt="Powered by Stripe"
+            height={40}
+            width={120}
+            className="-mt-4 mx-auto"
+          />
+        </>
       ) : error ? (
         <Error errorMessage={error?.message || "Unknown Error"} />
       ) : (
         <>
+          <FontAwesomeIcon
+            icon={faCreditCard}
+            size="4x"
+            className="text-movet-black mx-auto w-full mb-4"
+          />
           <BookingHeader
             isAppMode={isAppMode}
             title="Form of Payment Required"
-            description={`A valid form of payment on file is required before MoVET can perform any services on your pet${
-              session?.patients && session?.patients?.length > 1 ? "s" : ""
-            }.`}
+            description={
+              "Having a payment source on file allows you to receive expedited service and skip the checkout lines when visiting our clinic and boutique."
+            }
           />
           <form onSubmit={onSubmit}>
-            <h2 className="text-center font-extrabold italic mt-4">
-              You will not be charged until your appointment is completed.
-            </h2>
+            <p className="text-center font-extrabold italic mt-4">
+              * You will <span className="underline">not</span> be charged until
+              your appointment is completed.
+            </p>
             <Button
               type="submit"
               icon={faCreditCard}
@@ -67,8 +83,22 @@ export const PaymentConfirmation = ({
               iconSize={"sm"}
               color="black"
               text="Add Payment"
-              className="mt-8 mb-4"
+              className="mt-6 mb-4"
             />
+            <a
+              href="https://stripe.com/payments"
+              target="_blank"
+              rel="noreferrer"
+              className="shrink-0"
+            >
+              <Image
+                src="/images/icons/powered-by-stripe.svg"
+                alt="Powered by Stripe"
+                height={40}
+                width={120}
+                className="hover:bg-movet-gray ease-in-out duration-500 mx-auto"
+              />
+            </a>
           </form>
         </>
       )}

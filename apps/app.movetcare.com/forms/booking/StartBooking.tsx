@@ -70,6 +70,7 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
             "verifyBooking"
           )({
             email: data.email,
+            device: navigator.userAgent,
             token,
           });
           if (result.error !== true || result.error === undefined) {

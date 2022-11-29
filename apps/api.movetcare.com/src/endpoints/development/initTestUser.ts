@@ -205,7 +205,7 @@ const importCustomerData = async (stripeCustomerData: any) =>
     .doc(`${5125}`)
     .set(
       {
-        customer: stripeCustomerData,
+        customer: stripeCustomerData.id,
         updatedOn: new Date(),
       },
       { merge: true }

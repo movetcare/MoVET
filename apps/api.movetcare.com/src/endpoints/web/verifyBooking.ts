@@ -21,16 +21,20 @@ export const verifyBooking = functions
         );
         console.log("verifyBooking => context.auth", context.auth);
       }
-      const { token, email } = data || {};
+      const { token, email, device } = data || {};
       if (token) {
         if (await recaptchaIsVerified(token)) {
           if (context?.auth?.uid)
             return await getActiveBookingSession(
-              (await getAuthUserByEmail(context.auth.token.email)) as UserRecord
+              (await getAuthUserByEmail(
+                context.auth.token.email
+              )) as UserRecord,
+              device
             );
           else if (email) {
             return await handleUnauthenticatedBookingVerification(
-              email?.toLowerCase()
+              email?.toLowerCase(),
+              device
             );
           } else
             return await handleFailedBooking(data, "FAILED AUTHENTICATION");

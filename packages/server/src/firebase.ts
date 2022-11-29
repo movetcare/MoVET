@@ -8,8 +8,6 @@ const environment =
     ? "development"
     : "production";
 
-console.log("SERVER ENVIRONMENT =>", process.env.NODE_ENV);
-
 if (environment === "development")
   process.env.FIRESTORE_EMULATOR_HOST = `localhost:8080`;
 
@@ -48,5 +46,4 @@ if (environment === "production") {
     });
   }
 }
-
-export default admin.firestore();
+export const firestore = admin.firestore();

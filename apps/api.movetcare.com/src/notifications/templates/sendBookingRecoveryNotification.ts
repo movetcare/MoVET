@@ -28,6 +28,7 @@ export const sendBookingRecoveryNotification = async ({
     switch (type) {
       case "1_HOUR":
         sendOneHourBookingRecoveryNotification(booking);
+        sendAdminBookingRecoveryNotification(booking, type);
         break;
       case "24_HOUR":
         sendTwentyFourHourBookingRecoveryNotification(booking);
@@ -56,7 +57,7 @@ export const sendBookingRecoveryNotification = async ({
 
 const sendAdminBookingRecoveryNotification = async (
   booking: Booking,
-  type: "24_HOUR" | "72_HOUR"
+  type: "24_HOUR" | "72_HOUR" | "1_HOUR"
 ) => {
   const {
     client,
@@ -78,14 +79,15 @@ const sendAdminBookingRecoveryNotification = async (
         client: client.uid,
         to: "info@movetcare.com",
         replyTo: email,
-        subject:
+        subject: `${
+          displayName ? displayName : email ? email : ""
+        } abandoned their appointment booking request ${
           type === "24_HOUR"
-            ? `${
-                displayName ? displayName : email ? email : ""
-              } abandoned their appointment booking request yesterday at step "${step}"`
-            : `${
-                displayName ? displayName : email ? email : ""
-              } abandoned their appointment booking request three days ago at step "${step}"`,
+            ? "yesterday"
+            : type === "72_HOUR"
+            ? "three days ago"
+            : "one hour ago"
+        } at step "${step}"`,
         message: `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
           ?.toDate()
           ?.toString()}</p>${
@@ -108,13 +110,9 @@ const sendAdminBookingRecoveryNotification = async (
                       patient?.illnessDetails?.notes
                     }`
                   : " NONE"
-              }</p><p><b>Aggression Status:</b> ${
-                patient?.aggressionStatus?.name.includes(
-                  "no history of aggression"
-                )
-                  ? "NOT Aggressive"
-                  : "AGGRESSIVE"
-              }</p><p><b>VCPR Required:</b> ${
+              }</p><p><b>Aggression Status:</b> "${
+                patient?.aggressionStatus?.name
+              }"</p><p><b>VCPR Required:</b> ${
                 patient?.vcprRequired ? "Yes" : "No"
               }</p>`
           )
@@ -225,7 +223,13 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
             ? "https://stage.app.movetcare.com"
             : "http://localhost:3000") +
           `/request-an-appointment/?email=${email}/`
-    }' style="border-radius: 40px; border: 2px solid rgb(255, 255, 255); display: inline-block; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; font-size: 16px; font-weight: bold; font-style: normal; padding: 18px; text-decoration: none; min-width: 30px; background-color: #E76159; color: rgb(255, 255, 255); --darkreader-inline-border-top:#D1CCBD; --darkreader-inline-border-right:#D1CCBD; --darkreader-inline-border-bottom:#D1CCBD; --darkreader-inline-border-left:#D1CCBD; --darkreader-inline-bgcolor:#E76159; --darkreader-inline-color:#e8e6e3;">Complete Booking</a></p><p>At MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!</p><p>We look forward to seeing you soon!</p><p>The MoVET Team</p>`;
+    }' style="border-radius: 40px; border: 2px solid rgb(255, 255, 255); display: inline-block; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; font-size: 16px; font-weight: bold; font-style: normal; padding: 18px; text-decoration: none; min-width: 30px; background-color: #E76159; color: rgb(255, 255, 255); --darkreader-inline-border-top:#D1CCBD; --darkreader-inline-border-right:#D1CCBD; --darkreader-inline-border-bottom:#D1CCBD; --darkreader-inline-border-left:#D1CCBD; --darkreader-inline-bgcolor:#E76159; --darkreader-inline-color:#e8e6e3;">Complete Booking</a></p><p><a href="${
+      (environment.type === "production"
+        ? "https://app.movetcare.com"
+        : environment.type === "staging"
+        ? "https://stage.app.movetcare.com"
+        : "http://localhost:3000") + `/request-an-appointment/cancel?id=${id}/`
+    }">Cancel Booking</a></p><p>At MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!</p><p>We look forward to seeing you soon!</p><p>The MoVET Team</p>`;
     const emailConfig: EmailConfiguration = {
       to: email,
       subject: "Finish Booking Your Appointment!",
@@ -279,6 +283,12 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
             ? "https://stage.app.movetcare.com"
             : "http://localhost:3000") +
           `/request-an-appointment/?email=${email}/`
+    }\n\nOr, Cancel Appointment Request: ${
+      (environment.type === "production"
+        ? "https://app.movetcare.com"
+        : environment.type === "staging"
+        ? "https://stage.app.movetcare.com"
+        : "http://localhost:3000") + `/request-an-appointment/cancel?id=${id}/`
     }\n\nAt MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!\nWe look forward to seeing you soon!\nThe MoVET Team`;
 
     sendNotification({

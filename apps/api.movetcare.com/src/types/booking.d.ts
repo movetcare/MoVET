@@ -22,6 +22,7 @@ export type Booking = {
     | "choose-staff"
     | "choose-datetime"
     | "confirmation"
+    | "cancelled-client"
     | "restart";
   location?: "home" | "clinic" | "virtual";
   datetime?: Date;

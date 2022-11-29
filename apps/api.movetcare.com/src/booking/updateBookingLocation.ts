@@ -13,8 +13,10 @@ export const updateBookingLocation = async (
     const {
       clinicMinorIllnessVcprReason,
       housecallMinorIllnessVcprReason,
+      virtualMinorIllnessVcprReason,
       clinicStandardVcprReason,
       housecallStandardVcprReason,
+      virtualStandardVcprReason,
     } = await getBookingConfiguration();
     if (DEBUG) {
       console.log("updateBookingLocation => illPatients", illPatients);
@@ -44,9 +46,13 @@ export const updateBookingLocation = async (
         vcprReason = clinicMinorIllnessVcprReason?.value;
       if (location === "Home")
         vcprReason = housecallMinorIllnessVcprReason?.value;
+      if (location === "Virtually")
+        vcprReason = virtualMinorIllnessVcprReason?.value;
     } else {
       if (location === "Clinic") vcprReason = clinicStandardVcprReason?.value;
       if (location === "Home") vcprReason = housecallStandardVcprReason?.value;
+      if (location === "Virtually")
+        vcprReason = virtualStandardVcprReason?.value;
     }
   }
   if (DEBUG) console.log("updateBookingLocation => vcprReason", vcprReason);

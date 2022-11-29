@@ -10,6 +10,7 @@ import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { BookingHeader } from "components/booking/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { AppHeader } from "components/AppHeader";
 
 export default function BookingSuccess() {
   const router = useRouter();
@@ -66,10 +67,11 @@ export default function BookingSuccess() {
   };
   return (
     <section className="w-full flex-1">
+      <AppHeader />
       <div
         className={`flex items-center justify-center bg-white rounded-xl max-w-lg mx-auto`}
       >
-        <div className={isAppMode ? "px-4 mb-8" : "p-4 sm:p-8"}>
+        <div className={isAppMode ? "px-4 mb-8" : "p-8"}>
           <section className="relative mx-auto">
             {isLoading ? (
               <Loader message="Loading Confirmation..." />
@@ -89,12 +91,9 @@ export default function BookingSuccess() {
                     "We will get contact to you as soon as we can to confirm the exact day and time of your appointment!"
                   }
                 />
-                <p className="text-xs italic text-center mt-4">
+                <p className="text-xs italic text-center mt-4 sm:px-8">
                   Please allow 1 business day for a response. All appointment
-                  requests are responded to in the order they are received. You
-                  will hear from us. We promise. We are working hard to give
-                  everyone the same service we are known for and can&apos;t wait
-                  to give you the love and attention you deserve!
+                  requests are responded to in the order they are received.
                 </p>
               </>
             )}

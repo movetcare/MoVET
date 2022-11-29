@@ -119,8 +119,8 @@ export const ChooseLocation = ({
         } else if (label.toLowerCase().includes("housecall")) {
           items.push({ name: "Home", icon: faHome, id });
         } else if (
-          label.toLowerCase().includes("virtual") &&
-          !session?.vcprRequired
+          label.toLowerCase().includes("virtual")
+          // && !session?.vcprRequired
         ) {
           items.push({ name: "Virtually", icon: faHeadset, id });
         }

@@ -41,13 +41,21 @@ export const configureBooking = async (): Promise<boolean> => {
             value: 105,
             label: "Establish Care Exam",
           },
+          virtualStandardVcprReason: {
+            value: 121,
+            label: "Virtual Meet & Greet",
+          },
+          virtualMinorIllnessVcprReason: {
+            value: 121,
+            label: "Virtual Meet & Greet",
+          },
           updatedOn: new Date(),
         },
         { merge: true }
       )
       .then(async () => {
         console.log("BOOKING CONFIGURATION COMPLETE");
-        if (environment.type === "production") generateTestBookingData();
+        if (environment.type !== "production") generateTestBookingData();
       })
       .catch((error: any) => throwError(error));
   }

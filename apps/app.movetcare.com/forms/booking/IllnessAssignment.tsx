@@ -37,6 +37,7 @@ export const IllnessAssignment = ({
   const [error, setError] = useState<any>(null);
   const [pet, setPet] = useState<any>(null);
   useEffect(() => {
+    setIsLoading(true);
     if (session && session?.patients) {
       if (session?.nextPatient) {
         session?.patients.forEach((patient: any) =>

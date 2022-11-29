@@ -54,7 +54,7 @@ export const processProVetWebhook = async (
       : request.body?.organizationitem_id
       ? `:medical_symbol: Organization Item Update - ${request.body?.organizationitem_id} - ${proVetAppUrl}/organization/administration/items/`
       : `:pencil: Update - ${
-          request.body?.message || "```${JSON.stringify(payload?.data)}```"
+          request.body?.message || `\`\`\`${JSON.stringify(request.body)}\`\`\``
         }`
   }`;
   sendNotification({

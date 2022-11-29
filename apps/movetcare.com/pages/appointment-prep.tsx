@@ -11,7 +11,7 @@ const AppointmentPrep = () => {
   return (
     <Layout>
       <Head>
-        <title>Careers with MoVET</title>
+        <title>How to Prepare for Your Appointment</title>
       </Head>
       <section className="flex flex-col max-w-screen-lg bg-white rounded-xl p-4 sm:p-8 mx-4 sm:mx-auto my-8">
         <div

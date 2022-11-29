@@ -111,10 +111,8 @@ export const updateBookingPatients = async (
                   type: "plain_text",
                   text: `${
                     patients && fullPatientData.length > 0
-                      ? `\nPatients: ${fullPatientData.map(
-                          (patient: any) => patient.name
-                        )}`
-                      : "Not Found?"
+                      ? `${fullPatientData.map((patient: any) => patient.name)}`
+                      : fullPatientData?.name || JSON.stringify(fullPatientData)
                   }`,
                 },
                 {

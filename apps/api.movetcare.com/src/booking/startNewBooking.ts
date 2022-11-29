@@ -2,7 +2,10 @@ import { admin, throwError, DEBUG } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
 import { createBookingAbandonmentNotifications } from "./abandonment/createBookingAbandonmentNotifications";
 
-export const startNewBooking = async (client: any): Promise<any> => {
+export const startNewBooking = async (
+  client: any,
+  device: string
+): Promise<any> => {
   const newBookingSession = await admin
     .firestore()
     .collection("bookings")
@@ -13,6 +16,7 @@ export const startNewBooking = async (client: any): Promise<any> => {
         displayName: client?.displayName,
         phoneNumber: client?.phoneNumber,
       },
+      device,
       createdAt: new Date(),
       isActive: true,
       step: "started",
@@ -63,6 +67,14 @@ export const startNewBooking = async (client: any): Promise<any> => {
               }${
                 client.phoneNumber ? ` -  Phone: ${client.phoneNumber}\n\n` : ""
               }`,
+            },
+            {
+              type: "mrkdwn",
+              text: "*Device*",
+            },
+            {
+              type: "plain_text",
+              text: device,
             },
           ],
         },

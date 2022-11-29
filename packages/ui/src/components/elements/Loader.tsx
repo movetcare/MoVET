@@ -62,15 +62,15 @@ LottieProps) => {
   //     lottieInstance.current = lottie.loadAnimation({
   //       animationData,
   //       container: element.current,
-  //     });
+  //     });s
   //   }
   // }, [animationData]);
   // const randomNumber = getRandomInt(1, 2);
 
   useEffect(() => {
-    //setIndex(getRandomInt(1, 3));
-    setIndex(3);
-  });
+    setIndex(getRandomInt(1, 3));
+    //setIndex(3);
+  }, []);
   return (
     <>
       <div className="flex flex-grow justify-center items-center overflow-hidden">

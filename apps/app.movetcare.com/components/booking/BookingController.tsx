@@ -6,7 +6,6 @@ import { ChooseLocation } from "forms/booking/ChooseLocation";
 import { ChooseService } from "forms/booking/ChooseService";
 import { ChooseStaff } from "forms/booking/ChooseStaff";
 import { ClientInfo } from "forms/booking/ClientInfo";
-import { Confirmation } from "forms/booking/Confirmation";
 import { IllnessAssignment } from "forms/booking/IllnessAssignment";
 import { SelectAPet } from "forms/booking/SelectAPet";
 import { WellnessCheck } from "forms/booking/WellnessCheck";
@@ -15,6 +14,7 @@ import { firestore } from "services/firebase";
 import { Booking } from "types/Booking";
 import { environment } from "utilities";
 import { PaymentConfirmation } from "forms/booking/PaymentConfirmation";
+import Image from "next/image";
 
 export const BookingController = ({
   id,
@@ -74,14 +74,23 @@ export const BookingController = ({
         return <ChooseDateTime session={session} isAppMode={isAppMode} />;
       case "payment-confirmation":
         return <PaymentConfirmation session={session} isAppMode={isAppMode} />;
-      case "confirmation":
-        return <Confirmation session={session} isAppMode={isAppMode} />;
       case "complete":
         return <Loader message="Confirming Booking Request..." />;
       case "needs-scheduling":
         return <Loader message="Almost Finished..." />;
       case "checkout":
-        return <Loader message="Taking you to Stripe..." />;
+        return (
+          <>
+            <Loader message="Loading Payment Information..." />
+            <Image
+              src="/images/icons/powered-by-stripe.svg"
+              alt="Powered by Stripe"
+              height={40}
+              width={120}
+              className="-mt-4 mx-auto"
+            />
+          </>
+        );
       case "add-pet":
         return <Loader message="Saving Pet..." />;
       case "restart":

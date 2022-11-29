@@ -82,61 +82,62 @@ export const sendAppointmentConfirmationEmail = async (
   // 'Unknown - Please contact us to let us know where we will be conducting the appointment.';
   if (!appointment?.locationType)
     clientProvetRecord = await fetchEntity("client", parseInt(clientId));
-  //   const emailText = `${
-  //     displayName ? `<p>Hi ${displayName},</p>` : ''
-  //   }<p>Thank you for reaching out to MoVET! MoVET offers preventative/primary services only, such as examinations, puppy/kitten exams, basic wound care/illnesses, and vaccines.</p><p>We see you have scheduled a new appointment for:</p><ul>${petNames}</ul>${
-  //     wasCreatedInProvet && reason
-  //       ? `<p><b>Reason:</b> ${reason?.name || reason}</p>`
-  //       : ''
-  //   }<p><b><i>Please confirm we have the right information:</i></b></p>
-  // ${
-  //   appointment?.locationType === 'Home' && appointment?.address
-  //     ? `<p><b>Appointment Location</b>: ${appointment?.address}</p>`
-  //     : appointment?.locationType === 'Virtually'
-  //     ? '<p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>'
-  //     : appointment?.user === 8
-  //     ? `<p><b>Appointment Location</b>: Home - ${
-  //         clientProvetRecord?.street_address || 'STREET UNKNOWN'
-  //       } ${clientProvetRecord?.city || 'CITY UNKNOWN'}, ${
-  //         clientProvetRecord?.state || 'STATE UNKNOWN'
-  //       } ${clientProvetRecord?.zip_code || 'ZIPCODE UNKNOWN'}`
-  //     : appointment?.user === 7
-  //     ? '<p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-  //     : '<p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>'
-  // }${
-  //     appointment?.start
-  //       ? `<p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
-  //           appointment?.start
-  //         )}`
-  //       : ''
-  //   }${
-  //     appointment?.instructions
-  //       ? `<p><b>Instructions</b>: ${appointment?.instructions}</p>`
-  //       : ''
-  //   }${
-  //     phoneNumber &&
-  //     (appointment?.locationType === 'Home' ||
-  //       appointment?.locationType === 'Virtually')
-  //       ? `<p><b>Contact Phone Number</b>: ${phoneNumber}</p><p>*Please keep your phone handy the day of the ${
-  //           appointment?.locationType === 'Virtually'
-  //             ? 'consultation.'
-  //             : 'appointment. We will text you when we are on our way.</p>'
-  //         }`
-  //       : ''
-  //   }${
-  //     appointment?.locationType === 'Home'
-  //       ? '<p><b>Home Visit Trip Fee</b>: $60</p><p><b>*Additional charges will apply for add-on diagnostics, medications, pampering, etc.</b></p><p><i>A $60 cancellation fee will be charged if cancellation occurs within 24 hours of your appointment</i></p>'
-  //       : ''
-  //   }<p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> (If you have completed a waiver/release for this pet in the past, then a new one is not necessary.)</p><p><b>COVID-19 Questionnaire</b>: Please complete this Form prior to your appointment: <a href="https://docs.google.com/forms/d/1lKJs78fDD3gUBOV1l5TbomtoBXbgEm4xihij2wqq9VA/">COVID-19 Pre-Screening Questionnaire</a>. We thank you in advance for your cooperation.</p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.
-  // </p><p>Looking forward to meeting you,</p><p>- <a href="https://www.instagram.com/drlexiabramson/">Dr. A</a>, <a href="https://www.instagram.com/nessie_themovetpup/">Nessie</a>, and the <a href="https://www.facebook.com/MOVETCARE/">MoVET Team</a></p>`;
+    const emailTextClient = `${
+      displayName ? `<p>Hi ${displayName},</p>` : ""
+    }<p>Thank you for reaching out to MoVET!</p><p>We see you have scheduled a new appointment for:</p><ul>${petNames}</ul>${
+      wasCreatedInProvet && reason
+        ? `<p><b>Reason:</b> ${reason?.name || reason}</p>`
+        : ""
+    }<p><b><i>Please confirm we have the right information:</i></b></p>
+  ${
+    appointment?.locationType === "Home" && appointment?.address
+      ? `<p><b>Appointment Location</b>: ${appointment?.address}</p>`
+      : appointment?.locationType === "Virtually"
+      ? "<p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+      : appointment?.user === 8
+      ? `<p><b>Appointment Location</b>: Home - ${
+          clientProvetRecord?.street_address || "STREET UNKNOWN"
+        } ${clientProvetRecord?.city || "CITY UNKNOWN"}, ${
+          clientProvetRecord?.state || "STATE UNKNOWN"
+        } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
+      : appointment?.user === 7
+      ? // eslint-disable-next-line quotes
+        '<p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+      : "<p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+  }${
+      appointment?.start
+        ? `<p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
+            appointment?.start
+          )}`
+        : ""
+    }${
+      appointment?.instructions
+        ? `<p><b>Instructions</b>: ${appointment?.instructions}</p>`
+        : ""
+    }${
+      phoneNumber &&
+      (appointment?.locationType === "Home" ||
+        appointment?.locationType === "Virtually")
+        ? `<p><b>Contact Phone Number</b>: ${phoneNumber}</p><p>*Please keep your phone handy the day of the ${
+            appointment?.locationType === "Virtually"
+              ? "consultation."
+              : "appointment. We will text you when we are on our way.</p>"
+          }`
+        : ""
+    }${
+      appointment?.locationType === "Home"
+        ? "<p><b>Home Visit Trip Fee</b>: $60</p><p><b>*Additional charges will apply for add-on diagnostics, medications, pampering, etc.</b></p><p><i>A $60 cancellation fee will be charged if cancellation occurs within 24 hours of your appointment</i></p>"
+        : ""
+    }<p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> (If you have completed a waiver/release for this pet in the past, then a new one is not necessary.)</p><p><b>COVID-19 Questionnaire</b>: Please complete this Form prior to your appointment: <a href="https://docs.google.com/forms/d/1lKJs78fDD3gUBOV1l5TbomtoBXbgEm4xihij2wqq9VA/">COVID-19 Pre-Screening Questionnaire</a>. We thank you in advance for your cooperation.</p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.
+  </p><p>Looking forward to meeting you,</p><p>- <a href="https://www.instagram.com/drlexiabramson/">Dr. A</a>, <a href="https://www.instagram.com/nessie_themovetpup/">Nessie</a>, and the <a href="https://www.facebook.com/MOVETCARE/">MoVET Team</a></p>`;
 
-  const emailText = `<p>New Appointment Scheduled:</p><p><b>Client</b>: <a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">${
-    email ? email : ""
-  }${phoneNumber ? ` - ${phoneNumber}` : ""}</a></p><ul>${petNames}</ul>${
-    wasCreatedInProvet && reason
-      ? `<p><b>Reason:</b> ${reason?.name || reason}</p>`
-      : ""
-  }
+    const emailText = `<p>New Appointment Scheduled:</p><p><b>Client</b>: <a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">${
+      email ? email : ""
+    }${phoneNumber ? ` - ${phoneNumber}` : ""}</a></p><ul>${petNames}</ul>${
+      wasCreatedInProvet && reason
+        ? `<p><b>Reason:</b> ${reason?.name || reason}</p>`
+        : ""
+    }
 ${
   appointment?.locationType === "Home" && appointment?.address
     ? `<p><b>Appointment Location</b>: ${appointment?.address}</p>`
@@ -155,43 +156,60 @@ ${
     ? "<p><b>Appointment Location</b>: Virtual</p>"
     : "<p><b>Appointment Location</b>: Walk In</p>"
 }${
-    appointment?.start
-      ? `<p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
-          appointment?.start?.toDate()
-        )}`
-      : ""
-  }${
-    appointment?.instructions
-      ? `<p><b>Instructions</b>: ${appointment?.instructions}</p>`
-      : ""
-  }${
-    phoneNumber &&
-    (appointment?.locationType === "Home" ||
-      appointment?.locationType === "Virtually")
-      ? `<p><b>Contact Phone Number</b>: ${phoneNumber}</p>'
-        }`
-      : ""
-  }`;
-
-  if (DEBUG) {
-    console.log("emailText -> ", emailText);
-    console.log("htmlText -> ", emailText.replace(/(<([^>]+)>)/gi, ""));
-  }
-
-  const emailConfig: EmailConfiguration = {
-    to: "info@movetcare.com",
-    subject: `ADMIN ALERT - CLIENT APPOINTMENT - ${
       appointment?.start
-        ? getDateStringFromDate(appointment?.start?.toDate())
+        ? `<p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
+            appointment?.start?.toDate()
+          )}`
         : ""
-    }`,
-    message: emailText,
-  };
-  sendNotification({
-    type: "email",
-    payload: {
-      ...emailConfig,
-      client: clientId,
-    },
-  });
+    }${
+      appointment?.instructions
+        ? `<p><b>Instructions</b>: ${appointment?.instructions}</p>`
+        : ""
+    }${
+      phoneNumber &&
+      (appointment?.locationType === "Home" ||
+        appointment?.locationType === "Virtually")
+        ? `<p><b>Contact Phone Number</b>: ${phoneNumber}</p>'
+        }`
+        : ""
+    }`;
+
+    if (DEBUG) {
+      console.log("emailTextClient -> ", emailTextClient);
+      console.log("emailText -> ", emailText);
+      console.log("htmlText -> ", emailText.replace(/(<([^>]+)>)/gi, ""));
+    }
+
+    const emailConfigClient: EmailConfiguration = {
+      to: email,
+      subject: `Your Upcoming Appointment with MoVET - ${
+        appointment?.start
+          ? getDateStringFromDate(appointment?.start?.toDate())
+          : ""
+      }`,
+      message: emailTextClient,
+    };
+    sendNotification({
+      type: "email",
+      payload: {
+        ...emailConfigClient,
+        client: clientId,
+      },
+    });
+    const emailConfigAdmin: EmailConfiguration = {
+      to: "info@movetcare.com",
+      subject: `ADMIN ALERT - CLIENT APPOINTMENT - ${
+        appointment?.start
+          ? getDateStringFromDate(appointment?.start?.toDate())
+          : ""
+      }`,
+      message: emailText,
+    };
+    sendNotification({
+      type: "email",
+      payload: {
+        ...emailConfigAdmin,
+        client: clientId,
+      },
+    });
 };

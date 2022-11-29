@@ -362,12 +362,12 @@ export const saveAppointment = async (
                 console.log(
                   `Successfully Synchronized PROVET Cloud Data w/ Firestore for Appointment #${proVetAppointmentData.id}`
                 );
-              return movetAppointmentData
-                ? await sendAppointmentConfirmationEmail(
-                    `${data?.client}`,
-                    `${proVetAppointmentData.id}`
-                  )
-                : true;
+              if (movetAppointmentData)
+                sendAppointmentConfirmationEmail(
+                  `${data?.client}`,
+                  `${proVetAppointmentData.id}`
+                );
+              return true;
             })
             .catch((error: any) => throwError(error));
         } else {
@@ -429,10 +429,11 @@ export const saveAppointment = async (
                         .catch((error: any) => throwError(error));
                   } else throwError(error);
                 });
-              return await sendAppointmentConfirmationEmail(
-                `${data?.client}`,
-                `${proVetAppointmentData.id}`
-              );
+             sendAppointmentConfirmationEmail(
+               `${data?.client}`,
+               `${proVetAppointmentData.id}`
+             );
+              return true;
             })
             .catch((error: any) => throwError(error));
         }

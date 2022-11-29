@@ -155,7 +155,7 @@ export const createCustomer = functions
 
         const ephemeralKey = await stripe.ephemeralKeys.create(
           { customer: customer?.id },
-          { apiVersion: "2020-03-02" }
+          { apiVersion: "2020-11-15" }
         );
 
         if (DEBUG) console.log("Ephemeral Key Generated:", ephemeralKey);

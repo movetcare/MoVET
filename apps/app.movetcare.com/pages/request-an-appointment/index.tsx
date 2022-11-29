@@ -170,7 +170,7 @@ export default function Booking() {
           !isAppMode ? " p-4 my-8 sm:p-8" : ""
         }`}
       >
-        <div className={isAppMode ? "px-4 mb-8" : "p-4 sm:p-8"}>
+        <div className={isAppMode ? "px-4 mb-8" : "p-8"}>
           <section className="relative mx-auto">
             {isLoading ? (
               <Loader />

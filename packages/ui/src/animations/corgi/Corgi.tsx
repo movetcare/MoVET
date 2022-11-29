@@ -2,7 +2,7 @@ import "./corgi.css";
 export const Corgi = () => (
   <div className="mb-10">
     <div className="container">
-      <div className="corgi min-h-32">
+      <div className="corgi h-20">
         <div className="head">
           <div className="ear ear--r"></div>
           <div className="ear ear--l"></div>

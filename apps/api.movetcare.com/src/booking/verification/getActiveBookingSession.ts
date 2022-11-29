@@ -5,7 +5,8 @@ import { startNewBooking } from "../startNewBooking";
 import { enforceOnlyOneActiveAppointmentBooking } from "./enforceOnlyOneActiveAppointmentBooking";
 
 export const getActiveBookingSession = async (
-  user: UserRecord
+  user: UserRecord,
+  device: string
 ): Promise<Booking | false> =>
   await admin
     .firestore()
@@ -14,11 +15,16 @@ export const getActiveBookingSession = async (
     .orderBy("createdAt", "desc")
     .get()
     .then(
-      async (snapshot: any) => await getActiveAppointmentBooking(user, snapshot)
+      async (snapshot: any) =>
+        await getActiveAppointmentBooking(user, snapshot, device)
     )
     .catch((error: any) => throwError(error));
 
-const getActiveAppointmentBooking = async (user: UserRecord, snapshot: any) => {
+const getActiveAppointmentBooking = async (
+  user: UserRecord,
+  snapshot: any,
+  device: string
+) => {
   const activeBookings: Array<any> = [];
   snapshot.forEach((doc: any) => {
     if (DEBUG)
@@ -33,7 +39,7 @@ const getActiveAppointmentBooking = async (user: UserRecord, snapshot: any) => {
       );
     if (activeBookings) {
       if (activeBookings.length > 1)
-         enforceOnlyOneActiveAppointmentBooking(activeBookings);
+        enforceOnlyOneActiveAppointmentBooking(activeBookings);
       const bookingDocument = await admin
         .firestore()
         .collection("bookings")
@@ -54,17 +60,17 @@ const getActiveAppointmentBooking = async (user: UserRecord, snapshot: any) => {
               return { id: bookingDocument?.id, ...document.data() };
             } else
               return {
-                id: (await startNewBooking(user))?.id,
+                id: (await startNewBooking(user, device))?.id,
               };
           })
           .catch((error: any) => throwError(error))),
       };
     } else
       return {
-        id: (await startNewBooking(user))?.id,
+        id: (await startNewBooking(user, device))?.id,
       };
   } else
     return {
-      id: (await startNewBooking(user))?.id,
+      id: (await startNewBooking(user, device))?.id,
     };
 };

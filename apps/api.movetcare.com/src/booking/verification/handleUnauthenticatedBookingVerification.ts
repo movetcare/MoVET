@@ -8,7 +8,8 @@ import { createProVetClient } from "../../integrations/provet/entities/client/cr
 import type { Booking, BookingError } from "../../types/booking";
 
 export const handleUnauthenticatedBookingVerification = async (
-  email: string
+  email: string,
+  device: string
 ): Promise<Booking | BookingError | false> => {
   if (DEBUG)
     console.log(
@@ -54,7 +55,8 @@ export const handleUnauthenticatedBookingVerification = async (
         return {
           isNewClient: true,
           ...((await getActiveBookingSession(
-            (await getAuthUserByEmail(email)) as UserRecord
+            (await getAuthUserByEmail(email)) as UserRecord,
+            device
           )) as Booking),
         };
     }
@@ -75,6 +77,6 @@ export const handleUnauthenticatedBookingVerification = async (
         "BOOKING FAILED: CLIENT DISABLED"
       );
     }
-    return await getActiveBookingSession(authUser as UserRecord);
+    return await getActiveBookingSession(authUser as UserRecord, device);
   }
 };

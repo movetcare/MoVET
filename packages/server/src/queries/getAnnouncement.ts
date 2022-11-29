@@ -1,8 +1,8 @@
-import admin from "../firebase";
+import { firestore } from "../firebase";
 const DEBUG = false;
 export const getAnnouncement = async () => {
   try {
-    const announcement = await admin
+    const announcement = await firestore
       .collection("alerts")
       .doc("banner")
       .get()

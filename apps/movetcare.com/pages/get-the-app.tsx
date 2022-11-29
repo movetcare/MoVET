@@ -1,4 +1,4 @@
-import { AppLinks } from "ui";
+import { AppLinks, Loader } from "ui";
 import Layout from "components/Layout";
 import Head from "next/head";
 import { useEffect } from "react";
@@ -16,7 +16,11 @@ const GetTheApp = () => {
         <title>MoVET App Download</title>
       </Head>
       <section className=" bg-white rounded-xl p-4 sm:p-8 italic flex flex-col flex-grow items-center justify-center text-center max-w-screen-md mx-4 sm:mx-auto px-4 sm:px-8 overflow-hidden sm:mt-8 sm:mb-24 text-2xl">
-        <h2 className="text-2xl">Taking you to download the MoVET App...</h2>
+        <Loader
+          message={`Taking you to the ${
+            isAndroid ? "Google Play" : "App Store"
+          } store...`}
+        />
         <div className="flex justify-center mt-4">
           <AppLinks />
         </div>

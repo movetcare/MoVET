@@ -118,12 +118,22 @@ export const addNewPatient = async (
                   },
                   {
                     type: "mrkdwn",
+                    text: "*Species*",
+                  },
+                  {
+                    type: "plain_text",
+                    text: `${
+                      patient?.type ? `${patient?.type}` : "Not Found?"
+                    }`,
+                  },
+                  {
+                    type: "mrkdwn",
                     text: "*Notes*",
                   },
                   {
                     type: "plain_text",
                     text: `${
-                      patient?.notes ? `${patient?.notes}` : "Not Found?"
+                      patient?.notes ? `${patient?.notes}` : "None Provided"
                     }`,
                   },
                 ],

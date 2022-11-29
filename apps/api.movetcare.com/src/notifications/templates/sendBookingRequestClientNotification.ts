@@ -121,11 +121,7 @@ const createClientMessage = ({
                 patient?.illnessDetails?.symptoms
               )} - ${patient?.illnessDetails?.notes}</p>`
             : ""
-        }<p><b>Aggression Status:</b> ${
-          patient?.aggressionStatus?.name.includes("no history of aggression")
-            ? "NOT Aggressive"
-            : "AGGRESSIVE"
-        }</p>`
+        }<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
     )}${
       requestedDateTime?.date
         ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(
