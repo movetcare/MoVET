@@ -32,7 +32,7 @@ export const refreshCustomerToken = functions
           .collection("clients")
           .doc(context.auth?.uid)
           .get()
-          .then((document: any) => document.data()?.customer?.id)
+          .then((document: any) => document.data()?.customer)
           .catch((error: any) => throwError(error));
 
         if (DEBUG) console.log("Customer ID Found:", customerId);

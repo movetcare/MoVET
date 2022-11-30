@@ -100,7 +100,7 @@ export const deleteMoVETAccount = functions
       .collection("clients")
       .doc(`${user?.uid}`)
       .get()
-      .then((document: any) => document.data()?.customer?.id);
+      .then((document: any) => document.data()?.customer);
 
     if (DEBUG) console.log("customerId", customerId);
 

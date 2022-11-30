@@ -49,7 +49,7 @@ export const checkIn = functions
             .then((doc: any) => doc.data())
             .catch((error: any) => throwError(error));
            stripe.customers
-             .update(`${client?.customer?.id}`, {
+             .update(`${client?.customer}`, {
                name:
                  firstName && lastName
                    ? `${firstName} ${lastName}`
