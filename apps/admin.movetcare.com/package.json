@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@types/lodash.kebabcase": "^4.1.7",
-    "@types/node": "^18.11.9",
+    "@types/node": "^18.11.10",
     "@types/react": "18.0.25",
     "@types/uuid": "^9.0.0",
     "autoprefixer": "^10.4.13",

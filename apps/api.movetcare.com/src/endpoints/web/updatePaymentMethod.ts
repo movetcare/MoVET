@@ -7,7 +7,8 @@ import {
   stripe,
   throwError,
 } from "../../config/config";
-import {recaptchaIsVerified} from "../../utils/recaptchaIsVerified";
+import { getCustomerId } from "../../utils/getCustomerId";
+import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 
 interface UpdatePaymentMethodRequest {
   token: string;
@@ -52,93 +53,12 @@ export const updatePaymentMethod = functions
                 return userRecord;
               })
               .catch((error: any) => throwError(error));
-            const {data: matchingCustomers} = await stripe.customers.list({
-              email,
-            });
-            if (DEBUG) {
-              console.log("Existing Customers => ", matchingCustomers);
-              console.log(
-                "Number of Existing Customers w/ Same Email",
-                matchingCustomers.length
-              );
-            }
-            let customer: any = null;
-            if (matchingCustomers.length === 0) {
-              if (DEBUG)
-                console.log("Creating NEW Customer: ", {
-                  address: {
-                    line1: "UNKNOWN",
-                    city: "DENVER",
-                    state: "CO",
-                    country: "US",
-                  },
-                  email,
-                  metadata: {
-                    clientId: client.uid,
-                  },
-                });
-              customer = await stripe.customers
-                .create({
-                  address: {
-                    line1: "UNKNOWN",
-                    city: "DENVER",
-                    state: "CO",
-                    country: "US",
-                  },
-                  email,
-                  metadata: {
-                    clientId: client.uid,
-                  },
-                })
-                .catch((error: any) => throwError(error) as any);
-            } else {
-              let matchedCustomer = null;
-              matchingCustomers.forEach((customerData: any) => {
-                if (customerData.metadata?.clientId === client.uid)
-                  matchedCustomer = customerData;
-              });
-              if (matchedCustomer === null) {
-                if (DEBUG)
-                  console.log(
-                    "No Matching clientIds Found. Creating NEW Customer: ",
-                    {
-                      address: {
-                        line1: "UNKNOWN",
-                        city: "DENVER",
-                        state: "CO",
-                        country: "US",
-                      },
-                      email,
-                      metadata: {
-                        clientId: client.uid,
-                      },
-                    }
-                  );
-                customer = await stripe.customers
-                  .create({
-                    address: {
-                      line1: "UNKNOWN",
-                      city: "DENVER",
-                      state: "CO",
-                      country: "US",
-                    },
-                    email,
-                    metadata: {
-                      clientId: client.uid,
-                    },
-                  })
-                  .catch((error: any) => throwError(error) as any);
-              } else {
-                customer = matchedCustomer;
-                if (DEBUG)
-                  console.log("Matched an existing customer ID => ", customer);
-              }
-            }
+            const customer = await getCustomerId(client.uid);
             if (DEBUG) console.log("CUSTOMER -> ", customer);
             const session = await stripe.checkout.sessions.create({
               payment_method_types: ["card"],
               mode: "setup",
-              customer: customer?.id,
+              customer,
               client_reference_id: client.uid,
               metadata: {
                 clientId: client.uid,

@@ -52,7 +52,7 @@ export const sendBookingRequestAdminNotification = async ({
           : ""
       }${
         patient.vcprRequired
-          ? `<p><b>VCPR Required:</b>${
+          ? `<p><b>VCPR Required:</b> ${
               patient?.vcprRequired ? "Yes" : "No"
             }</p>`
           : ""

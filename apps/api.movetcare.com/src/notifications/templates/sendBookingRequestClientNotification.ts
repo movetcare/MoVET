@@ -55,6 +55,7 @@ export const sendBookingRequestClientNotification = async ({
   sendNotification({
     type: "email",
     payload: {
+      to: email,
       subject,
       message,
     },

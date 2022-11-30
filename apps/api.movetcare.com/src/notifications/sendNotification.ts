@@ -96,7 +96,7 @@ export const sendNotification = async ({
           .send(emailConfig)
           .then(() => {
             if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-            if (payload?.client) {
+            if (payload?.client && emailConfig.to !== "info@movetcare.com") {
               createProVetNote({
                 type: 1,
                 subject: emailConfig.subject,

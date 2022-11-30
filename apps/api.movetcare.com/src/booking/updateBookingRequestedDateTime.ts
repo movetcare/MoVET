@@ -46,7 +46,7 @@ export const updateBookingRequestedDateTime = async (
         })
       : null;
   if (DEBUG) console.log("STRIPE CHECKOUT SESSION", session);
-  admin
+  await admin
     .firestore()
     .collection("bookings")
     .doc(id)
