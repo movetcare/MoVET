@@ -33,9 +33,11 @@ import { BookingHeader } from "components/booking/BookingHeader";
 
 export const SelectAPet = ({
   session,
+  setStep,
   isAppMode,
 }: {
   session: Booking;
+  setStep: any;
   isAppMode: boolean;
 }) => {
   const cancelButtonRef = useRef(null);
@@ -178,10 +180,16 @@ export const SelectAPet = ({
         updatedOn: serverTimestamp(),
       },
       { merge: true }
-    ).catch((error: any) => {
-      setIsLoading(false);
-      setError(error);
-    });
+    )
+      .then(() =>
+        setStep(
+          establishCareExamRequired ? "wellness-check" : "choose-location"
+        )
+      )
+      .catch((error: any) => {
+        setIsLoading(false);
+        setError(error);
+      });
   };
   return (
     <>
@@ -200,6 +208,8 @@ export const SelectAPet = ({
           setShowAddAPet={setShowAddAPet}
           disableClose={disableClose}
         />
+      ) : pets.length === 0 ? (
+        <Loader message="Loading, Please Wait..." />
       ) : (
         <>
           <BookingHeader

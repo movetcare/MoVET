@@ -28,9 +28,11 @@ const symptoms = [
 ];
 export const IllnessAssignment = ({
   session,
+  setStep,
   isAppMode,
 }: {
   session: Booking;
+  setStep: any;
   isAppMode: boolean;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -103,6 +105,9 @@ export const IllnessAssignment = ({
       },
       { merge: true }
     )
+      // .then(() =>
+      //   setStep(session?.nextPatient ? "illness-assignment" : "choose-location")
+      // )
       .catch((error: any) => {
         setIsLoading(false);
         setError(error);
@@ -146,7 +151,7 @@ export const IllnessAssignment = ({
             >
               <label
                 htmlFor={`${symptom?.name}`}
-                className="text-lg select-none font-source-sans-pro flex flex-row items-center py-2 w-full"
+                className="text-base select-none font-source-sans-pro flex flex-row items-center py-2 w-full"
               >
                 <p>{symptom?.name}</p>
                 <span className="text-xs italic text-movet-red ml-2 text-center grow">

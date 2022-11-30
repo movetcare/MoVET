@@ -15,9 +15,11 @@ import { BookingHeader } from "components/booking/BookingHeader";
 
 export const ClientInfo = ({
   session,
+  setStep,
   isAppMode,
 }: {
   session: Booking;
+  setStep: any;
   isAppMode: boolean;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -53,10 +55,12 @@ export const ClientInfo = ({
         updatedOn: serverTimestamp(),
       },
       { merge: true }
-    ).catch((error: any) => {
-      setIsLoading(false);
-      setError(error);
-    });
+    )
+      .then(() => setStep("patient-selection"))
+      .catch((error: any) => {
+        setIsLoading(false);
+        setError(error);
+      });
   };
   return (
     <>

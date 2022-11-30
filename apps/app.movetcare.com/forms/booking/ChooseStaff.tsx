@@ -15,9 +15,11 @@ import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { firestore } from "services/firebase";
 export const ChooseStaff = ({
   session,
+  setStep,
   isAppMode,
 }: {
   session: Booking;
+  setStep: any;
   isAppMode: boolean;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -47,10 +49,12 @@ export const ChooseStaff = ({
         updatedOn: serverTimestamp(),
       },
       { merge: true }
-    ).catch((error: any) => {
-      setIsLoading(false);
-      setError(error);
-    });
+    )
+      .then(() => setStep("choose-datetime"))
+      .catch((error: any) => {
+        setIsLoading(false);
+        setError(error);
+      });
   };
   return (
     <>

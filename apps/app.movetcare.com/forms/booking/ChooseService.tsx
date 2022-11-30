@@ -16,9 +16,11 @@ import { Button } from "ui";
 
 export const ChooseService = ({
   session,
+  setStep,
   isAppMode,
 }: {
   session: Booking;
+  setStep: any;
   isAppMode: boolean;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);

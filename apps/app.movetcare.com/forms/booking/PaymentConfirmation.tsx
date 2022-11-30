@@ -12,9 +12,11 @@ import Image from "next/image";
 
 export const PaymentConfirmation = ({
   session,
+  setStep,
   isAppMode,
 }: {
   session: Booking;
+  setStep: any;
   isAppMode: boolean;
 }) => {
   const today = new Date();

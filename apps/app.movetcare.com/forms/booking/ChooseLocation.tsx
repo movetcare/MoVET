@@ -36,9 +36,11 @@ const center = {
 
 export const ChooseLocation = ({
   session,
+  setStep,
   isAppMode,
 }: {
   session: Booking;
+  setStep: any;
   isAppMode: boolean;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -190,10 +192,14 @@ export const ChooseLocation = ({
             updatedOn: serverTimestamp(),
           },
       { merge: true }
-    ).catch((error: any) => {
-      setIsLoading(false);
-      setError(error);
-    });
+    )
+      .then(() =>
+        setStep(session.vcprRequired ? "choose-datetime" : "choose-reason")
+      )
+      .catch((error: any) => {
+        setIsLoading(false);
+        setError(error);
+      });
   };
   return (
     <>

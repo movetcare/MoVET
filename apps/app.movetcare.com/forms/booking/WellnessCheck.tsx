@@ -25,9 +25,11 @@ import { Dialog, Transition } from "@headlessui/react";
 
 export const WellnessCheck = ({
   session,
+  setStep,
   isAppMode,
 }: {
   session: Booking;
+  setStep: any;
   isAppMode: boolean;
 }) => {
   const cancelButtonRef = useRef(null);
@@ -38,6 +40,7 @@ export const WellnessCheck = ({
   useEffect(() => {
     if (
       session &&
+      Array.isArray(session?.patients) &&
       !session?.patients?.every((patient: any) => typeof patient === "string")
     ) {
       setPets(session.patients);
@@ -69,7 +72,7 @@ export const WellnessCheck = ({
   const selected = watch("illPets") as any;
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    if (selected !== null)
+    if (selected !== null && data.illPets !== "false")
       await setDoc(
         doc(firestore, "bookings", `${session.id}`),
         {
@@ -81,6 +84,7 @@ export const WellnessCheck = ({
         },
         { merge: true }
       )
+        .then(() => setStep("illness-assignment"))
         .catch((error: any) => setError(error))
         .finally(() => setIsLoading(false));
     else
@@ -92,6 +96,7 @@ export const WellnessCheck = ({
         },
         { merge: true }
       )
+        .then(() => setStep("choose-location"))
         .catch((error: any) => setError(error))
         .finally(() => setIsLoading(false));
   };
@@ -281,15 +286,13 @@ export const WellnessCheck = ({
                 {isAppMode ? (
                   "Seek a veterinary hospital with emergency care for any of the following:"
                 ) : (
-                  <div className="italic">
-                    <span>
-                      Seek a{" "}
-                      <a href="/emergency" target="_blank">
-                        veterinary hospital with emergency care
-                      </a>{" "}
-                      for any of the following:
-                    </span>
-                  </div>
+                  <span className="italic">
+                    Seek a{" "}
+                    <a href="/emergency" target="_blank">
+                      veterinary hospital with emergency care
+                    </a>{" "}
+                    for any of the following:
+                  </span>
                 )}
               </p>
               <ul className="list-none ml-8 py-2 text-xs italic text-center">

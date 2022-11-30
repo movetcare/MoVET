@@ -1,7 +1,7 @@
 import {Stripe} from "stripe";
-import { admin, stripe, throwError, DEBUG } from "../config/config";
+import { admin, stripe, throwError } from "../config/config";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
-
+const DEBUG = true;
 export interface UserNotificationSettings {
   sendEmail: boolean;
   sendSms: boolean;
@@ -15,20 +15,17 @@ export const getCustomerId = async (id: string): Promise<string> =>
     .get()
     .then(async (document: any) => {
       if (DEBUG) {
+        console.log("document.data()?.customer", document.data()?.customer);
         console.log(
-          "document.data()?.customer?.id",
-          document.data()?.customer?.id
-        );
-        console.log(
-          "document.data()?.customer?.id === undefined || document.data()?.customer?.id === null",
-          document.data()?.customer?.id === undefined ||
-            document.data()?.customer?.id === null
+          "document.data()?.customer === undefined || document.data()?.customer === null",
+          document.data()?.customer === undefined ||
+            document.data()?.customer === null
         );
       }
-      return document.data()?.customer?.id === undefined ||
-        document.data()?.customer?.id === null
+      return document.data()?.customer === undefined ||
+        document.data()?.customer === null
         ? await createNewCustomer(id, document)
-        : document.data()?.customer?.id;
+        : document.data()?.customer;
     })
     .catch((error: any) => throwError(error));
 
@@ -36,6 +33,7 @@ const createNewCustomer = async (
   id: string,
   document: any
 ): Promise<string> => {
+  const { firstName, lastName, email, phone } = document.data() || {};
   if (DEBUG) {
     console.log("CLIENT DATA", document.data());
     console.log("CREATING NEW STRIPE CUSTOMER", {
@@ -46,15 +44,15 @@ const createNewCustomer = async (
         country: "US",
       },
       name:
-        document.data()?.firstName && document.data()?.lastName
+        firstName && lastName
           ? `${document.data()?.firstname} ${document.data()?.lastName}`
-          : document.data()?.firstName
-          ? document.data()?.firstName
-          : document.data()?.lastName
-          ? document.data()?.lastName
+          : firstName
+          ? firstName
+          : lastName
+          ? lastName
           : null,
-      email: document.data()?.email ? document.data()?.email : "UNKNOWN",
-      phone: document.data()?.phone ? document.data()?.phone : "UNKNOWN",
+      email: email ? email : "UNKNOWN",
+      phone: phone ? phone : "UNKNOWN",
       metadata: {
         clientId: id,
       },
@@ -69,15 +67,15 @@ const createNewCustomer = async (
         country: "US",
       },
       name:
-        document.data()?.firstName && document.data()?.lastName
+        firstName && lastName
           ? `${document.data()?.firstName} ${document.data()?.lastName}`
-          : document.data()?.firstName
-          ? document.data()?.firstName
-          : document.data()?.lastName
-          ? document.data()?.lastName
+          : firstName
+          ? firstName
+          : lastName
+          ? lastName
           : null,
-      email: document.data()?.email ? document.data()?.email : "UNKNOWN",
-      phone: document.data()?.phone ? document.data()?.phone : "UNKNOWN",
+      email: email ? email : "UNKNOWN",
+      phone: phone ? phone : "UNKNOWN",
       metadata: {
         clientId: id,
       },
@@ -88,5 +86,5 @@ const createNewCustomer = async (
     customer: customer?.id,
     id,
   });
-  return customer?.id;
+  return customer;
 };

@@ -1,6 +1,6 @@
 import "./blue-dog.css";
 export const BlueDog = () => (
-  <div className="w-full -mb-20 mt-48">
+  <div className="-mb-20 mt-48 w-[300px]">
     <div className="dog">
       <div className="ears"></div>
       <div className="body">

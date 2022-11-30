@@ -1,6 +1,6 @@
 import "./corgi.css";
 export const Corgi = () => (
-  <div className="mb-10">
+  <div className="my-10">
     <div className="container">
       <div className="corgi h-20">
         <div className="head">

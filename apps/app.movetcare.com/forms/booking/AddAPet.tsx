@@ -208,10 +208,12 @@ export const AddAPet = ({
         updatedOn: serverTimestamp(),
       },
       { merge: true }
-    ).catch((error: any) => {
-      setIsLoading(false);
-      setError(error);
-    });
+    )
+      .then(() => setShowAddAPet(false))
+      .catch((error: any) => {
+        setIsLoading(false);
+        setError(error);
+      });
   };
   return isLoading ? (
     <Loader />

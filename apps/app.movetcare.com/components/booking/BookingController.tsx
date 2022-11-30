@@ -33,7 +33,8 @@ export const BookingController = ({
       const getBookingStep = async () => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          console.log("Document STEP:", docSnap.data()?.step);
+          if (environment === "development")
+            console.log("Document STEP:", docSnap.data()?.step);
           setStep(docSnap.data()?.step || "started");
         } else setError("Data Not Found...");
       };
@@ -52,8 +53,14 @@ export const BookingController = ({
     } else return;
   }, [id]);
   useEffect(() => {
+    if (session?.step === "choose-location" && session?.nextPatient === null)
+      setStep("choose-location");
+    if (session?.step === "choose-staff") setStep("choose-staff");
+    if (session?.step === "choose-datetime") setStep("choose-datetime");
     if (session?.step === "checkout" && session?.checkout?.url && !isAppMode)
       window.location.href = session?.checkout?.url;
+    if (session?.step === "payment-confirmation")
+      setStep("payment-confirmation");
     if (session?.step === "needs-scheduling")
       window.location.href =
         window.location.origin + "/request-an-appointment/success?id=" + id;
@@ -61,13 +68,13 @@ export const BookingController = ({
   if (isLoading) return <Loader />;
   else if (error) return <Error error={error} />;
   else if (session !== null)
-    switch (session.step) {
+    switch (step) {
       case "started":
         if (session.client.displayName && session.client.phoneNumber)
           return (
             <SelectAPet
               session={session}
-              // setStep={setStep}
+              setStep={setStep}
               isAppMode={isAppMode}
             />
           );
@@ -75,7 +82,7 @@ export const BookingController = ({
           return (
             <ClientInfo
               session={session}
-              // setStep={setStep}
+              setStep={setStep}
               isAppMode={isAppMode}
             />
           );
@@ -83,7 +90,7 @@ export const BookingController = ({
         return (
           <ClientInfo
             session={session}
-            // setStep={setStep}
+            setStep={setStep}
             isAppMode={isAppMode}
           />
         );
@@ -91,7 +98,7 @@ export const BookingController = ({
         return (
           <SelectAPet
             session={session}
-            // setStep={setStep}
+            setStep={setStep}
             isAppMode={isAppMode}
           />
         );
@@ -99,7 +106,7 @@ export const BookingController = ({
         return (
           <WellnessCheck
             session={session}
-            // setStep={setStep}
+            setStep={setStep}
             isAppMode={isAppMode}
           />
         );
@@ -107,7 +114,7 @@ export const BookingController = ({
         return (
           <IllnessAssignment
             session={session}
-            // setStep={setStep}
+            setStep={setStep}
             isAppMode={isAppMode}
           />
         );
@@ -115,7 +122,7 @@ export const BookingController = ({
         return (
           <ChooseLocation
             session={session}
-            // setStep={setStep}
+            setStep={setStep}
             isAppMode={isAppMode}
           />
         );
@@ -123,7 +130,7 @@ export const BookingController = ({
         return (
           <ChooseService
             session={session}
-            // setStep={setStep}
+            setStep={setStep}
             isAppMode={isAppMode}
           />
         );
@@ -131,23 +138,17 @@ export const BookingController = ({
         return (
           <ChooseStaff
             session={session}
-            // setStep={setStep}
+            setStep={setStep}
             isAppMode={isAppMode}
           />
         );
       case "choose-datetime":
-        return (
-          <ChooseDateTime
-            session={session}
-            // setStep={setStep}
-            isAppMode={isAppMode}
-          />
-        );
+        return <ChooseDateTime session={session} isAppMode={isAppMode} />;
       case "payment-confirmation":
         return (
           <PaymentConfirmation
             session={session}
-            // setStep={setStep}
+            setStep={setStep}
             isAppMode={isAppMode}
           />
         );
