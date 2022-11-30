@@ -6,7 +6,7 @@ export const paymentMethodUpdated = (event: any): void => {
   admin
     .firestore()
     .collection("clients")
-    .where("customer.id", "==", customer)
+    .where("customer", "==", customer)
     .limit(1)
     .get()
     .then((querySnapshot: any) => {

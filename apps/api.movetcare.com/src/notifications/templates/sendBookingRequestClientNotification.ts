@@ -205,7 +205,9 @@ const createClientMessage = ({
           },
           {
             type: "plain_text",
-            text: `${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}`,
+            text: selectedStaff
+              ? `${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}`
+              : "None Selected",
           },
           {
             type: "mrkdwn",
