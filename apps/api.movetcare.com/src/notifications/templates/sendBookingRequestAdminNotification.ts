@@ -46,11 +46,17 @@ export const sendBookingRequestAdminNotification = async ({
               patient?.illnessDetails?.notes
             }`
           : " NONE"
-      }</p><p><b>Aggression Status:</b> "${
-        patient?.aggressionStatus?.name
-      }"</p><p><b>VCPR Required:</b> ${
-        patient?.vcprRequired ? "Yes" : "No"
-      }</p>`
+      }</p>${
+        patient.aggressionStatus
+          ? `<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
+          : ""
+      }${
+        patient.vcprRequired
+          ? `<p><b>VCPR Required:</b>${
+              patient?.vcprRequired ? "Yes" : "No"
+            }</p>`
+          : ""
+      }`
   )}
   ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
     requestedDateTime?.date
