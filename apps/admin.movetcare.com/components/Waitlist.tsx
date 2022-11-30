@@ -34,7 +34,7 @@ import {
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { firestore, functions } from 'services/firebase';
 import { timeSince } from 'utils/timeSince';
-import Loader from './Loader';
+import { Loader } from "ui";
 import Error from 'components/Error';
 import environment from 'utils/environment';
 import toast from 'react-hot-toast';

@@ -11,7 +11,7 @@ import { classNames } from 'utils/classNames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '../../Button';
 import Error from '../../Error';
-import Loader from '../../Loader';
+import { Loader } from "ui";
 import {
   query,
   collection,

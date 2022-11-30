@@ -14,7 +14,7 @@ import {
   faPaw,
   faPhone,
 } from "@fortawesome/free-solid-svg-icons";
-import Loader from "./Loader";
+import { Loader } from "ui";
 import PhoneInput from "./inputs/PhoneInput";
 import { useForm } from "react-hook-form";
 import Button from "./Button";

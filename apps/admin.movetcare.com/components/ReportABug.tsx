@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 import { functions, storage } from 'services/firebase';
 import Button from './Button';
 import SelectInput from './inputs/SelectInput';
-import Loader from 'components/Loader';
+import { Loader } from "ui";
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 
 const ReportABug = ({ type = 'bug' }: { type?: 'bug' | 'feature' }) => {

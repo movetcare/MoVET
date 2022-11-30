@@ -7,7 +7,7 @@ import {
   faGear,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Loader from "components/Loader";
+import { Loader } from "ui";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { setDoc, doc, serverTimestamp } from "firebase/firestore";

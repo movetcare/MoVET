@@ -1,14 +1,14 @@
-import Loader from 'components/Loader';
-import Head from 'next/head';
-import { useEffect } from 'react';
-import environment from 'utils/environment';
+import { Loader } from "ui";
+import Head from "next/head";
+import { useEffect } from "react";
+import environment from "utils/environment";
 
 export default function Custom404() {
   useEffect(() => {
     setTimeout(
       () =>
         (window.location.href =
-          (environment === 'development' ? 'http://' : 'https://') +
+          (environment === "development" ? "http://" : "https://") +
           `${window.location.host}`),
       3000
     );

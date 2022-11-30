@@ -10,7 +10,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
-import Loader from "components/Loader";
+import { Loader } from "ui";
 import { firestore } from "services/firebase";
 import {
   faPaw,

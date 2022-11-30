@@ -1,15 +1,15 @@
-import Loader from 'components/Loader';
-import { signOut } from 'firebase/auth';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { auth } from 'services/firebase';
+import { Loader } from "ui";
+import { signOut } from "firebase/auth";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { auth } from "services/firebase";
 
 export default function SignOut() {
   const router = useRouter();
 
   useEffect(() => {
-    signOut(auth).finally(() => router.push('/'));
+    signOut(auth).finally(() => router.push("/"));
   });
 
   return (

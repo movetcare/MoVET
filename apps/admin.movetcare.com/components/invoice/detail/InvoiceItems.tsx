@@ -1,9 +1,9 @@
-import Loader from 'components/Loader';
-import { query, collection } from 'firebase/firestore';
-import Error from 'components/Error';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { firestore } from 'services/firebase';
-import environment from 'utils/environment';
+import { Loader } from "ui";
+import { query, collection } from "firebase/firestore";
+import Error from "components/Error";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { firestore } from "services/firebase";
+import environment from "utils/environment";
 
 export const InvoiceItems = ({
   isClientInvoice,
@@ -12,8 +12,8 @@ export const InvoiceItems = ({
   isClientInvoice: boolean;
   id: number;
 }) => {
-  if (environment !== 'production')
-    console.log('InvoiceItems Props', {
+  if (environment !== "production")
+    console.log("InvoiceItems Props", {
       isClientInvoice,
       id,
     });
@@ -22,7 +22,7 @@ export const InvoiceItems = ({
       query(
         collection(
           firestore,
-          `${isClientInvoice ? 'client_invoices' : 'counter_sales'}/${id}/items`
+          `${isClientInvoice ? "client_invoices" : "counter_sales"}/${id}/items`
         )
       ),
       {
@@ -36,7 +36,7 @@ export const InvoiceItems = ({
       <div
         key={item.data()?.name}
         className={`flex flex-row justify-between items-center py-2 w-full${
-          index !== invoiceItems.docs.length - 1 ? ' border-b' : ' border-none'
+          index !== invoiceItems.docs.length - 1 ? " border-b" : " border-none"
         }`}
       >
         <h3 className="text-sm">

@@ -4,7 +4,7 @@ import { useDocument } from 'react-firebase-hooks/firestore';
 import { firestore } from 'services/firebase';
 import Error from 'components/Error';
 import { useEffect, useState } from 'react';
-import Loader from 'components/Loader';
+import { Loader } from "ui";
 import { InvoiceTitle } from 'components/invoice/detail/InvoiceTitle';
 import { InvoiceRemarks } from 'components/invoice/detail/InvoiceRemarks';
 import { InvoiceItems } from 'components/invoice/detail/InvoiceItems';

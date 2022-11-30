@@ -22,7 +22,7 @@ import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import Error from 'components/Error';
 import { useContext, useEffect, useState } from 'react';
 import { auth, firestore } from 'services/firebase';
-import Loader from './Loader';
+import { Loader } from "ui";
 import { Transition, Switch } from '@headlessui/react';
 import { Controller, useForm } from 'react-hook-form';
 import { classNames } from 'utils/classNames';

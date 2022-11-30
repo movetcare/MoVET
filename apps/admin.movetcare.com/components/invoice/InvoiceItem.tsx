@@ -37,7 +37,7 @@ import { timeSince } from "utils/timeSince";
 import Error from "components/Error";
 import { getMMDDFromDate } from "utils/getMMDDFromDate";
 import { httpsCallable } from "firebase/functions";
-import Loader from "../Loader";
+import { Loader } from "ui";
 import toast from "react-hot-toast";
 import ReactTooltip from "react-tooltip";
 

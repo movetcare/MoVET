@@ -1,6 +1,6 @@
 import { collection, limit, query, where } from 'firebase/firestore';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import Loader from 'components/Loader';
+import { Loader } from "ui";
 import { firestore } from 'services/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
