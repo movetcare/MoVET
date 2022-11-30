@@ -13,8 +13,8 @@ const Layout = ({ children, announcement }: any) => {
   const { mode } = router.query || {};
   const isAppMode = mode === "app";
   return (
-    <div className="flex flex-col items-center justify-center bg-movet-white min-h-screen">
-      {Announcement && (
+    <div className="flex flex-col items-center justify-center bg-white min-h-screen">
+      {!isAppMode && Announcement && (
         <Announcement announcement={announcement} layout="top" />
       )}
       {!isAppMode && <Header />}
@@ -26,7 +26,7 @@ const Layout = ({ children, announcement }: any) => {
         {children}
       </main>
       {!isAppMode && <Footer />}
-      {Announcement && (
+      {!isAppMode && Announcement && (
         <Announcement announcement={announcement} layout="bottom" />
       )}
     </div>
