@@ -477,7 +477,7 @@ importers:
       firebase: ^9.14.0
       firebase-admin: ^11.3.0
       firebase-functions: ^4.1.0
-      fs-extra: ^11.0.0
+      fs-extra: ^11.1.0
       kill-port: ^2.0.1
       lodash.isequal: ^4.5.0
       ngrok: ^4.3.3
@@ -491,7 +491,7 @@ importers:
       firebase: 9.14.0
       firebase-admin: 11.3.0
       firebase-functions: 4.1.0_firebase-admin@11.3.0
-      fs-extra: 11.0.0
+      fs-extra: 11.1.0
       kill-port: 2.0.1
       lodash.isequal: 4.5.0
       ngrok: 4.3.3
@@ -4327,8 +4327,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /fs-extra/11.0.0:
-    resolution: {integrity: sha512-4YxRvMi4P5C3WQTvdRfrv5UVqbISpqjORFQAW5QPiKAauaxNCwrEdIi6pG3tDFhKKpMen+enEhHIzB/tvIO+/w==}
+  /fs-extra/11.1.0:
+    resolution: {integrity: sha512-0rcTq621PD5jM/e0a3EJoGC/1TC5ZBCERW82LQuwfGnCa1V8w7dpYH1yNu+SLb6E5dkeCBzKEyLGlFrnr+dUyw==}
     engines: {node: '>=14.14'}
     dependencies:
       graceful-fs: 4.2.10

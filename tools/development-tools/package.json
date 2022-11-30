@@ -27,7 +27,7 @@
     "firebase": "^9.14.0",
     "firebase-admin": "^11.3.0",
     "firebase-functions": "^4.1.0",
-    "fs-extra": "^11.0.0",
+    "fs-extra": "^11.1.0",
     "kill-port": "^2.0.1",
     "lodash.isequal": "^4.5.0",
     "ngrok": "^4.3.3",
