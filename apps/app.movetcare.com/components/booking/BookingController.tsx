@@ -1,6 +1,6 @@
 import { Error } from "components/Error";
 import { Loader } from "ui";
-import { onSnapshot, doc } from "firebase/firestore";
+import { onSnapshot, doc, getDoc } from "firebase/firestore";
 import { ChooseDateTime } from "forms/booking/ChooseDateTime";
 import { ChooseLocation } from "forms/booking/ChooseLocation";
 import { ChooseService } from "forms/booking/ChooseService";
@@ -25,11 +25,21 @@ export const BookingController = ({
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [session, setSession] = useState<Booking | null>(null);
+  const [step, setStep] = useState<Booking["step"] | null>(null);
   const [error, setError] = useState<any>(null);
   useEffect(() => {
     if (id !== undefined && id !== null) {
+      const docRef = doc(firestore, "bookings", id);
+      const getBookingStep = async () => {
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          console.log("Document STEP:", docSnap.data()?.step);
+          setStep(docSnap.data()?.step || "started");
+        } else setError("Data Not Found...");
+      };
+      getBookingStep();
       const unsubscribe = onSnapshot(
-        doc(firestore, "bookings", id),
+        docRef,
         (doc: any) => {
           if (environment === "development")
             console.log("Booking Session Data", doc.data());
@@ -54,26 +64,93 @@ export const BookingController = ({
     switch (session.step) {
       case "started":
         if (session.client.displayName && session.client.phoneNumber)
-          return <SelectAPet session={session} isAppMode={isAppMode} />;
-        else return <ClientInfo session={session} isAppMode={isAppMode} />;
+          return (
+            <SelectAPet
+              session={session}
+              // setStep={setStep}
+              isAppMode={isAppMode}
+            />
+          );
+        else
+          return (
+            <ClientInfo
+              session={session}
+              // setStep={setStep}
+              isAppMode={isAppMode}
+            />
+          );
       case "contact-info":
-        return <ClientInfo session={session} isAppMode={isAppMode} />;
+        return (
+          <ClientInfo
+            session={session}
+            // setStep={setStep}
+            isAppMode={isAppMode}
+          />
+        );
       case "patient-selection":
-        return <SelectAPet session={session} isAppMode={isAppMode} />;
+        return (
+          <SelectAPet
+            session={session}
+            // setStep={setStep}
+            isAppMode={isAppMode}
+          />
+        );
       case "wellness-check":
-        return <WellnessCheck session={session} isAppMode={isAppMode} />;
+        return (
+          <WellnessCheck
+            session={session}
+            // setStep={setStep}
+            isAppMode={isAppMode}
+          />
+        );
       case "illness-assignment":
-        return <IllnessAssignment session={session} isAppMode={isAppMode} />;
+        return (
+          <IllnessAssignment
+            session={session}
+            // setStep={setStep}
+            isAppMode={isAppMode}
+          />
+        );
       case "choose-location":
-        return <ChooseLocation session={session} isAppMode={isAppMode} />;
+        return (
+          <ChooseLocation
+            session={session}
+            // setStep={setStep}
+            isAppMode={isAppMode}
+          />
+        );
       case "choose-reason":
-        return <ChooseService session={session} isAppMode={isAppMode} />;
+        return (
+          <ChooseService
+            session={session}
+            // setStep={setStep}
+            isAppMode={isAppMode}
+          />
+        );
       case "choose-staff":
-        return <ChooseStaff session={session} isAppMode={isAppMode} />;
+        return (
+          <ChooseStaff
+            session={session}
+            // setStep={setStep}
+            isAppMode={isAppMode}
+          />
+        );
       case "choose-datetime":
-        return <ChooseDateTime session={session} isAppMode={isAppMode} />;
+        return (
+          <ChooseDateTime
+            session={session}
+            // setStep={setStep}
+            isAppMode={isAppMode}
+          />
+        );
       case "payment-confirmation":
-        return <PaymentConfirmation session={session} isAppMode={isAppMode} />;
+        return (
+          <PaymentConfirmation
+            session={session}
+            // setStep={setStep}
+            isAppMode={isAppMode}
+          />
+        );
       case "complete":
         return <Loader message="Confirming Booking Request..." />;
       case "needs-scheduling":
