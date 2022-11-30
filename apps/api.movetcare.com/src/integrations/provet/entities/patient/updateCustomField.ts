@@ -43,6 +43,14 @@ export const updateCustomField = async (
       "updateCustomField => Array.isArray(customFieldValue) ",
       Array.isArray(customFieldValue)
     );
+    console.log(
+      "URL ARG =>",
+      typeof customFieldValue === "object"
+        ? `${customFieldValue?.id}`
+        : Array.isArray(customFieldValue)
+        ? `${customFieldValue[0]?.id}`
+        : id
+    );
   }
   if (
     customFieldValue === null ||
@@ -74,7 +82,7 @@ export const updateCustomField = async (
             ? `${customFieldValue?.id}`
             : Array.isArray(customFieldValue)
             ? `${customFieldValue[0]?.id}`
-            : customFieldValue
+            : id
         }`,
         {
           field: id,
@@ -86,10 +94,19 @@ export const updateCustomField = async (
         async (response: any) =>
           DEBUG &&
           console.log(
-            `API Response: PATCH /custom_field_values/${customFieldValue} => `,
+            `API Response: PATCH /custom_field_values/${
+              typeof customFieldValue === "object"
+                ? `${customFieldValue?.id}`
+                : Array.isArray(customFieldValue)
+                ? `${customFieldValue[0]?.id}`
+                : id
+            } => `,
             response.data
           )
       )
       .then(() => true)
-      .catch((error: any) => (console.log("ERROR: ", error) as any) && false);
+      .catch(
+        (error: any) =>
+          (console.log("API ERROR: ", JSON.stringify(error)) as any) && false
+      );
 };
