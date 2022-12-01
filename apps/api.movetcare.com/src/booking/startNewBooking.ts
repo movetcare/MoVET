@@ -76,7 +76,7 @@ export const startNewBooking = async (
             },
             {
               type: "plain_text",
-              text: device,
+              text: JSON.stringify(device) || "Unknown",
             },
           ],
         },

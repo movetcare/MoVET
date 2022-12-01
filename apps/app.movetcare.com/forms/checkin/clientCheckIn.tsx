@@ -124,33 +124,6 @@ export const ClientCheckIn = () => {
                 as soon as we are ready to begin your appointment.
               </p>
               <hr className="border-movet-gray w-full sm:w-2/3 mx-auto my-8" />
-              <h3 className="mt-4">Need to change your information?</h3>
-              <div className="flex flex-row justify-center items-center">
-                <div className="mx-2 flex flex-col justify-center items-center">
-                  <Button
-                    color="black"
-                    icon={faUserEdit}
-                    iconSize={"lg"}
-                    text="Update Profile"
-                    className={"mt-4"}
-                    onClick={() => router.push("/appointment-check-in/info/")}
-                  />
-                </div>
-                {email && (
-                  <div className="mx-2 flex flex-col justify-center items-center">
-                    <Button
-                      color="red"
-                      icon={faCreditCard}
-                      iconSize={"lg"}
-                      text="Update Payment"
-                      className={"mt-4"}
-                      onClick={() =>
-                        router.push(`/update-payment-method?email=${email}`)
-                      }
-                    />
-                  </div>
-                )}
-              </div>
               <p
                 className={
                   "mt-8 leading-6 text-movet-black font-source-sans-pro italic"

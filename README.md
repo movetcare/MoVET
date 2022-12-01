@@ -42,9 +42,10 @@ Follow the installation guide for each.
 - [OpenJDK](https://formulae.brew.sh/formula/openjdk) `brew install openjdk`
 - [NodeJS](https://formulae.brew.sh/formula/node) `brew install node`
 - [PNPM](https://formulae.brew.sh/formula/pnpm) `brew install pnpm`
+- [Watchman](https://facebook.github.io/watchman/) `brew install watchman`
 - [Expo CLI](https://docs.expo.dev/archived/expo-cli/)
 - [Firebase CLI](https://firebase.google.com/docs/cli#mac-linux-npm) `pnpm i -g firebase-tools`
-- [Gitmoji CLI](https://www.npmjs.com/package/gitmoji-cli) `pnpm i -g gitmoji-cli`
+- [Gitmoji CLI](https://www.npmjs.com/package/gitmoji-cli) `pnpm i -g gitmoji-cli` 
 - [NPM Check Updates](https://www.npmjs.com/package/npm-check-updates) `pnpm i -g npm-check-updates`
 - [Kill Port](https://www.npmjs.com/package/kill-port) `pnpm i -g kill-port`
 

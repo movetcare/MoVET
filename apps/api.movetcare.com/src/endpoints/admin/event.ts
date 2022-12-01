@@ -18,9 +18,9 @@ export const event = functions
       if (payload.apiKey === mobileClientApiKey) {
         if (payload.tag === "login" || payload.tag === "reset-password") {
           logAuthEvent({
-             ...payload,
-             ip: context.rawRequest.ip || "UNKNOWN",
-           });
+            ...payload,
+            ip: context.rawRequest.ip || "UNKNOWN",
+          });
           if (payload.tag === "login" && payload.success)
             syncFromProVetClientData(payload.data?.email);
         } else if (payload?.tag === "service-request") {
@@ -32,8 +32,7 @@ export const event = functions
         }
         sendNotification({ type: "slack", payload });
         return true;
-      } else {
-        return false;
-      }
+      } else return false;
+      
     }
   );
