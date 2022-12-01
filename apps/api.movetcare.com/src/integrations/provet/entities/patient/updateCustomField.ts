@@ -48,19 +48,11 @@ export const updateCustomField = async (
       'typeof customFieldValue === "object"',
       typeof customFieldValue === "object"
     );
-    console.log("id", id);
     console.log(
       "typeof customFieldValue === 'undefined'",
       typeof customFieldValue === "undefined"
     );
-    console.log(
-      "URL ARG =>",
-      typeof customFieldValue === "object"
-        ? `${customFieldValue?.id}`
-        : Array.isArray(customFieldValue)
-        ? `${customFieldValue[0]?.id}`
-        : id
-    );
+    console.log("id", id);
   }
   if (
     customFieldValue === null ||
@@ -86,31 +78,16 @@ export const updateCustomField = async (
       .catch((error: any) => (console.log("ERROR: ", error) as any) && false);
   else
     return await request
-      .patch(
-        `/custom_field_values/${
-          typeof customFieldValue === "object"
-            ? `${customFieldValue?.id}`
-            : Array.isArray(customFieldValue)
-            ? `${customFieldValue[0]?.id}`
-            : id
-        }`,
-        {
-          field: id,
-          value: value,
-          object_id: patient,
-        }
-      )
+      .patch(`/custom_field_values/${id}`, {
+        field: id,
+        value: value,
+        object_id: patient,
+      })
       .then(
         async (response: any) =>
           DEBUG &&
           console.log(
-            `API Response: PATCH /custom_field_values/${
-              typeof customFieldValue === "object"
-                ? `${customFieldValue?.id}`
-                : Array.isArray(customFieldValue)
-                ? `${customFieldValue[0]?.id}`
-                : id
-            } => `,
+            `API Response: PATCH /custom_field_values/${id} => `,
             response.data
           )
       )

@@ -107,7 +107,7 @@ export const sendAppointmentConfirmationEmail = async (
   }${
       appointment?.start
         ? `<p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
-            appointment?.start
+            appointment?.start.toDate()
           )}`
         : ""
     }${

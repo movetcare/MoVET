@@ -1,7 +1,6 @@
 import {Stripe} from "stripe";
-import { admin, stripe, throwError } from "../config/config";
+import { admin, stripe, throwError, DEBUG } from "../config/config";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
-const DEBUG = true;
 export interface UserNotificationSettings {
   sendEmail: boolean;
   sendSms: boolean;
