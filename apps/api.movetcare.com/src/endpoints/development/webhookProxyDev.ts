@@ -5,7 +5,6 @@ import {
   environment,
   defaultRuntimeOptions,
   admin,
-  stripeApiVersion,
   DEBUG,
 } from "../../config/config";
 
