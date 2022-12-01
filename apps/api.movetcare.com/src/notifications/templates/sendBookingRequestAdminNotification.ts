@@ -34,30 +34,35 @@ export const sendBookingRequestAdminNotification = async ({
           phoneNumber?.replaceAll("+1", "")
         )}</a></p>`
       : ""
-  }${patients.map(
-    (patient: any) =>
-      `<p><b>Patient Name:</b> ${patient?.name}</p><p><b>Patient Species:</b> ${
-        patient?.species
-      }</p><p><b>Patient Gender:</b> ${
-        patient?.gender
-      }</p><p><b>Patient Minor Illness:</b> ${
-        patient?.hasMinorIllness
-          ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-              patient?.illnessDetails?.notes
-            }`
-          : " NONE"
-      }</p>${
-        patient.aggressionStatus
-          ? `<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
-          : ""
-      }${
-        patient.vcprRequired
-          ? `<p><b>VCPR Required:</b> ${
-              patient?.vcprRequired ? "Yes" : "No"
-            }</p>`
-          : ""
-      }`
-  )}
+  }${
+    patients &&
+    patients.map(
+      (patient: any) =>
+        `<p><b>Patient Name:</b> ${
+          patient?.name
+        }</p><p><b>Patient Species:</b> ${
+          patient?.species
+        }</p><p><b>Patient Gender:</b> ${
+          patient?.gender
+        }</p><p><b>Patient Minor Illness:</b> ${
+          patient?.hasMinorIllness
+            ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                patient?.illnessDetails?.notes
+              }`
+            : " NONE"
+        }</p>${
+          patient.aggressionStatus
+            ? `<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
+            : ""
+        }${
+          patient.vcprRequired
+            ? `<p><b>VCPR Required:</b> ${
+                patient?.vcprRequired ? "Yes" : "No"
+              }</p>`
+            : ""
+        }`
+    )
+  }
   ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
     requestedDateTime?.date
       ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(

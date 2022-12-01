@@ -69,9 +69,9 @@ export default function BookingSuccess() {
     <section className="w-full flex-1">
       <AppHeader />
       <div
-        className={`flex items-center justify-center bg-white rounded-xl max-w-lg mx-auto`}
+        className={`flex items-center justify-center bg-white rounded-xl max-w-lg mx-auto mb-4`}
       >
-        <div className={isAppMode ? "px-4 mb-8" : "p-8"}>
+        <div className={isAppMode ? "px-4 mb-8" : "p-4"}>
           <section className="relative mx-auto">
             {isLoading ? (
               <Loader message="Loading Confirmation..." />

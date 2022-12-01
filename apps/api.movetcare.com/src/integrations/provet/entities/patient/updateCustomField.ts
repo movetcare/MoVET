@@ -44,6 +44,16 @@ export const updateCustomField = async (
       Array.isArray(customFieldValue)
     );
     console.log(
+      // eslint-disable-next-line quotes
+      'typeof customFieldValue === "object"',
+      typeof customFieldValue === "object"
+    );
+    console.log("id", id);
+    console.log(
+      "typeof customFieldValue === 'undefined'",
+      typeof customFieldValue === "undefined"
+    );
+    console.log(
       "URL ARG =>",
       typeof customFieldValue === "object"
         ? `${customFieldValue?.id}`
@@ -55,7 +65,7 @@ export const updateCustomField = async (
   if (
     customFieldValue === null ||
     customFieldValue === false ||
-    customFieldValue === undefined ||
+    typeof customFieldValue === "undefined" ||
     (Array.isArray(customFieldValue) && customFieldValue?.length < 1)
   )
     return await request

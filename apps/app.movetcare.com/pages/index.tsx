@@ -180,7 +180,7 @@ export default function Home() {
           !isAppMode ? " p-4 mb-8 sm:p-8" : ""
         }`}
       >
-        <div className={isAppMode ? "px-4 mb-8" : "p-8"}>
+        <div className={isAppMode ? "px-4 mb-8" : "p-4"}>
           <section className="relative mx-auto">
             {isLoading ? (
               <Loader />

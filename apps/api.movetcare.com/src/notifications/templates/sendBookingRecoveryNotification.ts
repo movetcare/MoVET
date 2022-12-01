@@ -163,7 +163,7 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
     if (client?.displayName) emailHtml += `<p>Hey ${client?.displayName}!</p>`;
     else emailHtml += "<p>Hey there!</p>";
 
-    emailHtml += `<p>It looks like you were in the process of submitting an appointment booking request with MoVET.</p><p><b>Click the button bellow to resume your session:</b></p><p><a href='${
+    emailHtml += `<p>It looks like you were in the process of submitting an appointment booking request with MoVET.</p><p><b>Click the link bellow to resume your session:</b></p><p><a href='${
       authLink
         ? authLink
         : (environment.type === "production"

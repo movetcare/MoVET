@@ -33,7 +33,11 @@ export const handleBookingUpdate = functions.firestore
     } = data || {};
     if (DEBUG) console.log("handleBookingUpdate => DATA", { id, data });
     if (data !== undefined && isActive) {
-      if (step === "restart" || step === "complete") {
+      if (
+        step === "restart" ||
+        step === "complete" ||
+        step === "cancelled-client"
+      ) {
         if (DEBUG)
           console.log(
             `REMOVING BOOKING ABANDONMENT AUTOMATION TASK FROM QUEUE FOR ${id}`
