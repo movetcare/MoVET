@@ -2,7 +2,6 @@ import {
   request,
   functions,
   defaultRuntimeOptions,
-  DEBUG,
   throwError,
   admin,
   proVetApiUrl,
@@ -17,7 +16,7 @@ import { sendNotification } from "../../notifications/sendNotification";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
-
+const DEBUG = true;
 export const checkIn = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<any> => {
@@ -48,18 +47,20 @@ export const checkIn = functions
             .get()
             .then((doc: any) => doc.data())
             .catch((error: any) => throwError(error));
-          admin
-            .firestore()
-            .collection("waitlist")
-            .doc(client?.email)
-            .set(
-              {
-                ...data,
-                isActive: true,
-                updatedOn: new Date(),
-              },
-              { merge: true }
-            );
+          // admin
+          //   .firestore()
+          //   .collection("waitlist")
+          //   .doc(client?.email)
+          //   .set(
+          //     {
+          //       ...data,
+          //       isActive: true,
+          //       updatedOn: new Date(),
+          //     },
+          //     { merge: true }
+          //   );
+          if (DEBUG)
+            console.log("didUpdateProVetClient", didUpdateProVetClient);
           if (didUpdateProVetClient)
             return {
               client: {
@@ -117,18 +118,18 @@ export const checkIn = functions
                 });
               if (DEBUG) console.log("isNewClient", isNewClient);
               if (isNewClient) {
-                admin
-                  .firestore()
-                  .collection("waitlist")
-                  .doc(email)
-                  .set(
-                    {
-                      status: "creating-client",
-                      updatedOn: new Date(),
-                    },
-                    { merge: true }
-                  )
-                  .catch((error: any) => throwError(error));
+                // admin
+                //   .firestore()
+                //   .collection("waitlist")
+                //   .doc(email)
+                //   .set(
+                //     {
+                //       status: "creating-client",
+                //       updatedOn: new Date(),
+                //     },
+                //     { merge: true }
+                //   )
+                //   .catch((error: any) => throwError(error));
                 if (DEBUG) console.log("CREATING NEW CLIENT");
                 const proVetClientData: any = await createProVetClient({
                   email,
@@ -143,19 +144,21 @@ export const checkIn = functions
                     null,
                     false
                   );
+                  if (DEBUG)
+                    console.log("didCreateNewClient", didCreateNewClient);
                   if (didCreateNewClient) {
-                    admin
-                      .firestore()
-                      .collection("waitlist")
-                      .doc(email)
-                      .set(
-                        {
-                          id: proVetClientData?.id,
-                          updatedOn: new Date(),
-                        },
-                        { merge: true }
-                      )
-                      .catch((error: any) => throwError(error));
+                    // admin
+                    //   .firestore()
+                    //   .collection("waitlist")
+                    //   .doc(email)
+                    //   .set(
+                    //     {
+                    //       id: proVetClientData?.id,
+                    //       updatedOn: new Date(),
+                    //     },
+                    //     { merge: true }
+                    //   )
+                    //   .catch((error: any) => throwError(error));
                     if (phone) {
                       if (DEBUG) console.log("SAVING CLIENT PHONE NUMBER");
                       request
@@ -179,33 +182,35 @@ export const checkIn = functions
                             );
                         })
                         .catch((error: any) => throwError(error));
-                      admin
-                        .firestore()
-                        .collection("waitlist")
-                        .doc(email)
-                        .set(
-                          {
-                            phone,
-                            updatedOn: new Date(),
-                          },
-                          { merge: true }
-                        )
-                        .catch((error: any) => throwError(error));
+                      // admin
+                      //   .firestore()
+                      //   .collection("waitlist")
+                      //   .doc(email)
+                      //   .set(
+                      //     {
+                      //       phone,
+                      //       updatedOn: new Date(),
+                      //     },
+                      //     { merge: true }
+                      //   )
+                      //   .catch((error: any) => throwError(error));
                     }
-                    const customer = await getCustomerId(proVetClientData?.id);
-                    admin
-                      .firestore()
-                      .collection("waitlist")
-                      .doc(email)
-                      .set(
-                        {
-                          status: "checkout",
-                          customerId: customer,
-                          updatedOn: new Date(),
-                        },
-                        { merge: true }
-                      )
-                      .catch((error: any) => throwError(error));
+                    const customer = await getCustomerId(
+                      `${proVetClientData?.id}`
+                    );
+                    // admin
+                    //   .firestore()
+                    //   .collection("waitlist")
+                    //   .doc(email)
+                    //   .set(
+                    //     {
+                    //       status: "checkout",
+                    //       customerId: customer,
+                    //       updatedOn: new Date(),
+                    //     },
+                    //     { merge: true }
+                    //   )
+                    //   .catch((error: any) => throwError(error));
                     const session = await stripe.checkout.sessions.create({
                       payment_method_types: ["card"],
                       mode: "setup",
@@ -263,21 +268,21 @@ export const checkIn = functions
                             } `,
                           },
                         });
-                        admin
-                          .firestore()
-                          .collection("waitlist")
-                          .doc(client?.email)
-                          .set(
-                            {
-                              firstName: client?.firstName,
-                              lastName: client?.lastName,
-                              phone: client?.phone,
-                              id: client?.uid,
-                              updatedOn: new Date(),
-                            },
-                            { merge: true }
-                          )
-                          .catch((error: any) => throwError(error));
+                        // admin
+                        //   .firestore()
+                        //   .collection("waitlist")
+                        //   .doc(client?.email)
+                        //   .set(
+                        //     {
+                        //       firstName: client?.firstName,
+                        //       lastName: client?.lastName,
+                        //       phone: client?.phone,
+                        //       id: client?.uid,
+                        //       updatedOn: new Date(),
+                        //     },
+                        //     { merge: true }
+                        //   )
+                        //   .catch((error: any) => throwError(error));
                         return {
                           client: {
                             email: client?.email,
@@ -307,18 +312,18 @@ export const checkIn = functions
                 }
               } else {
                 if (DEBUG) console.log("HANDLING EXISTING CLIENT CHECK IN");
-                admin
-                  .firestore()
-                  .collection("waitlist")
-                  .doc(email)
-                  .set(
-                    {
-                      status: "processing-client",
-                      updatedOn: new Date(),
-                    },
-                    { merge: true }
-                  )
-                  .catch((error: any) => throwError(error));
+                // admin
+                //   .firestore()
+                //   .collection("waitlist")
+                //   .doc(email)
+                //   .set(
+                //     {
+                //       status: "processing-client",
+                //       updatedOn: new Date(),
+                //     },
+                //     { merge: true }
+                //   )
+                //   .catch((error: any) => throwError(error));
                 const clientId = await admin
                   .auth()
                   .getUserByEmail(email)
@@ -327,18 +332,18 @@ export const checkIn = functions
                     return userRecord?.uid;
                   })
                   .catch((error: any) => throwError(error));
-                admin
-                  .firestore()
-                  .collection("waitlist")
-                  .doc(email)
-                  .set(
-                    {
-                      id: clientId,
-                      updatedOn: new Date(),
-                    },
-                    { merge: true }
-                  )
-                  .catch((error: any) => throwError(error));
+                // admin
+                //   .firestore()
+                //   .collection("waitlist")
+                //   .doc(email)
+                //   .set(
+                //     {
+                //       id: clientId,
+                //       updatedOn: new Date(),
+                //     },
+                //     { merge: true }
+                //   )
+                //   .catch((error: any) => throwError(error));
                 const client = await admin
                   .firestore()
                   .collection("clients")
@@ -437,23 +442,23 @@ export const checkIn = functions
                         : "https://app.movetcare.com") +
                       "/appointment-check-in/",
                   });
-                  admin
-                    .firestore()
-                    .collection("waitlist")
-                    .doc(email)
-                    .set(
-                      {
-                        status: "checkout",
-                        id: clientId,
-                        firstName: client?.firstName,
-                        lastName: client?.lastName,
-                        phone: client?.phone,
-                        customerId: customer,
-                        updatedOn: new Date(),
-                      },
-                      { merge: true }
-                    )
-                    .catch((error: any) => throwError(error));
+                  // admin
+                  //   .firestore()
+                  //   .collection("waitlist")
+                  //   .doc(email)
+                  //   .set(
+                  //     {
+                  //       status: "checkout",
+                  //       id: clientId,
+                  //       firstName: client?.firstName,
+                  //       lastName: client?.lastName,
+                  //       phone: client?.phone,
+                  //       customerId: customer,
+                  //       updatedOn: new Date(),
+                  //     },
+                  //     { merge: true }
+                  //   )
+                  //   .catch((error: any) => throwError(error));
                   if (DEBUG)
                     console.log("FINAL RESULT => ", {
                       session,

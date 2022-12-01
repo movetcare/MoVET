@@ -104,7 +104,7 @@ const createClientMessage = ({
   if (messageTemplate === "email") {
     const message = `<p>Hi ${
       client?.displayName
-    },</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request bellow and let us know (by replying to this email) if anything needs to be changed.</p>${
+    },</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request bellow and let us know (by replying to this email) if anything needs to be changed.</p><p></p>${
       displayName ? `<p><b>Name:</b> ${displayName}</p>` : ""
     }<p><b>Email:</b> ${email}</p>${
       phoneNumber
@@ -147,7 +147,7 @@ const createClientMessage = ({
       selectedStaff
         ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
         : ""
-    }<p>We look forward to seeing you soon!</p><p>- The MoVET Team</p>`;
+    }<p></p><p>We look forward to seeing you soon!</p><p>- The MoVET Team</p>`;
 
     return {
       subject: "We have received your appointment request!",

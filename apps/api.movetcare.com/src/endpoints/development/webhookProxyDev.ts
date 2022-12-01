@@ -26,8 +26,7 @@ export const webhookProxyDev: Promise<Response> = functions
         .get()
         .then((querySnapshot: any) => {
           return querySnapshot.forEach(async (doc: any) =>
-            request.body?.livemode === false &&
-            request.body?.api_version === stripeApiVersion
+            request.body?.livemode === false
               ? await axios
                   .post(
                     `${doc.data()?.url}/${

@@ -1,17 +1,13 @@
-import {
-  faCheckCircle,
-  faCreditCard,
-  faUserEdit,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, AppLinks } from "ui";
+import { AppLinks } from "ui";
 import { Loader } from "ui";
 import { httpsCallable } from "firebase/functions";
-import router from "next/router";
 import { useState, useEffect } from "react";
 import { functions } from "services/firebase";
 import { formatPhoneNumber } from "utilities";
 import Head from "next/head";
+import { AppHeader } from "components/AppHeader";
 
 export default function Success() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -35,16 +31,17 @@ export default function Success() {
     }
   }, []);
   return (
-    <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
+    <>
       <Head>
         <title>Success - Appointment Check In</title>
       </Head>
-      <main className="w-full flex-1 overflow-hidden">
-        <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 sm:p-8">
+      <div className="w-full flex-1">
+        <AppHeader />
+        <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 sm:p-8 mb-4 text-center">
           {isLoading ? (
             <Loader />
           ) : (
-            <div className="text-center">
+            <>
               <FontAwesomeIcon icon={faCheckCircle} size="4x" color="#00A36C" />
               <h3 className="text-2xl tracking-tight text-movet-black font-parkinson mt-6">
                 We&apos;ve got you checked in
@@ -54,52 +51,19 @@ export default function Success() {
                       client?.firstName.slice(1)
                     }`
                   : ""}
-                .
               </h3>
               <p
                 className={
                   "text-lg leading-6 text-movet-black font-source-sans-pro mt-4"
                 }
               >
-                We&apos;ll send you a text @{" "}
+                We&apos;ll call your name (or send you a text @{" "}
                 <span className="italic">
                   {formatPhoneNumber(client?.phone)}
-                </span>{" "}
-                as soon as we are ready to begin your appointment.
+                </span>
+                ) as soon as we are ready to begin your appointment!
               </p>
               <hr className="border-movet-gray w-full sm:w-2/3 mx-auto my-8" />
-              <h3 className="mt-4">Need to change your information?</h3>
-              <div className="flex flex-row justify-center items-center">
-                <div className="mx-2 flex flex-col justify-center items-center">
-                  <Button
-                    color="black"
-                    icon={faUserEdit}
-                    iconSize={"lg"}
-                    text="Update Profile"
-                    className={"mt-4"}
-                    onClick={() => router.reload()}
-                  />
-                </div>
-                {client?.email && (
-                  <div className="mx-2 flex flex-col justify-center items-center">
-                    <Button
-                      color="red"
-                      icon={faCreditCard}
-                      iconSize={"lg"}
-                      text="Update Payment"
-                      className={"mt-4"}
-                      onClick={() =>
-                        router.push(
-                          `/update-payment-method?email=${client?.email?.replaceAll(
-                            "+",
-                            "%2B"
-                          )}`
-                        )
-                      }
-                    />
-                  </div>
-                )}
-              </div>
               <p
                 className={
                   "mt-8 leading-6 text-movet-black font-source-sans-pro italic"
@@ -114,10 +78,10 @@ export default function Success() {
                   <AppLinks />
                 </div>
               </div>
-            </div>
+            </>
           )}
         </section>
-      </main>
-    </div>
+      </div>
+    </>
   );
 }

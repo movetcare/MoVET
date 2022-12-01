@@ -8,7 +8,7 @@ export default function CheckIn() {
   const router = useRouter();
   const { mode } = router.query || {};
   return (
-    <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
+    <>
       <Head>
         <title>Appointment Check In</title>
         <meta
@@ -16,7 +16,7 @@ export default function CheckIn() {
           content="Check in for your MoVET appointment!"
         />
       </Head>
-      <main className="w-full flex-1 overflow-hidden">
+      <div className="w-full flex-1">
         <AppHeader />
         {mode === "kiosk" ? (
           <section className="flex flex-col justify-center items-center max-w-xl mx-auto bg-white rounded-xl mb-8 p-8">
@@ -35,7 +35,7 @@ export default function CheckIn() {
         ) : (
           <ClientCheckIn />
         )}
-      </main>
-    </div>
+      </div>
+    </>
   );
 }

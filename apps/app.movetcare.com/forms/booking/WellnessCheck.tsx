@@ -295,7 +295,7 @@ export const WellnessCheck = ({
                   </span>
                 )}
               </p>
-              <ul className="list-none ml-8 py-2 text-xs italic text-center">
+              <ul className="list-none py-2 text-xs italic text-center">
                 <li className="my-1">Profuse Bleeding</li>
                 <li className="my-1">Breathing Difficulties</li>
                 <li className="my-1">Fainting / Collapse</li>

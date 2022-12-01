@@ -154,9 +154,7 @@ export const IllnessAssignment = ({
                 className="text-base select-none font-source-sans-pro flex flex-row items-center py-2 w-full"
               >
                 <p>{symptom?.name}</p>
-                <span className="text-xs italic text-movet-red ml-2 text-center grow">
-                  {""}
-                </span>
+                <span className="text-xs italic text-movet-red ml-2 text-center grow"></span>
                 <div className="ml-3 flex items-center h-5 flex-none">
                   <input
                     id={`${symptom?.name}`}
@@ -170,7 +168,7 @@ export const IllnessAssignment = ({
             </div>
           ))}
           <ErrorMessage errorMessage={errors?.symptoms?.message as string} />
-          <div className="mt-8">
+          <div className="mt-4">
             <TextInput
               label="Tell Us More"
               control={control}

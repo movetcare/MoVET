@@ -60,12 +60,14 @@ export const startNewBooking = async (
             },
             {
               type: "plain_text",
-              text: `${client.uid ? `ID: ${client.uid}\n\n` : ""}${
-                client.email ? ` - Email: ${client.email}\n\n` : ""
+              text: `${client?.uid ? `ID: ${client?.uid}\n\n` : ""}${
+                client?.email ? ` - Email: ${client?.email}\n\n` : ""
               }${
-                client.displayName ? ` - Name: ${client.displayName}\n\n` : ""
+                client?.displayName ? ` - Name: ${client?.displayName}\n\n` : ""
               }${
-                client.phoneNumber ? ` -  Phone: ${client.phoneNumber}\n\n` : ""
+                client?.phoneNumber
+                  ? ` -  Phone: ${client?.phoneNumber}\n\n`
+                  : ""
               }`,
             },
             {

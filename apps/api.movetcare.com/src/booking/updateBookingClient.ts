@@ -28,18 +28,18 @@ export const updateBookingClient = async (
         step: "patient-selection",
         updatedOn: new Date(),
         client: {
-          displayName: capitalizeFirstLetter(client.firstName),
-          phone: client.phone,
+          displayName: capitalizeFirstLetter(client?.firstName),
+          phone: client?.phone,
         },
       },
       { merge: true }
     )
     .catch((error: any) => throwError(error));
   const didUpdateClient = await updateProVetClient({
-    id: client.uid,
-    firstName: capitalizeFirstLetter(client.firstName),
-    lastName: capitalizeFirstLetter(client.lastName),
-    phone: client.phone,
+    id: client?.uid,
+    firstName: capitalizeFirstLetter(client?.firstName),
+    lastName: capitalizeFirstLetter(client?.lastName),
+    phone: client?.phone,
   });
   if (DEBUG) console.log("didUpdateClient", didUpdateClient);
   if (didUpdateClient) {
@@ -87,8 +87,8 @@ export const updateBookingClient = async (
               },
               {
                 type: "plain_text",
-                text: `${client.firstName ? `${client.firstName}` : ""}${
-                  client.lastName ? ` ${client.lastName}` : ""
+                text: `${client?.firstName ? `${client?.firstName}` : ""}${
+                  client?.lastName ? ` ${client?.lastName}` : ""
                 }`,
               },
               {
@@ -97,7 +97,7 @@ export const updateBookingClient = async (
               },
               {
                 type: "plain_text",
-                text: `${client.phone ? `${client.phone}` : ""}`,
+                text: `${client?.phone ? `${client?.phone}` : ""}`,
               },
               {
                 type: "mrkdwn",
@@ -105,7 +105,7 @@ export const updateBookingClient = async (
               },
               {
                 type: "plain_text",
-                text: `${client.email ? `${client.email}` : ""}`,
+                text: `${client?.email ? `${client?.email}` : ""}`,
               },
             ],
           },
