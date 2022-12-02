@@ -2,16 +2,11 @@ import { sendNotification } from "./../notifications/sendNotification";
 import { admin, throwError, DEBUG } from "../config/config";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
 import { capitalizeFirstLetter } from "../utils/capitalizeFirstLetter";
+import type { Booking } from "../types/booking";
 
 export const updateBookingClient = async (
   id: string,
-  client: {
-    uid: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
-  }
+  client: Booking["client"]
 ): Promise<void> => {
   if (DEBUG)
     console.log("UPDATING CLIENT", {

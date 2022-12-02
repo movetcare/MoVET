@@ -61,7 +61,7 @@ export const PaymentConfirmation = ({
           <FontAwesomeIcon
             icon={faCreditCard}
             size="4x"
-            className="text-movet-black mx-auto w-full mb-4"
+            className="text-movet-black mx-auto w-full mb-2"
           />
           <BookingHeader
             isAppMode={isAppMode}
@@ -98,7 +98,7 @@ export const PaymentConfirmation = ({
                 alt="Powered by Stripe"
                 height={40}
                 width={120}
-                className="hover:bg-movet-gray ease-in-out duration-500 mx-auto"
+                className="mx-auto"
               />
             </a>
           </form>

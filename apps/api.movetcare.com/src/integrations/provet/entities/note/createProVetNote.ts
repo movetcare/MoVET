@@ -33,9 +33,9 @@ export const createProVetNote = ({
       title: subject,
       type,
       client: proVetApiUrl + `/client/${client}/`,
-      patients: patients.map(
-        (patient: any) => proVetApiUrl + `/patient/${patient}/`
-      ),
+      patients:
+        patients.map((patient: any) => proVetApiUrl + `/patient/${patient}/`) ||
+        [],
       note: message,
     })
     .then((response: any) => {

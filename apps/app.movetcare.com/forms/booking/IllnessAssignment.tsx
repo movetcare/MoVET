@@ -28,11 +28,9 @@ const symptoms = [
 ];
 export const IllnessAssignment = ({
   session,
-  setStep,
   isAppMode,
 }: {
   session: Booking;
-  setStep: any;
   isAppMode: boolean;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);

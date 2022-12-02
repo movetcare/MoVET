@@ -1,6 +1,10 @@
 import { admin, DEBUG } from "../../config/config";
+import { sendNotification } from "../../notifications/sendNotification";
 
-export const removeBookingAbandonmentNotifications = (id: string) =>
+export const removeBookingAbandonmentNotifications = (
+  id: string,
+  email: string
+) =>
   admin
     .firestore()
     .collection("tasks_queue")
@@ -43,4 +47,12 @@ export const removeBookingAbandonmentNotifications = (id: string) =>
               `booking_abandonment_notification_3_day_${id}`
             )
         )
+    )
+    .then(() =>
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: `:no_entry_sign: ${id} - Appointment Booking Abandonment Notifications Cancelled by ${email}`,
+        },
+      })
     );

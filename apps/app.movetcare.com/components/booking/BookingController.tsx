@@ -127,13 +127,7 @@ export const BookingController = ({
           />
         );
       case "choose-reason":
-        return (
-          <ChooseService
-            session={session}
-            setStep={setStep}
-            isAppMode={isAppMode}
-          />
-        );
+        return <ChooseService session={session} isAppMode={isAppMode} />;
       case "choose-staff":
         return (
           <ChooseStaff

@@ -1,3 +1,4 @@
+import type { Staff } from "./staff";
 export type BookingError = {
   error: true;
   message: string;
@@ -7,9 +8,11 @@ export type Booking = {
   id: string;
   isActive: boolean;
   staffId?: string;
+  selectedStaff?: Staff;
   isNewClient?: boolean;
   reasonGroup?: number;
   reasonType?: number;
+  requestedDateTime?: { date: any; time: string };
   step?:
     | "started"
     | "contact-info"
@@ -23,33 +26,56 @@ export type Booking = {
     | "choose-datetime"
     | "confirmation"
     | "cancelled-client"
+    | "complete"
     | "restart";
   location?: "home" | "clinic" | "virtual";
-  datetime?: Date;
+  address?: {
+    full: string;
+    info: string;
+    parts: Array<string>;
+    placeId: string;
+    zipcode: string;
+  };
+  datetime?: any;
   paymentMethodRequired?: boolean;
   checkoutUrl?: string;
   source?: "web" | "mobile";
-  createdAt: Date;
-  updatedOn?: Date;
+  createdAt: any;
+  updatedOn?: any;
   client: {
     uid: string;
+    firstName: string;
+    lastName: string;
     displayName: string;
-    phoneNumber: string;
+    phone: string;
     email: string;
   };
-  patients?: [
-    {
-      id: string;
-      name: string;
-      species: "canine" | "feline";
-      breed: string;
-      sex: "male" | "female";
-      birthday: string;
-      recordsUploaded: boolean | null;
-      vcprRequired: boolean;
-      hasMinorIllness: boolean;
-    }
-  ];
+  patients?:
+    | [
+        {
+          id: string;
+          name: string;
+          species: "canine" | "feline";
+          breed: string;
+          sex: "male" | "female";
+          birthday: string;
+          recordsUploaded: boolean | null;
+          vcprRequired: boolean;
+        }
+      ]
+    | any;
+  newPatient?: {
+    id: string;
+    name: string;
+    species: "canine" | "feline";
+    breed: string;
+    sex: "male" | "female";
+    birthday: string;
+    recordsUploaded: boolean | null;
+    vcprRequired: boolean;
+    hasMinorIllness: boolean;
+  };
+  reason?: { label: string; value: string };
   illPatients?: Array<string>;
   illnessDetails?: {
     id: string;
@@ -57,5 +83,8 @@ export type Booking = {
     notes: string;
   };
   nextPatient?: string | null;
-  vcprRequired: boolean;
+  vcprRequired?: boolean;
+  cancelComplete?: boolean;
+  cancelReason?: string;
+  cancelDetails?: string;
 };
