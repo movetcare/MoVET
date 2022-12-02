@@ -51,7 +51,7 @@ export const ChooseDateTime = ({
   return (
     <>
       {isLoading ? (
-        <Loader message="Saving Date & Time Selection..." />
+        <Loader message="Finalizing Appointment Request..." />
       ) : error ? (
         <Error errorMessage={error?.message || "Unknown Error"} />
       ) : (
