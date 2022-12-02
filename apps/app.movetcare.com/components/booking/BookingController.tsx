@@ -111,13 +111,7 @@ export const BookingController = ({
           />
         );
       case "illness-assignment":
-        return (
-          <IllnessAssignment
-            session={session}
-            setStep={setStep}
-            isAppMode={isAppMode}
-          />
-        );
+        return <IllnessAssignment session={session} isAppMode={isAppMode} />;
       case "choose-location":
         return (
           <ChooseLocation
