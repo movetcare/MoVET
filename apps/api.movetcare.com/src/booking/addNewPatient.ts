@@ -75,7 +75,11 @@ export const addNewPatient = async (
       .collection("bookings")
       .doc(booking)
       .set(
-        { step: "patient-selection", updatedOn: new Date() },
+        {
+          step: "patient-selection",
+          vcprRequired: true,
+          updatedOn: new Date(),
+        },
         { merge: true }
       )
       .then(() =>

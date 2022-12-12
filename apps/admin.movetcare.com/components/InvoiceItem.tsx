@@ -39,7 +39,6 @@ import { getMMDDFromDate } from "utils/getMMDDFromDate";
 import { httpsCallable } from "firebase/functions";
 import { Loader } from "ui";
 import toast from "react-hot-toast";
-import ReactTooltip from "react-tooltip";
 
 interface Invoice {
   due_sum: number;
@@ -119,14 +118,7 @@ const InvoiceItemHeader = ({
     >
       <div className="min-w-0 flex-1 flex items-center">
         <div className="flex-shrink-0 cursor-pointer">
-          <ReactTooltip place="left" effect="solid" id="invoice" />
           <a
-            data-tip={
-              invoice?.client_due_sum === 0
-                ? "View Invoice in ProVet"
-                : "Update Invoice in ProVet"
-            }
-            data-for="invoice"
             href={`${
               environment === "production"
                 ? "https://us.provetcloud.com/4285/billing/invoice/"
@@ -193,10 +185,7 @@ const InvoiceItemHeader = ({
               </p>
               {client?.firstName && client?.lastName && (
                 <>
-                  <ReactTooltip place="top" effect="solid" id="provet" />
                   <a
-                    data-tip="View Client in ProVet"
-                    data-for="provet"
                     href={`${
                       environment === "production"
                         ? "https://us.provetcloud.com/4285/client/"
@@ -220,10 +209,7 @@ const InvoiceItemHeader = ({
                     paymentMethod.data()?.active &&
                     index === 0 && (
                       <>
-                        <ReactTooltip place="top" effect="solid" id="stripe" />
                         <a
-                          data-tip="View Customer in Stripe"
-                          data-for="stripe"
                           key={index}
                           href={
                             environment === "production"
@@ -302,10 +288,7 @@ const InvoiceItemHeader = ({
           <div className="hidden md:flex flex-row justify-end items-center">
             {invoice?.client && (
               <>
-                <ReactTooltip place="right" effect="solid" id="provet-1" />
                 <a
-                  data-tip="View Client in ProVet"
-                  data-for="provet-1"
                   href={`${
                     environment === "production"
                       ? "https://us.provetcloud.com/4285/client/"

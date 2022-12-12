@@ -15,7 +15,6 @@ import { auth, firestore, functions } from "services/firebase";
 import Error from "components/Error";
 import { isValidEmail } from "utils/isValidEmail";
 import Breadcrumbs from "components/Breadcrumbs";
-import ReactTooltip from "react-tooltip";
 import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 import { onAuthStateChanged } from "firebase/auth";
@@ -223,7 +222,6 @@ const ManageUsers = () => {
                   </p>
                 </div>
                 <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                  <ReactTooltip place="top" effect="solid" id="resync-users" />
                   <Button
                     color="black"
                     onClick={async () => {
@@ -232,8 +230,6 @@ const ManageUsers = () => {
                   >
                     <span className="flex-shrink-0 cursor-pointer mr-2">
                       <FontAwesomeIcon
-                        data-tip="Re-Sync w/ ProVet"
-                        data-for="resync-users"
                         icon={faRedo}
                         className="text-movet-white"
                       />

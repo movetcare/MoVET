@@ -19,7 +19,6 @@ import { AnnouncementBannerContext } from "contexts/AnnouncementBannerContext";
 import { onAuthStateChanged } from "firebase/auth";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
-import ReactTooltip from "react-tooltip";
 import { auth } from "services/firebase";
 
 const Footer: React.FC = () => {
@@ -189,59 +188,34 @@ const Footer: React.FC = () => {
           © MoVET {new Date().getFullYear()}
         </p>
         <div className={"flex flex-row items-center justify-center"}>
-          <ReactTooltip place="top" effect="solid" id="sign-out" />
           <Link href="/signout">
-            <div
-              data-tip="Sign Out"
-              data-for="sign-out"
-              className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center"
-            >
+            <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center">
               <FontAwesomeIcon icon={faArrowRightFromBracket} size="lg" />
             </div>
           </Link>
           <p className="text-movet-white text-xl mx-3">|</p>
-          <ReactTooltip place="top" effect="solid" id="feature" />
           <Link href="/request-a-feature">
-            <div
-              data-tip="Request a Feature"
-              data-for="feature"
-              className="text-movet-white font-abside-smooth uppercase hover:text-movet-green hover:cursor-pointer italic flex w-full items-center justify-center"
-            >
+            <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-green hover:cursor-pointer italic flex w-full items-center justify-center">
               <FontAwesomeIcon icon={faFaceSmile} size="lg" />
             </div>
           </Link>
           <p className="text-movet-white text-xl mx-3">|</p>
-          <ReactTooltip place="top" effect="solid" id="bug" />
           <Link href="/report-a-bug">
-            <div
-              data-tip="Report a Bug"
-              data-for="bug"
-              className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center"
-            >
+            <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center">
               <FontAwesomeIcon icon={faBug} size="lg" />
             </div>
           </Link>
           <p className="text-movet-white text-xl mx-3">|</p>
-          <ReactTooltip place="top" effect="solid" id="docs" />
           <Link href="/docs">
-            <div
-              data-tip="View Documentation"
-              data-for="docs"
-              className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center"
-            >
+            <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center">
               <FontAwesomeIcon icon={faBookMedical} size="lg" />
             </div>
           </Link>
           {isAdmin && (
             <>
               <p className="text-movet-white text-xl mx-3">|</p>
-              <ReactTooltip place="top" effect="solid" id="settings" />
               <Link href="/settings">
-                <div
-                  data-tip="View Settings"
-                  data-for="settings"
-                  className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center"
-                >
+                <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center">
                   <FontAwesomeIcon icon={faCogs} size="lg" />
                 </div>
               </Link>

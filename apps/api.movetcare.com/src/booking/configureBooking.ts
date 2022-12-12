@@ -173,6 +173,7 @@ const generateTestBookingData = () =>
                 title: "Welcome!",
                 link: "/contact",
                 isActive: true,
+                isActiveMobile: true,
                 icon: "info-circle",
               },
               { merge: true }

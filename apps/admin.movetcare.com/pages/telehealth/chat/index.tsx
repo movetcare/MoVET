@@ -31,7 +31,6 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { timeSince } from "utils/timeSince";
 import TelehealthChatSummary from "components/TelehealthChatSummary";
-import ReactTooltip from "react-tooltip";
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { GOTO_PHONE_URL } from "constants/urls";
 import Image from "next/image";
@@ -273,10 +272,7 @@ const ChatSession = () => {
               <div className="flex items-center space-x-2">
                 {router.query.mode !== "embed" && (
                   <>
-                    <ReactTooltip place="left" effect="solid" id="provet" />
                     <a
-                      data-tip={"View Client in ProVet"}
-                      data-for="provet"
                       href={
                         environment === "production"
                           ? `https://us.provetcloud.com/4285/client/${query?.id}/`
@@ -296,17 +292,7 @@ const ChatSession = () => {
                       paymentMethod.data()?.active &&
                       index === 0 && (
                         <>
-                          <ReactTooltip
-                            place="bottom"
-                            effect="solid"
-                            id="stripe"
-                          />
                           <a
-                            data-tip={`View Customer in Stripe -  ${paymentMethod
-                              .data()
-                              ?.card?.brand.toUpperCase()} 
-                              ${paymentMethod.data()?.card?.last4}`}
-                            data-for="stripe"
                             key={index}
                             href={
                               environment === "production"
@@ -324,12 +310,7 @@ const ChatSession = () => {
                   )}
                 {session?.data()?.client?.phone && (
                   <>
-                    <ReactTooltip place="bottom" effect="solid" id="phone" />
                     <a
-                      data-tip={`Call ${
-                        session.data()?.client?.firstName
-                      } - ${formatPhoneNumber(session?.data()?.client?.phone)}`}
-                      data-for="phone"
                       href={`${GOTO_PHONE_URL}/${
                         session?.data()?.client?.phone
                       }`}
@@ -343,12 +324,7 @@ const ChatSession = () => {
                 )}
                 {session?.data()?.client?.email && (
                   <>
-                    <ReactTooltip place="bottom" effect="solid" id="email" />
                     <a
-                      data-tip={`Email ${session.data()?.client?.firstName} - ${
-                        session?.data()?.client?.email
-                      }`}
-                      data-for="email"
                       href={`mailto:${session?.data()?.client?.email}`}
                       target="_blank"
                       className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
@@ -364,15 +340,7 @@ const ChatSession = () => {
                       onClick={() => endTelehealthChatSession()}
                       className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red text-movet-yellow"
                     >
-                      <ReactTooltip effect="solid" id="end" />
-                      <FontAwesomeIcon
-                        data-tip={`End Chat w/ ${
-                          session.data()?.client?.firstName
-                        }`}
-                        data-for="end"
-                        icon={faCircleXmark}
-                        size="lg"
-                      />
+                      <FontAwesomeIcon icon={faCircleXmark} size="lg" />
                     </div>
                   </>
                 )}

@@ -31,10 +31,9 @@ import SelectInput from './inputs/SelectInput';
 import {
   AnnouncementBanner,
   AnnouncementBannerPreview,
-} from 'types/AnnouncementBanner';
-import ReactTooltip from 'react-tooltip';
-import { AnnouncementBannerContext } from 'contexts/AnnouncementBannerContext';
-import { onAuthStateChanged } from 'firebase/auth';
+} from "types/AnnouncementBanner";
+import { AnnouncementBannerContext } from "contexts/AnnouncementBannerContext";
+import { onAuthStateChanged } from "firebase/auth";
 
 export const AnnouncementBannerControls = () => {
   const {
@@ -57,49 +56,50 @@ export const AnnouncementBannerControls = () => {
     reset,
     formState: { isValid, isSubmitting, isDirty, errors },
   } = useForm({
-    mode: 'onSubmit',
+    mode: "onSubmit",
     defaultValues: {
-      color: { name: 'Blue', id: '#2C3C72' },
-      icon: { name: 'Bullhorn', id: 'bullhorn' },
+      color: { name: "Blue", id: "#2C3C72" },
+      icon: { name: "Bullhorn", id: "bullhorn" },
       title: null,
       message: null,
       link: null,
       isActive: false,
+      isActiveMobile: false,
     },
   });
-
-  const isActive = watch('isActive');
-  const icon = watch('icon');
-  const color = watch('color');
-  const title = watch('title');
-  const message = watch('message');
-  const link = watch('link');
+  const isActiveMobile = watch("isActiveMobile");
+  const isActive = watch("isActive");
+  const icon = watch("icon");
+  const color = watch("color");
+  const title = watch("title");
+  const message = watch("message");
+  const link = watch("link");
 
   const colorClasses =
-    color?.id === '#DAAA00'
-      ? 'text-movet-yellow'
-      : color?.id === '#2C3C72'
-      ? 'text-movet-dark-blue'
-      : color?.id === '#E76159'
-      ? 'text-movet-red'
-      : color?.id === '#232127'
-      ? 'text-movet-black'
-      : color?.id === '#00A36C'
-      ? 'text-movet-green'
-      : color?.id === '#A15643'
-      ? 'text-movet-brown'
-      : 'text-movet-black';
+    color?.id === "#DAAA00"
+      ? "text-movet-yellow"
+      : color?.id === "#2C3C72"
+      ? "text-movet-dark-blue"
+      : color?.id === "#E76159"
+      ? "text-movet-red"
+      : color?.id === "#232127"
+      ? "text-movet-black"
+      : color?.id === "#00A36C"
+      ? "text-movet-green"
+      : color?.id === "#A15643"
+      ? "text-movet-brown"
+      : "text-movet-black";
 
   const selectedIcon =
-    icon?.id === 'bullhorn'
+    icon?.id === "bullhorn"
       ? faBullhorn
-      : icon?.id === 'exclamation-circle'
+      : icon?.id === "exclamation-circle"
       ? faExclamationCircle
-      : icon?.id === 'bell'
+      : icon?.id === "bell"
       ? faBell
-      : icon?.id === 'star'
+      : icon?.id === "star"
       ? faStar
-      : icon?.id === 'info-circle'
+      : icon?.id === "info-circle"
       ? faInfoCircle
       : faIcons;
 
@@ -110,44 +110,44 @@ export const AnnouncementBannerControls = () => {
         color: announcement?.color
           ? {
               name:
-                announcement?.color === '#DAAA00'
-                  ? 'Yellow'
-                  : announcement?.color === '#2C3C72'
-                  ? 'Blue'
-                  : announcement?.color === '#E76159'
-                  ? 'Red'
-                  : announcement?.color === '#232127'
-                  ? 'Black'
-                  : announcement?.color === '#00A36C'
-                  ? 'Green'
-                  : announcement?.color === '#A15643'
-                  ? 'Brown'
-                  : 'Black',
+                announcement?.color === "#DAAA00"
+                  ? "Yellow"
+                  : announcement?.color === "#2C3C72"
+                  ? "Blue"
+                  : announcement?.color === "#E76159"
+                  ? "Red"
+                  : announcement?.color === "#232127"
+                  ? "Black"
+                  : announcement?.color === "#00A36C"
+                  ? "Green"
+                  : announcement?.color === "#A15643"
+                  ? "Brown"
+                  : "Black",
               id: announcement?.color,
             }
-          : { name: 'Blue', id: '#2C3C72' },
+          : { name: "Blue", id: "#2C3C72" },
         icon: announcement?.icon
           ? {
               name:
-                announcement?.icon === 'bullhorn'
-                  ? 'Bullhorn'
-                  : announcement?.icon === 'exclamation-circle'
-                  ? 'Exclamation'
-                  : announcement?.icon === 'bell'
-                  ? 'Bell'
-                  : announcement?.icon === 'star'
-                  ? 'Star'
-                  : announcement?.icon === 'info-circle'
-                  ? 'Info'
-                  : 'Bullhorn',
+                announcement?.icon === "bullhorn"
+                  ? "Bullhorn"
+                  : announcement?.icon === "exclamation-circle"
+                  ? "Exclamation"
+                  : announcement?.icon === "bell"
+                  ? "Bell"
+                  : announcement?.icon === "star"
+                  ? "Star"
+                  : announcement?.icon === "info-circle"
+                  ? "Info"
+                  : "Bullhorn",
               id: announcement?.icon,
             }
-          : { name: 'Bullhorn', id: 'bullhorn' },
+          : { name: "Bullhorn", id: "bullhorn" },
       });
   }, [announcement, reset]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const claimsString = (user as any)?.reloadUserInfo?.customAttributes;
         if (claimsString) {
@@ -161,7 +161,7 @@ export const AnnouncementBannerControls = () => {
 
   const onSubmit = async (data: AnnouncementBanner) =>
     await setDoc(
-      doc(firestore, 'alerts/banner'),
+      doc(firestore, "alerts/banner"),
       {
         ...data,
         color: (data.color as any)?.id,
@@ -172,7 +172,7 @@ export const AnnouncementBannerControls = () => {
     ).catch((error: any) =>
       toast(`Announcement banner update FAILED: ${error?.message}`, {
         duration: 5000,
-        position: 'bottom-center',
+        position: "bottom-center",
         icon: (
           <FontAwesomeIcon
             icon={faCircleExclamation}
@@ -207,16 +207,8 @@ export const AnnouncementBannerControls = () => {
             }
           }}
         >
-          {loading ? 'Loading...' : 'Announcement Banner'}
+          {loading ? "Loading..." : "Announcement Banner"}
         </h1>
-        {((announcement && announcement?.isActive) ||
-          (announcementPreview && announcementPreview.isActive)) && (
-          <ReactTooltip
-            place="bottom"
-            effect="solid"
-            id="preview-announcement-banner"
-          />
-        )}
       </div>
       {loading ? (
         <div className="mb-6">
@@ -237,7 +229,7 @@ export const AnnouncementBannerControls = () => {
           >
             <div
               className={
-                'flex flex-col items-center px-4 py-4 sm:px-6 group mx-auto max-w-xl'
+                "flex flex-col items-center px-4 py-4 sm:px-6 group mx-auto max-w-xl"
               }
             >
               <div className="min-w-0 flex-col w-full justify-center">
@@ -264,13 +256,6 @@ export const AnnouncementBannerControls = () => {
                   {announcement && announcement?.message && (
                     <p className="italic">{announcement?.message}</p>
                   )}
-                  {!showAnnouncementSettingsMenu && (
-                    <ReactTooltip
-                      place="bottom"
-                      effect="solid"
-                      id="edit-announcement-banner"
-                    />
-                  )}
                   <h2 className="text-center text-sm mt-4">
                     <FontAwesomeIcon
                       icon={faEdit}
@@ -281,11 +266,11 @@ export const AnnouncementBannerControls = () => {
                     <span
                       className={`mr-2 italic${
                         announcement?.isActive
-                          ? ' text-movet-green'
-                          : ' text-movet-red'
+                          ? " text-movet-green"
+                          : " text-movet-red"
                       }`}
                     >
-                      {announcement?.isActive ? 'ACTIVE' : 'INACTIVE'}
+                      {announcement?.isActive ? "ACTIVE" : "INACTIVE"}
                     </span>
                     <FontAwesomeIcon
                       icon={
@@ -310,25 +295,25 @@ export const AnnouncementBannerControls = () => {
                       onSubmit={handleSubmit(onSubmit as any)}
                       className="flex flex-col w-full mx-auto mt-8 px-4 md:px-8"
                     >
-                      <div className="flex flex-col w-full justify-center items-center pt-4 mb-4 border-t border-movet-gray -mt-2">
-                        <label className="italic mt-2 mb-2 text-sm">
+                      <div className="flex flex-row w-full justify-center items-center pt-4 mb-4 border-t border-movet-gray -mt-2">
+                        <label className="italic mt-2 mb-2 text-sm mr-2">
                           <FontAwesomeIcon
                             icon={faFlag}
                             size="sm"
                             className={`${
-                              isActive ? ' text-movet-green' : ' text-movet-red'
+                              isActive ? " text-movet-green" : " text-movet-red"
                             }`}
                           />
                           <span className="ml-2">
-                            Status:{' '}
+                            Status:{" "}
                             <span
                               className={`italic${
                                 isActive
-                                  ? 'text-movet-green'
-                                  : ' text-movet-red'
+                                  ? "text-movet-green"
+                                  : " text-movet-red"
                               }`}
                             >
-                              {isActive ? 'ACTIVE' : 'INACTIVE'}
+                              {isActive ? "ACTIVE" : "INACTIVE"}
                             </span>
                           </span>
                         </label>
@@ -343,15 +328,67 @@ export const AnnouncementBannerControls = () => {
                               onChange={onChange}
                               onBlur={onBlur}
                               className={classNames(
-                                isActive ? 'bg-movet-green' : 'bg-movet-red',
-                                'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
+                                isActive ? "bg-movet-green" : "bg-movet-red",
+                                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
                               )}
                             >
                               <span
                                 aria-hidden="true"
                                 className={classNames(
-                                  isActive ? 'translate-x-5' : 'translate-x-0',
-                                  'inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
+                                  isActive ? "translate-x-5" : "translate-x-0",
+                                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                )}
+                              />
+                            </Switch>
+                          )}
+                        />
+                        <label className="italic mt-2 mb-2 text-sm ml-4">
+                          <FontAwesomeIcon
+                            icon={faFlag}
+                            size="sm"
+                            className={`${
+                              isActiveMobile
+                                ? " text-movet-green"
+                                : " text-movet-red"
+                            }`}
+                          />
+                          <span className="mx-2">
+                            Show on Mobile:{" "}
+                            <span
+                              className={`italic${
+                                isActive
+                                  ? "text-movet-green"
+                                  : " text-movet-red"
+                              }`}
+                            >
+                              {isActiveMobile ? "YES" : "NO"}
+                            </span>
+                          </span>
+                        </label>
+                        <Controller
+                          name="isActiveMobile"
+                          control={control}
+                          render={({
+                            field: { onChange, onBlur, value },
+                          }: any) => (
+                            <Switch
+                              checked={value}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              className={classNames(
+                                isActiveMobile
+                                  ? "bg-movet-green"
+                                  : "bg-movet-red",
+                                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                              )}
+                            >
+                              <span
+                                aria-hidden="true"
+                                className={classNames(
+                                  isActiveMobile
+                                    ? "translate-x-5"
+                                    : "translate-x-0",
+                                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
                                 )}
                               />
                             </Switch>
@@ -373,16 +410,16 @@ export const AnnouncementBannerControls = () => {
                               required
                               values={[
                                 {
-                                  id: 'exclamation-circle',
-                                  name: 'Exclamation',
+                                  id: "exclamation-circle",
+                                  name: "Exclamation",
                                 },
                                 {
-                                  id: 'bullhorn',
-                                  name: 'Bullhorn',
+                                  id: "bullhorn",
+                                  name: "Bullhorn",
                                 },
-                                { id: 'bell', name: 'Bell' },
-                                { id: 'star', name: 'Star' },
-                                { id: 'info-circle', name: 'Info' },
+                                { id: "bell", name: "Bell" },
+                                { id: "star", name: "Star" },
+                                { id: "info-circle", name: "Info" },
                               ]}
                               errors={errors}
                               control={control}
@@ -398,7 +435,7 @@ export const AnnouncementBannerControls = () => {
                             />
                             <span
                               className={classNames(
-                                'ml-2 text-movet-white',
+                                "ml-2 text-movet-white",
                                 colorClasses
                               )}
                             >
@@ -411,14 +448,14 @@ export const AnnouncementBannerControls = () => {
                               name="color"
                               required
                               values={[
-                                { id: '#DAAA00', name: 'Yellow' },
+                                { id: "#DAAA00", name: "Yellow" },
                                 {
-                                  id: '#2C3C72',
-                                  name: 'Blue',
+                                  id: "#2C3C72",
+                                  name: "Blue",
                                 },
-                                { id: '#E76159', name: 'Red' },
-                                { id: '#232127', name: 'Black' },
-                                { id: '#A15643', name: 'Brown' },
+                                { id: "#E76159", name: "Red" },
+                                { id: "#232127", name: "Black" },
+                                { id: "#A15643", name: "Brown" },
                               ]}
                               errors={errors}
                               control={control}
@@ -434,7 +471,7 @@ export const AnnouncementBannerControls = () => {
                         type="text"
                         placeholder="Write Something..."
                         className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full"
-                        {...register('title')}
+                        {...register("title")}
                       />
                       <label className="italic my-2 text-sm">
                         <FontAwesomeIcon icon={faMessage} size="sm" />
@@ -444,7 +481,7 @@ export const AnnouncementBannerControls = () => {
                         type="text"
                         placeholder="Write Something..."
                         className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full"
-                        {...register('message')}
+                        {...register("message")}
                       />
                       <label className="italic my-2 text-sm">
                         <FontAwesomeIcon icon={faLink} size="sm" />
@@ -454,7 +491,7 @@ export const AnnouncementBannerControls = () => {
                         type="text"
                         placeholder="/path-to-page/on-movet-website/"
                         className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full"
-                        {...register('link')}
+                        {...register("link")}
                       />
                       <div className="flex flex-row mt-4">
                         <button
@@ -473,8 +510,8 @@ export const AnnouncementBannerControls = () => {
                           }}
                           className={
                             !isActive
-                              ? 'w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4'
-                              : 'w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4'
+                              ? "w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4"
+                              : "w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4"
                           }
                         >
                           <FontAwesomeIcon icon={faMagnifyingGlass} size="lg" />
@@ -499,8 +536,8 @@ export const AnnouncementBannerControls = () => {
                           disabled={!isDirty || isSubmitting}
                           className={
                             !isDirty || isSubmitting || !isValid
-                              ? 'w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4'
-                              : 'w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4'
+                              ? "w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4"
+                              : "w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4"
                           }
                         >
                           <FontAwesomeIcon icon={faWrench} size="lg" />

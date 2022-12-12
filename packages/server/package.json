@@ -10,14 +10,14 @@
     "update": "ncu -u"
   },
   "devDependencies": {
-    "@firebase/app-types": "^0.8.1",
-    "@types/node": "^18.11.10",
+    "@firebase/app-types": "^0.9.0",
+    "@types/node": "^18.11.13",
     "firebase-admin": "^11.3.0",
     "next": "13.0.6",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "tsconfig": "workspace:*",
-    "typescript": "^4.9.3",
+    "typescript": "^4.9.4",
     "yup": "^0.32.11",
     "types": "workspace:*",
     "schemas": "workspace:*",

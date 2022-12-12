@@ -1,5 +1,21 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+#expo
+.expo/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+*.keystore
+*.pepk
+googlePlayServiceAccount.json
+*.der
+credentials.json
+google-service-account.json
+
 # dependencies
 node_modules
 .pnp

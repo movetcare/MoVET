@@ -39,15 +39,15 @@ import Error from 'components/Error';
 import environment from 'utils/environment';
 import toast from 'react-hot-toast';
 import { httpsCallable } from 'firebase/functions';
-import ReactTooltip from 'react-tooltip';
-import { formatPhoneNumber } from 'utils/formatPhoneNumber';
-import { useState } from 'react';
-import { GOTO_PHONE_URL } from 'constants/urls';
+
+import { formatPhoneNumber } from "utils/formatPhoneNumber";
+import { useState } from "react";
+import { GOTO_PHONE_URL } from "constants/urls";
 
 export const Waitlist = () => {
   const [showArchive, setShowArchive] = useState<boolean>(false);
   const [clients, loading, error] = useCollection(
-    query(collection(firestore, 'waitlist'), where('isActive', '==', true)),
+    query(collection(firestore, "waitlist"), where("isActive", "==", true)),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
     }
@@ -56,8 +56,8 @@ export const Waitlist = () => {
   const [previousCheckIns, loadingPreviousCheckIns, errorPreviousCheckIns] =
     useCollection(
       query(
-        collection(firestore, 'waitlist'),
-        where('isActive', '==', false),
+        collection(firestore, "waitlist"),
+        where("isActive", "==", false),
         limit(50)
       ),
       {
@@ -74,7 +74,7 @@ export const Waitlist = () => {
           size="lg"
         />
         <h1 className="ml-2 my-4 text-lg">
-          {loading ? 'Loading...' : 'Client Check Ins'}
+          {loading ? "Loading..." : "Client Check Ins"}
         </h1>
       </div>
       {loading ? (
@@ -100,25 +100,18 @@ export const Waitlist = () => {
               <li key={index}>
                 <div
                   className={`flex flex-col items-center px-4 py-4 sm:px-6${
-                    client?.data()?.status === 'complete'
-                      ? ' bg-movet-green text-movet-white font-bold'
-                      : client?.data()?.status === 'error'
-                      ? ' bg-movet-red text-movet-white'
-                      : ''
+                    client?.data()?.status === "complete"
+                      ? " bg-movet-green text-movet-white font-bold"
+                      : client?.data()?.status === "error"
+                      ? " bg-movet-red text-movet-white"
+                      : ""
                   }`}
                 >
                   <div className="min-w-0 flex w-full">
                     <div className="flex-shrink-0 cursor-pointer md:mr-4">
-                      <ReactTooltip
-                        place="bottom"
-                        effect="solid"
-                        id="provet-1"
-                      />
                       <a
-                        data-tip="View Client in ProVet"
-                        data-for="provet-1"
                         href={
-                          environment === 'production'
+                          environment === "production"
                             ? `https://us.provetcloud.com/4285/client/${
                                 client?.data()?.id
                               }/`
@@ -135,16 +128,9 @@ export const Waitlist = () => {
                     </div>
                     <div className="min-w-0 flex flex-row justify-center md:justify-between w-full">
                       <div className="flex flex-row items-center">
-                        <ReactTooltip
-                          place="bottom"
-                          effect="solid"
-                          id="provet-2"
-                        />
                         <a
-                          data-tip="View Client in ProVet"
-                          data-for="provet-2"
                           href={
-                            environment === 'production'
+                            environment === "production"
                               ? `https://us.provetcloud.com/4285/client/${
                                   client?.data()?.id
                                 }/`
@@ -166,16 +152,9 @@ export const Waitlist = () => {
                       <div className="hidden md:flex justify-end">
                         {client?.data()?.customerId && (
                           <>
-                            <ReactTooltip
-                              place="top"
-                              effect="solid"
-                              id="stripe"
-                            />
                             <a
-                              data-tip="View Stripe Customer Details"
-                              data-for="stripe"
                               href={
-                                environment === 'production'
+                                environment === "production"
                                   ? `https://dashboard.stripe.com/customers/${
                                       client?.data()?.customerId
                                     }/`
@@ -192,13 +171,13 @@ export const Waitlist = () => {
                                 <span className="ml-2">
                                   {client
                                     ?.data()
-                                    ?.paymentMethod?.card?.brand?.toUpperCase()}{' '}
+                                    ?.paymentMethod?.card?.brand?.toUpperCase()}{" "}
                                   {client
                                     ?.data()
                                     ?.paymentMethod?.card?.last4?.toUpperCase()}
                                 </span>
                               ) : (
-                                ''
+                                ""
                               )}
                             </a>
                           </>
@@ -214,7 +193,7 @@ export const Waitlist = () => {
                               </p>
                             </>
                           )}
-                          {client?.data()?.status === 'started' && (
+                          {client?.data()?.status === "started" && (
                             <>
                               <span className="flex-shrink-0 mr-2">
                                 <FontAwesomeIcon
@@ -225,7 +204,7 @@ export const Waitlist = () => {
                               <p className="mr-2 text-sm">STARTED</p>
                             </>
                           )}
-                          {client?.data()?.status === 'creating-client' && (
+                          {client?.data()?.status === "creating-client" && (
                             <>
                               <span className="flex-shrink-0 mr-2 text-movet-green">
                                 <FontAwesomeIcon icon={faUserCog} />
@@ -233,7 +212,7 @@ export const Waitlist = () => {
                               <p className="mr-2 text-sm">CREATING CLIENT</p>
                             </>
                           )}
-                          {client?.data()?.status === 'processing-client' && (
+                          {client?.data()?.status === "processing-client" && (
                             <>
                               <span className="flex-shrink-0 mr-2 text-movet-green">
                                 <FontAwesomeIcon icon={faUser} />
@@ -241,7 +220,7 @@ export const Waitlist = () => {
                               <p className="mr-2 text-sm">PROCESSING</p>
                             </>
                           )}
-                          {client?.data()?.status === 'checkout' && (
+                          {client?.data()?.status === "checkout" && (
                             <>
                               <span className="flex-shrink-0 mr-2">
                                 <FontAwesomeIcon
@@ -252,7 +231,7 @@ export const Waitlist = () => {
                               <p className="mr-2 text-sm">CHECKING OUT</p>
                             </>
                           )}
-                          {client?.data()?.status === 'complete' && (
+                          {client?.data()?.status === "complete" && (
                             <>
                               <span className="flex-shrink-0 mr-2">
                                 <FontAwesomeIcon icon={faCheck} size="lg" />
@@ -262,15 +241,8 @@ export const Waitlist = () => {
                               </span>
                             </>
                           )}
-                          <ReactTooltip
-                            place="bottom"
-                            effect="solid"
-                            id="updated"
-                          />
-                          <div
-                            data-tip="Last Sync w/ Database"
-                            data-for="updated"
-                          >
+
+                          <div>
                             <span className="flex-shrink-0 mr-2 ml-4">
                               <FontAwesomeIcon icon={faClockFour} />
                             </span>
@@ -287,10 +259,8 @@ export const Waitlist = () => {
                         </div>
                       </div>
                     </div>
-                    <ReactTooltip place="right" effect="solid" id="remove" />
+
                     <button
-                      data-tip="Remove from Waitlist"
-                      data-for="remove"
                       className="md:ml-6 md:mr-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
                       onClick={async () => {
                         await updateDoc(
@@ -340,7 +310,7 @@ export const Waitlist = () => {
                     <a
                       data-tip="View Stripe Customer Details"
                       href={
-                        environment === 'production'
+                        environment === "production"
                           ? `https://dashboard.stripe.com/customers/${
                               client?.data()?.customerId
                             }/`
@@ -357,29 +327,22 @@ export const Waitlist = () => {
                         <span className="ml-2">
                           {client
                             ?.data()
-                            ?.paymentMethod?.card?.brand?.toUpperCase()}{' '}
+                            ?.paymentMethod?.card?.brand?.toUpperCase()}{" "}
                           {client
                             ?.data()
                             ?.paymentMethod?.card?.last4?.toUpperCase()}
                         </span>
                       ) : (
-                        ''
+                        ""
                       )}
                     </a>
                   )}
                   <div className="flex justify-center items-center mt-3 w-full">
                     {client?.data()?.id && (
                       <>
-                        <ReactTooltip
-                          place="bottom"
-                          effect="solid"
-                          id="provet"
-                        />
                         <a
-                          data-tip="View Client in ProVet"
-                          data-for="provet"
                           href={
-                            environment === 'production'
+                            environment === "production"
                               ? `https://us.provetcloud.com/4285/client/${
                                   client?.data()?.id
                                 }/`
@@ -397,14 +360,7 @@ export const Waitlist = () => {
                     )}
                     {client?.data()?.email && (
                       <>
-                        <ReactTooltip
-                          place="bottom"
-                          effect="solid"
-                          id="email"
-                        />
                         <a
-                          data-tip={`Email Client - ${client?.data()?.email}`}
-                          data-for="email"
                           href={`mailto://${client?.data()?.email}`}
                           target="_blank"
                           className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -416,16 +372,7 @@ export const Waitlist = () => {
                     )}
                     {client?.data()?.phone && (
                       <>
-                        <ReactTooltip
-                          place="bottom"
-                          effect="solid"
-                          id="phone"
-                        />
                         <a
-                          data-tip={`Call Client - ${formatPhoneNumber(
-                            client?.data()?.phone
-                          )}`}
-                          data-for="phone"
                           href={`${GOTO_PHONE_URL}/${client?.data()?.phone}`}
                           target="_blank"
                           className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -436,26 +383,19 @@ export const Waitlist = () => {
                       </>
                     )}
                     {client?.data()?.phone &&
-                      client?.data()?.status === 'complete' && (
+                      client?.data()?.status === "complete" && (
                         <>
-                          <ReactTooltip
-                            place="bottom"
-                            effect="solid"
-                            id="text"
-                          />
                           <button
-                            data-for="text"
-                            data-tip='Send "Ready for Appointment" Text Message'
                             onClick={() => {
                               toast(
                                 `SENDING "Ready for Appointment" message to ${
                                   client?.data()?.firstName
                                     ? client?.data()?.firstName
-                                    : ''
+                                    : ""
                                 } @ ${
                                   client?.data()?.phone
                                     ? formatPhoneNumber(client?.data()?.phone)
-                                    : ''
+                                    : ""
                                 }`,
                                 {
                                   icon: (
@@ -469,7 +409,7 @@ export const Waitlist = () => {
                               );
                               const checkInText = httpsCallable(
                                 functions,
-                                'checkInText'
+                                "checkInText"
                               );
                               checkInText({
                                 id: client?.data()?.id,
@@ -479,13 +419,13 @@ export const Waitlist = () => {
                                     `SENT "Ready for Appointment" message to ${
                                       client?.data()?.firstName
                                         ? client?.data()?.firstName
-                                        : ''
+                                        : ""
                                     } @ ${
                                       client?.data()?.phone
                                         ? formatPhoneNumber(
                                             client?.data()?.phone
                                           )
-                                        : ''
+                                        : ""
                                     }`,
                                     {
                                       icon: (
@@ -523,7 +463,7 @@ export const Waitlist = () => {
                         UNKNOWN STATUS
                       </p>
                     )}
-                    {client?.data()?.status === 'started' && (
+                    {client?.data()?.status === "started" && (
                       <>
                         <span className="flex-shrink-0 cursor-pointer mr-2">
                           <FontAwesomeIcon icon={faFlagCheckered} size="sm" />
@@ -531,7 +471,7 @@ export const Waitlist = () => {
                         <p className="mr-2 text-xs">STARTED</p>
                       </>
                     )}
-                    {client?.data()?.status === 'creating-client' && (
+                    {client?.data()?.status === "creating-client" && (
                       <>
                         <span className="flex-shrink-0 cursor-pointer mr-2 text-movet-green">
                           <FontAwesomeIcon icon={faUserCog} />
@@ -539,7 +479,7 @@ export const Waitlist = () => {
                         <p className="mr-2 text-xs">CREATING CLIENT</p>
                       </>
                     )}
-                    {client?.data()?.status === 'processing-client' && (
+                    {client?.data()?.status === "processing-client" && (
                       <>
                         <span className="flex-shrink-0 cursor-pointer mr-2 text-movet-green">
                           <FontAwesomeIcon icon={faUser} />
@@ -547,7 +487,7 @@ export const Waitlist = () => {
                         <p className="mr-2 text-xs">PROCESSING</p>
                       </>
                     )}
-                    {client?.data()?.status === 'checkout' && (
+                    {client?.data()?.status === "checkout" && (
                       <>
                         <span className="flex-shrink-0 cursor-pointer mr-2">
                           <FontAwesomeIcon icon={faCartShopping} size="sm" />
@@ -555,7 +495,7 @@ export const Waitlist = () => {
                         <p className="mr-2 text-xs">CHECKING OUT</p>
                       </>
                     )}
-                    {client?.data()?.status === 'complete' && (
+                    {client?.data()?.status === "complete" && (
                       <>
                         <span className="flex-shrink-0 cursor-pointer mr-2 text-movet-white">
                           <FontAwesomeIcon icon={faCheck} />
@@ -582,15 +522,15 @@ export const Waitlist = () => {
         <>
           <div
             className={
-              'group w-full flex flex-row items-center justify-center -mb-4 hover:text-movet-white hover:bg-movet-black hover:cursor-pointer border-t-movet-gray border-t'
+              "group w-full flex flex-row items-center justify-center -mb-4 hover:text-movet-white hover:bg-movet-black hover:cursor-pointer border-t-movet-gray border-t"
             }
             onClick={() => setShowArchive(!showArchive)}
           >
             <div className="hidden group-hover:block">
-              <FontAwesomeIcon icon={faCheckToSlot} size={'sm'} />
+              <FontAwesomeIcon icon={faCheckToSlot} size={"sm"} />
             </div>
-            <h2 className={'ml-2 text-sm my-3 font-bold'}>
-              {loading ? 'Loading Previous Check Ins...' : 'Previous Check Ins'}
+            <h2 className={"ml-2 text-sm my-3 font-bold"}>
+              {loading ? "Loading Previous Check Ins..." : "Previous Check Ins"}
             </h2>
             <div className="hidden group-hover:block ml-2 text-movet-black group-hover:text-movet-white">
               {showArchive ? (
@@ -620,25 +560,18 @@ export const Waitlist = () => {
                     <li key={index}>
                       <div
                         className={`flex flex-col items-center px-4 py-4 sm:px-6${
-                          client?.data()?.status === 'complete'
-                            ? ' bg-movet-green text-movet-white font-bold'
-                            : client?.data()?.status === 'error'
-                            ? ' bg-movet-red text-movet-white'
-                            : ''
+                          client?.data()?.status === "complete"
+                            ? " bg-movet-green text-movet-white font-bold"
+                            : client?.data()?.status === "error"
+                            ? " bg-movet-red text-movet-white"
+                            : ""
                         }`}
                       >
                         <div className="min-w-0 flex w-full">
                           <div className="flex-shrink-0 cursor-pointer md:mr-4">
-                            <ReactTooltip
-                              place="bottom"
-                              effect="solid"
-                              id="provet-1"
-                            />
                             <a
-                              data-tip="View Client in ProVet"
-                              data-for="provet-1"
                               href={
-                                environment === 'production'
+                                environment === "production"
                                   ? `https://us.provetcloud.com/4285/client/${
                                       client?.data()?.id
                                     }/`
@@ -655,16 +588,9 @@ export const Waitlist = () => {
                           </div>
                           <div className="min-w-0 flex flex-row justify-center md:justify-between w-full">
                             <div className="flex flex-row items-center">
-                              <ReactTooltip
-                                place="bottom"
-                                effect="solid"
-                                id="provet-2"
-                              />
                               <a
-                                data-tip="View Client in ProVet"
-                                data-for="provet-2"
                                 href={
-                                  environment === 'production'
+                                  environment === "production"
                                     ? `https://us.provetcloud.com/4285/client/${
                                         client?.data()?.id
                                       }/`
@@ -687,16 +613,9 @@ export const Waitlist = () => {
                             <div className="hidden md:flex justify-end">
                               {client?.data()?.customerId && (
                                 <>
-                                  <ReactTooltip
-                                    place="top"
-                                    effect="solid"
-                                    id="stripe"
-                                  />
                                   <a
-                                    data-tip="View Stripe Customer Details"
-                                    data-for="stripe"
                                     href={
-                                      environment === 'production'
+                                      environment === "production"
                                         ? `https://dashboard.stripe.com/customers/${
                                             client?.data()?.customerId
                                           }/`
@@ -716,13 +635,13 @@ export const Waitlist = () => {
                                       <span className="ml-2">
                                         {client
                                           ?.data()
-                                          ?.paymentMethod?.card?.brand?.toUpperCase()}{' '}
+                                          ?.paymentMethod?.card?.brand?.toUpperCase()}{" "}
                                         {client
                                           ?.data()
                                           ?.paymentMethod?.card?.last4?.toUpperCase()}
                                       </span>
                                     ) : (
-                                      ''
+                                      ""
                                     )}
                                   </a>
                                 </>
@@ -741,7 +660,7 @@ export const Waitlist = () => {
                                     </p>
                                   </>
                                 )}
-                                {client?.data()?.status === 'started' && (
+                                {client?.data()?.status === "started" && (
                                   <>
                                     <span className="flex-shrink-0 mr-2">
                                       <FontAwesomeIcon
@@ -753,7 +672,7 @@ export const Waitlist = () => {
                                   </>
                                 )}
                                 {client?.data()?.status ===
-                                  'creating-client' && (
+                                  "creating-client" && (
                                   <>
                                     <span className="flex-shrink-0 mr-2 text-movet-green">
                                       <FontAwesomeIcon icon={faUserCog} />
@@ -764,7 +683,7 @@ export const Waitlist = () => {
                                   </>
                                 )}
                                 {client?.data()?.status ===
-                                  'processing-client' && (
+                                  "processing-client" && (
                                   <>
                                     <span className="flex-shrink-0 mr-2 text-movet-green">
                                       <FontAwesomeIcon icon={faUser} />
@@ -772,7 +691,7 @@ export const Waitlist = () => {
                                     <p className="mr-2 text-sm">PROCESSING</p>
                                   </>
                                 )}
-                                {client?.data()?.status === 'checkout' && (
+                                {client?.data()?.status === "checkout" && (
                                   <>
                                     <span className="flex-shrink-0 mr-2">
                                       <FontAwesomeIcon
@@ -783,7 +702,7 @@ export const Waitlist = () => {
                                     <p className="mr-2 text-sm">CHECKING OUT</p>
                                   </>
                                 )}
-                                {client?.data()?.status === 'complete' && (
+                                {client?.data()?.status === "complete" && (
                                   <>
                                     <span className="flex-shrink-0 mr-2">
                                       <FontAwesomeIcon
@@ -796,15 +715,8 @@ export const Waitlist = () => {
                                     </span>
                                   </>
                                 )}
-                                <ReactTooltip
-                                  place="bottom"
-                                  effect="solid"
-                                  id="updated"
-                                />
-                                <div
-                                  data-tip="Last Sync w/ Database"
-                                  data-for="updated"
-                                >
+
+                                <div>
                                   <span className="flex-shrink-0 mr-2 ml-4">
                                     <FontAwesomeIcon icon={faClockFour} />
                                   </span>
@@ -828,7 +740,7 @@ export const Waitlist = () => {
                           <a
                             data-tip="View Stripe Customer Details"
                             href={
-                              environment === 'production'
+                              environment === "production"
                                 ? `https://dashboard.stripe.com/customers/${
                                     client?.data()?.customerId
                                   }/`
@@ -845,29 +757,22 @@ export const Waitlist = () => {
                               <span className="ml-2">
                                 {client
                                   ?.data()
-                                  ?.paymentMethod?.card?.brand?.toUpperCase()}{' '}
+                                  ?.paymentMethod?.card?.brand?.toUpperCase()}{" "}
                                 {client
                                   ?.data()
                                   ?.paymentMethod?.card?.last4?.toUpperCase()}
                               </span>
                             ) : (
-                              ''
+                              ""
                             )}
                           </a>
                         )}
                         <div className="flex justify-center items-center mt-3 w-full">
                           {client?.data()?.id && (
                             <>
-                              <ReactTooltip
-                                place="bottom"
-                                effect="solid"
-                                id="provet"
-                              />
                               <a
-                                data-tip="View Client in ProVet"
-                                data-for="provet"
                                 href={
-                                  environment === 'production'
+                                  environment === "production"
                                     ? `https://us.provetcloud.com/4285/client/${
                                         client?.data()?.id
                                       }/`
@@ -885,16 +790,7 @@ export const Waitlist = () => {
                           )}
                           {client?.data()?.email && (
                             <>
-                              <ReactTooltip
-                                place="bottom"
-                                effect="solid"
-                                id="email"
-                              />
                               <a
-                                data-tip={`Email Client - ${
-                                  client?.data()?.email
-                                }`}
-                                data-for="email"
                                 href={`mailto://${client?.data()?.email}`}
                                 target="_blank"
                                 className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -906,16 +802,7 @@ export const Waitlist = () => {
                           )}
                           {client?.data()?.phone && (
                             <>
-                              <ReactTooltip
-                                place="bottom"
-                                effect="solid"
-                                id="phone"
-                              />
                               <a
-                                data-tip={`Call Client - ${formatPhoneNumber(
-                                  client?.data()?.phone
-                                )}`}
-                                data-for="phone"
                                 href={`${GOTO_PHONE_URL}/${
                                   client?.data()?.phone
                                 }`}
@@ -928,28 +815,21 @@ export const Waitlist = () => {
                             </>
                           )}
                           {client?.data()?.phone &&
-                            client?.data()?.status === 'complete' && (
+                            client?.data()?.status === "complete" && (
                               <>
-                                <ReactTooltip
-                                  place="bottom"
-                                  effect="solid"
-                                  id="text"
-                                />
                                 <button
-                                  data-for="text"
-                                  data-tip='Send "Ready for Appointment" Text Message'
                                   onClick={() => {
                                     toast(
                                       `SENDING "Ready for Appointment" message to ${
                                         client?.data()?.firstName
                                           ? client?.data()?.firstName
-                                          : ''
+                                          : ""
                                       } @ ${
                                         client?.data()?.phone
                                           ? formatPhoneNumber(
                                               client?.data()?.phone
                                             )
-                                          : ''
+                                          : ""
                                       }`,
                                       {
                                         icon: (
@@ -963,7 +843,7 @@ export const Waitlist = () => {
                                     );
                                     const checkInText = httpsCallable(
                                       functions,
-                                      'checkInText'
+                                      "checkInText"
                                     );
                                     checkInText({
                                       id: client?.data()?.id,
@@ -973,13 +853,13 @@ export const Waitlist = () => {
                                           `SENT "Ready for Appointment" message to ${
                                             client?.data()?.firstName
                                               ? client?.data()?.firstName
-                                              : ''
+                                              : ""
                                           } @ ${
                                             client?.data()?.phone
                                               ? formatPhoneNumber(
                                                   client?.data()?.phone
                                                 )
-                                              : ''
+                                              : ""
                                           }`,
                                           {
                                             icon: (
@@ -1020,7 +900,7 @@ export const Waitlist = () => {
                               UNKNOWN STATUS
                             </p>
                           )}
-                          {client?.data()?.status === 'started' && (
+                          {client?.data()?.status === "started" && (
                             <>
                               <span className="flex-shrink-0 cursor-pointer mr-2">
                                 <FontAwesomeIcon
@@ -1031,7 +911,7 @@ export const Waitlist = () => {
                               <p className="mr-2 text-xs">STARTED</p>
                             </>
                           )}
-                          {client?.data()?.status === 'creating-client' && (
+                          {client?.data()?.status === "creating-client" && (
                             <>
                               <span className="flex-shrink-0 cursor-pointer mr-2 text-movet-green">
                                 <FontAwesomeIcon icon={faUserCog} />
@@ -1039,7 +919,7 @@ export const Waitlist = () => {
                               <p className="mr-2 text-xs">CREATING CLIENT</p>
                             </>
                           )}
-                          {client?.data()?.status === 'processing-client' && (
+                          {client?.data()?.status === "processing-client" && (
                             <>
                               <span className="flex-shrink-0 cursor-pointer mr-2 text-movet-green">
                                 <FontAwesomeIcon icon={faUser} />
@@ -1047,7 +927,7 @@ export const Waitlist = () => {
                               <p className="mr-2 text-xs">PROCESSING</p>
                             </>
                           )}
-                          {client?.data()?.status === 'checkout' && (
+                          {client?.data()?.status === "checkout" && (
                             <>
                               <span className="flex-shrink-0 cursor-pointer mr-2">
                                 <FontAwesomeIcon
@@ -1058,7 +938,7 @@ export const Waitlist = () => {
                               <p className="mr-2 text-xs">CHECKING OUT</p>
                             </>
                           )}
-                          {client?.data()?.status === 'complete' && (
+                          {client?.data()?.status === "complete" && (
                             <>
                               <span className="flex-shrink-0 cursor-pointer mr-2 text-movet-white">
                                 <FontAwesomeIcon icon={faCheck} />
