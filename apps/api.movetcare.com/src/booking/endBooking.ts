@@ -1,10 +1,9 @@
-import { admin, throwError } from "../config/config";
+import { admin, throwError, DEBUG } from "../config/config";
 import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
 import { sendNotification } from "../notifications/sendNotification";
 import type { Booking } from "../types/booking";
 import { formatDateToMMDDYY } from "../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
-const DEBUG = true;
 export const endBooking = (
   id: string,
   {

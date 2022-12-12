@@ -7,6 +7,7 @@ import {
   proVetApiUrl,
   environment,
   stripe,
+  DEBUG,
 } from "../../config/config";
 import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
@@ -16,7 +17,7 @@ import { sendNotification } from "../../notifications/sendNotification";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
-const DEBUG = true;
+
 export const checkIn = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<any> => {

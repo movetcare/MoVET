@@ -41,7 +41,7 @@ export default function Home({ announcement }: { announcement: AnnouncementType 
           callToAction={
             <>
               <p className="mb-3 font-abside text-sm">REQUEST AN APPOINTMENT</p>
-              <BookAnAppointmentForm autoFocus />
+              <BookAnAppointmentForm />
               <div className="flex justify-center">
                 <p className="text-sm font-abside my-3">OR</p>
               </div>

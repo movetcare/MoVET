@@ -5,9 +5,8 @@ import {
   DEBUG,
 } from "../../../../config/config";
 import type { Appointment } from "../../../../types/appointment";
-import {createVirtualAppointment} from "./createVirtualAppointment";
-import {saveAppointment} from "./saveAppointment";
-
+import { createVirtualAppointment } from "./createVirtualAppointment";
+import { saveAppointment } from "./saveAppointment";
 export const createProVetAppointment = async (
   proVetData: Appointment,
   movetData: any
@@ -72,35 +71,53 @@ export const createProVetAppointment = async (
         if (DEBUG) console.log("API Response: POST /appointment/ => ", data);
         return data;
       })
-      .catch((error: any) => throwError(error));
-
-    if (movetData?.locationType === "Virtually") {
-      if (DEBUG) console.log("VIRTUAL APPOINTMENT DETECTED");
-      const virtualAppointmentUrl = await createVirtualAppointment(
-        appointmentData?.id,
-        start,
-        end,
-        appointmentData?.request_hash
-      );
-      if (virtualAppointmentUrl === false) {
+      .catch((error: any) => {
         if (DEBUG)
-          console.log("FAILED TO CREATE VIRTUAL APPOINTMENT", {
-            id: appointmentData?.id,
-            start,
-            end,
-            request_hash: appointmentData?.request_hash,
-          });
-        return await saveAppointment(appointmentData, movetData);
-      } else if (
-        await saveAppointment(
-          { ...appointmentData, telemedicine_url: virtualAppointmentUrl },
-          movetData
+          console.log(
+            "error?.response?.data?.non_field_errors",
+            error?.response?.data?.non_field_errors
+          );
+        if (
+          error?.response?.data?.non_field_errors[0]?.includes(
+            "already an appointment for this time slot"
+          )
         )
-      ) {
-        return virtualAppointmentUrl;
-      } else return false;
+          return "ALREADY_BOOKED";
+        else return throwError(error);
+      });
+    if (DEBUG) console.log("appointmentData", appointmentData);
+    if (appointmentData !== "ALREADY_BOOKED") {
+      if (movetData?.locationType === "Virtually") {
+        if (DEBUG) console.log("VIRTUAL APPOINTMENT DETECTED");
+        const virtualAppointmentUrl = await createVirtualAppointment(
+          appointmentData?.id,
+          start,
+          end,
+          appointmentData?.request_hash
+        );
+        if (virtualAppointmentUrl === false) {
+          if (DEBUG)
+            console.log("FAILED TO CREATE VIRTUAL APPOINTMENT", {
+              id: appointmentData?.id,
+              start,
+              end,
+              request_hash: appointmentData?.request_hash,
+            });
+          return await saveAppointment(appointmentData, movetData);
+        } else if (
+          await saveAppointment(
+            { ...appointmentData, telemedicine_url: virtualAppointmentUrl },
+            movetData
+          )
+        ) {
+          return virtualAppointmentUrl;
+        } else return false;
+      }
+      return await saveAppointment(appointmentData, movetData);
+    } else {
+      console.log("RETURNING", appointmentData);
+      return appointmentData;
     }
-    return await saveAppointment(appointmentData, movetData);
   } else return false;
 };
 
