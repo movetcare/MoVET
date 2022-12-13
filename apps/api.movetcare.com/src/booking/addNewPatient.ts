@@ -77,6 +77,7 @@ export const addNewPatient = async (
       .set(
         {
           step: "patient-selection",
+          vcprRequired: true,
           updatedOn: new Date(),
         },
         { merge: true }

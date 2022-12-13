@@ -19,7 +19,7 @@ export const sendWelcomeEmail = async (
     emailText += `
       ${
         withResetLink
-          ? `<p>If you haven't already, you can download our mobile app for <a href="https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556">iOS</a> and <a href="https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US">Android</a>.</p><p>You may start using MoVET's services once you confirm your account and set a password via the link below:</p><p><b>${link}</b></p>`
+          ? `<p>If you haven't already, you can download our mobile app for <a href="https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556">iOS</a> and <a href="https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US">Android</a>.</p><p>You may start using MoVET's services once you confirm your account and set a password via the link below:</p><p><b><a href="${link}">Verify My MoVET Account</a></b></p>`
           : ""
       }`;
   }

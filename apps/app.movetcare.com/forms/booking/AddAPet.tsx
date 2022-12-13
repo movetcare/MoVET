@@ -209,7 +209,7 @@ export const AddAPet = ({
       },
       { merge: true }
     )
-      // .then(() => setShowAddAPet(false))
+      .then(() => setShowAddAPet(false))
       .catch((error: any) => {
         setIsLoading(false);
         setError(error);

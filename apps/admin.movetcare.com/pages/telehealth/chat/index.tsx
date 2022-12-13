@@ -31,7 +31,6 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { timeSince } from "utils/timeSince";
 import TelehealthChatSummary from "components/TelehealthChatSummary";
-import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { GOTO_PHONE_URL } from "constants/urls";
 import Image from "next/image";
 

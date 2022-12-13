@@ -38,7 +38,6 @@ import { onAuthStateChanged } from "firebase/auth";
 export const AnnouncementBannerControls = () => {
   const {
     announcement,
-    announcementPreview,
     setAnnouncementPreview,
     setShowAnnouncementPreview,
     loading,
