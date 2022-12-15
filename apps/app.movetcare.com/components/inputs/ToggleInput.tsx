@@ -39,6 +39,7 @@ export const ToggleInput = ({
         <div className="flex flex-col sm:flex-row justify-center items-center w-full">
           {options.map((option: { name: string; icon: any }, index: number) => (
             <div
+              id={option.name}
               className={`bg-movet-black rounded-full text-movet-white px-10 py-4 my-2 sm:my-0 mx-2 cursor-pointer hover:bg-movet-brown w-full flex justify-center items-center ${classNames(
                 value !== option.name ? "bg-movet-black" : "bg-movet-brown"
               )}`}

@@ -54,6 +54,7 @@ if (environment.type === "development") {
     host: "localhost:8080",
     ssl: false,
     ignoreUndefinedProperties: true,
+    experimentalForceLongPolling: true,
   });
   func.app.setEmulatedAdminApp(productionInstance);
 } else if (environment.type === "staging") {
@@ -73,7 +74,10 @@ if (environment.type === "development") {
     },
     "staging"
   );
-  stagingInstance.firestore().settings({ ignoreUndefinedProperties: true });
+  stagingInstance.firestore().settings({
+    ignoreUndefinedProperties: true,
+    experimentalForceLongPolling: true,
+  });
 } else if (environment.type === "production") {
   productionInstance.firestore().settings({ ignoreUndefinedProperties: true });
 }

@@ -203,7 +203,7 @@ export const PlacesInput = ({
                       primary: "#232127",
                     },
                   }),
-                  className: `border-movet-black relative border w-full bg-white rounded-xl py-2 text-left cursor-pointer sm:text-sm${
+                  className: `places-search border-movet-black relative border w-full bg-white rounded-xl py-2 text-left cursor-pointer sm:text-sm${
                     errors[name]?.message
                       ? " border-movet-red border-2 text-movet-red"
                       : ""

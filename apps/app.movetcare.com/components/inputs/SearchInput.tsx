@@ -108,7 +108,7 @@ export const SearchInput = ({
                   primary: "#232127",
                 },
               })}
-              className="border-movet-black relative border w-full bg-white rounded-xl py-2 text-left cursor-pointer sm:text-sm"
+              className="search-input border-movet-black relative border w-full bg-white rounded-xl py-2 text-left cursor-pointer sm:text-sm"
             />
           </>
         )}

@@ -29,8 +29,8 @@ export const Error = ({ error, isAppMode }: any) => {
           <a
             href={
               (environment === "production"
-                ? "https://movetcare.com"
-                : "http://localhost:3000") + "/contact"
+                ? "https://app.movetcare.com"
+                : "http://localhost:3001") + "/contact"
             }
             target="_blank"
             rel="noreferrer"

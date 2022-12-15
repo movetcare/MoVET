@@ -126,6 +126,7 @@ return (
                   target="_blank"
                   href={"sms://+17205077387"}
                   rel="noopener noreferrer"
+                  id="text-us-cta"
                 >
                   <FontAwesomeIcon icon={faSms} size="lg" className="mr-2" />
                   Text Us
@@ -137,6 +138,7 @@ return (
                   target="_blank"
                   href={`${origin}/request-an-appointment`}
                   rel="noopener noreferrer"
+                  id="request-appointment-cta"
                 >
                   <FontAwesomeIcon
                     icon={faCalendarPlus}
@@ -153,6 +155,7 @@ return (
               onClick={() => {
                 toggleMobileMenu(!mobileMenu);
               }}
+              id="mobile-navigation"
               className="bg-transparent inline-flex items-center justify-center hover:bg-transparent shadow-none"
             >
               <span className="sr-only">Open Navigation Menu - Mobile</span>
@@ -217,6 +220,7 @@ return (
                 target="_blank"
                 href={"sms://+17205077387"}
                 rel="noopener noreferrer"
+                id="mobile-text-us-cta"
               >
                 <FontAwesomeIcon icon={faSms} size="lg" className="mr-2" />
                 TEXT US
@@ -230,6 +234,7 @@ return (
                 target="_blank"
                 href={`${origin}/request-an-appointment`}
                 rel="noopener noreferrer"
+                id="mobile-request-appointment-cta"
               >
                 <FontAwesomeIcon
                   icon={faCalendarPlus}

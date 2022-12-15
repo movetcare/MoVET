@@ -1,7 +1,7 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { functions, defaultRuntimeOptions, DEBUG } from "../../config/config";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
-import { handleFailedBooking } from "../../booking/handleFailedBooking";
+import { handleFailedBooking } from "../../booking/session/handleFailedBooking";
 import { handleUnauthenticatedBookingVerification } from "../../booking/verification/handleUnauthenticatedBookingVerification";
 import { getActiveBookingSession } from "../../booking/verification/getActiveBookingSession";
 import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";

@@ -91,7 +91,7 @@ export const ContactForm = () => {
       {isLoading ? (
         <Loader message="Processing submission, please wait..." />
       ) : (
-        <>
+        <div id="contact-form">
           {submissionSuccess ? (
             <div className="text-center">
               <FontAwesomeIcon
@@ -250,7 +250,7 @@ export const ContactForm = () => {
               </form>
             </div>
           )}
-        </>
+        </div>
       )}
     </>
   );

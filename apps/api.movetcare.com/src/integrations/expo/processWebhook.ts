@@ -18,6 +18,7 @@ export const processExpoWebhook = async (
       sendNotification({
         type: "slack",
         payload: {
+          channel: "production-logs",
           message: `:building_construction: Expo Build Update!\n\nPlatform: ${platform}\n\nStatus: ${status}\n\nArtifacts: ${JSON.stringify(
             artifacts
           )}\n\nMetadata: ${JSON.stringify(

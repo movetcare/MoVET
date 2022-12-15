@@ -2,13 +2,14 @@
 export { taskRunnerDev } from "./endpoints/development/taskRunnerDev";
 export { webhookProxyDev } from "./endpoints/development/webhookProxyDev";
 export { initTestUser } from "./endpoints/development/initTestUser";
+export { resetTestData } from "./endpoints/development/resetTestData";
 
 export { taskRunner } from "./cron/taskRunner";
 export { refreshShifts } from "./cron/refreshShifts";
 export { refreshBreeds } from "./cron/refreshBreeds";
 export { updateTelehealthChatStatusToOffline } from "./cron/updateTelehealthChatStatusToOffline";
 
-export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
+// export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
 export { handleContactSubmission } from "./triggers/handleContactSubmission";
 export { handleFileUpload } from "./triggers/handleFileUpload";
 
@@ -33,6 +34,8 @@ export { getBookingToken } from "./endpoints/mobile/booking/getBookingToken";
 export { reportABug } from "./endpoints/web/reportABug";
 export { updatePaymentMethod } from "./endpoints/web/updatePaymentMethod";
 export { verifyBooking } from "./endpoints/web/verifyBooking";
+export { scheduleAppointment } from "./endpoints/web/scheduleAppointment";
+export { getBreedsData } from "./endpoints/web/getBreedsData";
 
 export { cancelTerminalAction } from "./endpoints/admin/pos/cancelTerminalAction";
 export { refundPaymentIntent } from "./endpoints/admin/pos/refundPaymentIntent";

@@ -1,0 +1,221 @@
+import client = require("@sendgrid/client");
+import { admin, throwError } from "../../config/config";
+import { createProVetPatient } from "../../integrations/provet/entities/patient/createProVetPatient";
+import { updateCustomField } from "../../integrations/provet/entities/patient/updateCustomField";
+import { sendNotification } from "../../notifications/sendNotification";
+import type {
+  BookingError,
+  AddAPet,
+  BookingResponse,
+  PatientData,
+} from "../../types/booking";
+import { moveFile } from "../../utils/moveFile";
+import { reverseDateStringMDY } from "../../utils/reverseDateStringMDY";
+import { getAllActivePatients } from "./getAllActivePatients";
+import { handleFailedBooking } from "./handleFailedBooking";
+
+export const processAddAPet = async (
+  id: string,
+  {
+    name,
+    type,
+    gender,
+    spayedOrNeutered,
+    aggressionStatus,
+    breed,
+    birthday,
+    weight,
+    vet,
+    notes,
+  }: AddAPet
+): Promise<BookingResponse | BookingError> => {
+  const bookingRef = admin.firestore().collection("bookings").doc(id);
+  await bookingRef
+    .set(
+      {
+        addAPet: {
+          name,
+          type,
+          gender,
+          spayedOrNeutered,
+          aggressionStatus,
+          breed,
+          birthday,
+          weight,
+          vet,
+          notes,
+        } as AddAPet,
+        updatedOn: new Date(),
+      },
+      { merge: true }
+    )
+    .catch(async (error: any) => {
+      throwError(error);
+      return await handleFailedBooking(error, "UPDATE ADD A PET FAILED");
+    });
+  const session = await bookingRef
+    .get()
+    .then((doc: any) => doc.data())
+    .catch(async (error: any) => {
+      throwError(error);
+      return await handleFailedBooking(error, "GET BOOKING DATA FAILED");
+    });
+
+  const newPatientId = await createProVetPatient({
+    client: session?.client?.uid,
+    name: session?.addAPet?.name,
+    species: session?.addAPet?.type,
+    gender: session?.addAPet?.gender,
+    breed: session?.addAPet?.breed?.value,
+    birthday: reverseDateStringMDY(session?.addAPet?.birthday),
+    weight: session?.addAPet?.weight,
+    notes: `${
+      session?.addAPet?.aggressionStatus?.name
+        ? `${
+            session?.addAPet?.aggressionStatus?.name.includes(
+              "no history of aggression"
+            )
+              ? ""
+              : "BE CAREFUL - PATIENT IS AGGRESSIVE!"
+          }\n\n`
+        : ""
+    }`,
+    vcprRequired: true,
+    spayedOrNeutered: session?.addAPet?.spayedOrNeutered,
+  });
+  if (newPatientId) {
+    if (session?.addAPet?.aggressionStatus?.name)
+      updateCustomField(
+        newPatientId,
+        4,
+        session?.addAPet?.aggressionStatus?.name.includes(
+          "no history of aggression"
+        )
+          ? "False"
+          : "True"
+      );
+    if (session?.addAPet?.notes)
+      updateCustomField(newPatientId, 6, session?.addAPet?.notes);
+    if (session?.addAPet?.vet?.label)
+      updateCustomField(
+        newPatientId,
+        5,
+        `${session?.addAPet?.vet?.label}${
+          session?.addAPet?.vet?.value?.place_id
+            ? ` - https://www.google.com/maps/place/?q=place_id:${session?.addAPet?.vet?.value?.place_id}`
+            : ""
+        }`
+      );
+    if (session?.addAPet?.photo) {
+      moveFile(
+        `clients/${client}/patients/new/photo/${session?.addAPet?.photo.name}`,
+        `clients/${client}/patients/${newPatientId}/photo/${session?.addAPet?.photo.name}`
+      );
+    }
+    if (session?.addAPet?.records) {
+      moveFile(
+        `clients/${client}/patients/new/records/${session?.addAPet?.records.name}`,
+        `clients/${client}/patients/${newPatientId}/records/${session?.addAPet?.records.name}`
+      );
+    }
+  }
+
+  if (newPatientId) {
+    const patients: Array<PatientData> | BookingError | any =
+      await getAllActivePatients(session?.client?.uid);
+    if (patients) {
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: [
+            {
+              type: "section",
+              text: {
+                text: `:book: _Appointment Booking_ *UPDATED* (${id})`,
+                type: "mrkdwn",
+              },
+              fields: [
+                {
+                  type: "mrkdwn",
+                  text: "*STEP*",
+                },
+                {
+                  type: "plain_text",
+                  text: "ADD A PET",
+                },
+                {
+                  type: "mrkdwn",
+                  text: "*NAME*",
+                },
+                {
+                  type: "plain_text",
+                  text: name,
+                },
+                {
+                  type: "mrkdwn",
+                  text: "*SPECIES*",
+                },
+                {
+                  type: "plain_text",
+                  text: type,
+                },
+                {
+                  type: "mrkdwn",
+                  text: "*IS AGGRESSIVE?*",
+                },
+                {
+                  type: "plain_text",
+                  text: session?.addAPet?.aggressionStatus?.name.includes(
+                    "no history of aggression"
+                  )
+                    ? "No"
+                    : "Yes",
+                },
+              ],
+            },
+          ],
+        },
+      });
+      return {
+        patients,
+        id,
+        client: {
+          uid: session?.client?.uid,
+          requiresInfo: session?.client?.requiresInfo,
+        },
+      };
+    }
+    return await handleFailedBooking(
+      {
+        id,
+        name,
+        type,
+        gender,
+        spayedOrNeutered,
+        aggressionStatus,
+        breed,
+        birthday,
+        weight,
+        vet,
+        notes,
+      },
+      "FAILED TO GET PATIENTS"
+    );
+  } else
+    return await handleFailedBooking(
+      {
+        id,
+        name,
+        type,
+        gender,
+        spayedOrNeutered,
+        aggressionStatus,
+        breed,
+        birthday,
+        weight,
+        vet,
+        notes,
+      },
+      "FAILED TO CREATE NEW PET"
+    );
+};

@@ -3,13 +3,11 @@ describe("home-page-loads", () => {
     cy.visit("http://localhost:3001");
   });
 
-  it("display home page hero elements", () => {
-    cy.get("main section h1").first().contains("Your neighborhood vet,");
-    cy.get("main section h1").last().contains("Delivered");
-    cy.get("main section p span")
-      .first()
-      .contains("A stress-free way to take care of your vet appointments.");
-    cy.get("main section div p").contains("REQUEST AN APPOINTMENT");
-    cy.get("main section div form input").should("be.visible");
-  });
+ it("display app sign in form", () => {
+   cy.get("form input[name='email']").type("CYPRESS@TEST.COM");
+   cy.get("form button[type='submit']")
+     .contains("Continue")
+     .should("be.visible")
+     .click();
+ });
 });

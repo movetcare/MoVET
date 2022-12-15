@@ -47,9 +47,9 @@ export const sendAppointmentConfirmationEmail = async (
   else
     petNames = appointment?.patients.map((patient: any) =>
       `<li>${patient?.name}${
-        patient?.symptom !== undefined &&
-        patient?.symptom !== "No Symptoms of Illness"
-          ? ` is showing symptoms of ${JSON.parse(patient?.symptom).map(
+        patient?.minorIllness !== undefined &&
+        patient?.minorIllness !== "No Symptoms of Illness"
+          ? ` is showing symptoms of ${JSON.parse(patient?.minorIllness).map(
               (symptoms: any) => {
                 if (symptoms?.id === patient?.id)
                   return `${symptoms?.minorIllness.toLowerCase()} - "${
@@ -58,8 +58,8 @@ export const sendAppointmentConfirmationEmail = async (
                 else return;
               }
             )}`
-          : (patient?.symptom &&
-              patient?.symptom === "No Symptoms of Illness") ||
+          : (patient?.minorIllness &&
+              patient?.minorIllness === "No Symptoms of Illness") ||
             patient?.minorIllness === undefined
           ? " needs a general checkup"
           : ` is showing symptoms of ${patient?.minorIllness.toLowerCase()} - "${

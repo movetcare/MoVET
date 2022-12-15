@@ -1,5 +1,5 @@
-import { throwError, DEBUG } from "../config/config";
-import type { BookingError } from "../types/booking";
+import { throwError, DEBUG } from "../../config/config";
+import type { BookingError } from "../../types/booking";
 
 export const handleFailedBooking = async (
   data: any,

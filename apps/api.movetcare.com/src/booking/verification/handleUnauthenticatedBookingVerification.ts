@@ -1,5 +1,5 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-import { handleFailedBooking } from "../handleFailedBooking";
+import { handleFailedBooking } from "../session/handleFailedBooking";
 import { getAuthUserByEmail } from "./../../utils/auth/getAuthUserByEmail";
 import { admin, DEBUG } from "../../config/config";
 import { getActiveBookingSession } from "./getActiveBookingSession";

@@ -34,6 +34,7 @@ export const DateInput = ({
               </label>
             )}
             <PatternFormat
+              name={name}
               allowEmptyFormatting
               className="border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-xl pl-3 pr-10 py-3 text-left cursor-pointer sm:text-sm placeholder:text-gray font-abside-smooth"
               patternChar="#"

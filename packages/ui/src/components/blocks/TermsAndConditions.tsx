@@ -273,7 +273,7 @@ export const TermsAndConditions = () => {
         </h2>
         <p>
           We may enter into contracts with the Veterinary Experts listed through
-          the Services with whom you may book appointments, and Veterinary
+          the Services with whom you may schedule appointments, and Veterinary
           Experts may pay us a service fee in order to be marketed through the
           Services. We may provide you with lists and/or profile previews of
           Veterinary Experts who may be suitable to provide the Services you

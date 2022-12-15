@@ -4,6 +4,42 @@ export type BookingError = {
   message: string;
 };
 
+export type ClientInfo = {
+  uid: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  requiresInfo: boolean;
+};
+
+export type PatientData = {
+  id: string;
+  name: string;
+  archived?: boolean;
+  vcprRequired: boolean;
+  species: string;
+  gender: string;
+};
+
+export type BookingResponse = {
+  patients: Array<PatientData>;
+  id: string;
+  client: ClientInfo;
+};
+
+export type AddAPet = {
+  name: string;
+  type: string;
+  gender: string;
+  spayedOrNeutered: boolean;
+  aggressionStatus: string;
+  breed: string;
+  birthday: string;
+  weight: string;
+  vet?: string;
+  notes?: string;
+};
+
 export type Booking = {
   id: string;
   isActive: boolean;

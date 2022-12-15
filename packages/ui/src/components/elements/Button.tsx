@@ -19,6 +19,7 @@ interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   iconSize?: SizeProp;
   color?: "black" | "red" | "white";
   type?: "button" | "submit" | "reset";
+  id?: string | undefined;
 }
 
 export const Button = ({
@@ -37,6 +38,7 @@ export const Button = ({
   iconSize = "lg",
   color,
   type = "button",
+  id = undefined,
   ...rest
 }: ButtonProps) => {
   let content = children;
@@ -98,6 +100,7 @@ export const Button = ({
 
   return (
     <button
+      id={id}
       title={title}
       onClick={onClick}
       type={type}

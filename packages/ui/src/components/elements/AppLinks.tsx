@@ -7,7 +7,7 @@ export const AppLinks = ({ size = "sm" }: { size?: "sm" | "lg" }) => (
       href="https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556"
       target="_blank"
       rel="noreferrer"
-      className="shrink-0 sm:mr-1"
+      className="shrink-0 sm:mr-1 ios-app-link"
     >
       <Image
         src="/images/icons/app-store-download.svg"
@@ -24,7 +24,7 @@ export const AppLinks = ({ size = "sm" }: { size?: "sm" | "lg" }) => (
       href="https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
       target="_blank"
       rel="noreferrer"
-      className="shrink-0 sm:ml-1 -mt-2.5"
+      className="shrink-0 sm:ml-1 -mt-2.5 android-app-link"
     >
       <Image
         height={60}

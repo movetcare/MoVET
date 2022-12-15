@@ -209,8 +209,8 @@ export const StartBooking = ({ isAppMode }: { isAppMode: boolean }) => {
                 <AppLinks />
               </div>
               <p className="text-center mb-4 italic text-sm w-full sm:w-2/3 mx-auto">
-                You can also download our our mobile app to book appointments,
-                manage your pets, chat with us, and much more!
+                You can also download our our mobile app to schedule
+                appointments, manage your pets, chat with us, and much more!
               </p>
             </>
           )}

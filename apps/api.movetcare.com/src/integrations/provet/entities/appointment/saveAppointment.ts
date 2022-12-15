@@ -429,10 +429,10 @@ export const saveAppointment = async (
                         .catch((error: any) => throwError(error));
                   } else throwError(error);
                 });
-             sendAppointmentConfirmationEmail(
-               `${data?.client}`,
-               `${proVetAppointmentData.id}`
-             );
+              sendAppointmentConfirmationEmail(
+                `${data?.client}`,
+                `${proVetAppointmentData.id}`
+              );
               return true;
             })
             .catch((error: any) => throwError(error));
