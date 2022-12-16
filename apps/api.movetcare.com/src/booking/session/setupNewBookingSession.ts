@@ -12,7 +12,6 @@ import { handleFailedBooking } from "./handleFailedBooking";
 import { getActiveBookingSession } from "../verification/getActiveBookingSession";
 import { getAllActivePatients } from "./getAllActivePatients";
 import { verifyClientInfo } from "./verifyClientInfo";
-import { sendNotification } from "../../notifications/sendNotification";
 
 export const setupNewBookingSession = async ({
   email,
@@ -35,68 +34,16 @@ export const setupNewBookingSession = async ({
       const customer: string = await getCustomerId(authUser.uid);
       const requiresInfo = await verifyClientInfo(authUser);
       if (patients && customer && booking) {
-        sendNotification({
-          type: "slack",
-          payload: {
-            message: [
-              {
-                type: "section",
-                text: {
-                  text: `:book: _Appointment Booking_ *STARTED* (${booking.id})`,
-                  type: "mrkdwn",
-                },
-                fields: [
-                  {
-                    type: "mrkdwn",
-                    text: "*DEVICE*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: device || "Unknown",
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*CLIENT ID*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: authUser?.uid,
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*EMAIL*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: email,
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*REQUIRES CLIENT INFO*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: requiresInfo ? "Yes" : "No",
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*PATIENTS*",
-                  },
-                  {
-                    type: "plain_text",
-                    text: `${patients?.length}`,
-                  },
-                ],
-              },
-            ],
-          },
-        });
         return {
           patients,
           id: booking.id,
           client: { uid: authUser?.uid, requiresInfo },
         };
-      } else await handleFailedBooking({ email, device }, "FAILED TO GET DATA");
+      } else
+        await handleFailedBooking(
+          { email, device, patients, customer },
+          "FAILED TO GET DATA"
+        );
     } else {
       return await handleFailedBooking(
         { email, device },

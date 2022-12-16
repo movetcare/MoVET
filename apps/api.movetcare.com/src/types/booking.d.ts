@@ -25,6 +25,8 @@ export type BookingResponse = {
   patients: Array<PatientData>;
   id: string;
   client: ClientInfo;
+  selectedPatients?: Array<string>;
+  establishCareExamRequired?: boolean;
 };
 
 export type AddAPet = {

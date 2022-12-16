@@ -5,6 +5,7 @@ import {
   defaultRuntimeOptions,
   admin,
   stripe,
+  mobileClientApiKey,
 } from "../../config/config";
 // import { updateProVetAppointment } from "../../integrations/provet/entities/appointment/updateProVetAppointment";
 // import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
@@ -15,130 +16,138 @@ const DEBUG = true;
 export const resetTestData: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {
-    //console.log("resetTestData: {request, response}", { request, response });
-    if (environment.type === "staging" || environment.type === "development") {
-      await admin
-        .auth()
-        .updateUser("5125", {
-          phoneNumber: null,
-          displayName: null,
-        })
-        .then(
-          (userRecord: any) =>
-            DEBUG &&
-            console.log("Successfully Updated Auth User", userRecord.toJSON())
-        )
-        .catch((error: any) => DEBUG && console.error(error));
-      await admin
-        .firestore()
-        .collection("clients")
-        .doc("5125")
-        .delete()
-        .then(
-          () =>
-            DEBUG && console.log("Successfully Deleted Client Document", 5125)
-        )
-        .catch((error: any) => DEBUG && console.error(error));
-      const patients = admin
-        .firestore()
-        .collection("patients")
-        .where("client", "==", 5125);
-      patients
-        .get()
-        .then(
-          (querySnapshot: any) =>
-            querySnapshot.forEach((doc: any) => doc.ref.delete()) &&
-            DEBUG &&
-            console.log("Successfully Deleted Client Document", 5125)
-        )
-        .catch((error: any) => DEBUG && console.error(error));
-
-      // const client = await fetchEntity("client", 5125);
-
-      // const proVetPatientIds: Array<number> = [];
-      // if (client?.patients.length)
-      //   client?.patients.map((patient: string) =>
-      //     proVetPatientIds.push(getProVetIdFromUrl(patient) as number)
-      //   );
-
-      // if (DEBUG) console.log("proVetPatientIds", proVetPatientIds);
-
-      // let proVetAppointmentIds: Array<number> = [];
-
-      // if (DEBUG)
-      //   console.log(
-      //     "QUERY STRING =>",
-      //     `?client__eq=${client?.id}&active=1
-      //     &start__gte=${new Date().toISOString().split("T")[0]}%2000:00%2B00:00`
-      //   );
-      // const appointments = await fetchEntity(
-      //   "appointment",
-      //   null,
-      //   `?client__eq=${client?.id}&active=1&start__gte=${
-      //     new Date().toISOString().split("T")[0]
-      //   }%2000:00%2B00:00`
-      // );
-      // if (appointments.length)
-      //   proVetAppointmentIds = appointments.map(
-      //     (appointment: any) => appointment?.id
-      //   );
-
-      // if (proVetAppointmentIds.length) {
-      //   if (DEBUG)
-      //     console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
-      //   Promise.all(
-      //     proVetAppointmentIds.map((id: number) =>
-      //       updateProVetAppointment({ id, active: 0 })
-      //     )
-      //   );
-      // } else if (DEBUG)
-      //   console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
-
-      // if (proVetPatientIds.length) {
-      //   if (DEBUG) console.log("ARCHIVING PATIENTS: ", proVetPatientIds);
-      //   await Promise.all(
-      //     proVetPatientIds.map(
-      //       async (id: number) =>
-      //         await updateProVetPatient({ id: `${id}`, archived: true })
-      //     )
-      //   );
-      // } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
-
-      const paymentMethods = await stripe.paymentMethods
-        .list({
-          customer: "cus_LYg1C7Et5ySQKC",
-          type: "card",
-        })
-        .catch((error: any) => DEBUG && console.error(error));
-      if (DEBUG) console.log("paymentMethods", paymentMethods);
-      if (paymentMethods) {
-        const paymentMethodIds = paymentMethods?.data?.map(
-          (paymentMethod) => paymentMethod?.id
-        );
-        if (DEBUG) console.log("paymentMethodIds", paymentMethodIds);
-        Promise.all(
-          paymentMethodIds.map((paymentMethodId: string) =>
-            stripe.paymentMethods
-              .detach(paymentMethodId)
-              .then(
-                () =>
-                  DEBUG &&
-                  console.log(
-                    "Successfully Deleted Client Payment Method",
-                    paymentMethodId
-                  )
-              )
-              .catch((error: any) => DEBUG && console.error(error))
+    if (
+      environment.type === "development" &&
+      request.headers.host === "localhost:5001" &&
+      request.body?.apiKey === mobileClientApiKey
+    ) {
+      if (request.body?.id === 5125) {
+        await admin
+          .auth()
+          .updateUser("5125", {
+            phoneNumber: null,
+            displayName: null,
+          })
+          .then(
+            (userRecord: any) =>
+              DEBUG &&
+              console.log("Successfully Updated Auth User", userRecord.toJSON())
           )
-        ).catch((error: any) => DEBUG && console.error(error));
+          .catch((error: any) => DEBUG && console.error(error));
+        await admin
+          .firestore()
+          .collection("clients")
+          .doc("5125")
+          .delete()
+          .then(
+            () =>
+              DEBUG && console.log("Successfully Deleted Client Document", 5125)
+          )
+          .catch((error: any) => DEBUG && console.error(error));
+        const patients = admin
+          .firestore()
+          .collection("patients")
+          .where("client", "==", 5125);
+        patients
+          .get()
+          .then((querySnapshot: any) =>
+            querySnapshot.forEach((doc: any) => {
+              //if (doc.data()?.id !== 5747) {
+              doc.ref.delete();
+              DEBUG &&
+                console.log("Successfully Deleted Client Document", doc.id);
+              //}
+            })
+          )
+          .catch((error: any) => DEBUG && console.error(error));
+
+        // const client = await fetchEntity("client", 5125);
+
+        // const proVetPatientIds: Array<number> = [];
+        // if (client?.patients.length)
+        //   client?.patients.map((patient: string) =>
+        //     proVetPatientIds.push(getProVetIdFromUrl(patient) as number)
+        //   );
+
+        // if (DEBUG) console.log("proVetPatientIds", proVetPatientIds);
+
+        // let proVetAppointmentIds: Array<number> = [];
+
+        // if (DEBUG)
+        //   console.log(
+        //     "QUERY STRING =>",
+        //     `?client__eq=${client?.id}&active=1
+        //     &start__gte=${new Date().toISOString().split("T")[0]}%2000:00%2B00:00`
+        //   );
+        // const appointments = await fetchEntity(
+        //   "appointment",
+        //   null,
+        //   `?client__eq=${client?.id}&active=1&start__gte=${
+        //     new Date().toISOString().split("T")[0]
+        //   }%2000:00%2B00:00`
+        // );
+        // if (appointments.length)
+        //   proVetAppointmentIds = appointments.map(
+        //     (appointment: any) => appointment?.id
+        //   );
+
+        // if (proVetAppointmentIds.length) {
+        //   if (DEBUG)
+        //     console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
+        //   Promise.all(
+        //     proVetAppointmentIds.map((id: number) =>
+        //       updateProVetAppointment({ id, active: 0 })
+        //     )
+        //   );
+        // } else if (DEBUG)
+        //   console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
+
+        // if (proVetPatientIds.length) {
+        //   if (DEBUG) console.log("ARCHIVING PATIENTS: ", proVetPatientIds);
+        //   await Promise.all(
+        //     proVetPatientIds.map(
+        //       async (id: number) =>
+        //         await updateProVetPatient({ id: `${id}`, archived: true })
+        //     )
+        //   );
+        // } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
+
+        const paymentMethods = await stripe.paymentMethods
+          .list({
+            customer: "cus_LYg1C7Et5ySQKC",
+            type: "card",
+          })
+          .catch((error: any) => DEBUG && console.error(error));
+        if (DEBUG) console.log("paymentMethods", paymentMethods);
+        if (paymentMethods) {
+          const paymentMethodIds = paymentMethods?.data?.map(
+            (paymentMethod) => paymentMethod?.id
+          );
+          if (DEBUG) console.log("paymentMethodIds", paymentMethodIds);
+          Promise.all(
+            paymentMethodIds.map((paymentMethodId: string) =>
+              stripe.paymentMethods
+                .detach(paymentMethodId)
+                .then(
+                  () =>
+                    DEBUG &&
+                    console.log(
+                      "Successfully Deleted Client Payment Method",
+                      paymentMethodId
+                    )
+                )
+                .catch((error: any) => DEBUG && console.error(error))
+            )
+          ).catch((error: any) => DEBUG && console.error(error));
+        }
+        sendNotification({
+          type: "slack",
+          payload: {
+            message:
+              ":red_circle: TEST DATA RESET FOR alex.rodriguez+test@movetcare.com",
+          },
+        });
       }
-      sendNotification({
-        type: "slack",
-        payload: {
-          message:
-            ":red_circle: TEST DATA RESET FOR alex.rodriguez+test@movetcare.com",
-        },
-      });
     }
     return response.status(200).send();
   });

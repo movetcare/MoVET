@@ -7,7 +7,7 @@ import { AppHeader } from "components/AppHeader";
 export default function Custom404() {
   const router = useRouter();
   useEffect(() => {
-    setTimeout(() => router.replace("/"), 3000);
+    setTimeout(() => router.replace("/schedule-an-appointment"), 3000);
   }, [router]);
   return (
     <div className="flex flex-col items-center justify-center min-py-2">

@@ -28,7 +28,7 @@ export const initProVetConfig = async (
       },
     });
     const entities: Array<string> = [
-      "breeds",
+      // "breeds",
       "shifts",
       "invoices",
       "appointments",
@@ -47,6 +47,7 @@ export const initProVetConfig = async (
             (await configureAppointmentEstimates()) &&
             (await configureAppointmentOptionDetails()) &&
             (await configureTelehealthStatus()) &&
+            (await configureBreeds()) &&
             (await admin
               .firestore()
               .collection("tasks_queue")

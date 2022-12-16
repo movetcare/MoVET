@@ -5,6 +5,7 @@ import type { BookingError, BookingResponse } from "../../types/booking";
 import { processContactInfo } from "../../booking/session/processContactInfo";
 import { setupNewBookingSession } from "../../booking/session/setupNewBookingSession";
 import { processAddAPet } from "../../booking/session/processAddAPet";
+import { processPetSelection } from "../../booking/session/processPetSelection";
 const DEBUG = true;
 
 export const scheduleAppointment = functions
@@ -15,12 +16,20 @@ export const scheduleAppointment = functions
         "scheduleAppointment => INCOMING REQUEST PAYLOAD scheduleAppointment => ",
         data
       );
-    const { token, email, contactInfo, id, addAPet } = data || {};
+    const {
+      token,
+      email,
+      contactInfo,
+      id,
+      addAPet,
+      petSelection,
+      establishCareExamRequired,
+    } = data || {};
     if (token) {
       if (await recaptchaIsVerified(token)) {
         if (email) return await setupNewBookingSession(data);
         else if (contactInfo && id) {
-          if (DEBUG) console.log("CONTACT INFO DATA", data);
+          if (DEBUG) console.log("CONTACT INFO DATA", contactInfo);
           if (
             contactInfo?.firstName &&
             contactInfo?.lastName &&
@@ -35,7 +44,7 @@ export const scheduleAppointment = functions
               "FAILED TO HANDLE CONTACT INFO"
             );
         } else if (addAPet && id) {
-          if (DEBUG) console.log("ADD A PET DATA", data);
+          if (DEBUG) console.log("ADD A PET DATA", addAPet);
           if (
             addAPet?.name &&
             addAPet?.type &&
@@ -51,6 +60,19 @@ export const scheduleAppointment = functions
             return await handleFailedBooking(
               data,
               "FAILED TO HANDLE ADD A PET"
+            );
+        } else if (petSelection && id) {
+          if (DEBUG) console.log("PET SELECTION DATA", petSelection);
+          if (petSelection?.pets?.length > 0)
+            return await processPetSelection(
+              id,
+              petSelection.pets,
+              establishCareExamRequired
+            );
+          else
+            return await handleFailedBooking(
+              data,
+              "FAILED TO HANDLE PET SELECTION"
             );
         } else
           return await handleFailedBooking(data, "FAILED TO HANDLE REQUEST");

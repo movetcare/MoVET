@@ -17,7 +17,7 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { addMethod, bool, object, string, lazy } from "yup";
 import { httpsCallable } from "firebase/functions";
-import { firestore, functions } from "services/firebase";
+import { functions } from "services/firebase";
 import { BookingHeader } from "components/booking/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Transition } from "@headlessui/react";
@@ -29,7 +29,6 @@ import { RadioInput } from "components/inputs/RadioInput";
 import { SearchInput } from "components/inputs/SearchInput";
 import SwitchInput from "components/inputs/SwitchInput";
 import { ToggleInput } from "components/inputs/ToggleInput";
-import { onSnapshot, doc } from "firebase/firestore";
 
 addMethod(string, "isBeforeToday", function (errorMessage: string) {
   return (this as any).test(

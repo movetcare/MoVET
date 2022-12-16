@@ -78,6 +78,10 @@ export default function ScheduleAnAppointment() {
                 router.push("/schedule-an-appointment/pet-selection");
               else if (result?.patients?.length === 0)
                 router.push("/schedule-an-appointment/add-a-pet");
+              else if (result?.selectedPatients?.length > 0)
+                if (result?.selectedPatients?.establishCareExamRequired)
+                  router.push("/schedule-an-appointment/wellness-check");
+                else router.push("/schedule-an-appointment/location-selection");
             } else handleError(result);
           } else handleError(result);
         } catch (error) {

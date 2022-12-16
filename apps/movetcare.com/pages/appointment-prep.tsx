@@ -94,29 +94,6 @@ const AppointmentPrep = () => {
             advance for keeping our staff safe!
           </i>
         </p>
-        <h2 className="mb-0">COVID-19 Waiver</h2>
-        <p>
-          By attending your appointment, you are confirming that, to the best of
-          your knowledge, you nor anyone in your household has not had any
-          symptoms of COVID-19 (such as fever, chills, cough, shortness of
-          breath or difficulty breathing, fatigue, muscle or body aches,
-          headache, new loss of taste or smell, sore throat, congestion or runny
-          nose, nausea or vomiting) nor have you or any member of your household
-          tested positive to the COVID-19 virus in the last 14 days.{" "}
-          <i>
-            Please cancel and reschedule your appointment using our (
-            <a
-              href="https://movetcare.com/get-the-app"
-              target="_blank"
-              rel="noreferrer"
-            >
-              mobile app
-            </a>
-            ) for another day/time if any of the above is true.
-          </i>
-          {"  "}
-          No cancellation charge will apply in this case.
-        </p>
         <h2 className="mb-0">Virtual Consultations</h2>
         <p>
           Please tap the &quot;START CONSULTATION&quot; button in our{" "}

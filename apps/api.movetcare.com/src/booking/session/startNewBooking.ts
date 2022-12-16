@@ -1,11 +1,17 @@
-import { admin, throwError, DEBUG } from "../config/config";
-import { sendNotification } from "../notifications/sendNotification";
-import { createBookingAbandonmentNotifications } from "./abandonment/createBookingAbandonmentNotifications";
-
+import { admin, throwError, DEBUG } from "../../config/config";
+import { sendNotification } from "../../notifications/sendNotification";
+import type { PatientData, BookingError } from "../../types/booking";
+import { createBookingAbandonmentNotifications } from "../abandonment/createBookingAbandonmentNotifications";
+import { getAllActivePatients } from "./getAllActivePatients";
+import { verifyClientInfo } from "./verifyClientInfo";
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
 export const startNewBooking = async (
-  client: any,
+  client: UserRecord,
   device: string
 ): Promise<any> => {
+  const patients: Array<PatientData> | BookingError | any =
+    await getAllActivePatients(client?.uid);
+  const requiresInfo = await verifyClientInfo(client);
   const newBookingSession = await admin
     .firestore()
     .collection("bookings")
@@ -14,12 +20,13 @@ export const startNewBooking = async (
         uid: client?.uid,
         email: client?.email,
         displayName: client?.displayName,
-        phoneNumber: client?.phoneNumber,
+        phone: client?.phoneNumber,
+        requiresInfo,
       },
+      patients,
       device,
       createdAt: new Date(),
       isActive: true,
-      step: "started",
     })
     .catch((error: any) => throwError(error));
   if (DEBUG)
@@ -34,49 +41,49 @@ export const startNewBooking = async (
         {
           type: "section",
           text: {
-            text: ":book: _Appointment Booking_ *STARTED*",
+            text: `:book: _Appointment Booking_ *STARTED* (${newBookingSession?.id})`,
             type: "mrkdwn",
           },
           fields: [
             {
               type: "mrkdwn",
-              text: "*Session ID*",
+              text: "*DEVICE*",
             },
             {
               type: "plain_text",
-              text: newBookingSession?.id,
+              text: device || "Unknown",
             },
             {
               type: "mrkdwn",
-              text: "*Step*",
+              text: "*CLIENT ID*",
             },
             {
               type: "plain_text",
-              text: "Start Booking",
+              text: client?.uid,
             },
             {
               type: "mrkdwn",
-              text: "*Client*",
+              text: "*EMAIL*",
             },
             {
               type: "plain_text",
-              text: `${client?.uid ? `ID: ${client?.uid}\n\n` : ""}${
-                client?.email ? ` - Email: ${client?.email}\n\n` : ""
-              }${
-                client?.displayName ? ` - Name: ${client?.displayName}\n\n` : ""
-              }${
-                client?.phoneNumber
-                  ? ` -  Phone: ${client?.phoneNumber}\n\n`
-                  : ""
-              }`,
+              text: client?.email,
             },
             {
               type: "mrkdwn",
-              text: "*Device*",
+              text: "*REQUIRES CLIENT INFO*",
             },
             {
               type: "plain_text",
-              text: JSON.stringify(device) || "Unknown",
+              text: requiresInfo ? "Yes" : "No",
+            },
+            {
+              type: "mrkdwn",
+              text: "*PATIENTS*",
+            },
+            {
+              type: "plain_text",
+              text: `${patients?.length}`,
             },
           ],
         },

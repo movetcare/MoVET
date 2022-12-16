@@ -217,13 +217,7 @@ or aggressive towards humans or other pets? Anything that would make your pet mo
 comfortable with us for their visit would be great! We can offer anti-anxiety medications ahead of
 appointments for some patients that might need a little help relaxing around us.</p><p><i>Please reply to this email <b>before your appointment</b> should 
 you feel your pet(s) needs more options, such as anxiolytics and / or supplements to continue to 
-make your pet's visit more comfortable. We thank you in advance for keeping our staff safe!</i></p><p><b>COVID-19 Waiver:</b> By attending this appointment, you are confirming that, to the best of 
-your knowledge, you nor anyone in your household has not had any symptoms of COVID-19 
-(such as fever, chills, cough, shortness of breath or difficulty breathing, fatigue, muscle or body 
-aches, headache, new loss of taste or smell, sore throat, congestion or runny nose, nausea or 
-vomiting) nor have you or any member of your household tested positive to the COVID-19 virus 
-in the last 14 days. <i>Please cancel and reschedule your appointment (<a href="https://movetcare.com/get-the-app" target="_blank">using our mobile app</a>) for 
-another day/time if any of the above is true.</i> No cancellation charge will apply in this case.</p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
+make your pet's visit more comfortable. We thank you in advance for keeping our staff safe!</i></p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
     if (DEBUG) console.log("emailText -> ", emailText);
     const emailConfig: EmailConfiguration = {
       to: email,

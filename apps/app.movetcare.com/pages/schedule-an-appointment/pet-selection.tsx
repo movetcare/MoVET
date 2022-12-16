@@ -131,24 +131,20 @@ export default function PetSelection() {
   };
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    setLoadingMessage("Saving Contact Info...");
+    setLoadingMessage("Saving Your Selection...");
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
       if (token) {
         try {
-          const session = JSON.parse(
-            window.localStorage.getItem("bookingSession") as string
-          );
           console.log("session", session);
           const { data: result }: any = await httpsCallable(
             functions,
             "scheduleAppointment"
           )({
-            contactInfo: {
+            petSelection: {
               ...data,
-              uid: session?.client?.uid,
-              requiresInfo: session?.client?.requiresInfo,
             },
+            establishCareExamRequired,
             id: session?.id,
             device: navigator.userAgent,
             token,
@@ -161,12 +157,10 @@ export default function PetSelection() {
                 "bookingSession",
                 JSON.stringify(result)
               );
-              if (result?.client?.requiresInfo)
-                router.push("/schedule-an-appointment/contact-info");
-              else if (result?.patients?.length > 0)
-                router.push("/schedule-an-appointment/pet-selection");
-              else if (result?.patients?.length === 0)
-                router.push("/schedule-an-appointment/add-a-pet");
+              if (result?.selectedPatients?.length > 0)
+                if (result?.establishCareExamRequired)
+                  router.push("/schedule-an-appointment/wellness-check");
+                else router.push("/schedule-an-appointment/location-selection");
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
