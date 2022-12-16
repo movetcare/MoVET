@@ -6,11 +6,11 @@ import {
   admin,
   stripe,
 } from "../../config/config";
-import { updateProVetAppointment } from "../../integrations/provet/entities/appointment/updateProVetAppointment";
-import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
-import { updateProVetPatient } from "../../integrations/provet/entities/patient/updateProVetPatient";
+// import { updateProVetAppointment } from "../../integrations/provet/entities/appointment/updateProVetAppointment";
+// import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
+// import { updateProVetPatient } from "../../integrations/provet/entities/patient/updateProVetPatient";
 import { sendNotification } from "../../notifications/sendNotification";
-import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
+// import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 const DEBUG = true;
 export const resetTestData: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
@@ -53,56 +53,56 @@ export const resetTestData: Promise<Response> = functions
         )
         .catch((error: any) => DEBUG && console.error(error));
 
-      const client = await fetchEntity("client", 5125);
+      // const client = await fetchEntity("client", 5125);
 
-      const proVetPatientIds: Array<number> = [];
-      if (client?.patients.length)
-        client?.patients.map((patient: string) =>
-          proVetPatientIds.push(getProVetIdFromUrl(patient) as number)
-        );
+      // const proVetPatientIds: Array<number> = [];
+      // if (client?.patients.length)
+      //   client?.patients.map((patient: string) =>
+      //     proVetPatientIds.push(getProVetIdFromUrl(patient) as number)
+      //   );
 
-      if (DEBUG) console.log("proVetPatientIds", proVetPatientIds);
+      // if (DEBUG) console.log("proVetPatientIds", proVetPatientIds);
 
-      let proVetAppointmentIds: Array<number> = [];
+      // let proVetAppointmentIds: Array<number> = [];
 
-      if (DEBUG)
-        console.log(
-          "QUERY STRING =>",
-          `?client__eq=${client?.id}&active=1
-          &start__gte=${new Date().toISOString().split("T")[0]}%2000:00%2B00:00`
-        );
-      const appointments = await fetchEntity(
-        "appointment",
-        null,
-        `?client__eq=${client?.id}&active=1&start__gte=${
-          new Date().toISOString().split("T")[0]
-        }%2000:00%2B00:00`
-      );
-      if (appointments.length)
-        proVetAppointmentIds = appointments.map(
-          (appointment: any) => appointment?.id
-        );
+      // if (DEBUG)
+      //   console.log(
+      //     "QUERY STRING =>",
+      //     `?client__eq=${client?.id}&active=1
+      //     &start__gte=${new Date().toISOString().split("T")[0]}%2000:00%2B00:00`
+      //   );
+      // const appointments = await fetchEntity(
+      //   "appointment",
+      //   null,
+      //   `?client__eq=${client?.id}&active=1&start__gte=${
+      //     new Date().toISOString().split("T")[0]
+      //   }%2000:00%2B00:00`
+      // );
+      // if (appointments.length)
+      //   proVetAppointmentIds = appointments.map(
+      //     (appointment: any) => appointment?.id
+      //   );
 
-      if (proVetAppointmentIds.length) {
-        if (DEBUG)
-          console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
-        Promise.all(
-          proVetAppointmentIds.map((id: number) =>
-            updateProVetAppointment({ id, active: 0 })
-          )
-        );
-      } else if (DEBUG)
-        console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
+      // if (proVetAppointmentIds.length) {
+      //   if (DEBUG)
+      //     console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
+      //   Promise.all(
+      //     proVetAppointmentIds.map((id: number) =>
+      //       updateProVetAppointment({ id, active: 0 })
+      //     )
+      //   );
+      // } else if (DEBUG)
+      //   console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
 
-      if (proVetPatientIds.length) {
-        if (DEBUG) console.log("ARCHIVING PATIENTS: ", proVetPatientIds);
-        await Promise.all(
-          proVetPatientIds.map(
-            async (id: number) =>
-              await updateProVetPatient({ id: `${id}`, archived: true })
-          )
-        );
-      } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
+      // if (proVetPatientIds.length) {
+      //   if (DEBUG) console.log("ARCHIVING PATIENTS: ", proVetPatientIds);
+      //   await Promise.all(
+      //     proVetPatientIds.map(
+      //       async (id: number) =>
+      //         await updateProVetPatient({ id: `${id}`, archived: true })
+      //     )
+      //   );
+      // } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
 
       const paymentMethods = await stripe.paymentMethods
         .list({
@@ -116,20 +116,19 @@ export const resetTestData: Promise<Response> = functions
           (paymentMethod) => paymentMethod?.id
         );
         if (DEBUG) console.log("paymentMethodIds", paymentMethodIds);
-        await Promise.all(
-          paymentMethodIds.map(
-            async (paymentMethodId: string) =>
-              await stripe.paymentMethods
-                .detach(paymentMethodId)
-                .then(
-                  () =>
-                    DEBUG &&
-                    console.log(
-                      "Successfully Deleted Client Payment Method",
-                      paymentMethodId
-                    )
-                )
-                .catch((error: any) => DEBUG && console.error(error))
+        Promise.all(
+          paymentMethodIds.map((paymentMethodId: string) =>
+            stripe.paymentMethods
+              .detach(paymentMethodId)
+              .then(
+                () =>
+                  DEBUG &&
+                  console.log(
+                    "Successfully Deleted Client Payment Method",
+                    paymentMethodId
+                  )
+              )
+              .catch((error: any) => DEBUG && console.error(error))
           )
         ).catch((error: any) => DEBUG && console.error(error));
       }

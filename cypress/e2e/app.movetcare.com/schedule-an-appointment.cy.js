@@ -1,10 +1,13 @@
 describe("schedule-an-appointment-flow", () => {
-  beforeEach(() => {
+  it("can schedule an appointment as existing client", () => {
+    cy.request(
+      "POST",
+      "http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/app/config/",
+      { apiKey: "L9At3HGmvRDuyi7TTX", type: "breeds" }
+    );
     cy.request(
       "http://localhost:5001/movet-care-staging/us-central1/resetTestData"
     );
-  });
-  it("can schedule an appointment as existing client", () => {
     cy.visit("http://localhost:3001/schedule-an-appointment");
     cy.get("form input[name='email']").type(
       "alex.rodriguez+TEST@MOVETCARE.COM"
@@ -13,7 +16,7 @@ describe("schedule-an-appointment-flow", () => {
       .contains("Continue")
       .should("be.visible")
       .click();
-
+    cy.wait(5000);
     cy.get("form input[name='firstName']").type("TEST");
     cy.get("form input[name='lastName']").type("CLIENT - DO NOT DELETE");
     cy.get("form input[name='phone-number']").type("2222222222");
@@ -21,7 +24,7 @@ describe("schedule-an-appointment-flow", () => {
       .contains("Continue")
       .should("be.visible")
       .click();
-
+    cy.wait(1000);
     cy.get("form #dog").click();
     cy.get("form #male").click();
     cy.get("form button.switch-input").click();
@@ -42,10 +45,11 @@ describe("schedule-an-appointment-flow", () => {
       .contains("Continue")
       .should("be.visible")
       .click();
-
+    cy.wait(1000);
     cy.get("span").contains("What are Establish Care Exams?").click();
     cy.get("button").contains("CLOSE").click();
     cy.get("button").contains("Add a Pet").click();
+    cy.wait(1000);
     cy.get("form #cat").click();
     cy.get("form #female").click();
     cy.get("form button.switch-input").click();
