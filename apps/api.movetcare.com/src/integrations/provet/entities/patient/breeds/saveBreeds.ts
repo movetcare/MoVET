@@ -5,15 +5,9 @@ export const saveBreeds = async (
   type: "canine" | "feline"
 ): Promise<boolean> => {
   const breeds = breedData.map(
-    ({value, label}: {value: number; label: string}) => ({
+    ({ value, label }: { value: number; label: string }) => ({
       id: value.toString(),
       title: label,
-    })
-  );
-  const newBreeds = breedData.map(
-    ({value, label}: {value: number; label: string}) => ({
-      value: value.toString(),
-      label,
     })
   );
 
@@ -36,27 +30,5 @@ export const saveBreeds = async (
   )
     .then(() => true)
     .catch((error: any) => throwError(error));
-
-  const didUpdateNewBreedsList = await Promise.all(
-    newBreeds.map(async (breed: { value: string; label: string }) => {
-      if (DEBUG) console.log("BREED", breed);
-      await admin
-        .firestore()
-        .collection("breeds")
-        .doc(`${type}`)
-        .set(
-          {
-            options: FieldValue.arrayUnion(breed),
-            updatedOn: new Date(),
-          },
-          { merge: true }
-        )
-        .then(() => true)
-        .catch((error: any) => throwError(error));
-    })
-  )
-    .then(() => true)
-    .catch((error: any) => throwError(error));
-  if (didUpdateOldBreedsList && didUpdateNewBreedsList) return true;
-  else return false;
+  return didUpdateOldBreedsList;
 };

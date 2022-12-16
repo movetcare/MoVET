@@ -9,10 +9,11 @@
   ],
   "scripts": {
     "start": "pnpm run config:env && pnpm run kill:emulator && turbo run dev --parallel",
+    "start:test": "pnpm run config:env && pnpm run kill:emulator && turbo run dev:test --parallel",
     "build": "pnpm run config:env && turbo run build",
     "dev": "pnpm run start",
     "lint": "turbo run lint",
-    "test": "start-server-and-test start 3000 test:platform",
+    "test": "start-server-and-test start:test 3000 test:platform",
     "test:platform": "sleep 60 && ./node_modules/.bin/cypress run",
     "open:test": "pnpm cypress open",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",

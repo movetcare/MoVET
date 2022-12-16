@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "op run --env-file='./.env.local' -- next dev --port 3002",
+    "dev:test": "op run --env-file='./.env.local' -- next dev --port 3002",
     "build": "op run --env-file='./.env.local' -- next build",
     "build:prod": "next build",
     "start": "next start",
