@@ -5,12 +5,16 @@ import { admin, DEBUG } from "../../config/config";
 import { getActiveBookingSession } from "./getActiveBookingSession";
 import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
-import type { Booking, BookingError } from "../../types/booking";
+import type {
+  Booking,
+  BookingError,
+  BookingResponse,
+} from "../../types/booking";
 
 export const handleUnauthenticatedBookingVerification = async (
   email: string,
   device: string
-): Promise<Booking | BookingError | false> => {
+): Promise<Booking | BookingResponse | BookingError | false> => {
   if (DEBUG)
     console.log(
       "handleUnauthenticatedBookingVerification => FETCHING USER DETAILS FOR: ",
@@ -57,7 +61,7 @@ export const handleUnauthenticatedBookingVerification = async (
           ...((await getActiveBookingSession(
             (await getAuthUserByEmail(email)) as UserRecord,
             device
-          )) as Booking),
+          )) as BookingResponse),
         };
     }
     return await handleFailedBooking(

@@ -36,6 +36,19 @@ export const resetTestData: Promise<Response> = functions
           .catch((error: any) => DEBUG && console.error(error));
         await admin
           .firestore()
+          .collection("bookings")
+          .where("client.uid", "==", "5125")
+          .get()
+          .then((querySnapshot: any) =>
+            querySnapshot.forEach((doc: any) => {
+              doc.ref.delete();
+              DEBUG &&
+                console.log("Successfully Deleted Booking Document", doc.id);
+            })
+          )
+          .catch((error: any) => DEBUG && console.error(error));
+        await admin
+          .firestore()
           .collection("clients")
           .doc("5125")
           .delete()
@@ -55,7 +68,7 @@ export const resetTestData: Promise<Response> = functions
               //if (doc.data()?.id !== 5747) {
               doc.ref.delete();
               DEBUG &&
-                console.log("Successfully Deleted Client Document", doc.id);
+                console.log("Successfully Deleted Patient Document", doc.id);
               //}
             })
           )

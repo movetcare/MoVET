@@ -1,16 +1,9 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-import type {
-  BookingError,
-  BookingResponse,
-  Booking,
-  PatientData,
-} from "../../types/booking";
+import type { BookingError, BookingResponse } from "../../types/booking";
 import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
 import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
-import { getCustomerId } from "../../utils/getCustomerId";
 import { handleFailedBooking } from "./handleFailedBooking";
 import { getActiveBookingSession } from "../verification/getActiveBookingSession";
-import { getAllActivePatients } from "./getAllActivePatients";
 import { verifyClientInfo } from "./verifyClientInfo";
 
 export const setupNewBookingSession = async ({
@@ -25,25 +18,17 @@ export const setupNewBookingSession = async ({
   if (isExistingClient) {
     const authUser: UserRecord | null = await getAuthUserByEmail(email);
     if (authUser) {
-      const booking: Booking | false = await getActiveBookingSession(
+      const session: BookingResponse | false = await getActiveBookingSession(
         authUser,
         device
       );
-      const patients: Array<PatientData> | BookingError | any =
-        await getAllActivePatients(authUser.uid);
-      const customer: string = await getCustomerId(authUser.uid);
       const requiresInfo = await verifyClientInfo(authUser);
-      if (patients && customer && booking) {
+      if (session) {
         return {
-          patients,
-          id: booking.id,
+          ...session,
           client: { uid: authUser?.uid, requiresInfo },
         };
-      } else
-        await handleFailedBooking(
-          { email, device, patients, customer },
-          "FAILED TO GET DATA"
-        );
+      } else await handleFailedBooking({ email, device }, "FAILED TO GET DATA");
     } else {
       return await handleFailedBooking(
         { email, device },

@@ -64,7 +64,6 @@ export default function ScheduleAnAppointment() {
             device: navigator.userAgent,
             token,
           });
-          console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
             if (result?.client?.uid && result?.id) {
@@ -74,21 +73,21 @@ export default function ScheduleAnAppointment() {
               );
               if (result?.client?.requiresInfo)
                 router.push("/schedule-an-appointment/contact-info");
+              else if (result?.selectedPatients?.length > 0)
+                if (result?.establishCareExamRequired)
+                  router.push("/schedule-an-appointment/wellness-check");
+                else router.push("/schedule-an-appointment/location-selection");
               else if (result?.patients?.length > 0)
                 router.push("/schedule-an-appointment/pet-selection");
               else if (result?.patients?.length === 0)
                 router.push("/schedule-an-appointment/add-a-pet");
-              else if (result?.selectedPatients?.length > 0)
-                if (result?.selectedPatients?.establishCareExamRequired)
-                  router.push("/schedule-an-appointment/wellness-check");
-                else router.push("/schedule-an-appointment/location-selection");
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
           handleError(error);
         }
       }
-    } else handleError({ message: "FAILED CAPTCHA" });
+    } else handleError({ message: "SOMETHING WENT WRONG" });
   };
   useEffect(() => {
     if (
@@ -112,6 +111,10 @@ export default function ScheduleAnAppointment() {
       );
       if (session?.client?.requiresInfo)
         router.push("/schedule-an-appointment/contact-info");
+      else if (session?.selectedPatients?.length > 0)
+        if (session?.establishCareExamRequired)
+          router.push("/schedule-an-appointment/wellness-check");
+        else router.push("/schedule-an-appointment/location-selection");
       else if (session?.patients?.length > 0)
         router.push("/schedule-an-appointment/pet-selection");
       else if (session?.patients?.length === 0)

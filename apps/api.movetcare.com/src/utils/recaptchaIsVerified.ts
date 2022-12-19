@@ -1,5 +1,9 @@
-import {DEBUG, recaptchaSecretKey, request, throwError} from "../config/config";
-
+import {
+  DEBUG,
+  recaptchaSecretKey,
+  request,
+  throwError,
+} from "../config/config";
 export const recaptchaIsVerified = async (token: string) =>
   await request
     .post(

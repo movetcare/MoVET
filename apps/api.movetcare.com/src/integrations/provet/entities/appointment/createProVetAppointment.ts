@@ -36,7 +36,7 @@ export const createProVetAppointment = async (
         duration,
         notes,
         active: 1,
-        type: 2,
+        type: 1,
         patients: patients.map(
           (patient: any) => `${proVetApiUrl}/patient/${patient}/`
         ),

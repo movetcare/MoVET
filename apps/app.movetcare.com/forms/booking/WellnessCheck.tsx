@@ -329,7 +329,7 @@ export const WellnessCheck = ({
                       Array.isArray(selected) && selected?.length > 1
                         ? "Pets DO NOT"
                         : "Pet DOES NOT"
-                    }  need emergency care`
+                    } need emergency care`
                   : "Skip"
               }
               onClick={handleSubmit(onSubmit)}

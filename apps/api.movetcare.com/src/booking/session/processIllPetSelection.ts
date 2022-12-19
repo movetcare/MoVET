@@ -3,31 +3,29 @@ import { sendNotification } from "../../notifications/sendNotification";
 import type { BookingError, BookingResponse } from "../../types/booking";
 import { handleFailedBooking } from "./handleFailedBooking";
 
-export const processPetSelection = async (
+export const processIllPetSelection = async (
   id: string,
-  selectedPets: Array<string>,
-  establishCareExamRequired: boolean
+  illPets: Array<string>
 ): Promise<BookingResponse | BookingError> => {
-  const data = {
-    id,
-    selectedPets,
-    establishCareExamRequired,
-  };
-  if (DEBUG) console.log("PET SELECTION DATA", data);
-  if (selectedPets?.length > 0) {
+  const data = { id, illPets };
+  if (DEBUG) console.log("ILL PETS DATA", data);
+  if (illPets?.length > 0) {
     const bookingRef = admin.firestore().collection("bookings").doc(id);
     await bookingRef
       .set(
         {
-          selectedPatients: selectedPets,
-          establishCareExamRequired,
+          illPatientSelection: illPets,
+          nextPatient: illPets[0],
           updatedOn: new Date(),
         },
         { merge: true }
       )
       .catch(async (error: any) => {
         throwError(error);
-        return await handleFailedBooking(error, "UPDATE PET SELECTION FAILED");
+        return await handleFailedBooking(
+          error,
+          "UPDATE ILL PET SELECTION FAILED"
+        );
       });
     const session = await bookingRef
       .get()
@@ -54,7 +52,7 @@ export const processPetSelection = async (
               },
               {
                 type: "plain_text",
-                text: "PET SELECTION",
+                text: "ILL PET SELECTION",
               },
               {
                 type: "mrkdwn",
@@ -62,15 +60,7 @@ export const processPetSelection = async (
               },
               {
                 type: "plain_text",
-                text: JSON.stringify(session.selectedPatients),
-              },
-              {
-                type: "mrkdwn",
-                text: "*VCPR Required*",
-              },
-              {
-                type: "plain_text",
-                text: establishCareExamRequired ? "Yes" : "No",
+                text: JSON.stringify(session.illPetSelection),
               },
             ],
           },
@@ -78,9 +68,7 @@ export const processPetSelection = async (
       },
     });
     return {
-      patients: session.patients,
-      selectedPatients: session.selectedPatients,
-      establishCareExamRequired: session.establishCareExamRequired,
+      ...session,
       id,
       client: {
         uid: session?.client?.uid,

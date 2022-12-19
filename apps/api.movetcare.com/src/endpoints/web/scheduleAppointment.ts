@@ -6,6 +6,7 @@ import { processContactInfo } from "../../booking/session/processContactInfo";
 import { setupNewBookingSession } from "../../booking/session/setupNewBookingSession";
 import { processAddAPet } from "../../booking/session/processAddAPet";
 import { processPetSelection } from "../../booking/session/processPetSelection";
+import { processIllPetSelection } from "../../booking/session/processIllPetSelection";
 const DEBUG = true;
 
 export const scheduleAppointment = functions
@@ -24,58 +25,33 @@ export const scheduleAppointment = functions
       addAPet,
       petSelection,
       establishCareExamRequired,
+      illPetSelection,
     } = data || {};
     if (token) {
       if (await recaptchaIsVerified(token)) {
         if (email) return await setupNewBookingSession(data);
-        else if (contactInfo && id) {
-          if (DEBUG) console.log("CONTACT INFO DATA", contactInfo);
-          if (
-            contactInfo?.firstName &&
-            contactInfo?.lastName &&
-            contactInfo?.phone &&
-            contactInfo?.uid &&
-            contactInfo?.requiresInfo
-          )
-            return await processContactInfo(id, contactInfo);
-          else
-            return await handleFailedBooking(
-              data,
-              "FAILED TO HANDLE CONTACT INFO"
-            );
-        } else if (addAPet && id) {
-          if (DEBUG) console.log("ADD A PET DATA", addAPet);
-          if (
-            addAPet?.name &&
-            addAPet?.type &&
-            addAPet?.gender &&
-            addAPet?.spayedOrNeutered &&
-            addAPet?.aggressionStatus &&
-            addAPet?.breed &&
-            addAPet?.birthday &&
-            addAPet?.weight
-          )
-            return await processAddAPet(id, addAPet);
-          else
-            return await handleFailedBooking(
-              data,
-              "FAILED TO HANDLE ADD A PET"
-            );
-        } else if (petSelection && id) {
-          if (DEBUG) console.log("PET SELECTION DATA", petSelection);
-          if (petSelection?.pets?.length > 0)
+        else if (id) {
+          if (contactInfo) return await processContactInfo(id, contactInfo);
+          else if (addAPet) return await processAddAPet(id, addAPet);
+          else if (petSelection)
             return await processPetSelection(
               id,
-              petSelection.pets,
+              Array.isArray(petSelection.pets)
+                ? petSelection.pets
+                : [petSelection.pets],
               establishCareExamRequired
             );
-          else
-            return await handleFailedBooking(
-              data,
-              "FAILED TO HANDLE PET SELECTION"
+          else if (illPetSelection)
+            return await processIllPetSelection(
+              id,
+              Array.isArray(illPetSelection?.illPets)
+                ? illPetSelection?.illPets
+                : [illPetSelection?.illPets]
             );
-        } else
-          return await handleFailedBooking(data, "FAILED TO HANDLE REQUEST");
+          else
+            return await handleFailedBooking(data, "FAILED TO HANDLE REQUEST");
+        }
+        return await handleFailedBooking(data, "FAILED TO GET SESSION");
       } else return await handleFailedBooking(data, "FAILED TO PASS CAPTCHA");
     } else return await handleFailedBooking(data, "MISSING TOKEN");
   });

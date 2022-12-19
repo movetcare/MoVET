@@ -1,13 +1,13 @@
 import {UserRecord} from "firebase-admin/lib/auth/user-record";
 import { admin, throwError, DEBUG } from "../../config/config";
-import type { Booking } from "../../types/booking";
+import type { BookingResponse } from "../../types/booking";
 import { startNewBooking } from "../session/startNewBooking";
 import { enforceOnlyOneActiveAppointmentBooking } from "./enforceOnlyOneActiveAppointmentBooking";
 
 export const getActiveBookingSession = async (
   user: UserRecord,
   device: string
-): Promise<Booking | false> =>
+): Promise<BookingResponse | false> =>
   await admin
     .firestore()
     .collection("bookings")

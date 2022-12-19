@@ -23,8 +23,9 @@ node_modules
 
 # testing
 coverage
-cypress/screenshots/
-cypress/videos/
+testing/results/screenshots/
+testing/results/videos/
+testing/results/downloads/
 # next.js
 .next/
 out/

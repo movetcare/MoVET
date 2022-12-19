@@ -5,7 +5,11 @@ import { handleFailedBooking } from "../../booking/session/handleFailedBooking";
 import { handleUnauthenticatedBookingVerification } from "../../booking/verification/handleUnauthenticatedBookingVerification";
 import { getActiveBookingSession } from "../../booking/verification/getActiveBookingSession";
 import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
-import type { Booking, BookingError } from "../../types/booking";
+import type {
+  Booking,
+  BookingError,
+  BookingResponse,
+} from "../../types/booking";
 
 export const verifyBooking = functions
   .runWith(defaultRuntimeOptions)
@@ -13,7 +17,7 @@ export const verifyBooking = functions
     async (
       data: any,
       context: any
-    ): Promise<Booking | BookingError | false> => {
+    ): Promise<Booking | BookingResponse | BookingError | false> => {
       if (DEBUG) {
         console.log(
           "verifyBooking => INCOMING REQUEST PAYLOAD verifyBooking => ",

@@ -1,9 +1,28 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
+  env: {},
+  retries: {
+    runMode: 3,
+    openMode: 0,
+  },
+  defaultCommandTimeout: 10000,
+  redirectionLimit: 3,
+  requestTimeout: 10000,
+  responseTimeout: 30000,
+  taskTimeout: 60000,
+  viewportHeight: 667,
+  viewportWidth: 375,
+  fixturesFolder: "testing/fixtures",
+  downloadsFolder: "testing/results/downloads",
+  screenshotsFolder: "testing/results/screenshots",
+  videosFolder: "testing/results/videos",
   e2e: {
-    setupNodeEvents(on, config) {
-      // implement node event listeners here
-    },
-  }
+    specPattern: "testing/e2e/**/*.cy.{js,jsx,ts,tsx}",
+    supportFile: "testing/support/e2e.{js,jsx,ts,tsx}",
+  },
+  component: {
+    specPattern: "testing/component/**/*.cy.{js,jsx,ts,tsx}",
+    supportFile: "testing/support/e2e.{js,jsx,ts,tsx}",
+  },
 });
