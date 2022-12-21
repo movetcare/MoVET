@@ -1,36 +1,20 @@
 import { faRedo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Transition, Dialog } from "@headlessui/react";
-import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { useRef, Fragment, useState } from "react";
-import { firestore } from "services/firebase";
-import { Booking } from "types/Booking";
 import { Loader } from "ui";
-import { Error } from "components/Error";
+import { useRouter } from "next/router";
 
-export const BookingFooter = ({ session }: { session: Booking }) => {
+export const BookingFooter = () => {
   const cancelButtonRef = useRef(null);
+  const router = useRouter();
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<any>(null);
-  const restartBooking = async () => {
+  const restartBooking = () => {
     setIsLoading(true);
-    await setDoc(
-      doc(firestore, "bookings", `${session.id}`),
-      {
-        step: "restart",
-        updatedOn: serverTimestamp(),
-      },
-      { merge: true }
-    )
-      .then(() => {
-        location.reload();
-        return false;
-      })
-      .catch((error: any) => {
-        setIsLoading(false);
-        setError(error);
-      });
+    localStorage.removeItem("email");
+    localStorage.removeItem("bookingSession");
+    router.replace("/");
   };
   return (
     <>
@@ -78,8 +62,6 @@ export const BookingFooter = ({ session }: { session: Booking }) => {
               <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                 {isLoading ? (
                   <Loader message="Restarting Appointment Booking..." />
-                ) : error ? (
-                  <Error error={error} />
                 ) : (
                   <>
                     <div className="sm:flex sm:items-start">
@@ -108,7 +90,7 @@ export const BookingFooter = ({ session }: { session: Booking }) => {
                       <button
                         type="button"
                         className="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-movet-black hover:bg-movet-red text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red sm:ml-3 sm:w-auto sm:text-sm ease-in-out duration-500"
-                        onClick={async () => await restartBooking()}
+                        onClick={() => restartBooking()}
                       >
                         YES
                       </button>

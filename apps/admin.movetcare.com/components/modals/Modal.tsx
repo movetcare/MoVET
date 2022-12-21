@@ -8,12 +8,12 @@ export const Modal = ({
   icon = faQuestion,
   title,
   text,
-  yesButtonText = 'OK',
-  cancelButtonText = 'CANCEL',
+  yesButtonText = "OK",
+  cancelButtonText = "Cancel",
   modalIsOpen = false,
   setModalIsOpen,
-  iconColor = 'black',
-  yesButtonColor = 'black',
+  iconColor = "black",
+  yesButtonColor = "black",
   callback,
 }: {
   icon?: any;
@@ -23,8 +23,8 @@ export const Modal = ({
   cancelButtonText?: string;
   modalIsOpen: boolean;
   setModalIsOpen: any;
-  iconColor?: 'red' | 'black' | 'green' | 'yellow';
-  yesButtonColor?: 'red' | 'black' | 'green' | 'yellow';
+  iconColor?: "red" | "black" | "green" | "yellow";
+  yesButtonColor?: "red" | "black" | "green" | "yellow";
   callback: any;
 }) => {
   const cancelButtonRef = useRef(null);

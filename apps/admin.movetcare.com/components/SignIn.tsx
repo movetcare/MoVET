@@ -212,7 +212,7 @@ export const SignIn = () => {
                       phone as string
                     )}`}
                     yesButtonText="SIGN IN"
-                    cancelButtonText="CANCEL"
+                    cancelButtonText="Cancel"
                     modalIsOpen={showTokenModal}
                     setModalIsOpen={setShowTokenModal}
                     iconColor="green"

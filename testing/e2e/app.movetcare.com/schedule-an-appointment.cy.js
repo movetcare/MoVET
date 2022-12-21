@@ -181,6 +181,11 @@ describe(
         "eq",
         "/schedule-an-appointment/wellness-check/"
       );
+      cy.get("p").contains("Restart").click();
+      cy.get("h2")
+        .contains("Restart Appointment Booking?")
+        .should("be.visible");
+      cy.get("button").contains("CANCEL").click();
       cy.get("h2").contains("Pet Wellness Check").should("be.visible");
       cy.get("span").contains("What are symptoms of minor illness?").click();
       cy.get("h2").contains("Minor Illness Symptoms").should("be.visible");
@@ -190,6 +195,55 @@ describe(
       cy.get("section button[type='submit']")
         .contains("My Pets DO NOT need emergency care")
         .click();
+      cy.location("pathname", { timeout: defaultTimeOut }).should(
+        "eq",
+        "/schedule-an-appointment/illness-selection/"
+      );
+      cy.get("h2").contains("Minor Illness").should("be.visible");
+      cy.get("legend").contains("Symptoms").should("be.visible");
+      cy.get("p").contains("Restart").click();
+      cy.get("h2")
+        .contains("Restart Appointment Booking?")
+        .should("be.visible");
+      cy.get("button").contains("CANCEL").click();
+      cy.get("p")
+        .contains("We're sorry to hear TEST DOG is not feeling well")
+        .should("be.visible");
+      cy.get("section label p").contains("Coughing").click();
+      cy.get("section label p").contains("Coughing").click();
+      cy.get("p.text-movet-red")
+        .contains("A symptom selection is required")
+        .should("be.visible");
+      cy.get("section label p").contains("Coughing").click();
+      cy.get("section label p").contains("Other").click();
+      cy.get("section button[type='submit']").contains("Continue").click();
+      cy.get("p.text-movet-red")
+        .contains("Please tell us more...")
+        .should("be.visible");
+      cy.get("textarea[name='details']").type("Test symptom notes...");
+      cy.get("section button[type='submit']").contains("Continue").click();
+      cy.location("pathname", { timeout: defaultTimeOut }).should(
+        "eq",
+        "/schedule-an-appointment/illness-selection/"
+      );
+      cy.get("h2").contains("Minor Illness").should("be.visible");
+      cy.get("legend").contains("Symptoms").should("be.visible");
+      cy.get("p")
+        .contains("We're sorry to hear TEST CAT 1 is not feeling well")
+        .should("be.visible");
+      cy.get("section label p").contains("Other").click();
+      cy.get("textarea[name='details']").type("Test symptom notes...");
+      cy.get("section button").contains("Continue").click();
+      cy.location("pathname", { timeout: defaultTimeOut }).should(
+        "eq",
+        "/schedule-an-appointment/location-selection/"
+      );
+      cy.get("h2").contains("Choose a Location").should("be.visible");
+      // cy.get("p").contains("Restart").click();
+      // cy.get("h2")
+      //   .contains("Restart Appointment Booking?")
+      //   .should("be.visible");
+      // cy.get("button").contains("CANCEL").click();
     });
   }
 );

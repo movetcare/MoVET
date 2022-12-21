@@ -19,6 +19,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { setTimeout } from "timers";
 import { object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Head from "next/head";
 
 export default function UpdatePaymentMethod() {
   const router = useRouter();
@@ -89,25 +90,16 @@ export default function UpdatePaymentMethod() {
 
   return (
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
+      <Head>
+        <title>Update Payment Method - MoVET</title>
+        <meta
+          name="description"
+          content="Update the default payment method for your MoVET account."
+        />
+      </Head>
       <main className="w-full flex-1 overflow-hidden">
         <AppHeader />
-        {mode === "kiosk" ? (
-          <section className="flex flex-col justify-center items-center max-w-xl mx-auto bg-white rounded-xl mb-8 p-8">
-            <QRCodeSVG
-              size={250}
-              value={
-                (window.location.hostname === "localhost"
-                  ? "http://localhost:3001"
-                  : "https://movetcare.com") +
-                `/payment/${email ? `?email=${email}` : ""}`
-              }
-            />
-            <p className="text-center mt-8 italic text-xl">
-              Scan the QR code above to update your payment method for MoVET
-              Care.
-            </p>
-          </section>
-        ) : success ? (
+        {success ? (
           <div className="text-center relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8">
             <FontAwesomeIcon icon={faCheckCircle} size="4x" color="#00A36C" />
             <h3 className="text-2xl tracking-tight text-movet-black font-parkinson mt-6">

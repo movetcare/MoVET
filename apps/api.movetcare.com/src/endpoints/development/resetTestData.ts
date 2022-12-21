@@ -6,13 +6,14 @@ import {
   admin,
   stripe,
   mobileClientApiKey,
+  DEBUG,
 } from "../../config/config";
 // import { updateProVetAppointment } from "../../integrations/provet/entities/appointment/updateProVetAppointment";
 // import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
 // import { updateProVetPatient } from "../../integrations/provet/entities/patient/updateProVetPatient";
 import { sendNotification } from "../../notifications/sendNotification";
 // import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
-const DEBUG = true;
+
 export const resetTestData: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {

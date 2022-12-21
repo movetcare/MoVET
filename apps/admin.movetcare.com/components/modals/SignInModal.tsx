@@ -11,12 +11,12 @@ export const SignInModal = ({
   icon = faQuestion,
   title,
   text,
-  yesButtonText = 'OK',
-  cancelButtonText = 'CANCEL',
+  yesButtonText = "OK",
+  cancelButtonText = "Cancel",
   modalIsOpen = false,
   setModalIsOpen,
-  iconColor = 'black',
-  yesButtonColor = 'black',
+  iconColor = "black",
+  yesButtonColor = "black",
   setToken,
 }: {
   icon?: any;
@@ -26,8 +26,8 @@ export const SignInModal = ({
   cancelButtonText?: string;
   modalIsOpen: boolean;
   setModalIsOpen: any;
-  iconColor?: 'red' | 'black' | 'green' | 'yellow';
-  yesButtonColor?: 'red' | 'black' | 'green' | 'yellow';
+  iconColor?: "red" | "black" | "green" | "yellow";
+  yesButtonColor?: "red" | "black" | "green" | "yellow";
   setToken: any;
 }) => {
   const cancelButtonRef = useRef(null);
@@ -36,9 +36,9 @@ export const SignInModal = ({
     handleSubmit,
     formState: { isDirty, errors },
   } = useForm({
-    mode: 'onSubmit',
+    mode: "onSubmit",
     defaultValues: {
-      code: '',
+      code: "",
     },
   });
   const onSubmit = (data: { code: string }) => {
@@ -122,7 +122,7 @@ export const SignInModal = ({
                   className={`bg-movet-${yesButtonColor} w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`}
                   onClick={handleSubmit(onSubmit as any)}
                   icon={faPaw}
-                  iconSize={'sm'}
+                  iconSize={"sm"}
                   color="black"
                 />
                 <button

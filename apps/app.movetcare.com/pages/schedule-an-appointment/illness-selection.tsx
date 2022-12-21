@@ -1,7 +1,7 @@
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, ErrorMessage, Loader } from "ui";
 import { faArrowRight, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,7 +11,6 @@ import { array, object, string, lazy } from "yup";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
 import { BookingHeader } from "components/booking/BookingHeader";
-
 import { BookingFooter } from "components/booking/BookingFooter";
 import TextInput from "components/inputs/TextInput";
 
@@ -32,7 +31,8 @@ export default function IllnessSelection() {
   const { mode } = router.query || {};
   const isAppMode = mode === "app";
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [loadingMessage, setLoadingMessage] = useState<string | null>(null);
+  const [loadingMessage, setLoadingMessage] =
+    useState<string>("Loading Session...");
   const [error, setError] = useState<any>(null);
   const [session, setSession] = useState<any>();
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -47,17 +47,16 @@ export default function IllnessSelection() {
   }, [router]);
   useEffect(() => {
     setIsLoading(true);
-    console.log(session);
+    setLoadingMessage("Loading Pet...");
+    console.log("session", session?.nextPatient);
     if (session?.nextPatient) {
       session?.patients.forEach((patient: any) =>
-        patient?.id === session?.nextPatient &&
-        patient?.illnessDetails === undefined
-          ? setPet(patient)
-          : null
+        patient?.id === session?.nextPatient ? setPet(patient) : null
       );
       setIsLoading(false);
-    }
-  }, [session]);
+    } else if (session?.nextPatient === null && router)
+      router.push("/schedule-an-appointment");
+  }, [session, router]);
   const {
     handleSubmit,
     watch,
@@ -99,7 +98,7 @@ export default function IllnessSelection() {
   const onSubmit = async (data: any) => {
     console.log("data", data);
     setIsLoading(true);
-    setLoadingMessage("Saving Your Selection...");
+    setLoadingMessage("Processing, please wait...");
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
       if (token) {
@@ -128,6 +127,7 @@ export default function IllnessSelection() {
               );
               if (result?.nextPatient)
                 router.push("/schedule-an-appointment/illness-selection");
+              else router.push("/schedule-an-appointment/location-selection");
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
@@ -147,7 +147,7 @@ export default function IllnessSelection() {
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
             {isLoading ? (
-              <Loader message={loadingMessage || `Loading Wellness Check...`} />
+              <Loader message={loadingMessage} />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (
@@ -222,7 +222,7 @@ export default function IllnessSelection() {
                     onClick={handleSubmit(onSubmit)}
                   />
                 </div>
-                <BookingFooter session={session} />
+                <BookingFooter />
               </>
             )}
           </section>

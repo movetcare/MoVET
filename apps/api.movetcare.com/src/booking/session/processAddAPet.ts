@@ -183,7 +183,7 @@ export const processAddAPet = async (
                   },
                   {
                     type: "plain_text",
-                    text: type,
+                    text: type === "dog" ? ":dog:" : ":cat:",
                   },
                   {
                     type: "mrkdwn",

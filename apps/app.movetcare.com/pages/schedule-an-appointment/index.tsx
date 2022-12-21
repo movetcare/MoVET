@@ -73,10 +73,6 @@ export default function ScheduleAnAppointment() {
               );
               if (result?.client?.requiresInfo)
                 router.push("/schedule-an-appointment/contact-info");
-              else if (result?.selectedPatients?.length > 0)
-                if (result?.establishCareExamRequired)
-                  router.push("/schedule-an-appointment/wellness-check");
-                else router.push("/schedule-an-appointment/location-selection");
               else if (result?.patients?.length > 0)
                 router.push("/schedule-an-appointment/pet-selection");
               else if (result?.patients?.length === 0)
@@ -109,8 +105,8 @@ export default function ScheduleAnAppointment() {
       const session = JSON.parse(
         window.localStorage.getItem("bookingSession") as string
       );
-      if (session?.client?.requiresInfo)
-        router.push("/schedule-an-appointment/contact-info");
+      if (session?.nextPatient)
+        router.push("/schedule-an-appointment/illness-selection");
       else if (session?.selectedPatients?.length > 0)
         if (session?.establishCareExamRequired)
           router.push("/schedule-an-appointment/wellness-check");
@@ -119,6 +115,8 @@ export default function ScheduleAnAppointment() {
         router.push("/schedule-an-appointment/pet-selection");
       else if (session?.patients?.length === 0)
         router.push("/schedule-an-appointment/add-a-pet");
+      else if (session?.client?.requiresInfo)
+        router.push("/schedule-an-appointment/contact-info");
     } else if (window.localStorage.getItem("email") && executeRecaptcha) {
       reset({
         email: window.localStorage.getItem("email") || "",

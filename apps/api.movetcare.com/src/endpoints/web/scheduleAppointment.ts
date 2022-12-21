@@ -1,4 +1,4 @@
-import { functions, defaultRuntimeOptions } from "../../config/config";
+import { functions, defaultRuntimeOptions, DEBUG } from "../../config/config";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 import { handleFailedBooking } from "../../booking/session/handleFailedBooking";
 import type { BookingError, BookingResponse } from "../../types/booking";
@@ -7,7 +7,7 @@ import { setupNewBookingSession } from "../../booking/session/setupNewBookingSes
 import { processAddAPet } from "../../booking/session/processAddAPet";
 import { processPetSelection } from "../../booking/session/processPetSelection";
 import { processIllPetSelection } from "../../booking/session/processIllPetSelection";
-const DEBUG = true;
+import { processIllnessDetails } from "../../booking/session/processIllnessDetails";
 
 export const scheduleAppointment = functions
   .runWith(defaultRuntimeOptions)
@@ -26,6 +26,7 @@ export const scheduleAppointment = functions
       petSelection,
       establishCareExamRequired,
       illPetSelection,
+      illnessDetails,
     } = data || {};
     if (token) {
       if (await recaptchaIsVerified(token)) {
@@ -48,6 +49,8 @@ export const scheduleAppointment = functions
                 ? illPetSelection?.illPets
                 : [illPetSelection?.illPets]
             );
+          else if (illnessDetails)
+            return await processIllnessDetails(id, illnessDetails);
           else
             return await handleFailedBooking(data, "FAILED TO HANDLE REQUEST");
         }

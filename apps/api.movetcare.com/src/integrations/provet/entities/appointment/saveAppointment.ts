@@ -208,7 +208,7 @@ export const saveAppointment = async (
                 })
                 .catch((error: any) => {
                   if (error.code === "auth/user-not-found") {
-                    if (data?.client && environment.type !== "development")
+                    if (data?.client && environment.type === "production")
                       admin
                         .firestore()
                         .collection("tasks_queue")

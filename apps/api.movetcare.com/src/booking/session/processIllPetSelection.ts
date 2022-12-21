@@ -60,7 +60,7 @@ export const processIllPetSelection = async (
               },
               {
                 type: "plain_text",
-                text: JSON.stringify(session.illPetSelection),
+                text: JSON.stringify(session.illPatientSelection),
               },
             ],
           },
