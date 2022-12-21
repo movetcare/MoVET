@@ -13,7 +13,7 @@
     "build": "pnpm run config:env && turbo run build",
     "dev": "pnpm run start",
     "lint": "turbo run lint",
-    "test": "start-server-and-test start:test 3000 test:platform",
+    "test": "pnpm run build && start-server-and-test start:test 3000 test:platform",
     "test:platform": "sleep 60 && ./node_modules/.bin/cypress run",
     "open:test": "pnpm cypress open",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
