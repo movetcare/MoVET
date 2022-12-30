@@ -123,7 +123,7 @@ export const ChooseService = ({
               />
             </form>
           </div>
-          <BookingFooter session={session} />
+          <BookingFooter />
         </>
       )}
     </>

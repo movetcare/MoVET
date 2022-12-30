@@ -2,7 +2,7 @@ import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
 import { Fragment, useEffect, useRef, useState } from "react";
-import { Button, ErrorMessage, Loader } from "ui";
+import { Button, ErrorMessage, Loader, Modal } from "ui";
 import {
   faArrowRight,
   faCat,
@@ -205,102 +205,30 @@ export default function WellnessCheck() {
                   />
                   What are symptoms of minor illness?
                 </span>
-                <Transition.Root show={showExplainer} as={Fragment}>
-                  <Dialog
-                    as="div"
-                    className="fixed z-10 inset-0 overflow-y-auto"
-                    initialFocus={cancelButtonRef}
-                    onClose={() => setShowExplainer(false)}
-                  >
-                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                      <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-500"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-500"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                      >
-                        <Dialog.Overlay className="fixed inset-0 bg-movet-white bg-opacity-50 transition-opacity" />
-                      </Transition.Child>
-                      <span
-                        className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                        aria-hidden="true"
-                      >
-                        &#8203;
-                      </span>
-                      <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                        enterTo="opacity-100 translate-y-0 sm:scale-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                        leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                      >
-                        <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-                          {isLoading ? (
-                            <Loader />
-                          ) : error ? (
-                            <Error error={error} />
-                          ) : (
-                            <>
-                              <div className="sm:flex sm:items-start">
-                                <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10 text-movet-red">
-                                  <FontAwesomeIcon
-                                    icon={faStethoscope}
-                                    size="2x"
-                                  />
-                                </div>
-                                <div className="mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                  <Dialog.Title
-                                    as="h2"
-                                    className="text-xl uppercase leading-6 font-medium mt-0 text-center"
-                                  >
-                                    Minor Illness Symptoms
-                                  </Dialog.Title>
-                                  <div className="text-sm mt-6">
-                                    <ul className="list-disc ml-8 pb-2">
-                                      <li className="my-1">
-                                        Behavioral Concerns
-                                      </li>
-                                      <li className="my-1">Coughing</li>
-                                      <li className="my-1">
-                                        Minor Cuts & Scrapes
-                                      </li>
-                                      <li className="my-1">Ear Infection</li>
-                                      <li className="my-1">Eye Infection</li>
-                                      <li className="my-1">
-                                        Orthopedic / Limping Concerns
-                                      </li>
-                                      <li className="my-1">
-                                        Lumps / Bumps / Bruises
-                                      </li>
-                                      <li className="my-1">Skin / Itching</li>
-                                      <li className="my-1">
-                                        GI Concerns - Vomiting / Diarrhea
-                                      </li>
-                                    </ul>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="mt-5 flex flex-col mx-auto justify-center items-center">
-                                <button
-                                  type="button"
-                                  className="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-movet-black hover:bg-movet-red text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red sm:ml-3 sm:w-auto sm:text-sm ease-in-out duration-500"
-                                  onClick={() => setShowExplainer(false)}
-                                >
-                                  CLOSE
-                                </button>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </Transition.Child>
-                    </div>
-                  </Dialog>
-                </Transition.Root>
+                <Modal
+                  showModal={showExplainer}
+                  setShowModal={setShowExplainer}
+                  cancelButtonRef={cancelButtonRef}
+                  isLoading={isLoading}
+                  error={error ? <Error message={error} /> : undefined}
+                  content={
+                    <ul className="list-disc ml-8 pb-2">
+                      <li className="my-1">Behavioral Concerns</li>
+                      <li className="my-1">Coughing</li>
+                      <li className="my-1">Minor Cuts & Scrapes</li>
+                      <li className="my-1">Ear Infection</li>
+                      <li className="my-1">Eye Infection</li>
+                      <li className="my-1">Orthopedic / Limping Concerns</li>
+                      <li className="my-1">Lumps / Bumps / Bruises</li>
+                      <li className="my-1">Skin / Itching</li>
+                      <li className="my-1">
+                        GI Concerns - Vomiting / Diarrhea
+                      </li>
+                    </ul>
+                  }
+                  title="Minor Illness Symptoms"
+                  icon={faStethoscope}
+                />
                 <Transition
                   show={selected !== null && selected?.length > 0}
                   enter="transition ease-in duration-500"
@@ -369,7 +297,7 @@ export default function WellnessCheck() {
                     onClick={handleSubmit(onSubmit)}
                   />
                 </div>
-                <BookingFooter session={session} />
+                <BookingFooter />
               </>
             )}
           </section>

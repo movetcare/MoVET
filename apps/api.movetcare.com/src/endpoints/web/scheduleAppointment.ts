@@ -8,6 +8,8 @@ import { processAddAPet } from "../../booking/session/processAddAPet";
 import { processPetSelection } from "../../booking/session/processPetSelection";
 import { processIllPetSelection } from "../../booking/session/processIllPetSelection";
 import { processIllnessDetails } from "../../booking/session/processIllnessDetails";
+import { processLocation } from "../../booking/session/processLocation";
+import { processDateTime } from "../../booking/session/processDateTime";
 
 export const scheduleAppointment = functions
   .runWith(defaultRuntimeOptions)
@@ -27,6 +29,8 @@ export const scheduleAppointment = functions
       establishCareExamRequired,
       illPetSelection,
       illnessDetails,
+      location,
+      requestedDateTime,
     } = data || {};
     if (token) {
       if (await recaptchaIsVerified(token)) {
@@ -51,7 +55,11 @@ export const scheduleAppointment = functions
             );
           else if (illnessDetails)
             return await processIllnessDetails(id, illnessDetails);
-          else
+          else if (location) {
+            return await processLocation(data);
+          } else if (requestedDateTime) {
+            return await processDateTime(id, requestedDateTime);
+          } else
             return await handleFailedBooking(data, "FAILED TO HANDLE REQUEST");
         }
         return await handleFailedBooking(data, "FAILED TO GET SESSION");

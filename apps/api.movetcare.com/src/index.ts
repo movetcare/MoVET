@@ -9,7 +9,7 @@ export { refreshShifts } from "./cron/refreshShifts";
 export { refreshBreeds } from "./cron/refreshBreeds";
 export { updateTelehealthChatStatusToOffline } from "./cron/updateTelehealthChatStatusToOffline";
 
-// export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
+export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
 export { handleContactSubmission } from "./triggers/handleContactSubmission";
 export { handleFileUpload } from "./triggers/handleFileUpload";
 
@@ -36,6 +36,7 @@ export { updatePaymentMethod } from "./endpoints/web/updatePaymentMethod";
 export { verifyBooking } from "./endpoints/web/verifyBooking";
 export { scheduleAppointment } from "./endpoints/web/scheduleAppointment";
 export { getBreedsData } from "./endpoints/web/getBreedsData";
+export { getAppointmentLocations } from "./endpoints/web/getAppointmentLocations";
 
 export { cancelTerminalAction } from "./endpoints/admin/pos/cancelTerminalAction";
 export { refundPaymentIntent } from "./endpoints/admin/pos/refundPaymentIntent";

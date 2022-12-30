@@ -3,3 +3,4 @@ export * from "./src/forms";
 export * from "./src/announcement";
 export * from "./src/blog";
 export * from "./src/booking";
+export * from "./src/google-maps";

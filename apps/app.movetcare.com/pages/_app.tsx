@@ -15,7 +15,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
-        <title>Request an Appointment - MoVET</title>
+        <title>Schedule an Appointment - MoVET</title>
         <meta
           name="description"
           content="Sign in to your MoVET account to manage and access your pet's data and schedule appointments!"

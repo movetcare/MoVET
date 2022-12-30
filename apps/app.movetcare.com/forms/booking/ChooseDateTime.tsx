@@ -200,7 +200,7 @@ export const ChooseDateTime = ({
             />
           </form>
           <div className="mt-8">
-            <BookingFooter session={session} />
+            <BookingFooter />
           </div>
         </>
       )}

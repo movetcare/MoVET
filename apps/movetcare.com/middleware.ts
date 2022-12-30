@@ -48,15 +48,15 @@ export function middleware(request: NextRequest) {
     );
   } else if (
     request.nextUrl.pathname === "/book-an-appointment/" ||
-    request.nextUrl.pathname === "/request-an-appointment/" ||
+    request.nextUrl.pathname === "/schedule-an-appointment/" ||
     request.nextUrl.pathname === "/appointment-booking/"
   ) {
     return NextResponse.redirect(
       request.nextUrl.hostname === "localhost"
-        ? "http://localhost:3001/request-an-appointment"
+        ? "http://localhost:3001/schedule-an-appointment"
         : request.nextUrl.hostname.includes("stage.")
-        ? "https://stage.app.movetcare.com/request-an-appointment"
-        : "https://app.movetcare.com/request-an-appointment"
+        ? "https://stage.app.movetcare.com/schedule-an-appointment"
+        : "https://app.movetcare.com/schedule-an-appointment"
     );
   }
 }

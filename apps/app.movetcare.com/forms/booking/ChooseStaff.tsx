@@ -145,7 +145,7 @@ export const ChooseStaff = ({
               />
             </form>
           </div>
-          <BookingFooter session={session} />
+          <BookingFooter />
         </>
       )}
     </>

@@ -193,7 +193,7 @@ export const IllnessAssignment = ({
               onClick={handleSubmit(onSubmit)}
             />
           </div>
-          <BookingFooter session={session} />
+          <BookingFooter />
         </>
       )}
     </>

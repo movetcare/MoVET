@@ -1,5 +1,5 @@
 import { throwError } from "../../config/config";
-import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
+// import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { sendNotification } from "../sendNotification";
 export const sendBookingRequestAdminNotification = async ({
@@ -14,6 +14,7 @@ export const sendBookingRequestAdminNotification = async ({
     createdAt,
     patients,
     reason,
+    selectedPatients,
     requestedDateTime,
     location,
     address,
@@ -23,6 +24,34 @@ export const sendBookingRequestAdminNotification = async ({
     .then((doc: any) => doc.data())
     .catch((error: any) => throwError(error));
   const { email, displayName, phoneNumber } = client;
+
+  let allPatients = "";
+  selectedPatients.forEach((selectedPatient: any) => {
+    patients.map((patient: any) => {
+      if (selectedPatient === patient?.id)
+        allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
+          patient?.name
+        }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
+          patient?.gender
+        }</p><p><b>Minor Illness:</b> ${
+          patient?.hasMinorIllness
+            ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                patient?.illnessDetails?.notes
+              }`
+            : " NONE"
+        }</p>${
+          patient.aggressionStatus
+            ? `<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
+            : ""
+        }${
+          patient.vcprRequired
+            ? `<p><b>VCPR Required:</b> ${
+                patient?.vcprRequired ? "Yes" : "No"
+              }</p>`
+            : ""
+        }<p><b>-----------------------------------</b></p>`;
+    });
+  });
 
   const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
     ?.toDate()
@@ -35,40 +64,13 @@ export const sendBookingRequestAdminNotification = async ({
         )}</a></p>`
       : ""
   }${
-    Array.isArray(patients)
-      ? patients.map(
-          (patient: any) =>
-            `<p><b>Patient Name:</b> ${
-              patient?.name
-            }</p><p><b>Patient Species:</b> ${
-              patient?.species
-            }</p><p><b>Patient Gender:</b> ${
-              patient?.gender
-            }</p><p><b>Patient Minor Illness:</b> ${
-              patient?.hasMinorIllness
-                ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                    patient?.illnessDetails?.notes
-                  }`
-                : " NONE"
-            }</p>${
-              patient.aggressionStatus
-                ? `<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
-                : ""
-            }${
-              patient.vcprRequired
-                ? `<p><b>VCPR Required:</b> ${
-                    patient?.vcprRequired ? "Yes" : "No"
-                  }</p>`
-                : ""
-            }`
-        )
+    Array.isArray(patients) && Array.isArray(selectedPatients)
+      ? allPatients
       : ""
   }
   ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
     requestedDateTime?.date
-      ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(
-          requestedDateTime.date?.toDate()
-        )}</p>`
+      ? `<p><b>Requested Date:</b> ${requestedDateTime.date}</p>`
       : ""
   }${
     requestedDateTime?.time

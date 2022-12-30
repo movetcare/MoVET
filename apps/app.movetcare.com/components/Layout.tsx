@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { GoogleMapsProvider } from "providers/GoogleMapsProvider";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +23,19 @@ const Layout = ({ children }: any) => {
           appendTo: "body",
         }}
       >
-        {children}
+        {router.pathname.includes(
+          "/schedule-an-appointment/location-selection"
+        ) ? (
+          <GoogleMapsProvider
+            googleMapsApiKey={"AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"}
+            language="en"
+            libraries={["places"]}
+          >
+            {children}
+          </GoogleMapsProvider>
+        ) : (
+          children
+        )}
       </GoogleReCaptchaProvider>
     </main>
   );

@@ -1,39 +1,16 @@
-import {addNewPatient} from "../booking/addNewPatient";
-import {removeBookingAbandonmentNotifications} from "../booking/abandonment/removeBookingAbandonmentNotifications";
+import { removeBookingAbandonmentNotifications } from "../booking/abandonment/removeBookingAbandonmentNotifications";
 import { endBooking } from "../booking/endBooking";
-import { updateBookingClient } from "../booking/updateBookingClient";
-import { updateBookingPatients } from "../booking/updateBookingPatients";
-import { updateBookingPatientsWithIllness } from "../booking/updateBookingPatientsWithIllness";
-import { updateBookingPatientsWithSymptoms } from "../booking/updateBookingPatientsWithSymptoms";
-import { functions, DEBUG } from "./../config/config";
-import { updateBookingLocation } from "../booking/updateBookingLocation";
-import { updateBookingReason } from "../booking/updateBookingReason";
-import { updateBookingStaff } from "../booking/updateBookingStaff";
-import { updateBookingRequestedDateTime } from "../booking/updateBookingRequestedDateTime";
+import { functions } from "./../config/config";
 import { archiveBooking } from "../booking/archiveBooking";
 import type { Booking } from "../types/booking";
-import { updateBookingCancellation } from "../booking/updateBookingCancellation";
-
+import { updateBookingCancellation } from "../booking/session/updateBookingCancellation";
+const DEBUG = true;
 export const handleBookingUpdate = functions.firestore
   .document("bookings/{id}")
   .onWrite((change: any, context: any) => {
     const { id } = context.params || {};
     const data: Booking = change.after.data();
-    const {
-      client,
-      step,
-      patients,
-      newPatient,
-      vcprRequired,
-      isActive,
-      illPatients,
-      illnessDetails,
-      location,
-      reason,
-      selectedStaff,
-      requestedDateTime,
-      cancelReason,
-    } = data || {};
+    const { client, step, isActive, cancelReason } = data || {};
     if (DEBUG) console.log("handleBookingUpdate => DATA", { id, data });
     if (data !== undefined) {
       if (cancelReason) updateBookingCancellation(id, data);
@@ -49,41 +26,7 @@ export const handleBookingUpdate = functions.firestore
             );
           removeBookingAbandonmentNotifications(id, client?.email);
         }
-        if (
-          step === "started" &&
-          client.uid &&
-          client.email &&
-          client.firstName &&
-          client.lastName &&
-          client.phone
-        )
-          updateBookingClient(id, client);
-        else if (
-          (step === "started" || step === "patient-selection") &&
-          patients &&
-          vcprRequired !== undefined
-        )
-          updateBookingPatients(id, patients, vcprRequired);
-        else if (step === "add-pet" && newPatient && client.uid)
-          addNewPatient(id, client.uid, newPatient);
-        else if (step === "wellness-check" && illPatients && patients)
-          updateBookingPatientsWithIllness(id, patients, illPatients);
-        else if (step === "illness-assignment" && illnessDetails)
-          updateBookingPatientsWithSymptoms(id, patients, illnessDetails);
-        else if (step === "choose-location" && location)
-          updateBookingLocation(
-            id,
-            location,
-            vcprRequired as boolean,
-            illPatients as Array<string>
-          );
-        else if (step === "choose-reason" && reason)
-          updateBookingReason(id, reason);
-        else if (step === "choose-staff" && selectedStaff)
-          updateBookingStaff(id, selectedStaff);
-        else if (step === "choose-datetime" && requestedDateTime)
-          updateBookingRequestedDateTime(id, client.uid, requestedDateTime);
-        else if (step === "complete" && isActive) archiveBooking(id);
+        if (step === "complete" && isActive) archiveBooking(id);
         else if (step === "restart" || step === "cancelled-client")
           endBooking(id, data);
       } else {

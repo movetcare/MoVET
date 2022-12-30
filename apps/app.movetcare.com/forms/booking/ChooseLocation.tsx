@@ -419,7 +419,7 @@ export const ChooseLocation = ({
                           leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                          <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                          <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                             {isLoading ? (
                               <Loader />
                             ) : error ? (
@@ -480,7 +480,7 @@ export const ChooseLocation = ({
                                 <div className="mt-5 flex flex-col mx-auto justify-center items-center">
                                   <button
                                     type="button"
-                                    className="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-movet-black hover:bg-movet-red text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red sm:ml-3 sm:w-auto sm:text-sm ease-in-out duration-500"
+                                    className="w-full inline-flex justify-center rounded-lg border border-transparent hover:shadow-2xl px-4 py-2 bg-movet-black hover:bg-movet-red text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red sm:ml-3 sm:w-auto sm:text-sm ease-in-out duration-500"
                                     onClick={() => setShowExplainer(false)}
                                   >
                                     CLOSE
@@ -513,7 +513,7 @@ export const ChooseLocation = ({
               </div>
             </form>
           )}
-          <BookingFooter session={session} />
+          <BookingFooter />
         </>
       )}
     </>

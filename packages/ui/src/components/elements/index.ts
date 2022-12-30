@@ -7,3 +7,4 @@ export * from "./EmergencyWarning";
 export * from "./Loader";
 export * from "./AnalyticsTracker";
 export * from "./PopUpAd";
+export * from "./Modal";

@@ -1,4 +1,5 @@
 import { admin, DEBUG, throwError } from "../../config/config";
+import { updateProVetClient } from "../../integrations/provet/entities/client/updateProVetClient";
 import { sendNotification } from "../../notifications/sendNotification";
 import type {
   BookingError,
@@ -37,9 +38,15 @@ export const processContactInfo = async (
         throwError(error);
         return await handleFailedBooking(error, "UPDATE CLIENT INFO FAILED");
       });
+    const didUpdateProVetClient = await updateProVetClient({
+      firstName: firstName || "UNKNOWN",
+      lastName: lastName || "UNKNOWN",
+      phone: phone || "UNKNOWN",
+      id: uid,
+    });
     const patients: Array<PatientData> | BookingError | any =
       await getAllActivePatients(uid);
-    if (patients) {
+    if (patients && didUpdateProVetClient) {
       sendNotification({
         type: "slack",
         payload: {

@@ -36,11 +36,11 @@ export const ToggleInput = ({
       defaultValue={defaultValue}
       control={control}
       render={({ field: { onChange, onBlur, value } }: any) => (
-        <div className="flex flex-col sm:flex-row justify-center items-center w-full">
+        <div className="flex flex-col sm:flex-row justify-center items-center w-full px-4 sm:px-0">
           {options.map((option: { name: string; icon: any }, index: number) => (
             <div
               id={option.name}
-              className={`bg-movet-black rounded-full text-movet-white px-10 py-4 my-2 sm:my-0 mx-2 cursor-pointer hover:bg-movet-brown w-full flex justify-center items-center ${classNames(
+              className={`bg-movet-black rounded-full text-movet-white px-10 py-4 my-2 sm:my-0 mx-2 cursor-pointer hover:bg-movet-brown w-full flex justify-center items-center shadow-xl hover:shadow-2xl ease-in-out duration-500 ${classNames(
                 value !== option.name ? "bg-movet-black" : "bg-movet-brown"
               )}`}
               onBlur={onBlur}

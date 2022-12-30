@@ -86,45 +86,21 @@ export default function ScheduleAnAppointment() {
     } else handleError({ message: "SOMETHING WENT WRONG" });
   };
   useEffect(() => {
-    if (
-      window.localStorage.getItem("bookingSession") === null &&
-      email &&
-      executeRecaptcha
-    ) {
+    if ((window.localStorage.getItem("email") || email) && executeRecaptcha) {
       setIsLoading(true);
       setLoadingMessage("Processing, please wait...");
-      reset({ email: (email as string)?.toLowerCase()?.replaceAll(" ", "+") });
+      if (email)
+        reset({
+          email: (email as string)?.toLowerCase()?.replaceAll(" ", "+"),
+        });
+      else if (window.localStorage.getItem("email"))
+        reset({
+          email: window.localStorage.getItem("email") as string,
+        });
       handleSubmit(onSubmit)();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email, reset, executeRecaptcha]);
-  useEffect(() => {
-    if (window.localStorage.getItem("bookingSession")) {
-      setIsLoading(true);
-      setLoadingMessage("Loading session, please wait...");
-      const session = JSON.parse(
-        window.localStorage.getItem("bookingSession") as string
-      );
-      if (session?.nextPatient)
-        router.push("/schedule-an-appointment/illness-selection");
-      else if (session?.selectedPatients?.length > 0)
-        if (session?.establishCareExamRequired)
-          router.push("/schedule-an-appointment/wellness-check");
-        else router.push("/schedule-an-appointment/location-selection");
-      else if (session?.patients?.length > 0)
-        router.push("/schedule-an-appointment/pet-selection");
-      else if (session?.patients?.length === 0)
-        router.push("/schedule-an-appointment/add-a-pet");
-      else if (session?.client?.requiresInfo)
-        router.push("/schedule-an-appointment/contact-info");
-    } else if (window.localStorage.getItem("email") && executeRecaptcha) {
-      reset({
-        email: window.localStorage.getItem("email") || "",
-      });
-      handleSubmit(onSubmit)();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [executeRecaptcha]);
   return (
     <section className="w-full flex-1">
       <AppHeader />

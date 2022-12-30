@@ -239,11 +239,37 @@ describe(
         "/schedule-an-appointment/location-selection/"
       );
       cy.get("h2").contains("Choose a Location").should("be.visible");
-      // cy.get("p").contains("Restart").click();
-      // cy.get("h2")
-      //   .contains("Restart Appointment Booking?")
+      cy.get("p").contains("Restart").click();
+      cy.get("h2")
+        .contains("Restart Appointment Booking?")
+        .should("be.visible");
+      cy.get("button").contains("CANCEL").click();
+      cy.get("h2").contains("MoVET @ Belleview Station").should("be.visible");
+      cy.get("a")
+        .contains("4912 S Newport St, Denver CO 80237")
+        .should("be.visible");
+      cy.get("button[type='submit']").should("not.be.disabled");
+      cy.get("#Virtually").contains("Virtually").click();
+      cy.get("h2")
+        .contains("What can I expect in a Virtual Consultation?")
+        .should("be.visible");
+      cy.get("p").contains("What is VCPR?").click();
+      cy.get("button").contains("CLOSE").click();
+      cy.get("button[type='submit']").should("not.be.disabled");
+      cy.get("#Home").contains("Home").click();
+      cy.get("button[type='submit']").should("be.disabled");
+      cy.get("form .places-search").type("702 Westgate Ave");
+      cy.focused().tab();
+      cy.get("button[type='submit']").should("be.disabled");
+      // cy.get("p.text-movet-red")
+      //   .contains(
+      //     "MoVET does not currently service this area. Please enter a new address that is in (or near) the Denver Metro area."
+      //   )
       //   .should("be.visible");
-      // cy.get("button").contains("CANCEL").click();
+      cy.get("form .places-search").type("4912 S Newport Street Denver");
+      cy.focused().tab();
+      cy.get("button[type='submit']").should("be.disabled");
+      cy.get("#info").type("Apartment 2A (This is a test address)");
     });
   }
 );
