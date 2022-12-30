@@ -14,7 +14,6 @@ export type ClientInfo = {
 
 export type PatientData = {
   id: string;
-  value?: string;
   name: string;
   archived?: boolean;
   vcprRequired: boolean;

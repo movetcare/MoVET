@@ -75,8 +75,7 @@ export default function Home() {
                 router.push("/schedule-an-appointment/contact-info");
               else if (result?.patients?.length > 0)
                 router.push("/schedule-an-appointment/pet-selection");
-              else if (result?.patients?.length === 0)
-                router.push("/schedule-an-appointment/add-a-pet");
+              else router.push("/schedule-an-appointment/add-a-pet");
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
