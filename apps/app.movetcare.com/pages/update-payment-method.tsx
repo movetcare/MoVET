@@ -15,7 +15,6 @@ import Link from "next/link";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { functions } from "services/firebase";
-import { QRCodeSVG } from "qrcode.react";
 import { setTimeout } from "timers";
 import { object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";

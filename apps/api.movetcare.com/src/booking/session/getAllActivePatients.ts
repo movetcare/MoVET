@@ -15,7 +15,7 @@ export const getAllActivePatients = async (
       patients.forEach((patient: { data(): PatientData; id: string }) =>
         !patient.data().archived
           ? patientsArray.push({
-              id: patient.id,
+              id: patient.data()?.value || patient.id,
               name: patient.data().name,
               species: patient.data().species,
               vcprRequired: patient.data().vcprRequired,

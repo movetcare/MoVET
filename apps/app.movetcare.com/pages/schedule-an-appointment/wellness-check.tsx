@@ -1,7 +1,7 @@
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, ErrorMessage, Loader, Modal } from "ui";
 import {
   faArrowRight,
