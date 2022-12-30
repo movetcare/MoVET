@@ -112,8 +112,9 @@ export const sendAppointmentConfirmationEmail = async (
         : ""
     }${
       appointment?.instructions
-        ? `<p><b>Instructions</b>: ${appointment?.instructions}</p>`
-        : ""
+        ? `<p><b>Instructions: </b>${appointment?.instructions}</p>`
+        : // eslint-disable-next-line quotes
+          '<p><b>Medical Records:</b> If this appointment is for a new pet, please email (or have your previous vet email) their vaccine and medical records to <a href="mailto://info@movetcare.com" target="_blank">info@movetcare.com</a> <b>prior</b> to your appointment.</p>'
     }${
       phoneNumber &&
       (appointment?.locationType === "Home" ||
@@ -128,11 +129,6 @@ export const sendAppointmentConfirmationEmail = async (
       appointment?.locationType === "Home"
         ? "<p><b>Home Visit Trip Fee</b>: $60</p><p><b>*Additional charges will apply for add-on diagnostics, medications, pampering, etc.</b></p><p><i>A $60 cancellation fee will be charged if cancellation occurs within 24 hours of your appointment</i></p>"
         : ""
-    }${
-      appointment?.instructions
-        ? `<p><b>Instructions: </b>${appointment?.instructions}</p>`
-        : // eslint-disable-next-line quotes
-          '<p><b>Medical Records:</b> If this appointment is for a new pet, please email (or have your previous vet email) their vaccine and medical records to <a href="mailto://info@movetcare.com" target="_blank">info@movetcare.com</a> <b>prior</b> to your appointment.</p>'
     }<p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> (If you have completed a waiver/release for this pet in the past, then a new one is not necessary.)</p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.
   </p><p>Looking forward to meeting you,</p><p>- <a href="https://www.instagram.com/drlexiabramson/">Dr. A</a>, <a href="https://www.instagram.com/nessie_themovetpup/">Nessie</a>, and the <a href="https://www.facebook.com/MOVETCARE/">MoVET Team</a></p>`;
 
@@ -168,8 +164,9 @@ ${
         : ""
     }${
       appointment?.instructions
-        ? `<p><b>Instructions</b>: ${appointment?.instructions}</p>`
-        : ""
+        ? `<p><b>Instructions: </b>${appointment?.instructions}</p>`
+        : // eslint-disable-next-line quotes
+          '<p><b>Medical Records:</b> If this appointment is for a new pet, please email (or have your previous vet email) their vaccine and medical records to <a href="mailto://info@movetcare.com" target="_blank">info@movetcare.com</a> <b>prior</b> to your appointment.</p>'
     }${
       phoneNumber &&
       (appointment?.locationType === "Home" ||

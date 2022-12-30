@@ -1,4 +1,4 @@
-import { admin, DEBUG, throwError } from "../../config/config";
+import { admin, throwError } from "../../config/config";
 import { updateProVetClient } from "../../integrations/provet/entities/client/updateProVetClient";
 import { sendNotification } from "../../notifications/sendNotification";
 import type {
@@ -9,7 +9,7 @@ import type {
 } from "../../types/booking";
 import { getAllActivePatients } from "./getAllActivePatients";
 import { handleFailedBooking } from "./handleFailedBooking";
-
+const DEBUG = true;
 export const processContactInfo = async (
   id: string,
   { firstName, lastName, phone, uid, requiresInfo }: ClientInfo
@@ -44,6 +44,7 @@ export const processContactInfo = async (
       phone: phone || "UNKNOWN",
       id: uid,
     });
+    if (DEBUG) console.log("didUpdateProVetClient", didUpdateProVetClient);
     const patients: Array<PatientData> | BookingError | any =
       await getAllActivePatients(uid);
     if (patients && didUpdateProVetClient) {

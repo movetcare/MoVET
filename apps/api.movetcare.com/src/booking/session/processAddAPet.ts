@@ -1,5 +1,5 @@
 import client = require("@sendgrid/client");
-import { admin, DEBUG, throwError } from "../../config/config";
+import { admin, throwError } from "../../config/config";
 import { createProVetPatient } from "../../integrations/provet/entities/patient/createProVetPatient";
 import { updateCustomField } from "../../integrations/provet/entities/patient/updateCustomField";
 import { sendNotification } from "../../notifications/sendNotification";
@@ -13,7 +13,7 @@ import { moveFile } from "../../utils/moveFile";
 import { reverseDateStringMDY } from "../../utils/reverseDateStringMDY";
 import { getAllActivePatients } from "./getAllActivePatients";
 import { handleFailedBooking } from "./handleFailedBooking";
-
+const DEBUG = true;
 export const processAddAPet = async (
   id: string,
   {

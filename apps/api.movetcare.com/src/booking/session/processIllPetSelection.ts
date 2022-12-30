@@ -1,8 +1,8 @@
-import { admin, DEBUG, throwError } from "../../config/config";
+import { admin, throwError } from "../../config/config";
 import { sendNotification } from "../../notifications/sendNotification";
 import type { BookingError, BookingResponse } from "../../types/booking";
 import { handleFailedBooking } from "./handleFailedBooking";
-
+const DEBUG = true;
 export const processIllPetSelection = async (
   id: string,
   illPets: Array<string>

@@ -1,7 +1,7 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-import { admin, DEBUG, throwError } from "../../config/config";
+import { admin, throwError } from "../../config/config";
 import { handleFailedBooking } from "./handleFailedBooking";
-
+const DEBUG = true;
 export const verifyClientInfo = async (authUser: UserRecord) =>
   await admin
     .firestore()
