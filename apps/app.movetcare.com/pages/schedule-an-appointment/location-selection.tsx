@@ -230,8 +230,10 @@ export default function LocationSelection() {
       >
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
-            {isLoading || !isLoaded ? (
-              <Loader message={isLoaded ? loadingMessage : "Loading Map..."} />
+            {isLoading && !isLoaded ? (
+              <Loader
+                message={isLoaded ? loadingMessage : "Loading Please Wait..."}
+              />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (
