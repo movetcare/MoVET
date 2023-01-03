@@ -4,7 +4,7 @@ import type { BookingError, Booking } from "../../types/booking";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 import { handleFailedBooking } from "./handleFailedBooking";
-const DEBUG = true;
+const DEBUG = false;
 export const processDateTime = async (
   id: string,
   requestedDateTime: { date: string; time: string }

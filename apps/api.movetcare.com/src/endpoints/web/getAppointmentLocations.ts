@@ -4,7 +4,7 @@ import {
   functions,
   throwError,
 } from "../../config/config";
-const DEBUG = true;
+const DEBUG = false;
 export const getAppointmentLocations = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

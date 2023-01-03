@@ -1,7 +1,8 @@
-import {admin, throwError, DEBUG} from "../../../../../config/config";
-const {FieldValue} = require("firebase-admin/firestore");
+import { admin, throwError } from "../../../../../config/config";
+const { FieldValue } = require("firebase-admin/firestore");
+const DEBUG = false;
 export const saveBreeds = async (
-  breedData: Array<{value: number; label: string}>,
+  breedData: Array<{ value: number; label: string }>,
   type: "canine" | "feline"
 ): Promise<boolean> => {
   const breeds = breedData.map(
@@ -10,7 +11,7 @@ export const saveBreeds = async (
       title: label,
     })
   );
-
+  if (DEBUG) console.log("breeds", breeds);
   const didUpdateOldBreedsList = await Promise.all(
     breeds.map(async (breed: { id: string; title: string }) => {
       if (DEBUG) console.log("BREED", breed);
@@ -30,5 +31,6 @@ export const saveBreeds = async (
   )
     .then(() => true)
     .catch((error: any) => throwError(error));
+  if (DEBUG) console.log("didUpdateOldBreedsList", didUpdateOldBreedsList);
   return didUpdateOldBreedsList;
 };

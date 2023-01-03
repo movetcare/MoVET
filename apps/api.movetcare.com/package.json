@@ -15,7 +15,7 @@
     "dev": "pnpm run config:env && pnpm run emulate",
     "dev:test": "pnpm run config:env && pnpm run emulate",
     "watch": "tsc --watch --preserveWatchOutput",
-    "emulate": "firebase emulators:start --only auth,functions,firestore,pubsub,storage",
+    "emulate": "FUNCTIONS_EMULATOR_TIMEOUT_SECONDS=540s firebase emulators:start --only auth,functions,firestore,pubsub,storage",
     "start": "pnpm run dev",
     "init:config:dev": "curl -i -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/app/config/ && curl -i -v POST http://localhost:5001/movet-care-staging/us-central1/initTestUser",
     "init:config:stage": "curl -i -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST https://us-central1-movet-care-staging.cloudfunctions.net/incomingWebhook/app/config/",

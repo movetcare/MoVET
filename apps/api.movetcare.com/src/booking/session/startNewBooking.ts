@@ -5,7 +5,7 @@ import { createBookingAbandonmentNotifications } from "../abandonment/createBook
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { verifyClientDataExists } from "../../utils/auth/verifyClientDataExists";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-const DEBUG = true;
+const DEBUG = false;
 export const startNewBooking = async (
   client: UserRecord,
   device: string

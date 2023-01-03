@@ -1,7 +1,7 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { admin, throwError } from "../../config/config";
 import { handleFailedBooking } from "../../booking/session/handleFailedBooking";
-const DEBUG = true;
+const DEBUG = false;
 export const verifyClientDataExists = async (authUser: UserRecord) =>
   await admin
     .firestore()

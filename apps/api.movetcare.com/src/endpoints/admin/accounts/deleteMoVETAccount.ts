@@ -1,16 +1,19 @@
-import {functions, DEBUG, stripe, admin} from "../../../config/config";
-import {updateProVetAppointment} from "../../../integrations/provet/entities/appointment/updateProVetAppointment";
-import {updateProVetClient} from "../../../integrations/provet/entities/client/updateProVetClient";
-import {fetchEntity} from "../../../integrations/provet/entities/fetchEntity";
-import {updateProVetPatient} from "../../../integrations/provet/entities/patient/updateProVetPatient";
+import {
+  functions,
+  DEBUG,
+  stripe,
+  admin,
+  defaultRuntimeOptions,
+} from "../../../config/config";
+import { updateProVetAppointment } from "../../../integrations/provet/entities/appointment/updateProVetAppointment";
+import { updateProVetClient } from "../../../integrations/provet/entities/client/updateProVetClient";
+import { fetchEntity } from "../../../integrations/provet/entities/fetchEntity";
+import { updateProVetPatient } from "../../../integrations/provet/entities/patient/updateProVetPatient";
 import { sendNotification } from "../../../notifications/sendNotification";
 import { getProVetIdFromUrl } from "../../../utils/getProVetIdFromUrl";
 
 export const deleteMoVETAccount = functions
-  .runWith({
-    timeoutSeconds: 360,
-    memory: "1GB",
-  })
+  .runWith(defaultRuntimeOptions)
   .auth.user()
   .onDelete(async (user: any) => {
     if (DEBUG) console.log("deleteMoVETAccount =>", user?.email);
@@ -105,23 +108,23 @@ export const deleteMoVETAccount = functions
     if (DEBUG) console.log("customerId", customerId);
 
     if (customerId)
-       stripe.customers
-         .del(customerId)
-         .then(
-           (result) => DEBUG && console.log("STRIPE CUSTOMER DELETED: ", result)
-         );
+      stripe.customers
+        .del(customerId)
+        .then(
+          (result) => DEBUG && console.log("STRIPE CUSTOMER DELETED: ", result)
+        );
 
-     sendNotification({
-       type: "slack",
-       payload: {
-         message: `MoVET Account and Data Archived for ${
-           user?.email
-         } => ${JSON.stringify({
-           proVetClientIds,
-           proVetPatientIds,
-           proVetAppointmentIds,
-           customerId,
-         })}`,
-       },
-     });
+    sendNotification({
+      type: "slack",
+      payload: {
+        message: `MoVET Account and Data Archived for ${
+          user?.email
+        } => ${JSON.stringify({
+          proVetClientIds,
+          proVetPatientIds,
+          proVetAppointmentIds,
+          customerId,
+        })}`,
+      },
+    });
   });

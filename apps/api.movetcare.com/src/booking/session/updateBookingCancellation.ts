@@ -5,7 +5,7 @@ import type { Booking } from "../../types/booking";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
 
-const DEBUG = true;
+const DEBUG = false;
 export const updateBookingCancellation = async (
   id: string,
   {

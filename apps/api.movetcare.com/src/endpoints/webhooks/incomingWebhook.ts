@@ -1,12 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 import {Request, Response, NextFunction} from "express";
-import { admin, functions } from "../../config/config";
-const DEBUG = true;
-import {processProVetWebhook} from "../../integrations/provet/processWebhook";
-import {initProVetConfig} from "../../config/initConfig";
-import {processExpoWebhook} from "../../integrations/expo/processWebhook";
-import {processStripeWebhook} from "../../integrations/stripe/processWebhook";
+import { admin, defaultRuntimeOptions, functions } from "../../config/config";
+const DEBUG = false;
+import { processProVetWebhook } from "../../integrations/provet/processWebhook";
+import { initProVetConfig } from "../../config/initConfig";
+import { processExpoWebhook } from "../../integrations/expo/processWebhook";
+import { processStripeWebhook } from "../../integrations/stripe/processWebhook";
 
 const decodeJWT = async (
   req: Request,
@@ -40,7 +40,7 @@ const runAsync =
 
 const app = express();
 
-app.use(cors({origin: true}));
+app.use(cors({ origin: true }));
 
 app.use(
   express.json({
@@ -57,7 +57,7 @@ app.post("/stripe/webhook/", runAsync(processStripeWebhook));
 
 export const incomingWebhook: Promise<Response> = functions
   .runWith({
-    timeoutSeconds: 180,
-    memory: "1GB",
+    ...defaultRuntimeOptions,
+    memory: "2GB",
   })
   .https.onRequest(app);

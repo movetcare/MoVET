@@ -13,7 +13,7 @@ import { moveFile } from "../../utils/moveFile";
 import { reverseDateStringMDY } from "../../utils/reverseDateStringMDY";
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { handleFailedBooking } from "./handleFailedBooking";
-const DEBUG = true;
+const DEBUG = false;
 export const processAddAPet = async (
   id: string,
   {

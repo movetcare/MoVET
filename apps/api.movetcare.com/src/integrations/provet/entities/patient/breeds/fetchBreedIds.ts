@@ -1,5 +1,5 @@
 import {throwError, request} from "../../../../../config/config";
-
+const DEBUG = false;
 export const fetchBreedIds = async (
   breedListId: string
 ): Promise<Array<string> | boolean> =>
@@ -7,6 +7,7 @@ export const fetchBreedIds = async (
     .get(`/list/${breedListId}/`)
     .then(async (response: any) => {
       const { data } = response;
+      if (DEBUG) console.log("fetchBreedIds data", data);
       if (data.is_active) {
         const breeds: Array<string> = [];
         data.items.forEach((value: any) => {
@@ -14,6 +15,7 @@ export const fetchBreedIds = async (
           id = id.substring(id.lastIndexOf("/") + 1);
           breeds.push(id);
         });
+        if (DEBUG) console.log("fetchBreedIds breeds", breeds);
         return breeds;
       } else
         return throwError({

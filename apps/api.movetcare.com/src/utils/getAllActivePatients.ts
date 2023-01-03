@@ -1,7 +1,7 @@
 import { admin, throwError } from "../config/config";
 import type { BookingError, PatientBookingData } from "../types/booking";
 import { handleFailedBooking } from "../booking/session/handleFailedBooking";
-const DEBUG = true;
+const DEBUG = false;
 export const getAllActivePatients = async (
   uid: string
 ): Promise<BookingError | Array<PatientBookingData>> =>

@@ -1,10 +1,10 @@
-import { admin, DEBUG, throwError } from "../../../../../config/config";
+import { admin, throwError } from "../../../../../config/config";
 import { fetchBreedIds } from "./fetchBreedIds";
 import { fetchBreedData } from "./fetchBreedData";
 import { supportedBreeds } from "./supportedBreeds";
 import { saveBreeds } from "./saveBreeds";
 import type { Breed } from "../../../../../types/breed";
-
+const DEBUG = false;
 export const configureBreeds = async (): Promise<boolean> => {
   const alreadyHasCanineBreeds = await admin
     .firestore()
@@ -33,14 +33,17 @@ export const configureBreeds = async (): Promise<boolean> => {
   } else {
     console.log("STARTING BREEDS CONFIGURATION");
     let breedsConfigured = 0;
+    if (DEBUG) console.log("supportedBreeds", supportedBreeds);
     return await Promise.all(
       supportedBreeds.map(async (breed: Breed) => {
         const breedIds: Array<string> | boolean = await fetchBreedIds(
           breed.listId
         );
+        if (DEBUG) console.log("breedIds", breedIds);
         if (breedIds) {
           const breedData: Array<{ value: number; label: string }> =
             await fetchBreedData(breedIds as Array<string>, breed);
+          if (DEBUG) console.log("breedData", breedData);
           if (breedData) {
             const didSaveBreedData: boolean = await saveBreeds(
               breedData,

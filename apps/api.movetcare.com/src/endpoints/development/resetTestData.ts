@@ -68,7 +68,7 @@ export const resetTestData: Promise<Response> = functions
             querySnapshot.forEach((doc: any) => {
               //if (doc.data()?.id !== 5747) {
               doc.ref.delete();
-              DEBUG &&
+              if (DEBUG)
                 console.log("Successfully Deleted Patient Document", doc.id);
               //}
             })

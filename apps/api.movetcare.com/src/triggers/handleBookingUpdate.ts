@@ -4,7 +4,7 @@ import { functions } from "./../config/config";
 import { archiveBooking } from "../booking/session/archiveBooking";
 import type { Booking } from "../types/booking";
 import { updateBookingCancellation } from "../booking/session/updateBookingCancellation";
-const DEBUG = true;
+const DEBUG = false;
 export const handleBookingUpdate = functions.firestore
   .document("bookings/{id}")
   .onWrite((change: any, context: any) => {

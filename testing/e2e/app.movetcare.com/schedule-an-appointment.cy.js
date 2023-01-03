@@ -4,6 +4,11 @@ describe(
   { defaultCommandTimeout: defaultTimeOut },
   () => {
     it("can schedule an appointment as existing client with no patients", () => {
+      // cy.request(
+      //   "POST",
+      //   "http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/app/config",
+      //   { apiKey: "L9At3HGmvRDuyi7TTX", type: "breeds" }
+      // );
       cy.request(
         "POST",
         "http://localhost:5001/movet-care-staging/us-central1/resetTestData",

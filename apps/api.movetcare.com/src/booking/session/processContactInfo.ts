@@ -9,7 +9,7 @@ import type {
 } from "../../types/booking";
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { handleFailedBooking } from "./handleFailedBooking";
-const DEBUG = true;
+const DEBUG = false;
 export const processContactInfo = async (
   id: string,
   {
