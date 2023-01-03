@@ -1,10 +1,10 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-import type { BookingError, BookingResponse } from "../../types/booking";
+import type { BookingError, Booking } from "../../types/booking";
 import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
 import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
 import { handleFailedBooking } from "./handleFailedBooking";
 import { getActiveBookingSession } from "../verification/getActiveBookingSession";
-import { verifyClientInfo } from "./verifyClientInfo";
+import { verifyClientDataExists } from "../../utils/auth/verifyClientDataExists";
 import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
 
@@ -15,7 +15,7 @@ export const setupNewBookingSession = async ({
   email: string;
   device: string;
   token: string;
-}): Promise<BookingError | BookingResponse> => {
+}): Promise<BookingError | Booking> => {
   const isExistingClient = await verifyExistingClient(email);
   if (isExistingClient) return await startNewSession({ email, device });
   else {
@@ -48,14 +48,14 @@ const startNewSession = async ({
 }: {
   email: string;
   device: string;
-}): Promise<BookingError | BookingResponse> => {
+}): Promise<BookingError | Booking> => {
   const authUser: UserRecord | null = await getAuthUserByEmail(email);
   if (authUser) {
-    const session: BookingResponse | false = await getActiveBookingSession(
+    const session: Booking | false = await getActiveBookingSession(
       authUser,
       device
     );
-    const requiresInfo = await verifyClientInfo(authUser);
+    const requiresInfo = await verifyClientDataExists(authUser);
     if (session) {
       return {
         ...session,

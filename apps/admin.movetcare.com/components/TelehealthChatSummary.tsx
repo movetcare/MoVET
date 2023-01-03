@@ -52,7 +52,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
             size="lg"
           />
           <h1 className="ml-2 my-4 text-lg">
-            {loadingActiveChats ? 'Loading Chats...' : 'Active Chats'}
+            {loadingActiveChats ? "Loading Chats..." : "Active Chats"}
           </h1>
         </div>
         <TelehealthChatStatus />
@@ -80,7 +80,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                   key={index}
                   className="block hover:bg-movet-red hover:text-movet-white cursor-pointer"
                 >
-                  <Link href={`/telehealth/chat/?id=${session.id}`} passHref>
+                  <Link href={`/telehealth/chat/?id=${session.id}`}>
                     <div className="flex items-center px-4 py-4 sm:px-6">
                       <div className="min-w-0 flex-1 flex items-center">
                         <div className="flex-shrink-0 cursor-pointer">
@@ -90,13 +90,13 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                           <div className="w-full">
                             {session?.data()?.client?.firstName ? (
                               <p className="text-lg font-bold">
-                                {session?.data()?.client?.firstName}{' '}
+                                {session?.data()?.client?.firstName}{" "}
                                 {session?.data()?.client?.lastName}
                               </p>
                             ) : (
                               <p className="italic">Unknown Client</p>
                             )}
-                            {mode !== 'sidebar' && (
+                            {mode !== "sidebar" && (
                               <p className="flex-row items-center overflow-hidden italic">
                                 &quot;{session?.data()?.question}&quot;
                               </p>
@@ -142,7 +142,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                             </p>
                           </div>
                           <div className="hidden md:flex w-full justify-end">
-                            {mode !== 'sidebar' && (
+                            {mode !== "sidebar" && (
                               <p className="flex flex-row justify-center h-full items-center">
                                 <span className="flex-shrink-0 cursor-pointer mr-2">
                                   <FontAwesomeIcon
@@ -211,7 +211,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
               />
             </div>
             <h2 className="ml-2 text-sm my-3 font-bold">
-              {loadingCompletedChats ? 'Loading Chats...' : 'Archived Chats'}
+              {loadingCompletedChats ? "Loading Chats..." : "Archived Chats"}
             </h2>
             <div className="hidden group-hover:block ml-2">
               {showArchive ? (
@@ -241,7 +241,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                     key={index}
                     className="block hover:bg-movet-red hover:text-movet-white cursor-pointer"
                   >
-                    <Link href={`/telehealth/chat/?id=${session.id}`} passHref>
+                    <Link href={`/telehealth/chat/?id=${session.id}`}>
                       <div className="flex items-center px-4 py-4 sm:px-6">
                         <div className="min-w-0 flex-1 flex items-center">
                           <div className="flex-shrink-0 cursor-pointer">
@@ -251,7 +251,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                             <div>
                               {session?.data()?.client?.firstName ? (
                                 <p className="text-lg font-bold">
-                                  {session?.data()?.client?.firstName}{' '}
+                                  {session?.data()?.client?.firstName}{" "}
                                   {session?.data()?.client?.lastName}
                                 </p>
                               ) : (
@@ -301,7 +301,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                               </p>
                             </div>
                             <div className="hidden md:block">
-                              {mode !== 'sidebar' && (
+                              {mode !== "sidebar" && (
                                 <p className="flex flex-row justify-center h-full items-center">
                                   <span className="flex-shrink-0 cursor-pointer mr-2">
                                     <FontAwesomeIcon

@@ -147,7 +147,6 @@ export default function Blog() {
                       <Link
                         href={post.href}
                         className="mt-2 block hover:no-underline"
-                        passHref
                       >
                         <p className="text-xl font-semibold cursor-pointer text-movet-black hover:no-underline">
                           {post.title}
@@ -156,7 +155,6 @@ export default function Blog() {
                       <Link
                         href={post.href}
                         className="mt-2 block hover:no-underline"
-                        passHref
                       >
                         <p className="mt-3 text-base cursor-pointer text-movet-black hover:no-underline">
                           {post.description}

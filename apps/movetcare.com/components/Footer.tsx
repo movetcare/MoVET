@@ -175,25 +175,25 @@ export const Footer = () => {
       >
         <p className=" mx-1">© MoVET {new Date().getFullYear()}</p>
         <p className="mx-1">|</p>
-        <Link href="/privacy-policy" passHref prefetch={false}>
+        <Link href="/privacy-policy" prefetch={false}>
           <p className="ease-in-out duration-500 hover:underline cursor-pointer mx-1">
             Privacy Policy
           </p>
         </Link>
         <p className="mx-1">|</p>
-        <Link href="/terms-and-conditions" passHref prefetch={false}>
+        <Link href="/terms-and-conditions" prefetch={false}>
           <p className="ease-in-out duration-500 hover:underline cursor-pointer mx-1">
             Terms of Service
           </p>
         </Link>
         <p className="mx-1">|</p>
-        <Link href="/appointment-prep" passHref prefetch={false}>
+        <Link href="/appointment-prep" prefetch={false}>
           <p className="ease-in-out duration-500 hover:underline cursor-pointer mx-1">
             FAQs
           </p>
         </Link>
         <p className="mx-1">|</p>
-        <Link href="/emergency" passHref prefetch={false}>
+        <Link href="/emergency" prefetch={false}>
           <p className="ease-in-out duration-500 hover:underline cursor-pointer mx-1">
             Emergency Care
           </p>

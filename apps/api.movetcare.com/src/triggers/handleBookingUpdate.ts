@@ -1,7 +1,7 @@
 import { removeBookingAbandonmentNotifications } from "../booking/abandonment/removeBookingAbandonmentNotifications";
-import { endBooking } from "../booking/endBooking";
+import { endBooking } from "../booking/session/endBooking";
 import { functions } from "./../config/config";
-import { archiveBooking } from "../booking/archiveBooking";
+import { archiveBooking } from "../booking/session/archiveBooking";
 import type { Booking } from "../types/booking";
 import { updateBookingCancellation } from "../booking/session/updateBookingCancellation";
 const DEBUG = true;
@@ -10,7 +10,7 @@ export const handleBookingUpdate = functions.firestore
   .onWrite((change: any, context: any) => {
     const { id } = context.params || {};
     const data: Booking = change.after.data();
-    const { client, step, isActive, cancelReason } = data || {};
+    const { step, isActive, cancelReason } = data || {};
     if (DEBUG) console.log("handleBookingUpdate => DATA", { id, data });
     if (data !== undefined) {
       if (cancelReason) updateBookingCancellation(id, data);
@@ -24,7 +24,7 @@ export const handleBookingUpdate = functions.firestore
             console.log(
               `REMOVING BOOKING ABANDONMENT AUTOMATION TASK FROM QUEUE FOR ${id}`
             );
-          removeBookingAbandonmentNotifications(id, client?.email);
+          removeBookingAbandonmentNotifications(id);
         }
         if (step === "complete" && isActive) archiveBooking(id);
         else if (step === "restart" || step === "cancelled-client")
@@ -35,7 +35,7 @@ export const handleBookingUpdate = functions.firestore
             `CAN NOT UPDATE AN ARCHIVED (OR DELETED) BOOKING: ${id}`,
             data
           );
-        removeBookingAbandonmentNotifications(id, client?.email);
+        removeBookingAbandonmentNotifications(id);
       }
     }
     return true;

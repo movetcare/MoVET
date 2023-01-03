@@ -1,7 +1,7 @@
 import { functions, defaultRuntimeOptions, DEBUG } from "../../config/config";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 import { handleFailedBooking } from "../../booking/session/handleFailedBooking";
-import type { BookingError, BookingResponse } from "../../types/booking";
+import type { BookingError, Booking } from "../../types/booking";
 import { processContactInfo } from "../../booking/session/processContactInfo";
 import { setupNewBookingSession } from "../../booking/session/setupNewBookingSession";
 import { processAddAPet } from "../../booking/session/processAddAPet";
@@ -13,7 +13,7 @@ import { processDateTime } from "../../booking/session/processDateTime";
 
 export const scheduleAppointment = functions
   .runWith(defaultRuntimeOptions)
-  .https.onCall(async (data: any): Promise<BookingResponse | BookingError> => {
+  .https.onCall(async (data: any): Promise<Booking | BookingError> => {
     if (DEBUG)
       console.log(
         "scheduleAppointment => INCOMING REQUEST PAYLOAD scheduleAppointment => ",

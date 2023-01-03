@@ -1,7 +1,10 @@
 import { throwError } from "../../config/config";
 // import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
+import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
+import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
 import { sendNotification } from "../sendNotification";
+
 export const sendBookingRequestAdminNotification = async ({
   id,
   bookingRef,
@@ -56,7 +59,11 @@ export const sendBookingRequestAdminNotification = async ({
   const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
     ?.toDate()
     ?.toString()}</p>${
-    displayName ? `<p><b>Client Name:</b> ${displayName}</p>` : ""
+    displayName
+      ? `<p><b>Client Name:</b> ${getClientFirstNameFromDisplayName(
+          displayName
+        )}</p>`
+      : ""
   }<p><b>Client Email:</b> ${email}</p>${
     phoneNumber
       ? `<p><b>Client Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
@@ -70,7 +77,9 @@ export const sendBookingRequestAdminNotification = async ({
   }
   ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
     requestedDateTime?.date
-      ? `<p><b>Requested Date:</b> ${requestedDateTime.date}</p>`
+      ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
+          requestedDateTime.date
+        )}</p>`
       : ""
   }${
     requestedDateTime?.time
@@ -88,7 +97,7 @@ export const sendBookingRequestAdminNotification = async ({
       : ""
   }<p><a href="https://us.provetcloud.com/4285/client/${
     client?.uid
-  }/tabs" style="border-radius: 40px; border: 2px solid rgb(255, 255, 255); display: inline-block; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; font-size: 16px; font-weight: bold; font-style: normal; padding: 18px; text-decoration: none; min-width: 30px; background-color: #E76159; color: rgb(255, 255, 255); --darkreader-inline-border-top:#D1CCBD; --darkreader-inline-border-right:#D1CCBD; --darkreader-inline-border-bottom:#D1CCBD; --darkreader-inline-border-left:#D1CCBD; --darkreader-inline-bgcolor:#E76159; --darkreader-inline-color:#e8e6e3;">Book Appointment</a></p>`;
+  }/tabs" >Book Appointment</a></p>`;
 
   sendNotification({
     type: "email",
@@ -99,6 +108,67 @@ export const sendBookingRequestAdminNotification = async ({
         displayName ? displayName : email ? email : ""
       } has submitted a new appointment request`,
       message,
+    },
+  });
+
+  sendNotification({
+    type: "slack",
+    payload: {
+      message: [
+        {
+          type: "section",
+          text: {
+            text: `:exclamation: New Appointment Request :exclamation:\n\n${id}`,
+            type: "mrkdwn",
+          },
+          fields: [
+            {
+              type: "mrkdwn",
+              text: "*Client*",
+            },
+            {
+              type: "plain_text",
+              text: `${client?.displayName} - ${client?.email} (${client?.uid})`,
+            },
+            {
+              type: "mrkdwn",
+              text: "*Patients*",
+            },
+            {
+              type: "plain_text",
+              text: allPatients,
+            },
+            {
+              type: "mrkdwn",
+              text: "*Reason*",
+            },
+            {
+              type: "plain_text",
+              text: `${reason.label ? `${reason.label}` : "Establish Care"}`,
+            },
+            {
+              type: "mrkdwn",
+              text: "*Location*",
+            },
+            {
+              type: "plain_text",
+              text: `${location} ${
+                address ? `- ${address?.full} (${address?.info})` : ""
+              }`,
+            },
+            {
+              type: "mrkdwn",
+              text: "*Requested Time & Date*",
+            },
+            {
+              type: "plain_text",
+              text: `${requestedDateTime.time} on ${getYYMMDDFromString(
+                requestedDateTime.date
+              )}`,
+            },
+          ],
+        },
+      ],
     },
   });
 };

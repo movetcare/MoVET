@@ -4,31 +4,35 @@ export type BookingError = {
   message: string;
 };
 
-export type ClientInfo = {
-  uid: string;
-  firstName?: string;
-  lastName?: string;
+export type ClientBookingData = {
+  displayName?: string;
+  email?: string;
   phone?: string;
   requiresInfo: boolean;
+  uid: string;
 };
 
-export type PatientData = {
+export type PatientBookingData = {
   id: string;
   name: string;
   archived?: boolean;
-  vcprRequired: boolean;
+  vcprRequired?: boolean | null;
+  aggressionStatus?: boolean | null;
   species: string;
   gender: string;
+  breed: string;
+  birthday: string;
+  photo?: string | null;
+  previousVet?: string | null;
+  clientNote?: string | null;
+  rabiesTag?: string | null;
+  customFields?: Array<{
+    field_id: number;
+    id: number;
+    label: string;
+    value: string;
+  }> | null;
 };
-
-export type BookingResponse = {
-  patients: Array<PatientData>;
-  id: string;
-  client: ClientInfo;
-  selectedPatients?: Array<string>;
-  establishCareExamRequired?: boolean;
-};
-
 export type AddAPet = {
   name: string;
   type: string;
@@ -43,11 +47,17 @@ export type AddAPet = {
 };
 
 export type Booking = {
+  checkoutSession?: string;
+  client?: ClientBookingData;
+  createdAt?: any;
+  device?: string;
+  establishCareExamRequired?: boolean;
+  patients?: Array<PatientBookingData>;
   id: string;
-  isActive: boolean;
+  selectedPatients?: Array<string>;
+  isActive?: boolean;
   staffId?: string;
   selectedStaff?: Staff;
-  isNewClient?: boolean;
   reasonGroup?: number;
   reasonType?: number;
   requestedDateTime?: { date: any; time: string };
@@ -67,6 +77,7 @@ export type Booking = {
     | "complete"
     | "restart";
   location?: "home" | "clinic" | "virtual";
+  locationId?: number;
   address?: {
     full: string;
     info: string;
@@ -74,34 +85,7 @@ export type Booking = {
     placeId: string;
     zipcode: string;
   };
-  datetime?: any;
-  paymentMethodRequired?: boolean;
-  checkoutUrl?: string;
-  source?: "web" | "mobile";
-  createdAt: any;
   updatedOn?: any;
-  client: {
-    uid: string;
-    firstName: string;
-    lastName: string;
-    displayName: string;
-    phone: string;
-    email: string;
-  };
-  patients?:
-    | [
-        {
-          id: string;
-          name: string;
-          species: "canine" | "feline";
-          breed: string;
-          sex: "male" | "female";
-          birthday: string;
-          recordsUploaded: boolean | null;
-          vcprRequired: boolean;
-        }
-      ]
-    | any;
   newPatient?: {
     id: string;
     name: string;
@@ -114,14 +98,8 @@ export type Booking = {
     hasMinorIllness: boolean;
   };
   reason?: { label: string; value: string };
-  illPatients?: Array<string>;
-  illnessDetails?: {
-    id: string;
-    symptoms: Array<string>;
-    notes: string;
-  };
+  illPatientSelection?: Array<string>;
   nextPatient?: string | null;
-  vcprRequired?: boolean;
   cancelComplete?: boolean;
   cancelReason?: string;
   cancelDetails?: string;

@@ -6,12 +6,12 @@ import { sendNotification } from "../../notifications/sendNotification";
 import type {
   BookingError,
   AddAPet,
-  BookingResponse,
-  PatientData,
+  Booking,
+  PatientBookingData,
 } from "../../types/booking";
 import { moveFile } from "../../utils/moveFile";
 import { reverseDateStringMDY } from "../../utils/reverseDateStringMDY";
-import { getAllActivePatients } from "./getAllActivePatients";
+import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { handleFailedBooking } from "./handleFailedBooking";
 const DEBUG = true;
 export const processAddAPet = async (
@@ -28,7 +28,7 @@ export const processAddAPet = async (
     vet,
     notes,
   }: AddAPet
-): Promise<BookingResponse | BookingError> => {
+): Promise<Booking | BookingError> => {
   const data = {
     name,
     type,
@@ -97,6 +97,7 @@ export const processAddAPet = async (
       vcprRequired: true,
       spayedOrNeutered: session?.addAPet?.spayedOrNeutered,
     });
+
     if (newPatientId) {
       if (session?.addAPet?.aggressionStatus?.name)
         updateCustomField(
@@ -132,10 +133,7 @@ export const processAddAPet = async (
           `clients/${client}/patients/${newPatientId}/records/${session?.addAPet?.records.name}`
         );
       }
-    }
-
-    if (newPatientId) {
-      const patients: Array<PatientData> | BookingError | any =
+      const patients: Array<PatientBookingData> | BookingError | any =
         await getAllActivePatients(session?.client?.uid);
       if (patients) {
         await bookingRef

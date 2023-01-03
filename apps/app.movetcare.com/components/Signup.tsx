@@ -83,13 +83,13 @@ export const SignUp = () => {
           <div className="hidden group-hover:flex items-center justify-center text-center md:-mt-4 md:-mb-2">
             <p className="text-xs italic text-movet-white md:text-movet-black">
               By clicking the Sig Up button, you agree to the{" "}
-              <Link href="/privacy-policy" passHref>
+              <Link href="/privacy-policy">
                 <span className="font-medium text-movet-white md:text-movet-brown font-abside text-center md:text-left hover:underline ease-in-out duration-500 mb-2 cursor-pointer">
                   Privacy Policy{" "}
                 </span>
               </Link>{" "}
               and{" "}
-              <Link href="/terms-and-conditions" passHref>
+              <Link href="/terms-and-conditions">
                 <span className="font-medium text-movet-white md:text-movet-brown font-abside text-center md:text-left hover:underline ease-in-out duration-500 mb-2 cursor-pointer">
                   Terms of Service{" "}
                 </span>

@@ -2,6 +2,7 @@ import { sendNotification } from "./../../../notifications/sendNotification";
 import { throwError, functions, admin, DEBUG } from "./../../../config/config";
 import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { createProVetNote } from "../../../integrations/provet/entities/note/createProVetNote";
+import { getClientFirstNameFromDisplayName } from "../../../utils/getClientFirstNameFromDisplayName";
 
 export const syncChatLogWithProVet = functions.firestore
   .document("/telehealth_chat/{clientId}")
@@ -75,7 +76,9 @@ export const syncChatLogWithProVet = functions.firestore
         patients: [],
       });
       const emailText = `${
-        displayName ? `<p>Hi ${displayName},</p>` : "Hey there,"
+        displayName
+          ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
+          : "Hey there,"
       }<p>Thank you for reaching out to MoVET today!<p><p>Please find your chat log summary below:</p>\n\n${chatLog}\n\n<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>- The MoVET Team</p>`;
       const emailConfig: any = {
         to: email,

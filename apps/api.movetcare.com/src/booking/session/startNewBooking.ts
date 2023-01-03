@@ -1,18 +1,18 @@
 import { admin, throwError } from "../../config/config";
 import { sendNotification } from "../../notifications/sendNotification";
-import type { PatientData, BookingError } from "../../types/booking";
+import type { PatientBookingData, BookingError } from "../../types/booking";
 import { createBookingAbandonmentNotifications } from "../abandonment/createBookingAbandonmentNotifications";
-import { getAllActivePatients } from "./getAllActivePatients";
-import { verifyClientInfo } from "./verifyClientInfo";
+import { getAllActivePatients } from "../../utils/getAllActivePatients";
+import { verifyClientDataExists } from "../../utils/auth/verifyClientDataExists";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 const DEBUG = true;
 export const startNewBooking = async (
   client: UserRecord,
   device: string
 ): Promise<any> => {
-  const patients: Array<PatientData> | BookingError | any =
+  const patients: Array<PatientBookingData> | BookingError | any =
     await getAllActivePatients(client?.uid);
-  const requiresInfo = await verifyClientInfo(client);
+  const requiresInfo = await verifyClientDataExists(client);
   const newBookingSession = await admin
     .firestore()
     .collection("bookings")

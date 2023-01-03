@@ -1,6 +1,6 @@
 import { admin, throwError } from "../../config/config";
 import { sendNotification } from "../../notifications/sendNotification";
-import type { BookingError, BookingResponse } from "../../types/booking";
+import type { BookingError, Booking } from "../../types/booking";
 import { handleFailedBooking } from "./handleFailedBooking";
 const DEBUG = true;
 export const processIllnessDetails = async (
@@ -10,7 +10,7 @@ export const processIllnessDetails = async (
     id: string;
     notes: string;
   }
-): Promise<BookingResponse | BookingError> => {
+): Promise<Booking | BookingError> => {
   const data = { id, illnessDetails };
   if (DEBUG) console.log("ILL PETS DATA", data);
   if (illnessDetails?.id) {

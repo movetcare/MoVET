@@ -1,7 +1,9 @@
 import { throwError } from "../../config/config";
 import { createProVetNote } from "../../integrations/provet/entities/note/createProVetNote";
-import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
+// import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
+import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
+import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
 import { sendNotification } from "../sendNotification";
 export const sendBookingRequestClientNotification = async ({
   id,
@@ -21,6 +23,7 @@ export const sendBookingRequestClientNotification = async ({
     address,
     illPatients,
     selectedStaff,
+    selectedPatients,
   }: any = await bookingRef
     .get()
     .then((doc: any) => doc.data())
@@ -42,6 +45,15 @@ export const sendBookingRequestClientNotification = async ({
     location,
     address,
     selectedStaff,
+    selectedPatients,
+  });
+
+  const allPatientIds: any = [];
+  selectedPatients.forEach((selectedPatient: any) => {
+    patients.map((patient: any) => {
+      if (selectedPatient === patient?.id)
+        allPatientIds.push(patient?.id || patient?.value);
+    });
   });
 
   createProVetNote({
@@ -49,7 +61,7 @@ export const sendBookingRequestClientNotification = async ({
     subject,
     message,
     client: uid,
-    patients: patients.map((patient: { value: string }) => patient.value),
+    patients: Array.isArray(selectedPatients) ? allPatientIds : [],
   });
 
   sendNotification({
@@ -81,6 +93,7 @@ export const sendBookingRequestClientNotification = async ({
         location,
         address,
         selectedStaff,
+        selectedPatients,
       }),
     },
   });
@@ -89,9 +102,7 @@ export const sendBookingRequestClientNotification = async ({
 const createClientMessage = ({
   messageTemplate,
   client,
-  illPatients,
   reason,
-  vcprRequired,
   patients,
   displayName,
   phoneNumber,
@@ -100,11 +111,29 @@ const createClientMessage = ({
   location,
   address,
   selectedStaff,
+  selectedPatients,
 }: any): any => {
   if (messageTemplate === "email") {
-    const message = `<p>Hi ${
+    let allPatients = "";
+    selectedPatients.forEach((selectedPatient: any) => {
+      patients.map((patient: any) => {
+        if (selectedPatient === patient?.id)
+          allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
+            patient?.name
+          }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
+            patient?.gender
+          }</p><p><b>Minor Illness:</b> ${
+            patient?.hasMinorIllness
+              ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                  patient?.illnessDetails?.notes
+                }`
+              : " NONE"
+          }</p><p><b>-----------------------------------</b></p>`;
+      });
+    });
+    const message = `<p>Hi ${getClientFirstNameFromDisplayName(
       client?.displayName
-    },</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request bellow and let us know (by replying to this email) if anything needs to be changed.</p><p></p>${
+    )},</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request bellow and let us know (by replying to this email) if anything needs to be changed.</p><p></p>${
       displayName ? `<p><b>Name:</b> ${displayName}</p>` : ""
     }<p><b>Email:</b> ${email}</p>${
       phoneNumber
@@ -112,25 +141,12 @@ const createClientMessage = ({
             phoneNumber?.replaceAll("+1", "")
           )}</a></p>`
         : ""
-    }${patients.map(
-      (patient: any) =>
-        `<p><b>Pet Name:</b> ${patient?.name}</p><p><b>Pet Species:</b> ${
-          patient?.species
-        }</p><p><b>Pet Gender:</b> ${patient?.gender}</p>${
-          patient?.hasMinorIllness && patient?.illnessDetails
-            ? `<p><b>Pet Minor Illness:</b> ${JSON.stringify(
-                patient?.illnessDetails?.symptoms
-              )} - ${patient?.illnessDetails?.notes}</p>`
-            : ""
-        }${
-          patient.aggressionStatus
-            ? `<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
-            : ""
-        }`
-    )}${
+    }${allPatients}
+    ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}
+    ${
       requestedDateTime?.date
-        ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(
-            requestedDateTime.date?.toDate()
+        ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
+            requestedDateTime.date
           )}</p>`
         : ""
     }${
@@ -154,6 +170,12 @@ const createClientMessage = ({
       message,
     };
   } else {
+    const patientNames: any = [];
+    selectedPatients.forEach((selectedPatient: any) => {
+      patients.map((patient: any) => {
+        if (selectedPatient === patient?.id) patientNames.push(patient?.name);
+      });
+    });
     return [
       {
         type: "section",
@@ -182,23 +204,7 @@ const createClientMessage = ({
           },
           {
             type: "plain_text",
-            text:
-              patients.length > 1
-                ? JSON.stringify(
-                    patients.map((patient: any, index: number) =>
-                      index !== patients.length - 1
-                        ? `${patient?.name} `
-                        : ` and ${patient?.name}`
-                    )
-                  )
-                : patients[0].name +
-                  ` ${illPatients ? `${illPatients?.length} are ill` : ""} ${
-                    reason ? `Reason - ${reason?.label}` : ""
-                  } ${
-                    vcprRequired
-                      ? `VCPR ${vcprRequired ? "IS" : "IS NOT"} REQUIRED`
-                      : ""
-                  } `,
+            text: JSON.stringify(patientNames),
           },
           {
             type: "mrkdwn",
@@ -230,9 +236,7 @@ const createClientMessage = ({
             type: "plain_text",
             text: requestedDateTime
               ? `${
-                  requestedDateTime?.date
-                    ? `${formatDateToMMDDYY(requestedDateTime?.date?.toDate())}`
-                    : ""
+                  requestedDateTime?.date ? `${requestedDateTime?.date}` : ""
                 }${
                   requestedDateTime?.time ? ` @ ${requestedDateTime?.time}` : ""
                 }`

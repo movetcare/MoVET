@@ -19,7 +19,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
 import { BookingHeader } from "components/booking/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Transition, Dialog } from "@headlessui/react";
+import { Transition } from "@headlessui/react";
 import { capitalizeFirstLetter } from "utilities";
 import { BookingFooter } from "components/booking/BookingFooter";
 

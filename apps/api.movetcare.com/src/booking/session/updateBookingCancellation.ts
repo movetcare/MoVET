@@ -2,14 +2,14 @@
 import { createProVetNote } from "../../integrations/provet/entities/note/createProVetNote";
 import { sendNotification } from "../../notifications/sendNotification";
 import type { Booking } from "../../types/booking";
-import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
+import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
+
 const DEBUG = true;
 export const updateBookingCancellation = async (
   id: string,
   {
     client,
-    createdAt,
     patients,
     reason,
     requestedDateTime,
@@ -18,72 +18,61 @@ export const updateBookingCancellation = async (
     selectedStaff,
     cancelReason,
     cancelDetails,
+    selectedPatients,
   }: Booking
 ) => {
   if (cancelReason) {
-    const message = `<p>CANCELLATION REASON: ${cancelReason}</p><p>CANCELLATION DETAILS: ${cancelDetails}</p><p></p><p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
-      ?.toDate()
-      ?.toString()}</p>${
-      client?.displayName
-        ? `<p><b>Client Name:</b> ${client?.displayName}</p>`
-        : ""
-    }<p><b>Client Email:</b> ${client?.email}</p>${
-      client?.phone
-        ? `<p><b>Client Phone:</b> <a href="tel://${
-            client?.phone
-          }">${formatPhoneNumber(client?.phone?.replaceAll("+1", ""))}</a></p>`
-        : ""
-    }${
-      Array.isArray(patients)
-        ? patients.map(
-            (patient: any) =>
-              `<p><b>Patient Name:</b> ${
-                patient?.name
-              }</p><p><b>Patient Species:</b> ${
-                patient?.species
-              }</p><p><b>Patient Gender:</b> ${
-                patient?.gender
-              }</p><p><b>Patient Minor Illness:</b> ${
-                patient?.hasMinorIllness
-                  ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                      patient?.illnessDetails?.notes
-                    }`
-                  : " NONE"
-              }</p>${
-                patient.aggressionStatus
-                  ? `<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
-                  : ""
-              }${
-                patient.vcprRequired
-                  ? `<p><b>VCPR Required:</b> ${
-                      patient?.vcprRequired ? "Yes" : "No"
-                    }</p>`
-                  : ""
-              }`
-          )
-        : ""
-    }
-  ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
+    let message = `<p>CANCELLATION REASON: ${cancelReason}</p><p>CANCELLATION DETAILS: ${cancelDetails}</p><p></p><p><b>Session ID:</b> ${id}</p>`;
+    let allPatients = "";
+    if (Array.isArray(selectedPatients) && Array.isArray(patients))
+      selectedPatients.forEach((selectedPatient: any) => {
+        patients.map((patient: any) => {
+          if (selectedPatient === patient?.id)
+            allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
+              patient?.name
+            }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
+              patient?.gender
+            }</p><p><b>Minor Illness:</b> ${
+              patient?.hasMinorIllness
+                ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                    patient?.illnessDetails?.notes
+                  }`
+                : " NONE"
+            }</p><p><b>-----------------------------------</b></p>`;
+        });
+      });
+    if (client)
+      message += `${
+        client.displayName ? `<p><b>Name:</b> ${client.displayName}</p>` : ""
+      }<p><b>Email:</b> ${client.email}</p>${
+        client.phone
+          ? `<p><b>Phone:</b> <a href="tel://${
+              client.phone
+            }">${formatPhoneNumber(client.phone?.replaceAll("+1", ""))}</a></p>`
+          : ""
+      }${allPatients}
+    ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}
+    ${
       requestedDateTime?.date
-        ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(
-            requestedDateTime.date?.toDate()
+        ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
+            requestedDateTime.date
           )}</p>`
         : ""
     }${
-      requestedDateTime?.time
-        ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
-        : ""
-    }${
-      location
-        ? `<p><b>Requested Location:</b> ${location} ${
-            address ? `- ${address?.full} (${address?.info})` : ""
-          }</p>`
-        : ""
-    }${
-      selectedStaff
-        ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
-        : ""
-    }`;
+        requestedDateTime?.time
+          ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
+          : ""
+      }${
+        location
+          ? `<p><b>Requested Location:</b> ${location} ${
+              address ? `- ${address?.full} (${address?.info})` : ""
+            }</p>`
+          : ""
+      }${
+        selectedStaff
+          ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
+          : ""
+      }<p></p><p>We look forward to seeing you soon!</p><p>- The MoVET Team</p>`;
 
     const subject = `Appointment Booking Request Cancellation Reason Provided: "${cancelReason?.toUpperCase()}"`;
     sendNotification({
@@ -95,15 +84,23 @@ export const updateBookingCancellation = async (
         message,
       },
     });
+
+    const allPatientIds: any = [];
+    if (Array.isArray(selectedPatients) && Array.isArray(patients))
+      selectedPatients.forEach((selectedPatient: any) => {
+        patients.map((patient: any) => {
+          if (selectedPatient === patient?.id)
+            allPatientIds.push(patient?.id || patient?.value);
+        });
+      });
+
     if (DEBUG)
       console.log("createProVetNote() =>", {
         type: 1,
         subject,
         message,
         client: `${client?.uid}`,
-        patients: Array.isArray(patients)
-          ? patients.map((patient: { value: string }) => patient.value)
-          : [],
+        patients: Array.isArray(selectedPatients) ? allPatientIds : [],
       });
 
     createProVetNote({
@@ -111,9 +108,7 @@ export const updateBookingCancellation = async (
       subject,
       message,
       client: `${client?.uid}`,
-      patients: Array.isArray(patients)
-        ? patients.map((patient: { value: string }) => patient.value)
-        : [],
+      patients: Array.isArray(selectedPatients) ? allPatientIds : [],
     });
   }
   sendNotification({

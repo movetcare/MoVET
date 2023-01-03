@@ -1,12 +1,13 @@
 import { environment, admin, DEBUG } from "../../config/config";
 import type { Booking } from "../../types/booking";
 import type { EmailConfiguration } from "../../types/email.d";
-import { sendSignInByEmailLink } from "../../utils/auth/sendSignInByEmailLink";
-import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
+import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
+import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
 import {
   getClientNotificationSettings,
   UserNotificationSettings,
 } from "../../utils/getClientNotificationSettings";
+import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
 import { sendNotification } from "../sendNotification";
 
 export const sendBookingRecoveryNotification = async ({
@@ -68,9 +69,79 @@ const sendAdminBookingRecoveryNotification = async (
     requestedDateTime,
     location,
     address,
-    step,
+    selectedPatients,
+    selectedStaff,
   }: any = booking;
   const { email, displayName, phoneNumber } = client;
+
+  let allPatients = "";
+  selectedPatients.forEach((selectedPatient: any) => {
+    patients.map((patient: any) => {
+      if (selectedPatient === patient?.id)
+        allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
+          patient?.name
+        }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
+          patient?.gender
+        }</p><p><b>Minor Illness:</b> ${
+          patient?.hasMinorIllness
+            ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                patient?.illnessDetails?.notes
+              }`
+            : " NONE"
+        }</p>${
+          patient.aggressionStatus
+            ? `<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
+            : ""
+        }${
+          patient.vcprRequired
+            ? `<p><b>VCPR Required:</b> ${
+                patient?.vcprRequired ? "Yes" : "No"
+              }</p>`
+            : ""
+        }<p><b>-----------------------------------</b></p>`;
+    });
+  });
+
+  const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
+    ?.toDate()
+    ?.toString()}</p>${
+    displayName
+      ? `<p><b>Client Name:</b> ${getClientFirstNameFromDisplayName(
+          displayName
+        )}</p>`
+      : ""
+  }<p><b>Client Email:</b> ${email}</p>${
+    phoneNumber
+      ? `<p><b>Client Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
+          phoneNumber?.replaceAll("+1", "")
+        )}</a></p>`
+      : ""
+  }${
+    Array.isArray(patients) && Array.isArray(selectedPatients)
+      ? allPatients
+      : ""
+  }
+  ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
+    requestedDateTime?.date
+      ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
+          requestedDateTime.date
+        )}</p>`
+      : ""
+  }${
+    requestedDateTime?.time
+      ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
+      : ""
+  }${
+    location
+      ? `<p><b>Requested Location:</b> ${location} ${
+          address ? `- ${address?.full} (${address?.info})` : ""
+        }</p>`
+      : ""
+  }${
+    selectedStaff
+      ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
+      : ""
+  }`;
 
   if (id && email)
     sendNotification({
@@ -87,58 +158,8 @@ const sendAdminBookingRecoveryNotification = async (
             : type === "72_HOUR"
             ? "three days ago"
             : "one hour ago"
-        } at step "${step}"`,
-        message: `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
-          ?.toDate()
-          ?.toString()}</p>${
-          displayName ? `<p><b>Client Name:</b> ${displayName}</p>` : ""
-        }<p><b>Client Email:</b> ${email}</p>${
-          phoneNumber ? `<p><b>Client Phone:</b> ${phoneNumber}</p>` : ""
-        }${
-          patients &&
-          patients.map(
-            (patient: any) =>
-              `<p><b>Patient Name:</b> ${
-                patient?.name
-              }</p><p><b>Patient Species:</b> ${
-                patient?.species
-              }</p><p><b>Patient Gender:</b> ${
-                patient?.gender
-              }</p><p><b>Patient Minor Illness:</b> ${
-                patient?.hasMinorIllness
-                  ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                      patient?.illnessDetails?.notes
-                    }`
-                  : " NONE"
-              }</p>${
-                patient.aggressionStatus
-                  ? `<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
-                  : ""
-              }${
-                patient.vcprRequired
-                  ? `<p><b>VCPR Required:</b> ${
-                      patient?.vcprRequired ? "Yes" : "No"
-                    }</p>`
-                  : ""
-              }`
-          )
-        }${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
-          requestedDateTime?.date
-            ? `<p><b>Requested Date:</b> ${formatDateToMMDDYY(
-                requestedDateTime.date?.toDate()
-              )}</p>`
-            : ""
-        }${
-          requestedDateTime?.time
-            ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
-            : ""
-        }${
-          location
-            ? `<p><b>Location:</b> ${location} ${
-                address ? `- ${address?.full} (${address?.info})` : ""
-              }</p>`
-            : ""
         }`,
+        message,
       },
     });
 };
@@ -147,32 +168,35 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
   if (DEBUG)
     console.log("SENDING ONE HOUR BOOKING RECOVERY NOTIFICATION", booking);
   const { isActive, client, id } = booking;
-  const { email, uid } = client;
+  const { email, uid } = client || {};
   if (isActive && id && email) {
-    const authLink = await sendSignInByEmailLink({
-      email,
-      sendEmail: false,
-      sessionId: id,
-    });
-    if (DEBUG)
-      console.log(
-        "sendOneHourBookingRecoveryNotification => authLink",
-        authLink
-      );
+    // const authLink = await sendSignInByEmailLink({
+    //   email,
+    //   sendEmail: false,
+    //   sessionId: id,
+    // });
+    // if (DEBUG)
+    //   console.log(
+    //     "sendOneHourBookingRecoveryNotification => authLink",
+    //     authLink
+    //   );
     let emailHtml = "";
-    if (client?.displayName) emailHtml += `<p>Hey ${client?.displayName}!</p>`;
+    if (client?.displayName)
+      emailHtml += `<p>Hey ${getClientFirstNameFromDisplayName(
+        client?.displayName
+      )}!</p>`;
     else emailHtml += "<p>Hey there!</p>";
 
     emailHtml += `<p>It looks like you were in the process of submitting an appointment booking request with MoVET.</p><p><b>Click the link bellow to resume your session:</b></p><p><a href='${
-      authLink
-        ? authLink
-        : (environment.type === "production"
-            ? "https://app.movetcare.com"
-            : environment.type === "staging"
-            ? "https://stage.app.movetcare.com"
-            : "http://localhost:3000") +
-          `/schedule-an-appointment/?email=${email}/`
-    }' style="border-radius: 40px; border: 2px solid rgb(255, 255, 255); display: inline-block; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; font-size: 16px; font-weight: bold; font-style: normal; padding: 18px; text-decoration: none; min-width: 30px; background-color: #E76159; color: rgb(255, 255, 255); --darkreader-inline-border-top:#D1CCBD; --darkreader-inline-border-right:#D1CCBD; --darkreader-inline-border-bottom:#D1CCBD; --darkreader-inline-border-left:#D1CCBD; --darkreader-inline-bgcolor:#E76159; --darkreader-inline-color:#e8e6e3;">Complete Booking</a></p><p>At MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!</p><p>We look forward to seeing you soon!</p><p>The MoVET Team</p><p></p><p><a href="${
+      // authLink
+      //   ? authLink
+      //   :
+      (environment.type === "production"
+        ? "https://app.movetcare.com"
+        : environment.type === "staging"
+        ? "https://stage.app.movetcare.com"
+        : "http://localhost:3000") + `/schedule-an-appointment/?email=${email}/`
+    }' >Complete Booking</a></p><p>At MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!</p><p>We look forward to seeing you soon!</p><p>The MoVET Team</p><p></p><p><a href="${
       (environment.type === "production"
         ? "https://app.movetcare.com"
         : environment.type === "staging"
@@ -186,19 +210,21 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
     };
     if (DEBUG)
       console.log("BOOKING RECOVERY NOTIFICATION EMAIL READY", emailConfig);
-    const userNotificationSettings: UserNotificationSettings | false =
-      await getClientNotificationSettings(uid);
-    if (userNotificationSettings && userNotificationSettings?.sendEmail) {
-      sendNotification({
-        type: "email",
-        payload: { ...emailConfig, client: client.uid },
-      });
-    }
-  } else if (DEBUG)
-    console.log(
-      "FAILED TO SEND ONE HOUR BOOKING RECOVERY NOTIFICATION EMAIL",
-      booking
-    );
+    if (client && uid) {
+      const userNotificationSettings: UserNotificationSettings | false =
+        await getClientNotificationSettings(uid);
+      if (userNotificationSettings && userNotificationSettings?.sendEmail) {
+        sendNotification({
+          type: "email",
+          payload: { ...emailConfig, client: client.uid },
+        });
+      }
+    } else if (DEBUG)
+      console.log(
+        "FAILED TO SEND ONE HOUR BOOKING RECOVERY NOTIFICATION EMAIL",
+        booking
+      );
+  }
 };
 
 const sendTwentyFourHourBookingRecoveryNotification = async (
@@ -210,32 +236,35 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
       booking
     );
   const { isActive, client, id } = booking;
-  const { email, uid } = client;
+  const { email, uid } = client || {};
   if (isActive && id && email) {
-    const authLink = await sendSignInByEmailLink({
-      email,
-      sendEmail: false,
-      sessionId: id,
-    });
-    if (DEBUG)
-      console.log(
-        "sendTwentyFourHourBookingRecoveryNotification => authLink",
-        authLink
-      );
+    // const authLink = await sendSignInByEmailLink({
+    //   email,
+    //   sendEmail: false,
+    //   sessionId: id,
+    // });
+    // if (DEBUG)
+    //   console.log(
+    //     "sendTwentyFourHourBookingRecoveryNotification => authLink",
+    //     authLink
+    //   );
     let emailHtml = "";
-    if (client?.displayName) emailHtml += `<p>Hey ${client?.displayName}!</p>`;
+    if (client?.displayName)
+      emailHtml += `<p>Hey ${getClientFirstNameFromDisplayName(
+        client?.displayName
+      )}!</p>`;
     else emailHtml += "<p>Hey there!</p>";
 
     emailHtml += `<p>It looks like you didn't finish booking your appointment with MoVET yesterday.</p><p><b>Click on the link bellow to resume your session:</b></p><p><a href='${
-      authLink
-        ? authLink
-        : (environment.type === "production"
-            ? "https://app.movetcare.com"
-            : environment.type === "staging"
-            ? "https://stage.app.movetcare.com"
-            : "http://localhost:3000") +
-          `/schedule-an-appointment/?email=${email}/`
-    }' style="border-radius: 40px; border: 2px solid rgb(255, 255, 255); display: inline-block; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; font-size: 16px; font-weight: bold; font-style: normal; padding: 18px; text-decoration: none; min-width: 30px; background-color: #E76159; color: rgb(255, 255, 255); --darkreader-inline-border-top:#D1CCBD; --darkreader-inline-border-right:#D1CCBD; --darkreader-inline-border-bottom:#D1CCBD; --darkreader-inline-border-left:#D1CCBD; --darkreader-inline-bgcolor:#E76159; --darkreader-inline-color:#e8e6e3;">Complete Booking</a></p><p>At MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!</p><p>We look forward to seeing you soon!</p><p>The MoVET Team</p><p></p><p><a href="${
+      // authLink
+      //   ? authLink
+      //   :
+      (environment.type === "production"
+        ? "https://app.movetcare.com"
+        : environment.type === "staging"
+        ? "https://stage.app.movetcare.com"
+        : "http://localhost:3000") + `/schedule-an-appointment/?email=${email}/`
+    }' >Complete Booking</a></p><p>At MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!</p><p>We look forward to seeing you soon!</p><p>The MoVET Team</p><p></p><p><a href="${
       (environment.type === "production"
         ? "https://app.movetcare.com"
         : environment.type === "staging"
@@ -247,19 +276,21 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
       subject: "Finish Booking Your Appointment!",
       message: emailHtml,
     };
-    const userNotificationSettings: UserNotificationSettings | false =
-      await getClientNotificationSettings(uid);
-    if (userNotificationSettings && userNotificationSettings?.sendEmail) {
-      sendNotification({
-        type: "email",
-        payload: { ...emailConfig, client: client.uid },
-      });
-    }
-  } else if (DEBUG)
-    console.log(
-      "FAILED TO SEND TWENTY FOUR HOUR BOOKING RECOVERY NOTIFICATION",
-      booking
-    );
+    if (client && uid) {
+      const userNotificationSettings: UserNotificationSettings | false =
+        await getClientNotificationSettings(uid);
+      if (userNotificationSettings && userNotificationSettings?.sendEmail) {
+        sendNotification({
+          type: "email",
+          payload: { ...emailConfig, client: client.uid },
+        });
+      }
+    } else if (DEBUG)
+      console.log(
+        "FAILED TO SEND TWENTY FOUR HOUR BOOKING RECOVERY NOTIFICATION",
+        booking
+      );
+  }
 };
 
 const sendSeventyTwoHourBookingRecoveryNotification = async (
@@ -271,30 +302,33 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
       booking
     );
   const { isActive, client, id } = booking;
-  const { uid, email } = client;
+  const { uid, email } = client || {};
   if (isActive && id && email) {
-    const authLink = await sendSignInByEmailLink({
-      email,
-      sendEmail: false,
-      sessionId: id,
-    });
-    if (DEBUG)
-      console.log(
-        "sendOneHourBookingRecoveryNotification => authLink",
-        authLink
-      );
+    // const authLink = await sendSignInByEmailLink({
+    //   email,
+    //   sendEmail: false,
+    //   sessionId: id,
+    // });
+    // if (DEBUG)
+    //   console.log(
+    //     "sendOneHourBookingRecoveryNotification => authLink",
+    //     authLink
+    //   );
     let smsMessage = "";
-    if (client?.displayName) smsMessage += `Hey ${client?.displayName}!\n\n`;
+    if (client?.displayName)
+      smsMessage += `Hey ${getClientFirstNameFromDisplayName(
+        client?.displayName
+      )}!\n\n`;
     else smsMessage += "Hey there!\n\n";
     smsMessage += `It looks like you haven't finished your appointment booking request with MoVET from three days ago.\n\nTap the link bellow to resume your session:\n\n${
-      authLink
-        ? authLink
-        : (environment.type === "production"
-            ? "https://app.movetcare.com"
-            : environment.type === "staging"
-            ? "https://stage.app.movetcare.com"
-            : "http://localhost:3000") +
-          `/schedule-an-appointment/?email=${email}/`
+      // authLink
+      //   ? authLink
+      //   :
+      (environment.type === "production"
+        ? "https://app.movetcare.com"
+        : environment.type === "staging"
+        ? "https://stage.app.movetcare.com"
+        : "http://localhost:3000") + `/schedule-an-appointment/?email=${email}/`
     }\n\nAt MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!\nWe look forward to seeing you soon!\nThe MoVET Team\n\nCancel Booking: ${
       (environment.type === "production"
         ? "https://app.movetcare.com"

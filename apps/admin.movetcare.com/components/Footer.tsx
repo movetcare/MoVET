@@ -10,6 +10,7 @@ import {
   faFaceSmile,
   faIcons,
   faInfoCircle,
+  faPlug,
   faStar,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
@@ -188,12 +189,16 @@ const Footer: React.FC = () => {
           © MoVET {new Date().getFullYear()}
         </p>
         <div className={"flex flex-row items-center justify-center"}>
-          <Link href="/signout">
-            <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center">
-              <FontAwesomeIcon icon={faArrowRightFromBracket} size="lg" />
-            </div>
-          </Link>
-          <p className="text-movet-white text-xl mx-3">|</p>
+          {isAdmin && (
+            <>
+              <Link href="/settings">
+                <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center">
+                  <FontAwesomeIcon icon={faCogs} size="lg" />
+                </div>
+              </Link>
+              <p className="text-movet-white text-xl mx-3">|</p>
+            </>
+          )}
           <Link href="/request-a-feature">
             <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-green hover:cursor-pointer italic flex w-full items-center justify-center">
               <FontAwesomeIcon icon={faFaceSmile} size="lg" />
@@ -211,16 +216,18 @@ const Footer: React.FC = () => {
               <FontAwesomeIcon icon={faBookMedical} size="lg" />
             </div>
           </Link>
-          {isAdmin && (
-            <>
-              <p className="text-movet-white text-xl mx-3">|</p>
-              <Link href="/settings">
-                <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center">
-                  <FontAwesomeIcon icon={faCogs} size="lg" />
-                </div>
-              </Link>
-            </>
-          )}
+          <p className="text-movet-white text-xl mx-3">|</p>
+          <Link href="/status">
+            <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center">
+              <FontAwesomeIcon icon={faPlug} size="lg" />
+            </div>
+          </Link>
+          <p className="text-movet-white text-xl mx-3">|</p>
+          <Link href="/signout">
+            <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center">
+              <FontAwesomeIcon icon={faArrowRightFromBracket} size="lg" />
+            </div>
+          </Link>
         </div>
       </footer>
       <Transition

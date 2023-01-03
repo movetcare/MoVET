@@ -1,6 +1,7 @@
 import { DEBUG, admin, throwError } from "../../config/config";
 import { EmailConfiguration } from "../../types/email.d";
 import { getAuthUserById } from "../../utils/auth/getAuthUserById";
+import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
 import { getDateStringFromDate } from "../../utils/getDateStringFromDate";
 import { sendNotification } from "../sendNotification";
 
@@ -42,7 +43,9 @@ export const sendCancellationEmail = async (
   if (DEBUG) console.log("petNames -> ", petNames);
 
   const emailText = `${
-    displayName ? `<p>Hi ${displayName},</p>` : ""
+    displayName
+      ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
+      : ""
   }<p>We are reaching out to let you know that we have received your request to cancel your appointment for ${
     petNames ? petNames : ""
   } on ${getDateStringFromDate(

@@ -1,6 +1,6 @@
 import { admin, environment, stripe, throwError } from "../../config/config";
 import { sendNotification } from "../../notifications/sendNotification";
-import type { BookingError, BookingResponse } from "../../types/booking";
+import type { BookingError, Booking } from "../../types/booking";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 import { handleFailedBooking } from "./handleFailedBooking";
@@ -8,7 +8,7 @@ const DEBUG = true;
 export const processDateTime = async (
   id: string,
   requestedDateTime: { date: string; time: string }
-): Promise<BookingResponse | BookingError> => {
+): Promise<Booking | BookingError> => {
   if (DEBUG) console.log("DATE TIME DATA", requestedDateTime);
   if (requestedDateTime && id) {
     const bookingRef = admin.firestore().collection("bookings").doc(id);

@@ -45,7 +45,7 @@ export const BookAnAppointmentForm = ({
       className="flex justify-center items-top"
     >
       <EmailInput
-        autoFocus={autoFocus}
+        autoFocus={false}
         required
         name="email"
         errors={errors}

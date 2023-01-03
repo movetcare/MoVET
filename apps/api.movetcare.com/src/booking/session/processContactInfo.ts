@@ -3,17 +3,29 @@ import { updateProVetClient } from "../../integrations/provet/entities/client/up
 import { sendNotification } from "../../notifications/sendNotification";
 import type {
   BookingError,
-  ClientInfo,
-  BookingResponse,
-  PatientData,
+  ClientBookingData,
+  Booking,
+  PatientBookingData,
 } from "../../types/booking";
-import { getAllActivePatients } from "./getAllActivePatients";
+import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { handleFailedBooking } from "./handleFailedBooking";
 const DEBUG = true;
 export const processContactInfo = async (
   id: string,
-  { firstName, lastName, phone, uid, requiresInfo }: ClientInfo
-): Promise<BookingResponse | BookingError> => {
+  {
+    firstName,
+    lastName,
+    phone,
+    uid,
+    requiresInfo,
+  }: {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    uid: string;
+    requiresInfo: boolean;
+  }
+): Promise<Booking | BookingError> => {
   const data = { firstName, lastName, phone, uid, requiresInfo, id };
   if (DEBUG) console.log("CONTACT INFO DATA", data);
   if (firstName && lastName && phone && uid && requiresInfo) {
@@ -29,7 +41,7 @@ export const processContactInfo = async (
             phone,
             uid,
             requiresInfo: false,
-          } as ClientInfo,
+          } as ClientBookingData,
           updatedOn: new Date(),
         },
         { merge: true }
@@ -45,7 +57,7 @@ export const processContactInfo = async (
       id: uid,
     });
     if (DEBUG) console.log("didUpdateProVetClient", didUpdateProVetClient);
-    const patients: Array<PatientData> | BookingError | any =
+    const patients: Array<PatientBookingData> | BookingError | any =
       await getAllActivePatients(uid);
     if (patients && didUpdateProVetClient) {
       sendNotification({

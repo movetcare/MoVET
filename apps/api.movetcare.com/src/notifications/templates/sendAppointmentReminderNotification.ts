@@ -13,6 +13,7 @@ import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
 import type { EmailConfiguration } from "../../types/email.d";
 import { sendNotification } from "../sendNotification";
+import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
 
 interface AppointmentDetails {
   active: boolean;
@@ -164,7 +165,9 @@ const send24HourAppointmentNotification = async (
     email
   ) {
     const emailText = `${
-      displayName ? `<p>Hi ${displayName},</p>` : "<p>Hey there!</p>"
+      displayName
+        ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
+        : "<p>Hey there!</p>"
     }<p>This email contains important information about your upcoming appointment with MoVET.</p>${
       user
         ? `<p><b>Location: </b>${
@@ -259,7 +262,9 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
     if (DEBUG) console.log("petNames -> ", petNames);
     const reasonName = reason ? await getReasonName(reason) : null;
     const smsText = `${
-      displayName ? `Hi ${displayName}. ` : "Hey there! "
+      displayName
+        ? `Hi ${getClientFirstNameFromDisplayName(displayName)}. `
+        : "Hey there! "
     }\n\nThis is MoVET reaching out to remind you of your upcoming appointment.\n\nAPPOINTMENT DETAILS:\n${
       user
         ? `Location: ${
@@ -350,7 +355,9 @@ const send30MinAppointmentNotification = async (
     email
   ) {
     const emailText = `${
-      displayName ? `<p>Hi ${displayName},</p>` : "<p>Hey there!</p>"
+      displayName
+        ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
+        : "<p>Hey there!</p>"
     }${
       user === 8
         ? `<p>A MoVET Expert is on their way to ${
@@ -437,7 +444,9 @@ const send30MinAppointmentNotification = async (
         : patients[0].name;
     if (DEBUG) console.log("petNames -> ", petNames);
     const smsText = `${
-      displayName ? `Hi ${displayName},\n\n` : "Hey there!\n\n"
+      displayName
+        ? `Hi ${getClientFirstNameFromDisplayName(displayName)},\n\n`
+        : "Hey there!\n\n"
     }${
       user === 8
         ? `A MoVET Expert is on their way to ${

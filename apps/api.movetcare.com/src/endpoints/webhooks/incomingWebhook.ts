@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 import {Request, Response, NextFunction} from "express";
-import {admin, functions, DEBUG} from "../../config/config";
+import { admin, functions } from "../../config/config";
+const DEBUG = true;
 import {processProVetWebhook} from "../../integrations/provet/processWebhook";
 import {initProVetConfig} from "../../config/initConfig";
 import {processExpoWebhook} from "../../integrations/expo/processWebhook";

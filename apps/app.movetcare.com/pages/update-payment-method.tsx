@@ -22,7 +22,7 @@ import Head from "next/head";
 
 export default function UpdatePaymentMethod() {
   const router = useRouter();
-  const { mode, email, success } = router.query || {};
+  const { email, success } = router.query || {};
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
   const [signUpSuccess, setSignUpSuccess] = useState<boolean | null>(null);
