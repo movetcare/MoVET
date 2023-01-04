@@ -41,8 +41,7 @@ export const processDateTime = async (
                 : environment?.type === "production"
                 ? "https://app.movetcare.com"
                 : "https://stage.app.movetcare.com") +
-              "/schedule-an-appointment/success?id=" +
-              id,
+              "/schedule-an-appointment/success",
             cancel_url:
               (environment?.type === "development"
                 ? "http://localhost:3001"

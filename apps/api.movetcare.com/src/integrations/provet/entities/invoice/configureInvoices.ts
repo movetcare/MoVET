@@ -36,34 +36,40 @@ export const configureInvoices = async (): Promise<boolean> => {
     if (DEBUG) console.log("INVOICES DATA =>", invoices);
     if (invoices) {
       const batch = admin.firestore().batch();
-      invoices.forEach((invoice: any) => {
-        if (invoice.client) {
-          batch.set(
-            admin
-              .firestore()
-              .collection("client_invoices")
-              .doc(`${invoice?.id}`),
-            { ...invoice, updatedOn: new Date() },
-            { merge: true }
-          );
-          batch.set(
-            admin
-              .firestore()
-              .collection("clients")
-              .doc(`${getProVetIdFromUrl(invoice?.client)}`)
-              .collection("invoices")
-              .doc(`${invoice?.id}`),
-            { ...invoice, updatedOn: new Date() },
-            { merge: true }
-          );
-        } else {
-          batch.set(
-            admin.firestore().collection("counter_sales").doc(`${invoice?.id}`),
-            { ...invoice, updatedOn: new Date() },
-            { merge: true }
-          );
-        }
-      });
+      invoices
+        .slice()
+        .reverse()
+        .forEach((invoice: any, index: number) => {
+          if (invoice.client && index <= 100) {
+            batch.set(
+              admin
+                .firestore()
+                .collection("client_invoices")
+                .doc(`${invoice?.id}`),
+              { ...invoice },
+              { merge: true }
+            );
+            batch.set(
+              admin
+                .firestore()
+                .collection("clients")
+                .doc(`${getProVetIdFromUrl(invoice?.client)}`)
+                .collection("invoices")
+                .doc(`${invoice?.id}`),
+              { ...invoice },
+              { merge: true }
+            );
+          } else if (index <= 100) {
+            batch.set(
+              admin
+                .firestore()
+                .collection("counter_sales")
+                .doc(`${invoice?.id}`),
+              { ...invoice },
+              { merge: true }
+            );
+          }
+        });
       return batch
         .commit()
         .then(() => {

@@ -68,10 +68,7 @@ export default function WellnessCheck() {
       const selectedPatientsData: any = [];
       sessionData?.selectedPatients?.forEach((patientId: string) => {
         sessionData?.patients?.forEach((patient: any) => {
-          if (patient?.id === patientId) {
-            selectedPatientsData.push(patient);
-            console.log("patient", patient);
-          }
+          if (patient?.id === patientId) selectedPatientsData.push(patient);
         });
       });
       setSession(sessionData);
@@ -86,7 +83,6 @@ export default function WellnessCheck() {
     setIsLoading(false);
   };
   const onSubmit = async (data: any) => {
-    console.log("data", data);
     setIsLoading(true);
     setLoadingMessage("Saving Your Selection...");
     if (executeRecaptcha) {
@@ -95,7 +91,6 @@ export default function WellnessCheck() {
         router.push("/schedule-an-appointment/location-selection");
       else if (token) {
         try {
-          console.log("session", session);
           const { data: result }: any = await httpsCallable(
             functions,
             "scheduleAppointment"
@@ -107,7 +102,6 @@ export default function WellnessCheck() {
             device: navigator.userAgent,
             token,
           });
-          console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
             if (result?.client?.uid && result?.id) {

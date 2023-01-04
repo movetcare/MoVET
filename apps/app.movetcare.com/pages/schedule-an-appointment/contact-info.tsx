@@ -65,7 +65,6 @@ export default function ContactInfo() {
           const session = JSON.parse(
             window.localStorage.getItem("bookingSession") as string
           );
-          console.log("session", session);
           const { data: result }: any = await httpsCallable(
             functions,
             "scheduleAppointment"
@@ -79,7 +78,6 @@ export default function ContactInfo() {
             device: navigator.userAgent,
             token,
           });
-          console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
             if (result?.client?.uid && result?.id) {

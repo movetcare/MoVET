@@ -32,18 +32,24 @@ export const updateBookingCancellation = async (
               patient?.name
             }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
               patient?.gender
-            }</p><p><b>Minor Illness:</b> ${
-              patient?.hasMinorIllness
-                ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                    patient?.illnessDetails?.notes
-                  }`
-                : " NONE"
-            }</p><p><b>-----------------------------------</b></p>`;
+            }</p>${
+              patient?.illnessDetails
+                ? `<p><b>Minor Illness:</b> ${
+                    patient?.illnessDetails
+                      ? `${JSON.stringify(
+                          patient?.illnessDetails?.symptoms
+                        )} - ${patient?.illnessDetails?.notes}`
+                      : " None"
+                  }</p>`
+                : ""
+            }<p><b>-----------------------------------</b></p>`;
         });
       });
     if (client)
       message += `${
-        client.displayName ? `<p><b>Name:</b> ${client.displayName}</p>` : ""
+        client?.firstName && client?.lastName
+          ? `<p><b>Name:</b> ${client?.firstName} ${client?.lastName}</p>`
+          : ""
       }<p><b>Email:</b> ${client.email}</p>${
         client.phone
           ? `<p><b>Phone:</b> <a href="tel://${
@@ -51,7 +57,11 @@ export const updateBookingCancellation = async (
             }">${formatPhoneNumber(client.phone?.replaceAll("+1", ""))}</a></p>`
           : ""
       }${allPatients}
-    ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}
+    ${
+      reason
+        ? `<p><b>Reason:</b> ${reason.label}</p>`
+        : "<p><b>Reason:</b> Establish Care Exam</p>"
+    }
     ${
       requestedDateTime?.date
         ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(

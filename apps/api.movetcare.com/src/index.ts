@@ -33,7 +33,6 @@ export { getBookingToken } from "./endpoints/mobile/booking/getBookingToken";
 
 export { reportABug } from "./endpoints/web/reportABug";
 export { updatePaymentMethod } from "./endpoints/web/updatePaymentMethod";
-export { verifyBooking } from "./endpoints/web/verifyBooking";
 export { scheduleAppointment } from "./endpoints/web/scheduleAppointment";
 export { getBreedsData } from "./endpoints/web/getBreedsData";
 export { getAppointmentLocations } from "./endpoints/web/getAppointmentLocations";

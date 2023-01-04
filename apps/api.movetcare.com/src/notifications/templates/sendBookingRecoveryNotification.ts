@@ -72,7 +72,7 @@ const sendAdminBookingRecoveryNotification = async (
     selectedPatients,
     selectedStaff,
   }: any = booking;
-  const { email, displayName, phoneNumber } = client;
+  const { email, displayName, phone } = client;
 
   let allPatients = "";
   selectedPatients.forEach((selectedPatient: any) => {
@@ -82,15 +82,25 @@ const sendAdminBookingRecoveryNotification = async (
           patient?.name
         }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
           patient?.gender
-        }</p><p><b>Minor Illness:</b> ${
-          patient?.hasMinorIllness
-            ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                patient?.illnessDetails?.notes
-              }`
-            : " NONE"
         }</p>${
+          patient?.illnessDetails
+            ? `<p><b>Minor Illness:</b> ${
+                patient?.illnessDetails
+                  ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                      patient?.illnessDetails?.notes
+                    }`
+                  : " None"
+              }</p>`
+            : ""
+        }${
           patient.aggressionStatus
-            ? `<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
+            ? `<p><b>Aggression Status:</b> "${
+                patient?.aggressionStatus
+                  ? "IS AGGRESSIVE!"
+                  : "Is not aggressive" ||
+                    // eslint-disable-next-line quotes
+                    'UNKNOWN - Update "Is Aggressive" custom field on patient\'s profile in ProVet!'
+              } "</p>`
             : ""
         }${
           patient.vcprRequired
@@ -98,7 +108,7 @@ const sendAdminBookingRecoveryNotification = async (
                 patient?.vcprRequired ? "Yes" : "No"
               }</p>`
             : ""
-        }<p><b>-----------------------------------</b></p>`;
+        }<p></p><p></p>`;
     });
   });
 
@@ -111,9 +121,9 @@ const sendAdminBookingRecoveryNotification = async (
         )}</p>`
       : ""
   }<p><b>Client Email:</b> ${email}</p>${
-    phoneNumber
-      ? `<p><b>Client Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
-          phoneNumber?.replaceAll("+1", "")
+    phone
+      ? `<p><b>Client Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
+          phone?.replaceAll("+1", "")
         )}</a></p>`
       : ""
   }${
@@ -121,7 +131,11 @@ const sendAdminBookingRecoveryNotification = async (
       ? allPatients
       : ""
   }
-  ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
+  ${
+    reason
+      ? `<p><b>Reason:</b> ${reason.label}</p>`
+      : "<p><b>Reason:</b> Establish Care Exam</p>"
+  }${
     requestedDateTime?.date
       ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
           requestedDateTime.date
@@ -181,10 +195,7 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
     //     authLink
     //   );
     let emailHtml = "";
-    if (client?.displayName)
-      emailHtml += `<p>Hey ${getClientFirstNameFromDisplayName(
-        client?.displayName
-      )}!</p>`;
+    if (client?.firstName) emailHtml += `<p>Hey ${client?.firstName}!</p>`;
     else emailHtml += "<p>Hey there!</p>";
 
     emailHtml += `<p>It looks like you were in the process of submitting an appointment booking request with MoVET.</p><p><b>Click the link bellow to resume your session:</b></p><p><a href='${
@@ -249,10 +260,7 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
     //     authLink
     //   );
     let emailHtml = "";
-    if (client?.displayName)
-      emailHtml += `<p>Hey ${getClientFirstNameFromDisplayName(
-        client?.displayName
-      )}!</p>`;
+    if (client?.firstName) emailHtml += `<p>Hey ${client?.firstName}!</p>`;
     else emailHtml += "<p>Hey there!</p>";
 
     emailHtml += `<p>It looks like you didn't finish booking your appointment with MoVET yesterday.</p><p><b>Click on the link bellow to resume your session:</b></p><p><a href='${
@@ -315,10 +323,7 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
     //     authLink
     //   );
     let smsMessage = "";
-    if (client?.displayName)
-      smsMessage += `Hey ${getClientFirstNameFromDisplayName(
-        client?.displayName
-      )}!\n\n`;
+    if (client?.firstName) smsMessage += `Hey ${client?.firstName}!\n\n`;
     else smsMessage += "Hey there!\n\n";
     smsMessage += `It looks like you haven't finished your appointment booking request with MoVET from three days ago.\n\nTap the link bellow to resume your session:\n\n${
       // authLink

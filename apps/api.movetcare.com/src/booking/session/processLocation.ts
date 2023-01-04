@@ -41,65 +41,82 @@ export const processLocation = async (data: {
         throwError(error);
         return await handleFailedBooking(error, "GET BOOKING DATA FAILED");
       });
-    if (session) {
-      sendNotification({
-        type: "slack",
-        payload: {
-          message: [
-            {
-              type: "section",
-              text: {
-                text: `:book: _Appointment Booking_ *UPDATED* (${id})`,
-                type: "mrkdwn",
+      const defaultBookingReasons = await admin
+        .firestore()
+        .collection("configuration")
+        .doc("bookings")
+        .get()
+        .then((doc: any) => doc.data())
+        .catch(async (error: any) => {
+          throwError(error);
+          return await handleFailedBooking(error, "GET DEFAULT REASONS FAILED");
+        });
+      if (session && defaultBookingReasons) {
+        sendNotification({
+          type: "slack",
+          payload: {
+            message: [
+              {
+                type: "section",
+                text: {
+                  text: `:book: _Appointment Booking_ *UPDATED* (${id})`,
+                  type: "mrkdwn",
+                },
+                fields: [
+                  {
+                    type: "mrkdwn",
+                    text: "*STEP*",
+                  },
+                  {
+                    type: "plain_text",
+                    text: "LOCATION",
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*LOCATION*",
+                  },
+                  {
+                    type: "plain_text",
+                    text: session?.location,
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*LOCATION ID*",
+                  },
+                  {
+                    type: "plain_text",
+                    text: `${session?.locationId}`,
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*ADDRESS*",
+                  },
+                  {
+                    type: "plain_text",
+                    text: session?.address
+                      ? JSON.stringify(session?.address)
+                      : "N/A",
+                  },
+                ],
               },
-              fields: [
-                {
-                  type: "mrkdwn",
-                  text: "*STEP*",
-                },
-                {
-                  type: "plain_text",
-                  text: "LOCATION",
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*LOCATION*",
-                },
-                {
-                  type: "plain_text",
-                  text: session?.location,
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*LOCATION ID*",
-                },
-                {
-                  type: "plain_text",
-                  text: `${session?.locationId}`,
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*ADDRESS*",
-                },
-                {
-                  type: "plain_text",
-                  text: session?.address
-                    ? JSON.stringify(session?.address)
-                    : "N/A",
-                },
-              ],
-            },
-          ],
-        },
-      });
-      return {
-        ...session,
-        id,
-        client: {
-          uid: session?.client?.uid,
-          requiresInfo: session?.client?.requiresInfo,
-        },
-      };
-    } else return await handleFailedBooking(data, "FAILED TO GET SESSION");
+            ],
+          },
+        });
+        return {
+          ...session,
+          reason: session?.establishCareExamRequired
+            ? location === "Home"
+              ? defaultBookingReasons?.housecallStandardVcprReason
+              : location === "Clinic"
+              ? defaultBookingReasons?.clinicStandardVcprReason
+              : defaultBookingReasons?.virtualStandardVcprReason
+            : null,
+          id,
+          client: {
+            uid: session?.client?.uid,
+            requiresInfo: session?.client?.requiresInfo,
+          },
+        };
+      } else return await handleFailedBooking(data, "FAILED TO GET SESSION");
   } else return await handleFailedBooking(data, "FAILED TO HANDLE LOCATION");
 };

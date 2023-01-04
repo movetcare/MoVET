@@ -22,7 +22,7 @@ import { BookingHeader } from "components/booking/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Transition } from "@headlessui/react";
 import { DateInput } from "components/inputs/DateInput";
-import { FileUploadInput } from "components/inputs/FileUploadInput";
+// import { FileUploadInput } from "components/inputs/FileUploadInput";
 import { NumberInput } from "components/inputs/NumberInput";
 import { PlacesInput } from "components/inputs/PlacesInput";
 import { RadioInput } from "components/inputs/RadioInput";
@@ -108,8 +108,8 @@ export default function ContactInfo() {
   const [loadingMessage, setLoadingMessage] = useState<string | null>(null);
   const [breedsList, setBreedsList] = useState<Array<Breed>>();
   const [breedsData, setBreedsData] = useState<Array<Breed>>();
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [records, setRecords] = useState<string | null>(null);
+  // const [photo, setPhoto] = useState<string | null>(null);
+  // const [records, setRecords] = useState<string | null>(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [session, setSession] = useState<any>();
   const {
@@ -244,7 +244,8 @@ export default function ContactInfo() {
             functions,
             "scheduleAppointment"
           )({
-            addAPet: { ...data, records, photo },
+            addAPet: data,
+            //{ ...data, records, photo },
             id: session?.id,
             device: navigator.userAgent,
             token,
@@ -362,7 +363,7 @@ export default function ContactInfo() {
                       autoComplete="given-name"
                       required
                     />
-                    <Transition
+                    {/* <Transition
                       show={name !== ""}
                       enter="transition ease-in duration-500"
                       leave="transition ease-out duration-300"
@@ -381,7 +382,7 @@ export default function ContactInfo() {
                         successMessage="Photo Upload Complete!"
                         uploadPath={`/clients/${session?.client?.uid}/patients/new/photo`}
                       />
-                    </Transition>
+                    </Transition> */}
                   </div>
                   {specie !== undefined &&
                     specie !== null &&
@@ -449,7 +450,7 @@ export default function ContactInfo() {
                         <h2 className="text-center -mb-6">OR</h2>
                       </>
                     </Transition>
-                    <FileUploadInput
+                    {/* <FileUploadInput
                       fileTypes="PDF"
                       setValue={setRecords}
                       isAppMode={isAppMode}
@@ -457,7 +458,7 @@ export default function ContactInfo() {
                       fileName={`previous-records`}
                       uploadPath={`/clients/${session?.client?.uid}/patients/new/records`}
                       successMessage="Previous Vet Record Uploaded!"
-                    />
+                    /> */}
                   </div>
                   <RadioInput
                     name="aggressionStatus"

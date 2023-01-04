@@ -4,7 +4,7 @@ import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
 import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
 import { sendNotification } from "../sendNotification";
-
+const DEBUG = false;
 export const sendBookingRequestAdminNotification = async ({
   id,
   bookingRef,
@@ -26,25 +26,36 @@ export const sendBookingRequestAdminNotification = async ({
     .get()
     .then((doc: any) => doc.data())
     .catch((error: any) => throwError(error));
-  const { email, displayName, phoneNumber } = client;
+  const { email, displayName, phone } = client;
 
   let allPatients = "";
   selectedPatients.forEach((selectedPatient: any) => {
     patients.map((patient: any) => {
-      if (selectedPatient === patient?.id)
+      if (selectedPatient === patient?.id) {
+        if (DEBUG) console.log("selected patient", patient);
         allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
           patient?.name
         }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
           patient?.gender
-        }</p><p><b>Minor Illness:</b> ${
-          patient?.hasMinorIllness
-            ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                patient?.illnessDetails?.notes
-              }`
-            : " NONE"
         }</p>${
+          patient?.illnessDetails
+            ? `<p><b>Minor Illness:</b> ${
+                patient?.illnessDetails
+                  ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                      patient?.illnessDetails?.notes
+                    }`
+                  : " None"
+              }</p>`
+            : ""
+        }${
           patient.aggressionStatus
-            ? `<p><b>Aggression Status:</b> "${patient?.aggressionStatus?.name}"</p>`
+            ? `<p><b>Aggression Status:</b> "${
+                patient?.aggressionStatus
+                  ? "IS AGGRESSIVE!"
+                  : "Is not aggressive" ||
+                    // eslint-disable-next-line quotes
+                    'UNKNOWN - Update "Is Aggressive" custom field on patient\'s profile in ProVet!'
+              } "</p>`
             : ""
         }${
           patient.vcprRequired
@@ -52,7 +63,8 @@ export const sendBookingRequestAdminNotification = async ({
                 patient?.vcprRequired ? "Yes" : "No"
               }</p>`
             : ""
-        }<p><b>-----------------------------------</b></p>`;
+        }<p></p><p></p>`;
+      }
     });
   });
 
@@ -65,17 +77,21 @@ export const sendBookingRequestAdminNotification = async ({
         )}</p>`
       : ""
   }<p><b>Client Email:</b> ${email}</p>${
-    phoneNumber
-      ? `<p><b>Client Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
-          phoneNumber?.replaceAll("+1", "")
+    phone
+      ? `<p><b>Client Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
+          phone?.replaceAll("+1", "")
         )}</a></p>`
       : ""
   }${
     Array.isArray(patients) && Array.isArray(selectedPatients)
       ? allPatients
       : ""
-  }
-  ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}${
+  }<p><b>---------------------------------</b></p>
+  ${
+    reason
+      ? `<p><b>Reason:</b> ${reason.label}</p>`
+      : "<p><b>Reason:</b> Establish Care Exam</p>"
+  }${
     requestedDateTime?.date
       ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
           requestedDateTime.date
@@ -97,7 +113,7 @@ export const sendBookingRequestAdminNotification = async ({
       : ""
   }<p><a href="https://us.provetcloud.com/4285/client/${
     client?.uid
-  }/tabs" >Book Appointment</a></p>`;
+  }/tabs" >Book an Appointment for this Client</a></p>`;
 
   sendNotification({
     type: "email",
@@ -144,7 +160,9 @@ export const sendBookingRequestAdminNotification = async ({
             },
             {
               type: "plain_text",
-              text: `${reason.label ? `${reason.label}` : "Establish Care"}`,
+              text: `${
+                reason && reason?.label ? `${reason?.label}` : "Establish Care"
+              }`,
             },
             {
               type: "mrkdwn",

@@ -2,7 +2,6 @@ import { throwError } from "../../config/config";
 import { createProVetNote } from "../../integrations/provet/entities/note/createProVetNote";
 // import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
-import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
 import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
 import { sendNotification } from "../sendNotification";
 export const sendBookingRequestClientNotification = async ({
@@ -28,7 +27,7 @@ export const sendBookingRequestClientNotification = async ({
     .get()
     .then((doc: any) => doc.data())
     .catch((error: any) => throwError(error));
-  const { email, displayName, phoneNumber, uid } = client;
+  const { email, displayName, phone, uid } = client;
   const { subject, message } = createClientMessage({
     messageTemplate: "email",
     vcprRequired,
@@ -39,7 +38,7 @@ export const sendBookingRequestClientNotification = async ({
     id,
     displayName,
     createdAt,
-    phoneNumber,
+    phone,
     email,
     requestedDateTime,
     location,
@@ -87,7 +86,7 @@ export const sendBookingRequestClientNotification = async ({
         id,
         displayName,
         createdAt,
-        phoneNumber,
+        phone,
         email,
         requestedDateTime,
         location,
@@ -105,7 +104,7 @@ const createClientMessage = ({
   reason,
   patients,
   displayName,
-  phoneNumber,
+  phone,
   email,
   requestedDateTime,
   location,
@@ -118,31 +117,41 @@ const createClientMessage = ({
     selectedPatients.forEach((selectedPatient: any) => {
       patients.map((patient: any) => {
         if (selectedPatient === patient?.id)
-          allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
+          allPatients += `<p><b>-------------- PET ----------------</b></p><p><b>Name:</b> ${
             patient?.name
           }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
             patient?.gender
-          }</p><p><b>Minor Illness:</b> ${
-            patient?.hasMinorIllness
-              ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                  patient?.illnessDetails?.notes
-                }`
-              : " NONE"
-          }</p><p><b>-----------------------------------</b></p>`;
+          }</p>${
+            patient?.illnessDetails
+              ? `<p><b>Minor Illness:</b> ${
+                  patient?.illnessDetails
+                    ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                        patient?.illnessDetails?.notes
+                      }`
+                    : " None"
+                }</p>`
+              : ""
+          }<p></p><p></p>`;
       });
     });
-    const message = `<p>Hi ${getClientFirstNameFromDisplayName(
-      client?.displayName
-    )},</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request bellow and let us know (by replying to this email) if anything needs to be changed.</p><p></p>${
+
+    const message = `<p>Hi ${
+      client?.firstName
+    },</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request bellow and let us know (by replying to this email) if anything needs to be changed.</p><p><b>---------- CONTACT INFO -----------</b></p>${
       displayName ? `<p><b>Name:</b> ${displayName}</p>` : ""
     }<p><b>Email:</b> ${email}</p>${
-      phoneNumber
-        ? `<p><b>Phone:</b> <a href="tel://${phoneNumber}">${formatPhoneNumber(
-            phoneNumber?.replaceAll("+1", "")
+      phone
+        ? `<p><b>Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
+            phone?.replaceAll("+1", "")
           )}</a></p>`
         : ""
     }${allPatients}
-    ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}
+    <p><b>--------- DETAILS ----------</b></p>
+    ${
+      reason
+        ? `<p><b>Reason:</b> ${reason.label}</p>`
+        : "<p><b>Reason:</b> Establish Care Exam</p>"
+    }
     ${
       requestedDateTime?.date
         ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(

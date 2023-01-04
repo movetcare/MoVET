@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { Error } from "components/Error";
 import { useEffect, useState } from "react";
 import { Button, ErrorMessage, Loader } from "ui";
-import { faArrowRight, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
@@ -48,7 +48,6 @@ export default function IllnessSelection() {
   useEffect(() => {
     setIsLoading(true);
     setLoadingMessage("Loading Pet...");
-    console.log("session", session?.nextPatient);
     if (session?.nextPatient) {
       session?.patients.forEach((patient: any) =>
         patient?.id === session?.nextPatient ? setPet(patient) : null
@@ -59,7 +58,6 @@ export default function IllnessSelection() {
   }, [session, router]);
   const {
     handleSubmit,
-    watch,
     control,
     register,
     reset,
@@ -87,7 +85,6 @@ export default function IllnessSelection() {
       details: "",
     },
   });
-  const selected = watch("symptoms");
 
   const handleError = (error: any) => {
     console.error(error);
@@ -96,14 +93,12 @@ export default function IllnessSelection() {
     setIsLoading(false);
   };
   const onSubmit = async (data: any) => {
-    console.log("data", data);
     setIsLoading(true);
     setLoadingMessage("Processing, please wait...");
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
       if (token) {
         try {
-          console.log("session", session);
           const { data: result }: any = await httpsCallable(
             functions,
             "scheduleAppointment"
@@ -117,7 +112,6 @@ export default function IllnessSelection() {
             device: navigator.userAgent,
             token,
           });
-          console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
             if (result?.client?.uid && result?.id) {
@@ -125,6 +119,7 @@ export default function IllnessSelection() {
                 "bookingSession",
                 JSON.stringify(result)
               );
+              reset();
               if (result?.nextPatient)
                 router.push("/schedule-an-appointment/illness-selection");
               else router.push("/schedule-an-appointment/location-selection");
@@ -209,12 +204,7 @@ export default function IllnessSelection() {
                 <div className="flex flex-col justify-center items-center mt-8 mb-4">
                   <Button
                     type="submit"
-                    icon={
-                      selected !== null &&
-                      (selected as Array<string>)?.length > 0
-                        ? faCheck
-                        : faArrowRight
-                    }
+                    icon={faArrowRight}
                     disabled={!isDirty}
                     iconSize={"sm"}
                     color="black"

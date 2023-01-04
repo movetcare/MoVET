@@ -25,16 +25,8 @@ export const configureBooking = async (): Promise<boolean> => {
       .doc("bookings")
       .set(
         {
-          clinicMinorIllnessVcprReason: {
-            value: 106,
-            label: "Establish Care Exam",
-          },
           clinicStandardVcprReason: {
             value: 106,
-            label: "Establish Care Exam",
-          },
-          housecallMinorIllnessVcprReason: {
-            value: 105,
             label: "Establish Care Exam",
           },
           housecallStandardVcprReason: {
@@ -42,10 +34,6 @@ export const configureBooking = async (): Promise<boolean> => {
             label: "Establish Care Exam",
           },
           virtualStandardVcprReason: {
-            value: 121,
-            label: "Virtual Meet & Greet",
-          },
-          virtualMinorIllnessVcprReason: {
             value: 121,
             label: "Virtual Meet & Greet",
           },

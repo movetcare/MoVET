@@ -5,7 +5,8 @@ export type BookingError = {
 };
 
 export type ClientBookingData = {
-  displayName?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   phone?: string;
   requiresInfo: boolean;

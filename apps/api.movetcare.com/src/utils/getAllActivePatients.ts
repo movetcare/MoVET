@@ -12,41 +12,56 @@ export const getAllActivePatients = async (
     .get()
     .then((patients: any) => {
       const patientsArray: Array<PatientBookingData> = [];
-      patients.forEach((patient: { data(): PatientBookingData; id: string }) =>
-        !patient.data().archived
-          ? patientsArray.push({
-              id: patient.id,
-              name: patient.data().name,
-              species: patient.data().species,
-              birthday: patient.data().birthday,
-              breed: patient.data().breed,
-              vcprRequired: getCustomFieldValue(
-                "VCPR Required",
-                patient.data()?.customFields || null
-              ) as boolean,
-              aggressionStatus: getCustomFieldValue(
-                "Is Aggressive",
-                patient.data()?.customFields || null
-              ) as boolean,
-              previousVet: getCustomFieldValue(
-                "Previous Vet",
-                patient.data()?.customFields || null
-              ),
-              clientNote: getCustomFieldValue(
-                "Client Note",
-                patient.data()?.customFields || null
-              ),
-              photo: getCustomFieldValue(
-                "Patient Photo",
-                patient.data()?.customFields || null
-              ),
-              rabiesTag: getCustomFieldValue(
-                "Rabies Tag",
-                patient.data()?.customFields || null
-              ),
-              gender: patient.data().gender,
-            } as PatientBookingData)
-          : null
+      patients.forEach(
+        (patient: { data(): PatientBookingData; id: string }) => {
+          console.log(
+            " patient.data().vcprRequired ",
+            patient.data().vcprRequired
+          );
+          console.log(
+            " VCPR CUSTOM VALUE ",
+            getCustomFieldValue(
+              "VCPR Required",
+              patient.data()?.customFields || null
+            )
+          );
+          !patient.data().archived
+            ? patientsArray.push({
+                id: patient.id,
+                name: patient.data().name,
+                species: patient.data().species,
+                birthday: patient.data().birthday,
+                breed: patient.data().breed,
+                vcprRequired:
+                  patient.data().vcprRequired ||
+                  (getCustomFieldValue(
+                    "VCPR Required",
+                    patient.data()?.customFields || null
+                  ) as boolean),
+                aggressionStatus: getCustomFieldValue(
+                  "Is Aggressive",
+                  patient.data()?.customFields || null
+                ) as boolean,
+                previousVet: getCustomFieldValue(
+                  "Previous Vet",
+                  patient.data()?.customFields || null
+                ),
+                clientNote: getCustomFieldValue(
+                  "Client Note",
+                  patient.data()?.customFields || null
+                ),
+                photo: getCustomFieldValue(
+                  "Patient Photo",
+                  patient.data()?.customFields || null
+                ),
+                rabiesTag: getCustomFieldValue(
+                  "Rabies Tag",
+                  patient.data()?.customFields || null
+                ),
+                gender: patient.data().gender,
+              } as PatientBookingData)
+            : null;
+        }
       );
       if (DEBUG) console.log("patientsArray", patientsArray);
       return patientsArray;

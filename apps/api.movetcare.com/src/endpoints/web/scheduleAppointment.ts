@@ -1,4 +1,4 @@
-import { functions, defaultRuntimeOptions, DEBUG } from "../../config/config";
+import { functions, defaultRuntimeOptions } from "../../config/config";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 import { handleFailedBooking } from "../../booking/session/handleFailedBooking";
 import type { BookingError, Booking } from "../../types/booking";
@@ -10,7 +10,7 @@ import { processIllPetSelection } from "../../booking/session/processIllPetSelec
 import { processIllnessDetails } from "../../booking/session/processIllnessDetails";
 import { processLocation } from "../../booking/session/processLocation";
 import { processDateTime } from "../../booking/session/processDateTime";
-
+const DEBUG = false;
 export const scheduleAppointment = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<Booking | BookingError> => {
@@ -34,11 +34,31 @@ export const scheduleAppointment = functions
     } = data || {};
     if (token) {
       if (await recaptchaIsVerified(token)) {
-        if (email) return await setupNewBookingSession(data);
-        else if (id) {
-          if (contactInfo) return await processContactInfo(id, contactInfo);
-          else if (addAPet) return await processAddAPet(id, addAPet);
-          else if (petSelection)
+        if (email) {
+          if (DEBUG)
+            console.log(
+              "scheduleAppointment => setupNewBookingSession => ",
+              data
+            );
+          return await setupNewBookingSession(data);
+        } else if (id) {
+          if (contactInfo) {
+            if (DEBUG)
+              console.log(
+                "scheduleAppointment => processContactInfo => ",
+                contactInfo
+              );
+            return await processContactInfo(id, contactInfo);
+          } else if (addAPet) {
+            if (DEBUG)
+              console.log("scheduleAppointment => processAddAPet => ", addAPet);
+            return await processAddAPet(id, addAPet);
+          } else if (petSelection) {
+            if (DEBUG)
+              console.log(
+                "scheduleAppointment => processPetSelection => ",
+                petSelection
+              );
             return await processPetSelection(
               id,
               Array.isArray(petSelection.pets)
@@ -46,18 +66,38 @@ export const scheduleAppointment = functions
                 : [petSelection.pets],
               establishCareExamRequired
             );
-          else if (illPetSelection)
+          } else if (illPetSelection) {
+            if (DEBUG)
+              console.log(
+                "scheduleAppointment => processIllPetSelection => ",
+                illPetSelection
+              );
             return await processIllPetSelection(
               id,
               Array.isArray(illPetSelection?.illPets)
                 ? illPetSelection?.illPets
                 : [illPetSelection?.illPets]
             );
-          else if (illnessDetails)
+          } else if (illnessDetails) {
+            if (DEBUG)
+              console.log(
+                "scheduleAppointment => processIllnessDetails => ",
+                illnessDetails
+              );
             return await processIllnessDetails(id, illnessDetails);
-          else if (location) {
+          } else if (location) {
+            if (DEBUG)
+              console.log(
+                "scheduleAppointment => processLocation => ",
+                location
+              );
             return await processLocation(data);
           } else if (requestedDateTime) {
+            if (DEBUG)
+              console.log(
+                "scheduleAppointment => processDateTime => ",
+                requestedDateTime
+              );
             return await processDateTime(id, requestedDateTime);
           } else
             return await handleFailedBooking(data, "FAILED TO HANDLE REQUEST");

@@ -52,22 +52,24 @@ export const endBooking = (
                   patient?.name
                 }</p><p><b>Species:</b> ${
                   patient?.species
-                }</p><p><b>Gender:</b> ${
-                  patient?.gender
-                }</p><p><b>Minor Illness:</b> ${
-                  patient?.hasMinorIllness
-                    ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                        patient?.illnessDetails?.notes
-                      }`
-                    : " NONE"
-                }</p><p><b>-----------------------------------</b></p>`;
+                }</p><p><b>Gender:</b> ${patient?.gender}</p>${
+                  patient?.illnessDetails
+                    ? `<p><b>Minor Illness:</b> ${
+                        patient?.illnessDetails
+                          ? `${JSON.stringify(
+                              patient?.illnessDetails?.symptoms
+                            )} - ${patient?.illnessDetails?.notes}`
+                          : " None"
+                      }</p>`
+                    : ""
+                }<p><b>-----------------------------------</b></p>`;
             });
           });
 
         if (client)
           message += `${
-            client.displayName
-              ? `<p><b>Name:</b> ${client.displayName}</p>`
+            client?.firstName && client?.lastName
+              ? `<p><b>Name:</b> ${client?.firstName} ${client?.lastName}</p>`
               : ""
           }<p><b>Email:</b> ${client.email}</p>${
             client.phone
@@ -78,7 +80,11 @@ export const endBooking = (
                 )}</a></p>`
               : ""
           }${allPatients}
-    ${reason ? `<p><b>Reason:</b> ${reason.label}</p>` : ""}
+   ${
+     reason
+       ? `<p><b>Reason:</b> ${reason.label}</p>`
+       : "<p><b>Reason:</b> Establish Care Exam</p>"
+   }
     ${
       requestedDateTime?.date
         ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
@@ -102,8 +108,8 @@ export const endBooking = (
           }<p></p><p>We look forward to seeing you soon!</p><p>- The MoVET Team</p><p></p><p>CANCELLATION REASON: NOT PROVIDED</p><p>CANCELLATION DETAILS: NOT PROVIDED</p>`;
 
         const subject = `${
-          client?.displayName
-            ? client?.displayName
+          client?.firstName && client?.lastName
+            ? `${client?.firstName} ${client?.lastName}`
             : client?.email
             ? client?.email
             : "Unknown Client"

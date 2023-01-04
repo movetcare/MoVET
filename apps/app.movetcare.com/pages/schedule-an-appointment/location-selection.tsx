@@ -151,7 +151,6 @@ export default function LocationSelection() {
     setIsLoading(false);
   };
   const onSubmit = async (data: any) => {
-    console.log("data", data);
     setIsLoading(true);
     setLoadingMessage("Processing, please wait...");
     let locationId = null;
@@ -173,7 +172,6 @@ export default function LocationSelection() {
       const token = await executeRecaptcha("booking");
       if (token) {
         try {
-          console.log("session", session);
           const { data: result }: any = await httpsCallable(
             functions,
             "scheduleAppointment"
@@ -203,7 +201,6 @@ export default function LocationSelection() {
                   token,
                 }
           );
-          console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
             if (result?.client?.uid && result?.id) {

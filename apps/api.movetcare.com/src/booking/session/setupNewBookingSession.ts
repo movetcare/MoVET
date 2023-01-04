@@ -1,5 +1,9 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-import type { BookingError, Booking } from "../../types/booking";
+import type {
+  BookingError,
+  Booking,
+  PatientBookingData,
+} from "../../types/booking";
 import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
 import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
 import { handleFailedBooking } from "./handleFailedBooking";
@@ -7,7 +11,9 @@ import { getActiveBookingSession } from "../verification/getActiveBookingSession
 import { verifyClientDataExists } from "../../utils/auth/verifyClientDataExists";
 import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
+import { getAllActivePatients } from "../../utils/getAllActivePatients";
 
+const DEBUG = false;
 export const setupNewBookingSession = async ({
   email,
   device,
@@ -17,8 +23,15 @@ export const setupNewBookingSession = async ({
   token: string;
 }): Promise<BookingError | Booking> => {
   const isExistingClient = await verifyExistingClient(email);
-  if (isExistingClient) return await startNewSession({ email, device });
-  else {
+  if (isExistingClient) {
+    if (DEBUG)
+      console.log(
+        "setupNewBookingSession => isExistingClient => startNewSession",
+        email
+      );
+    return await startNewSession({ email, device });
+  } else {
+    if (DEBUG) console.log("setupNewBookingSession => createNewClient", email);
     const proVetClientData: any = await createProVetClient({
       email,
       zip_code: null,
@@ -56,9 +69,12 @@ const startNewSession = async ({
       device
     );
     const requiresInfo = await verifyClientDataExists(authUser);
-    if (session) {
+    const patients: Array<PatientBookingData> | BookingError | any =
+      await getAllActivePatients(authUser?.uid);
+    if (session && patients) {
       return {
         ...session,
+        patients,
         client: { uid: authUser?.uid, requiresInfo },
       };
     } else

@@ -1,5 +1,5 @@
 import type { Item } from "@slack/web-api/dist/response/PinsListResponse";
-import { DEBUG, admin, throwError, request } from "../../../../config/config";
+import { admin, throwError, request, DEBUG } from "../../../../config/config";
 import { addMinutesToDateObject } from "../../../../utils/addMinutesToDateObject";
 import { sliceArrayIntoChunks } from "../../../../utils/sliceArrayIntoChunks";
 
@@ -7,13 +7,13 @@ export const fetchItemsData = async (
   itemIds: Array<string>
 ): Promise<Array<Item>> => {
   const itemsData: Array<Item> = [];
-  if (itemIds.length > 100) {
+  if (itemIds.length > 30) {
     if (DEBUG)
       console.log(
-        "ITEM IDS > 100 - ADDING REQUESTS TO TASK QUEUE",
+        "ITEM IDS > 30 - ADDING REQUESTS TO TASK QUEUE",
         itemIds.length
       );
-    const itemIdChunks = sliceArrayIntoChunks(itemIds, 100);
+    const itemIdChunks = sliceArrayIntoChunks(itemIds, 30);
     if (DEBUG) console.log("itemIdChunks[0]", itemIdChunks[0]);
     itemIdChunks.map(
       async (itemIds: Array<string>, index: number) =>

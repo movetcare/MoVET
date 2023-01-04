@@ -28,6 +28,11 @@ export const initProVetConfig = async (
       },
     });
     const entities: Array<string> = [
+      "users",
+      "terminals",
+      "reasons",
+      "reason_groups",
+      "cancellation_reasons",
       "breeds",
       "shifts",
       "invoices",
@@ -38,12 +43,7 @@ export const initProVetConfig = async (
       case "all":
         if (environment.type !== "production")
           return (
-            (await configureUsers()) &&
-            (await configureTerminals()) &&
-            (await configureReasons()) &&
-            (await configureReasonGroups()) &&
             (await configureBooking()) &&
-            (await configureCancellationReasons()) &&
             (await configureAppointmentEstimates()) &&
             (await configureAppointmentOptionDetails()) &&
             (await configureTelehealthStatus()) &&

@@ -1,4 +1,4 @@
-import {request, throwError, DEBUG} from "../../../config/config";
+import { DEBUG, request, throwError } from "../../../config/config";
 
 export const fetchEntity = async (
   entity:
@@ -32,7 +32,7 @@ export const fetchEntity = async (
   const initialQuery = await request
     .get(queryUrl)
     .then(async (response: any) => {
-      const {data, status} = response;
+      const { data, status } = response;
       if (DEBUG) console.log(`API Response: GET ${queryUrl} =>`, data);
       return status !== 200 && status !== 201 ? "ERROR" : data;
     })

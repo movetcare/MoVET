@@ -10,10 +10,7 @@ export default function Custom404() {
     setTimeout(
       () =>
         (window.location.href =
-          window.location.protocol +
-          "//" +
-          window.location.host +
-          "/schedule-an-appointment"),
+          window.location.protocol + "//" + window.location.host),
       3000
     );
   }, [router]);

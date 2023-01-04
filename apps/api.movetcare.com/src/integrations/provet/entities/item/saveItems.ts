@@ -1,4 +1,4 @@
-import { admin, throwError } from "../../../../config/config";
+import { admin, DEBUG, throwError } from "../../../../config/config";
 import type { Item } from "../../../../types/item";
 
 export const saveItems = async (itemsData: Array<Item>): Promise<boolean> =>
@@ -10,9 +10,15 @@ export const saveItems = async (itemsData: Array<Item>): Promise<boolean> =>
           .collection("items")
           .doc(`${item.id}`)
           .set({ ...item, updatedOn: new Date() }, { merge: true })
-          .then(() => true)
+          .then(() => {
+            if (DEBUG) console.log("ITEM SAVED: ", item);
+            return true;
+          })
           .catch((error: any) => throwError(error))
     )
   )
-    .then(() => true)
+    .then(() => {
+      if (DEBUG) console.log("ALL ITEM SAVED!");
+      return true;
+    })
     .catch((error: any) => throwError(error));

@@ -20,7 +20,8 @@ export const startNewBooking = async (
       client: {
         uid: client?.uid,
         email: client?.email,
-        displayName: client?.displayName,
+        firstName: client?.displayName?.trim()?.split(" ")[0],
+        lastName: client?.displayName?.trim()?.split(" ")[1],
         phone: client?.phoneNumber,
         requiresInfo,
       },

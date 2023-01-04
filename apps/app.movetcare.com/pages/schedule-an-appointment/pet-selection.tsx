@@ -135,7 +135,6 @@ export default function PetSelection() {
       const token = await executeRecaptcha("booking");
       if (token) {
         try {
-          console.log("session", session);
           const { data: result }: any = await httpsCallable(
             functions,
             "scheduleAppointment"
@@ -148,7 +147,6 @@ export default function PetSelection() {
             device: navigator.userAgent,
             token,
           });
-          console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
             if (result?.client?.uid && result?.id) {
