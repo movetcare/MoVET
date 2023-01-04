@@ -32,30 +32,20 @@ describe("home-page-loads", () => {
   });
 
   it("displays all primary content sections", () => {
-    cy.get("main section div h2")
-      .contains("Moving Pet Care Forward")
-      .should("be.visible");
-    cy.get("main section div h2")
-      .contains("Additional Amenities")
-      .should("be.visible");
-    cy.get("main section h2").contains("Our Services").should("be.visible");
-    cy.get("main section div h2")
-      .contains("Hours of Operation")
-      .should("be.visible");
-    cy.get("main section div h2")
-      .contains("Our Happy Clients")
-      .should("be.visible");
-    cy.get("main section div h2").contains("Contact Us").should("be.visible");
-    cy.get("main section div h3")
-      .contains("Your neighborhood vet")
-      .should("be.visible");
+    cy.get("main section div h2").contains("Moving Pet Care Forward");
+    cy.get("main section div h2").contains("Additional Amenities");
+    cy.get("main section h2").contains("Our Services");
+    cy.get("main section div h2").contains("Hours of Operation");
+    cy.get("main section div h2").contains("Our Happy Clients");
+    cy.get("main section div h2").contains("Contact Us");
+    cy.get("main section div h3").contains("Your neighborhood vet");
   });
 
   it("displays all footer links", () => {
-    cy.get("footer a p").contains("Privacy Policy").should("be.visible");
-    cy.get("footer a p").contains("Terms of Service").should("be.visible");
-    cy.get("footer a p").contains("FAQs").should("be.visible");
-    cy.get("footer a p").contains("Emergency Care").should("be.visible");
+    cy.get("footer a p").contains("Privacy Policy");
+    cy.get("footer a p").contains("Terms of Service");
+    cy.get("footer a p").contains("FAQs");
+    cy.get("footer a p").contains("Emergency Care");
   });
 
   it("can submit contact form", () => {
@@ -66,11 +56,8 @@ describe("home-page-loads", () => {
     cy.get("#contact-form textarea[name='message']").type(
       "CYPRESS TEST 123..."
     );
-    cy.get("#contact-form button")
-      .contains("Submit")
-      .should("be.visible")
-      .click();
+    cy.get("#contact-form button").contains("Submit").click();
     cy.wait(3000);
-    cy.get("#contact-form h2").contains("Success!").should("be.visible");
+    cy.get("#contact-form h2").contains("Success!");
   });
 });

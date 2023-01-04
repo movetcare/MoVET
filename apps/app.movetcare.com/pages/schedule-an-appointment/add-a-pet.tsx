@@ -447,7 +447,6 @@ export default function ContactInfo() {
                             info@movetcare.com
                           </span>
                         </p>
-                        <h2 className="text-center -mb-6">OR</h2>
                       </>
                     </Transition>
                     {/* <FileUploadInput

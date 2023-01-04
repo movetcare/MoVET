@@ -217,13 +217,11 @@ const createClientMessage = ({
           },
           {
             type: "mrkdwn",
-            text: "*Selected Staff:*",
+            text: "*Reason*",
           },
           {
             type: "plain_text",
-            text: selectedStaff
-              ? `${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}`
-              : "None Selected",
+            text: reason?.label ? reason?.label : "Establish Care Exam",
           },
           {
             type: "mrkdwn",
@@ -233,7 +231,7 @@ const createClientMessage = ({
             type: "plain_text",
             text:
               location +
-              ` ${address ? address.full : ""} ${
+              ` ${address ? `- ${address.full}` : ""} ${
                 address?.info ? ` - ${address?.info}` : ""
               }`,
           },
@@ -245,7 +243,9 @@ const createClientMessage = ({
             type: "plain_text",
             text: requestedDateTime
               ? `${
-                  requestedDateTime?.date ? `${requestedDateTime?.date}` : ""
+                  requestedDateTime?.date
+                    ? `${getYYMMDDFromString(requestedDateTime?.date)}`
+                    : ""
                 }${
                   requestedDateTime?.time ? ` @ ${requestedDateTime?.time}` : ""
                 }`

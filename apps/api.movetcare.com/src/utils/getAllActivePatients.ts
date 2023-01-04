@@ -14,17 +14,6 @@ export const getAllActivePatients = async (
       const patientsArray: Array<PatientBookingData> = [];
       patients.forEach(
         (patient: { data(): PatientBookingData; id: string }) => {
-          console.log(
-            " patient.data().vcprRequired ",
-            patient.data().vcprRequired
-          );
-          console.log(
-            " VCPR CUSTOM VALUE ",
-            getCustomFieldValue(
-              "VCPR Required",
-              patient.data()?.customFields || null
-            )
-          );
           !patient.data().archived
             ? patientsArray.push({
                 id: patient.id,

@@ -213,8 +213,16 @@ const InvoiceItemHeader = ({
                           key={index}
                           href={
                             environment === "production"
-                              ? `https://dashboard.stripe.com/customers/${client?.customer}/`
-                              : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                              ? `https://dashboard.stripe.com/customers/${
+                                  client?.customer?.id !== undefined
+                                    ? client?.customer?.id
+                                    : client?.customer
+                                }/`
+                              : `https://dashboard.stripe.com/test/customers/${
+                                  client?.customer?.id !== undefined
+                                    ? client?.customer?.id
+                                    : client?.customer
+                                }/`
                           }
                           target="_blank"
                           rel="noreferrer"
@@ -271,8 +279,16 @@ const InvoiceItemHeader = ({
                       key={index}
                       href={
                         environment === "production"
-                          ? `https://dashboard.stripe.com/customers/${client?.customer}/`
-                          : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                          ? `https://dashboard.stripe.com/customers/${
+                              client?.customer?.id !== undefined
+                                ? client?.customer?.id
+                                : client?.customer
+                            }/`
+                          : `https://dashboard.stripe.com/test/customers/${
+                              client?.customer?.id !== undefined
+                                ? client?.customer?.id
+                                : client?.customer
+                            }/`
                       }
                       target="_blank"
                       rel="noreferrer"
@@ -1285,8 +1301,16 @@ const InvoiceDetails = ({
                                   href={
                                     client?.customer
                                       ? environment === "production"
-                                        ? `https://dashboard.stripe.com/customers/${client?.customer}/`
-                                        : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                                        ? `https://dashboard.stripe.com/customers/${
+                                            client?.customer?.id !== undefined
+                                              ? client?.customer?.id
+                                              : client?.customer
+                                          }/`
+                                        : `https://dashboard.stripe.com/test/customers/${
+                                            client?.customer?.id !== undefined
+                                              ? client?.customer?.id
+                                              : client?.customer
+                                          }/`
                                       : `https://us.provetcloud.com/4285/billing/invoice/${invoice?.id}`
                                   }
                                   target="_blank"
@@ -1392,8 +1416,18 @@ const InvoiceDetails = ({
                                       href={
                                         client?.customer
                                           ? environment === "production"
-                                            ? `https://dashboard.stripe.com/customers/${client?.customer}/`
-                                            : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                                            ? `https://dashboard.stripe.com/customers/${
+                                                client?.customer?.id !==
+                                                undefined
+                                                  ? client?.customer?.id
+                                                  : client?.customer
+                                              }/`
+                                            : `https://dashboard.stripe.com/test/customers/${
+                                                client?.customer?.id !==
+                                                undefined
+                                                  ? client?.customer?.id
+                                                  : client?.customer
+                                              }/`
                                           : environment === "production"
                                           ? `https://dashboard.stripe.com/payments/${invoice?.paymentIntent}`
                                           : `https://dashboard.stripe.com/test/payments/${invoice?.paymentIntent}`
@@ -1761,8 +1795,16 @@ const InvoiceDetails = ({
                                     invoice?.paymentIntent
                                       ? client?.customer
                                         ? environment === "production"
-                                          ? `https://dashboard.stripe.com/customers/${client?.customer}/`
-                                          : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                                          ? `https://dashboard.stripe.com/customers/${
+                                              client?.customer?.id !== undefined
+                                                ? client?.customer?.id
+                                                : client?.customer
+                                            }/`
+                                          : `https://dashboard.stripe.com/test/customers/${
+                                              client?.customer?.id !== undefined
+                                                ? client?.customer?.id
+                                                : client?.customer
+                                            }/`
                                         : environment === "production"
                                         ? `https://dashboard.stripe.com/payments/${invoice?.paymentIntent}`
                                         : `https://dashboard.stripe.com/test/payments/${invoice?.paymentIntent}`
@@ -1842,8 +1884,16 @@ const InvoiceDetails = ({
                               href={
                                 client?.customer
                                   ? environment === "production"
-                                    ? `https://dashboard.stripe.com/customers/${client?.customer}/`
-                                    : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                                    ? `https://dashboard.stripe.com/customers/${
+                                        client?.customer?.id !== undefined
+                                          ? client?.customer?.id
+                                          : client?.customer
+                                      }/`
+                                    : `https://dashboard.stripe.com/test/customers/${
+                                        client?.customer?.id !== undefined
+                                          ? client?.customer?.id
+                                          : client?.customer
+                                      }/`
                                   : environment === "production"
                                   ? `https://dashboard.stripe.com/payments/${invoice?.paymentIntent}`
                                   : `https://dashboard.stripe.com/test/payments/${invoice?.paymentIntent}`

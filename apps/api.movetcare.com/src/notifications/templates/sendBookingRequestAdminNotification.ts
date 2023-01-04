@@ -140,6 +140,14 @@ export const sendBookingRequestAdminNotification = async ({
           fields: [
             {
               type: "mrkdwn",
+              text: "*Session ID*",
+            },
+            {
+              type: "plain_text",
+              text: id,
+            },
+            {
+              type: "mrkdwn",
               text: "*Client*",
             },
             {

@@ -18,7 +18,7 @@
     "open:test": "pnpm cypress open",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "config:env": "yes | cp -rf apps/.env apps/movetcare.com/.env.local && source apps/movetcare.com/.env.local && yes | cp -rf apps/.env apps/app.movetcare.com/.env.local && source apps/app.movetcare.com/.env.local && yes | cp -rf apps/.env apps/admin.movetcare.com/.env.local && source apps/admin.movetcare.com/.env.local",
-    "update": "ncu -u && pnpm -r run update && pnpm install && pnpm build --force",
+    "update": "ncu -u && pnpm -r run update && pnpm clean",
     "clean": "pnpm run clean:logs && pnpm run clean:modules && pnpm run clean:builds && pnpm run clean:lock && pnpm run clean:turbo && pnpm install && pnpm build --force",
     "clean:builds": "find ./ -name .next -type d -exec rm -rf {} + && find ./ -name dist -type d -exec rm -rf {} + && find ./ -name build -type d -exec rm -rf {} + && find ./ -name lib -type d -exec rm -rf {} +",
     "clean:modules": "find ./ -name node_modules -type d -exec rm -rf {} +",
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@types/node": "^18.11.18",
     "concurrently": "^7.6.0",
-    "cypress": "^12.2.0",
+    "cypress": "^12.3.0",
     "cypress-plugin-tab": "^1.0.5",
     "eslint-config-custom": "workspace:0.0.0",
     "git-branch-is": "^4.0.0",
@@ -58,20 +58,24 @@
     "turbo": "^1.6.3"
   },
   "engines": {
-    "node": ">=18.11.0"
+    "node": ">= 16.18.1"
   },
   "packageManager": "pnpm@7.13.4",
   "lint-staged": {
     "apps/**/*.{js,ts,jsx,tsx}": [
+      "prettier --write",
       "eslint --fix"
     ],
     "packages/**/*.{js,ts,jsx,tsx}": [
+      "prettier --write",
       "eslint --fix"
     ],
     "tools/**/*.{js,ts,jsx,tsx}": [
+      "prettier --write",
       "eslint --fix"
     ],
     "cypress/**/*.{js,ts,jsx,tsx}": [
+      "prettier --write",
       "eslint --fix"
     ],
     "*.json": [

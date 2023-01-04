@@ -35,7 +35,6 @@ export const processStripeWebhook = async (
       return;
     }
   } else event = request.body;
-  console.log("STRIPE EVENT DATA", event);
   if (
     event.type.includes("terminal.reader.") ||
     event.type.includes("checkout.session.") ||

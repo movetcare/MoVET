@@ -22,7 +22,9 @@ export const updateBookingCancellation = async (
   }: Booking
 ) => {
   if (cancelReason) {
-    let message = `<p>CANCELLATION REASON: ${cancelReason}</p><p>CANCELLATION DETAILS: ${cancelDetails}</p><p></p><p><b>Session ID:</b> ${id}</p>`;
+    let message = `<p>CANCELLATION REASON: ${cancelReason}</p><p>CANCELLATION DETAILS: ${
+      cancelDetails ? cancelDetails : "None Provided (Yet)"
+    }</p><p></p><p><b>Session ID:</b> ${id}</p>`;
     let allPatients = "";
     if (Array.isArray(selectedPatients) && Array.isArray(patients))
       selectedPatients.forEach((selectedPatient: any) => {
