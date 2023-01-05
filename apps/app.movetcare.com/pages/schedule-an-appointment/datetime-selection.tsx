@@ -37,7 +37,8 @@ export default function DateTime() {
     setError(error);
     setIsLoading(false);
   };
-  const onSubmit = async () => {
+  const onSubmit = async (event: any) => {
+    event.preventDefault();
     setIsLoading(true);
     setLoadingMessage("Saving Date & Time...");
     if (executeRecaptcha) {

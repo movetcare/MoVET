@@ -13,7 +13,7 @@ import { createAuthClient } from "../../integrations/provet/entities/client/crea
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
 
-const DEBUG = false;
+const DEBUG = true;
 export const setupNewBookingSession = async ({
   email,
   device,
@@ -50,7 +50,7 @@ export const setupNewBookingSession = async ({
     } else
       return await handleFailedBooking(
         { email, device },
-        "FAILED CREATE NEW CLIENT"
+        "CREATE NEW CLIENT FAILED"
       );
   }
 };

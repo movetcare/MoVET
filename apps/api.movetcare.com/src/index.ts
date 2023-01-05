@@ -12,6 +12,7 @@ export { updateTelehealthChatStatusToOffline } from "./cron/updateTelehealthChat
 export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
 export { handleContactSubmission } from "./triggers/handleContactSubmission";
 export { handleFileUpload } from "./triggers/handleFileUpload";
+export { handleAnnouncementBannerUpdate } from "./triggers/handleAnnouncementBannerUpdate";
 
 export { sendgridWebhook } from "./endpoints/webhooks/sendgridWebhook";
 export { incomingWebhook } from "./endpoints/webhooks/incomingWebhook";

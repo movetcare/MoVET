@@ -10,7 +10,7 @@ import { processIllPetSelection } from "../../booking/session/processIllPetSelec
 import { processIllnessDetails } from "../../booking/session/processIllnessDetails";
 import { processLocation } from "../../booking/session/processLocation";
 import { processDateTime } from "../../booking/session/processDateTime";
-const DEBUG = false;
+const DEBUG = true;
 export const scheduleAppointment = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<Booking | BookingError> => {

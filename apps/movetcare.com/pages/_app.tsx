@@ -2,11 +2,9 @@ import "styles";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import Head from "next/head";
 import type { AppProps } from "next/app";
-// import Image from "next/image";
 import { environment } from "utilities";
 import dynamic from "next/dynamic";
 // import { PopUpAd } from "ui";
-// import Link from "next/link";
 
 const AnalyticsTracker = dynamic(() =>
   import("ui").then((mod) => mod.AnalyticsTracker)

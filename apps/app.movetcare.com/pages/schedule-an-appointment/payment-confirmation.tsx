@@ -31,7 +31,8 @@ export default function ContactInfo() {
     setError(error);
     setIsLoading(false);
   };
-  const onSubmit = async () => {
+  const onSubmit = async (event: any) => {
+    event.preventDefault();
     setIsLoading(true);
     if (session?.checkoutSession) window.location = session.checkoutSession;
     else handleError({ message: "FAILED TO START CHECKOUT SESSION" });

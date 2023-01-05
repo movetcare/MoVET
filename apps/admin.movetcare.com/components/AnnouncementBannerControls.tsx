@@ -3,6 +3,7 @@ import {
   faBullhorn,
   faCaretDown,
   faCaretUp,
+  faCircleCheck,
   faCircleExclamation,
   faDroplet,
   faEdit,
@@ -16,18 +17,18 @@ import {
   faMessage,
   faStar,
   faWrench,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
-import Error from 'components/Error';
-import { useContext, useEffect, useState } from 'react';
-import { auth, firestore } from 'services/firebase';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import Error from "components/Error";
+import { useContext, useEffect, useState } from "react";
+import { auth, firestore } from "services/firebase";
 import { Loader } from "ui";
-import { Transition, Switch } from '@headlessui/react';
-import { Controller, useForm } from 'react-hook-form';
-import { classNames } from 'utils/classNames';
-import toast from 'react-hot-toast';
-import SelectInput from './inputs/SelectInput';
+import { Transition, Switch } from "@headlessui/react";
+import { Controller, useForm } from "react-hook-form";
+import { classNames } from "utils/classNames";
+import toast from "react-hot-toast";
+import SelectInput from "./inputs/SelectInput";
 import {
   AnnouncementBanner,
   AnnouncementBannerPreview,
@@ -168,19 +169,33 @@ export const AnnouncementBannerControls = () => {
         updatedOn: serverTimestamp(),
       },
       { merge: true }
-    ).catch((error: any) =>
-      toast(`Announcement banner update FAILED: ${error?.message}`, {
-        duration: 5000,
-        position: "bottom-center",
-        icon: (
-          <FontAwesomeIcon
-            icon={faCircleExclamation}
-            size="sm"
-            className="text-movet-red"
-          />
-        ),
-      })
-    );
+    )
+      .then(() =>
+        toast(`Your updates will appear in 5 minutes (or less).`, {
+          duration: 5000,
+          position: "bottom-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleCheck}
+              size="sm"
+              className="text-movet-green"
+            />
+          ),
+        })
+      )
+      .catch((error: any) =>
+        toast(`Announcement banner update FAILED: ${error?.message}`, {
+          duration: 5000,
+          position: "bottom-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              size="sm"
+              className="text-movet-red"
+            />
+          ),
+        })
+      );
 
   return isAdmin ? (
     <div className="bg-white shadow overflow-hidden rounded-lg mb-4">

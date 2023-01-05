@@ -1,14 +1,11 @@
 const defaultTimeOut = 15000;
+const onlyTestOnePatient = false;
+const skipWellnessCheck = false;
 describe(
   "schedule-an-appointment-flow",
   { defaultCommandTimeout: defaultTimeOut },
   () => {
     it("can schedule an appointment as existing client with no patients", () => {
-      // cy.request(
-      //   "POST",
-      //   "http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/app/config",
-      //   { apiKey: "L9At3HGmvRDuyi7TTX", type: "breeds" }
-      // );
       cy.request(
         "POST",
         "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
@@ -77,89 +74,94 @@ describe(
       cy.get("section label").contains("* Requires Establish Care Exam");
       cy.get("section label").contains("TEST DOG").click();
       cy.get("section p").contains("A pet selection is required");
-      cy.get("button").contains("Add a Pet").click();
-      cy.location("pathname", { timeout: defaultTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/add-a-pet/"
-      );
-      cy.get("h2").contains("Add a Pet");
-      cy.get("form #cat").click();
-      cy.get("form #female").click();
-      cy.get("form button.switch-input").click();
-      cy.get("form input[name='name']").type("TEST CAT 1");
-      cy.get("form .search-input").type("Bombay{enter}");
-      cy.get("form input[name='weight-number']").type("10");
-      cy.get("form input[name='birthday']").type("10102020");
-      cy.get("form .places-search").type("Kingsburry{enter}").click();
-      cy.get("form p")
-        .contains(
-          "This pet DOES have had a history of aggression or aggressive tendencies."
-        )
-        .click();
-      cy.get("form textarea#notes").type(
-        "This is a test pet that is auto generated via Cypress..."
-      );
-      cy.get("form button[type='submit']").contains("Continue").click();
-      cy.location("pathname", { timeout: defaultTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/pet-selection/"
-      );
-      cy.get("button").contains("Add a Pet").click();
-      cy.location("pathname", { timeout: defaultTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/add-a-pet/"
-      );
-      cy.get("h2").contains("Add a Pet");
-      cy.get("form #cat").click();
-      cy.get("form #female").click();
-      cy.get("form button.switch-input").click();
-      cy.get("form input[name='name']").type("TEST CAT 2");
-      cy.get("form .search-input").type("Bombay{enter}");
-      cy.get("form input[name='weight-number']").type("10");
-      cy.get("form input[name='birthday']").type("10102020");
-      cy.get("form .places-search").type("Kingsburry{enter}").click();
-      cy.get("form p")
-        .contains(
-          "This pet DOES have had a history of aggression or aggressive tendencies."
-        )
-        .click();
-      cy.get("form textarea#notes").type(
-        "This is a test pet that is auto generated via Cypress..."
-      );
-      cy.get("form button[type='submit']").contains("Continue").click();
-      cy.location("pathname", { timeout: defaultTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/pet-selection/"
-      );
-      cy.get("button").contains("Add a Pet").click();
-      cy.get("h2").contains("Add a Pet");
-      cy.get("form #dog").click();
-      cy.get("form #female").click();
-      cy.get("form button.switch-input").click();
-      cy.get("form input[name='name']").type("TEST DOG 2");
-      cy.get("form .search-input").type("Lab{enter}");
-      cy.get("form input[name='weight-number']").type("10");
-      cy.get("form input[name='birthday']").type("10102020");
-      cy.get("form .places-search").type("Kingsburry{enter}").click();
-      cy.get("form p")
-        .contains(
-          "This pet DOES have had a history of aggression or aggressive tendencies."
-        )
-        .click();
-      cy.get("form textarea#notes").type(
-        "This is a test pet that is auto generated via Cypress..."
-      );
-      cy.get("form button[type='submit']").contains("Continue").click();
+      if (!onlyTestOnePatient) {
+        cy.get("button").contains("Add a Pet").click();
+        cy.location("pathname", { timeout: defaultTimeOut }).should(
+          "eq",
+          "/schedule-an-appointment/add-a-pet/"
+        );
+        cy.get("h2").contains("Add a Pet");
+        cy.get("form #cat").click();
+        cy.get("form #female").click();
+        cy.get("form button.switch-input").click();
+        cy.get("form input[name='name']").type("TEST CAT 1");
+        cy.get("form .search-input").type("Bombay{enter}");
+        cy.get("form input[name='weight-number']").type("10");
+        cy.get("form input[name='birthday']").type("10102020");
+        cy.get("form .places-search").type("Kingsburry{enter}").click();
+        cy.get("form p")
+          .contains(
+            "This pet DOES have had a history of aggression or aggressive tendencies."
+          )
+          .click();
+        cy.get("form textarea#notes").type(
+          "This is a test pet that is auto generated via Cypress..."
+        );
+        cy.get("form button[type='submit']").contains("Continue").click();
+        cy.location("pathname", { timeout: defaultTimeOut }).should(
+          "eq",
+          "/schedule-an-appointment/pet-selection/"
+        );
+        cy.get("button").contains("Add a Pet").click();
+        cy.location("pathname", { timeout: defaultTimeOut }).should(
+          "eq",
+          "/schedule-an-appointment/add-a-pet/"
+        );
+        cy.get("h2").contains("Add a Pet");
+        cy.get("form #cat").click();
+        cy.get("form #female").click();
+        cy.get("form button.switch-input").click();
+        cy.get("form input[name='name']").type("TEST CAT 2");
+        cy.get("form .search-input").type("Bombay{enter}");
+        cy.get("form input[name='weight-number']").type("10");
+        cy.get("form input[name='birthday']").type("10102020");
+        cy.get("form .places-search").type("Kingsburry{enter}").click();
+        cy.get("form p")
+          .contains(
+            "This pet DOES have had a history of aggression or aggressive tendencies."
+          )
+          .click();
+        cy.get("form textarea#notes").type(
+          "This is a test pet that is auto generated via Cypress..."
+        );
+        cy.get("form button[type='submit']").contains("Continue").click();
+
+        cy.location("pathname", { timeout: defaultTimeOut }).should(
+          "eq",
+          "/schedule-an-appointment/pet-selection/"
+        );
+        cy.get("button").contains("Add a Pet").click();
+        cy.get("h2").contains("Add a Pet");
+        cy.get("form #dog").click();
+        cy.get("form #female").click();
+        cy.get("form button.switch-input").click();
+        cy.get("form input[name='name']").type("TEST DOG 2");
+        cy.get("form .search-input").type("Lab{enter}");
+        cy.get("form input[name='weight-number']").type("10");
+        cy.get("form input[name='birthday']").type("10102020");
+        cy.get("form .places-search").type("Kingsburry{enter}").click();
+        cy.get("form p")
+          .contains(
+            "This pet DOES have had a history of aggression or aggressive tendencies."
+          )
+          .click();
+        cy.get("form textarea#notes").type(
+          "This is a test pet that is auto generated via Cypress..."
+        );
+        cy.get("form button[type='submit']").contains("Continue").click();
+      }
       cy.location("pathname", { timeout: defaultTimeOut }).should(
         "eq",
         "/schedule-an-appointment/pet-selection/"
       );
       cy.get("section label").contains("TEST DOG").click();
-      cy.get("section label").contains("TEST DOG 2").click();
-      cy.get("section label").contains("TEST CAT").click();
-      cy.get("section label").contains("TEST CAT 2").click();
-      cy.get("section p").contains("Only 3 pets are allowed per appointment");
-      cy.get("section label").contains("TEST CAT 2").click();
+      if (!onlyTestOnePatient) {
+        cy.get("section label").contains("TEST DOG 2").click();
+        cy.get("section label").contains("TEST CAT").click();
+        cy.get("section label").contains("TEST CAT 2").click();
+        cy.get("section p").contains("Only 3 pets are allowed per appointment");
+        cy.get("section label").contains("TEST CAT 2").click();
+      }
       cy.get("section button[type='submit']").contains("Continue").click();
       cy.location("pathname", { timeout: defaultTimeOut }).should(
         "eq",
@@ -172,42 +174,56 @@ describe(
       cy.get("span").contains("What are symptoms of minor illness?").click();
       cy.get("h2").contains("Minor Illness Symptoms");
       cy.get("button").contains("CLOSE").click();
-      cy.get("section label").contains("TEST DOG").click();
-      cy.get("section label").contains("TEST CAT 1").click();
-      cy.get("section button[type='submit']")
-        .contains("My Pets DO NOT need emergency care")
-        .click();
-      cy.location("pathname", { timeout: defaultTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/illness-selection/"
-      );
-      cy.get("h2").contains("Minor Illness");
-      cy.get("legend").contains("Symptoms");
-      cy.get("p").contains("Restart").click();
-      cy.get("h2").contains("Restart Appointment Booking?");
-      cy.get("button").contains("CANCEL").click();
-      cy.get("p").contains("We're sorry to hear TEST DOG is not feeling well");
-      cy.get("section label p").contains("Coughing").click();
-      cy.get("section label p").contains("Coughing").click();
-      cy.get("p.text-movet-red").contains("A symptom selection is required");
-      cy.get("section label p").contains("Coughing").click();
-      cy.get("section label p").contains("Other").click();
-      cy.get("section button[type='submit']").contains("Continue").click();
-      cy.get("p.text-movet-red").contains("Please tell us more...");
-      cy.get("textarea[name='details']").type("Test symptom notes...");
-      cy.get("section button[type='submit']").contains("Continue").click();
-      cy.location("pathname", { timeout: defaultTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/illness-selection/"
-      );
-      cy.get("h2").contains("Minor Illness");
-      cy.get("legend").contains("Symptoms");
-      cy.get("p").contains(
-        "We're sorry to hear TEST CAT 1 is not feeling well"
-      );
-      cy.get("section label p").contains("Other").click();
-      cy.get("textarea[name='details']").type("Test symptom notes...");
-      cy.get("section button").contains("Continue").click();
+      if (skipWellnessCheck) cy.get("section button[type='submit']").click();
+      if (!skipWellnessCheck)
+        cy.get("section label").contains("TEST DOG").click();
+      if (!onlyTestOnePatient && !skipWellnessCheck)
+        cy.get("section label").contains("TEST CAT 1").click();
+      if (!onlyTestOnePatient && !skipWellnessCheck)
+        cy.get("section button[type='submit']")
+          .contains("My Pets DO NOT need emergency care")
+          .click();
+      else if (!skipWellnessCheck)
+        cy.get("section button[type='submit']")
+          .contains("My Pet DOES NOT need emergency care")
+          .click();
+      if (!skipWellnessCheck) {
+        cy.location("pathname", { timeout: defaultTimeOut }).should(
+          "eq",
+          "/schedule-an-appointment/illness-selection/"
+        );
+        cy.get("h2").contains("Minor Illness");
+        cy.get("legend").contains("Symptoms");
+        cy.get("p").contains("Restart").click();
+        cy.get("h2").contains("Restart Appointment Booking?");
+        cy.get("button").contains("CANCEL").click();
+        cy.get("p").contains(
+          "We're sorry to hear TEST DOG is not feeling well"
+        );
+        cy.get("section label p").contains("Coughing").click();
+        cy.get("section label p").contains("Coughing").click();
+        cy.get("p.text-movet-red").contains("A symptom selection is required");
+        cy.get("section label p").contains("Coughing").click();
+        cy.get("section label p").contains("Other").click();
+        cy.get("section button[type='submit']").contains("Continue").click();
+        cy.get("p.text-movet-red").contains("Please tell us more...");
+        cy.get("textarea[name='details']").type("Test symptom notes...");
+        cy.get("section button[type='submit']").contains("Continue").click();
+      }
+      if (!onlyTestOnePatient && !skipWellnessCheck) {
+        cy.location("pathname", { timeout: defaultTimeOut }).should(
+          "eq",
+          "/schedule-an-appointment/illness-selection/"
+        );
+        cy.get("h2").contains("Minor Illness");
+        cy.get("legend").contains("Symptoms");
+        cy.get("p").contains(
+          "We're sorry to hear TEST CAT 1 is not feeling well"
+        );
+        cy.get("section label p").contains("Other").click();
+        cy.get("textarea[name='details']").type("Test symptom notes...");
+        cy.get("section button").contains("Continue").click();
+      }
       cy.location("pathname", { timeout: defaultTimeOut }).should(
         "eq",
         "/schedule-an-appointment/location-selection/"
@@ -218,21 +234,49 @@ describe(
       cy.get("button").contains("CANCEL").click();
       cy.get("h2").contains("MoVET @ Belleview Station");
       cy.get("a").contains("4912 S Newport St, Denver CO 80237");
-      cy.get("button[type='submit']").should("not.be.disabled");
+      cy.get("button[type='submit']").should("be.enabled");
       cy.get("#Virtually").contains("Virtually").click();
       cy.get("h2").contains("What can I expect in a Virtual Consultation?");
       cy.get("p").contains("What is VCPR?").click();
       cy.get("button").contains("CLOSE").click();
-      cy.get("button[type='submit']").should("not.be.disabled");
+      cy.get("button[type='submit']").should("be.enabled");
       cy.get("#Home").contains("Home").click();
       cy.get("button[type='submit']").should("be.disabled");
       cy.get("form .places-search").type("702 Westgate Ave");
       cy.focused().tab();
+      cy.get("form .places-search").type("{enter}");
       cy.get("button[type='submit']").should("be.disabled");
       cy.get("form .places-search").type("4912 S Newport Street Denver");
       cy.focused().tab();
       cy.get("button[type='submit']").should("be.disabled");
       cy.get("#info").type("Apartment 2A (This is a test address)");
+      cy.get("#Clinic").contains("Clinic").click();
+      cy.get("button[type='submit']").should("be.enabled").click();
+      cy.location("pathname", { timeout: defaultTimeOut }).should(
+        "eq",
+        "/schedule-an-appointment/datetime-selection/"
+      );
+      cy.get("h2").contains("Request a Time");
+      cy.get("p").contains("Restart").click();
+      cy.get("h2").contains("Restart Appointment Booking?");
+      cy.get("button").contains("CANCEL").click();
+      cy.get("button[type='submit']").should("be.disabled");
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      cy.get("button abbr").contains(String(tomorrow.getDate())).click();
+      cy.get(".time-input").type("1430");
+      cy.get("button[type='submit']").should("be.enabled").click();
+      cy.location("pathname", { timeout: defaultTimeOut }).should(
+        "eq",
+        "/schedule-an-appointment/payment-confirmation/"
+      );
+      cy.get("h2").contains("Form of Payment Required");
+      cy.get("form p").contains(
+        "* You will not be charged until your appointment is completed."
+      );
+      cy.get("button[type='submit']").should("be.enabled").click();
+      cy.visit("http://localhost:3001/schedule-an-appointment/success");
+      cy.get("h2").contains("Booking Request Successful");
     });
   }
 );

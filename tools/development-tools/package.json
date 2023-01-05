@@ -11,7 +11,7 @@
     "build:api:package:constant": "cp -a ../../packages/constant/src/. ../../apps/api.movetcare.com/src/constant",
     "build:api:package:types": "cp -a  ../../packages/types/src/. ../../apps/api.movetcare.com/src/types",
     "watch": "tsc --watch --preserveWatchOutput",
-    "init:config:dev": "pnpm config:all && pnpm init:test_user && pnpm config:users && pnpm config:terminals && pnpm config:reasons && pnpm config:reason_groups && pnpm config:cancellation_reasons && pnpm config:breeds && pnpm config:shifts && pnpm config:invoices && pnpm config:appointments && pnpm config:items && sleep 15 && curl -i -v GET http://localhost:5001/movet-care-staging/us-central1/taskRunnerDev",
+    "init:config:dev": "pnpm config:all && pnpm init:test_user && pnpm config:users && pnpm config:terminals && pnpm config:reasons && pnpm config:reason_groups && pnpm config:cancellation_reasons && pnpm config:breeds && pnpm config:shifts && pnpm config:invoices && pnpm config:appointments && pnpm config:items && curl -i -v GET http://localhost:5001/movet-care-staging/us-central1/taskRunnerDev",
     "init:test_user": "curl -i -v POST http://localhost:5001/movet-care-staging/us-central1/initTestUser",
     "config:all": "curl -i -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/app/config/",
     "config:users": "curl -i -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"users\"}' POST http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/app/config/",

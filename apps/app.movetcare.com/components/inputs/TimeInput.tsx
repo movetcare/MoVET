@@ -26,8 +26,9 @@ export const TimeInput = ({
       )}
       <div className="flex flex-row justify-center items-center">
         <PatternFormat
+          displayType="input"
           allowEmptyFormatting
-          className="border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full sm:w-20 bg-white rounded-xl py-3 text-left cursor-pointer sm:text-sm placeholder:text-gray font-abside-smooth"
+          className="time-input border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full sm:w-20 bg-white rounded-xl py-3 text-left cursor-pointer sm:text-sm placeholder:text-gray font-abside-smooth"
           patternChar="#"
           format={`##:##`}
           placeholder="HH:MM"

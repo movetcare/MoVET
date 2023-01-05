@@ -17,7 +17,7 @@ if (environment.type !== "development") {
   console.log = func.logger.log;
   console.error = func.logger.error;
   console.debug = func.logger.debug;
-} 
+}
 // else if (environment.type === "development")
 //   process.env.FUNCTIONS_EMULATOR_TIMEOUT_SECONDS = "540s";
 
@@ -47,7 +47,7 @@ export const throwError = (error: any): false => {
 export const defaultRuntimeOptions = {
   timeoutSeconds: 300,
   memory: "1GB",
-  minInstances: environment.type === "production" ? 1 : 0,
+  //minInstances: environment.type === "production" ? 1 : 0,
   maxInstances: 100,
 };
 
