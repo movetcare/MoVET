@@ -46,7 +46,7 @@ export const processAddAPet = async (
     name &&
     type &&
     gender &&
-    spayedOrNeutered &&
+    (spayedOrNeutered === true || spayedOrNeutered === false) &&
     aggressionStatus &&
     breed &&
     birthday &&
