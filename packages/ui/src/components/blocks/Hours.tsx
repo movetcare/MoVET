@@ -21,10 +21,10 @@ export const Hours = () => (
         <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white -mt-4 mb-12">
           Hours of Operation
         </h2>
-        <h3 className="font-abside text-center mb-8 -mt-4 italic text-sm w-full sm:w-2/3 mx-auto">
+        {/* <h3 className="font-abside text-center mb-8 -mt-4 italic text-sm w-full sm:w-2/3 mx-auto">
           * Our clinic will be closed from December 23rd - January 3rd. Our
           Boutique will stay open December 27 - 29.
-        </h3>
+        </h3> */}
         <div className="grid sm:grid-cols-2 gap-y-12 gap-x-8 mb-12">
           <div className="w-full max-w-lg">
             <h3 className="text-xl text-center font-bold pt-2">
@@ -152,10 +152,10 @@ export const Hours = () => (
         <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white -mt-4 mb-12">
           Hours of Operation
         </h2>
-        <h3 className="font-abside text-center mb-4 -mt-4 italic text-sm ">
+        {/* <h3 className="font-abside text-center mb-4 -mt-4 italic text-sm ">
           * Our clinic will be closed from December 23rd - January 3rd. Our
           Boutique will stay open December 27 - 29.
-        </h3>
+        </h3> */}
         <div className="flex flex-col justify-center items-center mb-12">
           <div className="w-full max-w-lg">
             <h3 className="text-xl text-center font-bold pt-2">
