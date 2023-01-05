@@ -57,6 +57,9 @@ export const processDateTime = async (
         {
           requestedDateTime,
           checkoutSession: checkoutSession ? checkoutSession?.url : null,
+          step: checkoutSession
+            ? ("datetime-selection" as Booking["step"])
+            : "success",
           updatedOn: new Date(),
         },
         { merge: true }

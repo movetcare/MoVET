@@ -1,4 +1,4 @@
-import { Staff } from './Staff';
+import { Staff } from "./Staff";
 
 export interface Booking {
   id: string;
@@ -10,14 +10,14 @@ export interface Booking {
   step?:
     | "started"
     | "contact-info"
-    | "patient-selection"
-    | "add-pet"
+    | "pet-selection"
+    | "add-a-pet"
     | "wellness-check"
-    | "illness-assignment"
-    | "choose-location"
-    | "choose-reason"
-    | "choose-staff"
-    | "choose-datetime"
+    | "illness-selection"
+    | "location-selection"
+    | "reason-selection"
+    | "staff-selection"
+    | "datetime-selection"
     | "payment-confirmation"
     | "checkout"
     | "confirmation"

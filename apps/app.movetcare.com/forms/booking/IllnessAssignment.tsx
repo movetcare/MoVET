@@ -104,7 +104,7 @@ export const IllnessAssignment = ({
       { merge: true }
     )
       // .then(() =>
-      //   setStep(session?.nextPatient ? "illness-assignment" : "choose-location")
+      //   setStep(session?.nextPatient ? "illness-selection" : "location-selection")
       // )
       .catch((error: any) => {
         setIsLoading(false);

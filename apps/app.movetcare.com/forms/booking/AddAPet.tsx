@@ -203,7 +203,7 @@ export const AddAPet = ({
     await setDoc(
       doc(firestore, "bookings", `${session.id}`),
       {
-        step: "add-pet",
+        step: "add-a-pet",
         newPatient: { ...data, photo, records },
         updatedOn: serverTimestamp(),
       },

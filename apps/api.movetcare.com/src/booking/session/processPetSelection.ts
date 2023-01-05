@@ -21,6 +21,7 @@ export const processPetSelection = async (
         {
           selectedPatients: selectedPets,
           establishCareExamRequired,
+          step: "pet-selection" as Booking["step"],
           updatedOn: new Date(),
         },
         { merge: true }

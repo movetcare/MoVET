@@ -19,7 +19,9 @@ export default function ScheduleAnAppointment() {
   const isAppMode = mode === "app";
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
-  const [loadingMessage, setLoadingMessage] = useState<string | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState<string | null>(
+    "Loading, please wait..."
+  );
   const { executeRecaptcha } = useGoogleReCaptcha();
   const {
     control,
@@ -48,10 +50,11 @@ export default function ScheduleAnAppointment() {
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     setLoadingMessage("Processing, please wait...");
-    window.localStorage.setItem(
-      "email",
-      data?.email?.toString()?.toLowerCase()
-    );
+    if (!window.localStorage.getItem("email"))
+      window.localStorage.setItem(
+        "email",
+        data?.email?.toString()?.toLowerCase()
+      );
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
       if (token) {
@@ -71,7 +74,9 @@ export default function ScheduleAnAppointment() {
                 "bookingSession",
                 JSON.stringify(result)
               );
-              if (result?.client?.requiresInfo)
+              if (result?.step)
+                router.push(`/schedule-an-appointment/${result.step}`);
+              else if (result?.client?.requiresInfo)
                 router.push("/schedule-an-appointment/contact-info");
               else if (result?.patients?.length > 0)
                 router.push("/schedule-an-appointment/pet-selection");
@@ -88,19 +93,17 @@ export default function ScheduleAnAppointment() {
   useEffect(() => {
     if ((window.localStorage.getItem("email") || email) && executeRecaptcha) {
       setIsLoading(true);
-      setLoadingMessage("Processing, please wait...");
       if (email)
-        reset({
+        onSubmit({
           email: (email as string)?.toLowerCase()?.replaceAll(" ", "+"),
         });
       else if (window.localStorage.getItem("email"))
-        reset({
+        onSubmit({
           email: window.localStorage.getItem("email") as string,
         });
-      handleSubmit(onSubmit)();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [email, reset, executeRecaptcha]);
+  }, [email, executeRecaptcha]);
   return (
     <section className="w-full flex-1">
       <AppHeader />

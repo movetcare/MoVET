@@ -67,8 +67,9 @@ export default function DateTime() {
                 JSON.stringify(result)
               );
               if (result?.checkoutSession)
-                window.location.href = result?.checkoutSession;
-              else router.push("/schedule-an-appointment/success");
+                router.push("/schedule-an-appointment/payment-confirmation");
+              else if (result.step === "success")
+                router.push("/schedule-an-appointment/success");
             } else handleError(result);
           } else handleError(result);
         } catch (error) {

@@ -56,6 +56,7 @@ export const processIllnessDetails = async (
         {
           patients: newPatientsData,
           nextPatient,
+          step: "illness-selection" as Booking["step"],
           updatedOn: new Date(),
         },
         { merge: true }

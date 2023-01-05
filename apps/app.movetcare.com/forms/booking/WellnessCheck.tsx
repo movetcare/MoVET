@@ -84,19 +84,19 @@ export const WellnessCheck = ({
         },
         { merge: true }
       )
-        .then(() => setStep("illness-assignment"))
+        .then(() => setStep("illness-selection"))
         .catch((error: any) => setError(error))
         .finally(() => setIsLoading(false));
     else
       await setDoc(
         doc(firestore, "bookings", `${session.id}`),
         {
-          step: "choose-location",
+          step: "location-selection",
           updatedOn: serverTimestamp(),
         },
         { merge: true }
       )
-        .then(() => setStep("choose-location"))
+        .then(() => setStep("location-selection"))
         .catch((error: any) => setError(error))
         .finally(() => setIsLoading(false));
   };

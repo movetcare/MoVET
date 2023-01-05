@@ -183,7 +183,7 @@ export const SelectAPet = ({
     )
       .then(() =>
         setStep(
-          establishCareExamRequired ? "wellness-check" : "choose-location"
+          establishCareExamRequired ? "wellness-check" : "location-selection"
         )
       )
       .catch((error: any) => {

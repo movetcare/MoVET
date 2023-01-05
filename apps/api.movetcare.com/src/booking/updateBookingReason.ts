@@ -50,12 +50,12 @@ export const updateBookingReason = async (
     .set(
       staff.length > 0
         ? {
-            step: "choose-staff",
+            step: "staff-selection",
             staff,
             updatedOn: new Date(),
           }
         : {
-            step: "choose-datetime",
+            step: "datetime-selection",
             updatedOn: new Date(),
           },
       { merge: true }

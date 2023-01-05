@@ -65,18 +65,18 @@ export type Booking = {
   step?:
     | "started"
     | "contact-info"
-    | "patient-selection"
-    | "add-pet"
+    | "pet-selection"
+    | "add-a-pet"
     | "wellness-check"
-    | "illness-assignment"
-    | "choose-location"
-    | "choose-reason"
-    | "choose-staff"
-    | "choose-datetime"
-    | "confirmation"
-    | "cancelled-client"
-    | "complete"
-    | "restart";
+    | "illness-selection"
+    | "location-selection"
+    | "reason-selection"
+    | "staff-selection"
+    | "datetime-selection"
+    | "payment-confirmation"
+    | "success"
+    | "restart"
+    | "cancelled-client";
   location?: "home" | "clinic" | "virtual";
   locationId?: number;
   address?: {

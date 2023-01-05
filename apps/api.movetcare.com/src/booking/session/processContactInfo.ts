@@ -42,6 +42,7 @@ export const processContactInfo = async (
             uid,
             requiresInfo: false,
           } as ClientBookingData,
+          step: "contact-info" as Booking["step"],
           updatedOn: new Date(),
         },
         { merge: true }

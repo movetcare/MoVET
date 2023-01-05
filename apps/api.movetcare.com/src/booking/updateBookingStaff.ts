@@ -10,7 +10,7 @@ export const updateBookingStaff = (id: string, staff: Staff | string) =>
     .doc(id)
     .set(
       {
-        step: "choose-datetime",
+        step: "datetime-selection",
         updatedOn: new Date(),
       },
       { merge: true }

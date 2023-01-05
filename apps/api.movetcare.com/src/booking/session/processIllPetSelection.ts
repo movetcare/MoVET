@@ -16,6 +16,7 @@ export const processIllPetSelection = async (
         {
           illPatientSelection: illPets,
           nextPatient: illPets[0],
+          step: "wellness-check" as Booking["step"],
           updatedOn: new Date(),
         },
         { merge: true }

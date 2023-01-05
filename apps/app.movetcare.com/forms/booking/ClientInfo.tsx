@@ -56,7 +56,7 @@ export const ClientInfo = ({
       },
       { merge: true }
     )
-      .then(() => setStep("patient-selection"))
+      .then(() => setStep("pet-selection"))
       .catch((error: any) => {
         setIsLoading(false);
         setError(error);

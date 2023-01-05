@@ -4,7 +4,7 @@ const DEBUG = false;
 export const setBooking = async (payload: Booking) => {
   const bookingRef = firestore.collection("bookings").doc(`${payload?.id}`);
   if (
-    (payload?.id && payload?.step === "complete") ||
+    (payload?.id && payload?.step === "success") ||
     payload?.step === "restart" ||
     payload?.step === "cancelled-client"
   )

@@ -203,7 +203,9 @@ export const ChooseLocation = ({
       { merge: true }
     )
       .then(() =>
-        setStep(session.vcprRequired ? "choose-datetime" : "choose-reason")
+        setStep(
+          session.vcprRequired ? "datetime-selection" : "reason-selection"
+        )
       )
       .catch((error: any) => {
         setIsLoading(false);

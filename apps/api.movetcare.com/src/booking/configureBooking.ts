@@ -143,7 +143,7 @@ const generateTestBookingData = () =>
             date: new Date(),
             time: "09:00",
           },
-          step: "complete",
+          step: "success",
           isActive: false,
           updatedOn: new Date(),
         })

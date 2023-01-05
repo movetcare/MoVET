@@ -59,6 +59,7 @@ export const processAddAPet = async (
           addAPet: {
             ...data,
           } as AddAPet,
+          step: "add-a-pet" as Booking["step"],
           updatedOn: new Date(),
         },
         { merge: true }

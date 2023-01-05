@@ -32,7 +32,7 @@ export default function BookingSuccess() {
         (
           await fetch("/api/schedule-an-appointment", {
             method: "POST",
-            body: JSON.stringify({ id: session?.id, step: "complete" }),
+            body: JSON.stringify({ id: session?.id, step: "success" }),
           })
         ).json();
       processAppointmentBooking()

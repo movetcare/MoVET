@@ -53,10 +53,10 @@ export const BookingController = ({
     } else return;
   }, [id]);
   useEffect(() => {
-    if (session?.step === "choose-location" && session?.nextPatient === null)
-      setStep("choose-location");
-    if (session?.step === "choose-staff") setStep("choose-staff");
-    if (session?.step === "choose-datetime") setStep("choose-datetime");
+    if (session?.step === "location-selection" && session?.nextPatient === null)
+      setStep("location-selection");
+    if (session?.step === "staff-selection") setStep("staff-selection");
+    if (session?.step === "datetime-selection") setStep("datetime-selection");
     if (session?.step === "checkout" && session?.checkout?.url && !isAppMode)
       window.location.href = session?.checkout?.url;
     if (session?.step === "payment-confirmation")
@@ -94,7 +94,7 @@ export const BookingController = ({
             isAppMode={isAppMode}
           />
         );
-      case "patient-selection":
+      case "pet-selection":
         return (
           <SelectAPet
             session={session}
@@ -110,9 +110,9 @@ export const BookingController = ({
             isAppMode={isAppMode}
           />
         );
-      case "illness-assignment":
+      case "illness-selection":
         return <IllnessAssignment session={session} isAppMode={isAppMode} />;
-      case "choose-location":
+      case "location-selection":
         return (
           <ChooseLocation
             session={session}
@@ -120,9 +120,9 @@ export const BookingController = ({
             isAppMode={isAppMode}
           />
         );
-      case "choose-reason":
+      case "reason-selection":
         return <ChooseService session={session} isAppMode={isAppMode} />;
-      case "choose-staff":
+      case "staff-selection":
         return (
           <ChooseStaff
             session={session}
@@ -130,7 +130,7 @@ export const BookingController = ({
             isAppMode={isAppMode}
           />
         );
-      case "choose-datetime":
+      case "datetime-selection":
         return <ChooseDateTime session={session} isAppMode={isAppMode} />;
       case "payment-confirmation":
         return (
@@ -157,7 +157,7 @@ export const BookingController = ({
             />
           </>
         );
-      case "add-pet":
+      case "add-a-pet":
         return <Loader message="Saving Your Pet..." />;
       case "restart":
         return <Loader message="Starting New Booking..." />;
