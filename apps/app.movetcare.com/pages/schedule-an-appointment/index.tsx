@@ -95,7 +95,11 @@ export default function ScheduleAnAppointment() {
       setIsLoading(true);
       if (email)
         onSubmit({
-          email: (email as string)?.toLowerCase()?.replaceAll(" ", "+"),
+          email: (email as string)
+            ?.toLowerCase()
+            ?.replaceAll(" ", "+")
+            ?.replaceAll("%20", "+")
+            ?.replaceAll("%40", "@"),
         });
       else if (window.localStorage.getItem("email"))
         onSubmit({

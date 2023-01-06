@@ -1,5 +1,5 @@
-import { BookingFooter } from "components/booking/BookingFooter";
-import { BookingHeader } from "components/booking/BookingHeader";
+import { BookingFooter } from "components/BookingFooter";
+import { BookingHeader } from "components/BookingHeader";
 import { Loader, Modal } from "ui";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -208,7 +208,9 @@ export default function LocationSelection() {
                 "bookingSession",
                 JSON.stringify(result)
               );
-              router.push("/schedule-an-appointment/datetime-selection");
+              if (result.establishCareExamRequired)
+                router.push("/schedule-an-appointment/datetime-selection");
+              else router.push("/schedule-an-appointment/reason-selection");
             } else handleError(result);
           } else handleError(result);
         } catch (error) {

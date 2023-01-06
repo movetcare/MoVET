@@ -1,6 +1,6 @@
-import { admin, throwError } from "../../../../../config/config";
+import { admin, throwError, DEBUG } from "../../../../../config/config";
 const { FieldValue } = require("firebase-admin/firestore");
-const DEBUG = false;
+
 export const saveBreeds = async (
   breedData: Array<{ value: number; label: string }>,
   type: "canine" | "feline"

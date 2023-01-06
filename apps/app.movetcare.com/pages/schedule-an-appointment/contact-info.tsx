@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
-import { BookingHeader } from "components/booking/BookingHeader";
+import { BookingHeader } from "components/BookingHeader";
 import PhoneInput from "ui/src/components/forms/inputs/PhoneInput";
 
 export default function ContactInfo() {

@@ -2,7 +2,7 @@
 import { useRouter } from "next/router";
 import { AppLinks, Loader } from "ui";
 import { Error } from "components/Error";
-import { BookingHeader } from "components/booking/BookingHeader";
+import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { AppHeader } from "components/AppHeader";

@@ -1,9 +1,7 @@
 import {
   faCheckCircle,
-  faCreditCard,
   faPaw,
   faRedo,
-  faUserEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "ui";
@@ -27,7 +25,6 @@ export const ClientCheckIn = () => {
   const [error, setError] = useState<any>(null);
   const [signUpSuccess, setSignUpSuccess] = useState<boolean | null>(null);
   const [client, setClient] = useState<any>();
-  const [email, setEmail] = useState<string | null>(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
   const {
     control,
@@ -58,8 +55,6 @@ export const ClientCheckIn = () => {
             "checkIn"
           )({ email: data.email.toLowerCase(), token });
           if (result && result?.client?.id) {
-            if (result?.client?.email)
-              setEmail(result?.client?.email?.replaceAll("+", "%2B"));
             sessionStorage.setItem("id", result?.client?.id);
             if (result?.session?.url)
               sessionStorage.setItem("session", result?.session?.url);

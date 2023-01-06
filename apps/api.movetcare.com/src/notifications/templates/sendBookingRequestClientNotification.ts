@@ -111,6 +111,7 @@ const createClientMessage = ({
   address,
   selectedStaff,
   selectedPatients,
+  id,
 }: any): any => {
   if (messageTemplate === "email") {
     let allPatients = "";
@@ -189,7 +190,7 @@ const createClientMessage = ({
       {
         type: "section",
         text: {
-          text: ":exclamation: _New Appointment Request_ :exclamation:",
+          text: `:exclamation: _New Appointment Request_ - ${id}:exclamation:`,
           type: "mrkdwn",
         },
         fields: [

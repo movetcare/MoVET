@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { Error } from "components/Error";
 import { useEffect, useState } from "react";
 import { Button, Loader } from "ui";
-import { BookingHeader } from "components/booking/BookingHeader";
+import { BookingHeader } from "components/BookingHeader";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";

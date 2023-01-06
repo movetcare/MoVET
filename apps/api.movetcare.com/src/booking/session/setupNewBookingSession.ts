@@ -12,8 +12,8 @@ import { verifyClientDataExists } from "../../utils/auth/verifyClientDataExists"
 import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
+import { DEBUG } from "../../config/config";
 
-const DEBUG = true;
 export const setupNewBookingSession = async ({
   email,
   device,

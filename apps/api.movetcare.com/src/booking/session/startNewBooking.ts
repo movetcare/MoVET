@@ -1,11 +1,11 @@
-import { admin, throwError } from "../../config/config";
+import { admin, throwError, DEBUG } from "../../config/config";
 import { sendNotification } from "../../notifications/sendNotification";
 import type { PatientBookingData, BookingError } from "../../types/booking";
 import { createBookingAbandonmentNotifications } from "../abandonment/createBookingAbandonmentNotifications";
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { verifyClientDataExists } from "../../utils/auth/verifyClientDataExists";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-const DEBUG = false;
+
 export const startNewBooking = async (
   client: UserRecord,
   device: string

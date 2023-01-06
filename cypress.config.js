@@ -1,9 +1,14 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
-  env: {},
+  env: {
+    defaultPathnameTimeOut:
+      Number(process.env.CYPRESS_DISPLAY_PATH_TIMEOUT) || 6000,
+    onlyTestOnePatient: process.env.CYPRESS_ONLY_TEST_ONE_PATIENT || true,
+    skipWellnessCheck: process.env.CYPRESS_SKIP_WELLNESS_CHECK || true,
+  },
   retries: {
-    runMode: 3,
+    runMode: 2,
     openMode: 0,
   },
   defaultCommandTimeout: 10000,

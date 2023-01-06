@@ -1,10 +1,16 @@
-import { admin, environment, stripe, throwError } from "../../config/config";
+import {
+  admin,
+  environment,
+  stripe,
+  throwError,
+  DEBUG,
+} from "../../config/config";
 import { sendNotification } from "../../notifications/sendNotification";
 import type { BookingError, Booking } from "../../types/booking";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 import { handleFailedBooking } from "./handleFailedBooking";
-const DEBUG = false;
+
 export const processDateTime = async (
   id: string,
   requestedDateTime: { date: string; time: string }
@@ -134,6 +140,9 @@ export const processDateTime = async (
         ...session,
         requestedDateTime,
         checkoutSession: checkoutSession ? checkoutSession?.url : null,
+        step: checkoutSession
+          ? ("datetime-selection" as Booking["step"])
+          : "success",
         id,
         client: {
           uid: session?.client?.uid,

@@ -5,9 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button, ErrorMessage, Loader, Modal } from "ui";
 import {
   faArrowRight,
-  faCat,
   faCheck,
-  faDog,
   faInfoCircle,
   faStethoscope,
 } from "@fortawesome/free-solid-svg-icons";
@@ -17,11 +15,11 @@ import { useForm } from "react-hook-form";
 import { array, object, string, lazy } from "yup";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
-import { BookingHeader } from "components/booking/BookingHeader";
+import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Transition } from "@headlessui/react";
 import { capitalizeFirstLetter } from "utilities";
-import { BookingFooter } from "components/booking/BookingFooter";
+import { BookingFooter } from "components/BookingFooter";
 
 export default function WellnessCheck() {
   const router = useRouter();
@@ -164,12 +162,15 @@ export default function WellnessCheck() {
                         htmlFor={`${pet.name}`}
                         className="text-lg select-none font-source-sans-pro flex flex-row items-center py-2 w-full"
                       >
-                        <FontAwesomeIcon
+                        {/* <FontAwesomeIcon
                           icon={pet.species.includes("Dog") ? faDog : faCat}
                           size={"lg"}
                           className="mr-2 h-8 w-8 text-movet-brown flex-none"
-                        />
-                        <p>{capitalizeFirstLetter(pet.name)}</p>
+                        /> */}
+                        <p>
+                          {pet.species.includes("Dog") ? "🐶" : "🐱"}{" "}
+                          {capitalizeFirstLetter(pet.name)}
+                        </p>
                         <span className="text-xs italic text-movet-red ml-2 text-center grow">
                           {""}
                         </span>

@@ -1,16 +1,16 @@
-import {configureReasonGroups} from "./../integrations/provet/entities/reason/configureReasonGroups";
-import {configureTerminals} from "./configureTerminals";
-import {Request, Response} from "express";
-import {mobileClientApiKey, environment, admin, throwError} from "./config";
-import {configureAppointments} from "../integrations/provet/entities/appointment/configure/configureAppointments";
-import {configureBreeds} from "../integrations/provet/entities/patient/breeds/configureBreeds";
-import {configureReasons} from "../integrations/provet/entities/reason/configureReasons";
-import {configureShifts} from "../integrations/provet/entities/shift/configureShifts";
-import {configureAppointmentEstimates} from "../integrations/provet/entities/appointment/configure/configureAppointmentEstimates";
-import {configureAppointmentOptionDetails} from "../integrations/provet/entities/appointment/configure/configureAppointmentOptionDetails";
-import {configureCancellationReasons} from "../integrations/provet/entities/reason/configureCancellationReasons";
-import {configureTelehealthStatus} from "../integrations/provet/entities/appointment/configure/configureTelehealthStatus";
-import {configureInvoices} from "../integrations/provet/entities/invoice/configureInvoices";
+import { configureReasonGroups } from "./../integrations/provet/entities/reason/configureReasonGroups";
+import { configureTerminals } from "./configureTerminals";
+import { Request, Response } from "express";
+import { mobileClientApiKey, environment, admin, throwError } from "./config";
+import { configureAppointments } from "../integrations/provet/entities/appointment/configure/configureAppointments";
+import { configureBreeds } from "../integrations/provet/entities/patient/breeds/configureBreeds";
+import { configureReasons } from "../integrations/provet/entities/reason/configureReasons";
+import { configureShifts } from "../integrations/provet/entities/shift/configureShifts";
+import { configureAppointmentEstimates } from "../integrations/provet/entities/appointment/configure/configureAppointmentEstimates";
+import { configureAppointmentOptionDetails } from "../integrations/provet/entities/appointment/configure/configureAppointmentOptionDetails";
+import { configureCancellationReasons } from "../integrations/provet/entities/reason/configureCancellationReasons";
+import { configureTelehealthStatus } from "../integrations/provet/entities/appointment/configure/configureTelehealthStatus";
+import { configureInvoices } from "../integrations/provet/entities/invoice/configureInvoices";
 import { configureUsers } from "./configureUsers";
 import { configureItems } from "../integrations/provet/entities/item/configureItems";
 import { configureBooking } from "../booking/configureBooking";
@@ -21,12 +21,13 @@ export const initProVetConfig = async (
   response: Response
 ): Promise<Response> => {
   if (apiKey === mobileClientApiKey) {
-    sendNotification({
-      type: "slack",
-      payload: {
-        message: `:warning: Platform Configuration "${type?.toUpperCase()}" Triggered!`,
-      },
-    });
+    if (environment.type === "production")
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: `:warning: Platform Configuration "${type?.toUpperCase()}" Triggered!`,
+        },
+      });
     const entities: Array<string> = [
       "users",
       "terminals",

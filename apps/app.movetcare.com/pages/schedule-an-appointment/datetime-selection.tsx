@@ -7,9 +7,9 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
-import { BookingHeader } from "components/booking/BookingHeader";
+import { BookingHeader } from "components/BookingHeader";
 import { Transition } from "@headlessui/react";
-import { BookingFooter } from "components/booking/BookingFooter";
+import { BookingFooter } from "components/BookingFooter";
 import { TimeInput } from "components/inputs/TimeInput";
 import Calendar from "react-calendar";
 import { formatDateObjectPlusTimeStringIntoString } from "utilities";
@@ -60,6 +60,7 @@ export default function DateTime() {
             device: navigator.userAgent,
             token,
           });
+          console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
             if (result?.client?.uid && result?.id) {

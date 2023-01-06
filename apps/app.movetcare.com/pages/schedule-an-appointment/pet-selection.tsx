@@ -5,8 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { Button, ErrorMessage, Loader, Modal } from "ui";
 import {
   faArrowRight,
-  faCat,
-  faDog,
   faInfoCircle,
   faPlusCircle,
   faStethoscope,
@@ -17,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { array, object, string, lazy } from "yup";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
-import { BookingHeader } from "components/booking/BookingHeader";
+import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { capitalizeFirstLetter } from "utilities";
 
@@ -231,12 +229,15 @@ export default function PetSelection() {
                             />
                           )
                       )} */}
-                        <FontAwesomeIcon
+                        {/* <FontAwesomeIcon
                           icon={pet.species.includes("Dog") ? faDog : faCat}
                           size={"lg"}
                           className="mr-2 h-8 w-8 text-movet-brown flex-none"
-                        />
-                        <p>{capitalizeFirstLetter(pet.name)}</p>
+                        /> */}
+                        <p>
+                          {pet.species.includes("Dog") ? "🐶" : "🐱"}{" "}
+                          {capitalizeFirstLetter(pet.name)}
+                        </p>
                         {pet.vcprRequired ? (
                           <span className="text-xs italic text-movet-red ml-2 text-right grow font-extrabold">
                             * Requires Establish Care Exam

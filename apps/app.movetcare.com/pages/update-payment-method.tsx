@@ -19,6 +19,7 @@ import { setTimeout } from "timers";
 import { object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Head from "next/head";
+import Image from "next/image";
 
 export default function UpdatePaymentMethod() {
   const router = useRouter();
@@ -79,8 +80,20 @@ export default function UpdatePaymentMethod() {
 
   useEffect(() => {
     if (email && executeRecaptcha) {
-      reset({ email: (email as string)?.toLowerCase() });
-      updatePaymentMethod({ email: (email as string)?.toLowerCase() });
+      reset({
+        email: (email as string)
+          ?.toLowerCase()
+          ?.replaceAll(" ", "+")
+          ?.replaceAll("%20", "+")
+          ?.replaceAll("%40", "@"),
+      });
+      onSubmit({
+        email: (email as string)
+          ?.toLowerCase()
+          ?.replaceAll(" ", "+")
+          ?.replaceAll("%20", "+")
+          ?.replaceAll("%40", "@"),
+      });
     }
   }, [email, executeRecaptcha]);
 
@@ -131,7 +144,23 @@ export default function UpdatePaymentMethod() {
         ) : (
           <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8">
             {isLoading ? (
-              <Loader />
+              <>
+                <Loader message="Taking you to Stripe..." />
+                <a
+                  href="https://stripe.com/payments"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="shrink-0"
+                >
+                  <Image
+                    src="/images/icons/powered-by-stripe.svg"
+                    alt="Powered by Stripe"
+                    height={40}
+                    width={120}
+                    className="mx-auto"
+                  />
+                </a>
+              </>
             ) : error ? (
               <div className="text-center">
                 <h2 className="text-2xl font-extrabold tracking-tight text-movet-black sm:text-4xl font-parkinson mb-4">
@@ -182,7 +211,21 @@ export default function UpdatePaymentMethod() {
                           onClick={handleSubmit(onSubmit)}
                         />
                       </div>
-                      <div className="flex sm:col-span-2 -mt-0 mx-auto">
+                      <a
+                        href="https://stripe.com/payments"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="shrink-0 col-span-2"
+                      >
+                        <Image
+                          src="/images/icons/powered-by-stripe.svg"
+                          alt="Powered by Stripe"
+                          height={40}
+                          width={120}
+                          className="mx-auto"
+                        />
+                      </a>
+                      <div className="flex sm:col-span-2 -mt-2 mx-auto">
                         <div className="flex items-center justify-center text-center">
                           <p className="text-xs italic text-movet-black">
                             By clicking the &quot;Add a Payment Method&quot;

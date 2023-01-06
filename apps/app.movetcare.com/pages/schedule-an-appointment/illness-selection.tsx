@@ -10,8 +10,8 @@ import { useForm } from "react-hook-form";
 import { array, object, string, lazy } from "yup";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
-import { BookingHeader } from "components/booking/BookingHeader";
-import { BookingFooter } from "components/booking/BookingFooter";
+import { BookingHeader } from "components/BookingHeader";
+import { BookingFooter } from "components/BookingFooter";
 import TextInput from "components/inputs/TextInput";
 
 const symptoms = [

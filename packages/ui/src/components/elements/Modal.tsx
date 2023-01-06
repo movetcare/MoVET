@@ -21,7 +21,7 @@ export const Modal = ({
     <Transition.Root show={showModal} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed z-10 inset-0 overflow-y-auto"
+        className="fixed z-50 inset-0 overflow-y-auto"
         initialFocus={cancelButtonRef}
         onClose={() => setShowModal(false)}
       >

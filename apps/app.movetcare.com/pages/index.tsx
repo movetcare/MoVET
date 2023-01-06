@@ -90,7 +90,11 @@ export default function Home() {
       setLoadingMessage("Processing, please wait...");
       if (email)
         reset({
-          email: (email as string)?.toLowerCase()?.replaceAll(" ", "+"),
+          email: (email as string)
+            ?.toLowerCase()
+            ?.replaceAll(" ", "+")
+            ?.replaceAll("%20", "+")
+            ?.replaceAll("%40", "@"),
         });
       else if (window.localStorage.getItem("email"))
         reset({

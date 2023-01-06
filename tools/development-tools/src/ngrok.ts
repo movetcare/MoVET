@@ -1,12 +1,12 @@
-const ngrok = require('ngrok');
-const app = require('./utils/initApp');
-const publicIp = require('public-ip');
-const firebaseConfig = require('./utils/firebase.json');
+const ngrok = require("ngrok");
+const app = require("./utils/initApp");
+const publicIp = require("public-ip");
+const firebaseConfig = require("./utils/firebase.json");
 // const kill = require('kill-port');
+const DEBUG = false;
 
 (async () => {
-  const DEBUG = false;
-  const admin = app.initializeApp('admin', 'staging');
+  const admin = app.initializeApp("admin", "staging");
   const ipv4 = await publicIp.v4();
   const url = await ngrok.connect({
     proto: "http",
@@ -19,7 +19,7 @@ const firebaseConfig = require('./utils/firebase.json');
       DEBUG && console.log(`NGROK EVENT: ${JSON.stringify(data)}`),
   });
   if (DEBUG)
-    console.log('\n\nTUNNEL URLS: ', await ngrok.getApi().listTunnels());
+    console.log("\n\nTUNNEL URLS: ", await ngrok.getApi().listTunnels());
   await admin
     .firestore()
     .collection("configuration")
@@ -64,14 +64,14 @@ setInterval(() => {
   // kill(9199);
   // kill(19002);
   // kill(62799);
-  console.log('\n\n**************************************************\n\n');
+  console.log("\n\n**************************************************\n\n");
   console.log(
-    'ATTENTION: YOUR FREE 2 HOUR NGROK TUNNEL TIME LIMIT HAS EXPIRED!\n'
+    "ATTENTION: YOUR FREE 2 HOUR NGROK TUNNEL TIME LIMIT HAS EXPIRED!\n"
   );
   console.log(
-    'YOUR ENVIRONNEMENT WILL NO LONGER RECEIVE PROVET CLOUD OR STRIPE WEBHOOKS'
+    "YOUR ENVIRONNEMENT WILL NO LONGER RECEIVE PROVET CLOUD OR STRIPE WEBHOOKS"
   );
-  console.log('\nSOME FEATURES MAY NO LONGER WORK CORRECTLY...\n');
-  console.log('RERUN THE START SCRIPT TO SETUP A NEW NGROK TUNNEL');
-  console.log('\n\n**************************************************\n\n');
+  console.log("\nSOME FEATURES MAY NO LONGER WORK CORRECTLY...\n");
+  console.log("RERUN THE START SCRIPT TO SETUP A NEW NGROK TUNNEL");
+  console.log("\n\n**************************************************\n\n");
 }, 120 * 60 * 1000);

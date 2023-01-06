@@ -1,6 +1,6 @@
 import { sendNotification } from "../notifications/sendNotification";
-import { functions, request } from "../config/config";
-const DEBUG = true;
+import { environment, functions, request, DEBUG } from "../config/config";
+
 export const handleAnnouncementBannerUpdate = functions.firestore
   .document("alerts/{id}")
   .onWrite(async (change: any, context: any) => {
@@ -14,22 +14,23 @@ export const handleAnnouncementBannerUpdate = functions.firestore
     if (id === "banner") {
       const { isActive, isActiveMobile, link, message, title } = data || {};
       // https://vercel.com/docs/concepts/git/deploy-hooks
-      const didTriggerVercelBuildWebhook = isActive
-        ? await request
-            .post(
-              "https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false"
-            )
-            .then(async (response: any) => {
-              const { data, status } = response;
-              if (DEBUG)
-                console.log(
-                  "API Response: POST https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false =>",
-                  data
-                );
-              return status !== 200 && status !== 201 ? "ERROR" : data;
-            })
-            .catch(() => false)
-        : false;
+      const didTriggerVercelBuildWebhook =
+        isActive && environment.type === "production"
+          ? await request
+              .post(
+                "https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false"
+              )
+              .then(async (response: any) => {
+                const { data, status } = response;
+                if (DEBUG)
+                  console.log(
+                    "API Response: POST https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false =>",
+                    data
+                  );
+                return status !== 200 && status !== 201 ? "ERROR" : data;
+              })
+              .catch(() => false)
+          : false;
 
       sendNotification({
         type: "slack",

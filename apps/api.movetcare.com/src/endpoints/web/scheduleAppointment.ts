@@ -1,4 +1,4 @@
-import { functions, defaultRuntimeOptions } from "../../config/config";
+import { functions, defaultRuntimeOptions, DEBUG } from "../../config/config";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 import { handleFailedBooking } from "../../booking/session/handleFailedBooking";
 import type { BookingError, Booking } from "../../types/booking";
@@ -10,7 +10,9 @@ import { processIllPetSelection } from "../../booking/session/processIllPetSelec
 import { processIllnessDetails } from "../../booking/session/processIllnessDetails";
 import { processLocation } from "../../booking/session/processLocation";
 import { processDateTime } from "../../booking/session/processDateTime";
-const DEBUG = true;
+import { processReason } from "../../booking/session/processReason";
+import { processStaff } from "../../booking/session/processStaff";
+
 export const scheduleAppointment = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<Booking | BookingError> => {
@@ -30,6 +32,8 @@ export const scheduleAppointment = functions
       illPetSelection,
       illnessDetails,
       location,
+      reason,
+      selectedStaff,
       requestedDateTime,
     } = data || {};
     if (token) {
@@ -92,6 +96,14 @@ export const scheduleAppointment = functions
                 location
               );
             return await processLocation(data);
+          } else if (reason) {
+            if (DEBUG)
+              console.log("scheduleAppointment => processReason => ", reason);
+            return await processReason(id, reason);
+          } else if (selectedStaff) {
+            if (DEBUG)
+              console.log("scheduleAppointment => processStaff => ", reason);
+            return await processStaff(id, selectedStaff);
           } else if (requestedDateTime) {
             if (DEBUG)
               console.log(

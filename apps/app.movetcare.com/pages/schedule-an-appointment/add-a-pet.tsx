@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { addMethod, bool, object, string, lazy } from "yup";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
-import { BookingHeader } from "components/booking/BookingHeader";
+import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Transition } from "@headlessui/react";
 import { DateInput } from "components/inputs/DateInput";

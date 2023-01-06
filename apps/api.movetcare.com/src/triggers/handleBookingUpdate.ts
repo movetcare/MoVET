@@ -1,10 +1,10 @@
 import { removeBookingAbandonmentNotifications } from "../booking/abandonment/removeBookingAbandonmentNotifications";
-import { endBooking } from "../booking/session/endBooking";
-import { functions } from "./../config/config";
+import { cancelBooking } from "../booking/abandonment/cancelBooking";
+import { DEBUG, functions } from "./../config/config";
 import { archiveBooking } from "../booking/session/archiveBooking";
 import type { Booking } from "../types/booking";
-import { updateBookingCancellation } from "../booking/session/updateBookingCancellation";
-const DEBUG = false;
+import { updateBookingCancellation } from "../booking/abandonment/updateBookingCancellation";
+
 export const handleBookingUpdate = functions.firestore
   .document("bookings/{id}")
   .onWrite((change: any, context: any) => {
@@ -28,15 +28,12 @@ export const handleBookingUpdate = functions.firestore
         }
         if (step === "success" && isActive) archiveBooking(id);
         else if (step === "restart" || step === "cancelled-client")
-          endBooking(id, data);
-      } else {
-        if (DEBUG)
-          console.log(
-            `CAN NOT UPDATE AN ARCHIVED (OR DELETED) BOOKING: ${id}`,
-            data
-          );
-        removeBookingAbandonmentNotifications(id);
-      }
+          cancelBooking(id, data);
+      } else if (DEBUG)
+        console.log(
+          `CAN NOT UPDATE AN ARCHIVED (OR DELETED) BOOKING: ${id}`,
+          data
+        );
     }
     return true;
   });

@@ -1,5 +1,5 @@
-import {throwError, request} from "../../../../../config/config";
-const DEBUG = false;
+import { throwError, request, DEBUG } from "../../../../../config/config";
+
 export const fetchBreedIds = async (
   breedListId: string
 ): Promise<Array<string> | boolean> =>

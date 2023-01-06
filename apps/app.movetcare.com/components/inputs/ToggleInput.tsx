@@ -47,7 +47,12 @@ export const ToggleInput = ({
               key={index}
               onClick={() => onChange(option.name)}
             >
-              <FontAwesomeIcon icon={option.icon} size="lg" />
+              {Object.prototype.toString.call(option.icon) ===
+              "[object String]" ? (
+                option.icon
+              ) : (
+                <FontAwesomeIcon icon={option.icon} size="lg" />
+              )}
               <span className="ml-2">{capitalizeFirstLetter(option.name)}</span>
             </div>
           ))}

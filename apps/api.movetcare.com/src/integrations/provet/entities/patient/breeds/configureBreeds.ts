@@ -1,10 +1,10 @@
-import { admin, throwError } from "../../../../../config/config";
+import { admin, DEBUG, throwError } from "../../../../../config/config";
 import { fetchBreedIds } from "./fetchBreedIds";
 import { fetchBreedData } from "./fetchBreedData";
 import { supportedBreeds } from "./supportedBreeds";
 import { saveBreeds } from "./saveBreeds";
 import type { Breed } from "../../../../../types/breed";
-const DEBUG = false;
+
 export const configureBreeds = async (): Promise<boolean> => {
   const alreadyHasCanineBreeds = await admin
     .firestore()

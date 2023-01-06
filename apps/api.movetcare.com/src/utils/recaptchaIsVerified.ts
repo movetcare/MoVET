@@ -3,8 +3,9 @@ import {
   recaptchaSecretKey,
   request,
   throwError,
+  DEBUG,
 } from "../config/config";
-const DEBUG = false;
+
 export const recaptchaIsVerified = async (token: string) =>
   environment.type === "development"
     ? true

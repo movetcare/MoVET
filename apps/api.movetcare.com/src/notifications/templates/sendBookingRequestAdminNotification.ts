@@ -1,10 +1,10 @@
-import { throwError } from "../../config/config";
+import { throwError, DEBUG } from "../../config/config";
 // import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
 import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
 import { sendNotification } from "../sendNotification";
-const DEBUG = false;
+
 export const sendBookingRequestAdminNotification = async ({
   id,
   bookingRef,
@@ -134,18 +134,10 @@ export const sendBookingRequestAdminNotification = async ({
         {
           type: "section",
           text: {
-            text: `:exclamation: New Appointment Request :exclamation:\n\n${id}`,
+            text: `:exclamation: New Appointment Request - ${id} :exclamation:\n\n${id}`,
             type: "mrkdwn",
           },
           fields: [
-            {
-              type: "mrkdwn",
-              text: "*Session ID*",
-            },
-            {
-              type: "plain_text",
-              text: id,
-            },
             {
               type: "mrkdwn",
               text: "*Client*",
