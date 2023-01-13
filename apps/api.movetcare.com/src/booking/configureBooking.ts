@@ -18,6 +18,7 @@ export const configureBooking = async (): Promise<boolean> => {
     // if (environment.type !== "production") generateTestBookingData();
   } else {
     console.log("STARTING BOOKING CONFIGURATION");
+    const today = new Date();
     admin
       .firestore()
       .collection("configuration")
@@ -35,6 +36,19 @@ export const configureBooking = async (): Promise<boolean> => {
           virtualStandardVcprReason: {
             value: 121,
             label: "Virtual Meet & Greet",
+          },
+          winterHousecallMode: {
+            startDate: today,
+            endDate: today.setDate(today.getDate() + 5),
+            message:
+              "Due to weather variability house calls are by Request Only beginning Wednesday, Dec 21st. Normal scheduling will reopen Monday, April 3rd. Please use an options below to request a house call appointment.",
+            showOnWebsite: true,
+            showOnMobileApp: true,
+            showOnWebApp: true,
+            enableForNewClientsOnly: true,
+            contactByPhone: true,
+            contactByEmail: true,
+            contactBySms: true,
           },
           updatedOn: new Date(),
         },

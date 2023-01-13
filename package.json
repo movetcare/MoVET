@@ -14,7 +14,7 @@
     "dev": "pnpm run start",
     "lint": "turbo run lint",
     "test": "pnpm run build && start-server-and-test start:test 3000 test:platform",
-    "test:platform": "sleep 60 && CYPRESS_DISPLAY_PATH_TIMEOUT=15000 CYPRESS_ONLY_TEST_ONE_PATIENT=false CYPRESS_SKIP_WELLNESS_CHECK=false ./node_modules/.bin/cypress run",
+    "test:platform": "sleep 60 && CYPRESS_ENDPOINT_API_KEY=L9At3HGmvRDuyi7TTX CYPRESS_DISPLAY_PATH_TIMEOUT=15000 CYPRESS_ONLY_TEST_ONE_PATIENT=false CYPRESS_SKIP_WELLNESS_CHECK=false ./node_modules/.bin/cypress run",
     "open:test": "pnpm cypress open",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "config:env": "yes | cp -rf apps/.env apps/movetcare.com/.env.local && source apps/movetcare.com/.env.local && yes | cp -rf apps/.env apps/app.movetcare.com/.env.local && source apps/app.movetcare.com/.env.local && yes | cp -rf apps/.env apps/admin.movetcare.com/.env.local && source apps/admin.movetcare.com/.env.local",
@@ -53,9 +53,9 @@
     "git-branch-is": "^4.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
-    "prettier": "^2.8.1",
+    "prettier": "^2.8.2",
     "start-server-and-test": "^1.15.2",
-    "turbo": "^1.6.3"
+    "turbo": "^1.7.0"
   },
   "engines": {
     "node": ">= 16.18.1"

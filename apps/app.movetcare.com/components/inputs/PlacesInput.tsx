@@ -187,9 +187,11 @@ export const PlacesInput = ({
                       color: state.data.color,
                     }),
                     indicatorSeparator: () => ({
+                      borderWidth: 0,
                       display: "none",
                     }),
                     dropdownIndicator: () => ({
+                      borderWidth: 0,
                       display: "none",
                     }),
                   },

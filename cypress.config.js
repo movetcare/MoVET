@@ -6,6 +6,7 @@ module.exports = defineConfig({
       Number(process.env.CYPRESS_DISPLAY_PATH_TIMEOUT) || 6000,
     onlyTestOnePatient: process.env.CYPRESS_ONLY_TEST_ONE_PATIENT || true,
     skipWellnessCheck: process.env.CYPRESS_SKIP_WELLNESS_CHECK || true,
+    endpointApiKey: process.env.CYPRESS_ENDPOINT_API_KEY || "",
   },
   retries: {
     runMode: 2,

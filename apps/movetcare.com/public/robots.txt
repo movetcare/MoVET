@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: http://movetcare.com/sitemap.xml
+Sitemap: https://movetcare.com/sitemap.xml

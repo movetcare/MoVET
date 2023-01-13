@@ -52,7 +52,7 @@
     "semver": "^7.3.8",
     "stripe": "^11.6.0",
     "trello-node-api": "^0.0.9",
-    "twilio": "^3.84.0",
+    "twilio": "^3.84.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -61,14 +61,14 @@
     "@types/node": "^18.11.18",
     "@types/safe-compare": "^1.1.0",
     "@types/uuid": "^9.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.48.0",
-    "@typescript-eslint/parser": "^5.48.0",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
     "eslint": "^8.31.0",
     "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-import": "^2.27.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.1",
+    "prettier": "^2.8.2",
     "typescript": "^4.9.4"
   }
 }

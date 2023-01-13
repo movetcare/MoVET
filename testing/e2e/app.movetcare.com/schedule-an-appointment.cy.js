@@ -1,6 +1,6 @@
-const defaultPathnameTimeOut = 15000; //Cypress.env().defaultPathnameTimeOut;
-const onlyTestOnePatient = false; //Cypress.env().onlyTestOnePatient;
-const skipWellnessCheck = false; //Cypress.env().skipWellnessCheck;
+const defaultPathnameTimeOut = Cypress.env().defaultPathnameTimeOut;
+const onlyTestOnePatient = Cypress.env().onlyTestOnePatient;
+const skipWellnessCheck = Cypress.env().skipWellnessCheck;
 describe(
   "schedule-an-appointment-flow",
   { defaultCommandTimeout: defaultPathnameTimeOut },
@@ -9,7 +9,7 @@ describe(
       cy.request(
         "POST",
         "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: "L9At3HGmvRDuyi7TTX", id: 5125 }
+        { apiKey: Cypress.env().endpointApiKey, id: 5125 }
       );
       cy.visit("http://localhost:3001/schedule-an-appointment");
       cy.get("input[name='email']").type(
@@ -280,7 +280,7 @@ describe(
       cy.get("@heading").contains("Booking Request Successful");
     });
 
-    it("Can schedule an appointment as an existing client - VCPR NOT REQUIRED", () => {
+    it.only("Can schedule an appointment as an existing client - VCPR NOT REQUIRED", () => {
       cy.visit(
         "http://localhost:3001/?email=alex.rodriguez+CYPRESS_TEST_VCPR_NOT_REQUIRED@MOVETCARE.COM"
       );

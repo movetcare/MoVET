@@ -145,7 +145,7 @@ export default function UpdatePaymentMethod() {
           <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8">
             {isLoading ? (
               <>
-                <Loader message="Taking you to Stripe..." />
+                <Loader message="Loading Payment Processing..." />
                 <a
                   href="https://stripe.com/payments"
                   target="_blank"

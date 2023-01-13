@@ -60,7 +60,6 @@ export default function DateTime() {
             device: navigator.userAgent,
             token,
           });
-          console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
             if (result?.client?.uid && result?.id) {

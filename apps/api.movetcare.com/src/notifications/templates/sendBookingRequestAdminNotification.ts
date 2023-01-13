@@ -68,6 +68,41 @@ export const sendBookingRequestAdminNotification = async ({
     });
   });
 
+  let petInfoText: string | null = null;
+  selectedPatients.forEach((selectedPatient: any) => {
+    patients.map((patient: any) => {
+      if (selectedPatient === patient?.id) {
+        if (DEBUG) console.log("selected patient", patient);
+        petInfoText += `\n\nName: ${patient?.name}\nSpecies: ${
+          patient?.species
+        }\nGender: ${patient?.gender}\n${
+          patient?.illnessDetails
+            ? `Minor Illness: ${
+                patient?.illnessDetails
+                  ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                      patient?.illnessDetails?.notes
+                    }`
+                  : " None"
+              }`
+            : ""
+        }\n${
+          patient.aggressionStatus
+            ? `Aggression Status: "${
+                patient?.aggressionStatus
+                  ? "IS AGGRESSIVE!"
+                  : "Is not aggressive" ||
+                    // eslint-disable-next-line quotes
+                    'UNKNOWN - Update "Is Aggressive" custom field on patient\'s profile in ProVet!'
+              } "`
+            : ""
+        }\n${
+          patient.vcprRequired
+            ? `VCPR Required: ${patient?.vcprRequired ? "Yes" : "No"}`
+            : ""
+        }`;
+      }
+    });
+  });
   const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
     ?.toDate()
     ?.toString()}</p>${
@@ -144,7 +179,7 @@ export const sendBookingRequestAdminNotification = async ({
             },
             {
               type: "plain_text",
-              text: `${client?.displayName} - ${client?.email} (${client?.uid})`,
+              text: `${client?.firstName} ${client?.lastName} - ${client?.email} (${client?.uid})`,
             },
             {
               type: "mrkdwn",
@@ -152,7 +187,7 @@ export const sendBookingRequestAdminNotification = async ({
             },
             {
               type: "plain_text",
-              text: allPatients,
+              text: petInfoText,
             },
             {
               type: "mrkdwn",
