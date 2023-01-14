@@ -13,6 +13,7 @@ export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
 export { handleContactSubmission } from "./triggers/handleContactSubmission";
 export { handleFileUpload } from "./triggers/handleFileUpload";
 export { handleAnnouncementBannerUpdate } from "./triggers/handleAnnouncementBannerUpdate";
+export { handleWinterModeUpdate } from "./triggers/handleWinterModeUpdate";
 
 export { sendgridWebhook } from "./endpoints/webhooks/sendgridWebhook";
 export { incomingWebhook } from "./endpoints/webhooks/incomingWebhook";

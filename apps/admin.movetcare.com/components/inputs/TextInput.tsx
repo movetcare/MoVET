@@ -1,6 +1,6 @@
-import { Controller } from 'react-hook-form';
-import { classNames } from 'utils/classNames';
-import ErrorMessage from './ErrorMessage';
+import { Controller } from "react-hook-form";
+import { classNames } from "utils/classNames";
+import ErrorMessage from "./ErrorMessage";
 
 const TextInput = ({
   label,
@@ -12,11 +12,11 @@ const TextInput = ({
   required = false,
   readOnly = false,
   disabled = false,
-  autoComplete = 'on',
+  autoComplete = "on",
   defaultValue = null,
   multiline = false,
   numberOfLines = 1,
-  type = 'text',
+  type = "text",
 }: {
   label: string;
   control: any;
@@ -26,29 +26,29 @@ const TextInput = ({
   placeholder: string;
   defaultValue?: string | null;
   autoComplete?:
-    | 'on'
-    | 'off'
-    | 'name'
-    | 'honorific-prefix'
-    | 'given-name'
-    | 'additional-name'
-    | 'family-name'
-    | 'honorific-suffix'
-    | 'nickname'
-    | 'organization-title'
-    | 'organization';
+    | "on"
+    | "off"
+    | "name"
+    | "honorific-prefix"
+    | "given-name"
+    | "additional-name"
+    | "family-name"
+    | "honorific-suffix"
+    | "nickname"
+    | "organization-title"
+    | "organization";
   readOnly?: boolean;
   disabled?: boolean;
   multiline?: boolean;
   autoFocus?: boolean;
   numberOfLines?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-  type: 'text' | 'number';
+  type: "text" | "number";
 }) => {
   return (
-    <div>
+    <div className="w-full">
       {label && (
         <label
-          htmlFor={name || 'form-input-element'}
+          htmlFor={name || "form-input-element"}
           className="block text-sm font-medium text-movet-black font-abside mb-2"
         >
           {label} {required && <span className="text-movet-red">*</span>}
@@ -60,24 +60,24 @@ const TextInput = ({
           rules={
             required
               ? {
-                  required: 'Field is required',
+                  required: "Field is required",
                   minLength: {
-                    message: 'Must be more than more than 2 characters',
+                    message: "Must be more than more than 2 characters",
                     value: 2,
                   },
                   maxLength: {
-                    message: 'Must be less than more than 80 characters',
-                    value: 80,
+                    message: "Must be less than more than 260 characters",
+                    value: 260,
                   },
                 }
               : {
                   minLength: {
-                    message: 'Must be more than more than 2 characters',
+                    message: "Must be more than more than 2 characters",
                     value: 2,
                   },
                   maxLength: {
-                    message: 'Must be less than more than 80 characters',
-                    value: 80,
+                    message: "Must be less than more than 260 characters",
+                    value: 260,
                   },
                 }
           }
@@ -93,15 +93,15 @@ const TextInput = ({
                 id={name}
                 rows={numberOfLines || 2}
                 cols={1}
-                placeholder={placeholder || ''}
+                placeholder={placeholder || ""}
                 value={value}
                 onChange={onChange}
                 onBlur={onBlur}
                 className={classNames(
                   disabled
-                    ? 'border-movet-gray text-movet-gray'
-                    : 'focus:ring-movet-brown focus:border-movet-brown text-movet-black',
-                  'py-3 px-4 block w-full rounded-lg font-abside-smooth'
+                    ? "border-movet-gray text-movet-gray"
+                    : "focus:ring-movet-brown focus:border-movet-brown text-movet-black",
+                  "py-3 px-4 block w-full rounded-lg font-abside-smooth"
                 )}
               />
             ) : (
@@ -113,16 +113,16 @@ const TextInput = ({
                 disabled={disabled}
                 readOnly={readOnly}
                 required={required}
-                autoComplete={autoComplete ? 'on' : 'off'}
-                placeholder={placeholder || ''}
+                autoComplete={autoComplete ? "on" : "off"}
+                placeholder={placeholder || ""}
                 value={value}
                 onChange={onChange}
                 onBlur={onBlur}
                 className={classNames(
                   disabled
-                    ? 'border-movet-gray text-movet-gray'
-                    : 'focus:ring-movet-brown focus:border-movet-brown text-movet-black',
-                  'py-3 px-4 block w-full rounded-lg font-abside-smooth'
+                    ? "border-movet-gray text-movet-gray"
+                    : "focus:ring-movet-brown focus:border-movet-brown text-movet-black",
+                  "py-3 px-4 block w-full rounded-lg font-abside-smooth"
                 )}
               />
             )

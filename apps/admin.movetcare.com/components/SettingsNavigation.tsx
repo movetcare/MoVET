@@ -1,6 +1,7 @@
 import {
   faCalendar,
   faCogs,
+  faSnowflake,
   faUser,
   faWrench,
 } from "@fortawesome/free-solid-svg-icons";
@@ -11,7 +12,7 @@ import { classNames } from "utils/classNames";
 export const SettingsNavigation = () => {
   const navigation = [
     {
-      title: "Manage Users",
+      title: "Users",
       description:
         "View Admin app users and re-sync ProVet user data w/ the platform",
       href: "/settings/users/",
@@ -20,13 +21,31 @@ export const SettingsNavigation = () => {
       iconBackground: "bg-movet-yellow bg-opacity-50",
     },
     {
-      title: "Manage Booking",
+      title: "Booking",
       description:
         "Customize how shifts in ProVet integrate with the MoVET platform's appointment scheduling system",
       href: "/settings/booking/",
       icon: faCalendar,
       iconForeground: "text-movet-brown",
       iconBackground: "bg-movet-brown bg-opacity-50",
+    },
+    {
+      title: "Announcement Banner",
+      description:
+        "Change the announcement banner displayed on the website and web/mobile apps",
+      href: "/settings/announcement-banner/",
+      icon: faWrench,
+      iconForeground: "text-movet-pink",
+      iconBackground: "bg-movet-pink bg-opacity-50",
+    },
+    {
+      title: "Winter Housecall Mode",
+      description:
+        "Control whether or not clients are able to schedule housecall appointments on demand or by request only",
+      href: "/settings/winter-mode/",
+      icon: faSnowflake,
+      iconForeground: "text-movet-blue",
+      iconBackground: "bg-movet-blue bg-opacity-50",
     },
     {
       title: "Platform Tools",

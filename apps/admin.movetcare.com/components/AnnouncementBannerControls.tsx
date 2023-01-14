@@ -1,12 +1,9 @@
 import {
   faBell,
   faBullhorn,
-  faCaretDown,
-  faCaretUp,
   faCircleCheck,
   faCircleExclamation,
   faDroplet,
-  faEdit,
   faExclamationCircle,
   faFlag,
   faHeading,
@@ -45,7 +42,7 @@ export const AnnouncementBannerControls = () => {
     error,
   }: any = useContext(AnnouncementBannerContext);
   const [showAnnouncementSettingsMenu, setShowAnnouncementSettingsMenu] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const {
@@ -247,13 +244,13 @@ export const AnnouncementBannerControls = () => {
               }
             >
               <div className="min-w-0 flex-col w-full justify-center">
-                <div
+                {/* <div
                   className="text-center text-sm cursor-pointer -mb-2"
-                  onClick={() =>
-                    setShowAnnouncementSettingsMenu(
-                      !showAnnouncementSettingsMenu
-                    )
-                  }
+                  // onClick={() =>
+                  //   setShowAnnouncementSettingsMenu(
+                  //     !showAnnouncementSettingsMenu
+                  //   )
+                  // }
                 >
                   {icon && (
                     <FontAwesomeIcon
@@ -294,7 +291,7 @@ export const AnnouncementBannerControls = () => {
                       className="invisible group-hover:visible"
                     />
                   </h2>
-                </div>
+                </div> */}
                 <menu>
                   <Transition
                     show={showAnnouncementSettingsMenu}
@@ -307,9 +304,9 @@ export const AnnouncementBannerControls = () => {
                   >
                     <form
                       onSubmit={handleSubmit(onSubmit as any)}
-                      className="flex flex-col w-full mx-auto mt-8 px-4 md:px-8"
+                      className="flex flex-col w-full mx-auto px-4 md:px-8"
                     >
-                      <div className="flex flex-row w-full justify-center items-center pt-4 mb-4 border-t border-movet-gray -mt-2">
+                      <div className="flex flex-row w-full justify-center items-center pt-4 mb-4 -mt-2">
                         <label className="italic mt-2 mb-2 text-sm mr-2">
                           <FontAwesomeIcon
                             icon={faFlag}
@@ -534,9 +531,9 @@ export const AnnouncementBannerControls = () => {
                         <button
                           type="submit"
                           onClick={() => {
-                            setShowAnnouncementSettingsMenu(
-                              !showAnnouncementSettingsMenu
-                            );
+                            // setShowAnnouncementSettingsMenu(
+                            //   !showAnnouncementSettingsMenu
+                            // );
                             setAnnouncementPreview({
                               color: color as any,
                               icon: icon as any,
