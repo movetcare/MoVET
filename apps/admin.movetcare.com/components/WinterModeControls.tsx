@@ -39,13 +39,13 @@ export const WinterModeControls = () => {
       isActiveOnWebsite: false,
       isActiveOnMobileApp: false,
       isActiveOnWebApp: false,
-      enableForNewClientsOnly: true,
+      enableForNewPatientsOnly: true,
     },
   });
   const isActiveOnWebsite = watch("isActiveOnWebsite");
   const isActiveOnMobileApp = watch("isActiveOnMobileApp");
   const isActiveOnWebApp = watch("isActiveOnWebApp");
-  const enableForNewClientsOnly = watch("enableForNewClientsOnly");
+  const enableForNewPatientsOnly = watch("enableForNewPatientsOnly");
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -270,9 +270,9 @@ export const WinterModeControls = () => {
                     />
                   </div>
                   <div className="flex flex-col sm:flex-row justify-between items-center w-full mx-auto py-2">
-                    <span className="font-extrabold">New Clients Only:</span>{" "}
+                    <span className="font-extrabold">New Patients Only:</span>{" "}
                     <Controller
-                      name="enableForNewClientsOnly"
+                      name="enableForNewPatientsOnly"
                       control={control}
                       render={({ field: { onChange, onBlur, value } }: any) => (
                         <Switch
@@ -280,7 +280,7 @@ export const WinterModeControls = () => {
                           onChange={onChange}
                           onBlur={onBlur}
                           className={classNames(
-                            enableForNewClientsOnly
+                            enableForNewPatientsOnly
                               ? "bg-movet-green"
                               : "bg-movet-red",
                             "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
@@ -289,7 +289,7 @@ export const WinterModeControls = () => {
                           <span
                             aria-hidden="true"
                             className={classNames(
-                              enableForNewClientsOnly
+                              enableForNewPatientsOnly
                                 ? "translate-x-5"
                                 : "translate-x-0",
                               "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"

@@ -1,18 +1,13 @@
 import { sendAppointmentConfirmationEmail } from "../../../../notifications/templates/sendAppointmentConfirmationEmail";
 import { fetchEntity } from "./../fetchEntity";
-import {
-  admin,
-  throwError,
-  DEBUG,
-  environment,
-} from "../../../../config/config";
+import { admin, throwError, environment } from "../../../../config/config";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { deleteAppointmentNotifications } from "./notifications/deleteAppointmentNotifications";
 import { generateNewAppointmentNotifications } from "./notifications/generateNewAppointmentNotifications";
 import type { Appointment } from "../../../../types/appointment";
 // import {getAuthUserById} from '../../../../utils/auth/getAuthUserById';
 // import {getDateStringFromDate} from '../../../../utils/getDateStringFromDate';
-
+const DEBUG = true;
 export const saveAppointment = async (
   proVetAppointmentData: Appointment,
   movetAppointmentData?: any

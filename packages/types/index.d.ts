@@ -4,3 +4,4 @@ export * from "./src/announcement";
 export * from "./src/blog";
 export * from "./src/booking";
 export * from "./src/google-maps";
+export * from "./src/winter-mode";

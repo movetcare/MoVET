@@ -150,7 +150,7 @@ export const sendNotification = async ({
         if (
           userNotificationSettings &&
           userNotificationSettings?.sendEmail &&
-          (environment?.type === "production" || environment.type === "staging")
+          environment?.type === "production"
         ) {
           sendEmailNotification();
         } else if (DEBUG)
@@ -159,7 +159,7 @@ export const sendNotification = async ({
               userNotificationSettings && userNotificationSettings?.sendEmail,
             ...emailConfig,
           });
-      } else sendEmailNotification();
+      } else if (environment?.type === "production") sendEmailNotification();
       break;
     case "sms":
       if (payload?.client) {
@@ -184,8 +184,7 @@ export const sendNotification = async ({
             userNotificationSettings &&
             userNotificationSettings?.sendSms &&
             phone &&
-            (environment?.type === "production" ||
-              environment.type === "staging")
+            environment?.type === "production"
           ) {
             smsClient.messages
               .create({

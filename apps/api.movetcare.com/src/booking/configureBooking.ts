@@ -1,5 +1,4 @@
-import { admin, throwError, environment } from "../config/config";
-
+import { admin, throwError, environment, DEBUG } from "../config/config";
 export const configureBooking = async (): Promise<boolean> => {
   const alreadyHasConfiguration = await admin
     .firestore()
@@ -19,6 +18,13 @@ export const configureBooking = async (): Promise<boolean> => {
   } else {
     console.log("STARTING BOOKING CONFIGURATION");
     const today = new Date();
+    if (DEBUG) {
+      console.log("today", today);
+      console.log(
+        "5 Days from now",
+        new Date(today.setDate(today.getDate() + 5))
+      );
+    }
     admin
       .firestore()
       .collection("configuration")
@@ -38,14 +44,14 @@ export const configureBooking = async (): Promise<boolean> => {
             label: "Virtual Meet & Greet",
           },
           winterHousecallMode: {
-            startDate: today,
+            startDate: new Date(),
             endDate: new Date(today.setDate(today.getDate() + 5)),
             message:
-              "Due to weather variability house calls are by Request Only beginning Wednesday, Dec 21st. Normal scheduling will reopen Monday, April 3rd.",
+              "Due to weather variability housecalls are by request only beginning Wednesday, Dec 21st. Normal scheduling will reopen Monday, April 3rd.",
             isActiveOnWebsite: false,
             isActiveOnMobileApp: false,
             isActiveOnWebApp: false,
-            enableForNewClientsOnly: true,
+            enableForNewPatientsOnly: true,
           },
           updatedOn: new Date(),
         },

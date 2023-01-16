@@ -1,5 +1,5 @@
 import Layout from "components/Layout";
-import { getAnnouncement } from "server";
+import { getAnnouncement, getWinterMode } from "server";
 // import { useRouter } from "next/router";
 // import { useEffect, useState } from "react";
 import {
@@ -15,17 +15,27 @@ import {
   CallToAction,
 } from "ui";
 
-import type { Announcement as AnnouncementType } from "types";
+import type {
+  Announcement as AnnouncementType,
+  WinterMode as WinterModeType,
+} from "types";
 
 export async function getStaticProps() {
   return {
     props: {
       announcement: (await getAnnouncement()) || null,
+      winterMode: (await getWinterMode()) || null,
     },
   };
 }
 
-export default function Home({ announcement }: { announcement: AnnouncementType }) {
+export default function Home({
+  announcement,
+  winterMode,
+}: {
+  announcement: AnnouncementType;
+  winterMode: WinterModeType;
+}) {
   return (
     <Layout announcement={announcement}>
       <div className="flex flex-col items-center justify-center min-py-2 bg-movet-white">
@@ -57,7 +67,7 @@ export default function Home({ announcement }: { announcement: AnnouncementType 
         <ServiceTypes />
         <Amenities />
         <Services />
-        <Hours />
+        <Hours winterMode={winterMode} />
         <Reviews />
         <Contact />
         <CallToAction />

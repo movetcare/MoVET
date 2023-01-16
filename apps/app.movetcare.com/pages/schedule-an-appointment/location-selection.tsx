@@ -27,6 +27,8 @@ import { httpsCallable } from "firebase/functions";
 import { useRouter } from "next/router";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useGoogleMaps } from "providers/GoogleMapsProvider";
+import { getWinterMode } from "server";
+import type { WinterMode as WinterModeType } from "types";
 
 const containerStyle = {
   width: "100%",
@@ -38,7 +40,19 @@ const center = {
   lng: -104.90679,
 };
 
-export default function LocationSelection() {
+export async function getStaticProps() {
+  return {
+    props: {
+      winterMode: (await getWinterMode()) || null,
+    },
+  };
+}
+
+export default function LocationSelection({
+  winterMode,
+}: {
+  winterMode: WinterModeType;
+}) {
   const router = useRouter();
   const { isLoaded } = useGoogleMaps();
   const { mode } = router.query || {};
@@ -116,11 +130,26 @@ export default function LocationSelection() {
         if (label.toLowerCase().includes("clinic")) {
           items.push({ name: "Clinic", icon: faHospital, id });
         } else if (label.toLowerCase().includes("housecall")) {
-          items.push({
-            name: "Home",
-            icon: faHouseMedical,
-            id,
-          });
+          if (winterMode?.isActive && winterMode?.isActiveOnWebApp) {
+            if (
+              winterMode?.enableForNewPatientsOnly &&
+              session.establishCareExamRequired
+            )
+              console.log("WINTER MODE ACTIVE FOR NEW PATIENTS");
+            else if (!winterMode?.enableForNewPatientsOnly)
+              console.log("WINTER MODE ACTIVE FOR ALL PATIENTS");
+            else
+              items.push({
+                name: "Home",
+                icon: faHouseMedical,
+                id,
+              });
+          } else
+            items.push({
+              name: "Home",
+              icon: faHouseMedical,
+              id,
+            });
         } else if (
           label.toLowerCase().includes("virtual")
           // && !session?.vcprRequired
@@ -128,9 +157,13 @@ export default function LocationSelection() {
           items.push({ name: "Virtually", icon: faLaptopMedical, id });
         }
       });
-      setOptions(items.sort((a, b) => a.name.localeCompare(b.name)));
+      setOptions(
+        items.sort((a, b) => {
+          return a.name.localeCompare(b.name);
+        })
+      );
     }
-  }, [reasonGroups, session]);
+  }, [reasonGroups, session, winterMode]);
 
   useEffect(() => {
     if (zipcode && !isValidZipcode(zipcode)) setHasAddressError(true);

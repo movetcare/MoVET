@@ -9,6 +9,7 @@ import { sendNotification } from "../notifications/sendNotification";
 export const updateTelehealthChatStatusToOffline: Promise<void> = functions
   .runWith(defaultRuntimeOptions)
   .pubsub.schedule("0 16 * * *")
+  .timeZone("America/Denver")
   .onRun(() =>
     admin
       .firestore()

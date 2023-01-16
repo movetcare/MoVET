@@ -6,44 +6,37 @@ import {
   stripe,
   admin,
 } from "./../../config/config";
-import {Response} from "express";
-import {createAuthClient} from "../../integrations/provet/entities/client/createAuthClient";
-import {saveClient} from "../../integrations/provet/entities/client/saveClient";
-import {fetchEntity} from "../../integrations/provet/entities/fetchEntity";
-import {savePatient} from "../../integrations/provet/entities/patient/savePatient";
-import {verifyExistingClient} from "../../utils/auth/verifyExistingClient";
-import {getProVetIdFromUrl} from "../../utils/getProVetIdFromUrl";
-
-let didImportTestUser = false;
-let proVetClientData: any = null;
+import { Response } from "express";
+import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
+import { saveClient } from "../../integrations/provet/entities/client/saveClient";
+import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
+import { savePatient } from "../../integrations/provet/entities/patient/savePatient";
+import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
+import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 
 export const initTestUser: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {
-    if (request.headers.host === "localhost:5001") {
-      await deleteDefaultUsers();
-      proVetClientData = await fetchEntity("client", 5125);
-      return (await importDefaultUsers()) &&
-        (await importTestUser("alex.rodriguez+test@movetcare.com")) &&
-        (await importPatientData()) &&
-        (await importCustomerData(
-          await stripe.customers
-            .retrieve("cus_LYg1C7Et5ySQKC")
-            .finally(() => true)
+    if (request.headers.host === "localhost:5001")
+      return (await deleteDefaultUsers()) &&
+        (await importDefaultUsers()) &&
+        (await importTestUser(
+          "alex.rodriguez+test@movetcare.com",
+          5125,
+          "cus_LYg1C7Et5ySQKC",
+          "pm_1KrYgADVQU5TYLF15o8YdFox"
         )) &&
-        (await importCustomerPaymentMethod({
-          ...(await stripe.paymentMethods
-            .retrieve("pm_1KrYgADVQU5TYLF15o8YdFox")
-            .finally(() => true)),
-          active: true,
-          updatedOn: new Date(),
-        }).finally(() => true)) &&
+        (await importTestUser(
+          "alex.rodriguez+cypress_test_vcpr_not_required@movetcare.com",
+          5592,
+          "cus_NACRZs2K4LcbBA",
+          "pm_1MPsBCDVQU5TYLF1nDJduEdp"
+        )) &&
         (await importTelehealthChat()) &&
         (await importCheckIn())
         ? response.status(200).send()
         : response.status(500).send();
-    }
-    return response.status(400).send();
+    else return response.status(400).send();
   });
 
 const deleteDefaultUsers = async () =>
@@ -152,14 +145,21 @@ const importDefaultUsers = async (): Promise<boolean> =>
     })
     .catch((error: any) => throwError(error));
 
-const importTestUser = async (email: string): Promise<boolean> => {
+const importTestUser = async (
+  email: string,
+  id: number,
+  customer: string,
+  paymentMethod: string
+): Promise<boolean> => {
+  const proVetClientData = await fetchEntity("client", id);
+  let didImportTestUser = false;
   const testUserAlreadyExists = await verifyExistingClient(email);
   if (testUserAlreadyExists === true) {
     if (DEBUG)
       console.log(
         `Test User Already Exists, Updating Firestore Document ID: ${proVetClientData.id}`
       );
-    didImportTestUser = await saveClient(5125, proVetClientData, null);
+    didImportTestUser = await saveClient(id, proVetClientData, null);
   } else {
     if (DEBUG)
       console.log(
@@ -171,11 +171,31 @@ const importTestUser = async (email: string): Promise<boolean> => {
       password: "testing",
     });
   }
+  await importPatientData(proVetClientData);
+  await importCustomerData(
+    id,
+    await stripe.customers.retrieve(customer).finally(() => true)
+  );
+  await importCustomerPaymentMethod(id, {
+    ...(await stripe.paymentMethods
+      .retrieve(paymentMethod)
+      .finally(() => true)),
+    active: true,
+    updatedOn: new Date(),
+  }).finally(() => true);
   if (didImportTestUser) return true;
-  else return throwError("Failed to create test user");
+  else
+    return throwError(
+      `Failed to configure test user ${JSON.stringify({
+        email,
+        id,
+        customer,
+        paymentMethod,
+      })}`
+    );
 };
 
-const importPatientData = async () => {
+const importPatientData = async (proVetClientData: any) => {
   const patientIds: any = [];
   proVetClientData.patients.map((patientUrl: string) =>
     patientIds.push(getProVetIdFromUrl(patientUrl))
@@ -198,11 +218,11 @@ const importPatientData = async () => {
     .catch((error: any) => throwError(error));
 };
 
-const importCustomerData = async (stripeCustomerData: any) =>
+const importCustomerData = async (client: number, stripeCustomerData: any) =>
   await admin
     .firestore()
     .collection("clients")
-    .doc(`${5125}`)
+    .doc(`${client}`)
     .set(
       {
         customer: stripeCustomerData.id,
@@ -212,11 +232,14 @@ const importCustomerData = async (stripeCustomerData: any) =>
     )
     .catch((error: any) => throwError(error));
 
-const importCustomerPaymentMethod = async (paymentMethod: any) =>
+const importCustomerPaymentMethod = async (
+  client: number,
+  paymentMethod: any
+) =>
   await admin
     .firestore()
     .collection("clients")
-    .doc("5125")
+    .doc(`${client}`)
     .collection("payment_methods")
     .doc(`${paymentMethod?.id}`)
     .set({ ...paymentMethod, active: true }, { merge: true })

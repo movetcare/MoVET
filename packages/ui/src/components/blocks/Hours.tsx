@@ -1,8 +1,9 @@
-import { faParking } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Image from 'next/image';
+import { faParking } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { WinterMode as WinterModeType } from "types";
+import Image from "next/image";
 
-export const Hours = () => (
+export const Hours = ({ winterMode }: { winterMode: WinterModeType }) => (
   <>
     <section className="hidden sm:block sm:relative w-full bg-movet-brown text-white pb-6">
       <div className="h-20 -top-20 sm:h-28 sm:-top-28 overflow-hidden absolute w-full">
@@ -97,27 +98,35 @@ export const Hours = () => (
           </div>
           <div className="w-full max-w-lg items-center">
             <h3 className="text-xl text-center">Housecalls</h3>
-            <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
-              <div className="w-full">
-                <div className="flex w-full">
-                  <span className="whitespace-nowrap">MONDAY</span>
-                  <div className="w-full border-b mb-2 mx-4"></div>
+            {winterMode &&
+            winterMode?.isActive &&
+            winterMode?.isActiveOnWebsite ? (
+              <p className="text-lg text-center italic mb-2">
+                * {winterMode?.message}
+              </p>
+            ) : (
+              <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
+                <div className="w-full">
+                  <div className="flex w-full">
+                    <span className="whitespace-nowrap">MONDAY</span>
+                    <div className="w-full border-b mb-2 mx-4"></div>
+                  </div>
+                  <div className="flex w-full">
+                    <span className="whitespace-nowrap">WEDNESDAY</span>
+                    <div className="w-full border-b mb-2 mx-4"></div>
+                  </div>
+                  <div className="flex w-full">
+                    <span className="whitespace-nowrap">FRIDAY</span>
+                    <div className="w-full border-b mb-2 mx-4"></div>
+                  </div>
                 </div>
-                <div className="flex w-full">
-                  <span className="whitespace-nowrap">WEDNESDAY</span>
-                  <div className="w-full border-b mb-2 mx-4"></div>
-                </div>
-                <div className="flex w-full">
-                  <span className="whitespace-nowrap">FRIDAY</span>
-                  <div className="w-full border-b mb-2 mx-4"></div>
+                <div className="w-max">
+                  <div className="whitespace-nowrap">MORNINGS</div>
+                  <div className="whitespace-nowrap">AFTERNOONS</div>
+                  <div className="whitespace-nowrap">MORNINGS</div>
                 </div>
               </div>
-              <div className="w-max">
-                <div className="whitespace-nowrap">MORNINGS</div>
-                <div className="whitespace-nowrap">AFTERNOONS</div>
-                <div className="whitespace-nowrap">MORNINGS</div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -226,29 +235,35 @@ export const Hours = () => (
               </div>
             </div>
           </div>
-          <div className="w-full max-w-lg items-center mt-8 mb-6">
+          <div className="w-full max-w-lg items-center mt-8 mb-12">
             <h3 className="text-xl text-center">Housecalls</h3>
-            <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap w-full text-sm sm:text-base">
-              <div className="w-full">
-                <div className="flex w-full">
-                  <span className="whitespace-nowrap">MONDAY</span>
-                  <div className="w-full border-b mb-2 mx-4"></div>
+            {winterMode &&
+            winterMode?.isActive &&
+            winterMode?.isActiveOnWebsite ? (
+              <p className="text-center italic">* {winterMode?.message}</p>
+            ) : (
+              <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
+                <div className="w-full">
+                  <div className="flex w-full">
+                    <span className="whitespace-nowrap">MONDAY</span>
+                    <div className="w-full border-b mb-2 mx-4"></div>
+                  </div>
+                  <div className="flex w-full">
+                    <span className="whitespace-nowrap">WEDNESDAY</span>
+                    <div className="w-full border-b mb-2 mx-4"></div>
+                  </div>
+                  <div className="flex w-full">
+                    <span className="whitespace-nowrap">FRIDAY</span>
+                    <div className="w-full border-b mb-2 mx-4"></div>
+                  </div>
                 </div>
-                <div className="flex w-full">
-                  <span className="whitespace-nowrap">WEDNESDAY</span>
-                  <div className="w-full border-b mb-2 mx-4"></div>
-                </div>
-                <div className="flex w-full">
-                  <span className="whitespace-nowrap">FRIDAY</span>
-                  <div className="w-full border-b mb-2 mx-4"></div>
+                <div className="w-max">
+                  <div className="whitespace-nowrap">MORNINGS</div>
+                  <div className="whitespace-nowrap">AFTERNOONS</div>
+                  <div className="whitespace-nowrap">MORNINGS</div>
                 </div>
               </div>
-              <div className="w-max">
-                <div className="whitespace-nowrap">MORNINGS</div>
-                <div className="whitespace-nowrap">AFTERNOONS</div>
-                <div className="whitespace-nowrap">MORNINGS</div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

@@ -41,8 +41,6 @@ export const AnnouncementBannerControls = () => {
     loading,
     error,
   }: any = useContext(AnnouncementBannerContext);
-  const [showAnnouncementSettingsMenu, setShowAnnouncementSettingsMenu] =
-    useState<boolean>(true);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const {
@@ -294,7 +292,7 @@ export const AnnouncementBannerControls = () => {
                 </div> */}
                 <menu>
                   <Transition
-                    show={showAnnouncementSettingsMenu}
+                    show={true}
                     enter="transition ease-in duration-250"
                     leave="transition ease-out duration-250"
                     leaveTo="opacity-10"
