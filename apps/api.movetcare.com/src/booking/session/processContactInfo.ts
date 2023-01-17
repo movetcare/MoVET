@@ -1,4 +1,4 @@
-import { admin, throwError, DEBUG } from "../../config/config";
+import { admin, throwError } from "../../config/config";
 import { updateProVetClient } from "../../integrations/provet/entities/client/updateProVetClient";
 import { sendNotification } from "../../notifications/sendNotification";
 import type {
@@ -9,7 +9,7 @@ import type {
 } from "../../types/booking";
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { handleFailedBooking } from "./handleFailedBooking";
-
+const DEBUG = true;
 export const processContactInfo = async (
   id: string,
   {
@@ -17,18 +17,16 @@ export const processContactInfo = async (
     lastName,
     phone,
     uid,
-    requiresInfo,
   }: {
     firstName: string;
     lastName: string;
     phone: string;
     uid: string;
-    requiresInfo: boolean;
   }
 ): Promise<Booking | BookingError> => {
-  const data = { firstName, lastName, phone, uid, requiresInfo, id };
+  const data = { firstName, lastName, phone, uid, id };
   if (DEBUG) console.log("CONTACT INFO DATA", data);
-  if (firstName && lastName && phone && uid && requiresInfo) {
+  if (firstName && lastName && phone && uid) {
     await admin
       .firestore()
       .collection("bookings")
