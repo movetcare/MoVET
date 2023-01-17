@@ -13,6 +13,7 @@ import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import { BookingFooter } from "components/BookingFooter";
 import TextInput from "components/inputs/TextInput";
+import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 
 const symptoms = [
   { name: "Behavioral Concerns", value: "behavioral-concerns" },
@@ -120,9 +121,17 @@ export default function IllnessSelection() {
                 JSON.stringify(result)
               );
               reset();
+              const queryString = getUrlQueryStringFromObject(router.query);
               if (result?.nextPatient)
-                router.push("/schedule-an-appointment/illness-selection");
-              else router.push("/schedule-an-appointment/location-selection");
+                router.push(
+                  "/schedule-an-appointment/illness-selection" +
+                    (queryString ? queryString : "")
+                );
+              else
+                router.push(
+                  "/schedule-an-appointment/location-selection" +
+                    (queryString ? queryString : "")
+                );
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
@@ -142,7 +151,7 @@ export default function IllnessSelection() {
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
             {isLoading ? (
-              <Loader message={loadingMessage} />
+              <Loader message={loadingMessage} isAppMode={isAppMode} />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (

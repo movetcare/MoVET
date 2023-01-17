@@ -14,6 +14,7 @@ import { BookingHeader } from "components/BookingHeader";
 import { BookingFooter } from "components/BookingFooter";
 import Image from "next/image";
 import { Staff } from "types/Staff";
+import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 
 export default function StaffSelection() {
   const router = useRouter();
@@ -67,7 +68,11 @@ export default function StaffSelection() {
                 "bookingSession",
                 JSON.stringify(result)
               );
-              router.push("/schedule-an-appointment/datetime-selection");
+              const queryString = getUrlQueryStringFromObject(router.query);
+              router.push(
+                "/schedule-an-appointment/datetime-selection" +
+                  (queryString ? queryString : "")
+              );
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
@@ -87,7 +92,10 @@ export default function StaffSelection() {
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
             {isLoading ? (
-              <Loader message={loadingMessage || "Loading, please wait..."} />
+              <Loader
+                message={loadingMessage || "Loading, please wait..."}
+                isAppMode={isAppMode}
+              />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (

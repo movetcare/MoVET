@@ -50,7 +50,10 @@ export default function ContactInfo() {
             <>
               {isLoading ? (
                 <>
-                  <Loader message="Loading Payment Information..." />
+                  <Loader
+                    message="Loading Payment Information..."
+                    isAppMode={isAppMode}
+                  />
                   <Image
                     src="/images/icons/powered-by-stripe.svg"
                     alt="Powered by Stripe"

@@ -203,12 +203,12 @@ const send24HourAppointmentNotification = async (
             "+",
             "%2B"
           )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-        : `<p><b>Our records indicate that you do not have a form of payment on file -> <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+        : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll(
             "+",
             "%2B"
-          )}`}" target="_blank">Add a Form of Payment</a></b></p>`
+          )}`}" target="_blank">add a form of payment</a></b></p>`
     }<p><b> Handling Tips for your Pet${
       patients.length > 1 ? "s" : ""
     }:</b> Pets can get nervous and anxious about visiting the 
@@ -293,7 +293,7 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
         ? `\nOur records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment. Please use the link below to add a new form of payment to your account:\n\n${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll("+", "%2B")}`}\n`
-        : `\nOur records indicate that you do not have a form of payment on file -> ADD A PAYMENT SOURCE: ${`https://app.movetcare.com/update-payment-method?email=${(
+        : `\nOur records indicate that you do not have a form of payment on file. Please add a payment source: ${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll("+", "%2B")}`}\n`
     }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
@@ -404,12 +404,12 @@ const send30MinAppointmentNotification = async (
             "+",
             "%2B"
           )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-        : `<p><b>Our records indicate that you do not have a form of payment on file -> <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+        : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll(
             "+",
             "%2B"
-          )}`}" target="_blank">Add a Form of Payment</a></b></p>`
+          )}`}" target="_blank">add a form of payment</a></b></p>`
     }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
     if (DEBUG) console.log("emailText -> ", emailText);
     const emailConfig: EmailConfiguration = {
@@ -485,7 +485,7 @@ and medical records to info@movetcare.com prior to your appointment.\n`
         ? `Payment on File: Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment:\n\n Add a Payment Method\nhttps://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll("+", "%2B")}\n\n`
-        : `Our records indicate that you do not have a form of payment on file -> Add a Payment Method\nhttps://app.movetcare.com/update-payment-method?email=${(
+        : `Our records indicate that you do not have a form of payment on file. Please add a payment method.\nhttps://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll("+", "%2B")}\n\n`
     }\nPlease email info@movetcare.com, text (720) 507-7387 us, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;

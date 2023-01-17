@@ -13,6 +13,7 @@ import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import { BookingFooter } from "components/BookingFooter";
 import { SearchInput } from "components/inputs/SearchInput";
+import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 
 export default function ReasonSelection() {
   const router = useRouter();
@@ -103,9 +104,17 @@ export default function ReasonSelection() {
                 "bookingSession",
                 JSON.stringify(result)
               );
+              const queryString = getUrlQueryStringFromObject(router.query);
               if (result.staff)
-                router.push("/schedule-an-appointment/staff-selection");
-              else router.push("/schedule-an-appointment/datetime-selection");
+                router.push(
+                  "/schedule-an-appointment/staff-selection" +
+                    (queryString ? queryString : "")
+                );
+              else
+                router.push(
+                  "/schedule-an-appointment/datetime-selection" +
+                    (queryString ? queryString : "")
+                );
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
@@ -125,7 +134,10 @@ export default function ReasonSelection() {
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
             {isLoading ? (
-              <Loader message={loadingMessage || "Loading, please wait..."} />
+              <Loader
+                message={loadingMessage || "Loading, please wait..."}
+                isAppMode={isAppMode}
+              />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (

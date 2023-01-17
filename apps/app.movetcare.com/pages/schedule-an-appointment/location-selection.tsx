@@ -29,6 +29,7 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useGoogleMaps } from "providers/GoogleMapsProvider";
 import { getWinterMode } from "server";
 import type { WinterMode as WinterModeType } from "types";
+import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 
 const containerStyle = {
   width: "100%",
@@ -55,8 +56,9 @@ export default function LocationSelection({
 }) {
   const router = useRouter();
   const { isLoaded } = useGoogleMaps();
-  const { mode } = router.query || {};
+  const { mode, housecallRequest } = router.query || {};
   const isAppMode = mode === "app";
+  const isHousecallRequest = Boolean(Number(housecallRequest));
   const [loadingMessage, setLoadingMessage] =
     useState<string>("Loading Session...");
   const [session, setSession] = useState<any>();
@@ -85,7 +87,7 @@ export default function LocationSelection({
   } = useForm({
     mode: "all",
     defaultValues: {
-      location: "Clinic",
+      location: isHousecallRequest ? "Home" : "Clinic",
       address: null,
       info: "",
     },
@@ -176,8 +178,9 @@ export default function LocationSelection({
         JSON.parse(window.localStorage.getItem("bookingSession") as string)
       );
       if (isLoaded) setIsLoading(false);
+      else if (!isLoaded && !isLoading) setIsLoading(true);
     } else router.push("/schedule-an-appointment");
-  }, [router, isLoaded]);
+  }, [router, isLoaded, isLoading]);
   const handleError = (error: any) => {
     console.error(error);
     setError(error);
@@ -203,6 +206,7 @@ export default function LocationSelection({
     );
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
+      console.log("data", data);
       if (token) {
         try {
           const { data: result }: any = await httpsCallable(
@@ -241,9 +245,17 @@ export default function LocationSelection({
                 "bookingSession",
                 JSON.stringify(result)
               );
+              const queryString = getUrlQueryStringFromObject(router.query);
               if (result.establishCareExamRequired)
-                router.push("/schedule-an-appointment/datetime-selection");
-              else router.push("/schedule-an-appointment/reason-selection");
+                router.push(
+                  "/schedule-an-appointment/datetime-selection" +
+                    (queryString ? queryString : "")
+                );
+              else
+                router.push(
+                  "/schedule-an-appointment/reason-selection" +
+                    (queryString ? queryString : "")
+                );
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
@@ -265,6 +277,7 @@ export default function LocationSelection({
             {isLoading && !isLoaded ? (
               <Loader
                 message={isLoaded ? loadingMessage : "Loading Please Wait..."}
+                isAppMode={isAppMode}
               />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
@@ -276,15 +289,17 @@ export default function LocationSelection({
                   description={"Where would you like to have your appointment?"}
                 />
                 {options && (
-                  <form className="mt-8">
-                    <ToggleInput
-                      options={options}
-                      control={control}
-                      errors={errors}
-                      name="location"
-                    />
+                  <form className={isHousecallRequest ? "" : "mt-8"}>
+                    {!isHousecallRequest && (
+                      <ToggleInput
+                        options={options}
+                        control={control}
+                        errors={errors}
+                        name="location"
+                      />
+                    )}
                     <Transition
-                      show={locationSelection === "Home"}
+                      show={locationSelection === "Home" || isHousecallRequest}
                       enter="transition ease-in duration-500"
                       leave="transition ease-out"
                       leaveTo="opacity-0"
@@ -340,7 +355,9 @@ export default function LocationSelection({
                       </>
                     </Transition>
                     <Transition
-                      show={locationSelection === "Clinic"}
+                      show={
+                        locationSelection === "Clinic" && !isHousecallRequest
+                      }
                       enter="transition ease-in duration-500"
                       leave="transition ease-out"
                       leaveTo="opacity-0"
@@ -379,7 +396,9 @@ export default function LocationSelection({
                       </div>
                     </Transition>
                     <Transition
-                      show={locationSelection === "Virtually"}
+                      show={
+                        locationSelection === "Virtually" && !isHousecallRequest
+                      }
                       enter="transition ease-in duration-500"
                       leave="transition ease-out"
                       leaveTo="opacity-0"
@@ -478,6 +497,9 @@ export default function LocationSelection({
                         type="submit"
                         icon={faArrowRight}
                         disabled={
+                          (locationSelection === "Clinic" &&
+                            isHousecallRequest &&
+                            (addressSelection === null || hasAddressError)) ||
                           (locationSelection !== "Clinic" && !isDirty) ||
                           (locationSelection === "Home" &&
                             addressSelection === null) ||

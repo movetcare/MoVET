@@ -11,7 +11,7 @@ const Layout = ({ children }: any) => {
     <main
       className={`flex items-center justify-center${
         isAppMode
-          ? " w-full bg-white py-4"
+          ? " w-full bg-white p-4"
           : " bg-movet-white min-h-screen max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden"
       }`}
     >

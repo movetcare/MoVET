@@ -53,7 +53,7 @@ export const BookingFooter = () => {
     setSubmissionSuccess(false);
     setIsLoading(false);
   };
-  return (
+  return !isAppMode ? (
     <>
       <div
         className="flex flex-row justify-center items-center cursor-pointer text-xs hover:text-movet-red ease-in-out duration-500"
@@ -88,5 +88,7 @@ export const BookingFooter = () => {
         noButtonText="CANCEL"
       />
     </>
+  ) : (
+    <></>
   );
 };

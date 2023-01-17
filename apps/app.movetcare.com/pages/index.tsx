@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
+import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 
 export default function Home() {
   const router = useRouter();
@@ -71,13 +72,27 @@ export default function Home() {
                 "bookingSession",
                 JSON.stringify(result)
               );
+              const queryString = getUrlQueryStringFromObject(router.query);
               if (result?.step)
-                router.push(`/schedule-an-appointment/${result.step}`);
+                router.push(
+                  `/schedule-an-appointment/${result.step}` +
+                    (queryString ? queryString : "")
+                );
               else if (result?.client?.requiresInfo)
-                router.push("/schedule-an-appointment/contact-info");
+                router.push(
+                  "/schedule-an-appointment/contact-info" +
+                    (queryString ? queryString : "")
+                );
               else if (result?.patients?.length === 0)
-                router.push("/schedule-an-appointment/add-a-pet");
-              else router.push("/schedule-an-appointment/pet-selection");
+                router.push(
+                  "/schedule-an-appointment/add-a-pet" +
+                    (queryString ? queryString : "")
+                );
+              else
+                router.push(
+                  "/schedule-an-appointment/pet-selection" +
+                    (queryString ? queryString : "")
+                );
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
@@ -117,7 +132,10 @@ export default function Home() {
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
             {isLoading ? (
-              <Loader message={loadingMessage || "Loading, please wait..."} />
+              <Loader
+                message={loadingMessage || "Loading, please wait..."}
+                isAppMode={isAppMode}
+              />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (

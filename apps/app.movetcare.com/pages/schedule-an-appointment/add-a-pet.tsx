@@ -29,6 +29,7 @@ import { RadioInput } from "components/inputs/RadioInput";
 import { SearchInput } from "components/inputs/SearchInput";
 import SwitchInput from "components/inputs/SwitchInput";
 import { ToggleInput } from "components/inputs/ToggleInput";
+import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 
 addMethod(string, "isBeforeToday", function (errorMessage: string) {
   return (this as any).test(
@@ -257,12 +258,22 @@ export default function ContactInfo() {
                 "bookingSession",
                 JSON.stringify(result)
               );
+              const queryString = getUrlQueryStringFromObject(router.query);
               if (result?.client?.requiresInfo)
-                router.push("/schedule-an-appointment/contact-info");
+                router.push(
+                  "/schedule-an-appointment/contact-info" +
+                    (queryString ? queryString : "")
+                );
               else if (result?.patients?.length > 0)
-                router.push("/schedule-an-appointment/pet-selection");
+                router.push(
+                  "/schedule-an-appointment/pet-selection" +
+                    (queryString ? queryString : "")
+                );
               else if (result?.patients?.length === 0)
-                router.push("/schedule-an-appointment/add-a-pet");
+                router.push(
+                  "/schedule-an-appointment/add-a-pet" +
+                    (queryString ? queryString : "")
+                );
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
@@ -282,7 +293,10 @@ export default function ContactInfo() {
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
             {isLoading ? (
-              <Loader message={loadingMessage || "Loading, please wait..."} />
+              <Loader
+                message={loadingMessage || "Loading, please wait..."}
+                isAppMode={isAppMode}
+              />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (

@@ -18,11 +18,13 @@ import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { capitalizeFirstLetter } from "utilities";
+import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 
 export default function PetSelection() {
   const router = useRouter();
-  const { mode } = router.query || {};
+  const { mode, housecallRequest } = router.query || {};
   const isAppMode = mode === "app";
+  const isHousecallRequest = Boolean(Number(housecallRequest));
   const cancelButtonRef = useRef(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
@@ -113,13 +115,22 @@ export default function PetSelection() {
       setSession(
         JSON.parse(window.localStorage.getItem("bookingSession") as string)
       );
-      setPets(
-        JSON.parse(window.localStorage.getItem("bookingSession") as string)
-          ?.patients
-      );
+      if (isHousecallRequest) {
+        const pets: any = [];
+        JSON.parse(
+          window.localStorage.getItem("bookingSession") as string
+        )?.patients.forEach((patient: any) => {
+          if (patient.vcprRequired) pets.push(patient);
+        });
+        setPets(pets);
+      } else
+        setPets(
+          JSON.parse(window.localStorage.getItem("bookingSession") as string)
+            ?.patients
+        );
       setIsLoading(false);
     } else router.push("/schedule-an-appointment");
-  }, [router]);
+  }, [router, isHousecallRequest]);
   const handleError = (error: any) => {
     console.error(error);
     setError(error);
@@ -152,10 +163,18 @@ export default function PetSelection() {
                 "bookingSession",
                 JSON.stringify(result)
               );
+              const queryString = getUrlQueryStringFromObject(router.query);
               if (result?.selectedPatients?.length > 0)
                 if (result?.establishCareExamRequired)
-                  router.push("/schedule-an-appointment/wellness-check");
-                else router.push("/schedule-an-appointment/location-selection");
+                  router.push(
+                    "/schedule-an-appointment/wellness-check" +
+                      (queryString ? queryString : "")
+                  );
+                else
+                  router.push(
+                    "/schedule-an-appointment/location-selection" +
+                      (queryString ? queryString : "")
+                  );
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
@@ -175,7 +194,10 @@ export default function PetSelection() {
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
             {isLoading ? (
-              <Loader message={loadingMessage || "Loading, please wait..."} />
+              <Loader
+                message={loadingMessage || "Loading, please wait..."}
+                isAppMode={isAppMode}
+              />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (

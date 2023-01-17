@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Transition } from "@headlessui/react";
 import { capitalizeFirstLetter } from "utilities";
 import { BookingFooter } from "components/BookingFooter";
+import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 
 export default function WellnessCheck() {
   const router = useRouter();
@@ -85,8 +86,12 @@ export default function WellnessCheck() {
     setLoadingMessage("Saving Your Selection...");
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
+      const queryString = getUrlQueryStringFromObject(router.query);
       if (data?.illPets === null)
-        router.push("/schedule-an-appointment/location-selection");
+        router.push(
+          "/schedule-an-appointment/location-selection" +
+            (queryString ? queryString : "")
+        );
       else if (token) {
         try {
           const { data: result }: any = await httpsCallable(
@@ -107,8 +112,12 @@ export default function WellnessCheck() {
                 "bookingSession",
                 JSON.stringify(result)
               );
+
               if (result?.nextPatient)
-                router.push("/schedule-an-appointment/illness-selection");
+                router.push(
+                  "/schedule-an-appointment/illness-selection" +
+                    (queryString ? queryString : "")
+                );
               else handleError(result);
             } else handleError(result);
           } else handleError(result);
@@ -129,7 +138,10 @@ export default function WellnessCheck() {
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
             {isLoading ? (
-              <Loader message={loadingMessage || `Loading Wellness Check...`} />
+              <Loader
+                message={loadingMessage || `Loading Wellness Check...`}
+                isAppMode={isAppMode}
+              />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (

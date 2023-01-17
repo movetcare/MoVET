@@ -66,28 +66,36 @@ export default function BookingSuccess() {
         <div className={isAppMode ? "px-4 mb-8" : "p-4"}>
           <section className="relative mx-auto">
             {isLoading || submissionSuccess === null ? (
-              <Loader message="Loading Confirmation..." />
+              <Loader message="Loading Confirmation..." isAppMode={isAppMode} />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (
-              <>
-                <FontAwesomeIcon
-                  icon={faCheckCircle}
-                  size="4x"
-                  className="text-movet-green mx-auto w-full mb-4"
-                />
-                <BookingHeader
-                  isAppMode={isAppMode}
-                  title="Booking Request Successful"
-                  description={
-                    "We will get contact to you as soon as we can to confirm the exact day and time of your appointment!"
-                  }
-                />
-                <p className="text-xs italic text-center mt-4 sm:px-8">
-                  Please allow 1 business day for a response. All appointment
-                  requests are responded to in the order they are received.
-                </p>
-              </>
+              <div
+                className={
+                  isAppMode
+                    ? "flex flex-col items-center justify-center min-h-screen"
+                    : ""
+                }
+              >
+                <div className={isAppMode ? "flex flex-col" : ""}>
+                  <FontAwesomeIcon
+                    icon={faCheckCircle}
+                    size="4x"
+                    className="text-movet-green mx-auto w-full mb-4"
+                  />
+                  <BookingHeader
+                    isAppMode={isAppMode}
+                    title="Booking Request Successful"
+                    description={
+                      "We will get contact to you as soon as we can to confirm the exact day and time of your appointment!"
+                    }
+                  />
+                  <p className="text-xs italic text-center mt-4 sm:px-8">
+                    Please allow 1 business day for a response. All appointment
+                    requests are responded to in the order they are received.
+                  </p>
+                </div>
+              </div>
             )}
           </section>
           {!isAppMode && submissionSuccess && (

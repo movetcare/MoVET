@@ -4,6 +4,7 @@ import { BlueDog } from "../../animations/blue-dog/BlueDog";
 import { Corgi } from "../../animations/corgi/Corgi";
 
 interface LottieProps {
+  isAppMode?: boolean;
   message?: string;
   animationData?: any;
   width?: number;
@@ -42,6 +43,7 @@ const randomRandomAnimation = () => {
 };
 
 export const Loader = ({
+  isAppMode = false,
   message = "Loading, please wait...",
   animationData = randomRandomAnimation(),
   width = 300,
@@ -65,19 +67,27 @@ export const Loader = ({
   }, []);
 
   return (
-    <>
-      <div className="flex flex-grow justify-center items-center overflow-hidden -mt-4">
-        {index === 1 ? (
-          <BlueDog />
-        ) : index === 2 ? (
-          <Corgi />
-        ) : (
-          <div style={{ width, height }} ref={element}></div>
-        )}
+    <div
+      className={
+        isAppMode
+          ? "flex flex-col items-center justify-center min-h-screen"
+          : ""
+      }
+    >
+      <div className={isAppMode ? "flex flex-col" : ""}>
+        <div className="flex flex-grow justify-center items-center overflow-hidden -mt-4">
+          {index === 1 ? (
+            <BlueDog />
+          ) : index === 2 ? (
+            <Corgi />
+          ) : (
+            <div style={{ width, height }} ref={element}></div>
+          )}
+        </div>
+        <h2 className="text-2xl font-extrabold tracking-tight text-center -mt-10 mb-8">
+          {message}
+        </h2>
       </div>
-      <h2 className="text-2xl font-extrabold tracking-tight text-center -mt-10 mb-8">
-        {message}
-      </h2>
-    </>
+    </div>
   );
 };

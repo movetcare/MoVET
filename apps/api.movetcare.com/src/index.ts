@@ -33,6 +33,7 @@ export { updateAppointment } from "./endpoints/mobile/appointment/updateAppointm
 export { updateOnboardingStatus } from "./endpoints/mobile/client/updateOnboardingStatus";
 export { refreshCustomerToken } from "./endpoints/mobile/client/refreshCustomerToken";
 export { getBookingToken } from "./endpoints/mobile/booking/getBookingToken";
+export { getWinterMode } from "./endpoints/mobile/appointment/getWinterMode";
 
 export { reportABug } from "./endpoints/web/reportABug";
 export { updatePaymentMethod } from "./endpoints/web/updatePaymentMethod";

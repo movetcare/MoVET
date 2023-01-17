@@ -13,6 +13,7 @@ import { BookingFooter } from "components/BookingFooter";
 import { TimeInput } from "components/inputs/TimeInput";
 import Calendar from "react-calendar";
 import { formatDateObjectPlusTimeStringIntoString } from "utilities";
+import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 
 export default function DateTime() {
   const today = new Date();
@@ -67,10 +68,17 @@ export default function DateTime() {
                 "bookingSession",
                 JSON.stringify(result)
               );
+              const queryString = getUrlQueryStringFromObject(router.query);
               if (result?.checkoutSession)
-                router.push("/schedule-an-appointment/payment-confirmation");
+                router.push(
+                  "/schedule-an-appointment/payment-confirmation" +
+                    (queryString ? queryString : "")
+                );
               else if (result.step === "success")
-                router.push("/schedule-an-appointment/success");
+                router.push(
+                  "/schedule-an-appointment/success" +
+                    (queryString ? queryString : "")
+                );
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
@@ -90,7 +98,10 @@ export default function DateTime() {
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
             {isLoading ? (
-              <Loader message={loadingMessage || "Loading, please wait..."} />
+              <Loader
+                message={loadingMessage || "Loading, please wait..."}
+                isAppMode={isAppMode}
+              />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (

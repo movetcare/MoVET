@@ -115,8 +115,8 @@ export const handleWinterModeUpdate = functions.firestore
                     : "WEBSITE: :red_circle:" +
                       "\n" +
                       didTriggerVercelBuildWebhookForWebApp
-                    ? "WEBSITE: :white_check_mark:"
-                    : "WEBSITE: :red_circle:",
+                    ? "WEB APP: :white_check_mark:"
+                    : "WEB APP: :red_circle:",
                 },
               ],
             },
