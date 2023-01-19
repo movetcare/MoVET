@@ -1,10 +1,10 @@
 import { formatDateToMMDDYY } from "./../utils/formatDateToMMDDYYY";
 import { sendNotification } from "../notifications/sendNotification";
-import { environment, functions, request, DEBUG } from "../config/config";
-
+import { environment, functions, request } from "../config/config";
+const DEBUG = true;
 export const handleWinterModeUpdate = functions.firestore
   .document("configuration/{id}")
-  .onWrite(async (change: any, context: any) => {
+  .onUpdate(async (change: any, context: any): Promise<void> => {
     const { id } = context.params || {};
     const data = change.after.data()?.winterHousecallMode;
     if (DEBUG)
@@ -124,5 +124,4 @@ export const handleWinterModeUpdate = functions.firestore
         },
       });
     }
-    return true;
   });
