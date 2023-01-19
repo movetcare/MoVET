@@ -98,12 +98,13 @@ export const sendAppointmentConfirmationEmail = async (
       : appointment?.locationType === "Virtually"
       ? "<p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
       : appointment?.user === 8
-      ? `<p><b>Appointment Location</b>: Home - ${
-          clientProvetRecord?.street_address || "STREET UNKNOWN"
-        } ${clientProvetRecord?.city || "CITY UNKNOWN"}, ${
-          clientProvetRecord?.state || "STATE UNKNOWN"
-        } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
-      : appointment?.user === 7
+      ? `<p><b>Appointment Location</b>: Home - ${appointment?.address}`
+      : // ${
+      //     clientProvetRecord?.street_address || "STREET UNKNOWN"
+      //   } ${clientProvetRecord?.city || "CITY UNKNOWN"}, ${
+      //     clientProvetRecord?.state || "STATE UNKNOWN"
+      //   } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
+      appointment?.user === 7
       ? // eslint-disable-next-line quotes
         '<p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
       : "<p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
@@ -148,12 +149,13 @@ ${
     : appointment?.locationType === "Virtually"
     ? "<p><b>Appointment Location</b>: Virtual</p>"
     : appointment?.user === 8
-    ? `<p><b>Appointment Location</b>: Home - ${
-        clientProvetRecord?.street_address || "STREET UNKNOWN"
-      } ${clientProvetRecord?.city || "CITY UNKNOWN"}, ${
-        clientProvetRecord?.state || "STATE UNKNOWN"
-      } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
-    : appointment?.user === 7
+    ? `<p><b>Appointment Location</b>: Home - ${appointment?.address}`
+    : // ${
+    //     clientProvetRecord?.street_address || "STREET UNKNOWN"
+    //   } ${clientProvetRecord?.city || "CITY UNKNOWN"}, ${
+    //     clientProvetRecord?.state || "STATE UNKNOWN"
+    //   } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
+    appointment?.user === 7
     ? // eslint-disable-next-line quotes
       '<p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
     : appointment?.user === 9

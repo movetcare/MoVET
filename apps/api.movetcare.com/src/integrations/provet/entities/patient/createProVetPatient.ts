@@ -1,14 +1,9 @@
-import {savePatient} from "./savePatient";
-import {
-  request,
-  throwError,
-  proVetApiUrl,
-  DEBUG,
-} from "../../../../config/config";
+import { savePatient } from "./savePatient";
+import { request, throwError, proVetApiUrl } from "../../../../config/config";
 import { toIsoString } from "../../../../utils/toIsoString";
 import { capitalizeFirstLetter } from "../../../../utils/capitalizeFirstLetter";
 import { updateCustomField } from "./updateCustomField";
-
+const DEBUG = true;
 export const createProVetPatient = async (data: {
   client: string;
   name: string;

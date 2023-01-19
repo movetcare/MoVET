@@ -66,13 +66,7 @@ export const BookingFooter = () => {
         showModal={showResetModal}
         setShowModal={setShowResetModal}
         cancelButtonRef={cancelButtonRef}
-        loader={
-          isLoading || submissionSuccess === null ? (
-            <Loader message="Restarting Session..." />
-          ) : (
-            <Error error={error} isAppMode={isAppMode} />
-          )
-        }
+        isLoading={isLoading}
         content={
           <p className="text-lg">
             Are you sure you want to restart your appointment booking?{" "}

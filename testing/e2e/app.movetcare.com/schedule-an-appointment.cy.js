@@ -277,7 +277,7 @@ describe(
       );
       cy.get("@submitButton").should("be.enabled").click();
       cy.visit("http://localhost:3001/schedule-an-appointment/success");
-      cy.get("@heading").contains("Booking Request Successful");
+      cy.get("@heading").contains("Appointment Request Successful");
     });
 
     it("Can schedule an appointment as an existing client - VCPR NOT REQUIRED", () => {
@@ -381,7 +381,7 @@ describe(
       cy.location("pathname", {
         timeout: defaultPathnameTimeOut + 3000,
       }).should("eq", "/schedule-an-appointment/success/");
-      cy.get("@heading").contains("Booking Request Successful");
+      cy.get("@heading").contains("Appointment Request Successful");
     });
   }
 );

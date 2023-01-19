@@ -85,7 +85,7 @@ export default function BookingSuccess() {
                   />
                   <BookingHeader
                     isAppMode={isAppMode}
-                    title="Booking Request Successful"
+                    title="Appointment Request Successful"
                     description={
                       "We will get contact to you as soon as we can to confirm the exact day and time of your appointment!"
                     }
