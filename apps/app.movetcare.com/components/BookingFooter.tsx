@@ -2,7 +2,7 @@ import { faRedo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {} from "@headlessui/react";
 import { useRef, useState } from "react";
-import { Loader, Modal } from "ui";
+import { Modal } from "ui";
 import { useRouter } from "next/router";
 import { ServerResponse } from "types";
 import { Error } from "components/Error";
@@ -14,9 +14,6 @@ export const BookingFooter = () => {
   const isAppMode = mode === "app";
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
-    null
-  );
   const [error, setError] = useState<any>(null);
   const restartBooking = () => {
     setIsLoading(true);
@@ -50,7 +47,6 @@ export const BookingFooter = () => {
   const handleError = (error: any) => {
     console.error(error);
     setError(error);
-    setSubmissionSuccess(false);
     setIsLoading(false);
   };
   return !isAppMode ? (
@@ -68,12 +64,16 @@ export const BookingFooter = () => {
         cancelButtonRef={cancelButtonRef}
         isLoading={isLoading}
         content={
-          <p className="text-lg">
-            Are you sure you want to restart your appointment booking?{" "}
-            <span className="text-lg italic font-bold">
-              This action cannot be undone!
-            </span>
-          </p>
+          error ? (
+            <Error error={error} />
+          ) : (
+            <p className="text-lg">
+              Are you sure you want to restart your appointment booking?{" "}
+              <span className="text-lg italic font-bold">
+                This action cannot be undone!
+              </span>
+            </p>
+          )
         }
         title="Restart Appointment Booking?"
         icon={faRedo}
