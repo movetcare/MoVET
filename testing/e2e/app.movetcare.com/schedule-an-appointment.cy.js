@@ -1,20 +1,18 @@
 const defaultPathnameTimeOut = Cypress.env().defaultPathnameTimeOut;
-const onlyTestOnePatient = false; //Cypress.env().onlyTestOnePatient;
-const skipWellnessCheck = false; //Cypress.env().skipWellnessCheck;
+const onlyTestOnePatient = Cypress.env().onlyTestOnePatient;
+const skipWellnessCheck = Cypress.env().skipWellnessCheck;
 describe(
   "schedule-an-appointment-flow",
   { defaultCommandTimeout: defaultPathnameTimeOut },
   () => {
-    it.only("Can schedule an appointment as existing client - VCPR REQUIRED", () => {
+    it("Can schedule an appointment as existing client - VCPR REQUIRED", () => {
       cy.request(
         "POST",
         "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
         { apiKey: Cypress.env().endpointApiKey, id: 5125 }
       );
       cy.visit("http://localhost:3001/schedule-an-appointment");
-      cy.get("input[name='email']").type(
-        "alex.rodriguez+CYPRESS_TEST_VCPR_REQUIRED@MOVETCARE.COM"
-      );
+      cy.get("input[name='email']").type(Cypress.env().vcprClientEmail);
       cy.get("h2").as("heading").contains("Schedule an Appointment");
       cy.get("button[type='submit']").as("submitButton").click();
       cy.get("@heading").contains("Processing, please wait...");
@@ -282,7 +280,7 @@ describe(
 
     it("Can schedule an appointment as an existing client - VCPR NOT REQUIRED", () => {
       cy.visit(
-        "http://localhost:3001/?email=alex.rodriguez+CYPRESS_TEST_VCPR_NOT_REQUIRED@MOVETCARE.COM"
+        `http://localhost:3001/?email=${Cypress.env().noVcprClientEmail}`
       );
       cy.get("h2").as("heading").contains("Schedule an Appointment");
       cy.get("@heading").contains("Processing, please wait...");

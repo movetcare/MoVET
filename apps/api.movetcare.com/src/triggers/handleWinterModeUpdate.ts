@@ -4,7 +4,7 @@ import { environment, functions, request } from "../config/config";
 const DEBUG = true;
 export const handleWinterModeUpdate = functions.firestore
   .document("configuration/bookings")
-  .onUpdate(async (change: any, context: any): Promise<void> => {
+  .onUpdate(async (change: any, context: any) => {
     const { id } = context.params || {};
     const data = change.after.data()?.winterHousecallMode;
     if (DEBUG)
@@ -12,7 +12,6 @@ export const handleWinterModeUpdate = functions.firestore
         id,
         data,
       });
-
     const {
       isActiveOnWebsite,
       isActiveOnMobileApp,
@@ -111,16 +110,17 @@ export const handleWinterModeUpdate = functions.firestore
               {
                 type: "plain_text",
                 text: didTriggerVercelBuildWebhookForMarketingWebsite
-                  ? "WEBSITE: :white_check_mark:"
-                  : "WEBSITE: :red_circle:" +
-                    "\n" +
+                  ? "Website: :white_check_mark:"
+                  : "Website: :red_circle:" +
+                    " | " +
                     didTriggerVercelBuildWebhookForWebApp
-                  ? "WEB APP: :white_check_mark:"
-                  : "WEB APP: :red_circle:",
+                  ? "Web App: :white_check_mark:"
+                  : "Web App: :red_circle:",
               },
             ],
           },
         ],
       },
     });
+    return true;
   });

@@ -1,4 +1,5 @@
 import { admin, throwError, DEBUG } from "../../config/config";
+import { updateProVetClient } from "../../integrations/provet/entities/client/updateProVetClient";
 import { sendNotification } from "../../notifications/sendNotification";
 import type { BookingError, Booking } from "../../types/booking";
 import { handleFailedBooking } from "./handleFailedBooking";
@@ -34,7 +35,6 @@ export const processLocation = async (data: {
         throwError(error);
         return await handleFailedBooking(error, "UPDATE LOCATION FAILED");
       });
-
     const session = await bookingRef
       .get()
       .then((doc: any) => doc.data())
@@ -53,6 +53,24 @@ export const processLocation = async (data: {
         return await handleFailedBooking(error, "GET DEFAULT REASONS FAILED");
       });
     if (session && defaultBookingReasons) {
+      let didUpdateProVetClient = false;
+      if (address?.full && location === "Home") {
+        const clientAddress: {
+          street?: string;
+          city?: string;
+          zip?: string;
+        } = {};
+        const providedAddress: Array<string> = address?.full
+          ?.split(",")
+          .slice(0, 3);
+        clientAddress.street = providedAddress[0].trim();
+        clientAddress.city = providedAddress[1].trim();
+        clientAddress.zip = providedAddress[2].split(" ")[2];
+        didUpdateProVetClient = await updateProVetClient({
+          ...clientAddress,
+          id: session.client.uid,
+        });
+      }
       sendNotification({
         type: "slack",
         payload: {
@@ -95,7 +113,11 @@ export const processLocation = async (data: {
                 {
                   type: "plain_text",
                   text: session?.address
-                    ? JSON.stringify(session?.address)
+                    ? `${session?.address?.full} (${
+                        didUpdateProVetClient
+                          ? "Address Updated in ProVet"
+                          : "Address NOT Updated in ProVet"
+                      })`
                     : "N/A",
                 },
               ],

@@ -12,7 +12,7 @@ export { rebuildStaticSites as rebuildStaticWebsite } from "./cron/rebuildStatic
 
 export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
 export { handleContactSubmission } from "./triggers/handleContactSubmission";
-export { handleFileUpload } from "./triggers/handleFileUpload";
+// export { handleFileUpload } from "./triggers/handleFileUpload";
 export { handleAnnouncementBannerUpdate } from "./triggers/handleAnnouncementBannerUpdate";
 export { handleWinterModeUpdate } from "./triggers/handleWinterModeUpdate";
 

@@ -111,7 +111,7 @@ export const createProVetAppointment = async (
       }
       return await saveAppointment(appointmentData, movetData);
     } else {
-      console.log("RETURNING", appointmentData);
+      if (DEBUG) console.log("RETURNING", appointmentData);
       return appointmentData;
     }
   } else return false;

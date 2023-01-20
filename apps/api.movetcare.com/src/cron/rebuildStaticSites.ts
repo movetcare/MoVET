@@ -64,12 +64,12 @@ export const rebuildStaticSites: Promise<void> = functions
               {
                 type: "plain_text",
                 text: didTriggerVercelBuildWebhookForMarketingWebsite
-                  ? "WEBSITE: :white_check_mark:"
-                  : "WEBSITE: :red_circle:" +
-                    "\n" +
+                  ? "Website: :white_check_mark:"
+                  : "Website: :red_circle:" +
+                    " |  " +
                     didTriggerVercelBuildWebhookForWebApp
-                  ? "WEBSITE: :white_check_mark:"
-                  : "WEBSITE: :red_circle:",
+                  ? "Web App: :white_check_mark:"
+                  : "Web App: :red_circle:",
               },
             ],
           },

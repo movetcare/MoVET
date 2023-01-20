@@ -88,9 +88,10 @@ export const handleAnnouncementBannerUpdate = functions.firestore
                 },
                 {
                   type: "plain_text",
-                  text: didTriggerVercelBuildWebhook
-                    ? ":white_check_mark:"
-                    : ":red_circle:",
+                  text:
+                    "Website: " + didTriggerVercelBuildWebhook
+                      ? ":white_check_mark:"
+                      : ":red_circle:",
                 },
               ],
             },

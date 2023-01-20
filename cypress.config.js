@@ -7,6 +7,9 @@ module.exports = defineConfig({
     onlyTestOnePatient: process.env.CYPRESS_ONLY_TEST_ONE_PATIENT || true,
     skipWellnessCheck: process.env.CYPRESS_SKIP_WELLNESS_CHECK || true,
     endpointApiKey: process.env.CYPRESS_ENDPOINT_API_KEY || "",
+    vcprClientEmail: "alex.rodriguez+CYPRESS_TEST_VCPR_REQUIRED@MOVETCARE.COM",
+    noVcprClientEmail:
+      "alex.rodriguez+CYPRESS_TEST_VCPR_NOT_REQUIRED@MOVETCARE.COM",
   },
   retries: {
     runMode: 2,

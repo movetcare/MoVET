@@ -1,13 +1,13 @@
 import { removeBookingAbandonmentNotifications } from "../booking/abandonment/removeBookingAbandonmentNotifications";
 import { cancelBooking } from "../booking/abandonment/cancelBooking";
-import { DEBUG, functions } from "./../config/config";
+import { functions } from "./../config/config";
 import { archiveBooking } from "../booking/session/archiveBooking";
 import type { Booking } from "../types/booking";
 import { updateBookingCancellation } from "../booking/abandonment/updateBookingCancellation";
-
+const DEBUG = true;
 export const handleBookingUpdate = functions.firestore
   .document("bookings/{id}")
-  .onWrite((change: any, context: any) => {
+  .onWrite(async (change: any, context: any) => {
     const { id } = context.params || {};
     const data: Booking = change.after.data();
     const { step, isActive, cancelReason } = data || {};
@@ -26,7 +26,7 @@ export const handleBookingUpdate = functions.firestore
             );
           removeBookingAbandonmentNotifications(id);
         }
-        if (step === "success" && isActive) archiveBooking(id);
+        if (step === "success" && isActive) await archiveBooking(id);
         else if (step === "restart" || step === "cancelled-client")
           cancelBooking(id, data);
       } else if (DEBUG)

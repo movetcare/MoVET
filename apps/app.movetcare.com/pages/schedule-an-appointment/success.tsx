@@ -37,6 +37,7 @@ export default function BookingSuccess() {
         ).json();
       processAppointmentBooking()
         .then((response: ServerResponse) => {
+          console.log("SUCCESS SENT!");
           if (response.error) {
             handleError({ message: response.error });
           } else {
@@ -83,6 +84,11 @@ export default function BookingSuccess() {
                     size="4x"
                     className="text-movet-green mx-auto w-full mb-4"
                   />
+                  {isAppMode && (
+                    <h2 className="text-3xl font-extrabold tracking-tight text-movet-black">
+                      Housecall Request Successful
+                    </h2>
+                  )}
                   <BookingHeader
                     isAppMode={isAppMode}
                     title="Appointment Request Successful"

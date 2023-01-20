@@ -2,10 +2,10 @@ import { sendBookingRequestAdminNotification } from "../../notifications/templat
 import { throwError, admin, DEBUG } from "../../config/config";
 import { sendBookingRequestClientNotification } from "../../notifications/templates/sendBookingRequestClientNotification";
 
-export const archiveBooking = (id: string) => {
+export const archiveBooking = async (id: string) => {
   if (DEBUG) console.log("archiveBooking", id);
   const bookingRef = admin.firestore().collection("bookings").doc(id);
-  bookingRef
+  await bookingRef
     .set(
       {
         step: "needs-scheduling",

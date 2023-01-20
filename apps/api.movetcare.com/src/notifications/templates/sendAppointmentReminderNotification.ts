@@ -181,7 +181,7 @@ const send24HourAppointmentNotification = async (
               ? 'MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)'
               : user === 9
               ? "Virtual - We'll email you a link when it's time for your consultation"
-              : 'UNKNOWN - Please reply to this email ASAP with the appointment location - "Housecall", "MoVET Clinic @ Belleview Station", "Virtual Consultation"'
+              : 'UNKNOWN - <b>Please reply to this email with the appointment location - "Housecall", "MoVET Clinic @ Belleview Station", "Virtual Consultation"</b>'
           }</p>`
         : ""
     }<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p><p><b>Pet${
