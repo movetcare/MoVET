@@ -3,11 +3,11 @@ const { defineConfig } = require("cypress");
 module.exports = defineConfig({
   env: {
     defaultPathnameTimeOut:
-      Number(process.env.CYPRESS_DISPLAY_PATH_TIMEOUT) || 6000,
+      Number(process.env.CYPRESS_DISPLAY_PATH_TIMEOUT) || 10000,
     onlyTestOnePatient: process.env.CYPRESS_ONLY_TEST_ONE_PATIENT || true,
     skipWellnessCheck: process.env.CYPRESS_SKIP_WELLNESS_CHECK || true,
-    endpointApiKey: process.env.CYPRESS_ENDPOINT_API_KEY || "",
-    vcprClientEmail: "alex.rodriguez+CYPRESS_TEST_VCPR_REQUIRED@MOVETCARE.COM",
+    endpointApiKey: "L9At3HGmvRDuyi7TTX",
+    vcprClientEmail: "alex.rodriguez+test@movetcare.com",
     noVcprClientEmail:
       "alex.rodriguez+CYPRESS_TEST_VCPR_NOT_REQUIRED@MOVETCARE.COM",
   },
