@@ -1,12 +1,6 @@
-import {getProVetIdFromUrl} from "./../../utils/getProVetIdFromUrl";
-import {
-  admin,
-  proVetApiUrl,
-  request,
-  throwError,
-  DEBUG,
-} from "../../config/config";
-
+import { getProVetIdFromUrl } from "./../../utils/getProVetIdFromUrl";
+import { admin, proVetApiUrl, request, throwError } from "../../config/config";
+const DEBUG = true;
 export const paymentIntentUpdated = async (event: any): Promise<void> => {
   const { object } = event?.data || {};
   const { id, status, amount, charges } = object || {};
@@ -141,14 +135,13 @@ export const paymentIntentUpdated = async (event: any): Promise<void> => {
                   )
               )
               .then(async () => {
-                //if (DEBUG) console.log('`${userId}`', `${userId}`);
                 const user = await admin
                   .auth()
                   .getUser(`${userId}`)
                   .catch((error: any) => console.error(error));
                 if (DEBUG) {
                   console.log("`${userId}`", `${userId}`);
-                  console.log("`${user.email}`", `${user.email}`);
+                  console.log("`${user.email}`", `${user?.email}`);
                 }
                 if (user) {
                   const clientIsOnWaitlist = await admin

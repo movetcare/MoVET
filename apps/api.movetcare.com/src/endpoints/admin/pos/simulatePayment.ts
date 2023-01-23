@@ -3,15 +3,14 @@ import {
   defaultRuntimeOptions,
   functions,
   request,
-  DEBUG,
 } from "../../../config/config";
-import {requestIsAuthorized} from "./requestIsAuthorized";
-
+import { requestIsAuthorized } from "./requestIsAuthorized";
+const DEBUG = true;
 export const simulatePayment = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
     async (
-      data: {card: string; reader: string},
+      data: { card: string; reader: string },
       context: any
     ): Promise<any> => {
       if (DEBUG) {
@@ -21,7 +20,7 @@ export const simulatePayment = functions
       }
       const isAuthorized = await requestIsAuthorized(context);
       if (isAuthorized) {
-        const {card, reader} = data || {};
+        const { card, reader } = data || {};
         if (card && reader) {
           const params = new URLSearchParams();
           params.append("type", "card_present");

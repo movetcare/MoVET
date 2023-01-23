@@ -1,5 +1,5 @@
-import {admin, stripe, throwError, DEBUG} from "../../../config/config";
-
+import { admin, stripe, throwError } from "../../../config/config";
+const DEBUG = true;
 export const checkoutSessionCompleted = (event: any) =>
   admin
     .firestore()
@@ -44,41 +44,41 @@ export const checkoutSessionCompleted = (event: any) =>
             );
           if (querySnapshot?.docs?.length > 0)
             querySnapshot.forEach(async (doc: any) => {
-               const client = await admin
-                 .firestore()
-                 .collection("clients")
-                 .doc(event?.data?.object?.client_reference_id)
-                 .get()
-                 .then((doc: any) => doc.data())
-                 .catch((error: any) => throwError(error));
+              const client = await admin
+                .firestore()
+                .collection("clients")
+                .doc(event?.data?.object?.client_reference_id)
+                .get()
+                .then((doc: any) => doc.data())
+                .catch((error: any) => throwError(error));
 
-               if (DEBUG) {
-                 console.log("client", client);
-               }
-               admin
-                 .firestore()
-                 .collection("waitlist")
-                 .doc(doc.data()?.email)
-                 .set(
-                   {
-                     paymentMethod: (
-                       (await stripe.customers.listPaymentMethods(
-                         event?.data?.object?.customer,
-                         { type: "card", limit: 1 }
-                       )) as any
-                     )?.data[0],
-                     status: "complete",
-                     isActive: true,
-                     updatedOn: new Date(),
-                     id: event?.data?.object?.client_reference_id,
-                     firstName: client?.firstName,
-                     lastName: client?.lastName,
-                     phone: client?.phone,
-                     customerId: event?.data?.object?.customer,
-                   },
-                   { merge: true }
-                 )
-                 .catch((error: any) => throwError(error));
+              if (DEBUG) {
+                console.log("client", client);
+              }
+              admin
+                .firestore()
+                .collection("waitlist")
+                .doc(doc.data()?.email)
+                .set(
+                  {
+                    paymentMethod: (
+                      (await stripe.customers.listPaymentMethods(
+                        event?.data?.object?.customer,
+                        { type: "card", limit: 1 }
+                      )) as any
+                    )?.data[0],
+                    status: "complete",
+                    isActive: true,
+                    updatedOn: new Date(),
+                    id: event?.data?.object?.client_reference_id,
+                    firstName: client?.firstName,
+                    lastName: client?.lastName,
+                    phone: client?.phone,
+                    customerId: event?.data?.object?.customer,
+                  },
+                  { merge: true }
+                )
+                .catch((error: any) => throwError(error));
             });
         })
         .catch((error: any) => throwError(error));

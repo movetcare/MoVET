@@ -1,17 +1,16 @@
 import {
-  DEBUG,
   defaultRuntimeOptions,
   functions,
   throwError,
 } from "../../../config/config";
-import {configureTerminals} from "../../../config/configureTerminals";
-import {requestIsAuthorized} from "./requestIsAuthorized";
-
+import { configureTerminals } from "../../../config/configureTerminals";
+import { requestIsAuthorized } from "./requestIsAuthorized";
+const DEBUG = true;
 export const resetTerminal = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
     async (
-      data: {mode: "counter" | "client"; invoice: string; reader: string},
+      data: { mode: "counter" | "client"; invoice: string; reader: string },
       context: any
     ): Promise<any> => {
       if (DEBUG) {

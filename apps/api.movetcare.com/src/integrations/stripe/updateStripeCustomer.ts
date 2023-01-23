@@ -1,6 +1,6 @@
-import { stripe, environment, DEBUG, throwError } from "../../config/config";
+import { stripe, environment, throwError } from "../../config/config";
 import { sendNotification } from "../../notifications/sendNotification";
-
+const DEBUG = true;
 export const updateStripeCustomer = (proVetClientData: {
   id_number: string | undefined | null;
   archived: boolean;

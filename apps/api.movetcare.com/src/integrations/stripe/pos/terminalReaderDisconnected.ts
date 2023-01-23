@@ -1,5 +1,5 @@
-import { admin, throwError, DEBUG } from "../../../config/config";
-
+import { admin, throwError } from "../../../config/config";
+const DEBUG = true;
 export const terminalReaderDisconnected = (event: any): void =>
   admin
     .firestore()

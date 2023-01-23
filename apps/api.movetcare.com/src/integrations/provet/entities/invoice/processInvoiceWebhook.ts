@@ -1,16 +1,16 @@
-import {Request, Response} from "express";
-import {admin, throwError, DEBUG} from "../../../../config/config";
-import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
-import {saveClient} from "../client/saveClient";
-import {fetchEntity} from "../fetchEntity";
-
+import { Request, Response } from "express";
+import { admin, throwError } from "../../../../config/config";
+import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
+import { saveClient } from "../client/saveClient";
+import { fetchEntity } from "../fetchEntity";
+const DEBUG = true;
 export const processInvoiceWebhook = async (
   request: Request,
   response: Response
 ): Promise<any> => {
-  const {invoice_id, user, timestamp} = request.body;
+  const { invoice_id, user, timestamp } = request.body;
   if (!(typeof invoice_id === "string") || invoice_id.length === 0)
-    throwError({message: "INVALID_PAYLOAD"});
+    throwError({ message: "INVALID_PAYLOAD" });
   try {
     if (DEBUG) console.log(`processInvoiceWebhook ID: ${invoice_id}`);
     const invoice = await fetchEntity("invoice", invoice_id);
@@ -328,6 +328,6 @@ export const processInvoiceWebhook = async (
           .catch((error: any) => throwError(error));
   } catch (error: any) {
     if (DEBUG) console.error(error);
-    return response.status(500).send({received: false});
+    return response.status(500).send({ received: false });
   }
 };

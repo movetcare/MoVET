@@ -1,13 +1,5 @@
-import {
-  DEBUG,
-  admin,
-  // request,
-  stripe,
-  throwError,
-  // proVetApiUrl,
-  // environment,
-} from "../../../config/config";
-
+import { admin, stripe, throwError } from "../../../config/config";
+const DEBUG = true;
 export const terminalReaderActionSucceeded = (event: any): void => {
   if (DEBUG) console.log("terminalReaderActionSucceeded EVENT => ", event);
   admin

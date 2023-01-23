@@ -1,4 +1,4 @@
-import {getProVetIdFromUrl} from "../../../utils/getProVetIdFromUrl";
+import { getProVetIdFromUrl } from "../../../utils/getProVetIdFromUrl";
 import {
   throwError,
   defaultRuntimeOptions,
@@ -6,11 +6,10 @@ import {
   stripe,
   admin,
   request,
-  DEBUG,
 } from "../../../config/config";
-import {requestIsAuthorized} from "./requestIsAuthorized";
+import { requestIsAuthorized } from "./requestIsAuthorized";
 import { getCustomerId } from "../../../utils/getCustomerId";
-
+const DEBUG = true;
 export const createPaymentIntent = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

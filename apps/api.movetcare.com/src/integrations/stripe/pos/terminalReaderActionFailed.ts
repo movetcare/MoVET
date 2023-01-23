@@ -1,5 +1,5 @@
-import { admin, stripe, throwError, DEBUG } from "../../../config/config";
-
+import { admin, stripe, throwError } from "../../../config/config";
+const DEBUG = true;
 export const terminalReaderActionFailed = (event: any): void => {
   if (DEBUG)
     console.log("terminalReaderActionFailed EVENT:", event?.data?.action);
@@ -126,22 +126,22 @@ export const terminalReaderActionFailed = (event: any): void => {
                   )
                   .catch((error: any) => throwError(error));
                 admin
-                   .firestore()
-                   .collection("client_invoices")
-                   .doc(doc.id)
-                   .set(
-                     {
-                       paymentStatus: event?.data?.object?.action?.status,
-                       paymentIntentObject: paymentIntent,
-                       failureCode:
-                         paymentIntent?.charges?.data[0]?.failure_code,
-                       failureMessage:
-                         paymentIntent?.charges?.data[0]?.failure_message,
-                       updatedOn: new Date(),
-                     },
-                     { merge: true }
-                   )
-                   .catch((error: any) => throwError(error));
+                  .firestore()
+                  .collection("client_invoices")
+                  .doc(doc.id)
+                  .set(
+                    {
+                      paymentStatus: event?.data?.object?.action?.status,
+                      paymentIntentObject: paymentIntent,
+                      failureCode:
+                        paymentIntent?.charges?.data[0]?.failure_code,
+                      failureMessage:
+                        paymentIntent?.charges?.data[0]?.failure_message,
+                      updatedOn: new Date(),
+                    },
+                    { merge: true }
+                  )
+                  .catch((error: any) => throwError(error));
               });
             else
               throwError({

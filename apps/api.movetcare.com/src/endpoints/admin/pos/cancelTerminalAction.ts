@@ -1,19 +1,18 @@
 import {
   admin,
   stripe,
-  DEBUG,
   defaultRuntimeOptions,
   functions,
   request,
   throwError,
 } from "../../../config/config";
-import {requestIsAuthorized} from "./requestIsAuthorized";
-
+import { requestIsAuthorized } from "./requestIsAuthorized";
+const DEBUG = true;
 export const cancelTerminalAction = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
     async (
-      data: {reader: string; paymentIntent: string},
+      data: { reader: string; paymentIntent: string },
       context: any
     ): Promise<any> => {
       if (DEBUG) {
