@@ -161,29 +161,30 @@ ${
       }${clientProvetRecord?.zip_code ? `${clientProvetRecord?.zip_code}` : ""}`
     : appointment?.user === 7
     ? // eslint-disable-next-line quotes
-      '<p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+      "<p><b>Appointment Location</b>: MoVET Clinic @ Belleview Station</a></p>"
     : appointment?.user === 9
-    ? "<p><b>Appointment Location</b>: Virtual</p>"
-    : "<p><b>Appointment Location</b>: Walk In</p>"
+    ? "<p><b>Appointment Location</b>: Virtual Appointment</p>"
+    : "<p><b>Appointment Location</b>: Walk In Appointment</p>"
 }${
     appointment?.start
       ? `<p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
           appointment?.start?.toDate()
         )}`
       : ""
-  }${
-    appointment?.instructions
-      ? `<p><b>Instructions: </b>${appointment?.instructions}</p>`
-      : // eslint-disable-next-line quotes
-        '<p><b>Medical Records:</b> If this appointment is for a new pet, please email (or have your previous vet email) their vaccine and medical records to <a href="mailto://info@movetcare.com" target="_blank">info@movetcare.com</a> <b>prior</b> to your appointment.</p>'
-  }${
-    phoneNumber &&
-    (appointment?.locationType === "Home" ||
-      appointment?.locationType === "Virtually")
-      ? `<p><b>Contact Phone Number</b>: ${phoneNumber}</p>'
-        }`
-      : ""
-  }`;
+  }<p></p><p><b><a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">EDIT APPOINTMENT</a></b></p>`;
+  // ${
+  //   appointment?.instructions
+  //     ? `<p><b>Instructions: </b>${appointment?.instructions}</p>`
+  //     : // eslint-disable-next-line quotes
+  //       '<p><b>Medical Records:</b> If this appointment is for a new pet, please email (or have your previous vet email) their vaccine and medical records to <a href="mailto://info@movetcare.com" target="_blank">info@movetcare.com</a> <b>prior</b> to your appointment.</p>'
+  // }${
+  //   phoneNumber &&
+  //   (appointment?.locationType === "Home" ||
+  //     appointment?.locationType === "Virtually")
+  //     ? `<p><b>Contact Phone Number</b>: ${phoneNumber}</p>'
+  //       }`
+  //     : ""
+  // }`;
 
   if (DEBUG) {
     console.log("emailTextClient -> ", emailTextClient);

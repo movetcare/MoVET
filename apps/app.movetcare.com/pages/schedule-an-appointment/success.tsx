@@ -85,7 +85,7 @@ export default function BookingSuccess() {
                     className="text-movet-green mx-auto w-full mb-4"
                   />
                   {isAppMode && (
-                    <h2 className="text-3xl font-extrabold tracking-tight text-movet-black">
+                    <h2 className="text-3xl font-extrabold tracking-tight text-movet-black text-center">
                       Housecall Request Successful
                     </h2>
                   )}

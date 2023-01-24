@@ -35,19 +35,7 @@ export const resetTestData: Promise<Response> = functions
               console.log("Successfully Updated Auth User", userRecord.toJSON())
           )
           .catch((error: any) => DEBUG && console.error(error));
-        await admin
-          .firestore()
-          .collection("bookings")
-          .where("client.uid", "==", "5125")
-          .get()
-          .then((querySnapshot: any) =>
-            querySnapshot.forEach((doc: any) => {
-              doc.ref.delete();
-              DEBUG &&
-                console.log("Successfully Deleted Booking Document", doc.id);
-            })
-          )
-          .catch((error: any) => DEBUG && console.error(error));
+        await deleteCollection("bookings");
         await admin
           .firestore()
           .collection("clients")
@@ -161,7 +149,62 @@ export const resetTestData: Promise<Response> = functions
               ":red_circle: TEST DATA RESET FOR alex.rodriguez+test@movetcare.com",
           },
         });
+      } else if (request.body?.id === "winter-mode-on") {
+        await deleteCollection("bookings");
+        const today = new Date();
+        await admin
+          .firestore()
+          .collection("configuration")
+          .doc("bookings")
+          .set(
+            {
+              winterHousecallMode: {
+                startDate: new Date(),
+                endDate: new Date(today.setDate(today.getDate() + 5)),
+                message:
+                  "Due to weather variability housecalls are by request only beginning Wednesday, Dec 21st. Normal scheduling will reopen Monday, April 3rd.",
+                isActiveOnWebsite: true,
+                isActiveOnMobileApp: true,
+                isActiveOnWebApp: true,
+                enableForNewPatientsOnly: true,
+              },
+              updatedOn: new Date(),
+            },
+            { merge: true }
+          );
+      } else if (request.body?.id === "winter-mode-off") {
+        await deleteCollection("bookings");
+        await admin
+          .firestore()
+          .collection("configuration")
+          .doc("bookings")
+          .set(
+            {
+              winterHousecallMode: {
+                isActiveOnWebsite: false,
+                isActiveOnMobileApp: false,
+                isActiveOnWebApp: false,
+                enableForNewPatientsOnly: false,
+              },
+              updatedOn: new Date(),
+            },
+            { merge: true }
+          );
       }
     }
     return response.status(200).send();
   });
+
+const deleteCollection = async (collectionName: string) => {
+  const batch = admin.firestore().batch();
+  await admin
+    .firestore()
+    .collection(collectionName)
+    .listDocuments()
+    .then((documents: any) => {
+      documents.map((document: any) => {
+        batch.delete(document);
+      });
+      batch.commit();
+    });
+};

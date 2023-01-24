@@ -3,6 +3,7 @@ import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
+  faArrowLeft,
   faCheckCircle,
   faCircleExclamation,
   faCreditCard,
@@ -15,7 +16,6 @@ import Link from "next/link";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { functions } from "services/firebase";
-import { setTimeout } from "timers";
 import { object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Head from "next/head";
@@ -65,7 +65,7 @@ export default function UpdatePaymentMethod() {
             setError("ERROR - UNKNOWN");
           } else {
             setSignUpSuccess(true);
-            setTimeout(() => router.push(result), 1500);
+            router.push(result);
           }
         } catch (error) {
           console.error(error);
@@ -114,12 +114,12 @@ export default function UpdatePaymentMethod() {
         {success ? (
           <div className="text-center relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8">
             <FontAwesomeIcon icon={faCheckCircle} size="4x" color="#00A36C" />
-            <h3 className="text-2xl tracking-tight text-movet-black font-parkinson mt-6">
+            <h2 className="text-2xl tracking-tight text-movet-black font-parkinson mt-6">
               You are all set!
-            </h3>
+            </h2>
             <p
               className={
-                "text-lg leading-6 text-movet-black font-source-sans-pro mt-4"
+                "text-lg leading-6 text-movet-black font-source-sans-pro my-4"
               }
             >
               We have updated your payment method on file and will use that
@@ -175,7 +175,13 @@ export default function UpdatePaymentMethod() {
                   We&apos;re sorry, but something went wrong. Please try again
                   or ask support@movetcare.com for assistance.
                 </p>
-                <p>{JSON.stringify(error)}</p>
+                <p className="mb-4">{JSON.stringify(error)}</p>
+                <Button
+                  color="black"
+                  text="Go Back"
+                  icon={faArrowLeft}
+                  onClick={() => router.reload()}
+                />
               </div>
             ) : (
               <>
@@ -211,21 +217,7 @@ export default function UpdatePaymentMethod() {
                           onClick={handleSubmit(onSubmit)}
                         />
                       </div>
-                      <a
-                        href="https://stripe.com/payments"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="shrink-0 col-span-2"
-                      >
-                        <Image
-                          src="/images/icons/powered-by-stripe.svg"
-                          alt="Powered by Stripe"
-                          height={40}
-                          width={120}
-                          className="mx-auto"
-                        />
-                      </a>
-                      <div className="flex sm:col-span-2 -mt-2 mx-auto">
+                      <div className="flex flex-col sm:col-span-2 -mt-2 mx-auto">
                         <div className="flex items-center justify-center text-center">
                           <p className="text-xs italic text-movet-black">
                             By clicking the &quot;Add a Payment Method&quot;
@@ -252,6 +244,20 @@ export default function UpdatePaymentMethod() {
                         </div>
                       </div>
                     </form>
+                    <a
+                      href="https://stripe.com/payments"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="shrink-0 col-span-2"
+                    >
+                      <Image
+                        src="/images/icons/powered-by-stripe.svg"
+                        alt="Powered by Stripe"
+                        height={40}
+                        width={120}
+                        className="mx-auto mb-4"
+                      />
+                    </a>
                   </>
                 ) : (
                   <Loader />

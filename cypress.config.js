@@ -7,8 +7,8 @@ module.exports = defineConfig({
     onlyTestOnePatient: process.env.CYPRESS_ONLY_TEST_ONE_PATIENT || true,
     skipWellnessCheck: process.env.CYPRESS_SKIP_WELLNESS_CHECK || true,
     endpointApiKey: "L9At3HGmvRDuyi7TTX",
-    vcprClientEmail: "alex.rodriguez+test@movetcare.com",
-    noVcprClientEmail:
+    existingClientNoPayment: "alex.rodriguez+test@movetcare.com",
+    existingClientWithPayment:
       "alex.rodriguez+CYPRESS_TEST_VCPR_NOT_REQUIRED@MOVETCARE.COM",
   },
   retries: {
@@ -34,4 +34,5 @@ module.exports = defineConfig({
     specPattern: "testing/component/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "testing/support/e2e.{js,jsx,ts,tsx}",
   },
+  experimentalModifyObstructiveThirdPartyCode: true,
 });

@@ -6,8 +6,6 @@ export const contactSchema = object({
   firstName: string(),
   lastName: string(),
   reason: object({ id: string(), name: string() }),
-  phone: string()
-    .min(10, "Phone number must be 10 digits")
-    .required("A phone number is required"),
+  phone: string(),
   message: string().required("A message is required"),
 });
