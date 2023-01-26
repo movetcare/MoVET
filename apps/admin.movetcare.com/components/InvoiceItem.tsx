@@ -1362,9 +1362,9 @@ const InvoiceDetails = ({
                                   <div className="rounded-md bg-movet-green p-2 text-movet-white">
                                     <div className="flex flex-row justify-center items-center text-base">
                                       <FontAwesomeIcon icon={faCheck} />
-                                      <h3 className="ml-2 font-medium text-center text-lg">
+                                      <h3 className="ml-2 my-0 font-medium text-center text-lg">
                                         PAID -
-                                        <span className="font-bold">
+                                        <span className="font-bold ml-1">
                                           ${invoice?.total_with_vat.toFixed(2)}
                                         </span>
                                       </h3>
