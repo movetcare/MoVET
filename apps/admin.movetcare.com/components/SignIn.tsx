@@ -6,6 +6,8 @@ import {
   GoogleAuthProvider,
   RecaptchaVerifier,
   signInWithPhoneNumber,
+  browserLocalPersistence,
+  setPersistence,
 } from "firebase/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -23,8 +25,6 @@ import toast from "react-hot-toast";
 import { SignInModal } from "./modals/SignInModal";
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import Image from "next/image";
-
-const provider = new GoogleAuthProvider();
 
 export const SignIn = () => {
   const router = useRouter();
@@ -168,22 +168,29 @@ export const SignIn = () => {
                       type="button"
                       onClick={() => {
                         setIsLoading(true);
-                        signInWithPopup(auth, provider).catch((error: any) => {
-                          if (error.code === "auth/user-disabled") {
-                            setSignInError(
-                              "Please contact support for assistance!"
+                        setPersistence(auth, browserLocalPersistence)
+                          .then(() => {
+                            const provider = new GoogleAuthProvider();
+                            return signInWithPopup(auth, provider).catch(
+                              (error: any) => {
+                                if (error.code === "auth/user-disabled") {
+                                  setSignInError(
+                                    "Please contact support for assistance!"
+                                  );
+                                  console.error(error);
+                                  setShowPhoneAuthFlow(false);
+                                  setShowTokenModal(false);
+                                  setSignInToken(null);
+                                  setDisabledNotice(true);
+                                  setIsLoading(false);
+                                } else {
+                                  handleError(error) &&
+                                    setTimeout(() => router.reload(), 3000);
+                                }
+                              }
                             );
-                            console.error(error);
-                            setShowPhoneAuthFlow(false);
-                            setShowTokenModal(false);
-                            setSignInToken(null);
-                            setDisabledNotice(true);
-                            setIsLoading(false);
-                          } else {
-                            handleError(error) &&
-                              setTimeout(() => router.reload(), 3000);
-                          }
-                        });
+                          })
+                          .catch((error: any) => console.error(error));
                       }}
                       className="flex flex-row bg-movet-red group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red"
                     >

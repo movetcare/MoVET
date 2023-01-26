@@ -75,6 +75,10 @@
     @apply text-lg font-source-sans-pro-italic uppercase mt-4 mb-2;
   }
 
+  h3 {
+    @apply font-source-sans-pro mt-4 mb-2;
+  }
+
   p {
     @apply font-source-sans-pro;
   }

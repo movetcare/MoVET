@@ -6,14 +6,13 @@ import {
   admin,
   stripe,
   mobileClientApiKey,
-  DEBUG,
 } from "../../config/config";
 // import { updateProVetAppointment } from "../../integrations/provet/entities/appointment/updateProVetAppointment";
 // import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
 // import { updateProVetPatient } from "../../integrations/provet/entities/patient/updateProVetPatient";
 import { sendNotification } from "../../notifications/sendNotification";
 // import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
-
+const DEBUG = true;
 export const resetTestData: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {
@@ -22,7 +21,22 @@ export const resetTestData: Promise<Response> = functions
       request.headers.host === "localhost:5001" &&
       request.body?.apiKey === mobileClientApiKey
     ) {
-      if (request.body?.id === 5125) {
+      if (request.body?.id === 5592) {
+        await admin
+          .firestore()
+          .collection("bookings")
+          .where("client.uid", "==", "5592")
+          .get()
+          .then((querySnapshot: any) =>
+            querySnapshot.forEach((doc: any) => {
+              doc.ref.delete();
+              DEBUG &&
+                console.log("Successfully Deleted Booking Document", doc.id);
+            })
+          )
+          .catch((error: any) => DEBUG && console.error(error));
+      } else if (request.body?.id === 5125) {
+        await disableWinterMode();
         await admin
           .auth()
           .updateUser("5125", {
@@ -35,7 +49,19 @@ export const resetTestData: Promise<Response> = functions
               console.log("Successfully Updated Auth User", userRecord.toJSON())
           )
           .catch((error: any) => DEBUG && console.error(error));
-        await deleteCollection("bookings");
+        await admin
+          .firestore()
+          .collection("bookings")
+          .where("client.uid", "==", "5125")
+          .get()
+          .then((querySnapshot: any) =>
+            querySnapshot.forEach((doc: any) => {
+              doc.ref.delete();
+              DEBUG &&
+                console.log("Successfully Deleted Booking Document", doc.id);
+            })
+          )
+          .catch((error: any) => DEBUG && console.error(error));
         await admin
           .firestore()
           .collection("clients")
@@ -150,7 +176,19 @@ export const resetTestData: Promise<Response> = functions
           },
         });
       } else if (request.body?.id === "winter-mode-on") {
-        await deleteCollection("bookings");
+        await admin
+          .firestore()
+          .collection("bookings")
+          .where("client.uid", "==", "5592")
+          .get()
+          .then((querySnapshot: any) =>
+            querySnapshot.forEach((doc: any) => {
+              doc.ref.delete();
+              DEBUG &&
+                console.log("Successfully Deleted Booking Document", doc.id);
+            })
+          )
+          .catch((error: any) => DEBUG && console.error(error));
         const today = new Date();
         await admin
           .firestore()
@@ -172,39 +210,27 @@ export const resetTestData: Promise<Response> = functions
             },
             { merge: true }
           );
-      } else if (request.body?.id === "winter-mode-off") {
-        await deleteCollection("bookings");
-        await admin
-          .firestore()
-          .collection("configuration")
-          .doc("bookings")
-          .set(
-            {
-              winterHousecallMode: {
-                isActiveOnWebsite: false,
-                isActiveOnMobileApp: false,
-                isActiveOnWebApp: false,
-                enableForNewPatientsOnly: false,
-              },
-              updatedOn: new Date(),
-            },
-            { merge: true }
-          );
-      }
+      } else if (request.body?.id === "winter-mode-off")
+        await disableWinterMode();
     }
     return response.status(200).send();
   });
 
-const deleteCollection = async (collectionName: string) => {
-  const batch = admin.firestore().batch();
+const disableWinterMode = async () =>
   await admin
     .firestore()
-    .collection(collectionName)
-    .listDocuments()
-    .then((documents: any) => {
-      documents.map((document: any) => {
-        batch.delete(document);
-      });
-      batch.commit();
-    });
-};
+    .collection("configuration")
+    .doc("bookings")
+    .set(
+      {
+        winterHousecallMode: {
+          isActiveOnWebsite: false,
+          isActiveOnMobileApp: false,
+          isActiveOnWebApp: false,
+          enableForNewPatientsOnly: false,
+        },
+        updatedOn: new Date(),
+      },
+      { merge: true }
+    )
+    .catch((error: any) => DEBUG && console.error(error));

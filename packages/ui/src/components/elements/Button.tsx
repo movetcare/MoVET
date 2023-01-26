@@ -17,7 +17,7 @@ interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   shape?: "wide" | "tall" | "round";
   title?: string;
   iconSize?: SizeProp;
-  color?: "black" | "red" | "white";
+  color?: "black" | "red" | "white" | "green";
   type?: "button" | "submit" | "reset";
   id?: string | undefined;
 }
@@ -114,6 +114,8 @@ export const Button = ({
         color === "black" &&
           "bg-movet-black hover:bg-movet-red group-hover:bg-movet-red text-movet-white",
         color === "red" && "bg-movet-red hover:bg-movet-black text-movet-white",
+        color === "green" &&
+          "bg-movet-green/50 hover:bg-movet-green text-movet-white",
         disabled
           ? "group-hover:bg-movet-gray group-hover:bg-opacity-50 hover:bg-opacity-50 hover:bg-movet-black bg-movet-black bg-opacity-50 cursor-not-allowed"
           : "",

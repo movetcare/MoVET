@@ -7,7 +7,6 @@ import {
   proVetApiUrl,
   environment,
   stripe,
-  DEBUG,
 } from "../../config/config";
 import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
@@ -17,7 +16,7 @@ import { sendNotification } from "../../notifications/sendNotification";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
-
+const DEBUG = true;
 export const checkIn = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<any> => {
@@ -35,12 +34,14 @@ export const checkIn = functions
               firstName,
               lastName,
             });
-          const didUpdateProVetClient = await updateProVetClient({
-            firstName: firstName || "UNKNOWN",
-            lastName: lastName || "UNKNOWN",
-            phone: phone || "UNKNOWN",
-            id: id,
-          });
+          let didUpdateProVetClient = false;
+          if (firstName && lastName && phone && id)
+            didUpdateProVetClient = await updateProVetClient({
+              firstName: firstName,
+              lastName: lastName,
+              phone: phone,
+              id: id,
+            });
           const client = await admin
             .firestore()
             .collection("clients")
@@ -66,9 +67,9 @@ export const checkIn = functions
             return {
               client: {
                 email: client?.email,
-                firstName: firstName || "",
-                lastName: lastName || "",
-                phone: phone || "",
+                firstName: firstName,
+                lastName: lastName,
+                phone: phone,
                 id: id,
               },
             };

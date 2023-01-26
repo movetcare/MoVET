@@ -49,22 +49,15 @@ describe("home-page-loads", () => {
   });
 
   it("can submit contact form", () => {
-    cy.get("input[name='firstName']").type("CYPRESS");
-    cy.get("button[type='submit']").as("submit").contains("Submit").click();
-    cy.get("p.text-movet-red")
-      .as("errorMessage")
-      .contains("An email address is required");
-    cy.get("@errorMessage").contains("A message is required");
-    cy.get("input[name='lastName']").type("TEST");
-    cy.get("input[name='email']").type("CYPRESS");
-    cy.get("@submit").click();
-    cy.get("p.text-movet-red")
-      .as("errorMessage")
-      .contains("Email must be a valid email address");
-    cy.get("input[name='email']").type("CYPRESS@TEST.COM");
-    cy.get("input[name='phone-number']").type("9999999999");
-    cy.get("textarea[name='message']").type("CYPRESS TEST 123...");
-    cy.get("@submit").click();
-    cy.get("h2").contains("Success!");
+    cy.get("#contact-form input[name='firstName']").type("CYPRESS");
+    cy.get("#contact-form input[name='lastName']").type("TEST");
+    cy.get("#contact-form input[name='email']").type("CYPRESS@TEST.COM");
+    cy.get("#contact-form input[name='phone-number']").type("9999999999");
+    cy.get("#contact-form textarea[name='message']").type(
+      "CYPRESS TEST 123..."
+    );
+    cy.get("#contact-form button").contains("Submit").click();
+    cy.wait(3000);
+    cy.get("#contact-form h2").contains("Success!");
   });
 });

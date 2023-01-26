@@ -5,27 +5,38 @@ describe("update-payment-method", () => {
 
   it("Shows errors when invalid email is used", () => {
     cy.get("h2").contains("Add a Payment Method");
-    cy.get("form input[name='email']").type("CYPRESSTEST");
-    cy.get("form button[type='submit']")
-      .contains("Add a Payment Method")
-      .click();
+    cy.get("input[name='email']").type("CYPRESSTEST");
+    cy.get("button[type='submit']").contains("Add a Payment Method").click();
     cy.get("p.text-movet-red").contains("Email must be a valid email address");
-    cy.get("form input[name='email']").type("CYPRESS@TEST.COM");
-    cy.get("form button[type='submit']")
-      .contains("Add a Payment Method")
-      .click();
+    cy.get("input[name='email']").type("CYPRESS@TEST.COM");
+    cy.get("button[type='submit']").contains("Add a Payment Method").click();
     cy.get("h2").contains("Whoops!");
     cy.get("button").contains("Go Back").click();
   });
 
-  it("Can redirect to stripe checkout", () => {
+  it("Can redirect to stripe checkout as existing client with valid payment already on file", () => {
     cy.get("h2").contains("Add a Payment Method");
-    cy.get("form input[name='email']").type(
-      Cypress.env().existingClientWithPayment
-    );
-    cy.get("form button[type='submit']")
-      .contains("Add a Payment Method")
-      .click();
+    cy.get("input[name='email']").type(Cypress.env().existingClientWithPayment);
+    cy.get("button[type='submit']").contains("Add a Payment Method").click();
+    cy.origin("https://payment.movetcare.com", () => {
+      cy.on("uncaught:exception", (e) => {
+        if (e.message.includes("Things went bad")) return false;
+      });
+    });
+  });
+
+  it("Can redirect to stripe checkout as existing client NO valid payment on file", () => {
+    cy.get("h2").contains("Add a Payment Method");
+    cy.get("input[name='email']").type(Cypress.env().existingClientNoPayment);
+    cy.get("button[type='submit']").contains("Add a Payment Method").click();
+    cy.origin("https://payment.movetcare.com", () => {
+      cy.on("uncaught:exception", (e) => {
+        if (e.message.includes("Things went bad")) return false;
+      });
+    });
+  });
+
+  it("Success page loads", () => {
     cy.visit("http://localhost:3001/update-payment-method/?success=true");
     cy.get("h2").contains("You are all set!");
     cy.get("p").contains(

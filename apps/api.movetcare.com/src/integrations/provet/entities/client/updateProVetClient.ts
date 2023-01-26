@@ -1,11 +1,11 @@
-import {saveClient} from "./saveClient";
+import { saveClient } from "./saveClient";
 import {
   request,
   throwError,
   proVetApiUrl,
   DEBUG,
 } from "../../../../config/config";
-import {capitalizeFirstLetter} from "../../../../utils/capitalizeFirstLetter";
+import { capitalizeFirstLetter } from "../../../../utils/capitalizeFirstLetter";
 
 export const updateProVetClient = async (payload: any): Promise<boolean> => {
   if (DEBUG) console.log("updateProVetClient -> ", payload);
@@ -70,7 +70,6 @@ export const updateProVetClient = async (payload: any): Promise<boolean> => {
         break;
       case "customer":
         movetClientData.customer = payload?.customer;
-        data.id_number = payload?.customer;
         break;
       default:
         break;

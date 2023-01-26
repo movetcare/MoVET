@@ -171,12 +171,7 @@ const Tools = () => {
               <Loader message={`Processing Account Repair for Client #${id}`} />
             </div>
 
-            <p className="italic -mt-6">This can take up to two minutes...</p>
-            <p className="mt-4 text-center mb-6 text-xs w-full mx-auto sm:w-2/3">
-              * You&apos;ll know this worked when you refresh the page and see
-              there is an &quot;ID Number&quot; value set for the client in
-              ProVet
-            </p>
+            <p className="italic -mt-6">This can take up to three minutes...</p>
           </div>
         ) : (
           <ul

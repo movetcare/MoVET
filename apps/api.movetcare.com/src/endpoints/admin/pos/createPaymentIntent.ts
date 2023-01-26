@@ -154,11 +154,9 @@ export const createPaymentIntent = functions
               paymentIntentConfig.payment_method_types = ["card"];
               paymentIntentConfig.confirm = true;
               paymentIntentConfig.off_session = true;
-              paymentIntentConfig.customer =
-                invoiceDetails?.payer_id_number ||
-                (await getCustomerId(
-                  `${getProVetIdFromUrl(invoiceDetails?.client)}`
-                ));
+              paymentIntentConfig.customer = await getCustomerId(
+                `${getProVetIdFromUrl(invoiceDetails?.client)}`
+              );
             } else {
               paymentIntentConfig.off_session = false;
               paymentIntentConfig.setup_future_usage = "off_session";

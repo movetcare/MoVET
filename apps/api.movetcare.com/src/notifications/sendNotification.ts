@@ -92,57 +92,66 @@ export const sendNotification = async ({
       };
       if (DEBUG) console.log("emailConfig =>", emailConfig);
       const sendEmailNotification = () => {
-        emailClient
-          .send(emailConfig)
-          .then(() => {
-            if (DEBUG) console.log("EMAIL SENT!", emailConfig);
-            if (payload?.client && emailConfig.to !== "info@movetcare.com") {
-              createProVetNote({
-                type: 1,
-                subject: emailConfig.subject,
-                message: emailConfig.message,
-                client: `${payload?.client}`,
-                patients: payload?.patients || [],
-              });
-              admin
-                .firestore()
-                .collection("clients")
-                .doc(`${payload?.client}`)
-                .collection("notifications")
-                .add({
-                  type: "email",
-                  ...emailConfig,
-                  createdOn: new Date(),
-                })
-                .catch((error: any) => throwError(error));
-            }
-            sendSlackMessageToChannel(
-              `:e-mail: System Email Sent:\n\nTO: ${emailConfig.to}\n\nFROM: ${emailConfig.from}\n\nSUBJECT: ${emailConfig.subject}`
-            );
-          })
-          .catch((error: any) => {
-            if (DEBUG) console.log("EMAIL FAILED TO SEND!", emailConfig);
-            sendSlackMessageToChannel(
-              `:e-mail: System Email FAILED:\n\nTO: ${
-                emailConfig.to
-              }\n\nFROM: ${emailConfig.from}\n\nSUBJECT: ${
-                emailConfig.subject
-              }\n\nREASON: \`\`\`${JSON.stringify(error)}}\`\`\``
-            );
-            if (payload?.client)
-              createProVetNote({
-                type: 0,
-                subject: "FAILED TO SEND: " + payload?.subject,
-                message:
-                  "ERROR MESSAGE: " +
-                  JSON.stringify(error) +
-                  "\n\nMESSAGE CONTENTS:\n" +
-                  payload?.message,
-                client: payload?.client,
-                patients: payload?.patients || [],
-              });
-            throwError(error);
-          });
+        if (
+          (environment.type !== "production" &&
+            emailConfig?.to?.toLowerCase().includes("+test")) ||
+          emailConfig?.to?.toLowerCase().includes("+cypress")
+        )
+          sendSlackMessageToChannel(
+            `:e-mail: System Email NOT Sent:\n\nTO: ${emailConfig.to}\n\nFROM: ${emailConfig.from}\n\nSUBJECT: ${emailConfig.subject}`
+          );
+        else
+          emailClient
+            .send(emailConfig)
+            .then(() => {
+              if (DEBUG) console.log("EMAIL SENT!", emailConfig);
+              if (payload?.client && emailConfig.to !== "info@movetcare.com") {
+                createProVetNote({
+                  type: 1,
+                  subject: emailConfig.subject,
+                  message: emailConfig.message,
+                  client: `${payload?.client}`,
+                  patients: payload?.patients || [],
+                });
+                admin
+                  .firestore()
+                  .collection("clients")
+                  .doc(`${payload?.client}`)
+                  .collection("notifications")
+                  .add({
+                    type: "email",
+                    ...emailConfig,
+                    createdOn: new Date(),
+                  })
+                  .catch((error: any) => throwError(error));
+              }
+              sendSlackMessageToChannel(
+                `:e-mail: System Email Sent:\n\nTO: ${emailConfig.to}\n\nFROM: ${emailConfig.from}\n\nSUBJECT: ${emailConfig.subject}`
+              );
+            })
+            .catch((error: any) => {
+              if (DEBUG) console.log("EMAIL FAILED TO SEND!", emailConfig);
+              sendSlackMessageToChannel(
+                `:e-mail: System Email FAILED:\n\nTO: ${
+                  emailConfig.to
+                }\n\nFROM: ${emailConfig.from}\n\nSUBJECT: ${
+                  emailConfig.subject
+                }\n\nREASON: \`\`\`${JSON.stringify(error)}}\`\`\``
+              );
+              if (payload?.client)
+                createProVetNote({
+                  type: 0,
+                  subject: "FAILED TO SEND: " + payload?.subject,
+                  message:
+                    "ERROR MESSAGE: " +
+                    JSON.stringify(error) +
+                    "\n\nMESSAGE CONTENTS:\n" +
+                    payload?.message,
+                  client: payload?.client,
+                  patients: payload?.patients || [],
+                });
+              throwError(error);
+            });
       };
       if (payload?.client) {
         const userNotificationSettings: UserNotificationSettings | false =

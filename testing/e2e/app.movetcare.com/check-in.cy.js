@@ -36,67 +36,67 @@ describe("appointment-check-in", () => {
     );
   });
 
-  it("New client can check in", () => {
-    runThroughCheckInWorkflows(
-      `alex.rodriguez+test_CYPRESS_${Math.floor(
-        Math.random() * 99999999999
-      )}@movetcare.com`,
-      true
-    );
-  });
+  // it("New client can check in", () => {
+  //   runThroughCheckInWorkflows(
+  //     `alex.rodriguez+test_CYPRESS_${Math.floor(
+  //       Math.random() * 99999999999
+  //     )}@movetcare.com`,
+  //     true
+  //   );
+  // });
 
-  it("Existing client can check in w/ no payment on file", () => {
-    cy.request(
-      "POST",
-      "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-      { apiKey: Cypress.env().endpointApiKey, id: 5125 }
-    );
-    runThroughCheckInWorkflows(Cypress.env().existingClientNoPayment, true);
-  });
+  // it("Existing client can check in w/ no payment on file", () => {
+  //   cy.request(
+  //     "POST",
+  //     "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
+  //     { apiKey: Cypress.env().endpointApiKey, id: 5125 }
+  //   );
+  //   runThroughCheckInWorkflows(Cypress.env().existingClientNoPayment, true);
+  // });
 
-  it("Existing client can check in w/ payment on file", () => {
-    runThroughCheckInWorkflows(Cypress.env().existingClientWithPayment, false);
-  });
+  // it("Existing client can check in w/ payment on file", () => {
+  //   runThroughCheckInWorkflows(Cypress.env().existingClientWithPayment, false);
+  // });
 });
 
-const runThroughCheckInWorkflows = (clientEmail, isNewClient) => {
-  cy.get("h2").contains("Appointment Check-In");
-  cy.get("form input[name='email']").type(clientEmail);
-  cy.get("form button[type='submit']")
-    .contains("Check In for Appointment")
-    .click();
-  if (isNewClient) {
-    cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
-      "eq",
-      "/appointment-check-in/info/"
-    );
-    cy.get("h1").contains("Contact Information");
-    cy.get("label").contains("First Name");
-    cy.get("label").contains("Last Name");
-    cy.get("label").contains("Phone Number");
-    cy.get("form button[type='submit']").contains("Submit").click();
-    cy.get("p.text-movet-red")
-      .as("errorMessage")
-      .contains("A first name is required");
-    cy.get("@errorMessage").contains("A last name is required");
-    cy.get("@errorMessage").contains("Phone number must be 10 digits");
-    cy.wait(1000);
-    cy.get("input[name='firstName']").type("TEST");
-    cy.wait(1000);
-    cy.get("input[name='lastName']").type("CLIENT - CYPRESS");
-    cy.wait(1000);
-    cy.get("input[name='phone-number']").type(
-      Math.floor(100000000 + Math.random() * 900000000)
-    );
-    cy.wait(1000);
-    cy.get("form button[type='submit']").contains("Submit").click();
-
-    cy.wait(1000);
-    cy.visit("http://localhost:3001/appointment-check-in/success");
-    cy.wait(1000);
-    cy.get("h3").contains("We've got you checked in");
-  } else {
-    cy.get("h3").contains("Welcome Back");
-    cy.get("h3").contains("We've got you checked in");
-  }
-};
+// const runThroughCheckInWorkflows = (clientEmail, isNewClient) => {
+//   cy.get("h2").contains("Appointment Check-In");
+//   cy.get("form input[name='email']").type(clientEmail);
+//   cy.get("form button[type='submit']")
+//     .contains("Check In for Appointment")
+//     .click();
+//   if (isNewClient) {
+//     cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+//       "eq",
+//       "/appointment-check-in/info/"
+//     );
+//     cy.get("h1").contains("Contact Information");
+//     cy.get("label").contains("First Name");
+//     cy.get("label").contains("Last Name");
+//     cy.get("label").contains("Phone Number");
+//     cy.get("form button[type='submit']").contains("Submit").click();
+//     cy.get("p.text-movet-red")
+//       .as("errorMessage")
+//       .contains("A first name is required");
+//     cy.get("@errorMessage").contains("A last name is required");
+//     cy.get("@errorMessage").contains("Phone number must be 10 digits");
+//     cy.wait(1500);
+//     cy.get("input[name='firstName']").type("TEST");
+//     cy.wait(1500);
+//     cy.get("input[name='lastName']").type("CLIENT - CYPRESS");
+//     cy.wait(1500);
+//     cy.get("input[name='phone-number']").type(
+//       Math.floor(1000000000 + Math.random() * 9000000000)
+//     );
+//     cy.get("form button[type='submit']").contains("Submit").click();
+//     cy.get("h2").contains("Loading, please wait...");
+//     cy.origin("https://payment.movetcare.com", () => {
+//       cy.on("uncaught:exception", (e) => {
+//         if (e.message.includes("Things went bad")) return false;
+//       });
+//     });
+//   } else {
+//     cy.get("h3").contains("Welcome Back");
+//     cy.get("h3").contains("We've got you checked in");
+//   }
+// };

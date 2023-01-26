@@ -1,4 +1,4 @@
-import { admin, throwError } from "../../config/config";
+import { admin, throwError, DEBUG } from "../../config/config";
 import { updateProVetClient } from "../../integrations/provet/entities/client/updateProVetClient";
 import { sendNotification } from "../../notifications/sendNotification";
 import type {
@@ -9,7 +9,7 @@ import type {
 } from "../../types/booking";
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { handleFailedBooking } from "./handleFailedBooking";
-const DEBUG = true;
+
 export const processContactInfo = async (
   id: string,
   {
