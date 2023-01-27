@@ -7,6 +7,7 @@ import {
   throwError,
 } from "../../../config/config";
 import { fetchEntity } from "../../../integrations/provet/entities/fetchEntity";
+import { sendNotification } from "../../../notifications/sendNotification";
 import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
 import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
@@ -132,7 +133,7 @@ export const verifyAccount = functions
                 id +
                 "</b></p>",
             },
-          } as any);
+          });
         }
         return {
           errors,
@@ -456,10 +457,3 @@ const getPaymentMethodErrors = async ({
   if (DEBUG) console.log("getPaymentMethodErrors", errors);
   return errors;
 };
-
-function sendNotification(arg0: {
-  type: string;
-  payload: { message: string };
-}) {
-  throw new Error("Function not implemented.");
-}
