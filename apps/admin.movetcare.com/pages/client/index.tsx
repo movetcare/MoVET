@@ -8,19 +8,19 @@ import {
   faEnvelope,
   faUser,
   faRedo,
-  faFlag,
   faAppleAlt,
   faSms,
   faCheck,
   faEnvelopeSquare,
   faCircleExclamation,
   faSpinner,
+  faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GOTO_PHONE_URL } from "constants/urls";
 import environment from "utils/environment";
-import { collection, doc } from "firebase/firestore";
-import { useCollection, useDocument } from "react-firebase-hooks/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { useDocument } from "react-firebase-hooks/firestore";
 import { firestore, functions } from "services/firebase";
 import { Button, Loader } from "ui";
 import Error from "components/Error";
@@ -30,40 +30,39 @@ import { getMMDDFromDate } from "utils/getMMDDFromDate";
 import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
+import { Transition } from "@headlessui/react";
 const Client = () => {
   const router = useRouter();
   const { query } = router;
-  const [account, setAccount] = useState<any>(null);
   const [errors, setErrors] = useState<Array<string> | null>(null);
   const [client, setClient] = useState<any>();
-  const [paymentMethods, setPaymentMethods] = useState<any>();
   const [isLoadingAccount, setIsLoadingAccount] = useState<boolean>(true);
+  const [isLoadingSendPaymentLink, setIsLoadingSendPaymentLink] =
+    useState<boolean>(false);
+  const [isLoadingAddingToWaitlist, setIsAddingToWaitlist] =
+    useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [paymentMethodsData, isLoadingPaymentMethods, errorPaymentMethods] =
-    useCollection(
-      collection(firestore, `clients/${query?.id}/payment_methods`)
-    );
   const [clientData, isLoadingClient, errorClient] = useDocument(
     doc(firestore, `clients/${query?.id}`)
   );
 
   useEffect(() => {
-    if (!isLoadingClient && !isLoadingPaymentMethods) setIsLoading(false);
-    if (clientData && paymentMethodsData?.docs) {
+    if (!isLoadingClient) setIsLoading(false);
+    if (clientData) {
       setClient(clientData.data());
-      const paymentMethods: any = [];
-      paymentMethodsData.docs.map((paymentMethod: any) =>
-        paymentMethods.push(paymentMethod.data())
-      );
-      setPaymentMethods(paymentMethods);
       const verifyAccount = httpsCallable(functions, "verifyAccount");
       verifyAccount({
         id: query?.id,
       })
         .then((result: any) => {
           console.log("result", result.data);
-          setClient(result.data);
-          // if (result.data?.errors.length > 0) setErrors(result.data.errors);
+          setClient({
+            ...result.data,
+            createdOn: clientData.data()?.createdOn,
+            updatedOn: clientData.data()?.updatedOn,
+          });
+          if (result.data?.errors && result.data?.errors.length > 0)
+            setErrors(result.data.errors);
         })
         .catch((error: any) => {
           toast(error?.message, {
@@ -80,59 +79,139 @@ const Client = () => {
         })
         .finally(() => setIsLoadingAccount(false));
     }
-  }, [
-    isLoadingPaymentMethods,
-    isLoadingClient,
-    clientData,
-    paymentMethodsData,
-    query,
-  ]);
+  }, [isLoadingClient, clientData, query]);
 
   const sendPaymentLink = (mode: "SMS" | "EMAIL") => {
+    setIsLoadingSendPaymentLink(true);
     toast(
       `SENDING PAYMENT LINK ${mode} TO ${
-        mode === "SMS" ? formatPhoneNumber(client?.phone) : client?.email
+        mode === "SMS"
+          ? client?.phone !== undefined
+            ? formatPhoneNumber(client?.phone)
+            : client?.phoneNumber
+          : client?.email
       }`,
       {
         position: "top-center",
-        duration: 3500,
+        duration: 1500,
         icon: (
           <FontAwesomeIcon
             icon={mode === "SMS" ? faSms : faEnvelopeSquare}
             size="lg"
-            className="text-movet-green"
+            className="text-movet-yellow"
           />
         ),
       }
     );
+    const sendPaymentLink = httpsCallable(functions, "sendPaymentLink");
+    sendPaymentLink({
+      id: query?.id,
+      mode,
+    })
+      .then((result: any) => {
+        if (result.data)
+          toast(
+            `SENT PAYMENT LINK ${mode} TO ${
+              mode === "SMS"
+                ? client?.phone !== undefined
+                  ? formatPhoneNumber(client?.phone)
+                  : client?.phoneNumber
+                : client?.email
+            }`,
+            {
+              position: "top-center",
+              duration: 5000,
+              icon: (
+                <FontAwesomeIcon
+                  icon={mode === "SMS" ? faSms : faEnvelopeSquare}
+                  size="lg"
+                  className="text-movet-green"
+                />
+              ),
+            }
+          );
+        else
+          toast("SOMETHING WENT WRONG SENDING PAYMENT LINK!", {
+            position: "top-center",
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                className="text-movet-red"
+              />
+            ),
+          });
+      })
+      .catch((error: any) => {
+        toast(error?.message, {
+          position: "top-center",
+          duration: 5000,
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              className="text-movet-red"
+            />
+          ),
+        });
+      })
+      .finally(() => setIsLoadingSendPaymentLink(false));
   };
 
-  const addToWaitlist = () => {
-    toast(`CLIENT ADDED TO WAITLIST`, {
-      position: "top-center",
-      duration: 3500,
-      icon: (
-        <FontAwesomeIcon
-          icon={faCheck}
-          size="lg"
-          className="text-movet-green"
-        />
-      ),
-    });
-  };
-
-  const flagClient = () => {
-    toast(`FLAG ACCOUNT FEATURE COMING SOON!`, {
-      position: "top-center",
-      duration: 3500,
-      icon: (
-        <FontAwesomeIcon
-          icon={faFlag}
-          size="lg"
-          className="text-movet-yellow"
-        />
-      ),
-    });
+  const addToWaitlist = async () => {
+    setIsAddingToWaitlist(true);
+    await setDoc(
+      doc(firestore, `waitlist/${client?.email}`),
+      {
+        id: query?.id,
+        firstName: client?.displayName,
+        lastName: "",
+        phone:
+          client?.phone !== undefined
+            ? formatPhoneNumber(client?.phone)
+            : client?.phoneNumber
+            ? client?.phoneNumber
+            : "UNKNOWN!",
+        status: "complete",
+        isActive: true,
+        customerId: client?.customer,
+        paymentMethod:
+          client?.paymentMethods.length > 0 && client?.paymentMethods[0]
+            ? [
+                `${client?.paymentMethods[0]?.card?.brand?.toUpperCase()} - ${
+                  client?.paymentMethods[0]?.card?.last4
+                }`,
+              ]
+            : [],
+        updatedOn: serverTimestamp(),
+      },
+      { merge: true }
+    )
+      .then(() =>
+        toast(`CLIENT ADDED TO WAITLIST`, {
+          position: "top-center",
+          duration: 3500,
+          icon: (
+            <FontAwesomeIcon
+              icon={faCheck}
+              size="lg"
+              className="text-movet-green"
+            />
+          ),
+        })
+      )
+      .catch((error: any) => {
+        toast(error?.message, {
+          position: "top-center",
+          duration: 5000,
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              className="text-movet-red"
+            />
+          ),
+        });
+      })
+      .finally(() => setIsAddingToWaitlist(false));
   };
   const reloadPage = () => {
     toast(`RELOADING DATA...`, {
@@ -150,8 +229,8 @@ const Client = () => {
       >
         {isLoading ? (
           <Loader />
-        ) : errorClient || errorPaymentMethods ? (
-          <Error error={errorClient || errorPaymentMethods} />
+        ) : errorClient ? (
+          <Error error={errorClient} />
         ) : (
           <>
             <div className="flex sm:items-center justify-between md:pb-6 border-b border-movet-gray px-8 py-4">
@@ -164,23 +243,41 @@ const Client = () => {
                   height={50}
                   width={50}
                 />
-                <div className="flex flex-col leading-tight">
+                <div className="flex flex-col text-center">
                   {client && (
-                    <div className="text-xl mt-1 flex items-center">
-                      <h1 className="mr-3 font-abside">
-                        {client?.firstName} {client?.lastName}
+                    <div className="mt-1 flex items-center">
+                      <h1 className="mr-3 font-abside text-lg">
+                        {client?.firstName !== undefined
+                          ? client?.firstName
+                          : ""}{" "}
+                        {client?.lastName !== undefined ? client?.lastName : ""}
+                        {client?.displayName !== undefined
+                          ? client?.displayName
+                          : ""}
                       </h1>
                     </div>
                   )}
+                  <div className="flex flex-col sm:flex-row text-center text-xs">
+                    <div className="mt-2">
+                      <b>Joined: </b>
+                      <span className="italic mr-4">
+                        {client?.createdOn
+                          ? timeSince(client?.createdOn?.toDate())
+                          : "UNKNOWN!"}
+                      </span>
+                    </div>
+                    <div className="mt-2">
+                      <b>Last Updated: </b>
+                      <span className="italic">
+                        {client?.updatedOn
+                          ? timeSince(client?.updatedOn?.toDate())
+                          : "UNKNOWN!"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row items-center space-x-2">
-                <div
-                  onClick={() => flagClient()}
-                  className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                >
-                  <FontAwesomeIcon icon={faFlag} size="lg" />
-                </div>
                 <a
                   href={
                     environment === "production"
@@ -193,27 +290,20 @@ const Client = () => {
                 >
                   <FontAwesomeIcon icon={faPaw} size="lg" />
                 </a>
-                {client &&
-                  paymentMethods &&
-                  paymentMethods.map(
-                    (paymentMethod: any, index: number) =>
-                      paymentMethod?.active &&
-                      index === 0 && (
-                        <a
-                          key={index}
-                          href={
-                            environment === "production"
-                              ? `https://dashboard.stripe.com/customers/${client?.customer}/`
-                              : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
-                          }
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                        >
-                          <FontAwesomeIcon icon={faCreditCard} size="lg" />
-                        </a>
-                      )
-                  )}
+                {client && client?.customer && (
+                  <a
+                    href={
+                      environment === "production"
+                        ? `https://dashboard.stripe.com/customers/${client?.customer}/`
+                        : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                  >
+                    <FontAwesomeIcon icon={faCreditCard} size="lg" />
+                  </a>
+                )}
                 {client && (
                   <a
                     href={`${GOTO_PHONE_URL}/${client?.phone}`}
@@ -242,11 +332,11 @@ const Client = () => {
                 </div>
               </div>
             </div>
-            <div className="flex-1 px-4">
-              <div className="flex flex-row items-center w-full pt-4">
+            <div className="flex-1 px-4 sm:px-8">
+              <div className="flex flex-row items-center w-full pt-4 ml-2">
                 <h3 className="text-lg m-0 font-extrabold">
                   <FontAwesomeIcon icon={faUser} className="mr-4" />
-                  ACCOUNT:
+                  ACCOUNT STATUS:
                 </h3>
                 {isLoadingAccount ? (
                   <FontAwesomeIcon
@@ -257,15 +347,15 @@ const Client = () => {
                   />
                 ) : Array.isArray(errors) &&
                   errors[0].includes("verifyAccount") ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white">
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
                     STATUS UNKNOWN
                   </span>
                 ) : errors ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white">
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
                     NEEDS REPAIR
                   </span>
                 ) : (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white">
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
                     HEALTHY
                   </span>
                 )}
@@ -300,17 +390,40 @@ const Client = () => {
                 <div className="mt-2">
                   <b>Name: </b>
                   <span className="italic">
-                    {client?.firstName} {client?.lastName}
+                    {client?.firstName !== undefined ? client?.firstName : ""}{" "}
+                    {client?.lastName !== undefined ? client?.lastName : ""}
+                    {client?.displayName !== undefined
+                      ? client?.displayName
+                      : ""}
                   </span>
                 </div>
                 <div className="mt-2">
                   <b>Email Address: </b>
-                  <span className="italic">{client?.email}</span>
+                  <span className="italic">
+                    {client?.email}
+                    {client?.emailVerified ? (
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        className="text-movet-green ml-2"
+                      />
+                    ) : client?.emailVerified === false ? (
+                      <FontAwesomeIcon
+                        icon={faCircleExclamation}
+                        className="text-movet-yellow ml-2"
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </span>
                 </div>
                 <div className="mt-2">
                   <b>Phone Number: </b>
                   <span className="italic">
-                    {formatPhoneNumber(client?.phone)}
+                    {client?.phone !== undefined
+                      ? formatPhoneNumber(client?.phone)
+                      : client?.phoneNumber
+                      ? client?.phoneNumber
+                      : "UNKNOWN!"}
                   </span>
                 </div>
                 <div className="mt-2">
@@ -331,57 +444,49 @@ const Client = () => {
                     {client?.zipCode ? client?.zipCode : "ZIPCODE UNKNOWN!"}
                   </span>
                 </div>
-                <div className="mt-2">
-                  <b>Joined: </b>
-                  <span className="italic">
-                    {client?.createdOn
-                      ? timeSince(client?.createdOn?.toDate())
-                      : "UNKNOWN!"}
-                  </span>
-                </div>
-                <div className="mt-2">
-                  <b>Last Updated: </b>
-                  <span className="italic">
-                    {client?.updatedOn
-                      ? timeSince(client?.updatedOn?.toDate())
-                      : "UNKNOWN!"}
-                  </span>
-                </div>
               </div>
               <Divider />
-              <div className="flex flex-row items-center w-full mt-2">
+              <div className="flex flex-row items-center w-full mt-2 ml-2">
                 <h3 className="text-lg m-0 font-extrabold">
                   <FontAwesomeIcon icon={faEnvelope} className="mr-4" />
                   EMAIL NOTIFICATIONS:
                 </h3>
-                {client?.sendEmail ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white">
+                {client?.sendEmail === undefined ? (
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                    UNKNOWN
+                  </span>
+                ) : client?.sendEmail ? (
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
                     ACTIVE
                   </span>
                 ) : (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white">
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
                     DISABLED
                   </span>
                 )}
               </div>
               <Divider />
-              <div className="flex flex-row items-center w-full mt-2">
+              <div className="flex flex-row items-center w-full mt-2 ml-2">
                 <h3 className="text-lg m-0 font-extrabold">
                   <FontAwesomeIcon icon={faSms} className="mr-4" />
                   SMS NOTIFICATIONS:
                 </h3>
-                {client?.sendEmail ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white">
+                {client?.sendSms === undefined ? (
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                    UNKNOWN
+                  </span>
+                ) : client?.sendSms ? (
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
                     ACTIVE
                   </span>
                 ) : (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white">
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
                     DISABLED
                   </span>
                 )}
               </div>
               <Divider />
-              <div className="flex flex-row items-center w-full mt-2">
+              <div className="flex flex-row items-center w-full mt-2 ml-2">
                 <FontAwesomeIcon
                   icon={faCreditCard}
                   className="mr-4"
@@ -395,99 +500,115 @@ const Client = () => {
                     size="lg"
                     className="text-movet-brown ml-4"
                   />
-                ) : errors ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white">
+                ) : client?.paymentMethods === undefined ? (
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
                     STATUS UNKNOWN
                   </span>
-                ) : paymentMethods.length === 0 ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white">
+                ) : client?.paymentMethods.length === 0 ? (
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
                     NEEDS A PAYMENT METHOD
                   </span>
                 ) : (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white">
+                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
                     READY
                   </span>
                 )}
+                {isLoadingSendPaymentLink ? (
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    spin
+                    size="sm"
+                    className="text-movet-brown ml-4"
+                  />
+                ) : (
+                  <>
+                    {client?.sendSms && (
+                      <div
+                        onClick={() => sendPaymentLink("SMS")}
+                        className="ml-4 cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      >
+                        <FontAwesomeIcon icon={faSms} size="lg" />
+                      </div>
+                    )}
+                    {client?.sendEmail && (
+                      <div
+                        onClick={() => sendPaymentLink("EMAIL")}
+                        className="ml-1 cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      >
+                        <FontAwesomeIcon icon={faEnvelopeSquare} size="lg" />
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
-              <div className="mt-4 ml-4 sm:ml-8 mb-6">
+              <div className="ml-4 sm:ml-8">
                 {client &&
-                  paymentMethods &&
-                  paymentMethods.map(
-                    (paymentMethod: any, index: number) =>
-                      paymentMethod?.active &&
-                      index === 0 && (
-                        <a
-                          key={index}
-                          href={
-                            environment === "production"
-                              ? `https://dashboard.stripe.com/customers/${client?.customer}/`
-                              : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
-                          }
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <div className="mt-2 flex flex-row items-center">
-                            <span className="text-xs mr-1">
-                              {getMMDDFromDate(
-                                new Date(paymentMethod?.created)
-                              )}
-                            </span>
-                            <b>
-                              {capitalizeFirstLetter(
-                                paymentMethod?.card?.funding
-                              )}{" "}
-                              {capitalizeFirstLetter(paymentMethod?.type)}:
-                            </b>
-                            <span className="italic ml-2">
-                              {capitalizeFirstLetter(
-                                paymentMethod?.card?.brand
-                              )}
-                            </span>
-                            <span className="italic ml-2">
-                              - {paymentMethod?.card?.last4}
-                            </span>
-                            <span className="italic ml-2">
-                              - {paymentMethod?.card?.exp_month}/
-                              {paymentMethod?.card?.exp_year}
-                              {paymentMethod?.card?.wallet?.apple_pay && (
-                                <FontAwesomeIcon
-                                  icon={faAppleAlt}
-                                  className="ml-2"
-                                  size="xs"
-                                />
-                              )}
-                            </span>
-                          </div>
-                        </a>
-                      )
+                  client?.paymentMethods &&
+                  client?.paymentMethods?.map(
+                    (paymentMethod: any, index: number) => (
+                      <a
+                        key={index}
+                        href={
+                          environment === "production"
+                            ? `https://dashboard.stripe.com/customers/${client?.customer}/`
+                            : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                        }
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <div className="mt-2 flex flex-row items-center">
+                          <span className="text-xs mr-1">
+                            {getMMDDFromDate(new Date(paymentMethod?.created))}
+                          </span>
+                          <b>
+                            {capitalizeFirstLetter(
+                              paymentMethod?.card?.funding
+                            )}{" "}
+                            {capitalizeFirstLetter(paymentMethod?.type)}:
+                          </b>
+                          <span className="italic ml-2">
+                            {capitalizeFirstLetter(paymentMethod?.card?.brand)}
+                          </span>
+                          <span className="italic ml-2">
+                            - {paymentMethod?.card?.last4}
+                          </span>
+                          <span className="italic ml-2">
+                            - {paymentMethod?.card?.exp_month}/
+                            {paymentMethod?.card?.exp_year}
+                            {paymentMethod?.card?.wallet?.apple_pay && (
+                              <FontAwesomeIcon
+                                icon={faAppleAlt}
+                                className="ml-2"
+                                size="xs"
+                              />
+                            )}
+                          </span>
+                        </div>
+                      </a>
+                    )
                   )}
               </div>
-              <div className="flex flex-row mb-2">
-                <Button
-                  text="SMS Payment Link"
-                  color="black"
-                  icon={faSms}
-                  disabled={!client?.sendSms}
-                  onClick={() => sendPaymentLink("SMS")}
-                />
-                <Button
-                  text="EMAIL Payment Link"
-                  color="black"
-                  icon={faEnvelope}
-                  disabled={!client?.sendEmail}
-                  onClick={() => sendPaymentLink("EMAIL")}
-                />
-              </div>
+              <Divider />
             </div>
-            <Divider />
-            <Button
-              text="Client Info Verified"
-              color="red"
-              icon={faCheck}
-              disabled={!client?.sendEmail}
-              onClick={() => addToWaitlist()}
-              className="bg-movet-green mb-8 mt-4"
-            />
+            <Transition
+              show={client?.paymentMethods !== undefined || errors !== null}
+              enter="transition ease-in duration-1000"
+              leave="transition ease-out duration-1000"
+              leaveTo="opacity-10"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leaveFrom="opacity-100"
+            >
+              <Button
+                text="Client Info Verified"
+                color="black"
+                icon={faCheck}
+                loading={isLoadingAddingToWaitlist}
+                disabled={isLoadingAddingToWaitlist}
+                onClick={() => addToWaitlist()}
+                className="hover:bg-movet-green mb-8 mt-4"
+              />
+            </Transition>
           </>
         )}
       </div>

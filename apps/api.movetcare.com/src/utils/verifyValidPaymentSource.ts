@@ -1,14 +1,13 @@
-import { DEBUG, admin, stripe, throwError } from "../config/config";
+import { admin, stripe, throwError } from "../config/config";
+const DEBUG = true;
 export const verifyValidPaymentSource = async (
   client: string,
-  customerId: string
+  customerId: string,
+  details = false
 ): Promise<Array<any> | false> => {
   if (DEBUG) console.log("verifyValidPaymentSource => ", customerId);
   const paymentMethods: any = await stripe.customers.listPaymentMethods(
-    customerId,
-    {
-      type: "card",
-    }
+    customerId
   );
   const validPaymentMethods: Array<any> = [];
   for (let i = 0; i < paymentMethods?.data.length; i++) {
@@ -17,7 +16,7 @@ export const verifyValidPaymentSource = async (
       (paymentMethods?.data[i]?.card?.exp_month as any) - 1
     );
     if (cardExpiryDate > new Date())
-      validPaymentMethods.push(paymentMethods?.data[i]?.card);
+      validPaymentMethods.push(paymentMethods?.data[i]);
   }
   if (DEBUG) {
     console.log("paymentMethods.data", paymentMethods.data);
@@ -27,18 +26,27 @@ export const verifyValidPaymentSource = async (
     if (DEBUG) console.log("CHECKING INVOICE PAYMENT METHODS");
     const validInvoicePaymentMethods: Array<any> = [];
     const invoicePaymentMethods: any = await getInvoicePaymentMethods(client);
-    validPaymentMethods.map((card: any) =>
-      invoicePaymentMethods.docs.map((invoiceCard: any) => {
-        if (DEBUG) console.log("invoiceCard", invoiceCard.data());
-        if (invoiceCard.data().card.last4 === card.last4) {
+    validPaymentMethods.map((stripePaymentMethod: any) =>
+      invoicePaymentMethods.map((invoicePaymentMethod: any) => {
+        if (DEBUG) {
+          console.log("stripePaymentMethod", stripePaymentMethod);
+          console.log("invoicePaymentMethod", invoicePaymentMethod);
+        }
+        if (invoicePaymentMethod.id === stripePaymentMethod.id) {
           if (DEBUG)
             console.log(
               "VALID PAYMENT METHOD FOUND!",
-              `${card?.brand?.toUpperCase()} - ${card?.last4}`
+              `${stripePaymentMethod?.card?.brand?.toUpperCase()} - ${
+                stripePaymentMethod?.card?.last4
+              }`
             );
-          validInvoicePaymentMethods.push(
-            `${card?.brand?.toUpperCase()} - ${card?.last4}`
-          );
+          if (details) validInvoicePaymentMethods.push(stripePaymentMethod);
+          else
+            validInvoicePaymentMethods.push(
+              `${stripePaymentMethod?.card?.brand?.toUpperCase()} - ${
+                stripePaymentMethod?.card?.last4
+              }`
+            );
         }
       })
     );
@@ -58,4 +66,11 @@ const getInvoicePaymentMethods = async (client: string): Promise<any> =>
     .doc(client)
     .collection("payment_methods")
     .get()
+    .then((snapshot: any) => {
+      const paymentMethods: Array<any> = [];
+      snapshot.docs.map((doc: any) => {
+        if (doc.data().active) paymentMethods.push(doc.data());
+      });
+      return paymentMethods;
+    })
     .catch((error: any) => throwError(error));

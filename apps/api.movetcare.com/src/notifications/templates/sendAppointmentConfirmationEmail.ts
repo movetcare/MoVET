@@ -50,15 +50,19 @@ export const sendAppointmentConfirmationEmail = async (
       `<li>${patient?.name}${
         patient?.minorIllness !== undefined &&
         patient?.minorIllness !== "No Symptoms of Illness"
-          ? ` is showing symptoms of ${JSON.parse(patient?.minorIllness).map(
-              (symptoms: any) => {
-                if (symptoms?.id === patient?.id)
-                  return `${symptoms?.minorIllness.toLowerCase()} - "${
-                    symptoms?.other
-                  }"`;
-                else return;
-              }
-            )}`
+          ? `${
+              Array.isArray(patient?.minorIllness)
+                ? `  is showing symptoms of ${JSON.parse(
+                    patient?.minorIllness
+                  ).map((symptoms: any) => {
+                    if (symptoms?.id === patient?.id)
+                      return `${symptoms?.minorIllness.toLowerCase()} - "${
+                        symptoms?.other
+                      }"`;
+                    else return;
+                  })}`
+                : " - " + patient?.minorIllness
+            }`
           : (patient?.minorIllness &&
               patient?.minorIllness === "No Symptoms of Illness") ||
             patient?.minorIllness === undefined

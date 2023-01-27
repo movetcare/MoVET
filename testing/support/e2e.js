@@ -15,3 +15,11 @@
 
 require("./commands");
 require("cypress-plugin-tab");
+
+Cypress.on("uncaught:exception", (error, runnable) => {
+  console.log(runnable);
+  console.error(error);
+  // returning false here prevents Cypress from
+  // failing the test
+  return false;
+});

@@ -53,6 +53,7 @@ export { syncChatLogWithProVet } from "./endpoints/admin/telehealth/syncChatLogW
 export { newClientTelehealthMessage } from "./endpoints/admin/telehealth/newClientTelehealthQuestion";
 export { assignRoles } from "./endpoints/admin/accounts/assignRoles";
 export { verifyAccount } from "./endpoints/admin/accounts/verifyAccount";
+export { sendPaymentLink } from "./endpoints/admin/accounts/sendPaymentLink";
 // export {deleteMoVETAccount} from './endpoints/admin/accounts/deleteMoVETAccount';
 export { deleteAccount } from "./endpoints/admin/accounts/deleteAccount";
 export { event } from "./endpoints/admin/event";
