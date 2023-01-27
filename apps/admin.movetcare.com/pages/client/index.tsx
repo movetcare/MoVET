@@ -388,16 +388,6 @@ const Client = () => {
                   </span>
                 </div>
                 <div className="mt-2">
-                  <b>Name: </b>
-                  <span className="italic">
-                    {client?.firstName !== undefined ? client?.firstName : ""}{" "}
-                    {client?.lastName !== undefined ? client?.lastName : ""}
-                    {client?.displayName !== undefined
-                      ? client?.displayName
-                      : ""}
-                  </span>
-                </div>
-                <div className="mt-2">
                   <b>Email Address: </b>
                   <span className="italic">
                     {client?.email}

@@ -12,7 +12,7 @@ import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
 import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
 import { requestIsAuthorized } from "../../admin/pos/requestIsAuthorized";
-const DEBUG = false;
+const DEBUG = true;
 let paymentMethods: Array<any> = [];
 interface AccountData {
   email: string;
@@ -292,8 +292,22 @@ const getPhoneNumberErrors = ({
   const movetPhone = formatPhoneNumber(movetData?.phone);
   let provetPhone: string | null = null;
   provetData?.phone_numbers?.map((phone: any) => {
-    if (phone.description === "Default Phone Number - Used for SMS Alerts")
+    if (DEBUG) console.log("provet phone", phone);
+    if (
+      phone.description === "Default Phone Number - Used for SMS Alerts" ||
+      (phone.type === "mobile" &&
+        phone.is_secondary_owners_phone_number === false)
+    ) {
+      if (DEBUG) {
+        console.log("phone.description", phone.description);
+        console.log(
+          " (phone.type === mobile &&  phone.is_secondary_owners_phone_number === false)",
+          phone.type === "mobile" &&
+            phone.is_secondary_owners_phone_number === false
+        );
+      }
       provetPhone = formatPhoneNumber(phone.number);
+    }
   });
   if (DEBUG) {
     console.log("authPhone", authPhone);
