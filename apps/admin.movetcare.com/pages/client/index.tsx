@@ -15,6 +15,8 @@ import {
   faCircleExclamation,
   faSpinner,
   faCheckCircle,
+  faPaperPlane,
+  faMapLocation,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GOTO_PHONE_URL } from "constants/urls";
@@ -37,6 +39,8 @@ const Client = () => {
   const [errors, setErrors] = useState<Array<string> | null>(null);
   const [client, setClient] = useState<any>();
   const [isLoadingAccount, setIsLoadingAccount] = useState<boolean>(true);
+  const [isLoadingSendPasswordResetLink, setIsLoadingSendPasswordResetLink] =
+    useState<boolean>(false);
   const [isLoadingSendPaymentLink, setIsLoadingSendPaymentLink] =
     useState<boolean>(false);
   const [isLoadingAddingToWaitlist, setIsAddingToWaitlist] =
@@ -61,8 +65,11 @@ const Client = () => {
             createdOn: clientData.data()?.createdOn,
             updatedOn: clientData.data()?.updatedOn,
           });
-          if (result.data?.errors && result.data?.errors.length > 0)
-            setErrors(result.data.errors);
+          if (
+            (result.data?.errors && result.data?.errors.length > 0) ||
+            result.data === false
+          )
+            setErrors(result.data?.errors || ["Client Not Found..."]);
         })
         .catch((error: any) => {
           toast(error?.message, {
@@ -225,6 +232,66 @@ const Client = () => {
     });
     router.reload();
   };
+
+  const sendPasswordResetLink = async () => {
+    setIsLoadingSendPasswordResetLink(true);
+    toast(`SENDING PASSWORD REST LINK TO ${client?.email}`, {
+      position: "top-center",
+      duration: 1500,
+      icon: (
+        <FontAwesomeIcon
+          icon={faEnvelopeSquare}
+          size="lg"
+          className="text-movet-yellow"
+        />
+      ),
+    });
+    const sendPasswordResetLink = httpsCallable(
+      functions,
+      "sendPasswordResetLink"
+    );
+    sendPasswordResetLink({
+      email: client?.email,
+    })
+      .then((result: any) => {
+        if (result.data)
+          toast(`SENT PASSWORD RESET LINK TO ${client?.email}`, {
+            position: "top-center",
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faEnvelopeSquare}
+                size="lg"
+                className="text-movet-green"
+              />
+            ),
+          });
+        else
+          toast("SOMETHING WENT WRONG SENDING PASSWORD RESET LINK!", {
+            position: "top-center",
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                className="text-movet-red"
+              />
+            ),
+          });
+      })
+      .catch((error: any) => {
+        toast(error?.message, {
+          position: "top-center",
+          duration: 5000,
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              className="text-movet-red"
+            />
+          ),
+        });
+      })
+      .finally(() => setIsLoadingSendPasswordResetLink(false));
+  };
   const Divider = () => <hr className="my-4 border-movet-brown/50" />;
   return (
     <div className="flex flex-col md:flex-row">
@@ -282,6 +349,29 @@ const Client = () => {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row items-center space-x-2">
+                <div
+                  onClick={() => sendPasswordResetLink()}
+                  className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                >
+                  {isLoadingSendPasswordResetLink ? (
+                    <FontAwesomeIcon
+                      icon={faSpinner}
+                      spin
+                      size="sm"
+                      className="text-movet-brown ml-4"
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faPaperPlane}
+                      size="lg"
+                      className={
+                        !client?.emailVerified && !isLoadingAccount
+                          ? "text-movet-yellow hover:text-movet-green"
+                          : ""
+                      }
+                    />
+                  )}
+                </div>
                 <a
                   href={
                     environment === "production"
@@ -328,9 +418,19 @@ const Client = () => {
                     <FontAwesomeIcon icon={faEnvelope} size="lg" />
                   </a>
                 )}
+                {client && (
+                  <a
+                    href={`http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`}
+                    target="_blank"
+                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faMapLocation} size="lg" />
+                  </a>
+                )}
                 <div
                   onClick={() => reloadPage()}
-                  className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                  className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                 >
                   <FontAwesomeIcon icon={faRedo} size="lg" />
                 </div>
@@ -338,7 +438,7 @@ const Client = () => {
             </div>
             <div className="flex-1 px-4 sm:px-8">
               <div className="flex flex-row items-center w-full pt-4 ml-2">
-                <h3 className="text-lg m-0 font-extrabold">
+                <h3 className="text-lg m-0 font-extrabold flex-wrap">
                   <FontAwesomeIcon icon={faUser} className="mr-4" />
                   ACCOUNT STATUS:
                 </h3>
@@ -391,9 +491,9 @@ const Client = () => {
                       : "DOES NOT EXIST!"}
                   </span>
                 </div>
-                <div className="mt-2">
+                <div className="mt-2 flex flex-row flex-wrap">
                   <b>Email Address: </b>
-                  <span className="italic">
+                  <p className="italic flex flex-row ml-2 items-center">
                     {client?.email}
                     {client?.emailVerified ? (
                       <FontAwesomeIcon
@@ -401,14 +501,19 @@ const Client = () => {
                         className="text-movet-green ml-2"
                       />
                     ) : client?.emailVerified === false ? (
-                      <FontAwesomeIcon
-                        icon={faCircleExclamation}
-                        className="text-movet-yellow ml-2"
-                      />
+                      <span className="group flex flex-row items-center flex-wrap">
+                        <FontAwesomeIcon
+                          icon={faCircleExclamation}
+                          className="text-movet-yellow ml-2"
+                        />
+                        <span className="hidden group-hover:flex items-center ml-2 text-xs text-movet-yellow font-extrabold">
+                          Client has not set an account password yet
+                        </span>
+                      </span>
                     ) : (
                       ""
                     )}
-                  </span>
+                  </p>
                 </div>
                 <div className="mt-2">
                   <b>Phone Number: </b>
@@ -585,7 +690,10 @@ const Client = () => {
               <Divider />
             </div>
             <Transition
-              show={client?.paymentMethods !== undefined || errors !== null}
+              show={
+                client?.paymentMethods !== undefined ||
+                (errors !== null && errors[0] !== "Client Not Found...")
+              }
               enter="transition ease-in duration-1000"
               leave="transition ease-out duration-1000"
               leaveTo="opacity-10"
