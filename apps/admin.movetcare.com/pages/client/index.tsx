@@ -158,13 +158,17 @@ const Client = () => {
   };
 
   const addToWaitlist = async () => {
+    console.log(" client?.displayName", client?.displayName);
     setIsAddingToWaitlist(true);
     await setDoc(
       doc(firestore, `waitlist/${client?.email}`),
       {
         id: query?.id,
-        firstName: client?.displayName,
-        lastName: "",
+        email: client?.email,
+        firstName: client?.displayName
+          ? client?.displayName
+          : client?.firstName,
+        lastName: client?.displayName ? "" : client?.lastName,
         phone:
           client?.phone !== undefined
             ? formatPhoneNumber(client?.phone)

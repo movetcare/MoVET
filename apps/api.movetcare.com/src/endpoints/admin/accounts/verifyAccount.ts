@@ -80,76 +80,81 @@ export const verifyAccount = functions
     ): Promise<AccountData | false> => {
       if (DEBUG) console.log("verifyAccount DATA =>", id);
       if (await requestIsAuthorized(context)) {
-        const { authData, movetData, provetData, stripeData } =
-          await getAllAccountData(id);
-        if (DEBUG)
-          console.log("accountData", {
-            authData,
-            movetData,
-            provetData,
-            stripeData,
-          });
-        let errors: Array<string | undefined> = [];
-        errors = [
-          ...getEmailErrors({ authData, movetData, provetData }),
-          ...getNotificationErrors({ movetData, provetData }),
-          ...getNameErrors({ authData, movetData, provetData }),
-          ...getPhoneNumberErrors({ authData, movetData, provetData }),
-          ...getAddressErrors({ movetData, provetData }),
-          ...getCustomerErrors({ stripeData, movetData }),
-          ...(await getPaymentMethodErrors({ id, stripeData, movetData })),
-        ];
-        // Verify client exists in sendgrid
-        if (errors.length > 0) {
-          sendNotification({
-            type: "slack",
-            payload: {
-              message:
-                ":fire_extinguisher: MoVET Account Errors Detected! Please Fix ASAP!\n\n" +
-                "```" +
-                JSON.stringify(errors) +
-                "```\n" +
-                (environment.type === "production"
-                  ? "https://admin.movetcare.com"
-                  : "http://localhost:3002") +
-                "/client?id=" +
-                id,
-            },
-          });
-          sendNotification({
-            type: "email",
-            payload: {
-              client: id,
-              to: "support@movetcare.com",
-              subject: "MoVET Account Errors Detected! Please Fix ASAP!",
-              message:
-                "<p>" +
-                JSON.stringify(errors) +
-                "</p><p><b>" +
-                (environment.type === "production"
-                  ? "https://admin.movetcare.com"
-                  : "http://localhost:3002") +
-                "/client?id=" +
-                id +
-                "</b></p>",
-            },
-          });
+        try {
+          const { authData, movetData, provetData, stripeData } =
+            await getAllAccountData(id);
+          if (DEBUG)
+            console.log("accountData", {
+              authData,
+              movetData,
+              provetData,
+              stripeData,
+            });
+          let errors: Array<string | undefined> = [];
+          errors = [
+            ...getEmailErrors({ authData, movetData, provetData }),
+            ...getNotificationErrors({ movetData, provetData }),
+            ...getNameErrors({ authData, movetData, provetData }),
+            ...getPhoneNumberErrors({ authData, movetData, provetData }),
+            ...getAddressErrors({ movetData, provetData }),
+            ...getCustomerErrors({ stripeData, movetData }),
+            ...(await getPaymentMethodErrors({ id, stripeData, movetData })),
+          ];
+          // Verify client exists in sendgrid
+          if (errors.length > 0) {
+            sendNotification({
+              type: "slack",
+              payload: {
+                message:
+                  ":fire_extinguisher: MoVET Account Errors Detected! Please Fix ASAP!\n\n" +
+                  "```" +
+                  JSON.stringify(errors) +
+                  "```\n" +
+                  (environment.type === "production"
+                    ? "https://admin.movetcare.com"
+                    : "http://localhost:3002") +
+                  "/client?id=" +
+                  id,
+              },
+            });
+            sendNotification({
+              type: "email",
+              payload: {
+                client: id,
+                to: "support@movetcare.com",
+                subject: "MoVET Account Errors Detected! Please Fix ASAP!",
+                message:
+                  "<p>" +
+                  JSON.stringify(errors) +
+                  "</p><p><b>" +
+                  (environment.type === "production"
+                    ? "https://admin.movetcare.com"
+                    : "http://localhost:3002") +
+                  "/client?id=" +
+                  id +
+                  "</b></p>",
+              },
+            });
+          }
+          return {
+            errors,
+            email: authData?.email,
+            sendEmail: movetData?.sendEmail,
+            sendSms: movetData?.sendSms,
+            emailVerified: authData?.emailVerified,
+            phoneNumber: formatPhoneNumber(authData?.phoneNumber),
+            displayName: authData?.displayName,
+            city: movetData?.city,
+            street: movetData?.street,
+            state: movetData?.state,
+            zipCode: movetData?.zipCode,
+            customer: stripeData?.customer,
+            paymentMethods: paymentMethods,
+          };
+        } catch (error) {
+          throwError(error);
+          return false;
         }
-        return {
-          errors,
-          email: authData?.email,
-          sendEmail: movetData?.sendEmail,
-          sendSms: movetData?.sendSms,
-          emailVerified: authData?.emailVerified,
-          phoneNumber: formatPhoneNumber(authData?.phoneNumber),
-          displayName: authData?.displayName,
-          city: movetData?.city,
-          street: movetData?.street,
-          state: movetData?.state,
-          zipCode: movetData?.zipCode,
-          customer: stripeData?.customer,
-          paymentMethods: paymentMethods,
-        };
       } else return false;
     }
   );
@@ -367,7 +372,7 @@ const getCustomerErrors = ({
   movetData: MovetData;
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
-  if (movetData.customer === undefined)
+  if (movetData?.customer === undefined)
     console.log(
       `No MoVET Client ID Found! (Should be ${JSON.stringify(
         stripeData.customer
@@ -386,11 +391,13 @@ const getCustomerErrors = ({
       movetData?.customer?.id !== customer
     )
       errors.push(
-        `MoVET Customer ID (${movetData.customer?.id}) does NOT match Stripe Customer ID (${customer})`
+        `MoVET Customer ID (${movetData?.customer?.id}) does NOT match Stripe Customer ID (${customer})`
       );
-    else if (movetData.customer !== customer)
+    else if (movetData?.customer !== customer)
       errors.push(
-        `MoVET Customer ID (${movetData.customer}) does NOT match Stripe Customer ID (${customer})`
+        `MoVET Customer ID (${JSON.stringify(
+          movetData?.customer
+        )}) does NOT match Stripe Customer ID (${customer})`
       );
   });
   if (DEBUG) console.log("getCustomerErrors", errors);
@@ -429,11 +436,13 @@ const getPaymentMethodErrors = async ({
         movetData?.customer?.id !== customer
       )
         errors.push(
-          `Can NOT determine Payment Methods as MoVET Customer ID (${movetData.customer?.id}) does NOT match Stripe Customer ID (${customer})`
+          `Can NOT determine Payment Methods as MoVET Customer ID (${movetData?.customer?.id}) does NOT match Stripe Customer ID (${customer})`
         );
-      else if (movetData.customer !== customer)
+      else if (movetData?.customer !== customer)
         errors.push(
-          `Can NOT determine Payment Methods as MoVET Customer ID (${movetData.customer}) does NOT match Stripe Customer ID (${customer})`
+          `Can NOT determine Payment Methods as MoVET Customer ID (${JSON.stringify(
+            movetData?.customer
+          )}) does NOT match Stripe Customer ID (${customer})`
         );
     });
     const movetPaymentMethods = await admin
