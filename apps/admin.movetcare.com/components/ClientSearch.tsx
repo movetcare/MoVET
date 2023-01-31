@@ -1,7 +1,4 @@
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { Loader } from "ui";
 import Error from "./Error";
 import Select from "react-select";
 import { collection } from "firebase/firestore";
