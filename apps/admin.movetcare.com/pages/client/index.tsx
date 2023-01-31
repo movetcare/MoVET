@@ -35,7 +35,7 @@ import { httpsCallable } from "firebase/functions";
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { Transition } from "@headlessui/react";
 import { ClientSearch } from "components/ClientSearch";
-import error from "next/error";
+
 const Client = () => {
   const router = useRouter();
   const { query } = router;
