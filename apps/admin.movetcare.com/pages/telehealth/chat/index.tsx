@@ -22,6 +22,7 @@ import {
   faPaperPlane,
   faPhone,
   faUserCircle,
+  faIdBadge,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import environment from "utils/environment";
@@ -269,79 +270,79 @@ const ChatSession = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
+                <a
+                  href={
+                    environment === "production"
+                      ? `https://admin.movetcare.com/client?id=${query?.id}/`
+                      : `http://localhost:3002/client?id=${query?.id}/`
+                  }
+                  target="_blank"
+                  className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                  rel="noreferrer"
+                >
+                  <FontAwesomeIcon icon={faIdBadge} size="lg" />
+                </a>
                 {router.query.mode !== "embed" && (
-                  <>
-                    <a
-                      href={
-                        environment === "production"
-                          ? `https://us.provetcloud.com/4285/client/${query?.id}/`
-                          : `https://us.provetcloud.com/4285/client/${query?.id}/`
-                      }
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faPaw} size="lg" />
-                    </a>
-                  </>
+                  <a
+                    href={
+                      environment === "production"
+                        ? `https://us.provetcloud.com/4285/client/${query?.id}/`
+                        : `https://us.provetcloud.com/4285/client/${query?.id}/`
+                    }
+                    target="_blank"
+                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faPaw} size="lg" />
+                  </a>
                 )}
                 {paymentMethods &&
                   paymentMethods.docs.map(
                     (paymentMethod: any, index: number) =>
                       paymentMethod.data()?.active &&
                       index === 0 && (
-                        <>
-                          <a
-                            key={index}
-                            href={
-                              environment === "production"
-                                ? `https://dashboard.stripe.com/customers/${session?.id}/`
-                                : `https://dashboard.stripe.com/test/customers/${session?.id}/`
-                            }
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                          >
-                            <FontAwesomeIcon icon={faCreditCard} size="lg" />
-                          </a>
-                        </>
+                        <a
+                          key={index}
+                          href={
+                            environment === "production"
+                              ? `https://dashboard.stripe.com/customers/${session?.id}/`
+                              : `https://dashboard.stripe.com/test/customers/${session?.id}/`
+                          }
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                        >
+                          <FontAwesomeIcon icon={faCreditCard} size="lg" />
+                        </a>
                       )
                   )}
                 {session?.data()?.client?.phone && (
-                  <>
-                    <a
-                      href={`${GOTO_PHONE_URL}/${
-                        session?.data()?.client?.phone
-                      }`}
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faPhone} size="lg" />
-                    </a>
-                  </>
+                  <a
+                    href={`${GOTO_PHONE_URL}/${session?.data()?.client?.phone}`}
+                    target="_blank"
+                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faPhone} size="lg" />
+                  </a>
                 )}
                 {session?.data()?.client?.email && (
-                  <>
-                    <a
-                      href={`mailto:${session?.data()?.client?.email}`}
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faEnvelope} size="lg" />
-                    </a>
-                  </>
+                  <a
+                    href={`mailto:${session?.data()?.client?.email}`}
+                    target="_blank"
+                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faEnvelope} size="lg" />
+                  </a>
                 )}
                 {router.query.mode !== "embed" && (
-                  <>
-                    <div
-                      onClick={() => endTelehealthChatSession()}
-                      className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red text-movet-yellow"
-                    >
-                      <FontAwesomeIcon icon={faCircleXmark} size="lg" />
-                    </div>
-                  </>
+                  <div
+                    onClick={() => endTelehealthChatSession()}
+                    className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red text-movet-yellow"
+                  >
+                    <FontAwesomeIcon icon={faCircleXmark} size="lg" />
+                  </div>
                 )}
               </div>
             </div>

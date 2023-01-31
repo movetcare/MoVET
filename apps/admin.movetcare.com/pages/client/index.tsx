@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import {
   faPaw,
   faCreditCard,
@@ -18,18 +17,18 @@ import {
   faPaperPlane,
   faMapLocation,
   faTrash,
+  faFire,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GOTO_PHONE_URL } from "constants/urls";
 import environment from "utils/environment";
-import { deleteDoc, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useDocument } from "react-firebase-hooks/firestore";
 import { firestore, functions } from "services/firebase";
 import { Button, Loader, Modal } from "ui";
 import Error from "components/Error";
 import { timeSince } from "utils/timeSince";
 import { capitalizeFirstLetter } from "utils/capitalizeFirstLetter";
-import { getMMDDFromDate } from "utils/getMMDDFromDate";
 import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
@@ -329,19 +328,31 @@ const Client = () => {
     deleteAccount({
       id: query?.id,
     })
-      .then(() => {
-        toast(`CLIENT #${query?.id} HAS BEEN DELETED!`, {
-          position: "top-center",
-          duration: 5000,
-          icon: (
-            <FontAwesomeIcon
-              icon={faTrash}
-              size="lg"
-              className="text-movet-green"
-            />
-          ),
-        });
-        router.push("/dashboard");
+      .then((result: any) => {
+        if (result.data) {
+          toast(`CLIENT #${query?.id} HAS BEEN DELETED!`, {
+            position: "top-center",
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faTrash}
+                size="lg"
+                className="text-movet-green"
+              />
+            ),
+          });
+          router.push("/dashboard");
+        } else
+          toast("SOMETHING WENT WRONG!", {
+            position: "top-center",
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                className="text-movet-red"
+              />
+            ),
+          });
       })
       .catch((error: any) =>
         toast(error?.message, {
@@ -472,9 +483,9 @@ const Client = () => {
                       <FontAwesomeIcon icon={faCreditCard} size="lg" />
                     </a>
                   )}
-                  {client && client?.phone && (
+                  {client && client?.phoneNumber && (
                     <a
-                      href={`${GOTO_PHONE_URL}/${client?.phone}`}
+                      href={`${GOTO_PHONE_URL}/${client?.phoneNumber}`}
                       target="_blank"
                       className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                       rel="noreferrer"
@@ -482,16 +493,18 @@ const Client = () => {
                       <FontAwesomeIcon icon={faPhone} size="lg" />
                     </a>
                   )}
-                  {client && client?.email && (
-                    <a
-                      href={`mailto:${client?.email}`}
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faEnvelope} size="lg" />
-                    </a>
-                  )}
+                  {client &&
+                    client?.email &&
+                    !client?.email?.toLowerCase()?.includes("missing") && (
+                      <a
+                        href={`mailto:${client?.email}`}
+                        target="_blank"
+                        className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                        rel="noreferrer"
+                      >
+                        <FontAwesomeIcon icon={faEnvelope} size="lg" />
+                      </a>
+                    )}
                   {client &&
                     !client?.street?.toLowerCase()?.includes("missing") && (
                       <a
@@ -503,6 +516,20 @@ const Client = () => {
                         <FontAwesomeIcon icon={faMapLocation} size="lg" />
                       </a>
                     )}
+                  <a
+                    href={`https://console.firebase.google.com/u/0/project/movet-care/firestore/data/~2Fclients~2F${query.id}`}
+                    target="_blank"
+                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faFire} size="lg" />
+                  </a>
+                  <div
+                    onClick={() => setShowDeleteClientModal(true)}
+                    className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                  >
+                    <FontAwesomeIcon icon={faTrash} size="lg" />
+                  </div>
                   <div
                     onClick={() => setShowDeleteClientModal(true)}
                     className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"

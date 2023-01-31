@@ -7,6 +7,7 @@ import {
   admin,
 } from "../../../config/config";
 import { sendNotification } from "../../../notifications/sendNotification";
+import { deleteAllAccountData } from "../../../utils/deleteAllAccountData";
 import { requestIsAuthorized } from "../pos/requestIsAuthorized";
 
 export const deleteAccount = functions
@@ -33,7 +34,10 @@ export const deleteAccount = functions
           });
           return true;
         })
-        .catch((error: any) => throwError(error));
+        .catch(async (error: any) => {
+          throwError(error);
+          return await deleteAllAccountData({ uid: context.auth?.uid });
+        });
     } else if ((await requestIsAuthorized(context)) && data?.id)
       return await admin
         .auth()
@@ -49,6 +53,9 @@ export const deleteAccount = functions
           });
           return true;
         })
-        .catch((error: any) => throwError(error));
+        .catch(async (error: any) => {
+          throwError(error);
+          return await deleteAllAccountData({ uid: data?.id });
+        });
     else return await throwError({ message: "AUTHENTICATION FAILED" });
   });

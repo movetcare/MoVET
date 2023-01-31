@@ -249,20 +249,35 @@ const getEmailErrors = ({
   provetData: ProvetData;
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
-  if (movetData?.email === undefined) errors.push("MoVET Email Not Found...");
-  if (provetData?.email === undefined) errors.push("ProVet Email Not Found...");
-  if (movetData?.email !== provetData?.email)
-    errors.push(
-      `MoVET Email Address (${movetData?.email}) does NOT match ProVet Email Address (${provetData?.email})`
-    );
-  if (authData?.email !== provetData?.email)
-    errors.push(
-      `Auth Email Address (${authData?.email}) does NOT match ProVet Email Address (${provetData?.email})`
-    );
-  if (authData?.email !== movetData?.email)
-    errors.push(
-      `Auth Email Address (${authData?.email}) does NOT match MoVET Email Address (${movetData?.email})`
-    );
+  if (
+    movetData?.email === undefined ||
+    movetData?.email === null ||
+    provetData?.email === undefined ||
+    provetData?.email === null ||
+    authData?.email === undefined ||
+    authData?.email === null ||
+    movetData?.email !== provetData?.email
+  ) {
+    if (movetData?.email === undefined || movetData?.email === null)
+      errors.push("MoVET Email Not Found...");
+    if (provetData?.email === undefined || provetData?.email === null)
+      errors.push("ProVet Email Not Found...");
+    if (authData?.email === undefined || authData?.email === null)
+      errors.push("ProVet Email Not Found...");
+  } else {
+    if (movetData?.email !== provetData?.email)
+      errors.push(
+        `MoVET Email Address (${movetData?.email}) does NOT match ProVet Email Address (${provetData?.email})`
+      );
+    if (authData?.email !== provetData?.email)
+      errors.push(
+        `Auth Email Address (${authData?.email}) does NOT match ProVet Email Address (${provetData?.email})`
+      );
+    if (authData?.email !== movetData?.email)
+      errors.push(
+        `Auth Email Address (${authData?.email}) does NOT match MoVET Email Address (${movetData?.email})`
+      );
+  }
   if (DEBUG) console.log("getEmailErrors", errors);
   return errors;
 };
@@ -421,41 +436,61 @@ const getAddressErrors = ({
   provetData: ProvetData;
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
-  if (movetData?.street === undefined || movetData?.street === "")
-    errors.push("MoVET Street Address Not Found...");
-  if (movetData?.city === undefined || movetData?.city === "")
-    errors.push("MoVET City Not Found...");
-  if (movetData?.state === undefined || movetData?.state === "")
-    errors.push("MoVET State Not Found...");
-  if (movetData?.zipCode === undefined || movetData?.zipCode === "")
-    errors.push("MoVET Zipcode Not Found...");
   if (
+    movetData?.street === undefined ||
+    movetData?.street === "" ||
+    movetData?.city === undefined ||
+    movetData?.city === "" ||
+    movetData?.state === undefined ||
+    movetData?.state === "" ||
+    movetData?.zipCode === undefined ||
+    movetData?.zipCode === "" ||
     provetData?.street_address === undefined ||
-    provetData?.street_address === ""
-  )
-    errors.push("ProVet Street Address Not Found...");
-  if (provetData?.city === undefined || provetData?.city === "")
-    errors.push("ProVet City Not Found...");
-  if (provetData?.state === undefined || provetData?.state === "")
-    errors.push("ProVet State Not Found...");
-  if (provetData?.zip_code === undefined || provetData?.zip_code === "")
-    errors.push("ProVet Zipcode Not Found...");
-  if (movetData?.street && movetData?.street !== provetData?.street_address)
-    errors.push(
-      `MoVET Street Address (${movetData?.street}) does NOT match ProVet Street Address (${provetData?.street_address})`
-    );
-  if (movetData?.city && movetData?.city !== provetData?.city)
-    errors.push(
-      `MoVET City (${movetData?.city}) does NOT match ProVet City (${provetData?.city})`
-    );
-  if (movetData?.state && movetData?.state !== provetData?.state)
-    errors.push(
-      `MoVET State (${movetData?.state}) does NOT match ProVet State (${provetData?.state})`
-    );
-  if (movetData?.zipCode && movetData?.zipCode !== provetData?.zip_code)
-    errors.push(
-      `MoVET Zipcode (${movetData?.zipCode}) does NOT match ProVet Zipcode (${provetData?.zip_code})`
-    );
+    provetData?.street_address === "" ||
+    provetData?.city === undefined ||
+    provetData?.city === "" ||
+    provetData?.state === undefined ||
+    provetData?.state === "" ||
+    provetData?.zip_code === undefined ||
+    provetData?.zip_code === ""
+  ) {
+    if (movetData?.street === undefined || movetData?.street === "")
+      errors.push("MoVET Street Address Not Found...");
+    if (movetData?.city === undefined || movetData?.city === "")
+      errors.push("MoVET City Not Found...");
+    if (movetData?.state === undefined || movetData?.state === "")
+      errors.push("MoVET State Not Found...");
+    if (movetData?.zipCode === undefined || movetData?.zipCode === "")
+      errors.push("MoVET Zipcode Not Found...");
+    if (
+      provetData?.street_address === undefined ||
+      provetData?.street_address === ""
+    )
+      errors.push("ProVet Street Address Not Found...");
+    if (provetData?.city === undefined || provetData?.city === "")
+      errors.push("ProVet City Not Found...");
+    if (provetData?.state === undefined || provetData?.state === "")
+      errors.push("ProVet State Not Found...");
+    if (provetData?.zip_code === undefined || provetData?.zip_code === "")
+      errors.push("ProVet Zipcode Not Found...");
+  } else {
+    if (movetData?.street && movetData?.street !== provetData?.street_address)
+      errors.push(
+        `MoVET Street Address (${movetData?.street}) does NOT match ProVet Street Address (${provetData?.street_address})`
+      );
+    if (movetData?.city && movetData?.city !== provetData?.city)
+      errors.push(
+        `MoVET City (${movetData?.city}) does NOT match ProVet City (${provetData?.city})`
+      );
+    if (movetData?.state && movetData?.state !== provetData?.state)
+      errors.push(
+        `MoVET State (${movetData?.state}) does NOT match ProVet State (${provetData?.state})`
+      );
+    if (movetData?.zipCode && movetData?.zipCode !== provetData?.zip_code)
+      errors.push(
+        `MoVET Zipcode (${movetData?.zipCode}) does NOT match ProVet Zipcode (${provetData?.zip_code})`
+      );
+  }
   if (DEBUG) console.log("getAddressErrors", errors);
   return errors;
 };

@@ -4,6 +4,7 @@ import Select from "react-select";
 import { collection } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { firestore } from "services/firebase";
+import { useRouter } from "next/router";
 interface Option {
   id: string;
   label: string;
@@ -14,6 +15,7 @@ interface Option {
 }
 
 export const ClientSearch = () => {
+  const router = useRouter();
   const [searchTerm, setSearchTerm]: any = useState<string>();
   const [options, setOptions] = useState<Array<Option> | null>(null);
   const [clientData, loading, error] = useCollection(
@@ -40,8 +42,12 @@ export const ClientSearch = () => {
     }
   }, [clientData]);
   useEffect(() => {
-    if (searchTerm?.id) window.location.href = `/client/?id=${searchTerm.id}`;
-  }, [searchTerm]);
+    if (searchTerm?.id && router) {
+      if (window.location.pathname === "/client/")
+        window.location.href = `/client/?id=${searchTerm.id}`;
+      else router.push(`/client?id=${searchTerm.id}`);
+    }
+  }, [searchTerm, router]);
   const formatOptionLabel = ({
     id,
     label,
