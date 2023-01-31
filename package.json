@@ -47,7 +47,7 @@
   "devDependencies": {
     "@types/node": "^18.11.18",
     "concurrently": "^7.6.0",
-    "cypress": "^12.4.0",
+    "cypress": "^12.4.1",
     "cypress-plugin-tab": "^1.0.5",
     "eslint-config-custom": "workspace:0.0.0",
     "git-branch-is": "^4.0.0",

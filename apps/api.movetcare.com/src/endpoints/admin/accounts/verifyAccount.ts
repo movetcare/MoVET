@@ -12,8 +12,7 @@ import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
 import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
 import { requestIsAuthorized } from "../../admin/pos/requestIsAuthorized";
-const DEBUG = true;
-let paymentMethods: Array<any> = [];
+const DEBUG = environment.type === "production";
 interface AccountData {
   email: string;
   displayName: string;
@@ -98,8 +97,13 @@ export const verifyAccount = functions
             ...getPhoneNumberErrors({ authData, movetData, provetData }),
             ...getAddressErrors({ movetData, provetData }),
             ...getCustomerErrors({ stripeData, movetData }),
-            ...(await getPaymentMethodErrors({ id, stripeData, movetData })),
+            ...(await getPaymentMethodErrors({
+              id,
+              stripeData,
+              movetData,
+            })),
           ];
+
           // Verify client exists in sendgrid
           if (errors.length > 0) {
             sendNotification({
@@ -138,23 +142,28 @@ export const verifyAccount = functions
           }
           return {
             errors,
-            email: authData?.email || "MISSING",
+            email: authData?.email || "MISSING EMAIL",
             sendEmail: movetData?.sendEmail || false,
             sendSms: movetData?.sendSms || false,
             emailVerified: authData?.emailVerified || false,
             phoneNumber: authData?.phoneNumber
               ? formatPhoneNumber(authData?.phoneNumber)
               : "MISSING",
-            displayName: authData?.displayName || "MISSING",
-            city: movetData?.city || "MISSING",
-            street: movetData?.street || "MISSING",
-            state: movetData?.state || "MISSING",
-            zipCode: movetData?.zipCode || "MISSING",
-            customer: stripeData?.customer || "MISSING",
-            paymentMethods: paymentMethods || [],
+            displayName: authData?.displayName || "MISSING CLIENT NAME",
+            city: movetData?.city || "MISSING CITY - ",
+            street: movetData?.street || "MISSING STREET - ",
+            state: movetData?.state || "MISSING STATE - ",
+            zipCode: movetData?.zipCode || "MISSING ZIPCODE",
+            customer: stripeData?.customer || "MISSING CUSTOMER",
+            paymentMethods:
+              Array.isArray(stripeData?.customer) &&
+              stripeData?.customer.length > 0
+                ? await getPaymentMethods(id, stripeData)
+                : [],
           };
         } catch (error) {
           throwError(error);
+          console.error("ROOT ERROR", error);
           return false;
         }
       } else return false;
@@ -197,6 +206,39 @@ const getAllAccountData = async (
   };
 };
 
+const getPaymentMethods = async (id: string, stripeData: any) => {
+  const movetPaymentMethods = await admin
+    .firestore()
+    .collection("clients")
+    .doc(id)
+    .collection("payment_methods")
+    .get()
+    .then((snapshot: any) => {
+      const paymentMethods: Array<any> = [];
+      snapshot.docs.map((doc: any) => {
+        if (doc.data().active) paymentMethods.push(doc.data());
+      });
+      return paymentMethods;
+    })
+    .catch((error: any) => throwError(error));
+  const stripePaymentMethods = await verifyValidPaymentSource(
+    id,
+    stripeData?.customer[0],
+    true
+  );
+  if (DEBUG) {
+    console.log("movetPaymentMethods", movetPaymentMethods);
+    console.log("stripePaymentMethods", stripePaymentMethods);
+    console.log(
+      "stripePaymentMethods && movetPaymentMethods.length !== 0",
+      stripePaymentMethods && movetPaymentMethods.length !== 0
+    );
+  }
+  if (stripePaymentMethods && movetPaymentMethods.length !== 0)
+    return stripePaymentMethods;
+  else return [];
+};
+
 const getEmailErrors = ({
   authData,
   movetData,
@@ -207,6 +249,8 @@ const getEmailErrors = ({
   provetData: ProvetData;
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
+  if (movetData?.email === undefined) errors.push("MoVET Email Not Found...");
+  if (provetData?.email === undefined) errors.push("ProVet Email Not Found...");
   if (movetData?.email !== provetData?.email)
     errors.push(
       `MoVET Email Address (${movetData?.email}) does NOT match ProVet Email Address (${provetData?.email})`
@@ -231,6 +275,14 @@ const getNotificationErrors = ({
   provetData: ProvetData;
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
+  if (movetData?.sendEmail === undefined)
+    errors.push("MoVET Email Notification Setting Not Found...");
+  if (movetData?.sendSms === undefined)
+    errors.push("MoVET SMS Notification Setting Not Found...");
+  if (provetData?.no_sms === undefined)
+    errors.push("ProVet SMS Notification Setting Not Found...");
+  if (provetData?.no_email === undefined)
+    errors.push("ProVet Email Notification Setting Not Found...");
   if (movetData?.sendEmail !== !provetData?.no_email)
     errors.push(
       `MoVET Email Notifications (${
@@ -257,30 +309,51 @@ const getNameErrors = ({
   provetData: ProvetData;
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
-  if (movetData?.firstName !== provetData?.firstname)
-    errors.push(
-      `MoVET First Name (${movetData?.firstName}) does NOT match ProVet First Name (${provetData?.firstname})`
-    );
-  if (movetData?.lastName !== provetData?.lastname)
-    errors.push(
-      `MoVET Last Name (${movetData?.lastName}) does NOT match ProVet Last Name (${provetData?.lastname})`
-    );
+  console.log("movetData?.firstName", movetData?.firstName);
   if (
-    authData?.displayName !== `${movetData?.firstName} ${movetData?.lastName}`
-  )
-    errors.push(
-      `Auth Display Name (${
-        authData?.displayName
-      }) does NOT match MoVET First Name & Last Name (${`${movetData?.firstName} ${movetData?.lastName}`})`
-    );
-  if (
-    authData?.displayName !== `${provetData?.firstname} ${provetData?.lastname}`
-  )
-    errors.push(
-      `Auth Display Name (${
-        authData?.displayName
-      }) does NOT match MoVET First Name & Last Name (${`${provetData?.firstname} ${provetData?.lastname}`})`
-    );
+    movetData?.firstName === undefined ||
+    movetData?.lastName === undefined ||
+    provetData?.firstname === undefined ||
+    provetData?.lastname === undefined ||
+    authData?.displayName === undefined
+  ) {
+    if (movetData?.firstName === undefined)
+      errors.push("MoVET First Name Not Found...");
+    if (movetData?.lastName === undefined)
+      errors.push("MoVET Last Name Not Found...");
+    if (provetData?.firstname === undefined)
+      errors.push("ProVet First Name Not Found...");
+    if (provetData?.lastname === undefined)
+      errors.push("ProVet First Name Not Found...");
+    if (authData?.displayName === undefined)
+      errors.push("Auth Display Name Not Found...");
+  } else {
+    if (movetData?.firstName !== provetData?.firstname)
+      errors.push(
+        `MoVET First Name (${movetData?.firstName}) does NOT match ProVet First Name (${provetData?.firstname})`
+      );
+    if (movetData?.lastName !== provetData?.lastname)
+      errors.push(
+        `MoVET Last Name (${movetData?.lastName}) does NOT match ProVet Last Name (${provetData?.lastname})`
+      );
+    if (
+      authData?.displayName !== `${movetData?.firstName} ${movetData?.lastName}`
+    )
+      errors.push(
+        `Auth Display Name (${
+          authData?.displayName
+        }) does NOT match MoVET First Name & Last Name (${`${movetData?.firstName} ${movetData?.lastName}`})`
+      );
+    if (
+      authData?.displayName !==
+      `${provetData?.firstname} ${provetData?.lastname}`
+    )
+      errors.push(
+        `Auth Display Name (${
+          authData?.displayName
+        }) does NOT match MoVET First Name & Last Name (${`${provetData?.firstname} ${provetData?.lastname}`})`
+      );
+  }
   if (DEBUG) console.log("getNameErrors", errors);
   return errors;
 };
@@ -321,6 +394,9 @@ const getPhoneNumberErrors = ({
     console.log("movetPhone", movetPhone);
     console.log("provetPhone", provetPhone);
   }
+  if (movetPhone === null) errors.push("MoVET Phone Number Not Found...");
+  if (provetPhone === null) errors.push("ProVet Phone Number Not Found...");
+  if (authPhone === null) errors.push("Auth Phone Number Not Found...");
   if (movetPhone !== provetPhone)
     errors.push(
       `MoVET Phone Number (${movetPhone}) does NOT match ProVet Phone Number (${provetPhone})`
@@ -345,23 +421,41 @@ const getAddressErrors = ({
   provetData: ProvetData;
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
-  if (movetData?.street !== provetData?.street_address)
+  if (movetData?.street === undefined || movetData?.street === "")
+    errors.push("MoVET Street Address Not Found...");
+  if (movetData?.city === undefined || movetData?.city === "")
+    errors.push("MoVET City Not Found...");
+  if (movetData?.state === undefined || movetData?.state === "")
+    errors.push("MoVET State Not Found...");
+  if (movetData?.zipCode === undefined || movetData?.zipCode === "")
+    errors.push("MoVET Zipcode Not Found...");
+  if (
+    provetData?.street_address === undefined ||
+    provetData?.street_address === ""
+  )
+    errors.push("ProVet Street Address Not Found...");
+  if (provetData?.city === undefined || provetData?.city === "")
+    errors.push("ProVet City Not Found...");
+  if (provetData?.state === undefined || provetData?.state === "")
+    errors.push("ProVet State Not Found...");
+  if (provetData?.zip_code === undefined || provetData?.zip_code === "")
+    errors.push("ProVet Zipcode Not Found...");
+  if (movetData?.street && movetData?.street !== provetData?.street_address)
     errors.push(
       `MoVET Street Address (${movetData?.street}) does NOT match ProVet Street Address (${provetData?.street_address})`
     );
-  if (movetData?.city !== provetData?.city)
+  if (movetData?.city && movetData?.city !== provetData?.city)
     errors.push(
       `MoVET City (${movetData?.city}) does NOT match ProVet City (${provetData?.city})`
     );
-  if (movetData?.state !== provetData?.state)
+  if (movetData?.state && movetData?.state !== provetData?.state)
     errors.push(
       `MoVET State (${movetData?.state}) does NOT match ProVet State (${provetData?.state})`
     );
-  if (movetData?.zipCode !== provetData?.zip_code)
+  if (movetData?.zipCode && movetData?.zipCode !== provetData?.zip_code)
     errors.push(
       `MoVET Zipcode (${movetData?.zipCode}) does NOT match ProVet Zipcode (${provetData?.zip_code})`
     );
-
   if (DEBUG) console.log("getAddressErrors", errors);
   return errors;
 };
@@ -375,13 +469,11 @@ const getCustomerErrors = ({
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
   if (movetData?.customer === undefined)
-    console.log(
-      `No MoVET Client ID Found! (Should be ${JSON.stringify(
-        stripeData.customer
-      )})`
-    );
+    console.log("No MoVET Customer ID Found!");
   if (stripeData.customer.length < 1)
-    errors.push("No Stripe Customer Found...");
+    errors.push(
+      "Can NOT determine Payment Methods as no Stripe Customer was found..."
+    );
   if (stripeData.customer.length > 1)
     errors.push(
       "Multiple Stripe Customers Found: " + JSON.stringify(stripeData.customer)
@@ -425,28 +517,29 @@ const getPaymentMethodErrors = async ({
       "Can NOT determine Payment Methods as no Stripe Customer was found..." +
         JSON.stringify(stripeData.customer)
     );
-  else if (stripeData.customer.length > 1)
+  else if (Array.isArray(stripeData.customer) && stripeData.customer.length > 1)
     errors.push(
       "Can NOT determine Payment Methods as multiple Stripe Customers were found: " +
         JSON.stringify(stripeData.customer)
     );
   else {
-    stripeData.customer.map((customer: string) => {
-      if (
-        typeof movetData?.customer !== "string" &&
-        movetData?.customer?.id !== undefined &&
-        movetData?.customer?.id !== customer
-      )
-        errors.push(
-          `Can NOT determine Payment Methods as MoVET Customer ID (${movetData?.customer?.id}) does NOT match Stripe Customer ID (${customer})`
-        );
-      else if (movetData?.customer !== customer)
-        errors.push(
-          `Can NOT determine Payment Methods as MoVET Customer ID (${JSON.stringify(
-            movetData?.customer
-          )}) does NOT match Stripe Customer ID (${customer})`
-        );
-    });
+    if (Array.isArray(stripeData.customer))
+      stripeData.customer.map((customer: string) => {
+        if (
+          typeof movetData?.customer !== "string" &&
+          movetData?.customer?.id !== undefined &&
+          movetData?.customer?.id !== customer
+        )
+          errors.push(
+            `Can NOT determine Payment Methods as MoVET Customer ID (${movetData?.customer?.id}) does NOT match Stripe Customer ID (${customer})`
+          );
+        else if (movetData?.customer !== customer)
+          errors.push(
+            `Can NOT determine Payment Methods as MoVET Customer ID (${JSON.stringify(
+              movetData?.customer
+            )}) does NOT match Stripe Customer ID (${customer})`
+          );
+      });
     const movetPaymentMethods = await admin
       .firestore()
       .collection("clients")
@@ -476,8 +569,6 @@ const getPaymentMethodErrors = async ({
       );
     if (!stripePaymentMethods)
       errors.push("Customer does NOT have a VALID Payment Method in Stripe");
-    if (stripePaymentMethods && movetPaymentMethods.length !== 0)
-      paymentMethods = stripePaymentMethods;
   }
   if (DEBUG) console.log("getPaymentMethodErrors", errors);
   return errors;

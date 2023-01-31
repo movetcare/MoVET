@@ -4,9 +4,10 @@ import {
   functions,
   stripe,
   admin,
+  environment,
 } from "../../../config/config";
 import { requestIsAuthorized } from "./requestIsAuthorized";
-const DEBUG = true;
+const DEBUG = environment.type === "production";
 export const refundPaymentIntent = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

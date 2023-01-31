@@ -1,4 +1,4 @@
-import {Stripe} from "stripe";
+import { Stripe } from "stripe";
 import { admin, stripe, throwError, DEBUG } from "../config/config";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
 export interface UserNotificationSettings {
@@ -6,7 +6,10 @@ export interface UserNotificationSettings {
   sendSms: boolean;
 }
 
-export const getCustomerId = async (id: string): Promise<string> =>
+export const getCustomerId = async (
+  id: string,
+  skipCreate = false
+): Promise<string> =>
   await admin
     .firestore()
     .collection("clients")
@@ -21,10 +24,11 @@ export const getCustomerId = async (id: string): Promise<string> =>
             document.data()?.customer === null
         );
       }
-      return document.data()?.customer === undefined ||
-        document.data()?.customer === null
+      return (document.data()?.customer === undefined ||
+        document.data()?.customer === null) &&
+        !skipCreate
         ? await createNewCustomer(id, document)
-        : document.data()?.customer?.id || document.data()?.customer;
+        : document.data()?.customer?.id || document.data()?.customer || null;
     })
     .catch((error: any) => throwError(error));
 

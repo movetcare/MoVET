@@ -55,7 +55,12 @@ export const ClientSearch = () => {
   }) => (
     <div className="flex flex-col">
       <p className="flex flex-row items-center text-lg">
-        {label} <span className="text-xs ml-2">({id})</span>
+        {label.includes("undefined") ? `Client #${id}` : label}{" "}
+        {label.includes("undefined") ? (
+          ""
+        ) : (
+          <span className="text-xs ml-2">({id})</span>
+        )}
       </p>
       <p className="text-sm">{email}</p>
       <p className="text-xs italic">{phone}</p>
@@ -76,7 +81,13 @@ export const ClientSearch = () => {
           .toLowerCase()
           .includes(searchText.toLowerCase())) ||
       (option.data.phone &&
-        option.data.phone.toLowerCase().includes(searchText.toLowerCase())) ||
+        option.data.phone
+          .toLowerCase()
+          .replaceAll(" ", "")
+          .replaceAll("(", "")
+          .replaceAll(")", "")
+          .replaceAll("-", "")
+          .includes(searchText.toLowerCase())) ||
       (option.data.email &&
         option.data.email.toLowerCase().includes(searchText.toLowerCase()))
     ) {
@@ -104,7 +115,12 @@ export const ClientSearch = () => {
             isClearable
             closeMenuOnSelect
             closeMenuOnScroll
+            escapeClearsValue
+            menuShouldScrollIntoView
+            openMenuOnClick
             isLoading={loading}
+            loadingMessage={() => "Loading Clients..."}
+            noOptionsMessage={() => "No Clients Found..."}
             formatOptionLabel={formatOptionLabel}
             filterOption={customFilter}
             value={searchTerm}

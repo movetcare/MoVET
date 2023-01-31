@@ -1,5 +1,5 @@
-import { admin, stripe, throwError } from "../config/config";
-const DEBUG = true;
+import { admin, environment, stripe, throwError } from "../config/config";
+const DEBUG = environment.type === "production";
 export const verifyValidPaymentSource = async (
   client: string,
   customerId: string,

@@ -1,10 +1,14 @@
 import { getClientFirstNameFromDisplayName } from "./../../../utils/getClientFirstNameFromDisplayName";
-import { defaultRuntimeOptions, functions } from "../../../config/config";
+import {
+  defaultRuntimeOptions,
+  environment,
+  functions,
+} from "../../../config/config";
 import { sendNotification } from "../../../notifications/sendNotification";
 import type { EmailConfiguration } from "../../../types/email";
 import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { requestIsAuthorized } from "../pos/requestIsAuthorized";
-const DEBUG = true;
+const DEBUG = environment.type === "production";
 export const sendPaymentLink = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

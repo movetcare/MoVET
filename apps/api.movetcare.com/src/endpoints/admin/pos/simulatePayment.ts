@@ -3,9 +3,10 @@ import {
   defaultRuntimeOptions,
   functions,
   request,
+  environment,
 } from "../../../config/config";
 import { requestIsAuthorized } from "./requestIsAuthorized";
-const DEBUG = true;
+const DEBUG = environment.type === "production";
 export const simulatePayment = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

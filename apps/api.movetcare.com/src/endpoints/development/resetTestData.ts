@@ -12,7 +12,7 @@ import {
 // import { updateProVetPatient } from "../../integrations/provet/entities/patient/updateProVetPatient";
 import { sendNotification } from "../../notifications/sendNotification";
 // import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
-const DEBUG = true;
+const DEBUG = environment.type === "production";
 export const resetTestData: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {

@@ -1,17 +1,18 @@
 import {
   functions,
-  DEBUG,
   stripe,
-  admin,
   defaultRuntimeOptions,
+  admin,
+  environment,
 } from "../../../config/config";
 import { updateProVetAppointment } from "../../../integrations/provet/entities/appointment/updateProVetAppointment";
 import { updateProVetClient } from "../../../integrations/provet/entities/client/updateProVetClient";
 import { fetchEntity } from "../../../integrations/provet/entities/fetchEntity";
 import { updateProVetPatient } from "../../../integrations/provet/entities/patient/updateProVetPatient";
 import { sendNotification } from "../../../notifications/sendNotification";
+import { getCustomerId } from "../../../utils/getCustomerId";
 import { getProVetIdFromUrl } from "../../../utils/getProVetIdFromUrl";
-
+const DEBUG = environment.type === "production";
 export const deleteMoVETAccount = functions
   .runWith(defaultRuntimeOptions)
   .auth.user()
@@ -31,7 +32,10 @@ export const deleteMoVETAccount = functions
       (client: any) => client?.id
     );
 
-    if (DEBUG) console.log("proVetClientIds", proVetClientIds);
+    if (DEBUG) {
+      console.log("matchingProVetClients", matchingProVetClients);
+      console.log("proVetClientIds", proVetClientIds);
+    }
 
     const proVetPatientIds: Array<number> = [];
     matchingProVetClients.map(
@@ -96,14 +100,9 @@ export const deleteMoVETAccount = functions
             await updateProVetClient({ id: id, archived: true })
         )
       );
-    } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
+    } else if (DEBUG) console.log("NO CLIENTS FOUND", proVetPatientIds);
 
-    const customerId = await admin
-      .firestore()
-      .collection("clients")
-      .doc(`${user?.uid}`)
-      .get()
-      .then((document: any) => document.data()?.customer);
+    const customerId = await getCustomerId(user?.uid, true);
 
     if (DEBUG) console.log("customerId", customerId);
 
@@ -113,6 +112,16 @@ export const deleteMoVETAccount = functions
         .then(
           (result) => DEBUG && console.log("STRIPE CUSTOMER DELETED: ", result)
         );
+
+    await admin
+      .firestore()
+      .collection("clients")
+      .doc(user?.uid)
+      .delete()
+      .then(
+        () =>
+          DEBUG && console.log("FIRESTORE CLIENT RECORD DELETED: ", user?.uid)
+      );
 
     sendNotification({
       type: "slack",

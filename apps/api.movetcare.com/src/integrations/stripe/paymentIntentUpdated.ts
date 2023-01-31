@@ -1,6 +1,12 @@
 import { getProVetIdFromUrl } from "./../../utils/getProVetIdFromUrl";
-import { admin, proVetApiUrl, request, throwError } from "../../config/config";
-const DEBUG = true;
+import {
+  admin,
+  environment,
+  proVetApiUrl,
+  request,
+  throwError,
+} from "../../config/config";
+const DEBUG = environment.type === "production";
 export const paymentIntentUpdated = async (event: any): Promise<void> => {
   const { object } = event?.data || {};
   const { id, status, amount, charges } = object || {};

@@ -24,7 +24,7 @@ export const initTestUser: Promise<Response> = functions
           "alex.rodriguez+test@movetcare.com",
           5125,
           "cus_LYg1C7Et5ySQKC",
-          "pm_1KrYgADVQU5TYLF15o8YdFox"
+          "card_1MWLO5DVQU5TYLF1Y3pW2SWl"
         )) &&
         (await importTestUser(
           "alex.rodriguez+cypress_test_vcpr_not_required@movetcare.com",
@@ -309,7 +309,7 @@ const importCheckIn = async (): Promise<boolean> => {
         lastName,
         paymentMethod: {
           ...(await stripe.paymentMethods.retrieve(
-            "pm_1KrYgADVQU5TYLF15o8YdFox"
+            "card_1MWLO5DVQU5TYLF1Y3pW2SWl"
           )),
           active: true,
           updatedOn: new Date(),

@@ -1,4 +1,5 @@
 export const formatPhoneNumber = (phoneNumber: string) => {
+  if (!phoneNumber) return null;
   const phone = phoneNumber.replace("+1", "");
   const cleaned = ("" + phone).replace(/\D/g, "");
   const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);

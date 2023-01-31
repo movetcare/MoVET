@@ -55,7 +55,7 @@ export { assignRoles } from "./endpoints/admin/accounts/assignRoles";
 export { verifyAccount } from "./endpoints/admin/accounts/verifyAccount";
 export { sendPaymentLink } from "./endpoints/admin/accounts/sendPaymentLink";
 export { sendPasswordResetLink } from "./endpoints/admin/accounts/sendPasswordResetLink";
-// export {deleteMoVETAccount} from './endpoints/admin/accounts/deleteMoVETAccount';
+export { deleteMoVETAccount } from "./endpoints/admin/accounts/deleteMoVETAccount";
 export { deleteAccount } from "./endpoints/admin/accounts/deleteAccount";
 export { event } from "./endpoints/admin/event";
 export { reportABugInternal } from "./endpoints/admin/reports/reportABugInternal";
