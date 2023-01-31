@@ -33,6 +33,7 @@ import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { Transition } from "@headlessui/react";
+import { ClientSearch } from "components/ClientSearch";
 const Client = () => {
   const router = useRouter();
   const { query } = router;
@@ -294,66 +295,332 @@ const Client = () => {
   };
   const Divider = () => <hr className="my-4 border-movet-brown/50" />;
   return (
-    <div className="flex flex-col md:flex-row">
-      <div
-        className={`flex flex-col lg:pb-8 lg:pt-4 justify-between bg-white shadow overflow-hidden rounded-lg text-movet-black w-full`}
-      >
-        {isLoading ? (
-          <Loader />
-        ) : errorClient ? (
-          <Error error={errorClient} />
-        ) : (
-          <>
-            <div className="flex sm:items-center justify-between md:pb-6 border-b border-movet-gray px-8 py-4">
-              <div className="flex items-center space-x-4">
-                <Image
-                  src="/images/logo/logo-paw-black.png"
-                  alt=""
-                  className="hidden md:block w-10 sm:w-16 h-10 sm:h-16 mr-4"
-                  priority
-                  height={50}
-                  width={50}
-                />
-                <div className="flex flex-col text-center">
-                  {client && (
-                    <div className="mt-1 flex items-center">
-                      <h1 className="mr-3 font-abside text-lg">
-                        {client?.firstName !== undefined
-                          ? client?.firstName
-                          : ""}{" "}
-                        {client?.lastName !== undefined ? client?.lastName : ""}
-                        {client?.displayName !== undefined
-                          ? client?.displayName
-                          : ""}
-                      </h1>
-                    </div>
-                  )}
-                  <div className="flex flex-col sm:flex-row text-center text-xs">
-                    <div className="mt-2">
-                      <b>Joined: </b>
-                      <span className="italic mr-4">
-                        {client?.createdOn
-                          ? timeSince(client?.createdOn?.toDate())
-                          : "UNKNOWN!"}
-                      </span>
-                    </div>
-                    <div className="mt-2">
-                      <b>Last Updated: </b>
-                      <span className="italic">
-                        {client?.updatedOn
-                          ? timeSince(client?.updatedOn?.toDate())
-                          : "UNKNOWN!"}
-                      </span>
+    <>
+      {" "}
+      <ClientSearch />
+      <div className="flex flex-col md:flex-row">
+        <div
+          className={`flex flex-col lg:pb-8 lg:pt-4 justify-between bg-white shadow overflow-hidden rounded-lg text-movet-black w-full`}
+        >
+          {isLoading ? (
+            <Loader />
+          ) : errorClient ? (
+            <Error error={errorClient} />
+          ) : (
+            <>
+              <div className="flex sm:items-center justify-between md:pb-6 border-b border-movet-gray px-8 py-4">
+                <div className="flex items-center space-x-4">
+                  <Image
+                    src="/images/logo/logo-paw-black.png"
+                    alt=""
+                    className="hidden md:block w-10 sm:w-16 h-10 sm:h-16 mr-4"
+                    priority
+                    height={50}
+                    width={50}
+                  />
+                  <div className="flex flex-col text-center">
+                    {client && (
+                      <div className="mt-1 flex items-center">
+                        <h1 className="mr-3 font-abside text-lg">
+                          {client?.firstName !== undefined
+                            ? client?.firstName
+                            : ""}{" "}
+                          {client?.lastName !== undefined
+                            ? client?.lastName
+                            : ""}
+                          {client?.displayName !== undefined
+                            ? client?.displayName
+                            : ""}
+                        </h1>
+                      </div>
+                    )}
+                    <div className="flex flex-col sm:flex-row text-center text-xs">
+                      <div className="mt-2">
+                        <b>Joined: </b>
+                        <span className="italic mr-4">
+                          {client?.createdOn
+                            ? timeSince(client?.createdOn?.toDate())
+                            : "UNKNOWN!"}
+                        </span>
+                      </div>
+                      <div className="mt-2">
+                        <b>Last Updated: </b>
+                        <span className="italic">
+                          {client?.updatedOn
+                            ? timeSince(client?.updatedOn?.toDate())
+                            : "UNKNOWN!"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
+                <div className="flex flex-col sm:flex-row items-center space-x-2">
+                  <div
+                    onClick={() => sendPasswordResetLink()}
+                    className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                  >
+                    {isLoadingSendPasswordResetLink ? (
+                      <FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size="sm"
+                        className="text-movet-brown ml-4"
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faPaperPlane}
+                        size="lg"
+                        className={
+                          !client?.emailVerified && !isLoadingAccount
+                            ? "text-movet-yellow hover:text-movet-green"
+                            : ""
+                        }
+                      />
+                    )}
+                  </div>
+                  <a
+                    href={
+                      environment === "production"
+                        ? `https://us.provetcloud.com/4285/client/${query?.id}/`
+                        : `https://us.provetcloud.com/4285/client/${query?.id}/`
+                    }
+                    target="_blank"
+                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faPaw} size="lg" />
+                  </a>
+                  {client && client?.customer && (
+                    <a
+                      href={
+                        environment === "production"
+                          ? `https://dashboard.stripe.com/customers/${client?.customer}/`
+                          : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                    >
+                      <FontAwesomeIcon icon={faCreditCard} size="lg" />
+                    </a>
+                  )}
+                  {client && (
+                    <a
+                      href={`${GOTO_PHONE_URL}/${client?.phone}`}
+                      target="_blank"
+                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      rel="noreferrer"
+                    >
+                      <FontAwesomeIcon icon={faPhone} size="lg" />
+                    </a>
+                  )}
+                  {client && (
+                    <a
+                      href={`mailto:${client?.email}`}
+                      target="_blank"
+                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      rel="noreferrer"
+                    >
+                      <FontAwesomeIcon icon={faEnvelope} size="lg" />
+                    </a>
+                  )}
+                  {client && (
+                    <a
+                      href={`http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`}
+                      target="_blank"
+                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      rel="noreferrer"
+                    >
+                      <FontAwesomeIcon icon={faMapLocation} size="lg" />
+                    </a>
+                  )}
+                  <div
+                    onClick={() => reloadPage()}
+                    className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                  >
+                    <FontAwesomeIcon icon={faRedo} size="lg" />
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col sm:flex-row items-center space-x-2">
-                <div
-                  onClick={() => sendPasswordResetLink()}
-                  className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                >
-                  {isLoadingSendPasswordResetLink ? (
+              <div className="flex-1 px-4 sm:px-8">
+                <div className="flex flex-row items-center w-full pt-4 ml-2">
+                  <h3 className="text-lg m-0 font-extrabold flex-wrap">
+                    <FontAwesomeIcon icon={faUser} className="mr-4" />
+                    ACCOUNT STATUS:
+                  </h3>
+                  {isLoadingAccount ? (
+                    <FontAwesomeIcon
+                      icon={faSpinner}
+                      spin
+                      size="lg"
+                      className="text-movet-brown ml-4"
+                    />
+                  ) : Array.isArray(errors) &&
+                    errors[0].includes("verifyAccount") ? (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      STATUS UNKNOWN
+                    </span>
+                  ) : errors ? (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      NEEDS REPAIR
+                    </span>
+                  ) : (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      HEALTHY
+                    </span>
+                  )}
+                </div>
+                <div className="ml-4 sm:ml-8">
+                  {errors && (
+                    <div className="mt-2">
+                      <b>Errors: </b>
+                      <ul>
+                        {errors.map((error: string, index: number) => (
+                          <li key={index} className="italic text-movet-red">
+                            &quot;{error}&quot;
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  <div className="mt-2">
+                    <b>Account ID: </b>
+                    <span className="italic">{query?.id}</span>
+                  </div>
+                  <div className="mt-2">
+                    <b>Customer ID: </b>
+                    <span className="italic">
+                      {client?.customer
+                        ? client?.customer
+                        : client?.customer?.id
+                        ? client?.customer?.id
+                        : "DOES NOT EXIST!"}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex flex-row flex-wrap">
+                    <b>Email Address: </b>
+                    <p className="italic flex flex-row ml-2 items-center">
+                      {client?.email}
+                      {client?.emailVerified ? (
+                        <FontAwesomeIcon
+                          icon={faCheckCircle}
+                          className="text-movet-green ml-2"
+                        />
+                      ) : client?.emailVerified === false ? (
+                        <span className="group flex flex-row items-center flex-wrap">
+                          <FontAwesomeIcon
+                            icon={faCircleExclamation}
+                            className="text-movet-yellow ml-2"
+                          />
+                          <span className="hidden group-hover:flex items-center ml-2 text-xs text-movet-yellow font-extrabold">
+                            Client has not set an account password yet
+                          </span>
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </p>
+                  </div>
+                  <div className="mt-2">
+                    <b>Phone Number: </b>
+                    <span className="italic">
+                      {client?.phone !== undefined
+                        ? formatPhoneNumber(client?.phone)
+                        : client?.phoneNumber
+                        ? client?.phoneNumber
+                        : "UNKNOWN!"}
+                    </span>
+                  </div>
+                  <div className="mt-2">
+                    <b>Address: </b>
+                    <span className="italic">
+                      {client?.street ? client?.street : "STREET UNKNOWN!"}
+                    </span>
+                    <span className="italic">
+                      {" "}
+                      {client?.city ? client?.city : "CITY UNKNOWN!"}
+                    </span>
+                    <span className="italic">
+                      {" "}
+                      {client?.state ? client?.state : "STATE UNKNOWN!"}
+                    </span>
+                    <span className="italic">
+                      {" "}
+                      {client?.zipCode ? client?.zipCode : "ZIPCODE UNKNOWN!"}
+                    </span>
+                  </div>
+                </div>
+                <Divider />
+                <div className="flex flex-row items-center w-full mt-2 ml-2">
+                  <h3 className="text-lg m-0 font-extrabold">
+                    <FontAwesomeIcon icon={faEnvelope} className="mr-4" />
+                    EMAIL NOTIFICATIONS:
+                  </h3>
+                  {client?.sendEmail === undefined ? (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      UNKNOWN
+                    </span>
+                  ) : client?.sendEmail ? (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      ACTIVE
+                    </span>
+                  ) : (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      DISABLED
+                    </span>
+                  )}
+                </div>
+                <Divider />
+                <div className="flex flex-row items-center w-full mt-2 ml-2">
+                  <h3 className="text-lg m-0 font-extrabold">
+                    <FontAwesomeIcon icon={faSms} className="mr-4" />
+                    SMS NOTIFICATIONS:
+                  </h3>
+                  {client?.sendSms === undefined ? (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      UNKNOWN
+                    </span>
+                  ) : client?.sendSms ? (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      ACTIVE
+                    </span>
+                  ) : (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      DISABLED
+                    </span>
+                  )}
+                </div>
+                <Divider />
+                <div className="flex flex-row items-center w-full mt-2 ml-2">
+                  <FontAwesomeIcon
+                    icon={faCreditCard}
+                    className="mr-4"
+                    size="lg"
+                  />
+                  <h3 className="text-lg m-0 font-extrabold">
+                    PAYMENT METHOD:
+                  </h3>
+                  {isLoadingAccount ? (
+                    <FontAwesomeIcon
+                      icon={faSpinner}
+                      spin
+                      size="lg"
+                      className="text-movet-brown ml-4"
+                    />
+                  ) : client?.paymentMethods === undefined ? (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      STATUS UNKNOWN
+                    </span>
+                  ) : client?.paymentMethods.length === 0 ? (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      NEEDS A PAYMENT METHOD
+                    </span>
+                  ) : (
+                    <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                      READY
+                    </span>
+                  )}
+                  {isLoadingSendPaymentLink ? (
                     <FontAwesomeIcon
                       icon={faSpinner}
                       spin
@@ -361,360 +628,106 @@ const Client = () => {
                       className="text-movet-brown ml-4"
                     />
                   ) : (
-                    <FontAwesomeIcon
-                      icon={faPaperPlane}
-                      size="lg"
-                      className={
-                        !client?.emailVerified && !isLoadingAccount
-                          ? "text-movet-yellow hover:text-movet-green"
-                          : ""
-                      }
-                    />
-                  )}
-                </div>
-                <a
-                  href={
-                    environment === "production"
-                      ? `https://us.provetcloud.com/4285/client/${query?.id}/`
-                      : `https://us.provetcloud.com/4285/client/${query?.id}/`
-                  }
-                  target="_blank"
-                  className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                  rel="noreferrer"
-                >
-                  <FontAwesomeIcon icon={faPaw} size="lg" />
-                </a>
-                {client && client?.customer && (
-                  <a
-                    href={
-                      environment === "production"
-                        ? `https://dashboard.stripe.com/customers/${client?.customer}/`
-                        : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
-                    }
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                  >
-                    <FontAwesomeIcon icon={faCreditCard} size="lg" />
-                  </a>
-                )}
-                {client && (
-                  <a
-                    href={`${GOTO_PHONE_URL}/${client?.phone}`}
-                    target="_blank"
-                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                    rel="noreferrer"
-                  >
-                    <FontAwesomeIcon icon={faPhone} size="lg" />
-                  </a>
-                )}
-                {client && (
-                  <a
-                    href={`mailto:${client?.email}`}
-                    target="_blank"
-                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                    rel="noreferrer"
-                  >
-                    <FontAwesomeIcon icon={faEnvelope} size="lg" />
-                  </a>
-                )}
-                {client && (
-                  <a
-                    href={`http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`}
-                    target="_blank"
-                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                    rel="noreferrer"
-                  >
-                    <FontAwesomeIcon icon={faMapLocation} size="lg" />
-                  </a>
-                )}
-                <div
-                  onClick={() => reloadPage()}
-                  className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                >
-                  <FontAwesomeIcon icon={faRedo} size="lg" />
-                </div>
-              </div>
-            </div>
-            <div className="flex-1 px-4 sm:px-8">
-              <div className="flex flex-row items-center w-full pt-4 ml-2">
-                <h3 className="text-lg m-0 font-extrabold flex-wrap">
-                  <FontAwesomeIcon icon={faUser} className="mr-4" />
-                  ACCOUNT STATUS:
-                </h3>
-                {isLoadingAccount ? (
-                  <FontAwesomeIcon
-                    icon={faSpinner}
-                    spin
-                    size="lg"
-                    className="text-movet-brown ml-4"
-                  />
-                ) : Array.isArray(errors) &&
-                  errors[0].includes("verifyAccount") ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    STATUS UNKNOWN
-                  </span>
-                ) : errors ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    NEEDS REPAIR
-                  </span>
-                ) : (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    HEALTHY
-                  </span>
-                )}
-              </div>
-              <div className="ml-4 sm:ml-8">
-                {errors && (
-                  <div className="mt-2">
-                    <b>Errors: </b>
-                    <ul>
-                      {errors.map((error: string, index: number) => (
-                        <li key={index} className="italic text-movet-red">
-                          &quot;{error}&quot;
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                <div className="mt-2">
-                  <b>Account ID: </b>
-                  <span className="italic">{query?.id}</span>
-                </div>
-                <div className="mt-2">
-                  <b>Customer ID: </b>
-                  <span className="italic">
-                    {client?.customer
-                      ? client?.customer
-                      : client?.customer?.id
-                      ? client?.customer?.id
-                      : "DOES NOT EXIST!"}
-                  </span>
-                </div>
-                <div className="mt-2 flex flex-row flex-wrap">
-                  <b>Email Address: </b>
-                  <p className="italic flex flex-row ml-2 items-center">
-                    {client?.email}
-                    {client?.emailVerified ? (
-                      <FontAwesomeIcon
-                        icon={faCheckCircle}
-                        className="text-movet-green ml-2"
-                      />
-                    ) : client?.emailVerified === false ? (
-                      <span className="group flex flex-row items-center flex-wrap">
-                        <FontAwesomeIcon
-                          icon={faCircleExclamation}
-                          className="text-movet-yellow ml-2"
-                        />
-                        <span className="hidden group-hover:flex items-center ml-2 text-xs text-movet-yellow font-extrabold">
-                          Client has not set an account password yet
-                        </span>
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </p>
-                </div>
-                <div className="mt-2">
-                  <b>Phone Number: </b>
-                  <span className="italic">
-                    {client?.phone !== undefined
-                      ? formatPhoneNumber(client?.phone)
-                      : client?.phoneNumber
-                      ? client?.phoneNumber
-                      : "UNKNOWN!"}
-                  </span>
-                </div>
-                <div className="mt-2">
-                  <b>Address: </b>
-                  <span className="italic">
-                    {client?.street ? client?.street : "STREET UNKNOWN!"}
-                  </span>
-                  <span className="italic">
-                    {" "}
-                    {client?.city ? client?.city : "CITY UNKNOWN!"}
-                  </span>
-                  <span className="italic">
-                    {" "}
-                    {client?.state ? client?.state : "STATE UNKNOWN!"}
-                  </span>
-                  <span className="italic">
-                    {" "}
-                    {client?.zipCode ? client?.zipCode : "ZIPCODE UNKNOWN!"}
-                  </span>
-                </div>
-              </div>
-              <Divider />
-              <div className="flex flex-row items-center w-full mt-2 ml-2">
-                <h3 className="text-lg m-0 font-extrabold">
-                  <FontAwesomeIcon icon={faEnvelope} className="mr-4" />
-                  EMAIL NOTIFICATIONS:
-                </h3>
-                {client?.sendEmail === undefined ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    UNKNOWN
-                  </span>
-                ) : client?.sendEmail ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    ACTIVE
-                  </span>
-                ) : (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    DISABLED
-                  </span>
-                )}
-              </div>
-              <Divider />
-              <div className="flex flex-row items-center w-full mt-2 ml-2">
-                <h3 className="text-lg m-0 font-extrabold">
-                  <FontAwesomeIcon icon={faSms} className="mr-4" />
-                  SMS NOTIFICATIONS:
-                </h3>
-                {client?.sendSms === undefined ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    UNKNOWN
-                  </span>
-                ) : client?.sendSms ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    ACTIVE
-                  </span>
-                ) : (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    DISABLED
-                  </span>
-                )}
-              </div>
-              <Divider />
-              <div className="flex flex-row items-center w-full mt-2 ml-2">
-                <FontAwesomeIcon
-                  icon={faCreditCard}
-                  className="mr-4"
-                  size="lg"
-                />
-                <h3 className="text-lg m-0 font-extrabold">PAYMENT METHOD:</h3>
-                {isLoadingAccount ? (
-                  <FontAwesomeIcon
-                    icon={faSpinner}
-                    spin
-                    size="lg"
-                    className="text-movet-brown ml-4"
-                  />
-                ) : client?.paymentMethods === undefined ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    STATUS UNKNOWN
-                  </span>
-                ) : client?.paymentMethods.length === 0 ? (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    NEEDS A PAYMENT METHOD
-                  </span>
-                ) : (
-                  <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                    READY
-                  </span>
-                )}
-                {isLoadingSendPaymentLink ? (
-                  <FontAwesomeIcon
-                    icon={faSpinner}
-                    spin
-                    size="sm"
-                    className="text-movet-brown ml-4"
-                  />
-                ) : (
-                  <>
-                    {client?.sendSms && (
-                      <div
-                        onClick={() => sendPaymentLink("SMS")}
-                        className="ml-4 cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      >
-                        <FontAwesomeIcon icon={faSms} size="lg" />
-                      </div>
-                    )}
-                    {client?.sendEmail && (
-                      <div
-                        onClick={() => sendPaymentLink("EMAIL")}
-                        className="ml-1 cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      >
-                        <FontAwesomeIcon icon={faEnvelopeSquare} size="lg" />
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-              <div className="ml-4 sm:ml-8">
-                {client &&
-                  client?.paymentMethods &&
-                  client?.paymentMethods?.map(
-                    (paymentMethod: any, index: number) => (
-                      <a
-                        key={index}
-                        href={
-                          environment === "production"
-                            ? `https://dashboard.stripe.com/customers/${client?.customer}/`
-                            : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
-                        }
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <div className="mt-2 flex flex-row items-center">
-                          <span className="text-xs mr-1">
-                            {getMMDDFromDate(new Date(paymentMethod?.created))}
-                          </span>
-                          <b>
-                            {capitalizeFirstLetter(
-                              paymentMethod?.card?.funding
-                            )}{" "}
-                            {capitalizeFirstLetter(paymentMethod?.type)}:
-                          </b>
-                          <span className="italic ml-2">
-                            {capitalizeFirstLetter(paymentMethod?.card?.brand)}
-                          </span>
-                          <span className="italic ml-2">
-                            - {paymentMethod?.card?.last4}
-                          </span>
-                          <span className="italic ml-2">
-                            - {paymentMethod?.card?.exp_month}/
-                            {paymentMethod?.card?.exp_year}
-                            {paymentMethod?.card?.wallet?.apple_pay && (
-                              <FontAwesomeIcon
-                                icon={faAppleAlt}
-                                className="ml-2"
-                                size="xs"
-                              />
-                            )}
-                          </span>
+                    <>
+                      {client?.sendSms && (
+                        <div
+                          onClick={() => sendPaymentLink("SMS")}
+                          className="ml-4 cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                        >
+                          <FontAwesomeIcon icon={faSms} size="lg" />
                         </div>
-                      </a>
-                    )
+                      )}
+                      {client?.sendEmail && (
+                        <div
+                          onClick={() => sendPaymentLink("EMAIL")}
+                          className="ml-1 cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                        >
+                          <FontAwesomeIcon icon={faEnvelopeSquare} size="lg" />
+                        </div>
+                      )}
+                    </>
                   )}
+                </div>
+                <div className="ml-4 sm:ml-8">
+                  {client &&
+                    client?.paymentMethods &&
+                    client?.paymentMethods?.map(
+                      (paymentMethod: any, index: number) => (
+                        <a
+                          key={index}
+                          href={
+                            environment === "production"
+                              ? `https://dashboard.stripe.com/customers/${client?.customer}/`
+                              : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                          }
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <div className="mt-2 flex flex-row items-center">
+                            <span className="text-xs mr-1">
+                              {getMMDDFromDate(
+                                new Date(paymentMethod?.created)
+                              )}
+                            </span>
+                            <b>
+                              {capitalizeFirstLetter(
+                                paymentMethod?.card?.funding
+                              )}{" "}
+                              {capitalizeFirstLetter(paymentMethod?.type)}:
+                            </b>
+                            <span className="italic ml-2">
+                              {capitalizeFirstLetter(
+                                paymentMethod?.card?.brand
+                              )}
+                            </span>
+                            <span className="italic ml-2">
+                              - {paymentMethod?.card?.last4}
+                            </span>
+                            <span className="italic ml-2">
+                              - {paymentMethod?.card?.exp_month}/
+                              {paymentMethod?.card?.exp_year}
+                              {paymentMethod?.card?.wallet?.apple_pay && (
+                                <FontAwesomeIcon
+                                  icon={faAppleAlt}
+                                  className="ml-2"
+                                  size="xs"
+                                />
+                              )}
+                            </span>
+                          </div>
+                        </a>
+                      )
+                    )}
+                </div>
+                <Divider />
               </div>
-              <Divider />
-            </div>
-            <Transition
-              show={
-                client?.paymentMethods !== undefined ||
-                (errors !== null && errors[0] !== "Client Not Found...")
-              }
-              enter="transition ease-in duration-1000"
-              leave="transition ease-out duration-1000"
-              leaveTo="opacity-10"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leaveFrom="opacity-100"
-            >
-              <Button
-                text="Client Info Verified"
-                color="black"
-                icon={faCheck}
-                loading={isLoadingAddingToWaitlist}
-                disabled={isLoadingAddingToWaitlist}
-                onClick={() => addToWaitlist()}
-                className="hover:bg-movet-green mb-8 mt-4"
-              />
-            </Transition>
-          </>
-        )}
+              <Transition
+                show={
+                  client?.paymentMethods !== undefined ||
+                  (errors !== null && errors[0] !== "Client Not Found...")
+                }
+                enter="transition ease-in duration-1000"
+                leave="transition ease-out duration-1000"
+                leaveTo="opacity-10"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leaveFrom="opacity-100"
+              >
+                <Button
+                  text="Client Info Verified"
+                  color="black"
+                  icon={faCheck}
+                  loading={isLoadingAddingToWaitlist}
+                  disabled={isLoadingAddingToWaitlist}
+                  onClick={() => addToWaitlist()}
+                  className="hover:bg-movet-green mb-8 mt-4"
+                />
+              </Transition>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

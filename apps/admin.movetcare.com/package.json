@@ -46,6 +46,7 @@
     "eslint-config-custom": "workspace:*",
     "next-transpile-modules": "10.0.0",
     "postcss": "^8.4.21",
+    "react-select": "^5.7.0",
     "schemas": "workspace:*",
     "tailwindcss": "^3.2.4",
     "tsconfig": "workspace:*",
