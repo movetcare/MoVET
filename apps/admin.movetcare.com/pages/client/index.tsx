@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   faPaw,
@@ -17,14 +17,15 @@ import {
   faCheckCircle,
   faPaperPlane,
   faMapLocation,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GOTO_PHONE_URL } from "constants/urls";
 import environment from "utils/environment";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useDocument } from "react-firebase-hooks/firestore";
 import { firestore, functions } from "services/firebase";
-import { Button, Loader } from "ui";
+import { Button, Loader, Modal } from "ui";
 import Error from "components/Error";
 import { timeSince } from "utils/timeSince";
 import { capitalizeFirstLetter } from "utils/capitalizeFirstLetter";
@@ -34,11 +35,15 @@ import { httpsCallable } from "firebase/functions";
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { Transition } from "@headlessui/react";
 import { ClientSearch } from "components/ClientSearch";
+import error from "next/error";
 const Client = () => {
   const router = useRouter();
   const { query } = router;
   const [errors, setErrors] = useState<Array<string> | null>(null);
   const [client, setClient] = useState<any>();
+  const cancelButtonRef = useRef(null);
+  const [showDeleteClientModal, setShowDeleteClientModal] =
+    useState<boolean>(false);
   const [isLoadingAccount, setIsLoadingAccount] = useState<boolean>(true);
   const [isLoadingSendPasswordResetLink, setIsLoadingSendPasswordResetLink] =
     useState<boolean>(false);
@@ -293,12 +298,53 @@ const Client = () => {
       })
       .finally(() => setIsLoadingSendPasswordResetLink(false));
   };
+  const deleteClient = async () => {
+    setIsLoading(true);
+    toast(`DELETING CLIENT #${query?.id}...`, {
+      position: "top-center",
+      duration: 3000,
+      icon: (
+        <FontAwesomeIcon
+          icon={faTrash}
+          size="lg"
+          className="text-movet-yellow"
+        />
+      ),
+    });
+    await deleteDoc(doc(firestore, "clients", query?.id as string))
+      .then(() => {
+        toast(`CLIENT #${query?.id} HAS BEEN DELETED!`, {
+          position: "top-center",
+          duration: 5000,
+          icon: (
+            <FontAwesomeIcon
+              icon={faTrash}
+              size="lg"
+              className="text-movet-green"
+            />
+          ),
+        });
+        router.push("/dashboard");
+      })
+      .catch((error: any) =>
+        toast(error?.message, {
+          position: "top-center",
+          duration: 5000,
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              className="text-movet-red"
+            />
+          ),
+        })
+      )
+      .finally(() => setIsLoading(false));
+  };
   const Divider = () => <hr className="my-4 border-movet-brown/50" />;
   return (
     <>
-      {" "}
       <ClientSearch />
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col md:flex-row max-w-2xl mx-auto">
         <div
           className={`flex flex-col lg:pb-8 lg:pt-4 justify-between bg-white shadow overflow-hidden rounded-lg text-movet-black w-full`}
         >
@@ -308,7 +354,7 @@ const Client = () => {
             <Error error={errorClient} />
           ) : (
             <>
-              <div className="flex sm:items-center justify-between md:pb-6 border-b border-movet-gray px-8 py-4">
+              <div className="flex flex-col sm:items-center justify-between md:pb-6 border-b border-movet-gray px-8 py-4">
                 <div className="flex items-center space-x-4">
                   <Image
                     src="/images/logo/logo-paw-black.png"
@@ -320,7 +366,7 @@ const Client = () => {
                   />
                   <div className="flex flex-col text-center">
                     {client && (
-                      <div className="mt-1 flex items-center">
+                      <div className="mt-1 flex justify-center items-center">
                         <h1 className="mr-3 font-abside text-lg">
                           {client?.firstName !== undefined
                             ? client?.firstName
@@ -330,6 +376,9 @@ const Client = () => {
                             : ""}
                           {client?.displayName !== undefined
                             ? client?.displayName
+                            : client?.firstName === undefined &&
+                              client?.lastName === undefined
+                            ? "UNKNOWN CLIENT"
                             : ""}
                         </h1>
                       </div>
@@ -354,7 +403,7 @@ const Client = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row items-center space-x-2">
+                <div className="flex flex-row items-center justify-center space-x-2 mt-2">
                   <div
                     onClick={() => sendPasswordResetLink()}
                     className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
@@ -404,7 +453,7 @@ const Client = () => {
                       <FontAwesomeIcon icon={faCreditCard} size="lg" />
                     </a>
                   )}
-                  {client && (
+                  {client && client?.phone && (
                     <a
                       href={`${GOTO_PHONE_URL}/${client?.phone}`}
                       target="_blank"
@@ -414,7 +463,7 @@ const Client = () => {
                       <FontAwesomeIcon icon={faPhone} size="lg" />
                     </a>
                   )}
-                  {client && (
+                  {client && client?.email && (
                     <a
                       href={`mailto:${client?.email}`}
                       target="_blank"
@@ -424,7 +473,7 @@ const Client = () => {
                       <FontAwesomeIcon icon={faEnvelope} size="lg" />
                     </a>
                   )}
-                  {client && (
+                  {client && client?.street && (
                     <a
                       href={`http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`}
                       target="_blank"
@@ -434,6 +483,12 @@ const Client = () => {
                       <FontAwesomeIcon icon={faMapLocation} size="lg" />
                     </a>
                   )}
+                  <div
+                    onClick={() => setShowDeleteClientModal(true)}
+                    className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                  >
+                    <FontAwesomeIcon icon={faTrash} size="lg" />
+                  </div>
                   <div
                     onClick={() => reloadPage()}
                     className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
@@ -727,6 +782,25 @@ const Client = () => {
           )}
         </div>
       </div>
+      <Modal
+        showModal={showDeleteClientModal}
+        setShowModal={setShowDeleteClientModal}
+        cancelButtonRef={cancelButtonRef}
+        isLoading={isLoading}
+        content={
+          <p className="text-lg">
+            Are you sure you want to delete this client?{" "}
+            <span className="text-lg italic font-bold">
+              This action cannot be undone!
+            </span>
+          </p>
+        }
+        title={`Delete Client ${query?.id}`}
+        icon={faRedo}
+        action={deleteClient}
+        yesButtonText="YES"
+        noButtonText="CANCEL"
+      />
     </>
   );
 };

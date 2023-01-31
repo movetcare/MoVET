@@ -138,18 +138,20 @@ export const verifyAccount = functions
           }
           return {
             errors,
-            email: authData?.email,
-            sendEmail: movetData?.sendEmail,
-            sendSms: movetData?.sendSms,
-            emailVerified: authData?.emailVerified,
-            phoneNumber: formatPhoneNumber(authData?.phoneNumber),
-            displayName: authData?.displayName,
-            city: movetData?.city,
-            street: movetData?.street,
-            state: movetData?.state,
-            zipCode: movetData?.zipCode,
-            customer: stripeData?.customer,
-            paymentMethods: paymentMethods,
+            email: authData?.email || "MISSING",
+            sendEmail: movetData?.sendEmail || false,
+            sendSms: movetData?.sendSms || false,
+            emailVerified: authData?.emailVerified || false,
+            phoneNumber: authData?.phoneNumber
+              ? formatPhoneNumber(authData?.phoneNumber)
+              : "MISSING",
+            displayName: authData?.displayName || "MISSING",
+            city: movetData?.city || "MISSING",
+            street: movetData?.street || "MISSING",
+            state: movetData?.state || "MISSING",
+            zipCode: movetData?.zipCode || "MISSING",
+            customer: stripeData?.customer || "MISSING",
+            paymentMethods: paymentMethods || [],
           };
         } catch (error) {
           throwError(error);
