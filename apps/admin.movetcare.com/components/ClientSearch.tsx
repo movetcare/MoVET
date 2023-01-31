@@ -63,12 +63,22 @@ export const ClientSearch = () => {
   );
   const customFilter = (option: any, searchText: string) => {
     if (
-      option.data.label.toLowerCase().includes(searchText.toLowerCase()) ||
-      option.data.id.toLowerCase().includes(searchText.toLowerCase()) ||
-      option.data.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-      option.data.lastName.toLowerCase().includes(searchText.toLowerCase()) ||
-      option.data.phone.toLowerCase().includes(searchText.toLowerCase()) ||
-      option.data.email.toLowerCase().includes(searchText.toLowerCase())
+      (option.data.label &&
+        option.data.label.toLowerCase().includes(searchText.toLowerCase())) ||
+      (option.data.id &&
+        option.data.id.toLowerCase().includes(searchText.toLowerCase())) ||
+      (option.data.firstName &&
+        option.data.firstName
+          .toLowerCase()
+          .includes(searchText.toLowerCase())) ||
+      (option.data.lastName &&
+        option.data.lastName
+          .toLowerCase()
+          .includes(searchText.toLowerCase())) ||
+      (option.data.phone &&
+        option.data.phone.toLowerCase().includes(searchText.toLowerCase())) ||
+      (option.data.email &&
+        option.data.email.toLowerCase().includes(searchText.toLowerCase()))
     ) {
       return true;
     } else {
