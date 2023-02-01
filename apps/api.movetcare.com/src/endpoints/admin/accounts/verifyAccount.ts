@@ -12,7 +12,7 @@ import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
 import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
 import { requestIsAuthorized } from "../../admin/pos/requestIsAuthorized";
-const DEBUG = environment.type === "production";
+const DEBUG = true; // environment.type === "production";
 interface AccountData {
   email: string;
   displayName: string;
@@ -89,6 +89,7 @@ export const verifyAccount = functions
               provetData,
               stripeData,
             });
+          await fixCustomerDataIfNeeded(id, movetData);
           let errors: Array<string | undefined> = [];
           errors = [
             ...getEmailErrors({ authData, movetData, provetData }),
@@ -103,8 +104,6 @@ export const verifyAccount = functions
               movetData,
             })),
           ];
-
-          // Verify client exists in sendgrid
           if (errors.length > 0) {
             sendNotification({
               type: "slack",
@@ -204,6 +203,21 @@ const getAllAccountData = async (
       ).data?.map((customer: { id: string }) => customer?.id),
     },
   };
+};
+
+const fixCustomerDataIfNeeded = async (id: string, movetData: MovetData) => {
+  if (DEBUG) console.log("movetData?.customer", movetData?.customer);
+  if ((movetData?.customer as any)?.id !== undefined)
+    await admin
+      .firestore()
+      .collection("clients")
+      .doc(id)
+      .set(
+        { customer: (movetData?.customer as any)?.id, updatedOn: new Date() },
+        { merge: true }
+      )
+      .then(() => DEBUG && console.log(`FIXED CUSTOMER DATA FOR CLIENT ${id}`))
+      .catch((error: any) => throwError(error));
 };
 
 const getPaymentMethods = async (id: string, stripeData: any) => {
@@ -324,7 +338,6 @@ const getNameErrors = ({
   provetData: ProvetData;
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
-  console.log("movetData?.firstName", movetData?.firstName);
   if (
     movetData?.firstName === undefined ||
     movetData?.lastName === undefined ||

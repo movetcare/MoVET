@@ -71,7 +71,7 @@ describe(
         "eq",
         "/schedule-an-appointment/location-selection/"
       );
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
@@ -79,7 +79,7 @@ describe(
         "/schedule-an-appointment/location-selection/"
       );
       cy.get("@heading").contains("Choose a Location");
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.get("@heading").contains("MoVET @ Belleview Station");
@@ -111,7 +111,7 @@ describe(
         "/schedule-an-appointment/reason-selection/"
       );
       cy.get("@heading").contains("Choose a Service");
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.get("@submitButton").should("be.disabled");
@@ -124,7 +124,7 @@ describe(
         "/schedule-an-appointment/staff-selection/"
       );
       cy.get("@heading").contains("Choose an Expert");
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.get("@submitButton").should("be.enabled");
@@ -134,7 +134,7 @@ describe(
         "/schedule-an-appointment/datetime-selection/"
       );
       cy.get("@heading").contains("Request a Time");
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.get("@submitButton").should("be.disabled");
@@ -192,7 +192,7 @@ describe(
         "eq",
         "/schedule-an-appointment/wellness-check/"
       );
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.get("@heading").contains("Pet Wellness Check");
@@ -204,7 +204,7 @@ describe(
         "eq",
         "/schedule-an-appointment/location-selection/"
       );
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
@@ -212,7 +212,7 @@ describe(
         "/schedule-an-appointment/location-selection/"
       );
       cy.get("@heading").contains("Choose a Location");
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.get("#Virtually").click();
@@ -281,7 +281,7 @@ describe(
         "eq",
         "/schedule-an-appointment/location-selection/"
       );
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
@@ -289,7 +289,7 @@ describe(
         "/schedule-an-appointment/location-selection/"
       );
       cy.get("@heading").contains("Choose a Location");
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.get("@heading").contains("MoVET @ Belleview Station");
@@ -319,7 +319,7 @@ describe(
         "/schedule-an-appointment/reason-selection/"
       );
       cy.get("@heading").contains("Choose a Service");
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.get("@submitButton").should("be.disabled");
@@ -330,7 +330,7 @@ describe(
         "/schedule-an-appointment/staff-selection/"
       );
       cy.get("@heading").contains("Choose an Expert");
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.get("@submitButton").should("be.enabled");
@@ -340,7 +340,7 @@ describe(
         "/schedule-an-appointment/datetime-selection/"
       );
       cy.get("@heading").contains("Request a Time");
-      cy.get("@text").contains("Restart").click();
+      cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.get("@submitButton").should("be.disabled");
@@ -600,7 +600,7 @@ const runThroughAppointmentRequestWorkflows = (clientEmail) => {
     "eq",
     "/schedule-an-appointment/wellness-check/"
   );
-  cy.get("@text").contains("Restart").click();
+  cy.get("#restart").contains("Restart").click();
   cy.get("@heading").contains("Restart Appointment Booking?");
   cy.get("button").contains("CANCEL").click();
   cy.get("@heading").contains("Pet Wellness Check");
@@ -622,7 +622,7 @@ const runThroughAppointmentRequestWorkflows = (clientEmail) => {
     );
     cy.get("@heading").contains("Minor Illness");
     cy.get("legend").contains("Symptoms");
-    cy.get("@text").contains("Restart").click();
+    cy.get("#restart").contains("Restart").click();
     cy.get("@heading").contains("Restart Appointment Booking?");
     cy.get("button").contains("CANCEL").click();
     cy.get("@text").contains(
@@ -657,7 +657,7 @@ const runThroughAppointmentRequestWorkflows = (clientEmail) => {
     "/schedule-an-appointment/location-selection/"
   );
   cy.get("@heading").contains("Choose a Location");
-  cy.get("@text").contains("Restart").click();
+  cy.get("#restart").contains("Restart").click();
   cy.get("@heading").contains("Restart Appointment Booking?");
   cy.get("button").contains("CANCEL").click();
   cy.get("@heading").contains("MoVET @ Belleview Station");
@@ -685,7 +685,7 @@ const runThroughAppointmentRequestWorkflows = (clientEmail) => {
     "/schedule-an-appointment/datetime-selection/"
   );
   cy.get("@heading").contains("Request a Time");
-  cy.get("@text").contains("Restart").click();
+  cy.get("#restart").contains("Restart").click();
   cy.get("@heading").contains("Restart Appointment Booking?");
   cy.get("button").contains("CANCEL").click();
   cy.get("@submitButton").should("be.disabled");

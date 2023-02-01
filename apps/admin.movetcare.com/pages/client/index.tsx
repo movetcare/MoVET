@@ -517,19 +517,18 @@ const Client = () => {
                       </a>
                     )}
                   <a
-                    href={`https://console.firebase.google.com/u/0/project/movet-care/firestore/data/~2Fclients~2F${query.id}`}
+                    href={
+                      window.location.hostname === "localhost"
+                        ? "http://localhost:4000/firestore/data/clients/" +
+                          query.id
+                        : `https://console.firebase.google.com/u/0/project/movet-care/firestore/data/~2Fclients~2F${query.id}`
+                    }
                     target="_blank"
                     className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                     rel="noreferrer"
                   >
                     <FontAwesomeIcon icon={faFire} size="lg" />
                   </a>
-                  <div
-                    onClick={() => setShowDeleteClientModal(true)}
-                    className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                  >
-                    <FontAwesomeIcon icon={faTrash} size="lg" />
-                  </div>
                   <div
                     onClick={() => setShowDeleteClientModal(true)}
                     className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
@@ -614,7 +613,7 @@ const Client = () => {
                       </div>
                       <div className="mt-2 flex flex-row flex-wrap">
                         <b>Email Address: </b>
-                        <p className="italic flex flex-row ml-2 items-center">
+                        <p className="group italic flex flex-row ml-2 items-center">
                           {client?.email}
                           {client?.emailVerified ? (
                             <FontAwesomeIcon
@@ -622,15 +621,10 @@ const Client = () => {
                               className="text-movet-green ml-2"
                             />
                           ) : client?.emailVerified === false ? (
-                            <span className="group flex flex-row items-center flex-wrap">
-                              <FontAwesomeIcon
-                                icon={faCircleExclamation}
-                                className="text-movet-yellow ml-2"
-                              />
-                              <span className="hidden group-hover:flex items-center ml-2 text-xs text-movet-yellow font-extrabold">
-                                Client has not set an account password yet
-                              </span>
-                            </span>
+                            <FontAwesomeIcon
+                              icon={faCircleExclamation}
+                              className="text-movet-yellow ml-2"
+                            />
                           ) : (
                             ""
                           )}

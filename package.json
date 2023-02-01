@@ -47,7 +47,7 @@
   "devDependencies": {
     "@types/node": "^18.11.18",
     "concurrently": "^7.6.0",
-    "cypress": "^12.4.1",
+    "cypress": "^12.5.0",
     "cypress-plugin-tab": "^1.0.5",
     "eslint-config-custom": "workspace:0.0.0",
     "git-branch-is": "^4.0.0",
@@ -55,7 +55,7 @@
     "lint-staged": "^13.1.0",
     "prettier": "^2.8.3",
     "start-server-and-test": "^1.15.3",
-    "turbo": "^1.7.0"
+    "turbo": "^1.7.1"
   },
   "engines": {
     "node": ">= 16.18.1"

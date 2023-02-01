@@ -56,7 +56,7 @@ export const BookingFooter = () => {
         onClick={() => setShowResetModal(true)}
       >
         <FontAwesomeIcon icon={faRedo} className="mr-2" />
-        <p>Restart</p>
+        <p id="restart">Restart</p>
       </div>
       <Modal
         showModal={showResetModal}

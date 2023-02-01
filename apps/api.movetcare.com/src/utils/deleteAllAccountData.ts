@@ -7,6 +7,7 @@ import { updateProVetPatient } from "../integrations/provet/entities/patient/upd
 import { sendNotification } from "../notifications/sendNotification";
 import { getCustomerId } from "./getCustomerId";
 import { getProVetIdFromUrl } from "./getProVetIdFromUrl";
+import { deleteCollection } from "./deleteCollection";
 const DEBUG = environment.type === "production";
 export const deleteAllAccountData = async (user: { uid: string }) => {
   const { email } = await getAuthUserById(user?.uid, ["email", "displayName"]);
@@ -103,22 +104,44 @@ export const deleteAllAccountData = async (user: { uid: string }) => {
       .del(customerId)
       .then(
         (result) => DEBUG && console.log("STRIPE CUSTOMER DELETED: ", result)
-      );
+      )
+      .catch((error: any) => console.error(error));
 
-  await admin
+  deleteCollection(`clients/${user?.uid}/notifications`)
+    .then(
+      () => DEBUG && console.log("DELETED clients/${user?.uid}/notifications")
+    )
+    .catch((error: any) => console.error(error));
+
+  deleteCollection(`clients/${user?.uid}/payment_methods`)
+    .then(
+      () => DEBUG && console.log("DELETED clients/${user?.uid}/payment_methods")
+    )
+    .catch((error: any) => console.error(error));
+
+  deleteCollection(`clients/${user?.uid}/logs`)
+    .then(() => DEBUG && console.log("DELETED clients/${user?.uid}/logs"))
+    .catch((error: any) => console.error(error));
+
+  deleteCollection(`clients/${user?.uid}/invoices`)
+    .then(() => DEBUG && console.log("DELETED clients/${user?.uid}/invoices"))
+    .catch((error: any) => console.error(error));
+
+  admin
     .firestore()
     .collection("clients")
     .doc(user?.uid)
     .delete()
     .then(
       () => DEBUG && console.log("FIRESTORE CLIENT RECORD DELETED: ", user?.uid)
-    );
+    )
+    .catch((error: any) => console.error(error));
 
   sendNotification({
     type: "slack",
     payload: {
       message: `MoVET Account and Data Archived for ${
-        user?.email
+        user?.uid
       } => ${JSON.stringify({
         proVetClientIds,
         proVetPatientIds,
