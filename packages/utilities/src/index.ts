@@ -6,3 +6,4 @@ export * from "./isValidZipcode";
 export * from "./validZipcodes";
 export * from "./formatDateObjectPlusTimeStringIntoString";
 export * from "./getUrlQueryStringFromObject";
+export * from "./isNumeric";

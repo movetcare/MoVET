@@ -34,7 +34,7 @@ import { httpsCallable } from "firebase/functions";
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { Transition } from "@headlessui/react";
 import { ClientSearch } from "components/ClientSearch";
-
+import { isNumeric } from "utilities";
 const Client = () => {
   const router = useRouter();
   const { query } = router;
@@ -54,6 +54,19 @@ const Client = () => {
   const [clientData, isLoadingClient, errorClient] = useDocument(
     doc(firestore, `clients/${query?.id}`)
   );
+
+  useEffect(() => {
+    if (query.id) {
+      const showError = () => {
+        setIsLoading(false);
+        setIsLoadingAccount(false);
+        setErrors(["Invalid Client ID!"]);
+        setClient([]);
+      };
+      if (!isNumeric(query.id as string)) showError();
+      else if (query.id.length < 3 || query.id.length > 5) showError();
+    }
+  }, [query]);
 
   useEffect(() => {
     if (!isLoadingClient) setIsLoading(false);
@@ -846,7 +859,9 @@ const Client = () => {
               <Transition
                 show={
                   client?.paymentMethods !== undefined ||
-                  (errors !== null && errors[0] !== "Client Not Found...")
+                  (errors !== null &&
+                    errors[0] !== "Client Not Found..." &&
+                    errors[0] !== "Invalid Client ID!")
                 }
                 enter="transition ease-in duration-1000"
                 leave="transition ease-out duration-1000"

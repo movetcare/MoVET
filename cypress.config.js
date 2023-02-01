@@ -1,6 +1,7 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
+  projectId: "isemvz",
   env: {
     defaultPathnameTimeOut:
       Number(process.env.CYPRESS_DISPLAY_PATH_TIMEOUT) || 10000,

@@ -6,6 +6,7 @@ import { environment } from "utilities";
 import dynamic from "next/dynamic";
 import Layout from "components/Layout";
 import { Toaster } from "react-hot-toast";
+import ErrorBoundary from "components/ErrorBoundary";
 
 const AnalyticsTracker = dynamic(() =>
   import("ui").then((mod) => mod.AnalyticsTracker)
@@ -13,7 +14,7 @@ const AnalyticsTracker = dynamic(() =>
 
 const MoVET = ({ Component, pageProps }: AppProps) => {
   return (
-    <>
+    <ErrorBoundary>
       <Head>
         <title>Schedule an Appointment - MoVET</title>
         <meta
@@ -28,7 +29,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
         <Component {...pageProps} />
       </Layout>
       <Toaster position="top-center" reverseOrder={false} />
-    </>
+    </ErrorBoundary>
   );
 };
 

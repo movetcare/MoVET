@@ -273,8 +273,8 @@ const ChatSession = () => {
                 <a
                   href={
                     environment === "production"
-                      ? `https://admin.movetcare.com/client?id=${query?.id}/`
-                      : `http://localhost:3002/client?id=${query?.id}/`
+                      ? `https://admin.movetcare.com/client/?id=${query?.id}`
+                      : `http://localhost:3002/client/?id=${query?.id}`
                   }
                   target="_blank"
                   className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
