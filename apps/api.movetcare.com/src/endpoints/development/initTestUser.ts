@@ -21,16 +21,16 @@ export const initTestUser: Promise<Response> = functions
       return (await deleteDefaultUsers()) &&
         (await importDefaultUsers()) &&
         (await importTestUser(
-          "alex.rodriguez+test@movetcare.com",
-          5125,
-          "cus_LYg1C7Et5ySQKC",
-          "card_1MWLO5DVQU5TYLF1Y3pW2SWl"
+          "dev+test@movetcare.com",
+          5747,
+          "cus_NHh7gfsz2LsVnp",
+          "pm_1MX7jnDVQU5TYLF1k3iHdDKc"
         )) &&
         (await importTestUser(
-          "alex.rodriguez+cypress_test_vcpr_not_required@movetcare.com",
+          "dev+test_vcpr_not_required@movetcare.com",
           5592,
-          "cus_NACRZs2K4LcbBA",
-          "pm_1MPsBCDVQU5TYLF1nDJduEdp"
+          "cus_NHhCBn8D5rsQS2",
+          "pm_1MX7ozDVQU5TYLF1gwB52QNF"
         )) &&
         (await importTelehealthChat()) &&
         (await importCheckIn())
@@ -249,13 +249,13 @@ const importTelehealthChat = async () =>
   await admin
     .firestore()
     .collection("telehealth_chat")
-    .doc("5125")
+    .doc("5747")
     .set(
       {
         client: await admin
           .firestore()
           .collection("clients")
-          .doc("5125")
+          .doc("5747")
           .get()
           .then((doc: any) => doc?.data()),
         question: "This is a test question...",
@@ -270,14 +270,14 @@ const importTelehealthChat = async () =>
         await admin
           .firestore()
           .collection("telehealth_chat")
-          .doc("5125")
+          .doc("5747")
           .collection("log")
           .add({
             _id: "123",
             startNewThread: true,
             text: "This is a test question...",
             user: {
-              _id: "5125",
+              _id: "5747",
               avatar: null,
               name: null,
             },
@@ -291,25 +291,25 @@ const importCheckIn = async (): Promise<boolean> => {
   const { firstName, lastName, phone } = await admin
     .firestore()
     .collection("clients")
-    .doc("5125")
+    .doc("5747")
     .get()
     .then((doc: any) => doc?.data())
     .catch((error: any) => throwError(error));
   return await admin
     .firestore()
     .collection("waitlist")
-    .doc("alex.rodriguez+test@movetcare.com")
+    .doc("dev+test@movetcare.com")
     .set(
       {
-        customerId: "cus_LYg1C7Et5ySQKC",
-        email: "alex.rodriguez+test@movetcare.com",
+        customerId: "cus_NHh7gfsz2LsVnp",
+        email: "dev+test@movetcare.com",
         firstName,
-        id: "5125",
+        id: "5747",
         isActive: true,
         lastName,
         paymentMethod: {
           ...(await stripe.paymentMethods.retrieve(
-            "card_1MWLO5DVQU5TYLF1Y3pW2SWl"
+            "pm_1MX7jnDVQU5TYLF1k3iHdDKc"
           )),
           active: true,
           updatedOn: new Date(),

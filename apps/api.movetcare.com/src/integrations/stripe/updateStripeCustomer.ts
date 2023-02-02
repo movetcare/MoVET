@@ -79,7 +79,7 @@ export const updateStripeCustomer = (proVetClientData: {
         })
       )
       .catch((error: any) =>
-        error?.message?.includes("No such customer: 'cus_LYg1C7Et5ySQKC'")
+        error?.message?.includes("No such customer: 'cus_NHh7gfsz2LsVnp'")
           ? console.log(error)
           : throwError(error)
       );

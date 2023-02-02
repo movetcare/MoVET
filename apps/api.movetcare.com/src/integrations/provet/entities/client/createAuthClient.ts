@@ -57,10 +57,9 @@ export const createAuthClient = (
     .catch((error: any) => {
       if (
         proVetClientData?.email !==
-          "alex.rodriguez+cypress_test_vcpr_not_required@movetcare.com" &&
-        proVetClientData?.email !==
-          "alex.rodriguez+cypress_test_vcpr_required@movetcare.com" &&
-        proVetClientData?.email !== "alex.rodriguez+test@movetcare.com"
+          "dev+test_vcpr_not_required@movetcare.com" &&
+        proVetClientData?.email !== "dev+test_vcpr_required@movetcare.com" &&
+        proVetClientData?.email !== "dev+test@movetcare.com"
       )
         throwError(error);
     });

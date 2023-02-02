@@ -35,11 +35,11 @@ export const resetTestData: Promise<Response> = functions
             })
           )
           .catch((error: any) => DEBUG && console.error(error));
-      } else if (request.body?.id === 5125) {
+      } else if (request.body?.id === 5747) {
         await disableWinterMode();
         await admin
           .auth()
-          .updateUser("5125", {
+          .updateUser("5747", {
             phoneNumber: null,
             displayName: null,
           })
@@ -52,7 +52,7 @@ export const resetTestData: Promise<Response> = functions
         await admin
           .firestore()
           .collection("bookings")
-          .where("client.uid", "==", "5125")
+          .where("client.uid", "==", "5747")
           .get()
           .then((querySnapshot: any) =>
             querySnapshot.forEach((doc: any) => {
@@ -65,17 +65,17 @@ export const resetTestData: Promise<Response> = functions
         await admin
           .firestore()
           .collection("clients")
-          .doc("5125")
+          .doc("5747")
           .delete()
           .then(
             () =>
-              DEBUG && console.log("Successfully Deleted Client Document", 5125)
+              DEBUG && console.log("Successfully Deleted Client Document", 5747)
           )
           .catch((error: any) => DEBUG && console.error(error));
         const patients = admin
           .firestore()
           .collection("patients")
-          .where("client", "==", 5125);
+          .where("client", "==", 5747);
         patients
           .get()
           .then((querySnapshot: any) =>
@@ -89,7 +89,7 @@ export const resetTestData: Promise<Response> = functions
           )
           .catch((error: any) => DEBUG && console.error(error));
 
-        // const client = await fetchEntity("client", 5125);
+        // const client = await fetchEntity("client", 5747);
 
         // const proVetPatientIds: Array<number> = [];
         // if (client?.patients.length)
@@ -142,7 +142,7 @@ export const resetTestData: Promise<Response> = functions
 
         const paymentMethods = await stripe.paymentMethods
           .list({
-            customer: "cus_LYg1C7Et5ySQKC",
+            customer: "cus_NHh7gfsz2LsVnp",
             type: "card",
           })
           .catch((error: any) => DEBUG && console.error(error));
@@ -171,8 +171,7 @@ export const resetTestData: Promise<Response> = functions
         sendNotification({
           type: "slack",
           payload: {
-            message:
-              ":red_circle: TEST DATA RESET FOR alex.rodriguez+test@movetcare.com",
+            message: ":red_circle: TEST DATA RESET FOR dev+test@movetcare.com",
           },
         });
       } else if (request.body?.id === "winter-mode-on") {

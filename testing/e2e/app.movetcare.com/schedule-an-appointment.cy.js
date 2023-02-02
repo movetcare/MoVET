@@ -16,7 +16,7 @@ describe(
   () => {
     it("Can schedule an appointment as a new client - VCPR REQUIRED", () => {
       runThroughAppointmentRequestWorkflows(
-        `alex.rodriguez+test_CYPRESS_${Math.floor(
+        `dev+test_client_${Math.floor(
           Math.random() * 99999999999
         )}@movetcare.com`
       );

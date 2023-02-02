@@ -119,7 +119,7 @@ export default function ResetPassword() {
                 />
                 <Button
                   disabled={!isDirty || !isValid || isLoading}
-                  text="Change Password"
+                  text="Save Password"
                   color="red"
                   icon={faKey}
                   iconSize="sm"

@@ -517,7 +517,7 @@ const getCustomerErrors = ({
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
   if (movetData?.customer === undefined)
-    console.log("No MoVET Customer ID Found!");
+    errors.push("No MoVET Customer ID Found!");
   if (stripeData.customer.length < 1)
     errors.push(
       "Can NOT determine Payment Methods as no Stripe Customer was found..."
@@ -556,15 +556,11 @@ const getPaymentMethodErrors = async ({
   movetData: MovetData;
 }): Promise<Array<string | undefined>> => {
   const errors: Array<string | undefined> = [];
-  if (movetData?.customer === undefined)
-    errors.push(
-      "Can NOT determine Payment Methods as no MoVET Customer was found..."
-    );
-  else if (stripeData.customer.length === 0)
-    errors.push(
-      "Can NOT determine Payment Methods as no Stripe Customer was found..." +
-        JSON.stringify(stripeData.customer)
-    );
+  if (
+    (movetData?.customer === undefined || stripeData.customer.length === 0) &&
+    DEBUG
+  )
+    console.log("MISSING CUSTOMER ID");
   else if (Array.isArray(stripeData.customer) && stripeData.customer.length > 1)
     errors.push(
       "Can NOT determine Payment Methods as multiple Stripe Customers were found: " +

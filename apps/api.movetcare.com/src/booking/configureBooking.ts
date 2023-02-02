@@ -93,7 +93,7 @@ export const configureBooking = async (): Promise<boolean> => {
 //     .firestore()
 //     .collection("contact")
 //     .add({
-//       email: "alex.rodriguez+test@movetcare.com",
+//       email: "dev+test@movetcare.com",
 //       firstName: "Alex",
 //       lastName: "Rodriguez",
 //       message:
@@ -112,10 +112,10 @@ export const configureBooking = async (): Promise<boolean> => {
 //         .add({
 //           createdAt: new Date(),
 //           client: {
-//             uid: "5125",
+//             uid: "5747",
 //             phoneNumber: "+1314 7360856",
 //             displayName: "Alex Rodriguez",
-//             email: "alex.rodriguez+test@movetcare.com",
+//             email: "dev+test@movetcare.com",
 //           },
 //           vcprRequired: true,
 //           id: "T565UH1WjK7qN5gW6WH5",
