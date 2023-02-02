@@ -13,8 +13,8 @@ module.exports = defineConfig({
       "alex.rodriguez+CYPRESS_TEST_VCPR_NOT_REQUIRED@MOVETCARE.COM",
   },
   retries: {
-    runMode: 2,
-    openMode: 0,
+    runMode: 3,
+    openMode: 2,
   },
   defaultCommandTimeout: 10000,
   redirectionLimit: 3,

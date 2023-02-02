@@ -1,11 +1,12 @@
 const axios = require("axios").default;
-import {Response} from "express";
+import { Response } from "express";
 import {
   functions,
   environment,
   defaultRuntimeOptions,
   admin,
   DEBUG,
+  throwError,
 } from "../../config/config";
 
 export const webhookProxyDev: Promise<Response> = functions
@@ -38,7 +39,7 @@ export const webhookProxyDev: Promise<Response> = functions
                     return response.status(200).send();
                   })
                   .catch((error: any) => {
-                    if (DEBUG) console.error(error);
+                    throwError(error);
                     return response.status(200).send();
                   })
               : await axios
@@ -53,13 +54,13 @@ export const webhookProxyDev: Promise<Response> = functions
                     return response.status(200).send();
                   })
                   .catch((error: any) => {
-                    if (DEBUG) console.error(error);
+                    throwError(error);
                     return response.status(200).send();
                   })
           );
         })
         .catch((error: any) => {
-          if (DEBUG) console.error(error);
+          throwError(error);
           return response.status(500).send();
         });
     }

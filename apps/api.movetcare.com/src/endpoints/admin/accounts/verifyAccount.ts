@@ -12,7 +12,7 @@ import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
 import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
 import { requestIsAuthorized } from "../../admin/pos/requestIsAuthorized";
-const DEBUG = true; // environment.type === "production";
+const DEBUG = environment.type === "production";
 interface AccountData {
   email: string;
   displayName: string;
@@ -556,7 +556,7 @@ const getPaymentMethodErrors = async ({
   movetData: MovetData;
 }): Promise<Array<string | undefined>> => {
   const errors: Array<string | undefined> = [];
-  if (movetData.customer === undefined)
+  if (movetData?.customer === undefined)
     errors.push(
       "Can NOT determine Payment Methods as no MoVET Customer was found..."
     );

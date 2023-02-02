@@ -29,7 +29,7 @@ export const processConsultationWebhook = async (
     }
     return response.status(200).send({ received: true });
   } catch (error: any) {
-    if (DEBUG) console.error(error);
+    throwError(error);
     return response.status(400).send({ received: false });
   }
 };

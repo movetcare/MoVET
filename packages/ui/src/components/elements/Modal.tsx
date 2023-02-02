@@ -12,6 +12,7 @@ export const Modal = ({
   setShowModal,
   cancelButtonRef,
   isLoading,
+  loadingMessage = "Loading, Please Wait...",
   error,
   action,
   yesButtonText = "OK",
@@ -54,7 +55,7 @@ export const Modal = ({
           >
             <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
               {isLoading ? (
-                <Loader />
+                <Loader message={loadingMessage} />
               ) : error ? (
                 error
               ) : (

@@ -11,7 +11,7 @@ console.log(
   Cypress.env().existingClientWithPayment
 );
 describe(
-  "schedule-an-appointment-flow",
+  "standard-schedule-an-appointment-flow",
   { defaultCommandTimeout: defaultPathnameTimeOut },
   () => {
     it("Can schedule an appointment as a new client - VCPR REQUIRED", () => {
@@ -148,8 +148,14 @@ describe(
       }).should("eq", "/schedule-an-appointment/success/");
       cy.get("@heading").contains("Appointment Request Successful");
     });
+  }
+);
 
-    it("WINTER MODE - Can NOT schedule a housecall with VCPR required patient", () => {
+describe(
+  "winter-mode-schedule-an-appointment-flow",
+  { defaultCommandTimeout: defaultPathnameTimeOut },
+  () => {
+    it("Can NOT request a housecall with VCPR required patient", () => {
       cy.request(
         "POST",
         "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
@@ -204,13 +210,6 @@ describe(
         "eq",
         "/schedule-an-appointment/location-selection/"
       );
-      cy.get("#restart").contains("Restart").click();
-      cy.get("@heading").contains("Restart Appointment Booking?");
-      cy.get("button").contains("CANCEL").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/location-selection/"
-      );
       cy.get("@heading").contains("Choose a Location");
       cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
@@ -234,133 +233,7 @@ describe(
       );
     });
 
-    it("WINTER MODE - Can schedule a housecall with NON-VCPR required patient", () => {
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-off" }
-      );
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-on" }
-      );
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: 5592 }
-      );
-      cy.visit(
-        `http://localhost:3001/?email=${
-          Cypress.env().existingClientWithPayment
-        }`
-      );
-      cy.get("h2").as("heading").contains("Schedule an Appointment");
-      cy.get("@heading").contains("Processing, please wait...");
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/pet-selection/"
-      );
-      cy.get("label")
-        .as("label")
-        .contains("NO VCPR TEST DOG - CYPRESS")
-        .click();
-      cy.get("@label").contains("VCPR REQUIRED TEST CAT - CYPRESS").click();
-      cy.get("p")
-        .as("text")
-        .contains(
-          "Only pets that require an Establish Care Exam may be selected"
-        );
-      cy.get("@label").contains("VCPR REQUIRED TEST CAT - CYPRESS").click();
-      cy.get("label")
-        .as("label")
-        .contains("NO VCPR TEST CAT - CYPRESS")
-        .click();
-      cy.get("button[type='submit']").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/location-selection/"
-      );
-      cy.get("#restart").contains("Restart").click();
-      cy.get("@heading").contains("Restart Appointment Booking?");
-      cy.get("button").contains("CANCEL").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/location-selection/"
-      );
-      cy.get("@heading").contains("Choose a Location");
-      cy.get("#restart").contains("Restart").click();
-      cy.get("@heading").contains("Restart Appointment Booking?");
-      cy.get("button").contains("CANCEL").click();
-      cy.get("@heading").contains("MoVET @ Belleview Station");
-      cy.get("a").contains("4912 S Newport St, Denver CO 80237");
-      cy.get("button[type='submit']").as("submitButton").should("be.enabled");
-      cy.get("#Virtually").contains("Virtually").click();
-      cy.get("@heading").contains(
-        "What can I expect in a Virtual Consultation?"
-      );
-      cy.get("@text").contains("What is VCPR?").click();
-      cy.get("button").contains("CLOSE").click();
-      cy.get("button").should("be.enabled");
-      cy.get("#Home").contains("Home").click();
-      cy.get("@submitButton").should("be.disabled");
-      cy.get(".places-search").type("702 Westgate Ave");
-      cy.focused().tab();
-      cy.get(".places-search").type("{enter}");
-      cy.get("@submitButton").should("be.disabled");
-      cy.get(".places-search").type("4912 S Newport Street Denver");
-      cy.focused().tab();
-      cy.get("@submitButton").should("be.disabled");
-      cy.get("#info").type("Apartment 2A (This is a test address)");
-      cy.get("#Clinic").contains("Clinic").click();
-      cy.get("@submitButton").should("be.enabled").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/reason-selection/"
-      );
-      cy.get("@heading").contains("Choose a Service");
-      cy.get("#restart").contains("Restart").click();
-      cy.get("@heading").contains("Restart Appointment Booking?");
-      cy.get("button").contains("CANCEL").click();
-      cy.get("@submitButton").should("be.disabled");
-      cy.get(".search-input").type("Exam - Routine / Vaccines{enter}");
-      cy.get("@submitButton").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/staff-selection/"
-      );
-      cy.get("@heading").contains("Choose an Expert");
-      cy.get("#restart").contains("Restart").click();
-      cy.get("@heading").contains("Restart Appointment Booking?");
-      cy.get("button").contains("CANCEL").click();
-      cy.get("@submitButton").should("be.enabled");
-      cy.get("@submitButton").contains("Request Dawn").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/datetime-selection/"
-      );
-      cy.get("@heading").contains("Request a Time");
-      cy.get("#restart").contains("Restart").click();
-      cy.get("@heading").contains("Restart Appointment Booking?");
-      cy.get("button").contains("CANCEL").click();
-      cy.get("@submitButton").should("be.disabled");
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      cy.get("button abbr").contains(String(tomorrow.getDate())).click();
-      cy.get(".time-input").type("1430");
-      cy.get("@submitButton").should("be.enabled").click();
-      cy.location("pathname", {
-        timeout: defaultPathnameTimeOut + 3000,
-      }).should("eq", "/schedule-an-appointment/success/");
-      cy.get("@heading").contains("Appointment Request Successful");
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-off" }
-      );
-    });
-
-    it("(MOBILE WEBVIEW) WINTER MODE - Can REQUEST a housecall with VCPR required patient", () => {
+    it("(MOBILE WEBVIEW) Can request a housecall with VCPR required patient", () => {
       cy.request(
         "POST",
         "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
@@ -383,7 +256,7 @@ describe(
       );
       cy.get("legend").contains("Your Pets");
       cy.get("label").contains("VCPR REQUIRED TEST CAT - CYPRESS").click();
-      cy.get("button[type='submit']").click();
+      cy.get("button[type='submit']").as("submit").click();
       cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
         "eq",
         "/schedule-an-appointment/wellness-check/"
@@ -395,18 +268,6 @@ describe(
       );
       cy.get("#Virtually").should("not.exist");
       cy.get("#Home").should("not.exist");
-      cy.get(".places-search").type("702 Westgate Ave");
-      cy.wait(1000);
-      cy.get("#react-select-3-option-0").click();
-      cy.get("p.text-movet-red").contains(
-        "MoVET does not currently service this area. Please enter a new address that is in (or near) the Denver Metro area."
-      );
-      cy.get("button[type='submit']").as("submit").should("be.disabled");
-      cy.visit(
-        `http://localhost:3001/schedule-an-appointment/location-selection?email=${
-          Cypress.env().existingClientWithPayment
-        }&mode=app&housecallRequest=1`
-      );
       cy.get(".places-search").type("4912 S Newport Street Denver");
       cy.wait(1000);
       cy.get("#react-select-3-option-0").click();

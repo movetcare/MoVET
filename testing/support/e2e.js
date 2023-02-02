@@ -24,7 +24,7 @@ Cypress.on("uncaught:exception", (error, runnable) => {
   return false;
 });
 
-Cypress.on("fail", (error) => {
-  console.error("FULL ERROR", error);
-  return false;
-});
+// Cypress.on("fail", (error) => {
+//   console.error("FULL ERROR", error);
+//   return false;
+// });

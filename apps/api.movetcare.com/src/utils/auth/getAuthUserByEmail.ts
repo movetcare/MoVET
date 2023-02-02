@@ -1,7 +1,9 @@
-import {UserRecord} from "firebase-admin/lib/auth/user-record";
-import { admin, DEBUG } from "../../config/config";
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { admin, DEBUG, throwError } from "../../config/config";
 
-export const getAuthUserByEmail = async (email: string): Promise<UserRecord | null> =>
+export const getAuthUserByEmail = async (
+  email: string
+): Promise<UserRecord | null> =>
   await admin
     .auth()
     .getUserByEmail(email)
@@ -10,6 +12,6 @@ export const getAuthUserByEmail = async (email: string): Promise<UserRecord | nu
       return userRecord;
     })
     .catch((error: any) => {
-      if (DEBUG) console.error(error);
+      throwError(error);
       return null;
     });

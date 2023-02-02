@@ -236,7 +236,7 @@ export const processInvoicePaymentWebhook = async (
           .then(() => response.status(200).send({ received: true }))
           .catch((error: any) => throwError(error));
   } catch (error: any) {
-    if (DEBUG) console.error(error);
+    throwError(error);
     return response.status(500).send({ received: false });
   }
 };

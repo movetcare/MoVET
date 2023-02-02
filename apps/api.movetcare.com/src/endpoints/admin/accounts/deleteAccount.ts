@@ -35,7 +35,7 @@ export const deleteAccount = functions
           return true;
         })
         .catch(async (error: any) => {
-          throwError(error);
+          console.log(error);
           return await deleteAllAccountData({ uid: context.auth?.uid });
         });
     } else if ((await requestIsAuthorized(context)) && data?.id)
@@ -54,8 +54,8 @@ export const deleteAccount = functions
           return true;
         })
         .catch(async (error: any) => {
-          throwError(error);
+          console.log(error);
           return await deleteAllAccountData({ uid: data?.id });
         });
-    else return await throwError({ message: "AUTHENTICATION FAILED" });
+    else return throwError({ message: "AUTHENTICATION FAILED" });
   });

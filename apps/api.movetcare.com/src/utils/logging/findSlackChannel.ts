@@ -1,4 +1,4 @@
-import {slackClient, slackBotToken, throwError} from "../../config/config";
+import { slackClient, slackBotToken, throwError } from "../../config/config";
 
 export const findSlackChannel = async (
   name: string
@@ -11,7 +11,7 @@ export const findSlackChannel = async (
       if (channel.name === name) return channel.id;
     }
   } catch (error) {
-    return (await throwError(error)) as any;
+    return throwError(error) as any;
   }
   return null;
 };

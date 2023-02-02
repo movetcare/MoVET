@@ -1,4 +1,9 @@
-import {proVetApiUrl, request, DEBUG} from "../../../../config/config";
+import {
+  throwError,
+  proVetApiUrl,
+  request,
+  DEBUG,
+} from "./../../../../config/config";
 
 export const createVirtualAppointment = async (
   id: string,
@@ -42,7 +47,7 @@ export const createVirtualAppointment = async (
       return data?.telemedicine_url;
     })
     .catch((error: any) => {
-      console.error("ERROR", JSON.stringify(error));
+      throwError(error);
       return true;
     });
   if (DEBUG) console.log("virtualAppointment", virtualAppointmentUrl);

@@ -25,7 +25,7 @@
     "qrcode.react": "^3.1.0",
     "react": "18.2.0",
     "react-calendar": "^4.0.0",
-    "react-clock": "^4.0.0",
+    "react-clock": "^4.1.0",
     "react-dom": "18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-google-places-autocomplete": "^3.4.0",

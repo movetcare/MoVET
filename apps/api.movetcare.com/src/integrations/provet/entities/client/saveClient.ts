@@ -175,7 +175,7 @@ export const saveClient = async (
                 userRecord.toJSON()
               );
           })
-          .catch((error: any) => DEBUG && console.error(error.message));
+          .catch((error: any) => throwError(error));
       }
     }
   } else if (DEBUG)

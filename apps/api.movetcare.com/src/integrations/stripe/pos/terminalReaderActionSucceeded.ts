@@ -98,7 +98,7 @@ export const terminalReaderActionSucceeded = (event: any): void => {
           //       })
           //       .catch(
           //         async (error: any) =>
-          //           (await throwError(error)) &&
+          //           (throwError(error)) &&
           //           console.error('error.response.data', error.response.data)
           //       )
           // )
@@ -191,7 +191,7 @@ export const terminalReaderActionSucceeded = (event: any): void => {
                 //       })
                 //       .catch(
                 //         async (error: any) =>
-                //           (await throwError(error)) &&
+                //           (throwError(error)) &&
                 //           console.error(
                 //             'error.response.data',
                 //             error.response.data

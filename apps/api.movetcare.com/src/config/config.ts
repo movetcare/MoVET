@@ -26,7 +26,7 @@ export const throwError = (error: any): false => {
     sendNotification({
       type: "slack",
       payload: {
-        message: `:interrobang: PLATFORM ERROR:\`\`\`${JSON.stringify(
+        message: `:interrobang: NEW ERROR:\`\`\`${JSON.stringify(
           error || error?.message
         )}\`\`\``,
       },

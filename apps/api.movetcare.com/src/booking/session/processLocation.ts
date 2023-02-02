@@ -1,4 +1,4 @@
-import { admin, throwError, DEBUG } from "../../config/config";
+import { DEBUG, admin, throwError } from "../../config/config";
 import { updateProVetClient } from "../../integrations/provet/entities/client/updateProVetClient";
 import { sendNotification } from "../../notifications/sendNotification";
 import type { BookingError, Booking } from "../../types/booking";
@@ -52,6 +52,10 @@ export const processLocation = async (data: {
         throwError(error);
         return await handleFailedBooking(error, "GET DEFAULT REASONS FAILED");
       });
+    if (DEBUG) {
+      console.log("session", session);
+      console.log("defaultBookingReasons", defaultBookingReasons);
+    }
     if (session && defaultBookingReasons) {
       let didUpdateProVetClient = false;
       if (address?.full && location === "Home") {
@@ -60,17 +64,25 @@ export const processLocation = async (data: {
           city?: string;
           zip?: string;
         } = {};
+
         const providedAddress: Array<string> = address?.full
           ?.split(",")
-          .slice(0, 3);
+          .slice(0, 4);
+        if (DEBUG) console.log("providedAddress", providedAddress);
         clientAddress.street = providedAddress[0].trim();
         clientAddress.city = providedAddress[1].trim();
-        clientAddress.zip = providedAddress[2].split(" ")[2];
+        clientAddress.zip = `${address?.zipcode}`;
+        if (DEBUG) console.log("clientAddress", clientAddress);
         didUpdateProVetClient = await updateProVetClient({
           ...clientAddress,
           id: session.client.uid,
         });
-      }
+        if (DEBUG) console.log("didUpdateProVetClient", didUpdateProVetClient);
+      } else if (DEBUG)
+        console.log(
+          "SKIPPED PROVET CLIENT ADDRESS UPDATE - LOCATION: ",
+          location
+        );
       sendNotification({
         type: "slack",
         payload: {

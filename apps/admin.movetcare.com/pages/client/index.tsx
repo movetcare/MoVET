@@ -184,7 +184,7 @@ const Client = () => {
 
   const addToWaitlist = async () => {
     setIsAddingToWaitlist(true);
-    if (client?.email)
+    if (client?.email && !client?.email?.toLowerCase().includes("missing"))
       await setDoc(
         doc(firestore, `waitlist/${client?.email}`),
         {
@@ -445,31 +445,32 @@ const Client = () => {
                   </div>
                 </div>
                 <div className="flex flex-row items-center justify-center space-x-2 mt-2">
-                  {client?.email && (
-                    <div
-                      onClick={() => sendPasswordResetLink()}
-                      className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                    >
-                      {isLoadingSendPasswordResetLink ? (
-                        <FontAwesomeIcon
-                          icon={faSpinner}
-                          spin
-                          size="sm"
-                          className="text-movet-brown ml-4"
-                        />
-                      ) : (
-                        <FontAwesomeIcon
-                          icon={faPaperPlane}
-                          size="lg"
-                          className={
-                            !client?.emailVerified && !isLoadingAccount
-                              ? "text-movet-yellow hover:text-movet-green"
-                              : ""
-                          }
-                        />
-                      )}
-                    </div>
-                  )}
+                  {client?.email !== undefined &&
+                    !client?.email?.toLowerCase().includes("missing") && (
+                      <div
+                        onClick={() => sendPasswordResetLink()}
+                        className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      >
+                        {isLoadingSendPasswordResetLink ? (
+                          <FontAwesomeIcon
+                            icon={faSpinner}
+                            spin
+                            size="sm"
+                            className="text-movet-brown ml-4"
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            icon={faPaperPlane}
+                            size="lg"
+                            className={
+                              !client?.emailVerified && !isLoadingAccount
+                                ? "text-movet-yellow hover:text-movet-green"
+                                : ""
+                            }
+                          />
+                        )}
+                      </div>
+                    )}
                   <a
                     href={
                       environment === "production"
@@ -496,16 +497,18 @@ const Client = () => {
                       <FontAwesomeIcon icon={faCreditCard} size="lg" />
                     </a>
                   )}
-                  {client && client?.phoneNumber && (
-                    <a
-                      href={`${GOTO_PHONE_URL}/${client?.phoneNumber}`}
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faPhone} size="lg" />
-                    </a>
-                  )}
+                  {client &&
+                    client?.phoneNumber &&
+                    !client?.phoneNumber?.toLowerCase().includes("missing") && (
+                      <a
+                        href={`${GOTO_PHONE_URL}/${client?.phoneNumber}`}
+                        target="_blank"
+                        className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                        rel="noreferrer"
+                      >
+                        <FontAwesomeIcon icon={faPhone} size="lg" />
+                      </a>
+                    )}
                   {client &&
                     client?.email &&
                     !client?.email?.toLowerCase()?.includes("missing") && (
@@ -519,7 +522,8 @@ const Client = () => {
                       </a>
                     )}
                   {client &&
-                    !client?.street?.toLowerCase()?.includes("missing") && (
+                    !client?.street?.toLowerCase()?.includes("missing") &&
+                    client?.street !== undefined && (
                       <a
                         href={`http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`}
                         target="_blank"
@@ -591,7 +595,7 @@ const Client = () => {
                     <div className="ml-4 sm:ml-8">
                       {errors && (
                         <div className="mt-2">
-                          <b>Errors: </b>
+                          <b>Issues: </b>
                           <ul>
                             {errors.map((error: string, index: number) => (
                               <li key={index} className="italic text-movet-red">
@@ -889,6 +893,7 @@ const Client = () => {
         setShowModal={setShowDeleteClientModal}
         cancelButtonRef={cancelButtonRef}
         isLoading={isLoading}
+        loadingMessage="Deleting Client, Please Wait..."
         content={
           <p className="text-lg">
             Are you sure you want to delete this client?{" "}
@@ -897,8 +902,8 @@ const Client = () => {
             </span>
           </p>
         }
-        title={`Delete Client ${query?.id}`}
-        icon={faRedo}
+        title={`Delete Client #${query?.id}`}
+        icon={faTrash}
         action={deleteClient}
         yesButtonText="YES"
         noButtonText="CANCEL"
