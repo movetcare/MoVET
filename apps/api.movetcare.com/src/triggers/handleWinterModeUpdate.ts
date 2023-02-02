@@ -72,9 +72,15 @@ export const handleWinterModeUpdate = functions.firestore
               },
               {
                 type: "plain_text",
-                text: `${formatDateToMMDDYY(
-                  startDate?.toDate()
-                )} - ${formatDateToMMDDYY(endDate?.toDate())}`,
+                text: `${
+                  startDate?.toDate() !== undefined
+                    ? formatDateToMMDDYY(startDate?.toDate())
+                    : "Missing Start Date"
+                } - ${
+                  endDate?.toDate() !== undefined
+                    ? formatDateToMMDDYY(endDate?.toDate())
+                    : "Missing End Date"
+                }`,
               },
               {
                 type: "mrkdwn",

@@ -28,15 +28,16 @@ export const ClientSearch = () => {
     if (clientData) {
       const clients: Array<Option> = [];
       clientData.docs.map((client: any) => {
-        const { firstName, lastName, email, phone } = client.data();
-        clients.push({
-          id: client.id,
-          label: `${firstName} ${lastName}`,
-          firstName,
-          lastName,
-          email,
-          phone,
-        });
+        const { firstName, lastName, email, phone, archived } = client.data();
+        if (archived !== true)
+          clients.push({
+            id: client.id,
+            label: `${firstName} ${lastName}`,
+            firstName,
+            lastName,
+            email,
+            phone,
+          });
       });
       setOptions(clients);
     }

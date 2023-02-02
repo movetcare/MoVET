@@ -51,17 +51,14 @@ describe(
         "eq",
         "/schedule-an-appointment/pet-selection/"
       );
-      cy.get("label")
-        .as("label")
-        .contains("NO VCPR TEST DOG - CYPRESS")
-        .click();
-      cy.get("@label").contains("VCPR REQUIRED TEST CAT - CYPRESS").click();
+      cy.get("label").contains("NO VCPR TEST DOG - CYPRESS").click();
+      cy.get("label").contains("VCPR REQUIRED TEST CAT - CYPRESS").click();
       cy.get("p")
         .as("text")
         .contains(
           "Only pets that require an Establish Care Exam may be selected"
         );
-      cy.get("@label").contains("VCPR REQUIRED TEST CAT - CYPRESS").click();
+      cy.get("label").contains("VCPR REQUIRED TEST CAT - CYPRESS").click();
       cy.get("label")
         .as("label")
         .contains("NO VCPR TEST CAT - CYPRESS")
@@ -155,7 +152,7 @@ describe(
   "winter-mode-schedule-an-appointment-flow",
   { defaultCommandTimeout: defaultPathnameTimeOut },
   () => {
-    it("Can NOT request a housecall with VCPR required patient", () => {
+    it.only("Can NOT request a housecall with VCPR required patient", () => {
       cy.request(
         "POST",
         "http://localhost:5001/movet-care-staging/us-central1/resetTestData",

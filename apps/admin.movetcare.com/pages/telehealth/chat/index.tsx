@@ -59,8 +59,7 @@ const ChatSession = () => {
   const [messages, loadingMessages, errorMessages] = useCollection(
     firestoreQuery(
       collection(firestore, `telehealth_chat/${query?.id}/log`),
-      orderBy("createdAt", "asc"),
-      limit(100)
+      orderBy("createdAt", "asc")
     ),
     queryOptions
   );

@@ -123,7 +123,6 @@ export const verifyAccount = functions
             sendNotification({
               type: "email",
               payload: {
-                client: id,
                 to: "support@movetcare.com",
                 subject: "MoVET Account Errors Detected! Please Fix ASAP!",
                 message:
@@ -235,22 +234,24 @@ const getPaymentMethods = async (id: string, stripeData: any) => {
       return paymentMethods;
     })
     .catch((error: any) => throwError(error));
-  const stripePaymentMethods = await verifyValidPaymentSource(
-    id,
-    stripeData?.customer[0],
-    true
-  );
-  if (DEBUG) {
-    console.log("movetPaymentMethods", movetPaymentMethods);
-    console.log("stripePaymentMethods", stripePaymentMethods);
-    console.log(
-      "stripePaymentMethods && movetPaymentMethods.length !== 0",
-      stripePaymentMethods && movetPaymentMethods.length !== 0
+  if (stripeData?.customer[0] !== undefined) {
+    const stripePaymentMethods = await verifyValidPaymentSource(
+      id,
+      stripeData?.customer[0],
+      true
     );
-  }
-  if (stripePaymentMethods && movetPaymentMethods.length !== 0)
-    return stripePaymentMethods;
-  else return [];
+    if (DEBUG) {
+      console.log("movetPaymentMethods", movetPaymentMethods);
+      console.log("stripePaymentMethods", stripePaymentMethods);
+      console.log(
+        "stripePaymentMethods && movetPaymentMethods.length !== 0",
+        stripePaymentMethods && movetPaymentMethods.length !== 0
+      );
+    }
+    if (stripePaymentMethods && movetPaymentMethods.length !== 0)
+      return stripePaymentMethods;
+    else return [];
+  } else return [];
 };
 
 const getEmailErrors = ({
@@ -598,21 +599,23 @@ const getPaymentMethodErrors = async ({
         return paymentMethods;
       })
       .catch((error: any) => throwError(error));
-    const stripePaymentMethods = await verifyValidPaymentSource(
-      id,
-      stripeData.customer[0],
-      true
-    );
-    if (DEBUG) {
-      console.log("movetPaymentMethods", movetPaymentMethods);
-      console.log("stripePaymentMethods", stripePaymentMethods);
-    }
     if (movetPaymentMethods.length === 0)
       errors.push(
         "Customer does NOT have a VALID Payment Method on MoVET Account"
       );
-    if (!stripePaymentMethods)
-      errors.push("Customer does NOT have a VALID Payment Method in Stripe");
+    if (DEBUG) console.log("movetPaymentMethods", movetPaymentMethods);
+
+    if (stripeData?.customer[0] !== undefined) {
+      const stripePaymentMethods = await verifyValidPaymentSource(
+        id,
+        stripeData.customer[0],
+        true
+      );
+      if (DEBUG) console.log("stripePaymentMethods", stripePaymentMethods);
+
+      if (!stripePaymentMethods)
+        errors.push("Customer does NOT have a VALID Payment Method in Stripe");
+    }
   }
   if (DEBUG) console.log("getPaymentMethodErrors", errors);
   return errors;

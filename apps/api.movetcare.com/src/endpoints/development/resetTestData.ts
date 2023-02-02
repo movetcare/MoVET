@@ -21,11 +21,11 @@ export const resetTestData: Promise<Response> = functions
       request.headers.host === "localhost:5001" &&
       request.body?.apiKey === mobileClientApiKey
     ) {
-      if (request.body?.id === 5592) {
+      if (request.body?.id === 5749) {
         await admin
           .firestore()
           .collection("bookings")
-          .where("client.uid", "==", "5592")
+          .where("client.uid", "==", "5749")
           .get()
           .then((querySnapshot: any) =>
             querySnapshot.forEach((doc: any) => {
@@ -178,7 +178,7 @@ export const resetTestData: Promise<Response> = functions
         await admin
           .firestore()
           .collection("bookings")
-          .where("client.uid", "==", "5592")
+          .where("client.uid", "==", "5749")
           .get()
           .then((querySnapshot: any) =>
             querySnapshot.forEach((doc: any) => {
