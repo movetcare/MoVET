@@ -14,7 +14,6 @@ import {
   faIcons,
   faInfoCircle,
   faLaptopMedical,
-  faNewspaper,
   faPaw,
   faPhone,
   faStar,
@@ -110,11 +109,11 @@ const Header: React.FC = () => {
                 text: "Telehealth",
                 icon: faHeadset,
               },
-              {
-                link: "/blog",
-                text: "Blog",
-                icon: faNewspaper,
-              },
+              // {
+              //   link: "/blog",
+              //   text: "Blog",
+              //   icon: faNewspaper,
+              // },
               {
                 link: "https://us.provetcloud.com/4285/dashboard/",
                 text: "ProVet",

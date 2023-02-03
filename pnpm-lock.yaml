@@ -60,6 +60,7 @@ importers:
       react-json-formatter: ^0.3.2
       react-number-format: ^5.1.3
       react-select: ^5.7.0
+      react-tooltip: ^5.7.4
       remark: ^14.0.2
       remark-html: ^15.0.1
       schemas: workspace:*
@@ -88,6 +89,7 @@ importers:
       react-hot-toast: 2.4.0_owo25xnefcwdq3zjgtohz6dbju
       react-json-formatter: 0.3.2_react@18.2.0
       react-number-format: 5.1.3_biqbaboplfbrettd7655fr4n2y
+      react-tooltip: 5.7.4_biqbaboplfbrettd7655fr4n2y
       remark: 14.0.2
       remark-html: 15.0.1
       uuid: 9.0.0
@@ -7367,6 +7369,18 @@ packages:
       react-dom: 18.2.0_react@18.2.0
       react-fit: 1.5.0_biqbaboplfbrettd7655fr4n2y
       update-input-width: 1.3.1
+    dev: false
+
+  /react-tooltip/5.7.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-Eocnm5Dl6numT52CXLVecX5p93W4ifU3TIbhGqrNfFw2KY7ES2tZDPQHH5yQ1OSWhAcxWZImuFRcUwe+W/vTig==}
+    peerDependencies:
+      react: '>=16.14.0'
+      react-dom: '>=16.14.0'
+    dependencies:
+      '@floating-ui/dom': 1.1.1
+      classnames: 2.3.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react-transition-group/4.4.5_biqbaboplfbrettd7655fr4n2y:

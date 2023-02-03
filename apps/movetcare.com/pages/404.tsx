@@ -1,8 +1,19 @@
 import Layout from "components/Layout";
 import Head from "next/head";
+import { useEffect } from "react";
 import { Loader } from "ui";
+import { environment } from "utilities";
 
 export default function Custom404() {
+  useEffect(() => {
+    setTimeout(
+      () =>
+        (window.location.href =
+          (environment === "development" ? "http://" : "https://") +
+          `${window.location.host}`),
+      3000
+    );
+  }, []);
   return (
     <Layout>
       <Head>

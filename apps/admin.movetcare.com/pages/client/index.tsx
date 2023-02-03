@@ -18,6 +18,7 @@ import {
   faMapLocation,
   faTrash,
   faFire,
+  faMessage,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GOTO_PHONE_URL } from "constants/urls";
@@ -35,6 +36,7 @@ import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { Transition } from "@headlessui/react";
 import { ClientSearch } from "components/ClientSearch";
 import { isNumeric } from "utilities";
+import { Tooltip } from "react-tooltip";
 const Client = () => {
   const router = useRouter();
   const { query } = router;
@@ -447,31 +449,39 @@ const Client = () => {
                 <div className="flex flex-row items-center justify-center space-x-2 mt-2">
                   {client?.email !== undefined &&
                     !client?.email?.toLowerCase().includes("missing") && (
-                      <div
-                        onClick={() => sendPasswordResetLink()}
-                        className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      >
-                        {isLoadingSendPasswordResetLink ? (
-                          <FontAwesomeIcon
-                            icon={faSpinner}
-                            spin
-                            size="sm"
-                            className="text-movet-brown ml-4"
-                          />
-                        ) : (
-                          <FontAwesomeIcon
-                            icon={faPaperPlane}
-                            size="lg"
-                            className={
-                              !client?.emailVerified && !isLoadingAccount
-                                ? "text-movet-yellow hover:text-movet-green"
-                                : ""
-                            }
-                          />
-                        )}
-                      </div>
+                      <>
+                        <Tooltip anchorId="resetPassword" />
+                        <div
+                          id="resetPassword"
+                          data-tooltip-content="Re-send Account Verification Link (Contains a reset password link)"
+                          onClick={() => sendPasswordResetLink()}
+                          className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                        >
+                          {isLoadingSendPasswordResetLink ? (
+                            <FontAwesomeIcon
+                              icon={faSpinner}
+                              spin
+                              size="sm"
+                              className="text-movet-brown ml-4"
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faPaperPlane}
+                              size="lg"
+                              className={
+                                !client?.emailVerified && !isLoadingAccount
+                                  ? "text-movet-yellow hover:text-movet-green"
+                                  : ""
+                              }
+                            />
+                          )}
+                        </div>
+                      </>
                     )}
+                  <Tooltip anchorId="viewInProvet" />
                   <a
+                    id="viewInProvet"
+                    data-tooltip-content="View Client in Provet"
                     href={
                       environment === "production"
                         ? `https://us.provetcloud.com/4285/client/${query?.id}/`
@@ -484,56 +494,96 @@ const Client = () => {
                     <FontAwesomeIcon icon={faPaw} size="lg" />
                   </a>
                   {client && client?.customer?.length > 0 && (
-                    <a
-                      href={
-                        environment === "production"
-                          ? `https://dashboard.stripe.com/customers/${client?.customer}/`
-                          : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                    >
-                      <FontAwesomeIcon icon={faCreditCard} size="lg" />
-                    </a>
+                    <>
+                      <Tooltip anchorId="viewInStripe" />
+                      <a
+                        id="viewInStripe"
+                        data-tooltip-content="View Customer in Stripe"
+                        href={
+                          environment === "production"
+                            ? `https://dashboard.stripe.com/customers/${client?.customer}/`
+                            : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                        }
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      >
+                        <FontAwesomeIcon icon={faCreditCard} size="lg" />
+                      </a>
+                    </>
                   )}
                   {client &&
                     client?.phoneNumber &&
                     !client?.phoneNumber?.toLowerCase().includes("missing") && (
-                      <a
-                        href={`${GOTO_PHONE_URL}/${client?.phoneNumber}`}
-                        target="_blank"
-                        className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                        rel="noreferrer"
-                      >
-                        <FontAwesomeIcon icon={faPhone} size="lg" />
-                      </a>
+                      <>
+                        <Tooltip anchorId="callPhone" />
+                        <a
+                          data-tooltip-content="Call Client"
+                          id="callPhone"
+                          href={`${GOTO_PHONE_URL}/${client?.phoneNumber}`}
+                          target="_blank"
+                          className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                          rel="noreferrer"
+                        >
+                          <FontAwesomeIcon icon={faPhone} size="lg" />
+                        </a>
+                      </>
                     )}
                   {client &&
                     client?.email &&
                     !client?.email?.toLowerCase()?.includes("missing") && (
-                      <a
-                        href={`mailto:${client?.email}`}
-                        target="_blank"
-                        className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                        rel="noreferrer"
-                      >
-                        <FontAwesomeIcon icon={faEnvelope} size="lg" />
-                      </a>
+                      <>
+                        <Tooltip anchorId="sendEmail" />
+                        <a
+                          id="sendEmail"
+                          data-tooltip-content="Email Client"
+                          href={`mailto:${client?.email}`}
+                          target="_blank"
+                          className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                          rel="noreferrer"
+                        >
+                          <FontAwesomeIcon icon={faEnvelope} size="lg" />
+                        </a>
+                      </>
+                    )}
+                  {client &&
+                    client?.email &&
+                    !client?.email?.toLowerCase()?.includes("missing") && (
+                      <>
+                        <Tooltip anchorId="chatWithClient" />
+                        <div
+                          id="chatWithClient"
+                          data-tooltip-content="Chat w/ Client"
+                          onClick={() =>
+                            router.push(`/telehealth/chat/?id=${query?.id}`)
+                          }
+                          className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                        >
+                          <FontAwesomeIcon icon={faMessage} size="lg" />
+                        </div>
+                      </>
                     )}
                   {client &&
                     !client?.street?.toLowerCase()?.includes("missing") &&
                     client?.street !== undefined && (
-                      <a
-                        href={`http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`}
-                        target="_blank"
-                        className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                        rel="noreferrer"
-                      >
-                        <FontAwesomeIcon icon={faMapLocation} size="lg" />
-                      </a>
+                      <>
+                        <Tooltip anchorId="viewOnMap" />
+                        <a
+                          id="viewOnMap"
+                          data-tooltip-content="View on Map"
+                          href={`http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`}
+                          target="_blank"
+                          className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                          rel="noreferrer"
+                        >
+                          <FontAwesomeIcon icon={faMapLocation} size="lg" />
+                        </a>
+                      </>
                     )}
+                  <Tooltip anchorId="viewInFirestore" />
                   <a
+                    id="viewInFirestore"
+                    data-tooltip-content="View Database Record"
                     href={
                       window.location.hostname === "localhost"
                         ? "http://localhost:4000/firestore/data/clients/" +
@@ -546,13 +596,19 @@ const Client = () => {
                   >
                     <FontAwesomeIcon icon={faFire} size="lg" />
                   </a>
+                  <Tooltip anchorId="deleteClient" />
                   <div
+                    id="deleteClient"
+                    data-tooltip-content="Delete Client"
                     onClick={() => setShowDeleteClientModal(true)}
                     className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                   >
                     <FontAwesomeIcon icon={faTrash} size="lg" />
                   </div>
+                  <Tooltip anchorId="reloadData" />
                   <div
+                    id="reloadData"
+                    data-tooltip-content="Reload Client Data"
                     onClick={() => reloadPage()}
                     className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                   >

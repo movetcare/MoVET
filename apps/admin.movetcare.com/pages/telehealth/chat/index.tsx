@@ -6,9 +6,9 @@ import {
   orderBy,
   serverTimestamp,
   addDoc,
-  limit,
   updateDoc,
 } from "firebase/firestore";
+import { Tooltip } from "react-tooltip";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 import { Loader } from "ui";
 import { firestore } from "services/firebase";
@@ -269,7 +269,10 @@ const ChatSession = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
+                <Tooltip anchorId="clientVerification" />
                 <a
+                  id="clientVerification"
+                  data-tooltip-content="Verify Client Account"
                   href={
                     environment === "production"
                       ? `https://admin.movetcare.com/client/?id=${query?.id}`
@@ -282,66 +285,93 @@ const ChatSession = () => {
                   <FontAwesomeIcon icon={faIdBadge} size="lg" />
                 </a>
                 {router.query.mode !== "embed" && (
-                  <a
-                    href={
-                      environment === "production"
-                        ? `https://us.provetcloud.com/4285/client/${query?.id}/`
-                        : `https://us.provetcloud.com/4285/client/${query?.id}/`
-                    }
-                    target="_blank"
-                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                    rel="noreferrer"
-                  >
-                    <FontAwesomeIcon icon={faPaw} size="lg" />
-                  </a>
+                  <>
+                    <Tooltip anchorId="viewProVet" />
+                    <a
+                      id="viewProVet"
+                      data-tooltip-content="View in ProVet"
+                      href={
+                        environment === "production"
+                          ? `https://us.provetcloud.com/4285/client/${query?.id}/`
+                          : `https://us.provetcloud.com/4285/client/${query?.id}/`
+                      }
+                      target="_blank"
+                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      rel="noreferrer"
+                    >
+                      <FontAwesomeIcon icon={faPaw} size="lg" />
+                    </a>
+                  </>
                 )}
                 {paymentMethods &&
                   paymentMethods.docs.map(
                     (paymentMethod: any, index: number) =>
                       paymentMethod.data()?.active &&
                       index === 0 && (
-                        <a
-                          key={index}
-                          href={
-                            environment === "production"
-                              ? `https://dashboard.stripe.com/customers/${session?.id}/`
-                              : `https://dashboard.stripe.com/test/customers/${session?.id}/`
-                          }
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                        >
-                          <FontAwesomeIcon icon={faCreditCard} size="lg" />
-                        </a>
+                        <>
+                          <Tooltip anchorId="viewCustomer" />
+                          <a
+                            id="viewCustomer"
+                            data-tooltip-content="View in Customer in Stripe"
+                            key={index}
+                            href={
+                              environment === "production"
+                                ? `https://dashboard.stripe.com/customers/${session?.id}/`
+                                : `https://dashboard.stripe.com/test/customers/${session?.id}/`
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                          >
+                            <FontAwesomeIcon icon={faCreditCard} size="lg" />
+                          </a>
+                        </>
                       )
                   )}
                 {session?.data()?.client?.phone && (
-                  <a
-                    href={`${GOTO_PHONE_URL}/${session?.data()?.client?.phone}`}
-                    target="_blank"
-                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                    rel="noreferrer"
-                  >
-                    <FontAwesomeIcon icon={faPhone} size="lg" />
-                  </a>
+                  <>
+                    <Tooltip anchorId="callClient" />
+                    <a
+                      id="callClient"
+                      data-tooltip-content="Call Client"
+                      href={`${GOTO_PHONE_URL}/${
+                        session?.data()?.client?.phone
+                      }`}
+                      target="_blank"
+                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      rel="noreferrer"
+                    >
+                      <FontAwesomeIcon icon={faPhone} size="lg" />
+                    </a>
+                  </>
                 )}
                 {session?.data()?.client?.email && (
-                  <a
-                    href={`mailto:${session?.data()?.client?.email}`}
-                    target="_blank"
-                    className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                    rel="noreferrer"
-                  >
-                    <FontAwesomeIcon icon={faEnvelope} size="lg" />
-                  </a>
+                  <>
+                    <Tooltip anchorId="emailClient" />
+                    <a
+                      id="emailClient"
+                      data-tooltip-content="Email Client"
+                      href={`mailto:${session?.data()?.client?.email}`}
+                      target="_blank"
+                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      rel="noreferrer"
+                    >
+                      <FontAwesomeIcon icon={faEnvelope} size="lg" />
+                    </a>
+                  </>
                 )}
                 {router.query.mode !== "embed" && (
-                  <div
-                    onClick={() => endTelehealthChatSession()}
-                    className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red text-movet-yellow"
-                  >
-                    <FontAwesomeIcon icon={faCircleXmark} size="lg" />
-                  </div>
+                  <>
+                    <Tooltip anchorId="endChat" />
+                    <div
+                      id="endChat"
+                      data-tooltip-content="End Client Chat - This will send them an email of the chat log!"
+                      onClick={() => endTelehealthChatSession()}
+                      className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red text-movet-yellow"
+                    >
+                      <FontAwesomeIcon icon={faCircleXmark} size="lg" />
+                    </div>
+                  </>
                 )}
               </div>
             </div>

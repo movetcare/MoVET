@@ -1,5 +1,6 @@
 import "../tailwind.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import "react-tooltip/dist/react-tooltip.css";
 import type { AppProps } from "next/app";
 import { UserContext } from "contexts/UserContext";
 import { useUserData } from "hooks/AuthUser";

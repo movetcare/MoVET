@@ -1,19 +1,19 @@
 import { Loader } from "ui";
 import Head from "next/head";
 import { useEffect } from "react";
-import { useRouter } from "next/router";
 import { AppHeader } from "components/AppHeader";
+import { environment } from "utilities";
 
 export default function Custom404() {
-  const router = useRouter();
   useEffect(() => {
     setTimeout(
       () =>
         (window.location.href =
-          window.location.protocol + "//" + window.location.host),
+          (environment === "development" ? "http://" : "https://") +
+          `${window.location.host}`),
       3000
     );
-  }, [router]);
+  }, []);
   return (
     <div className="flex flex-col items-center justify-center min-py-2">
       <Head>

@@ -20,8 +20,8 @@ import {
   faCheckToSlot,
   faCaretDown,
   faCaretUp,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   query,
   collection,
@@ -30,19 +30,20 @@ import {
   serverTimestamp,
   updateDoc,
   limit,
-} from 'firebase/firestore';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { firestore, functions } from 'services/firebase';
-import { timeSince } from 'utils/timeSince';
+} from "firebase/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { firestore, functions } from "services/firebase";
+import { timeSince } from "utils/timeSince";
 import { Loader } from "ui";
-import Error from 'components/Error';
-import environment from 'utils/environment';
-import toast from 'react-hot-toast';
-import { httpsCallable } from 'firebase/functions';
+import Error from "components/Error";
+import environment from "utils/environment";
+import toast from "react-hot-toast";
+import { httpsCallable } from "firebase/functions";
 
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { useState } from "react";
 import { GOTO_PHONE_URL } from "constants/urls";
+import { Tooltip } from "react-tooltip";
 
 export const Waitlist = () => {
   const [showArchive, setShowArchive] = useState<boolean>(false);
@@ -128,7 +129,10 @@ export const Waitlist = () => {
                     </div>
                     <div className="min-w-0 flex flex-row justify-center md:justify-between w-full">
                       <div className="flex flex-row items-center">
+                        <Tooltip anchorId="viewProVet" />
                         <a
+                          id="viewProVet"
+                          data-tooltip-content="View in ProVet"
                           href={
                             environment === "production"
                               ? `https://us.provetcloud.com/4285/client/${
@@ -152,7 +156,10 @@ export const Waitlist = () => {
                       <div className="hidden md:flex justify-end">
                         {client?.data()?.customerId && (
                           <>
+                            <Tooltip anchorId="View Customer in Stripe" />
                             <a
+                              id="View Customer in Stripe"
+                              data-tooltip-content="View in ProVet"
                               href={
                                 environment === "production"
                                   ? `https://dashboard.stripe.com/customers/${
@@ -241,7 +248,6 @@ export const Waitlist = () => {
                               </span>
                             </>
                           )}
-
                           <div>
                             <span className="flex-shrink-0 mr-2 ml-4">
                               <FontAwesomeIcon icon={faClockFour} />
@@ -259,8 +265,10 @@ export const Waitlist = () => {
                         </div>
                       </div>
                     </div>
-
+                    <Tooltip anchorId="remove" />
                     <button
+                      id="remove"
+                      data-tooltip-content="Remove from Waitlist"
                       className="md:ml-6 md:mr-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
                       onClick={async () => {
                         await updateDoc(
@@ -307,40 +315,47 @@ export const Waitlist = () => {
                     </button>
                   </div>
                   {client?.data()?.customerId && (
-                    <a
-                      data-tip="View Stripe Customer Details"
-                      href={
-                        environment === "production"
-                          ? `https://dashboard.stripe.com/customers/${
-                              client?.data()?.customerId
-                            }/`
-                          : `https://dashboard.stripe.com/test/customers/${
-                              client?.data()?.customerId
-                            }/`
-                      }
-                      target="_blank"
-                      className="md:hidden mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faCreditCard} size="lg" />
-                      {client?.data()?.paymentMethod?.card ? (
-                        <span className="ml-2">
-                          {client
-                            ?.data()
-                            ?.paymentMethod?.card?.brand?.toUpperCase()}{" "}
-                          {client
-                            ?.data()
-                            ?.paymentMethod?.card?.last4?.toUpperCase()}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </a>
+                    <>
+                      <Tooltip anchorId="viewStripe" />
+                      <a
+                        id="viewStripe"
+                        data-tooltip-content="View Customer in Stripe"
+                        href={
+                          environment === "production"
+                            ? `https://dashboard.stripe.com/customers/${
+                                client?.data()?.customerId
+                              }/`
+                            : `https://dashboard.stripe.com/test/customers/${
+                                client?.data()?.customerId
+                              }/`
+                        }
+                        target="_blank"
+                        className="md:hidden mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
+                        rel="noreferrer"
+                      >
+                        <FontAwesomeIcon icon={faCreditCard} size="lg" />
+                        {client?.data()?.paymentMethod?.card ? (
+                          <span className="ml-2">
+                            {client
+                              ?.data()
+                              ?.paymentMethod?.card?.brand?.toUpperCase()}{" "}
+                            {client
+                              ?.data()
+                              ?.paymentMethod?.card?.last4?.toUpperCase()}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </a>
+                    </>
                   )}
                   <div className="flex justify-center items-center mt-3 w-full">
                     {client?.data()?.id && (
                       <>
+                        <Tooltip anchorId="viewProvet" />
                         <a
+                          id="viewProvet"
+                          data-tooltip-content="View in ProVet"
                           href={
                             environment === "production"
                               ? `https://us.provetcloud.com/4285/client/${
@@ -360,7 +375,10 @@ export const Waitlist = () => {
                     )}
                     {client?.data()?.email && (
                       <>
+                        <Tooltip anchorId="sendEmail" />
                         <a
+                          id="sendEmail"
+                          data-tooltip-content="Email Client"
                           href={`mailto://${client?.data()?.email}`}
                           target="_blank"
                           className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -372,7 +390,10 @@ export const Waitlist = () => {
                     )}
                     {client?.data()?.phone && (
                       <>
+                        <Tooltip anchorId="callClient" />
                         <a
+                          id="callClient"
+                          data-tooltip-content="Call Client"
                           href={`${GOTO_PHONE_URL}/${client?.data()?.phone}`}
                           target="_blank"
                           className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -385,7 +406,10 @@ export const Waitlist = () => {
                     {client?.data()?.phone &&
                       client?.data()?.status === "complete" && (
                         <>
+                          <Tooltip anchorId="textClient" />
                           <button
+                            id="textClient"
+                            data-tooltip-content="Send  `Ready for Appointment` to Client"
                             onClick={() => {
                               toast(
                                 `SENDING "Ready for Appointment" message to ${

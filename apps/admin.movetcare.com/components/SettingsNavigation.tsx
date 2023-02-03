@@ -1,8 +1,10 @@
 import {
   faCalendar,
   faCogs,
+  faFlag,
   faSnowflake,
   faUser,
+  faVial,
   faWrench,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -34,7 +36,7 @@ export const SettingsNavigation = () => {
       description:
         "Change the announcement banner displayed on the website and web/mobile apps",
       href: "/settings/announcement-banner/",
-      icon: faWrench,
+      icon: faFlag,
       iconForeground: "text-movet-pink",
       iconBackground: "bg-movet-pink bg-opacity-50",
     },
@@ -48,13 +50,21 @@ export const SettingsNavigation = () => {
       iconBackground: "bg-movet-blue bg-opacity-50",
     },
     {
-      title: "Platform Tools",
+      title: "Troubleshooting Tools",
       description:
         "Tools for troubleshooting and debugging various platform issues",
       href: "/settings/tools/",
       icon: faWrench,
       iconForeground: "text-movet-green",
       iconBackground: "bg-movet-green bg-opacity-50",
+    },
+    {
+      title: "Testing Tools",
+      description: "Tools for deleting testing data from the platform",
+      href: "/settings/testing/",
+      icon: faVial,
+      iconForeground: "text-movet-magenta",
+      iconBackground: "bg-movet-magenta bg-opacity-50",
     },
   ];
   return (
