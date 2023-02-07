@@ -34,11 +34,6 @@ import { timeSince } from "utils/timeSince";
 import TelehealthChatSummary from "components/TelehealthChatSummary";
 import { GOTO_PHONE_URL } from "constants/urls";
 import Image from "next/image";
-import dynamic from "next/dynamic";
-
-const Tooltip: any = dynamic(() => import("react-tooltip") as any, {
-  ssr: false,
-});
 
 interface ChatMessage {
   _id: string;
