@@ -41,12 +41,13 @@ import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GOTO_PHONE_URL } from "constants/urls";
 import { Tooltip } from "react-tooltip";
 
 export const Waitlist = () => {
   const [showArchive, setShowArchive] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [clients, loading, error] = useCollection(
     query(collection(firestore, "waitlist"), where("isActive", "==", true)),
     {
@@ -65,6 +66,10 @@ export const Waitlist = () => {
         snapshotListenOptions: { includeMetadataChanges: true },
       }
     );
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
@@ -129,7 +134,7 @@ export const Waitlist = () => {
                     </div>
                     <div className="min-w-0 flex flex-row justify-center md:justify-between w-full">
                       <div className="flex flex-row items-center">
-                        <Tooltip anchorId="viewProVet" />
+                        {isMounted && <Tooltip anchorId="viewProVet" />}
                         <a
                           id="viewProVet"
                           data-tooltip-content="View in ProVet"
@@ -156,7 +161,9 @@ export const Waitlist = () => {
                       <div className="hidden md:flex justify-end">
                         {client?.data()?.customerId && (
                           <>
-                            <Tooltip anchorId="View Customer in Stripe" />
+                            {isMounted && (
+                              <Tooltip anchorId="View Customer in Stripe" />
+                            )}
                             <a
                               id="View Customer in Stripe"
                               data-tooltip-content="View in ProVet"
@@ -265,7 +272,7 @@ export const Waitlist = () => {
                         </div>
                       </div>
                     </div>
-                    <Tooltip anchorId="remove" />
+                    {isMounted && <Tooltip anchorId="remove" />}
                     <button
                       id="remove"
                       data-tooltip-content="Remove from Waitlist"
@@ -316,7 +323,7 @@ export const Waitlist = () => {
                   </div>
                   {client?.data()?.customerId && (
                     <>
-                      <Tooltip anchorId="viewStripe" />
+                      {isMounted && <Tooltip anchorId="viewStripe" />}
                       <a
                         id="viewStripe"
                         data-tooltip-content="View Customer in Stripe"
@@ -352,7 +359,7 @@ export const Waitlist = () => {
                   <div className="flex justify-center items-center mt-3 w-full">
                     {client?.data()?.id && (
                       <>
-                        <Tooltip anchorId="viewProvet" />
+                        {isMounted && <Tooltip anchorId="viewProvet" />}
                         <a
                           id="viewProvet"
                           data-tooltip-content="View in ProVet"
@@ -375,7 +382,7 @@ export const Waitlist = () => {
                     )}
                     {client?.data()?.email && (
                       <>
-                        <Tooltip anchorId="sendEmail" />
+                        {isMounted && <Tooltip anchorId="sendEmail" />}
                         <a
                           id="sendEmail"
                           data-tooltip-content="Email Client"
@@ -390,7 +397,7 @@ export const Waitlist = () => {
                     )}
                     {client?.data()?.phone && (
                       <>
-                        <Tooltip anchorId="callClient" />
+                        {isMounted && <Tooltip anchorId="callClient" />}
                         <a
                           id="callClient"
                           data-tooltip-content="Call Client"
@@ -406,7 +413,7 @@ export const Waitlist = () => {
                     {client?.data()?.phone &&
                       client?.data()?.status === "complete" && (
                         <>
-                          <Tooltip anchorId="textClient" />
+                          {isMounted && <Tooltip anchorId="textClient" />}
                           <button
                             id="textClient"
                             data-tooltip-content="Send  `Ready for Appointment` to Client"

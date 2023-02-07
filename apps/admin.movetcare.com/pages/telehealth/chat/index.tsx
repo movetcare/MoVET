@@ -52,6 +52,7 @@ const ChatSession = () => {
   const { query } = router;
   const messagesEndRef: any = useRef(null);
   const [didEndChat, setDidEndChat] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState(false);
   const queryOptions = {
     snapshotListenOptions: { includeMetadataChanges: true },
   };
@@ -82,6 +83,10 @@ const ChatSession = () => {
   } = useForm({
     mode: "onChange",
   });
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(
     () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }),
@@ -269,7 +274,7 @@ const ChatSession = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <Tooltip anchorId="clientVerification" />
+                {isMounted && <Tooltip anchorId="clientVerification" />}
                 <a
                   id="clientVerification"
                   data-tooltip-content="Verify Client Account"
@@ -286,7 +291,7 @@ const ChatSession = () => {
                 </a>
                 {router.query.mode !== "embed" && (
                   <>
-                    <Tooltip anchorId="viewProVet" />
+                    {isMounted && <Tooltip anchorId="viewProVet" />}
                     <a
                       id="viewProVet"
                       data-tooltip-content="View in ProVet"
@@ -309,7 +314,7 @@ const ChatSession = () => {
                       paymentMethod.data()?.active &&
                       index === 0 && (
                         <>
-                          <Tooltip anchorId="viewCustomer" />
+                          {isMounted && <Tooltip anchorId="viewCustomer" />}
                           <a
                             id="viewCustomer"
                             data-tooltip-content="View in Customer in Stripe"
@@ -330,7 +335,7 @@ const ChatSession = () => {
                   )}
                 {session?.data()?.client?.phone && (
                   <>
-                    <Tooltip anchorId="callClient" />
+                    {isMounted && <Tooltip anchorId="callClient" />}
                     <a
                       id="callClient"
                       data-tooltip-content="Call Client"
@@ -347,7 +352,7 @@ const ChatSession = () => {
                 )}
                 {session?.data()?.client?.email && (
                   <>
-                    <Tooltip anchorId="emailClient" />
+                    {isMounted && <Tooltip anchorId="emailClient" />}
                     <a
                       id="emailClient"
                       data-tooltip-content="Email Client"
@@ -362,7 +367,7 @@ const ChatSession = () => {
                 )}
                 {router.query.mode !== "embed" && (
                   <>
-                    <Tooltip anchorId="endChat" />
+                    {isMounted && <Tooltip anchorId="endChat" />}
                     <div
                       id="endChat"
                       data-tooltip-content="End Client Chat - This will send them an email of the chat log!"

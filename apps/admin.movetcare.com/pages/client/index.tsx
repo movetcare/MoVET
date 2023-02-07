@@ -42,6 +42,7 @@ const Client = () => {
   const { query } = router;
   const [errors, setErrors] = useState<Array<string> | null>(null);
   const [client, setClient] = useState<any>();
+  const [isMounted, setIsMounted] = useState(false);
   const cancelButtonRef = useRef(null);
   const [showDeleteClientModal, setShowDeleteClientModal] =
     useState<boolean>(false);
@@ -56,6 +57,10 @@ const Client = () => {
   const [clientData, isLoadingClient, errorClient] = useDocument(
     doc(firestore, `clients/${query?.id}`)
   );
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (query.id) {
@@ -450,7 +455,7 @@ const Client = () => {
                   {client?.email !== undefined &&
                     !client?.email?.toLowerCase().includes("missing") && (
                       <>
-                        <Tooltip anchorId="resetPassword" />
+                        {isMounted && <Tooltip anchorId="resetPassword" />}
                         <div
                           id="resetPassword"
                           data-tooltip-content="Re-send Account Verification Link (Contains a reset password link)"
@@ -478,7 +483,7 @@ const Client = () => {
                         </div>
                       </>
                     )}
-                  <Tooltip anchorId="viewInProvet" />
+                  {isMounted && <Tooltip anchorId="viewInProvet" />}
                   <a
                     id="viewInProvet"
                     data-tooltip-content="View Client in Provet"
@@ -495,7 +500,7 @@ const Client = () => {
                   </a>
                   {client && client?.customer?.length > 0 && (
                     <>
-                      <Tooltip anchorId="viewInStripe" />
+                      {isMounted && <Tooltip anchorId="viewInStripe" />}
                       <a
                         id="viewInStripe"
                         data-tooltip-content="View Customer in Stripe"
@@ -516,7 +521,7 @@ const Client = () => {
                     client?.phoneNumber &&
                     !client?.phoneNumber?.toLowerCase().includes("missing") && (
                       <>
-                        <Tooltip anchorId="callPhone" />
+                        {isMounted && <Tooltip anchorId="callPhone" />}
                         <a
                           data-tooltip-content="Call Client"
                           id="callPhone"
@@ -533,7 +538,7 @@ const Client = () => {
                     client?.email &&
                     !client?.email?.toLowerCase()?.includes("missing") && (
                       <>
-                        <Tooltip anchorId="sendEmail" />
+                        {isMounted && <Tooltip anchorId="sendEmail" />}
                         <a
                           id="sendEmail"
                           data-tooltip-content="Email Client"
@@ -550,7 +555,7 @@ const Client = () => {
                     client?.email &&
                     !client?.email?.toLowerCase()?.includes("missing") && (
                       <>
-                        <Tooltip anchorId="chatWithClient" />
+                        {isMounted && <Tooltip anchorId="chatWithClient" />}
                         <div
                           id="chatWithClient"
                           data-tooltip-content="Chat w/ Client"
@@ -567,7 +572,7 @@ const Client = () => {
                     !client?.street?.toLowerCase()?.includes("missing") &&
                     client?.street !== undefined && (
                       <>
-                        <Tooltip anchorId="viewOnMap" />
+                        {isMounted && <Tooltip anchorId="viewOnMap" />}
                         <a
                           id="viewOnMap"
                           data-tooltip-content="View on Map"
@@ -580,7 +585,7 @@ const Client = () => {
                         </a>
                       </>
                     )}
-                  <Tooltip anchorId="viewInFirestore" />
+                  {isMounted && <Tooltip anchorId="viewInFirestore" />}
                   <a
                     id="viewInFirestore"
                     data-tooltip-content="View Database Record"
@@ -596,7 +601,7 @@ const Client = () => {
                   >
                     <FontAwesomeIcon icon={faFire} size="lg" />
                   </a>
-                  <Tooltip anchorId="deleteClient" />
+                  {isMounted && <Tooltip anchorId="deleteClient" />}
                   <div
                     id="deleteClient"
                     data-tooltip-content="Delete Client"
@@ -605,7 +610,7 @@ const Client = () => {
                   >
                     <FontAwesomeIcon icon={faTrash} size="lg" />
                   </div>
-                  <Tooltip anchorId="reloadData" />
+                  {isMounted && <Tooltip anchorId="reloadData" />}
                   <div
                     id="reloadData"
                     data-tooltip-content="Reload Client Data"
