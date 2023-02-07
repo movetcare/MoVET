@@ -109,7 +109,7 @@ export const deleteAllAccountData = async (client: {
     if (DEBUG) console.log("proVetClient", proVetClient);
 
     const proVetPatientIds: Array<number> = [];
-    if (proVetClient?.patients.length)
+    if (proVetClient?.patients?.length > 0)
       proVetClient?.patients.map((patient: string) =>
         proVetPatientIds.push(getProVetIdFromUrl(patient) as number)
       );
@@ -132,7 +132,7 @@ export const deleteAllAccountData = async (client: {
         new Date().toISOString().split("T")[0]
       }%2000:00%2B00:00`
     );
-    if (appointments.length)
+    if (appointments.length > 0)
       proVetAppointmentIds = appointments.map(
         (appointment: any) => appointment?.id
       );
@@ -148,7 +148,7 @@ export const deleteAllAccountData = async (client: {
     } else if (DEBUG)
       console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
 
-    if (proVetPatientIds.length) {
+    if (proVetPatientIds.length > 0) {
       if (DEBUG) console.log("ARCHIVING PATIENTS: ", proVetPatientIds);
       await Promise.all(
         proVetPatientIds.map(
