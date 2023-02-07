@@ -1,13 +1,11 @@
 import {
   admin,
   DEBUG,
-  environment,
   // stripe,
   throwError,
 } from "../../../../config/config";
 import { createAuthClient } from "./createAuthClient";
 import { getAuthUserById } from "../../../../utils/auth/getAuthUserById";
-import { sendNotification } from "../../../../notifications/sendNotification";
 // import { updateStripeCustomer } from "../../../stripe/updateStripeCustomer";
 
 export const saveClient = async (
