@@ -43,6 +43,7 @@ import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { useEffect, useState } from "react";
 import { GOTO_PHONE_URL } from "constants/urls";
 import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 export const Waitlist = () => {
   const [showArchive, setShowArchive] = useState<boolean>(false);

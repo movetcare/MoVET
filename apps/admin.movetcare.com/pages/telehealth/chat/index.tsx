@@ -34,7 +34,7 @@ import { timeSince } from "utils/timeSince";
 import TelehealthChatSummary from "components/TelehealthChatSummary";
 import { GOTO_PHONE_URL } from "constants/urls";
 import Image from "next/image";
-
+import "react-tooltip/dist/react-tooltip.css";
 interface ChatMessage {
   _id: string;
   createdAt: any;
