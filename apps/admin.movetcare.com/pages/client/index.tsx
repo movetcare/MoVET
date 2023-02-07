@@ -36,7 +36,12 @@ import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { Transition } from "@headlessui/react";
 import { ClientSearch } from "components/ClientSearch";
 import { isNumeric } from "utilities";
-import { Tooltip } from "react-tooltip";
+import dynamic from "next/dynamic";
+
+const Tooltip: any = dynamic(() => import("react-tooltip") as any, {
+  ssr: false,
+});
+
 const Client = () => {
   const router = useRouter();
   const { query } = router;

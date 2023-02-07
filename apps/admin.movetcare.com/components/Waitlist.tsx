@@ -39,11 +39,14 @@ import Error from "components/Error";
 import environment from "utils/environment";
 import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
-
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { useEffect, useState } from "react";
 import { GOTO_PHONE_URL } from "constants/urls";
-import { Tooltip } from "react-tooltip";
+import dynamic from "next/dynamic";
+
+const Tooltip: any = dynamic(() => import("react-tooltip") as any, {
+  ssr: false,
+});
 
 export const Waitlist = () => {
   const [showArchive, setShowArchive] = useState<boolean>(false);
