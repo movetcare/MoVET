@@ -304,11 +304,11 @@ const getEmailErrors = ({
     movetData?.email !== provetData?.email
   ) {
     if (movetData?.email === undefined || movetData?.email === null)
-      errors.push("MoVET Email Not Found...");
+      errors.push("MoVET Email Not Found");
     if (provetData?.email === undefined || provetData?.email === null)
-      errors.push("ProVet Email Not Found...");
+      errors.push("ProVet Email Not Found");
     if (authData?.email === undefined || authData?.email === null)
-      errors.push("ProVet Email Not Found...");
+      errors.push("Auth Email Not Found");
   } else {
     if (movetData?.email !== provetData?.email)
       errors.push(
@@ -336,13 +336,13 @@ const getNotificationErrors = ({
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
   if (movetData?.sendEmail === undefined)
-    errors.push("MoVET Email Notification Setting Not Found...");
+    errors.push("MoVET Email Notification Setting Not Found");
   if (movetData?.sendSms === undefined)
-    errors.push("MoVET SMS Notification Setting Not Found...");
+    errors.push("MoVET SMS Notification Setting Not Found");
   if (provetData?.no_sms === undefined)
-    errors.push("ProVet SMS Notification Setting Not Found...");
+    errors.push("ProVet SMS Notification Setting Not Found");
   if (provetData?.no_email === undefined)
-    errors.push("ProVet Email Notification Setting Not Found...");
+    errors.push("ProVet Email Notification Setting Not Found");
   if (movetData?.sendEmail !== !provetData?.no_email)
     errors.push(
       `MoVET Email Notifications (${
@@ -381,15 +381,26 @@ const getNameErrors = ({
   provetData: ProvetData;
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
-  if (movetData?.firstName !== provetData?.firstname)
+  if (
+    movetData?.firstName !== undefined &&
+    provetData?.firstname !== undefined &&
+    movetData?.firstName !== provetData?.firstname
+  )
     errors.push(
       `MoVET First Name (${movetData?.firstName}) does NOT match ProVet First Name (${provetData?.firstname})`
     );
-  if (movetData?.lastName !== provetData?.lastname)
+  if (
+    movetData?.lastName !== undefined &&
+    provetData?.lastname !== undefined &&
+    movetData?.lastName !== provetData?.lastname
+  )
     errors.push(
       `MoVET Last Name (${movetData?.lastName}) does NOT match ProVet Last Name (${provetData?.lastname})`
     );
   if (
+    movetData?.firstName !== undefined &&
+    movetData?.lastName !== undefined &&
+    authData?.displayName !== null &&
     authData?.displayName !== `${movetData?.firstName} ${movetData?.lastName}`
   )
     errors.push(
@@ -398,6 +409,9 @@ const getNameErrors = ({
       }) does NOT match MoVET First Name & Last Name (${`${movetData?.firstName} ${movetData?.lastName}`})`
     );
   if (
+    provetData?.firstname !== undefined &&
+    provetData?.lastname !== undefined &&
+    authData?.displayName !== null &&
     authData?.displayName !== `${provetData?.firstname} ${provetData?.lastname}`
   )
     errors.push(
@@ -528,9 +542,9 @@ const getPhoneNumberWarnings = ({
     console.log("movetPhone", movetPhone);
     console.log("provetPhone", provetPhone);
   }
-  if (movetPhone === null) warnings.push("MoVET Phone Number Not Found...");
-  if (provetPhone === null) warnings.push("ProVet Phone Number Not Found...");
-  if (authPhone === null) warnings.push("Auth Phone Number Not Found...");
+  if (movetPhone === null) warnings.push("MoVET Phone Number Not Found");
+  if (provetPhone === null) warnings.push("ProVet Phone Number Not Found");
+  if (authPhone === null) warnings.push("Auth Phone Number Not Found");
   if (DEBUG) console.log("getPhoneNumberWarnings", warnings);
   return warnings;
 };
@@ -573,24 +587,24 @@ const getAddressWarnings = ({
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
   if (movetData?.street === undefined || movetData?.street === "")
-    errors.push("MoVET Street Address Not Found...");
+    errors.push("MoVET Street Address Not Found");
   if (movetData?.city === undefined || movetData?.city === "")
-    errors.push("MoVET City Not Found...");
+    errors.push("MoVET City Not Found");
   if (movetData?.state === undefined || movetData?.state === "")
-    errors.push("MoVET State Not Found...");
+    errors.push("MoVET State Not Found");
   if (movetData?.zipCode === undefined || movetData?.zipCode === "")
-    errors.push("MoVET Zipcode Not Found...");
+    errors.push("MoVET Zipcode Not Found");
   if (
     provetData?.street_address === undefined ||
     provetData?.street_address === ""
   )
-    errors.push("ProVet Street Address Not Found...");
+    errors.push("ProVet Street Address Not Found");
   if (provetData?.city === undefined || provetData?.city === "")
-    errors.push("ProVet City Not Found...");
+    errors.push("ProVet City Not Found");
   if (provetData?.state === undefined || provetData?.state === "")
-    errors.push("ProVet State Not Found...");
+    errors.push("ProVet State Not Found");
   if (provetData?.zip_code === undefined || provetData?.zip_code === "")
-    errors.push("ProVet Zipcode Not Found...");
+    errors.push("ProVet Zipcode Not Found");
   if (DEBUG) console.log("getAddressErrors", errors);
   return errors;
 };

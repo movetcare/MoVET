@@ -231,19 +231,7 @@ export const saveClient = async (
           )
           .then(() => true)
           .catch((error: any) => throwError(error));
-      } else {
-        sendNotification({
-          type: "slack",
-          payload: {
-            message: `PROVET CLOUD INTEGRATION FAILURE:\n\nFailed to Generate a MoVET Account for Client #${clientId} \n\nREASON: No Email Address Provided. Please login to PROVET Cloud and save an email address to Client #${clientId} to retry this action - ${
-              environment.type === "production"
-                ? "https://us.provetcloud.com/4285"
-                : "https://provetcloud.com/3785"
-            }/client/${clientId}/tabs/`,
-          },
-        });
-        return false;
-      }
+      } else return false;
     })
     .catch((error: any) => throwError(error));
 };

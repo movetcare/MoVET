@@ -158,7 +158,9 @@ export const deleteAllAccountData = async (client: {
       );
     } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
 
-    await updateProVetClient({ id: client?.uid, archived: true });
+    await updateProVetClient({ id: client?.uid, archived: true }).catch(
+      (error: any) => DEBUG && console.error(error)
+    );
   }
   const customerId = await getCustomerId(client?.uid, true);
 
@@ -170,7 +172,7 @@ export const deleteAllAccountData = async (client: {
       .then(
         (result) => DEBUG && console.log("STRIPE CUSTOMER DELETED: ", result)
       )
-      .catch((error: any) => console.error(error));
+      .catch((error: any) => DEBUG && console.error(error));
 
   deleteCollection(`clients/${client?.uid}/notifications`)
     .then(
@@ -202,19 +204,27 @@ export const deleteAllAccountData = async (client: {
       () =>
         DEBUG && console.log("FIRESTORE CLIENT RECORD DELETED: ", client?.uid)
     )
-    .catch((error: any) => console.error(error));
+    .catch((error: any) => DEBUG && console.error(error));
+
+  admin
+    .auth()
+    .deleteUser(client?.uid)
+    .then(() => {
+      console.log("Successfully deleted user");
+    })
+    .catch((error: any) => DEBUG && console.error(error));
 
   sendNotification({
     type: "slack",
     payload: {
       message: `MoVET Account and Data Archived for ${
         client?.uid
-      } => ${JSON.stringify({
+      } =>\n\`\`\`${JSON.stringify({
         clientIds,
         patientIds,
         appointmentIds,
         customerId,
-      })}`,
+      })}\`\`\``,
     },
   });
   return true;
