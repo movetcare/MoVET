@@ -169,12 +169,10 @@ export const Waitlist = () => {
                               title="View Customer in Stripe"
                               href={
                                 environment === "production"
-                                  ? `https://dashboard.stripe.com/customers/${
-                                      client?.data()?.customerId
-                                    }/`
-                                  : `https://dashboard.stripe.com/test/customers/${
-                                      client?.data()?.customerId
-                                    }/`
+                                  ? `https://dashboard.stripe.com/customers/` +
+                                    client?.data()?.customerId?.toString()
+                                  : `https://dashboard.stripe.com/test/customers/` +
+                                    client?.data()?.customerId?.toString()
                               }
                               target="_blank"
                               className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black text-sm"
@@ -331,12 +329,10 @@ export const Waitlist = () => {
                         title="View Customer in Stripe"
                         href={
                           environment === "production"
-                            ? `https://dashboard.stripe.com/customers/${
-                                client?.data()?.customerId
-                              }/`
-                            : `https://dashboard.stripe.com/test/customers/${
-                                client?.data()?.customerId
-                              }/`
+                            ? `https://dashboard.stripe.com/customers/` +
+                              client?.data()?.customerId?.toString()
+                            : `https://dashboard.stripe.com/test/customers/` +
+                              client?.data()?.customerId?.toString()
                         }
                         target="_blank"
                         className="md:hidden mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -653,12 +649,10 @@ export const Waitlist = () => {
                                   <a
                                     href={
                                       environment === "production"
-                                        ? `https://dashboard.stripe.com/customers/${
-                                            client?.data()?.customerId
-                                          }/`
-                                        : `https://dashboard.stripe.com/test/customers/${
-                                            client?.data()?.customerId
-                                          }/`
+                                        ? `https://dashboard.stripe.com/customers/` +
+                                          client?.data()?.customerId?.toString()
+                                        : `https://dashboard.stripe.com/test/customers/` +
+                                          client?.data()?.customerId?.toString()
                                     }
                                     target="_blank"
                                     className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black text-sm"
@@ -778,12 +772,10 @@ export const Waitlist = () => {
                             data-tip="View Stripe Customer Details"
                             href={
                               environment === "production"
-                                ? `https://dashboard.stripe.com/customers/${
-                                    client?.data()?.customerId
-                                  }/`
-                                : `https://dashboard.stripe.com/test/customers/${
-                                    client?.data()?.customerId
-                                  }/`
+                                ? `https://dashboard.stripe.com/customers/` +
+                                  client?.data()?.customerId?.toString()
+                                : `https://dashboard.stripe.com/test/customers/` +
+                                  client?.data()?.customerId?.toString()
                             }
                             target="_blank"
                             className="md:hidden mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"

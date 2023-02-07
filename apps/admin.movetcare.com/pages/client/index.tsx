@@ -19,6 +19,9 @@ import {
   faTrash,
   faFire,
   faMessage,
+  faIdCard,
+  faAddressBook,
+  faEnvelopesBulk,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GOTO_PHONE_URL } from "constants/urls";
@@ -87,10 +90,11 @@ const Client = () => {
         .then((result: any) => {
           console.log("result", result.data);
           if (
-            (result.data?.errors && result.data?.errors.length > 0) ||
+            (result.data?.alerts?.errors &&
+              result.data?.alerts?.errors.length > 0) ||
             result.data === false
           ) {
-            setErrors(result.data?.errors || ["Client Not Found..."]);
+            setErrors(result.data?.alerts?.errors || ["Client Not Found..."]);
           }
           setClient({
             ...result.data,
@@ -660,104 +664,188 @@ const Client = () => {
                       </span>
                     ) : (
                       <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                        HEALTHY
+                        READY
                       </span>
                     )}
                   </div>
                   {client && (
                     <div className="ml-4 sm:ml-8">
-                      {errors && (
+                      {errors && errors?.length > 0 && (
                         <div className="mt-2">
-                          <b>Issues: </b>
+                          <b>ERROR: </b>
                           <ul>
                             {errors.map((error: string, index: number) => (
-                              <li key={index} className="italic text-movet-red">
-                                &quot;{error}&quot;
+                              <li
+                                key={index}
+                                className="font-bold text-movet-red"
+                              >
+                                - {error}
                               </li>
                             ))}
                           </ul>
                         </div>
                       )}
-                      <div className="mt-2">
-                        <b>Account ID: </b>
-                        <span className="italic">{query?.id}</span>
-                      </div>
-                      <div className="mt-2">
-                        <b>Customer ID: </b>
-                        <span className="italic">
-                          {client?.customer
-                            ? Array.isArray(client?.customer) &&
-                              client?.customer.length > 1
-                              ? JSON.stringify(client?.customer)
-                              : Array.isArray(client?.customer) &&
-                                client?.customer.length === 1
-                              ? client?.customer[0]
-                              : Array.isArray(client?.customer) &&
-                                client?.customer.length === 0
-                              ? "DOES NOT EXIST"
-                              : client?.customer
-                            : client?.customer?.id
-                            ? client?.customer?.id
-                            : "DOES NOT EXIST"}
-                        </span>
-                      </div>
-                      <div className="mt-2 flex flex-row flex-wrap">
-                        <b>Email Address: </b>
+                      {client?.alerts?.warnings &&
+                        client?.alerts?.warnings?.length > 0 && (
+                          <div className="mt-2">
+                            <b>WARNING: </b>
+                            <ul>
+                              {client?.alerts?.warnings.map(
+                                (warning: string, index: number) => (
+                                  <li
+                                    key={index}
+                                    className="font-bold text-movet-yellow text-sm"
+                                  >
+                                    - {warning}
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                    </div>
+                  )}
+                  <Divider />
+                  <div className="flex flex-row items-center w-full mt-2 ml-2">
+                    <h3 className="text-lg m-0 font-extrabold">
+                      <FontAwesomeIcon icon={faIdCard} className="mr-4" />
+                      ACCOUNT ID:
+                    </h3>
+                    {isLoadingAccount ? (
+                      <FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size="lg"
+                        className="text-movet-brown ml-4"
+                      />
+                    ) : query?.id === undefined ? (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        UNKNOWN
+                      </span>
+                    ) : query?.id ? (
+                      <span className="ml-2 italic">{query?.id}</span>
+                    ) : (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        ERROR
+                      </span>
+                    )}
+                  </div>
+                  <Divider />
+                  <div className="flex flex-row items-center w-full mt-2 ml-2">
+                    <h3 className="text-lg m-0 font-extrabold">
+                      <FontAwesomeIcon icon={faCreditCard} className="mr-4" />
+                      CUSTOMER ID:
+                    </h3>
+                    {isLoadingAccount ? (
+                      <FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size="lg"
+                        className="text-movet-brown ml-4"
+                      />
+                    ) : client?.customer === undefined ? (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        DOES NOT EXIST
+                      </span>
+                    ) : client?.customer ? (
+                      <span className="ml-4">
+                        {client?.customer ? (
+                          Array.isArray(client?.customer) &&
+                          client?.customer.length > 1 ? (
+                            JSON.stringify(client?.customer)
+                          ) : Array.isArray(client?.customer) &&
+                            client?.customer.length === 1 ? (
+                            client?.customer[0]
+                          ) : Array.isArray(client?.customer) &&
+                            client?.customer.length === 0 ? (
+                            <span className="inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                              DOES NOT EXIST
+                            </span>
+                          ) : (
+                            client?.customer
+                          )
+                        ) : client?.customer?.id ? (
+                          client?.customer?.id
+                        ) : (
+                          <span className="inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                            DOES NOT EXIST
+                          </span>
+                        )}
+                      </span>
+                    ) : (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        DISABLED
+                      </span>
+                    )}
+                  </div>
+                  <Divider />
+                  <div className="flex flex-row items-center w-full mt-2 ml-2">
+                    <h3 className="text-lg m-0 font-extrabold">
+                      <FontAwesomeIcon icon={faEnvelope} className="mr-4" />
+                      EMAIL ADDRESS:
+                    </h3>
+                    {isLoadingAccount ? (
+                      <FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size="lg"
+                        className="text-movet-brown ml-4"
+                      />
+                    ) : client?.email === undefined ? (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        UNKNOWN
+                      </span>
+                    ) : client?.email ? (
+                      <span>
+                        {isMounted && (
+                          <Tooltip anchorId="verifyAccountIndicator" />
+                        )}
                         <p className="group italic flex flex-row ml-2 items-center">
-                          {client?.email}
+                          <a
+                            href={`mailto://${client?.email}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="hover:text-movet-red hover:underline ease-in-out duration-300"
+                            title="Send an Email to Client"
+                          >
+                            {client?.email}
+                          </a>
                           {client?.emailVerified ? (
                             <FontAwesomeIcon
                               icon={faCheckCircle}
                               className="text-movet-green ml-2"
                             />
                           ) : client?.emailVerified === false ? (
-                            <FontAwesomeIcon
-                              icon={faCircleExclamation}
-                              className="text-movet-yellow ml-2"
-                            />
+                            <>
+                              <span
+                                id="verifyAccountIndicator"
+                                data-tooltip-content="This client has not verified their MoVET account or set up an account password!"
+                                title="This client has not verified their MoVET account or set up an account password! Click on the paper plane icon above to send them a new account verification email."
+                              >
+                                <FontAwesomeIcon
+                                  icon={faCircleExclamation}
+                                  className="text-movet-yellow ml-2"
+                                />
+                              </span>
+                            </>
                           ) : (
                             ""
                           )}
                         </p>
-                      </div>
-                      <div className="mt-2">
-                        <b>Phone Number: </b>
-                        <span className="italic">
-                          {client?.phone !== undefined
-                            ? formatPhoneNumber(client?.phone)
-                            : client?.phoneNumber
-                            ? client?.phoneNumber
-                            : "UNKNOWN"}
-                        </span>
-                      </div>
-                      <div className="mt-2">
-                        <b>Address: </b>
-                        <span className="italic">
-                          {client?.street
-                            ? client?.street
-                            : "STREET UNKNOWN - "}
-                        </span>
-                        <span className="italic">
-                          {" "}
-                          {client?.city ? client?.city : "CITY UNKNOWN - "}
-                        </span>
-                        <span className="italic">
-                          {" "}
-                          {client?.state ? client?.state : "STATE UNKNOWN - "}
-                        </span>
-                        <span className="italic">
-                          {" "}
-                          {client?.zipCode
-                            ? client?.zipCode
-                            : "ZIPCODE UNKNOWN"}
-                        </span>
-                      </div>
-                    </div>
-                  )}
+                      </span>
+                    ) : (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        UNKNOWN
+                      </span>
+                    )}
+                  </div>
                   <Divider />
                   <div className="flex flex-row items-center w-full mt-2 ml-2">
                     <h3 className="text-lg m-0 font-extrabold">
-                      <FontAwesomeIcon icon={faEnvelope} className="mr-4" />
+                      <FontAwesomeIcon
+                        icon={faEnvelopesBulk}
+                        className="mr-4"
+                      />
                       EMAIL NOTIFICATIONS:
                     </h3>
                     {isLoadingAccount ? (
@@ -778,6 +866,50 @@ const Client = () => {
                     ) : (
                       <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
                         DISABLED
+                      </span>
+                    )}
+                  </div>
+                  <Divider />
+                  <div className="flex flex-row items-center w-full mt-2 ml-2">
+                    <h3 className="text-lg m-0 font-extrabold">
+                      <FontAwesomeIcon icon={faPhone} className="mr-4" />
+                      PHONE NUMBER:
+                    </h3>
+                    {isLoadingAccount ? (
+                      <FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size="lg"
+                        className="text-movet-brown ml-4"
+                      />
+                    ) : client?.phoneNumber === undefined ? (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        UNKNOWN
+                      </span>
+                    ) : client?.phoneNumber &&
+                      !client?.phoneNumber
+                        ?.toLowerCase()
+                        .includes("missing") ? (
+                      <a
+                        href={`https://app.goto.com/domain/ed586a2b-6975-4613-8df0-c3de59fefc65/${client?.phoneNumber
+                          ?.replaceAll("-", "")
+                          ?.replaceAll("(", "")
+                          ?.replaceAll(")", "")
+                          ?.replaceAll("+1", "")}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="hover:text-movet-red hover:underline ease-in-out duration-300 ml-2"
+                        title="Call Client"
+                      >
+                        <span className="italic">
+                          {client?.phoneNumber
+                            ? client?.phoneNumber
+                            : "UNKNOWN"}
+                        </span>
+                      </a>
+                    ) : (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        UNKNOWN
                       </span>
                     )}
                   </div>
@@ -805,6 +937,69 @@ const Client = () => {
                     ) : (
                       <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
                         DISABLED
+                      </span>
+                    )}
+                  </div>
+                  <Divider />
+                  <div className="flex flex-row items-center w-full mt-2 ml-2">
+                    <h3 className="text-lg m-0 font-extrabold">
+                      <FontAwesomeIcon icon={faAddressBook} className="mr-4" />
+                      ADDRESS:
+                    </h3>
+                    {isLoadingAccount ? (
+                      <FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size="lg"
+                        className="text-movet-brown ml-4"
+                      />
+                    ) : client?.street === undefined ? (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        UNKNOWN
+                      </span>
+                    ) : client?.street ? (
+                      <a
+                        id="viewOnMap"
+                        data-tooltip-content="View on Map"
+                        title="View Address on Map"
+                        href={
+                          !client?.street?.toLowerCase()?.includes("missing") &&
+                          client?.street !== undefined
+                            ? `http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`
+                            : "#"
+                        }
+                        target={
+                          !client?.street?.toLowerCase()?.includes("missing") &&
+                          client?.street !== undefined
+                            ? "_blank"
+                            : undefined
+                        }
+                        className="hover:underline duration-300 ease-in-out hover:text-movet-red"
+                        rel="noreferrer"
+                      >
+                        <span className="italic ml-2">
+                          {client?.street
+                            ? client?.street
+                            : "STREET UNKNOWN - "}
+                        </span>
+                        <span className="italic">
+                          {" "}
+                          {client?.city ? client?.city : "CITY UNKNOWN - "}
+                        </span>
+                        <span className="italic">
+                          {" "}
+                          {client?.state ? client?.state : "STATE UNKNOWN - "}
+                        </span>
+                        <span className="italic">
+                          {" "}
+                          {client?.zipCode
+                            ? client?.zipCode
+                            : "ZIPCODE UNKNOWN"}
+                        </span>
+                      </a>
+                    ) : (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        UNKNOWN
                       </span>
                     )}
                   </div>
@@ -869,7 +1064,6 @@ const Client = () => {
                       </>
                     )}
                   </div>
-
                   <div className="ml-4 sm:ml-8 mb-6">
                     <ul>
                       {client &&
@@ -924,7 +1118,6 @@ const Client = () => {
                         ))}
                     </ul>
                   </div>
-
                   {client?.paymentMethods !== undefined ||
                   (errors !== null && errors[0] !== "Client Not Found...") ? (
                     <Divider />
