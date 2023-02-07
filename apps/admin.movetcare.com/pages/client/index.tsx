@@ -461,6 +461,7 @@ const Client = () => {
                         <div
                           id="resetPassword"
                           data-tooltip-content="Re-send Account Verification Link (Contains a reset password link)"
+                          title="Re-send Account Verification Link (Contains a reset password link)"
                           onClick={() => sendPasswordResetLink()}
                           className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                         >
@@ -489,6 +490,7 @@ const Client = () => {
                   <a
                     id="viewInProvet"
                     data-tooltip-content="View Client in Provet"
+                    title="View Client in Provet"
                     href={
                       environment === "production"
                         ? `https://us.provetcloud.com/4285/client/${query?.id}/`
@@ -506,6 +508,7 @@ const Client = () => {
                       <a
                         id="viewInStripe"
                         data-tooltip-content="View Customer in Stripe"
+                        title="View Customer in Stripe"
                         href={
                           environment === "production"
                             ? `https://dashboard.stripe.com/customers/${client?.customer}/`
@@ -526,6 +529,7 @@ const Client = () => {
                         {isMounted && <Tooltip anchorId="callPhone" />}
                         <a
                           data-tooltip-content="Call Client"
+                          title="Call Client"
                           id="callPhone"
                           href={`${GOTO_PHONE_URL}/${client?.phoneNumber}`}
                           target="_blank"
@@ -544,6 +548,7 @@ const Client = () => {
                         <a
                           id="sendEmail"
                           data-tooltip-content="Email Client"
+                          title="Email Client"
                           href={`mailto:${client?.email}`}
                           target="_blank"
                           className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
@@ -561,6 +566,7 @@ const Client = () => {
                         <div
                           id="chatWithClient"
                           data-tooltip-content="Chat w/ Client"
+                          title="Chat w/ Client"
                           onClick={() =>
                             router.push(`/telehealth/chat/?id=${query?.id}`)
                           }
@@ -578,6 +584,7 @@ const Client = () => {
                         <a
                           id="viewOnMap"
                           data-tooltip-content="View on Map"
+                          title="View on Map"
                           href={`http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`}
                           target="_blank"
                           className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
@@ -591,6 +598,7 @@ const Client = () => {
                   <a
                     id="viewInFirestore"
                     data-tooltip-content="View Database Record"
+                    title="View Database Record"
                     href={
                       window.location.hostname === "localhost"
                         ? "http://localhost:4000/firestore/data/clients/" +
@@ -607,6 +615,7 @@ const Client = () => {
                   <div
                     id="deleteClient"
                     data-tooltip-content="Delete Client"
+                    title="Delete Client"
                     onClick={() => setShowDeleteClientModal(true)}
                     className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                   >
@@ -616,6 +625,7 @@ const Client = () => {
                   <div
                     id="reloadData"
                     data-tooltip-content="Reload Client Data"
+                    title="Reload Client Data"
                     onClick={() => reloadPage()}
                     className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                   >

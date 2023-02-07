@@ -138,6 +138,7 @@ export const Waitlist = () => {
                         <a
                           id="viewProVet"
                           data-tooltip-content="View in ProVet"
+                          title="View in ProVet"
                           href={
                             environment === "production"
                               ? `https://us.provetcloud.com/4285/client/${
@@ -161,12 +162,11 @@ export const Waitlist = () => {
                       <div className="hidden md:flex justify-end">
                         {client?.data()?.customerId && (
                           <>
-                            {isMounted && (
-                              <Tooltip anchorId="View Customer in Stripe" />
-                            )}
+                            {isMounted && <Tooltip anchorId="ViewInStripe" />}
                             <a
-                              id="View Customer in Stripe"
-                              data-tooltip-content="View in ProVet"
+                              id="ViewInStripe"
+                              data-tooltip-content="View Customer in Stripe"
+                              title="View Customer in Stripe"
                               href={
                                 environment === "production"
                                   ? `https://dashboard.stripe.com/customers/${
@@ -276,6 +276,7 @@ export const Waitlist = () => {
                     <button
                       id="remove"
                       data-tooltip-content="Remove from Waitlist"
+                      title="Remove from Waitlist"
                       className="md:ml-6 md:mr-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
                       onClick={async () => {
                         await updateDoc(
@@ -327,6 +328,7 @@ export const Waitlist = () => {
                       <a
                         id="viewStripe"
                         data-tooltip-content="View Customer in Stripe"
+                        title="View Customer in Stripe"
                         href={
                           environment === "production"
                             ? `https://dashboard.stripe.com/customers/${
@@ -363,6 +365,7 @@ export const Waitlist = () => {
                         <a
                           id="viewProvet"
                           data-tooltip-content="View in ProVet"
+                          title="View in ProVet"
                           href={
                             environment === "production"
                               ? `https://us.provetcloud.com/4285/client/${
@@ -386,6 +389,7 @@ export const Waitlist = () => {
                         <a
                           id="sendEmail"
                           data-tooltip-content="Email Client"
+                          title="Email Client"
                           href={`mailto://${client?.data()?.email}`}
                           target="_blank"
                           className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -401,6 +405,7 @@ export const Waitlist = () => {
                         <a
                           id="callClient"
                           data-tooltip-content="Call Client"
+                          title="Call Client"
                           href={`${GOTO_PHONE_URL}/${client?.data()?.phone}`}
                           target="_blank"
                           className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -417,6 +422,7 @@ export const Waitlist = () => {
                           <button
                             id="textClient"
                             data-tooltip-content="Send  `Ready for Appointment` to Client"
+                            title="Send  `Ready for Appointment` to Client"
                             onClick={() => {
                               toast(
                                 `SENDING "Ready for Appointment" message to ${

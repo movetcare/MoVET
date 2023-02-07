@@ -278,6 +278,7 @@ const ChatSession = () => {
                 <a
                   id="clientVerification"
                   data-tooltip-content="Verify Client Account"
+                  title="Verify Client Account"
                   href={
                     environment === "production"
                       ? `https://admin.movetcare.com/client/?id=${query?.id}`
@@ -295,6 +296,7 @@ const ChatSession = () => {
                     <a
                       id="viewProVet"
                       data-tooltip-content="View in ProVet"
+                      title="View in ProVet"
                       href={
                         environment === "production"
                           ? `https://us.provetcloud.com/4285/client/${query?.id}/`
@@ -318,6 +320,7 @@ const ChatSession = () => {
                           <a
                             id="viewCustomer"
                             data-tooltip-content="View in Customer in Stripe"
+                            title="View in Customer in Stripe"
                             key={index}
                             href={
                               environment === "production"
@@ -339,6 +342,7 @@ const ChatSession = () => {
                     <a
                       id="callClient"
                       data-tooltip-content="Call Client"
+                      title="Call Client"
                       href={`${GOTO_PHONE_URL}/${
                         session?.data()?.client?.phone
                       }`}
@@ -356,6 +360,7 @@ const ChatSession = () => {
                     <a
                       id="emailClient"
                       data-tooltip-content="Email Client"
+                      title="Email Client"
                       href={`mailto:${session?.data()?.client?.email}`}
                       target="_blank"
                       className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
@@ -371,6 +376,7 @@ const ChatSession = () => {
                     <div
                       id="endChat"
                       data-tooltip-content="End Client Chat - This will send them an email of the chat log!"
+                      title="End Client Chat - This will send them an email of the chat log!"
                       onClick={() => endTelehealthChatSession()}
                       className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red text-movet-yellow"
                     >
