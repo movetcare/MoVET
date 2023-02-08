@@ -97,7 +97,7 @@ export const SettingsNavigation = () => {
             </span>
           </div>
           <div className="mx-8">
-            <h3 className="text-lg font-medium">
+            <h3 className="text-lg font-extrabold -mb-0.5">
               <Link href={item.href}>
                 <div className="focus:outline-none hover:underline ease-in-out duration-500">
                   <span className="absolute inset-0" aria-hidden="true" />

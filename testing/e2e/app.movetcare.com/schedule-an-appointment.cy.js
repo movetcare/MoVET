@@ -5,21 +5,30 @@ console.log("endpointApiKey", Cypress.env().endpointApiKey);
 console.log("defaultPathnameTimeOut", Cypress.env().defaultPathnameTimeOut);
 console.log("onlyTestOnePatient", Cypress.env().onlyTestOnePatient);
 console.log("skipWellnessCheck", Cypress.env().skipWellnessCheck);
-console.log("existingClientNoPayment", Cypress.env().existingClientNoPayment);
+console.log("existingClientNoPaymentEmail", Cypress.env().existingClientNoPaymentEmail);
+console.log("existingClientNoPaymentFirstName", Cypress.env().existingClientNoPaymentFirstName);
+console.log("existingClientNoPaymentLastName", Cypress.env().existingClientNoPaymentLastName);
+console.log("existingClientNoPaymentId", Cypress.env().existingClientNoPaymentId);
 console.log(
-  "existingClientWithPayment",
-  Cypress.env().existingClientWithPayment
+  "existingClientWithPaymentEmail",
+  Cypress.env().existingClientWithPaymentEmail
 );
+console.log("existingClientWithPaymentFirstName", Cypress.env().existingClientWithPaymentFirstName);
+console.log("existingClientWithPaymentLastName", Cypress.env().existingClientWithPaymentLastName);
+console.log("existingClientWithPaymentId", Cypress.env().existingClientWithPaymentId);
 describe(
   "standard-schedule-an-appointment-flow",
   { defaultCommandTimeout: defaultPathnameTimeOut },
   () => {
     it("Can schedule an appointment as a new client - VCPR REQUIRED", () => {
-      runThroughAppointmentRequestWorkflows(
-        `dev+test_client_${Math.floor(
+      runThroughAppointmentRequestWorkflows({
+       email: `dev+test_client_${Math.floor(
           Math.random() * 99999999999
-        )}@movetcare.com`
-      );
+        )}@movetcare.com`,
+        firstName: "Test",
+        lastName: "Client",
+        id:null
+        });
     });
 
     if (!onlyTestOnePatient)
@@ -29,9 +38,9 @@ describe(
           "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
           { apiKey: Cypress.env().endpointApiKey, id: 5125 }
         );
-        runThroughAppointmentRequestWorkflows(
-          Cypress.env().existingClientNoPayment
-        );
+        runThroughAppointmentRequestWorkflows({ email:
+          Cypress.env().existingClientNoPaymentEmail
+      });
       });
 
     it("Can schedule an appointment as an existing client - VCPR NOT REQUIRED", () => {
@@ -42,7 +51,7 @@ describe(
       );
       cy.visit(
         `http://localhost:3001/?email=${
-          Cypress.env().existingClientWithPayment
+          Cypress.env().existingClientWithPaymentEmail
         }`
       );
       cy.get("h2").as("heading").contains("Schedule an Appointment");
@@ -152,7 +161,7 @@ describe(
   "winter-mode-schedule-an-appointment-flow",
   { defaultCommandTimeout: defaultPathnameTimeOut },
   () => {
-    it.only("Can NOT request a housecall with VCPR required patient", () => {
+    it("Can NOT request a housecall with VCPR required patient", () => {
       cy.request(
         "POST",
         "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
@@ -170,7 +179,7 @@ describe(
       );
       cy.visit(
         `http://localhost:3001/?email=${
-          Cypress.env().existingClientWithPayment
+          Cypress.env().existingClientWithPaymentEmail
         }`
       );
       cy.get("h2").as("heading").contains("Schedule an Appointment");
@@ -248,7 +257,7 @@ describe(
       );
       cy.visit(
         `http://localhost:3001/?email=${
-          Cypress.env().existingClientWithPayment
+          Cypress.env().existingClientWithPaymentEmail
         }&mode=app&housecallRequest=1`
       );
       cy.get("legend").contains("Your Pets");
@@ -293,7 +302,7 @@ describe(
   }
 );
 
-const runThroughAppointmentRequestWorkflows = (clientEmail) => {
+const runThroughAppointmentRequestWorkflows = ({email, id, firstName, lastName, petName}) => {
   cy.request(
     "POST",
     "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
@@ -302,10 +311,10 @@ const runThroughAppointmentRequestWorkflows = (clientEmail) => {
   cy.request(
     "POST",
     "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-    { apiKey: Cypress.env().endpointApiKey, id: 5592 }
+    { apiKey: Cypress.env().endpointApiKey, id }
   );
   cy.visit("http://localhost:3001/schedule-an-appointment");
-  cy.get("input[name='email']").type(clientEmail);
+  cy.get("input[name='email']").type(email);
   cy.get("h2").as("heading").contains("Schedule an Appointment");
   cy.get("button[type='submit']").as("submitButton").click();
   cy.get("@heading").contains("Processing, please wait...");
@@ -321,8 +330,8 @@ const runThroughAppointmentRequestWorkflows = (clientEmail) => {
     .contains("A first name is required");
   cy.get("@errorMessage").contains("A last name is required");
   cy.get("@errorMessage").contains("Phone number must be 10 digits");
-  cy.get("input[name='firstName']").type("TEST");
-  cy.get("input[name='lastName']").type("CLIENT - CYPRESS");
+  cy.get("input[name='firstName']").type(firstName);
+  cy.get("input[name='lastName']").type(lastName);
   cy.get("input[name='phone-number']").type(
     Math.floor(100000000 + Math.random() * 900000000)
   );
@@ -343,7 +352,7 @@ const runThroughAppointmentRequestWorkflows = (clientEmail) => {
   );
   cy.get("#dog").click();
   cy.get("#male").click();
-  cy.get("input[name='name']").type("TEST DOG");
+  cy.get("input[name='name']").type(petName);
   cy.get(".search-input").type("Mix{enter}");
   cy.get("input[name='weight-number']").type("10");
   cy.get("input[name='birthday']").type("10102020");
@@ -364,7 +373,7 @@ const runThroughAppointmentRequestWorkflows = (clientEmail) => {
   cy.get("span").contains("What are Establish Care Exams?").click();
   cy.get("button").contains("CLOSE").click();
   cy.get("label").contains("* Requires Establish Care Exam");
-  cy.get("label").contains("TEST DOG").click();
+  cy.get("label").contains(petName).click();
   cy.get("@text").contains("A pet selection is required");
   if (!onlyTestOnePatient) {
     cy.get("button").contains("Add a Pet").as("addAPetButton").click();

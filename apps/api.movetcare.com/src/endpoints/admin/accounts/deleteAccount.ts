@@ -46,7 +46,9 @@ export const deleteAccount = functions
           sendNotification({
             type: "slack",
             payload: {
-              message: `:sob: ${context.auth?.email} has deleted ${data.id}'s MoVET account!`,
+              message: `:sob: ${
+                context.auth?.displayName || "An Admin"
+              } has deleted ${data.id}'s MoVET account!`,
             },
           });
           return true;

@@ -52,7 +52,7 @@
     "semver": "^7.3.8",
     "stripe": "^11.9.1",
     "trello-node-api": "^0.0.9",
-    "twilio": "^4.0.0",
+    "twilio": "^4.7.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -68,7 +68,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.3",
+    "prettier": "^2.8.4",
     "typescript": "^4.9.5"
   }
 }

@@ -335,26 +335,34 @@ const getNotificationErrors = ({
   provetData: ProvetData;
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
-  if (movetData?.sendEmail === undefined)
-    errors.push("MoVET Email Notification Setting Not Found");
-  if (movetData?.sendSms === undefined)
-    errors.push("MoVET SMS Notification Setting Not Found");
-  if (provetData?.no_sms === undefined)
-    errors.push("ProVet SMS Notification Setting Not Found");
-  if (provetData?.no_email === undefined)
-    errors.push("ProVet Email Notification Setting Not Found");
-  if (movetData?.sendEmail !== !provetData?.no_email)
-    errors.push(
-      `MoVET Email Notifications (${
-        movetData?.sendEmail
-      }) does NOT match ProVet Email Notifications (${!provetData?.no_email})`
-    );
-  if (movetData?.sendSms !== !provetData?.no_sms)
-    errors.push(
-      `MoVET Email Notifications (${
-        movetData?.sendSms
-      }) does NOT match ProVet Email Notifications (${!provetData?.no_sms})`
-    );
+  if (
+    movetData?.sendEmail === undefined ||
+    movetData?.sendSms === undefined ||
+    provetData?.no_sms === undefined ||
+    provetData?.no_email === undefined
+  ) {
+    if (movetData?.sendEmail === undefined)
+      errors.push("MoVET Email Notification Setting Not Found");
+    if (movetData?.sendSms === undefined)
+      errors.push("MoVET SMS Notification Setting Not Found");
+    if (provetData?.no_sms === undefined)
+      errors.push("ProVet SMS Notification Setting Not Found");
+    if (provetData?.no_email === undefined)
+      errors.push("ProVet Email Notification Setting Not Found");
+  } else {
+    if (movetData?.sendEmail !== !provetData?.no_email)
+      errors.push(
+        `MoVET Email Notifications (${
+          movetData?.sendEmail
+        }) does NOT match ProVet Email Notifications (${!provetData?.no_email})`
+      );
+    if (movetData?.sendSms !== !provetData?.no_sms)
+      errors.push(
+        `MoVET Email Notifications (${
+          movetData?.sendSms
+        }) does NOT match ProVet Email Notifications (${!provetData?.no_sms})`
+      );
+  }
   if (DEBUG) console.log("getNotificationErrors", errors);
   return errors;
 };
@@ -490,18 +498,20 @@ const getPhoneNumberErrors = ({
     console.log("movetPhone", movetPhone);
     console.log("provetPhone", provetPhone);
   }
-  if (movetPhone !== provetPhone)
-    errors.push(
-      `MoVET Phone Number (${movetPhone}) does NOT match ProVet Phone Number (${provetPhone})`
-    );
-  if (movetPhone !== authPhone)
-    errors.push(
-      `MoVET Phone Number (${movetPhone}) does NOT match Auth Phone Number (${authPhone})`
-    );
-  if (provetPhone !== authPhone)
-    errors.push(
-      `MoVET Phone Number (${provetPhone}) does NOT match Auth Phone Number (${authPhone})`
-    );
+  if (movetPhone !== null || provetPhone !== null || authPhone !== null) {
+    if (movetPhone !== provetPhone)
+      errors.push(
+        `MoVET Phone Number (${movetPhone}) does NOT match ProVet Phone Number (${provetPhone})`
+      );
+    if (movetPhone !== authPhone)
+      errors.push(
+        `MoVET Phone Number (${movetPhone}) does NOT match Auth Phone Number (${authPhone})`
+      );
+    if (provetPhone !== authPhone)
+      errors.push(
+        `MoVET Phone Number (${provetPhone}) does NOT match Auth Phone Number (${authPhone})`
+      );
+  }
   if (DEBUG) console.log("getPhoneNumberErrors", errors);
   return errors;
 };

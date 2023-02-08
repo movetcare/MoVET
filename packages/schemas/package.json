@@ -7,7 +7,7 @@
     "update": "ncu -u"
   },
   "devDependencies": {
-    "yup": "^0.32.11"
+    "yup": "^1.0.0"
   },
   "private": true,
   "license": "NONE"

@@ -21,11 +21,11 @@ export const resetTestData: Promise<Response> = functions
       request.headers.host === "localhost:5001" &&
       request.body?.apiKey === mobileClientApiKey
     ) {
-      if (request.body?.id === 5749) {
+      if (request.body?.id === 5768) {
         await admin
           .firestore()
           .collection("bookings")
-          .where("client.uid", "==", "5749")
+          .where("client.uid", "==", "5768")
           .get()
           .then((querySnapshot: any) =>
             querySnapshot.forEach((doc: any) => {
@@ -35,11 +35,11 @@ export const resetTestData: Promise<Response> = functions
             })
           )
           .catch((error: any) => DEBUG && console.error(error));
-      } else if (request.body?.id === 5747) {
+      } else if (request.body?.id === 5769) {
         await disableWinterMode();
         await admin
           .auth()
-          .updateUser("5747", {
+          .updateUser("5769", {
             phoneNumber: null,
             displayName: null,
           })
@@ -52,7 +52,7 @@ export const resetTestData: Promise<Response> = functions
         await admin
           .firestore()
           .collection("bookings")
-          .where("client.uid", "==", "5747")
+          .where("client.uid", "==", "5769")
           .get()
           .then((querySnapshot: any) =>
             querySnapshot.forEach((doc: any) => {
@@ -65,22 +65,22 @@ export const resetTestData: Promise<Response> = functions
         await admin
           .firestore()
           .collection("clients")
-          .doc("5747")
+          .doc("5769")
           .delete()
           .then(
             () =>
-              DEBUG && console.log("Successfully Deleted Client Document", 5747)
+              DEBUG && console.log("Successfully Deleted Client Document", 5769)
           )
           .catch((error: any) => DEBUG && console.error(error));
         const patients = admin
           .firestore()
           .collection("patients")
-          .where("client", "==", 5747);
+          .where("client", "==", 5769);
         patients
           .get()
           .then((querySnapshot: any) =>
             querySnapshot.forEach((doc: any) => {
-              //if (doc.data()?.id !== 5747) {
+              //if (doc.data()?.id !== 5769) {
               doc.ref.delete();
               if (DEBUG)
                 console.log("Successfully Deleted Patient Document", doc.id);
@@ -89,7 +89,7 @@ export const resetTestData: Promise<Response> = functions
           )
           .catch((error: any) => DEBUG && console.error(error));
 
-        // const client = await fetchEntity("client", 5747);
+        // const client = await fetchEntity("client", 5769);
 
         // const proVetPatientIds: Array<number> = [];
         // if (client?.patients.length)
@@ -178,7 +178,7 @@ export const resetTestData: Promise<Response> = functions
         await admin
           .firestore()
           .collection("bookings")
-          .where("client.uid", "==", "5749")
+          .where("client.uid", "==", "5768")
           .get()
           .then((querySnapshot: any) =>
             querySnapshot.forEach((doc: any) => {

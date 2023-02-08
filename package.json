@@ -53,9 +53,9 @@
     "git-branch-is": "^4.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.1",
-    "prettier": "^2.8.3",
+    "prettier": "^2.8.4",
     "start-server-and-test": "^1.15.3",
-    "turbo": "^1.7.3"
+    "turbo": "^1.7.4"
   },
   "engines": {
     "node": ">= 16.18.1"

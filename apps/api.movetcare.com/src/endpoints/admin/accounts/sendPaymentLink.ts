@@ -49,7 +49,7 @@ export const sendPaymentLink = functions
                 displayName
                   ? getClientFirstNameFromDisplayName(displayName)
                   : "there"
-              }!\nHere is the link you can use to updated your payment method on file with MoVET\n\nhttps://movetcare.com/payment?email=${email}\n\nPlease text us (@ 720-507-7387), email us (@ info@movetcare.com), or "Ask a Question" via our mobile app if you have any questions or need assistance!\nThanks!\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`,
+              }!\n\nHere is the link you can use to updated your payment method on file with MoVET\n\nhttps://movetcare.com/payment?email=${email}\n\nPlease text us (@ 720-507-7387), email us (@ info@movetcare.com), or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nThanks!\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`,
               subject: "Here is your MoVET Account Update Payment Link (SMS)",
             },
           });

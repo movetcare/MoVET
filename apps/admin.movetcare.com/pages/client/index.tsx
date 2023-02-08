@@ -338,7 +338,6 @@ const Client = () => {
       .finally(() => setIsLoadingSendPasswordResetLink(false));
   };
   const deleteClient = async () => {
-    setIsLoading(true);
     toast(`DELETING CLIENT #${query?.id}...`, {
       position: "top-center",
       duration: 3000,
@@ -391,8 +390,7 @@ const Client = () => {
             />
           ),
         })
-      )
-      .finally(() => setIsLoading(false));
+      );
   };
   const Divider = () => <hr className="my-4 border-movet-brown/50" />;
   return (
@@ -1076,12 +1074,8 @@ const Client = () => {
                             <a
                               href={
                                 environment === "production"
-                                  ? `https://dashboard.stripe.com/customers/${JSON.stringify(
-                                      client?.customer
-                                    )}/`
-                                  : `https://dashboard.stripe.com/test/customers/${JSON.stringify(
-                                      client?.customer
-                                    )}/`
+                                  ? `https://dashboard.stripe.com/customers/${client?.customer}/`
+                                  : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
                               }
                               target="_blank"
                               rel="noreferrer"

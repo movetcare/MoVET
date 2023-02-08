@@ -112,7 +112,7 @@ export const configureBooking = async (): Promise<boolean> => {
 //         .add({
 //           createdAt: new Date(),
 //           client: {
-//             uid: "5747",
+//             uid: "5769",
 //             phoneNumber: "+1314 7360856",
 //             displayName: "Alex Rodriguez",
 //             email: "dev+test@movetcare.com",

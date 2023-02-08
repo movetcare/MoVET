@@ -22,13 +22,13 @@ export const initTestUser: Promise<Response> = functions
         (await importDefaultUsers()) &&
         (await importTestUser(
           "dev+test@movetcare.com",
-          5747,
+          5769,
           "cus_NHh7gfsz2LsVnp",
           "pm_1MX7jnDVQU5TYLF1k3iHdDKc"
         )) &&
         (await importTestUser(
           "dev+test_vcpr_not_required@movetcare.com",
-          5749,
+          5768,
           "cus_NHhCBn8D5rsQS2",
           "pm_1MX7ozDVQU5TYLF1gwB52QNF"
         )) &&
@@ -249,13 +249,13 @@ const importTelehealthChat = async () =>
   await admin
     .firestore()
     .collection("telehealth_chat")
-    .doc("5747")
+    .doc("5769")
     .set(
       {
         client: await admin
           .firestore()
           .collection("clients")
-          .doc("5747")
+          .doc("5769")
           .get()
           .then((doc: any) => doc?.data()),
         question: "This is a test question...",
@@ -270,14 +270,14 @@ const importTelehealthChat = async () =>
         await admin
           .firestore()
           .collection("telehealth_chat")
-          .doc("5747")
+          .doc("5769")
           .collection("log")
           .add({
             _id: "123",
             startNewThread: true,
             text: "This is a test question...",
             user: {
-              _id: "5747",
+              _id: "5769",
               avatar: null,
               name: null,
             },
@@ -291,7 +291,7 @@ const importCheckIn = async (): Promise<boolean> => {
   const { firstName, lastName, phone } = await admin
     .firestore()
     .collection("clients")
-    .doc("5747")
+    .doc("5769")
     .get()
     .then((doc: any) => doc?.data())
     .catch((error: any) => throwError(error));
@@ -304,7 +304,7 @@ const importCheckIn = async (): Promise<boolean> => {
         customerId: "cus_NHh7gfsz2LsVnp",
         email: "dev+test@movetcare.com",
         firstName,
-        id: "5747",
+        id: "5769",
         isActive: true,
         lastName,
         paymentMethod: {
