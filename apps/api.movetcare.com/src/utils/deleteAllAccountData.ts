@@ -159,7 +159,7 @@ export const deleteAllAccountData = async (client: {
     } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
 
     await updateProVetClient({ id: client?.uid, archived: true }).catch(
-      (error: any) => DEBUG && console.error(error)
+      (error: any) => DEBUG && console.log(error)
     );
   }
   const customerId = await getCustomerId(client?.uid, true);
@@ -172,28 +172,28 @@ export const deleteAllAccountData = async (client: {
       .then(
         (result) => DEBUG && console.log("STRIPE CUSTOMER DELETED: ", result)
       )
-      .catch((error: any) => DEBUG && console.error(error));
+      .catch((error: any) => DEBUG && console.log(error));
 
   deleteCollection(`clients/${client?.uid}/notifications`)
     .then(
       () => DEBUG && console.log(`DELETED clients/${client?.uid}/notifications`)
     )
-    .catch((error: any) => console.error(error));
+    .catch((error: any) => console.log(error));
 
   deleteCollection(`clients/${client?.uid}/payment_methods`)
     .then(
       () =>
         DEBUG && console.log(`DELETED clients/${client?.uid}/payment_methods`)
     )
-    .catch((error: any) => console.error(error));
+    .catch((error: any) => console.log(error));
 
   deleteCollection(`clients/${client?.uid}/logs`)
     .then(() => DEBUG && console.log(`DELETED clients/${client?.uid}/logs`))
-    .catch((error: any) => console.error(error));
+    .catch((error: any) => console.log(error));
 
   deleteCollection(`clients/${client?.uid}/invoices`)
     .then(() => DEBUG && console.log(`DELETED clients/${client?.uid}/invoices`))
-    .catch((error: any) => console.error(error));
+    .catch((error: any) => console.log(error));
 
   admin
     .firestore()
@@ -204,7 +204,7 @@ export const deleteAllAccountData = async (client: {
       () =>
         DEBUG && console.log("FIRESTORE CLIENT RECORD DELETED: ", client?.uid)
     )
-    .catch((error: any) => DEBUG && console.error(error));
+    .catch((error: any) => DEBUG && console.log(error));
 
   admin
     .auth()
@@ -212,7 +212,7 @@ export const deleteAllAccountData = async (client: {
     .then(() => {
       console.log("Successfully deleted user");
     })
-    .catch((error: any) => DEBUG && console.error(error));
+    .catch((error: any) => DEBUG && console.log(error));
 
   sendNotification({
     type: "slack",

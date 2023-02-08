@@ -1,4 +1,4 @@
-import {admin} from "../../config/config";
+import { admin } from "../../config/config";
 
 export const verifyExistingClient = async (
   email: string
@@ -10,5 +10,8 @@ export const verifyExistingClient = async (
     .catch((error: any) => {
       if (error.code === "auth/user-not-found") {
         return false;
-      } else return console.error(error);
+      } else {
+        console.log(error);
+        return null;
+      }
     });

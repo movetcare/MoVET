@@ -191,7 +191,7 @@ export const verifyAccount = functions
           };
         } catch (error) {
           throwError(error);
-          console.error("ROOT ERROR", error);
+          console.log("ERROR: verifyAccount", error);
           return false;
         }
       } else return false;

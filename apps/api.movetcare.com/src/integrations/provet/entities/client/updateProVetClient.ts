@@ -127,7 +127,7 @@ export const updateProVetClient = async (payload: any): Promise<boolean> => {
         console.log(`API Response: PATCH /client/${payload?.id} => `, data);
       return data;
     })
-    .catch((error: any) => DEBUG && console.error(error));
+    .catch((error: any) => DEBUG && console.log(error));
 
   return await saveClient(
     `${proVetClientData.id}`,

@@ -58,7 +58,7 @@ const deleteDefaultUsers = async () =>
       }
       if (deleteUsersResult.errors.length > 0) {
         deleteUsersResult.errors.forEach((error: any) => {
-          if (DEBUG) console.error(error.error.toJSON());
+          if (DEBUG) console.log(error.error.toJSON());
         });
         return throwError(deleteUsersResult.errors);
       } else return true;

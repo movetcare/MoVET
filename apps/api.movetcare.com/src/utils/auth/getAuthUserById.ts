@@ -1,4 +1,4 @@
-import {admin, DEBUG} from "../../config/config";
+import { admin, DEBUG } from "../../config/config";
 
 export const getAuthUserById = async (
   id: string,
@@ -25,7 +25,7 @@ export const getAuthUserById = async (
       }
     })
     .catch((error: any) => {
-      if (DEBUG) console.error(`${error?.message} -> ${id}`);
+      if (DEBUG) console.log(`${error?.message} -> ${id}`);
       if (values.length > 0) {
         const result: any = {};
         values.map((value: string, index: number) => {
