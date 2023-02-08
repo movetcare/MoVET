@@ -9,13 +9,11 @@ import { getCustomerId } from "./getCustomerId";
 import { getProVetIdFromUrl } from "./getProVetIdFromUrl";
 import { deleteCollection } from "./deleteCollection";
 const DEBUG = environment.type === "production";
-export const deleteAllAccountData = async (client: {
-  uid: string;
-}): Promise<boolean> => {
-  const { email } = await getAuthUserById(client?.uid, [
-    "email",
-    "displayName",
-  ]);
+export const deleteAllAccountData = async (
+  uid: string,
+  deleteAuthAccount = true
+): Promise<boolean> => {
+  const { email } = await getAuthUserById(uid, ["email", "displayName"]);
   if (DEBUG) console.log("deleteMoVETAccount =>", email);
   let clientIds, patientIds, appointmentIds;
   if (email) {
@@ -104,7 +102,7 @@ export const deleteAllAccountData = async (client: {
       );
     } else if (DEBUG) console.log("NO CLIENTS FOUND", proVetPatientIds);
   } else {
-    const proVetClient = await fetchEntity("client", Number(client?.uid));
+    const proVetClient = await fetchEntity("client", Number(uid));
     clientIds = proVetClient;
     if (DEBUG) console.log("proVetClient", proVetClient);
 
@@ -122,13 +120,13 @@ export const deleteAllAccountData = async (client: {
     if (DEBUG)
       console.log(
         "QUERY STRING =>",
-        `?client__eq=${client?.uid}&active=1
+        `?client__eq=${uid}&active=1
           &start__gte=${new Date().toISOString().split("T")[0]}%2000:00%2B00:00`
       );
     const appointments = await fetchEntity(
       "appointment",
       null,
-      `?client__eq=${client?.uid}&active=1&start__gte=${
+      `?client__eq=${uid}&active=1&start__gte=${
         new Date().toISOString().split("T")[0]
       }%2000:00%2B00:00`
     );
@@ -158,11 +156,11 @@ export const deleteAllAccountData = async (client: {
       );
     } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
 
-    await updateProVetClient({ id: client?.uid, archived: true }).catch(
+    await updateProVetClient({ id: uid, archived: true }).catch(
       (error: any) => DEBUG && console.log(error)
     );
   }
-  const customerId = await getCustomerId(client?.uid, true);
+  const customerId = await getCustomerId(uid, true);
 
   if (DEBUG) console.log("customerId", customerId);
 
@@ -174,57 +172,50 @@ export const deleteAllAccountData = async (client: {
       )
       .catch((error: any) => DEBUG && console.log(error));
 
-  deleteCollection(`clients/${client?.uid}/notifications`)
-    .then(
-      () => DEBUG && console.log(`DELETED clients/${client?.uid}/notifications`)
-    )
+  deleteCollection(`clients/${uid}/notifications`)
+    .then(() => DEBUG && console.log(`DELETED clients/${uid}/notifications`))
     .catch((error: any) => console.log(error));
 
-  deleteCollection(`clients/${client?.uid}/payment_methods`)
-    .then(
-      () =>
-        DEBUG && console.log(`DELETED clients/${client?.uid}/payment_methods`)
-    )
+  deleteCollection(`clients/${uid}/payment_methods`)
+    .then(() => DEBUG && console.log(`DELETED clients/${uid}/payment_methods`))
     .catch((error: any) => console.log(error));
 
-  deleteCollection(`clients/${client?.uid}/logs`)
-    .then(() => DEBUG && console.log(`DELETED clients/${client?.uid}/logs`))
+  deleteCollection(`clients/${uid}/logs`)
+    .then(() => DEBUG && console.log(`DELETED clients/${uid}/logs`))
     .catch((error: any) => console.log(error));
 
-  deleteCollection(`clients/${client?.uid}/invoices`)
-    .then(() => DEBUG && console.log(`DELETED clients/${client?.uid}/invoices`))
+  deleteCollection(`clients/${uid}/invoices`)
+    .then(() => DEBUG && console.log(`DELETED clients/${uid}/invoices`))
     .catch((error: any) => console.log(error));
 
   admin
     .firestore()
     .collection("clients")
-    .doc(client?.uid)
+    .doc(uid)
     .delete()
-    .then(
-      () =>
-        DEBUG && console.log("FIRESTORE CLIENT RECORD DELETED: ", client?.uid)
-    )
+    .then(() => DEBUG && console.log("FIRESTORE CLIENT RECORD DELETED: ", uid))
     .catch((error: any) => DEBUG && console.log(error));
 
-  admin
-    .auth()
-    .deleteUser(client?.uid)
-    .then(() => {
-      console.log("Successfully deleted user");
-    })
-    .catch((error: any) => DEBUG && console.log(error));
+  if (deleteAuthAccount)
+    admin
+      .auth()
+      .deleteUser(uid)
+      .then(() => {
+        console.log("Successfully deleted user");
+      })
+      .catch((error: any) => DEBUG && console.log(error));
 
   sendNotification({
     type: "slack",
     payload: {
-      message: `MoVET Account and Data Archived for ${
-        client?.uid
-      } =>\n\`\`\`${JSON.stringify({
-        clientIds,
-        patientIds,
-        appointmentIds,
-        customerId,
-      })}\`\`\``,
+      message: `MoVET Account and Data Archived for ${uid} =>\n\`\`\`${JSON.stringify(
+        {
+          clientIds,
+          patientIds,
+          appointmentIds,
+          customerId,
+        }
+      )}\`\`\``,
     },
   });
   return true;

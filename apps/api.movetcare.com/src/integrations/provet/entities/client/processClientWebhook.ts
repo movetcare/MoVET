@@ -25,7 +25,7 @@ export const processClientWebhook = async (
           message: `:red_circle: Client #${id} has been DELETED in ProVet - Proceeding to DELETE ALL MoVET Account Data!`,
         },
       });
-      deleteAllAccountData({ uid: id });
+      deleteAllAccountData(id);
     }
   } catch (error: any) {
     throwError(error);
