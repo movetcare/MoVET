@@ -276,7 +276,7 @@ export default function LocationSelection({
           <section className="relative mx-auto">
             {isLoading && !isLoaded ? (
               <Loader
-                message={isLoaded ? loadingMessage : "Loading Please Wait..."}
+                message={!isLoaded ? loadingMessage : "Loading Please Wait..."}
                 isAppMode={isAppMode}
               />
             ) : error || loadError ? (
@@ -288,7 +288,6 @@ export default function LocationSelection({
                   title="Choose a Location"
                   description={"Where would you like to have your appointment?"}
                 />
-
                 <form className={isHousecallRequest ? "" : "mt-8"}>
                   {!isHousecallRequest && (
                     <>
@@ -513,7 +512,6 @@ export default function LocationSelection({
                     />
                   </div>
                 </form>
-
                 <BookingFooter />
               </>
             )}
