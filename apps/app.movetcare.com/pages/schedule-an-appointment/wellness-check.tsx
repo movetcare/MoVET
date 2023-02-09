@@ -49,7 +49,7 @@ export default function WellnessCheck() {
             ? array()
                 .max(3, "Only 3 pets are allowed per appointment")
                 .of(string())
-            : string().nullable(true)
+            : string().nullable()
         ),
       })
     ),

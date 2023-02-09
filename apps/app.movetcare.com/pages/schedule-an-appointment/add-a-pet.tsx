@@ -31,7 +31,7 @@ import SwitchInput from "components/inputs/SwitchInput";
 import { ToggleInput } from "components/inputs/ToggleInput";
 import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 
-addMethod(string, "isBeforeToday", function (errorMessage: string) {
+addMethod(string as any, "isBeforeToday", function (errorMessage: string) {
   return (this as any).test(
     "test-before-today",
     errorMessage,
@@ -50,7 +50,7 @@ addMethod(string, "isBeforeToday", function (errorMessage: string) {
   );
 });
 
-addMethod(string, "isValidDay", function (errorMessage: string) {
+addMethod(string as any, "isValidDay", function (errorMessage: string) {
   return (this as any).test(
     "test-valid-day",
     errorMessage,
@@ -65,7 +65,7 @@ addMethod(string, "isValidDay", function (errorMessage: string) {
   );
 });
 
-addMethod(string, "isValidMonth", function (errorMessage: string) {
+addMethod(string as any, "isValidMonth", function (errorMessage: string) {
   return (this as any).test(
     "test-valid-month",
     errorMessage,
@@ -81,7 +81,7 @@ addMethod(string, "isValidMonth", function (errorMessage: string) {
   );
 });
 
-addMethod(string, "isValidWeight", function (errorMessage: string) {
+addMethod(string as any, "isValidWeight", function (errorMessage: string) {
   return (this as any).test(
     "test-valid-weight",
     errorMessage,
@@ -130,7 +130,7 @@ export default function ContactInfo() {
           .required("A name is required"),
         type: string().required("A type is required"),
         gender: string().required("A gender is required"),
-        spayedOrNeutered: bool().nullable(true).default(false),
+        spayedOrNeutered: bool().nullable().default(false),
         breed: lazy((value: any) =>
           typeof value === "object" && !Array.isArray(value) && value !== null
             ? object().shape({
