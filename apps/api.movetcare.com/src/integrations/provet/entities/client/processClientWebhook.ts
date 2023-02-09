@@ -26,6 +26,7 @@ export const processClientWebhook = async (
         },
       });
       deleteAllAccountData(id);
+      return response.status(200).send({ received: true });
     }
   } catch (error: any) {
     throwError(error);
