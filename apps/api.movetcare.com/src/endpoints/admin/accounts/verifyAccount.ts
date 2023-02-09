@@ -117,12 +117,12 @@ export const verifyAccount = functions
               })),
             ],
           };
-          if (alerts.errors.length > 0) {
+          if (alerts.errors.length > 0 && !authData?.email.includes("+test")) {
             sendNotification({
               type: "slack",
               payload: {
                 message:
-                  ":fire_extinguisher: MoVET Account Errors Found! Please Fix ASAP!\n\n" +
+                  `:fire_extinguisher: MoVET Account Errors Found for ${authData?.displayName}(${authData?.email})! Please Fix ASAP!\n\n` +
                   "```" +
                   JSON.stringify(alerts.errors) +
                   "```\n" +
@@ -136,9 +136,8 @@ export const verifyAccount = functions
             sendNotification({
               type: "email",
               payload: {
-                client: id,
                 to: "support@movetcare.com",
-                subject: "MoVET Account Errors Found! Please Fix ASAP",
+                subject: `MoVET Account Errors Found for ${authData?.displayName} (${authData?.email})! Please Fix ASAP`,
                 message:
                   "<p>" +
                   JSON.stringify(alerts.errors) +

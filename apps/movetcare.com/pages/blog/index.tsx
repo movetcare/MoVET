@@ -9,6 +9,23 @@ import { CallToAction } from "ui";
 
 const posts = [
   {
+    isFeatured: true,
+    title: "I Chews You!",
+    href: "/blog/i-chews-you",
+    category: { name: "Community", href: "#", color: "bg-movet-magenta" },
+    description:
+      "We all know Valentine's Day as the holiday to celebrate our significant others, but what about the OTHER significant other? (You know, the furry one with a wagging tail and slobbery kisses). It's not unusual these days for pet-owners to consider their fur-baby to be the great love of their life. These adorable  Valentine's deserve to be celebrated this February just like anyone else would! Unlike your human partner, you pet would not appreciate the flowers and boxes of chocolates… so what can you do for your Furry Valentine? Here's 5 ideas to make them feel extra loved this Valentine's Day!",
+    date: "Feb 9th, 2023",
+    datetime: "2023-02-09",
+    imageUrl: "/images/blog/i-chews-you.jpg",
+    readingTime: "3 min",
+    author: {
+      name: "Rachel Bloch",
+      href: "#",
+      imageUrl: "/icon-192x192.png",
+    },
+  },
+  {
     isFeatured: false,
     title: "6 Reasons Why We're Thankful For Our Pets This Thanksgiving Season",
     href: "/blog/six-reasons-we-are-thankful-for-our-pets",
@@ -26,7 +43,7 @@ const posts = [
     },
   },
   {
-    isFeatured: true,
+    isFeatured: false,
     title: "Black Friday Deal - Free Exam w/ Purchase",
     href: "/blog/black-friday-deal-2022",
     category: { name: "Deals", href: "#", color: "bg-movet-green" },

@@ -44,7 +44,7 @@ export const CallToAction = () => {
             {router?.query?.mode !== "app" && (
               <div className="flex flex-col justify-center items-center">
                 <p className="mb-3 font-abside text-sm text-movet-white">
-                  REQUEST AN APPOINTMENT
+                  SCHEDULE AN APPOINTMENT
                 </p>
                 <BookAnAppointmentForm />
                 <div className="flex justify-center">
