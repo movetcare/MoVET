@@ -55,7 +55,7 @@ export default function LocationSelection({
   winterMode: WinterModeType;
 }) {
   const router = useRouter();
-  const { isLoaded } = useGoogleMaps();
+  const { isLoaded, loadError } = useGoogleMaps();
   const { mode, housecallRequest } = router.query || {};
   const isAppMode = mode === "app";
   const isHousecallRequest = Boolean(Number(housecallRequest));
@@ -279,8 +279,8 @@ export default function LocationSelection({
                 message={isLoaded ? loadingMessage : "Loading Please Wait..."}
                 isAppMode={isAppMode}
               />
-            ) : error ? (
-              <Error error={error} isAppMode={isAppMode} />
+            ) : error || loadError ? (
+              <Error error={error || loadError} isAppMode={isAppMode} />
             ) : (
               <>
                 <BookingHeader
