@@ -269,7 +269,7 @@ describe(
       cy.visit(
         `http://localhost:3001/?email=${
           Cypress.env().existingClientWithPaymentEmail
-        }&mode=app&housecallRequest=1`
+        }&mode=app&housecallRequest=1&disableMaps=1`
       );
       cy.get("legend").contains("Your Pet");
       cy.get("label").contains("VCPR REQUIRED TEST CAT");

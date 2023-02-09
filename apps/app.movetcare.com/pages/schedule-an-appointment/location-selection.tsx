@@ -56,9 +56,10 @@ export default function LocationSelection({
 }) {
   const router = useRouter();
   const { isLoaded } = useGoogleMaps();
-  const { mode, housecallRequest } = router.query || {};
+  const { mode, housecallRequest, disableMaps } = router.query || {};
   const isAppMode = mode === "app";
   const isHousecallRequest = Boolean(Number(housecallRequest));
+  const disableMap = Boolean(Number(disableMaps));
   const [loadingMessage, setLoadingMessage] =
     useState<string>("Loading Session...");
   const [session, setSession] = useState<any>();
@@ -276,7 +277,7 @@ export default function LocationSelection({
           <section className="relative mx-auto">
             {isLoading && !isLoaded ? (
               <Loader
-                message={isLoaded ? loadingMessage : "Loading Please Wait..."}
+                message={!isLoaded ? loadingMessage : "Loading Please Wait..."}
                 isAppMode={isAppMode}
               />
             ) : error ? (
@@ -288,7 +289,6 @@ export default function LocationSelection({
                   title="Choose a Location"
                   description={"Where would you like to have your appointment?"}
                 />
-
                 <form className={isHousecallRequest ? "" : "mt-8"}>
                   {!isHousecallRequest && (
                     <>
@@ -314,12 +314,14 @@ export default function LocationSelection({
                     <>
                       <div className="flex rounded-lg border-2 border-movet-brown mt-8 mb-8 p-1">
                         <div className="flex w-full h-72 mx-auto">
-                          <GoogleMap
-                            mapContainerStyle={containerStyle}
-                            options={mapOptions}
-                            center={(addressLatLon as any) || center}
-                            zoom={addressLatLon ? 17 : 8.5}
-                          />
+                          {!disableMap && (
+                            <GoogleMap
+                              mapContainerStyle={containerStyle}
+                              options={mapOptions}
+                              center={(addressLatLon as any) || center}
+                              zoom={addressLatLon ? 17 : 8.5}
+                            />
+                          )}
                         </div>
                       </div>
                       <>
@@ -370,12 +372,14 @@ export default function LocationSelection({
                     <div className="flex flex-col w-full mx-auto">
                       <div className="flex rounded-lg border-2 border-movet-brown m-4 mt-8 p-1">
                         <div className="w-full h-72 mx-auto">
-                          <GoogleMap
-                            mapContainerStyle={containerStyle}
-                            options={mapOptions}
-                            center={center}
-                            zoom={19}
-                          />
+                          {!disableMap && (
+                            <GoogleMap
+                              mapContainerStyle={containerStyle}
+                              options={mapOptions}
+                              center={center}
+                              zoom={19}
+                            />
+                          )}
                         </div>
                       </div>
                       <h2 className="mb-0 mt-8 text-center">
