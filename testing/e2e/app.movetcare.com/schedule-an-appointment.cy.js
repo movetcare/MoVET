@@ -22,13 +22,14 @@ describe(
   () => {
     it("Can schedule an appointment as a new client - VCPR REQUIRED", () => {
       runThroughAppointmentRequestWorkflows({
-       email: `dev+test_client_${Math.floor(
+        email: `dev+test_client_${Math.floor(
           Math.random() * 99999999999
         )}@movetcare.com`,
         firstName: "Test",
-        lastName: "Client",
-        id:null
-        });
+        lastName: "Client (Can be Deleted)",
+        petName: Cypress.env().existingPatientWithVcprName,
+        id: null,
+      });
     });
 
     if (!onlyTestOnePatient)
@@ -36,18 +37,28 @@ describe(
         cy.request(
           "POST",
           "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-          { apiKey: Cypress.env().endpointApiKey, id: 5125 }
+          {
+            apiKey: Cypress.env().endpointApiKey,
+            id: Cypress.env().existingClientNoPaymentId,
+          }
         );
-        runThroughAppointmentRequestWorkflows({ email:
-          Cypress.env().existingClientNoPaymentEmail
-      });
+        runThroughAppointmentRequestWorkflows({
+          email: Cypress.env().existingClientNoPaymentEmail,
+          firstName: "Test",
+          lastName: "Client (Can be Deleted)",
+          petName: Cypress.env().existingPatientWithVcprName,
+          id: Cypress.env().existingClientNoPaymentId,
+        });
       });
 
     it("Can schedule an appointment as an existing client - VCPR NOT REQUIRED", () => {
       cy.request(
         "POST",
         "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: 5592 }
+        {
+          apiKey: Cypress.env().endpointApiKey,
+          id: Cypress.env().existingClientWithPaymentId,
+        }
       );
       cy.visit(
         `http://localhost:3001/?email=${
@@ -60,18 +71,15 @@ describe(
         "eq",
         "/schedule-an-appointment/pet-selection/"
       );
-      cy.get("label").contains("NO VCPR TEST DOG - CYPRESS").click();
-      cy.get("label").contains("VCPR REQUIRED TEST CAT - CYPRESS").click();
+      cy.get("label").contains("NO VCPR TEST DOG").click();
+      cy.get("label").contains("VCPR REQUIRED TEST CAT").click();
       cy.get("p")
         .as("text")
         .contains(
           "Only pets that require an Establish Care Exam may be selected"
         );
-      cy.get("label").contains("VCPR REQUIRED TEST CAT - CYPRESS").click();
-      cy.get("label")
-        .as("label")
-        .contains("NO VCPR TEST CAT - CYPRESS")
-        .click();
+      cy.get("label").contains("VCPR REQUIRED TEST CAT").click();
+      cy.get("label").as("label").contains("NO VCPR TEST CAT").click();
       cy.get("button[type='submit']").click();
       cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
         "eq",
@@ -175,7 +183,10 @@ describe(
       cy.request(
         "POST",
         "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: 5592 }
+        {
+          apiKey: Cypress.env().endpointApiKey,
+          id: Cypress.env().existingClientWithPaymentId,
+        }
       );
       cy.visit(
         `http://localhost:3001/?email=${
@@ -188,17 +199,14 @@ describe(
         "eq",
         "/schedule-an-appointment/pet-selection/"
       );
-      cy.get("label")
-        .as("label")
-        .contains("NO VCPR TEST DOG - CYPRESS")
-        .click();
-      cy.get("@label").contains("VCPR REQUIRED TEST CAT - CYPRESS").click();
+      cy.get("label").as("label").contains("NO VCPR TEST DOG").click();
+      cy.get("@label").contains("VCPR REQUIRED TEST CAT").click();
       cy.get("p")
         .as("text")
         .contains(
           "Only pets that require an Establish Care Exam may be selected"
         );
-      cy.get("@label").contains("NO VCPR TEST DOG - CYPRESS").click();
+      cy.get("@label").contains("NO VCPR TEST DOG").click();
       cy.get("button[type='submit']").click();
       cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
         "eq",
@@ -253,15 +261,18 @@ describe(
       cy.request(
         "POST",
         "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: 5592 }
+        {
+          apiKey: Cypress.env().endpointApiKey,
+          id: Cypress.env().existingClientWithPaymentId,
+        }
       );
       cy.visit(
         `http://localhost:3001/?email=${
           Cypress.env().existingClientWithPaymentEmail
         }&mode=app&housecallRequest=1`
       );
-      cy.get("legend").contains("Your Pets");
-      cy.get("label").contains("VCPR REQUIRED TEST CAT - CYPRESS").click();
+      cy.get("legend").contains("Your Pet");
+      cy.get("label").contains("VCPR REQUIRED TEST CAT");
       cy.get("button[type='submit']").as("submit").click();
       cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
         "eq",

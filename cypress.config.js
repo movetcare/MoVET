@@ -16,12 +16,12 @@ module.exports = defineConfig({
     existingClientWithPaymentId: 5768,
     existingClientWithPaymentFirstName: "(Has Payment) Fake Client - ",
     existingClientWithPaymentLastName: "DO NOT DELETE",
-    existingPatientWithNoVcprName:"NO VCPR TEST DOG",
-    existingPatientWithVcprName: "VCPR REQUIRED TEST DOG"
+    existingPatientWithNoVcprName: "NO VCPR TEST DOG",
+    existingPatientWithVcprName: "VCPR REQUIRED TEST DOG",
   },
   retries: {
-    runMode: 3,
-    openMode: 2,
+    runMode: 2,
+    openMode: 0,
   },
   defaultCommandTimeout: 10000,
   redirectionLimit: 3,

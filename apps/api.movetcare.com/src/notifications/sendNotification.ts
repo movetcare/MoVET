@@ -93,12 +93,17 @@ export const sendNotification = async ({
       if (DEBUG) console.log("emailConfig =>", emailConfig);
       const sendEmailNotification = () => {
         if (
-          (environment.type !== "production" &&
-            emailConfig?.to?.toLowerCase().includes("+test")) ||
-          emailConfig?.to?.toLowerCase().includes("+cypress")
+          environment.type !== "production" ||
+          emailConfig?.to?.toLowerCase().includes("+test")
         )
           sendSlackMessageToChannel(
-            `:e-mail: System Email NOT Sent:\n\nTO: ${emailConfig.to}\n\nFROM: ${emailConfig.from}\n\nSUBJECT: ${emailConfig.subject}`
+            `:e-mail: ${environment.type} Environment Email NOT Sent to ${
+              emailConfig?.to?.toLowerCase()?.includes("+test")
+                ? "TEST Client"
+                : "Client"
+            }:\n\nTO: ${emailConfig.to}\n\nFROM: ${
+              emailConfig.from
+            }\n\nSUBJECT: ${emailConfig.subject}`
           );
         else
           emailClient
@@ -159,7 +164,8 @@ export const sendNotification = async ({
         if (
           userNotificationSettings &&
           userNotificationSettings?.sendEmail &&
-          environment?.type === "production"
+          environment?.type === "production" &&
+          !emailConfig?.to?.toLowerCase()?.includes("+test")
         ) {
           sendEmailNotification();
         } else if (DEBUG)

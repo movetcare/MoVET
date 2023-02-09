@@ -26,6 +26,7 @@ export const processDateTime = async (
         return await handleFailedBooking(error, "GET BOOKING DATA FAILED");
       });
     const customer: string = await getCustomerId(session?.client?.uid);
+    if (DEBUG) console.log("customer", customer);
     const validFormOfPayment = await verifyValidPaymentSource(
       session?.client?.uid,
       customer

@@ -1,29 +1,24 @@
 import {
   faUsersBetweenLines,
-  faTrashCan,
   faTrash,
   faEnvelope,
   faUserCircle,
   faPhone,
   faCreditCard,
-  faCircleExclamation,
   faIdCard,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { collection } from "firebase/firestore";
-
-import { firestore, functions } from "services/firebase";
+import { firestore } from "services/firebase";
 import environment from "utils/environment";
-import Button from "components/Button";
 import "react-tooltip/dist/react-tooltip.css";
 import { Loader } from "ui";
 import { useCollection } from "react-firebase-hooks/firestore";
 import Error from "../../components/Error";
-import { httpsCallable } from "firebase/functions";
-import router from "next/router";
-import toast from "react-hot-toast";
 import { GOTO_PHONE_URL } from "constants/urls";
+import { Tooltip } from "react-tooltip";
+
 interface TestClient {
   id: string;
   label: string;
@@ -35,7 +30,6 @@ interface TestClient {
 }
 
 const Testing = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [testClients, setTestClients] = useState<Array<TestClient> | null>(
     null
   );
@@ -50,7 +44,11 @@ const Testing = () => {
       const clients: Array<TestClient> = [];
       clientData.docs.map((client: any) => {
         const { firstName, lastName, email, phone, customer } = client.data();
-        if (client.data()?.email.includes("+test"))
+        if (
+          email.includes("+test") &&
+          email !== "dev+test@movetcare.com" &&
+          email !== "dev+test_vcpr_not_required@movetcare.com"
+        )
           clients.push({
             id: client.id,
             label: `${firstName} ${lastName}`,
@@ -65,97 +63,25 @@ const Testing = () => {
     }
   }, [clientData]);
 
-  const deleteMoVetAccounts = async (id: string) => {
-    setIsLoading(true);
-    if (id === "all") {
-      console.log("delete all");
-    } else if (id) {
-      toast(`DELETING TEST CLIENT #${id}...`, {
-        position: "top-center",
-        duration: 3000,
-        icon: (
-          <FontAwesomeIcon
-            icon={faTrash}
-            size="lg"
-            className="text-movet-yellow"
-          />
-        ),
-      });
-      const deleteAccount = httpsCallable(functions, "deleteAccount");
-      deleteAccount({
-        id: id,
-      })
-        .then((result: any) => {
-          if (result.data) {
-            toast(`TEST CLIENT #${id} HAS BEEN DELETED!`, {
-              position: "top-center",
-              duration: 5000,
-              icon: (
-                <FontAwesomeIcon
-                  icon={faTrash}
-                  size="lg"
-                  className="text-movet-green"
-                />
-              ),
-            });
-            router.push("/dashboard");
-          } else
-            toast("SOMETHING WENT WRONG!", {
-              position: "top-center",
-              duration: 5000,
-              icon: (
-                <FontAwesomeIcon
-                  icon={faCircleExclamation}
-                  className="text-movet-red"
-                />
-              ),
-            });
-        })
-        .catch((error: any) =>
-          toast(error?.message, {
-            position: "top-center",
-            duration: 5000,
-            icon: (
-              <FontAwesomeIcon
-                icon={faCircleExclamation}
-                className="text-movet-red"
-              />
-            ),
-          })
-        )
-        .finally(() => setIsLoading(false));
-    }
-  };
-
   return (
     <>
       {(environment === "development" || environment === "production") && (
         <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between mt-1 px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center mt-1 px-8">
             <div className="flex flex-row items-center">
               <FontAwesomeIcon
                 icon={faUsersBetweenLines}
                 className={"text-movet-red"}
                 size="lg"
               />
-              <h1 className="ml-2 my-4 text-lg">
-                Test Accounts - Safe for Deletion
-              </h1>
+              <h1 className="ml-2 my-4 text-lg">Test Accounts</h1>
             </div>
-            {testClients && testClients?.length > 0 && (
-              <Button
-                onClick={() => deleteMoVetAccounts("all")}
-                text="Delete ALL Test Data"
-                color="red"
-                icon={faTrashCan}
-              />
-            )}
           </div>
           <ul
             role="list"
             className="divide-y divide-movet-gray border-t border-movet-gray mt-2"
           >
-            {isLoading || loading ? (
+            {loading ? (
               <li>
                 <Loader
                   message={
@@ -183,8 +109,9 @@ const Testing = () => {
                 <li className="px-8 p-4 flex flex-col sm:flex-row" key={index}>
                   {testClient?.id && (
                     <h2 className="my-2 sm:my-0 w-full text-center sm:w-1/2 flex items-center justify-center">
+                      <Tooltip anchorId="openInProVet" />
                       <a
-                        id="viewInProvet"
+                        id="openInProVet"
                         data-tooltip-content="View Client in Provet"
                         title="View Client in Provet"
                         href={
@@ -196,13 +123,14 @@ const Testing = () => {
                         className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"
                         rel="noreferrer"
                       >
-                        <FontAwesomeIcon icon={faIdCard} size="lg" />
+                        <FontAwesomeIcon icon={faIdCard} />
                       </a>
                       {testClient?.id}
                     </h2>
                   )}
                   {testClient?.email && (
-                    <h2 className="my-2 sm:my-0 w-full text-center sm:w-1/2 flex items-center justify-center">
+                    <h3 className="my-2 sm:my-0 w-full text-center sm:w-1/2 flex items-center justify-center">
+                      <Tooltip anchorId="sendEmail" />
                       <a
                         id="sendEmail"
                         data-tooltip-content="Email Client"
@@ -215,10 +143,11 @@ const Testing = () => {
                         <FontAwesomeIcon icon={faEnvelope} />
                       </a>
                       {testClient?.email}
-                    </h2>
+                    </h3>
                   )}
                   {(testClient?.firstName || testClient?.lastName) && (
                     <div className="w-full flex flex-row items-center justify-center sm:w-4/5">
+                      <Tooltip anchorId="viewInProvet" />
                       <a
                         id="viewInProvet"
                         data-tooltip-content="View Client in Provet"
@@ -232,7 +161,7 @@ const Testing = () => {
                         className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"
                         rel="noreferrer"
                       >
-                        <FontAwesomeIcon icon={faUserCircle} size="lg" />
+                        <FontAwesomeIcon icon={faUserCircle} />
                       </a>
                       <p>{testClient?.firstName}</p>
                       <p className="ml-1">{testClient?.lastName}</p>
@@ -240,6 +169,7 @@ const Testing = () => {
                   )}
                   {testClient?.phone && (
                     <div className="w-full flex flex-row items-center justify-center sm:w-4/5">
+                      <Tooltip anchorId="callPhone" />
                       <a
                         data-tooltip-content="Call Client"
                         title="Call Client"
@@ -256,6 +186,7 @@ const Testing = () => {
                   )}
                   {testClient?.customer && (
                     <div className="w-full flex flex-row items-center justify-center sm:w-4/5">
+                      <Tooltip anchorId="viewInStripe" />
                       <a
                         id="viewInStripe"
                         data-tooltip-content="View Customer in Stripe"
@@ -275,15 +206,22 @@ const Testing = () => {
                     </div>
                   )}
                   <div className="w-full flex flex-row justify-end -mt-10 sm:mt-0">
-                    <div
+                    <a
+                      href={
+                        environment === "production"
+                          ? `https://us.provetcloud.com/4285/client/${testClient?.id}/forget`
+                          : `https://us.provetcloud.com/4285/client/${testClient?.id}/forget`
+                      }
+                      target="_blank"
+                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"
+                      rel="noreferrer"
                       id="deleteClient"
                       data-tooltip-content="Delete Client"
                       title="Delete Client"
-                      onClick={() => deleteMoVetAccounts(testClient?.id)}
-                      className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                     >
-                      <FontAwesomeIcon icon={faTrash} size="lg" />
-                    </div>
+                      <Tooltip anchorId="deleteClient" />
+                      <FontAwesomeIcon icon={faTrash} />
+                    </a>
                   </div>
                 </li>
               ))

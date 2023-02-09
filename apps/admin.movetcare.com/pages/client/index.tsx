@@ -46,7 +46,7 @@ const Client = () => {
   const router = useRouter();
   const { query } = router;
   const [errors, setErrors] = useState<Array<string> | null>(null);
-  const [client, setClient] = useState<any>();
+  const [client, setClient] = useState<any>(null);
   const [isMounted, setIsMounted] = useState(false);
   const cancelButtonRef = useRef(null);
   const [showDeleteClientModal, setShowDeleteClientModal] =
@@ -400,8 +400,8 @@ const Client = () => {
         <div
           className={`flex flex-col justify-between bg-white shadow overflow-hidden rounded-lg text-movet-black w-full`}
         >
-          {isLoading ? (
-            <Loader />
+          {isLoading || client === null ? (
+            <Loader message="Loading Client Account..." />
           ) : errorClient ? (
             <Error error={errorClient} />
           ) : (
@@ -614,15 +614,26 @@ const Client = () => {
                     <FontAwesomeIcon icon={faFire} size="lg" />
                   </a>
                   {isMounted && <Tooltip anchorId="deleteClient" />}
-                  <div
-                    id="deleteClient"
-                    data-tooltip-content="Delete Client"
-                    title="Delete Client"
-                    onClick={() => setShowDeleteClientModal(true)}
-                    className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                  >
-                    <FontAwesomeIcon icon={faTrash} size="lg" />
-                  </div>
+                  {client?.email !== "dev+test@movetcare.com" &&
+                    client?.email !==
+                      "dev+test_vcpr_not_required@movetcare.com" && (
+                      <div
+                        id="deleteClient"
+                        data-tooltip-content="Delete Client"
+                        title="Delete Client"
+                        onClick={() =>
+                          client?.email.includes("+test")
+                            ? window.open(
+                                `https://us.provetcloud.com/4285/client/${query?.id}/forget`,
+                                "_blank"
+                              )
+                            : setShowDeleteClientModal(true)
+                        }
+                        className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      >
+                        <FontAwesomeIcon icon={faTrash} size="lg" />
+                      </div>
+                    )}
                   {isMounted && <Tooltip anchorId="reloadData" />}
                   <div
                     id="reloadData"
