@@ -105,60 +105,63 @@ export const deleteAllAccountData = async (
     const proVetClient = await fetchEntity("client", Number(uid));
     clientIds = proVetClient;
     if (DEBUG) console.log("proVetClient", proVetClient);
+    if (proVetClient) {
+      const proVetPatientIds: Array<number> = [];
+      if (proVetClient?.patients?.length > 0)
+        proVetClient?.patients.map((patient: string) =>
+          proVetPatientIds.push(getProVetIdFromUrl(patient) as number)
+        );
 
-    const proVetPatientIds: Array<number> = [];
-    if (proVetClient?.patients?.length > 0)
-      proVetClient?.patients.map((patient: string) =>
-        proVetPatientIds.push(getProVetIdFromUrl(patient) as number)
-      );
+      patientIds = proVetPatientIds;
+      if (DEBUG) console.log("proVetPatientIds", proVetPatientIds);
 
-    patientIds = proVetPatientIds;
-    if (DEBUG) console.log("proVetPatientIds", proVetPatientIds);
+      let proVetAppointmentIds: Array<number> = [];
 
-    let proVetAppointmentIds: Array<number> = [];
-
-    if (DEBUG)
-      console.log(
-        "QUERY STRING =>",
-        `?client__eq=${uid}&active=1
+      if (DEBUG)
+        console.log(
+          "QUERY STRING =>",
+          `?client__eq=${uid}&active=1
           &start__gte=${new Date().toISOString().split("T")[0]}%2000:00%2B00:00`
+        );
+      const appointments = await fetchEntity(
+        "appointment",
+        null,
+        `?client__eq=${uid}&active=1&start__gte=${
+          new Date().toISOString().split("T")[0]
+        }%2000:00%2B00:00`
       );
-    const appointments = await fetchEntity(
-      "appointment",
-      null,
-      `?client__eq=${uid}&active=1&start__gte=${
-        new Date().toISOString().split("T")[0]
-      }%2000:00%2B00:00`
-    );
-    if (appointments.length > 0)
-      proVetAppointmentIds = appointments.map(
-        (appointment: any) => appointment?.id
-      );
+      if (appointments.length > 0)
+        proVetAppointmentIds = appointments.map(
+          (appointment: any) => appointment?.id
+        );
 
-    appointmentIds = proVetAppointmentIds;
-    if (proVetAppointmentIds.length) {
-      if (DEBUG) console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
-      await Promise.all(
-        proVetAppointmentIds.map(
-          async (id: number) => await updateProVetAppointment({ id, active: 0 })
-        )
-      );
-    } else if (DEBUG)
-      console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
+      appointmentIds = proVetAppointmentIds;
+      if (proVetAppointmentIds.length) {
+        if (DEBUG)
+          console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
+        await Promise.all(
+          proVetAppointmentIds.map(
+            async (id: number) =>
+              await updateProVetAppointment({ id, active: 0 })
+          )
+        );
+      } else if (DEBUG)
+        console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
 
-    if (proVetPatientIds.length > 0) {
-      if (DEBUG) console.log("ARCHIVING PATIENTS: ", proVetPatientIds);
-      await Promise.all(
-        proVetPatientIds.map(
-          async (id: number) =>
-            await updateProVetPatient({ id: `${id}`, archived: true })
-        )
-      );
-    } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
+      if (proVetPatientIds.length > 0) {
+        if (DEBUG) console.log("ARCHIVING PATIENTS: ", proVetPatientIds);
+        await Promise.all(
+          proVetPatientIds.map(
+            async (id: number) =>
+              await updateProVetPatient({ id: `${id}`, archived: true })
+          )
+        );
+      } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
 
-    await updateProVetClient({ id: uid, archived: true }).catch(
-      (error: any) => DEBUG && console.log(error)
-    );
+      await updateProVetClient({ id: uid, archived: true }).catch(
+        (error: any) => DEBUG && console.log(error)
+      );
+    }
   }
   const customerId = await getCustomerId(uid, true);
 
