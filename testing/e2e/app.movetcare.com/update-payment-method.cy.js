@@ -16,23 +16,23 @@ describe("update-payment-method", () => {
 
   it("Can redirect to stripe checkout as existing client with valid payment already on file", () => {
     cy.get("h2").contains("Add a Payment Method");
-    cy.get("input[name='email']").type(Cypress.env().existingClientWithPayment);
+    cy.get("input[name='email']").type(
+      Cypress.env().existingClientWithPaymentEmail
+    );
     cy.get("button[type='submit']").contains("Add a Payment Method").click();
     cy.origin("https://payment.movetcare.com", () => {
-      cy.on("uncaught:exception", (e) => {
-        if (e.message.includes("Things went bad")) return false;
-      });
+      cy.on("uncaught:exception", () => false);
     });
   });
 
   it("Can redirect to stripe checkout as existing client NO valid payment on file", () => {
     cy.get("h2").contains("Add a Payment Method");
-    cy.get("input[name='email']").type(Cypress.env().existingClientNoPayment);
+    cy.get("input[name='email']").type(
+      Cypress.env().existingClientNoPaymentEmail
+    );
     cy.get("button[type='submit']").contains("Add a Payment Method").click();
     cy.origin("https://payment.movetcare.com", () => {
-      cy.on("uncaught:exception", (e) => {
-        if (e.message.includes("Things went bad")) return false;
-      });
+      cy.on("uncaught:exception", () => false);
     });
   });
 

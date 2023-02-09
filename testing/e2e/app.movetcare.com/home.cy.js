@@ -13,7 +13,7 @@ describe("home-page-loads", () => {
       .as("errorMessage")
       .contains("Email must be a valid email address");
     cy.get("@email").clear();
-    cy.get("@email").type(Cypress.env().existingClientNoPayment);
+    cy.get("@email").type(Cypress.env().existingClientNoPaymentEmail);
     cy.get("@submit").click();
   });
 
