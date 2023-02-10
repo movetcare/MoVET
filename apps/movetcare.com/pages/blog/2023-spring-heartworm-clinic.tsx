@@ -57,13 +57,13 @@ export default function IChooseYou() {
             )
           }
         />
-        <h2 className="text-3xl mt-8 mb-4 text-center">
+        <h2 className="text-3xl mt-8 mb-2 text-center">
           Spring Heartworm Clinic
         </h2>
         <p className="text-xl text-extrabold">
           Our 1st Annual Spring Heartworm Clinic is now open for bookings!
         </p>
-        <p className="text-lg -mt-1">
+        <p className="text-lg mt-2">
           Did you know{" "}
           <a
             href="https://www.zoetispetcare.com/products/proheart"

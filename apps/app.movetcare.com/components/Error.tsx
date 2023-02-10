@@ -34,7 +34,7 @@ export const Error = ({ error }: any) => {
         } else {
           localStorage.removeItem("email");
           localStorage.removeItem("bookingSession");
-          router.replace("/schedule-an-appointment");
+          router.push("/schedule-an-appointment");
         }
       })
       .catch((error) => handleError(error))
