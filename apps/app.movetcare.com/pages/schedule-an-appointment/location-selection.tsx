@@ -337,7 +337,6 @@ export default function LocationSelection({
                               ? " border-movet-red border-2"
                               : null
                           }
-                          types={["street_address", "street_number"]}
                         />
                         {hasAddressError && (
                           <div className="mb-8">
@@ -369,11 +368,13 @@ export default function LocationSelection({
                     <div className="flex flex-col w-full mx-auto">
                       <div className="flex rounded-lg border-2 border-movet-brown m-4 mt-8 p-1">
                         <div className="w-full h-72 mx-auto">
-                          <GoogleMap
-                            mapContainerStyle={containerStyle}
-                            options={mapOptions}
-                            center={center}
-                            zoom={19}
+                          <iframe
+                            title="Google Map of MoVET @ Belleview Station"
+                            loading="lazy"
+                            allowFullScreen
+                            referrerPolicy="no-referrer-when-downgrade"
+                            src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
+                            className="w-full h-72 rounded-lg"
                           />
                         </div>
                       </div>

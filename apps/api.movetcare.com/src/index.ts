@@ -16,7 +16,7 @@ export { handleContactSubmission } from "./triggers/handleContactSubmission";
 export { handleAnnouncementBannerUpdate } from "./triggers/handleAnnouncementBannerUpdate";
 export { handleWinterModeUpdate } from "./triggers/handleWinterModeUpdate";
 
-export { sendgridWebhook } from "./endpoints/webhooks/sendgridWebhook";
+// export { sendgridWebhook } from "./endpoints/webhooks/sendgridWebhook";
 export { incomingWebhook } from "./endpoints/webhooks/incomingWebhook";
 
 export { createClient } from "./endpoints/mobile/client/createClient";

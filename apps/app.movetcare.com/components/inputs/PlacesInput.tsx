@@ -14,7 +14,7 @@ export const PlacesInput = ({
   setLatLon = null,
   setExternalZipcodeValidation = null,
   label,
-  types,
+  types = null,
   className = null,
   defaultValue = null,
   setValue = null,
@@ -25,7 +25,7 @@ export const PlacesInput = ({
   required: boolean;
   label?: string;
   placeholder?: string;
-  types?: Array<"veterinary_care" | "street_address" | "street_number">;
+  types?: Array<"veterinary_care" | "street_address" | "street_number"> | null;
   setLatLon?: null | any;
   setExternalZipcodeValidation?: null | any;
   className?: string | null;
