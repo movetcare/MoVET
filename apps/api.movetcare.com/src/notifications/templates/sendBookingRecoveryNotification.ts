@@ -196,7 +196,7 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
     if (client?.firstName) emailHtml += `<p>Hey ${client?.firstName}!</p>`;
     else emailHtml += "<p>Hey there!</p>";
 
-    emailHtml += `<p>It looks like you were in the process of submitting an appointment booking request with MoVET.</p><p><b>Click the link bellow to resume your session:</b></p><p><a href='${
+    emailHtml += `<p>It looks like you were in the process of submitting an appointment booking request with MoVET.</p><p><b>Click the link below to resume your session:</b></p><p><a href='${
       // authLink
       //   ? authLink
       //   :
@@ -261,7 +261,7 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
     if (client?.firstName) emailHtml += `<p>Hey ${client?.firstName}!</p>`;
     else emailHtml += "<p>Hey there!</p>";
 
-    emailHtml += `<p>It looks like you didn't finish booking your appointment with MoVET yesterday.</p><p><b>Click on the link bellow to resume your session:</b></p><p><a href='${
+    emailHtml += `<p>It looks like you didn't finish booking your appointment with MoVET yesterday.</p><p><b>Click on the link below to resume your session:</b></p><p><a href='${
       // authLink
       //   ? authLink
       //   :
@@ -323,7 +323,7 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
     let smsMessage = "";
     if (client?.firstName) smsMessage += `Hey ${client?.firstName}!\n\n`;
     else smsMessage += "Hey there!\n\n";
-    smsMessage += `It looks like you haven't finished your appointment booking request with MoVET from three days ago.\n\nTap the link bellow to resume your session:\n\n${
+    smsMessage += `It looks like you haven't finished your appointment booking request with MoVET from three days ago.\n\nTap the link below to resume your session:\n\n${
       // authLink
       //   ? authLink
       //   :

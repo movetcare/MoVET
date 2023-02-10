@@ -138,7 +138,7 @@ const createClientMessage = ({
 
     const message = `<p>Hi ${
       client?.firstName
-    },</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request bellow and let us know (by replying to this email) if anything needs to be changed.</p><p><b>---------- CONTACT INFO -----------</b></p>${
+    },</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request below and let us know (by replying to this email) if anything needs to be changed.</p><p><b>---------- CONTACT INFO -----------</b></p>${
       displayName ? `<p><b>Name:</b> ${displayName}</p>` : ""
     }<p><b>Email:</b> ${email}</p>${
       phone

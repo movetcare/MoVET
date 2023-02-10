@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
-import { UserContext } from 'contexts/UserContext';
-import Error from './Error';
-import { auth } from 'services/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "contexts/UserContext";
+import Error from "./Error";
+import { auth } from "services/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/router";
 
 const AdminCheck = (props: any) => {
   const { user } = useContext(UserContext);
@@ -11,7 +11,7 @@ const AdminCheck = (props: any) => {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const claimsString = (user as any)?.reloadUserInfo?.customAttributes;
         if (claimsString) {
@@ -28,10 +28,10 @@ const AdminCheck = (props: any) => {
     : props.fallback || (
         <Error
           error={{
-            status: '401',
-            name: 'PERMISSION DENIED',
+            status: "401",
+            name: "PERMISSION DENIED",
             message:
-              'You do not have permission to view this page. Please contact support via the form bellow if you believe this is an error.',
+              "You do not have permission to view this page. Please contact support via the form below if you believe this is an error.",
           }}
         />
       );

@@ -83,7 +83,7 @@ export default function IChooseYou() {
             rel="noreferrer"
           >
             ProHeart12
-          </a>
+          </a>{" "}
           injection between March 20th and June 21st.
         </p>
         <h2 className="text-lg mt-4">
