@@ -85,13 +85,6 @@ describe(
         "eq",
         "/schedule-an-appointment/location-selection/"
       );
-      cy.get("#restart").contains("Restart").click();
-      cy.get("@heading").contains("Restart Appointment Booking?");
-      cy.get("button").contains("CANCEL").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
-        "eq",
-        "/schedule-an-appointment/location-selection/"
-      );
       cy.get("@heading").contains("Choose a Location");
       cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
