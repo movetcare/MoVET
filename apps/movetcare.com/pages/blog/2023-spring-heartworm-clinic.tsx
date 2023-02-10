@@ -13,7 +13,11 @@ export default function IChooseYou() {
           content="Our 1st Annual Spring Heartworm Clinic is now open for bookings!"
         />
         <meta property="og:type" content="website" />
-        <meta name="og:title" property="og:title" content="I Chews You" />
+        <meta
+          name="og:title"
+          property="og:title"
+          content="MoVET's 1st Annual Spring Heartworm Clinic"
+        />
         <meta
           name="og:description"
           property="og:description"
@@ -21,7 +25,10 @@ export default function IChooseYou() {
         />
         <meta property="og:site_name" content="MoVET" />
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content="I Chews You" />
+        <meta
+          name="twitter:title"
+          content="MoVET's 1st Annual Spring Heartworm Clinic"
+        />
         <meta
           name="twitter:description"
           content="Our 1st Annual Spring Heartworm Clinic is now open for bookings!"
