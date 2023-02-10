@@ -63,8 +63,28 @@ export default function IChooseYou() {
         <p className="text-xl text-extrabold">
           Our 1st Annual Spring Heartworm Clinic is now open for bookings!
         </p>
-        <p className="italic text-lg -mt-1 mb-4">
-          Did you know ProHeart12 lasts for 12 months! No more monthly tablets.
+        <p className="text-lg -mt-1">
+          Did you know{" "}
+          <a
+            href="https://www.zoetispetcare.com/products/proheart"
+            target="_blank"
+            rel="noreferrer"
+          >
+            ProHeart12
+          </a>{" "}
+          lasts for 12 months! No more monthly tablets.
+        </p>
+        <p className="italic text-lg mb-4">
+          Receive <span className="font-extrabold">$10 off</span> when you book
+          a Heartworm Test with a{" "}
+          <a
+            href="https://www.zoetispetcare.com/products/proheart"
+            target="_blank"
+            rel="noreferrer"
+          >
+            ProHeart12
+          </a>
+          injection between March 20th and June 21st.
         </p>
         <h2 className="text-lg mt-4">
           DON&apos;T FALL BEHIND ON YOUR HEARTWORM PREVENTION

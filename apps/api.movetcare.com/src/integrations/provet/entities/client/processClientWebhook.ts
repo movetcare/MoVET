@@ -3,7 +3,7 @@ import { saveClient } from "./saveClient";
 import { fetchEntity } from "../fetchEntity";
 import { sendNotification } from "../../../../notifications/sendNotification";
 import { Request, Response } from "express";
-//import { deleteAllAccountData } from "../../../../utils/deleteAllAccountData";
+import { deleteAllAccountData } from "../../../../utils/deleteAllAccountData";
 
 export const processClientWebhook = async (
   request: Request,
@@ -23,16 +23,10 @@ export const processClientWebhook = async (
       await sendNotification({
         type: "slack",
         payload: {
-          message: `:red_circle: Client #${id} is not found in ProVet!\n\n${request.headers} ${request.body}`,
+          message: `:red_circle: Client #${id} has been DELETED in ProVet - Proceeding to DELETE ALL MoVET Account Data! https://admin.movetcare.com/client?id=${id}`,
         },
       });
-      // sendNotification({
-      //   type: "slack",
-      //   payload: {
-      //     message: `:red_circle: Client #${id} has been DELETED in ProVet - Proceeding to DELETE ALL MoVET Account Data!`,
-      //   },
-      // });
-      //deleteAllAccountData(id);
+      await deleteAllAccountData(id);
       return response.status(200).send({ received: true });
     }
   } catch (error: any) {
