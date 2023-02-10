@@ -42,5 +42,6 @@ module.exports = defineConfig({
     specPattern: "testing/component/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "testing/support/e2e.{js,jsx,ts,tsx}",
   },
+  modifyObstructiveCode: true,
   experimentalModifyObstructiveThirdPartyCode: true,
 });

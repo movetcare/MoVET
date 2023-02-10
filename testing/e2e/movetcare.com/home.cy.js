@@ -10,7 +10,7 @@ describe("home-page-loads", () => {
     cy.get("main section p span")
       .first()
       .contains("A stress-free way to take care of your vet appointments.");
-    cy.get("main section div p").contains("REQUEST AN APPOINTMENT");
+    cy.get("main section div p").contains("SCHEDULE AN APPOINTMENT");
     cy.get("main section div form input").should("be.visible");
     cy.get("main section div .ios-app-link").should("be.visible");
     cy.get("main section div .android-app-link").should("be.visible");
