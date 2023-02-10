@@ -60,3 +60,4 @@ export { deleteAccount } from "./endpoints/admin/accounts/deleteAccount";
 export { event } from "./endpoints/admin/event";
 export { reportABugInternal } from "./endpoints/admin/reports/reportABugInternal";
 export { resyncProVetUsers } from "./endpoints/admin/users/resyncProVetUsers";
+export { resyncReasons } from "./endpoints/reasons/resyncReasons";

@@ -24,7 +24,7 @@ export const deleteAllAccountData = async (
     );
     if (DEBUG)
       console.log(
-        "QUERY STRING =>`)",
+        "deleteMoVETAccount => QUERY STRING =>`)",
         encodeURI(`?email__is=${email}&archived__is=0`)
       );
 
@@ -33,8 +33,11 @@ export const deleteAllAccountData = async (
     );
     clientIds = proVetClientIds;
     if (DEBUG) {
-      console.log("matchingProVetClients", matchingProVetClients);
-      console.log("proVetClientIds", proVetClientIds);
+      console.log(
+        "deleteMoVETAccount => matchingProVetClients",
+        matchingProVetClients
+      );
+      console.log("deleteMoVETAccount => proVetClientIds", proVetClientIds);
     }
     if (proVetClientIds) {
       const proVetPatientIds: Array<number> = [];
@@ -46,7 +49,8 @@ export const deleteAllAccountData = async (
           )
       );
       patientIds = proVetPatientIds;
-      if (DEBUG) console.log("proVetPatientIds", proVetPatientIds);
+      if (DEBUG)
+        console.log("deleteMoVETAccount => proVetPatientIds", proVetPatientIds);
 
       let proVetAppointmentIds: Array<number> = [];
 
@@ -74,7 +78,10 @@ export const deleteAllAccountData = async (
       appointmentIds = proVetAppointmentIds;
       if (proVetAppointmentIds.length) {
         if (DEBUG)
-          console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
+          console.log(
+            "deleteMoVETAccount => ARCHIVING APPOINTMENTS: ",
+            proVetAppointmentIds
+          );
         await Promise.all(
           proVetAppointmentIds.map(
             async (id: number) =>
@@ -82,32 +89,48 @@ export const deleteAllAccountData = async (
           )
         );
       } else if (DEBUG)
-        console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
+        console.log(
+          "deleteMoVETAccount => NO FUTURE APPOINTMENTS FOUND",
+          proVetAppointmentIds
+        );
 
       if (proVetPatientIds.length) {
-        if (DEBUG) console.log("ARCHIVING PATIENTS: ", proVetPatientIds);
+        if (DEBUG)
+          console.log(
+            "deleteMoVETAccount => ARCHIVING PATIENTS: ",
+            proVetPatientIds
+          );
         await Promise.all(
           proVetPatientIds.map(
             async (id: number) =>
               await updateProVetPatient({ id: `${id}`, archived: true })
           )
         );
-      } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
+      } else if (DEBUG)
+        console.log(
+          "deleteMoVETAccount => NO PATIENTS FOUND",
+          proVetPatientIds
+        );
 
       if (proVetClientIds.length) {
-        if (DEBUG) console.log("ARCHIVING CLIENTS: ", proVetClientIds);
+        if (DEBUG)
+          console.log(
+            "deleteMoVETAccount => ARCHIVING CLIENTS: ",
+            proVetClientIds
+          );
         await Promise.all(
           proVetClientIds.map(
             async (id: number) =>
               await updateProVetClient({ id: id, archived: true })
           )
         );
-      } else if (DEBUG) console.log("NO CLIENTS FOUND", proVetPatientIds);
+      } else if (DEBUG)
+        console.log("deleteMoVETAccount => NO CLIENTS FOUND", proVetPatientIds);
     }
   } else {
     const proVetClient = await fetchEntity("client", Number(uid));
     clientIds = proVetClient;
-    if (DEBUG) console.log("proVetClient", proVetClient);
+    if (DEBUG) console.log("deleteMoVETAccount => proVetClient", proVetClient);
     if (proVetClient) {
       const proVetPatientIds: Array<number> = [];
       if (proVetClient?.patients?.length > 0)
@@ -116,7 +139,8 @@ export const deleteAllAccountData = async (
         );
 
       patientIds = proVetPatientIds;
-      if (DEBUG) console.log("proVetPatientIds", proVetPatientIds);
+      if (DEBUG)
+        console.log("deleteMoVETAccount => proVetPatientIds", proVetPatientIds);
 
       let proVetAppointmentIds: Array<number> = [];
 
@@ -141,7 +165,10 @@ export const deleteAllAccountData = async (
       appointmentIds = proVetAppointmentIds;
       if (proVetAppointmentIds.length) {
         if (DEBUG)
-          console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
+          console.log(
+            "deleteMoVETAccount => ARCHIVING APPOINTMENTS: ",
+            proVetAppointmentIds
+          );
         await Promise.all(
           proVetAppointmentIds.map(
             async (id: number) =>
@@ -149,32 +176,45 @@ export const deleteAllAccountData = async (
           )
         );
       } else if (DEBUG)
-        console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
+        console.log(
+          "deleteMoVETAccount => NO FUTURE APPOINTMENTS FOUND",
+          proVetAppointmentIds
+        );
 
       if (proVetPatientIds.length > 0) {
-        if (DEBUG) console.log("ARCHIVING PATIENTS: ", proVetPatientIds);
+        if (DEBUG)
+          console.log(
+            "deleteMoVETAccount => ARCHIVING PATIENTS: ",
+            proVetPatientIds
+          );
         await Promise.all(
           proVetPatientIds.map(
             async (id: number) =>
               await updateProVetPatient({ id: `${id}`, archived: true })
           )
         );
-      } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
+      } else if (DEBUG)
+        console.log(
+          "deleteMoVETAccount => NO PATIENTS FOUND",
+          proVetPatientIds
+        );
 
-      await updateProVetClient({ id: uid, archived: true }).catch(
-        (error: any) => DEBUG && console.log(error)
-      );
+      // await updateProVetClient({ id: uid, archived: true }).catch(
+      //   (error: any) => DEBUG && console.log(error)
+      // );
     }
   }
   const customerId = await getCustomerId(uid, true);
 
-  if (DEBUG) console.log("customerId", customerId);
+  if (DEBUG) console.log("deleteMoVETAccount => customerId", customerId);
 
   if (customerId)
     stripe.customers
       .del(customerId)
       .then(
-        (result) => DEBUG && console.log("STRIPE CUSTOMER DELETED: ", result)
+        (result) =>
+          DEBUG &&
+          console.log("deleteMoVETAccount => STRIPE CUSTOMER DELETED: ", result)
       )
       .catch((error: any) => DEBUG && console.log(error));
 
@@ -199,7 +239,14 @@ export const deleteAllAccountData = async (
     .collection("clients")
     .doc(uid)
     .delete()
-    .then(() => DEBUG && console.log("FIRESTORE CLIENT RECORD DELETED: ", uid))
+    .then(
+      () =>
+        DEBUG &&
+        console.log(
+          "deleteMoVETAccount => FIRESTORE CLIENT RECORD DELETED: ",
+          uid
+        )
+    )
     .catch((error: any) => DEBUG && console.log(error));
 
   if (deleteAuthAccount)
@@ -207,7 +254,7 @@ export const deleteAllAccountData = async (
       .auth()
       .deleteUser(uid)
       .then(() => {
-        console.log("Successfully deleted user");
+        console.log("deleteMoVETAccount => Successfully deleted user");
       })
       .catch((error: any) => DEBUG && console.log(error));
 

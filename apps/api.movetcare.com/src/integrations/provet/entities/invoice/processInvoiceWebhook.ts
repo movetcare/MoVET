@@ -7,7 +7,7 @@ const DEBUG = environment.type === "production";
 export const processInvoiceWebhook = async (
   request: Request,
   response: Response
-): Promise<any> => {
+): Promise<Response> => {
   const { invoice_id, user, timestamp } = request.body;
   if (!(typeof invoice_id === "string") || invoice_id.length === 0)
     throwError({ message: "INVALID_PAYLOAD" });

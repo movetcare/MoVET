@@ -1,4 +1,4 @@
-import {admin, DEBUG, throwError} from "../../../../config/config";
+import { admin, DEBUG, throwError } from "../../../../config/config";
 import type { Reason } from "../../../../types/reason";
 import { deleteCollection } from "../../../../utils/deleteCollection";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
@@ -6,7 +6,7 @@ import { fetchEntity } from "../fetchEntity";
 
 const visibleReasonsInApp = [
   99, 98, 97, 96, 95, 94, 93, 92, 91, 89, 88, 87, 81, 121, 119, 118, 117, 116,
-  115, 114, 113, 108, 107, 104, 103, 102, 101, 100,
+  115, 114, 113, 108, 107, 104, 103, 102, 101, 100, 123, 90, 112, 124, 125,
 ];
 export const configureReasons = async (): Promise<boolean> => {
   console.log("STARTING REASONS CONFIGURATION");

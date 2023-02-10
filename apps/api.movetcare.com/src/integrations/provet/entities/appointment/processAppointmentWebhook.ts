@@ -1,12 +1,13 @@
+import { Request, Response } from "express";
 import { throwError } from "../../../../config/config";
 import { fetchEntity } from "../fetchEntity";
 // import {configureReminders} from '../reminder/configureReminders';
 import { saveAppointment } from "./saveAppointment";
 
 export const processAppointmentWebhook = async (
-  request: any,
-  response: any
-): Promise<any> => {
+  request: Request,
+  response: Response
+): Promise<Response> => {
   if (
     !(typeof request.body.appointment_id === "string") ||
     request.body.appointment_id.length === 0

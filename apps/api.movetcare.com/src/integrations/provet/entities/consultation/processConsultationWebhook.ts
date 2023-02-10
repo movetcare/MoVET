@@ -2,11 +2,12 @@ import { updateCustomField } from "./../patient/updateCustomField";
 import { throwError, DEBUG } from "../../../../config/config";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { fetchEntity } from "../fetchEntity";
+import { Request, Response } from "express";
 
 export const processConsultationWebhook = async (
-  request: any,
-  response: any
-): Promise<any> => {
+  request: Request,
+  response: Response
+): Promise<Response> => {
   if (
     !(typeof request.body.consultation_id === "string") ||
     request.body.consultation_id.length === 0

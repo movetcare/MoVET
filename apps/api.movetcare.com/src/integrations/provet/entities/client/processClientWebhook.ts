@@ -2,12 +2,13 @@ import { throwError, DEBUG } from "../../../../config/config";
 import { saveClient } from "./saveClient";
 import { fetchEntity } from "../fetchEntity";
 import { sendNotification } from "../../../../notifications/sendNotification";
-import { deleteAllAccountData } from "../../../../utils/deleteAllAccountData";
+import { Request, Response } from "express";
+//import { deleteAllAccountData } from "../../../../utils/deleteAllAccountData";
 
 export const processClientWebhook = async (
-  request: any,
-  response: any
-): Promise<any> => {
+  request: Request,
+  response: Response
+): Promise<Response> => {
   const id = request.body.client_id;
   if (!(typeof id === "string") || id.length === 0)
     throwError({ message: "INVALID_PAYLOAD" });
@@ -19,13 +20,19 @@ export const processClientWebhook = async (
         ? response.status(200).send({ received: true })
         : response.status(500).send({ received: false });
     else {
-      sendNotification({
+      await sendNotification({
         type: "slack",
         payload: {
-          message: `:red_circle: Client #${id} has been DELETED in ProVet - Proceeding to DELETE ALL MoVET Account Data!`,
+          message: `:red_circle: Client #${id} is not found in ProVet!\n\n${request.headers} ${request.body}`,
         },
       });
-      deleteAllAccountData(id);
+      // sendNotification({
+      //   type: "slack",
+      //   payload: {
+      //     message: `:red_circle: Client #${id} has been DELETED in ProVet - Proceeding to DELETE ALL MoVET Account Data!`,
+      //   },
+      // });
+      //deleteAllAccountData(id);
       return response.status(200).send({ received: true });
     }
   } catch (error: any) {

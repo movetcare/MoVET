@@ -1,4 +1,4 @@
-import { Switch } from '@headlessui/react';
+import { Switch } from "@headlessui/react";
 import {
   faCalendarMinus,
   faCalendarPlus,
@@ -6,11 +6,12 @@ import {
   faCircleDot,
   faCircleExclamation,
   faPencil,
-} from '@fortawesome/free-solid-svg-icons';
-import { classNames } from 'utils/classNames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Button from '../../Button';
-import Error from '../../Error';
+  faRedo,
+} from "@fortawesome/free-solid-svg-icons";
+import { classNames } from "utils/classNames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button from "../../Button";
+import Error from "../../Error";
 import { Loader } from "ui";
 import {
   query,
@@ -19,17 +20,18 @@ import {
   doc,
   serverTimestamp,
   setDoc,
-} from 'firebase/firestore';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { firestore } from 'services/firebase';
-import toast from 'react-hot-toast';
+} from "firebase/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { firestore, functions } from "services/firebase";
+import toast from "react-hot-toast";
+import { httpsCallable } from "firebase/functions";
 
 const GeneralSettings = () => {
   const [reasonGroups, loadingReasonGroups, errorReasonGroups] = useCollection(
-    query(collection(firestore, 'reason_groups'), orderBy('isVisible', 'desc'))
+    query(collection(firestore, "reason_groups"), orderBy("isVisible", "desc"))
   );
   const [reasons, loadingReasons, errorReasons] = useCollection(
-    query(collection(firestore, 'reasons'), orderBy('name', 'asc'))
+    query(collection(firestore, "reasons"), orderBy("name", "asc"))
   );
   const toggleReasonVisibility = async ({
     id,
@@ -43,7 +45,7 @@ const GeneralSettings = () => {
     isGroup?: boolean;
   }) => {
     await setDoc(
-      doc(firestore, isGroup ? 'reason_groups' : 'reasons', `${id}`),
+      doc(firestore, isGroup ? "reason_groups" : "reasons", `${id}`),
       {
         isVisible: isVisible !== undefined ? !isVisible : false,
         updatedOn: serverTimestamp(),
@@ -52,17 +54,17 @@ const GeneralSettings = () => {
     )
       .then(() =>
         toast(
-          `"${name}" ${isGroup ? 'services are' : 'service is'} now ${
-            isVisible ? 'DISABLED' : 'ACTIVE'
+          `"${name}" ${isGroup ? "services are" : "service is"} now ${
+            isVisible ? "DISABLED" : "ACTIVE"
           }`,
           {
-            position: 'top-center',
+            position: "top-center",
             icon: (
               <FontAwesomeIcon
                 icon={faCheckCircle}
                 size="sm"
                 className={`${
-                  isVisible ? 'text-movet-red' : 'text-movet-green'
+                  isVisible ? "text-movet-red" : "text-movet-green"
                 }`}
               />
             ),
@@ -72,11 +74,64 @@ const GeneralSettings = () => {
       .catch((error: any) =>
         toast(`Service "${name}" Update FAILED: ${error?.message}`, {
           duration: 5000,
-          position: 'bottom-center',
+          position: "bottom-center",
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}
               size="sm"
+              className="text-movet-red"
+            />
+          ),
+        })
+      );
+  };
+
+  const resyncReasons = () => {
+    toast(`RE-SYNCING PROVET REASONS...`, {
+      position: "top-center",
+      duration: 3000,
+      icon: (
+        <FontAwesomeIcon
+          icon={faRedo}
+          size="lg"
+          className="text-movet-yellow"
+        />
+      ),
+    });
+    const deleteAccount = httpsCallable(functions, "resyncReasons");
+    deleteAccount()
+      .then((result: any) => {
+        if (result.data) {
+          toast(`REASON RE-SYNC COMPLETE`, {
+            position: "top-center",
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faRedo}
+                size="lg"
+                className="text-movet-green"
+              />
+            ),
+          });
+        } else
+          toast("SOMETHING WENT WRONG!", {
+            position: "top-center",
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                className="text-movet-red"
+              />
+            ),
+          });
+      })
+      .catch((error: any) =>
+        toast(error?.message, {
+          position: "top-center",
+          duration: 5000,
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
               className="text-movet-red"
             />
           ),
@@ -139,8 +194,8 @@ const GeneralSettings = () => {
                                     size="lg"
                                     className={`${
                                       group.data()?.isVisible
-                                        ? 'text-movet-green'
-                                        : 'text-movet-red'
+                                        ? "text-movet-green"
+                                        : "text-movet-red"
                                     } mr-4`}
                                   />
                                   {group.data()?.name}
@@ -157,18 +212,18 @@ const GeneralSettings = () => {
                               }
                               className={classNames(
                                 group.data()?.isVisible
-                                  ? 'bg-movet-green'
-                                  : 'bg-movet-gray',
-                                'ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray'
+                                  ? "bg-movet-green"
+                                  : "bg-movet-gray",
+                                "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray"
                               )}
                             >
                               <span
                                 aria-hidden="true"
                                 className={classNames(
                                   group.data()?.isVisible
-                                    ? 'translate-x-5'
-                                    : 'translate-x-0',
-                                  'inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
+                                    ? "translate-x-5"
+                                    : "translate-x-0",
+                                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
                                 )}
                               />
                             </Switch>
@@ -197,8 +252,8 @@ const GeneralSettings = () => {
                                           size="2xs"
                                           className={`${
                                             reason.data()?.isVisible
-                                              ? 'text-movet-green'
-                                              : 'text-movet-red'
+                                              ? "text-movet-green"
+                                              : "text-movet-red"
                                           } mr-4`}
                                         />
                                         {reason.data()?.name}
@@ -214,18 +269,18 @@ const GeneralSettings = () => {
                                     }
                                     className={classNames(
                                       reason.data()?.isVisible
-                                        ? 'bg-movet-green'
-                                        : 'bg-movet-gray',
-                                      'ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray'
+                                        ? "bg-movet-green"
+                                        : "bg-movet-gray",
+                                      "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray"
                                     )}
                                   >
                                     <span
                                       aria-hidden="true"
                                       className={classNames(
                                         reason.data()?.isVisible
-                                          ? 'translate-x-5'
-                                          : 'translate-x-0',
-                                        'inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
+                                          ? "translate-x-5"
+                                          : "translate-x-0",
+                                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
                                       )}
                                     />
                                   </Switch>
@@ -244,8 +299,8 @@ const GeneralSettings = () => {
                   color="black"
                   onClick={() =>
                     window.open(
-                      'https://us.provetcloud.com/4285/organization/administration/reasons/',
-                      '_blank'
+                      "https://us.provetcloud.com/4285/organization/administration/reasons/",
+                      "_blank"
                     )
                   }
                 >
@@ -256,6 +311,19 @@ const GeneralSettings = () => {
                     />
                   </span>
                   Edit Reasons
+                </Button>
+                <Button
+                  className="ml-4"
+                  color="red"
+                  onClick={() => resyncReasons()}
+                >
+                  <span className="flex-shrink-0 cursor-pointer mr-2">
+                    <FontAwesomeIcon
+                      icon={faRedo}
+                      className="text-movet-white"
+                    />
+                  </span>
+                  Re-Sync Reasons
                 </Button>
               </div>
             </>

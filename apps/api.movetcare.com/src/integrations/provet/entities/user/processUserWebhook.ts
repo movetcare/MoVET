@@ -1,11 +1,12 @@
-import {getProVetIdFromUrl} from "./../../../../utils/getProVetIdFromUrl";
-import {admin, DEBUG, throwError} from "../../../../config/config";
-import {fetchEntity} from "./../fetchEntity";
+import { getProVetIdFromUrl } from "./../../../../utils/getProVetIdFromUrl";
+import { admin, DEBUG, throwError } from "../../../../config/config";
+import { fetchEntity } from "./../fetchEntity";
+import { Request, Response } from "express";
 
 export const processUserWebhook = async (
-  request: any,
-  response: any
-): Promise<any> => {
+  request: Request,
+  response: Response
+): Promise<Response> => {
   const user = await fetchEntity("user", request.body.user_id);
   const userDetails = await fetchEntity("userdetails", request.body.user_id);
   if (DEBUG) {

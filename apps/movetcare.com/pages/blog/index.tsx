@@ -27,6 +27,27 @@ const posts = [
   },
   {
     isFeatured: false,
+    title: "Spring Heartworm Clinic",
+    href: "/blog/2023-spring-heartworm-clinic",
+    category: {
+      name: "Health & Wellness",
+      href: "#",
+      color: "bg-movet-yellow",
+    },
+    description:
+      "Our 1st Annual Spring Heartworm Clinic is now open for bookings!",
+    date: "Feb 8th, 2023",
+    datetime: "2023-02-08",
+    imageUrl: "/images/blog/heartworm-clinic.png",
+    readingTime: "1 min",
+    author: {
+      name: "Dr. A",
+      href: "#",
+      imageUrl: "/images/blog/dr-a.png",
+    },
+  },
+  {
+    isFeatured: false,
     title: "6 Reasons Why We're Thankful For Our Pets This Thanksgiving Season",
     href: "/blog/six-reasons-we-are-thankful-for-our-pets",
     category: { name: "Community", href: "#", color: "bg-movet-magenta" },

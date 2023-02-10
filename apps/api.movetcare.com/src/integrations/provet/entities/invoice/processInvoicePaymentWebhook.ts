@@ -6,7 +6,7 @@ const DEBUG = environment.type === "production";
 export const processInvoicePaymentWebhook = async (
   request: Request,
   response: Response
-): Promise<any> => {
+): Promise<Response> => {
   const { invoicepayment_id } = request.body;
   if (
     !(typeof invoicepayment_id === "string") ||

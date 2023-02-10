@@ -50,9 +50,9 @@
     "format-json": "^1.0.3",
     "json2csv": "^5.0.7",
     "semver": "^7.3.8",
-    "stripe": "^11.9.1",
+    "stripe": "^11.10.0",
     "trello-node-api": "^0.0.9",
-    "twilio": "^4.7.1",
+    "twilio": "^4.7.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

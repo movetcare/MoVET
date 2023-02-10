@@ -1,11 +1,12 @@
+import { Request, Response } from "express";
 import { throwError } from "../../../../config/config";
 import { fetchEntity } from "../fetchEntity";
 import { savePatient } from "./savePatient";
 
 export const processPatientWebhook = async (
-  request: any,
-  response: any
-): Promise<any> => {
+  request: Request,
+  response: Response
+): Promise<Response> => {
   if (
     !(typeof request.body.patient_id === "string") ||
     request.body.patient_id.length === 0

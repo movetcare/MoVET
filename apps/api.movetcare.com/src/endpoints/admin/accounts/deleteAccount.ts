@@ -19,7 +19,11 @@ export const deleteAccount = functions
       !(await requestIsAuthorized(context)) &&
       data?.id === undefined
     ) {
-      if (DEBUG) console.log("DELETING ACCOUNT", context.auth?.uid);
+      if (DEBUG)
+        console.log(
+          "deleteAccount => CLIENT IS DELETING ACCOUNT",
+          context.auth?.uid
+        );
       // return await admin
       //   .auth()
       //   .deleteUser(context.auth?.uid)
@@ -39,7 +43,7 @@ export const deleteAccount = functions
       //     return await deleteAllAccountData(context.auth?.uid, false);
       //   });
       return await deleteAllAccountData(context.auth?.uid);
-    } else if ((await requestIsAuthorized(context)) && data?.id)
+    } else if ((await requestIsAuthorized(context)) && data?.id) {
       // return await admin
       //   .auth()
       //   .deleteUser(data?.id)
@@ -58,6 +62,8 @@ export const deleteAccount = functions
       //     console.log(error);
       //     return await deleteAllAccountData(data?.id, false);
       //   });
+      if (DEBUG)
+        console.log("deleteAccount => ADMIN IS DELETING ACCOUNT", data?.id);
       return await deleteAllAccountData(data?.id);
-    else return throwError({ message: "AUTHENTICATION FAILED" });
+    } else return throwError({ message: "AUTHENTICATION FAILED" });
   });
