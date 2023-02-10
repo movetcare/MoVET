@@ -57,7 +57,6 @@ export default function IChooseYou() {
             )
           }
         />
-
         <h2 className="text-3xl mt-8 mb-4 text-center">
           Spring Heartworm Clinic
         </h2>
@@ -67,13 +66,13 @@ export default function IChooseYou() {
         <p className="italic text-lg -mt-1 mb-4">
           Did you know ProHeart12 lasts for 12 months! No more monthly tablets.
         </p>
-        <h2 className="text-base">
+        <h2 className="text-lg mt-4">
           DON&apos;T FALL BEHIND ON YOUR HEARTWORM PREVENTION
         </h2>
         <Button
           text="Schedule an Appointment Today"
           color="red"
-          className="mt-2"
+          className="mt-2 mb-4"
           onClick={() =>
             window.open(
               "https://app.movetcare.com/schedule-an-appointment",
@@ -81,6 +80,30 @@ export default function IChooseYou() {
             )
           }
         />
+        <p className="mt-4 mb-4 italic uppercase">
+          Learn more about heartworm prevention
+        </p>
+        <div className="flex flex-row">
+          <Button
+            text="Heartworm In Colorado"
+            color="black"
+            className="mr-2"
+            onClick={() =>
+              window.open(
+                "https://movetcare.com/blog/winter-heartworm/",
+                "_blank"
+              )
+            }
+          />
+          <Button
+            text="American Heartworm Society"
+            color="black"
+            className="ml-2"
+            onClick={() =>
+              window.open("https://www.heartwormsociety.org/", "_blank")
+            }
+          />
+        </div>
       </section>
       <CallToAction />
     </Layout>
