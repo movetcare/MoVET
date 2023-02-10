@@ -23,8 +23,3 @@ Cypress.on("uncaught:exception", (error, runnable) => {
   // failing the test
   return false;
 });
-
-// Cypress.on("fail", (error) => {
-//   console.error("FULL ERROR", error);
-//   return false;
-// });

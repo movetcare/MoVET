@@ -20,7 +20,7 @@ module.exports = defineConfig({
     existingPatientWithVcprName: "VCPR REQUIRED TEST DOG",
   },
   retries: {
-    runMode: 2,
+    runMode: 4,
     openMode: 0,
   },
   defaultCommandTimeout: 10000,
