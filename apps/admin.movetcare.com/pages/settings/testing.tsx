@@ -273,9 +273,11 @@ const Testing = () => {
                 </li>
               ) : error ? (
                 <Error error={error} />
-              ) : testClients && testClients?.length === 0 ? (
+              ) : archivedClients && archivedClients?.length === 0 ? (
                 <li className="text-center p-4">
-                  <h1>No Archived Clients Found</h1>
+                  <h1 className="text-sm italic">
+                    No Archived Clients Found...
+                  </h1>
                 </li>
               ) : (
                 archivedClients &&

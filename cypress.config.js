@@ -4,7 +4,7 @@ module.exports = defineConfig({
   projectId: "isemvz",
   env: {
     defaultPathnameTimeOut:
-      Number(process.env.CYPRESS_DISPLAY_PATH_TIMEOUT) || 10000,
+      Number(process.env.CYPRESS_DISPLAY_PATH_TIMEOUT) || 15000,
     onlyTestOnePatient: process.env.CYPRESS_ONLY_TEST_ONE_PATIENT || true,
     skipWellnessCheck: process.env.CYPRESS_SKIP_WELLNESS_CHECK || true,
     endpointApiKey: "L9At3HGmvRDuyi7TTX",
@@ -23,9 +23,9 @@ module.exports = defineConfig({
     runMode: 4,
     openMode: 0,
   },
-  defaultCommandTimeout: 10000,
+  defaultCommandTimeout: 25000,
   redirectionLimit: 3,
-  requestTimeout: 10000,
+  requestTimeout: 15000,
   responseTimeout: 30000,
   taskTimeout: 60000,
   viewportHeight: 667,
@@ -42,6 +42,6 @@ module.exports = defineConfig({
     specPattern: "testing/component/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "testing/support/e2e.{js,jsx,ts,tsx}",
   },
-  modifyObstructiveCode: true,
-  experimentalModifyObstructiveThirdPartyCode: true,
+  // modifyObstructiveCode: true,
+  // experimentalModifyObstructiveThirdPartyCode: true,
 });

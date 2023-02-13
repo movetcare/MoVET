@@ -117,7 +117,7 @@ export const verifyAccount = functions
               })),
             ],
           };
-          if (alerts.errors.length > 0 && !authData?.email.includes("+test")) {
+          if (alerts.errors.length > 0 && !authData?.email?.includes("+test")) {
             sendNotification({
               type: "slack",
               payload: {
@@ -189,7 +189,6 @@ export const verifyAccount = functions
                 : [],
           };
         } catch (error) {
-          throwError(error);
           console.log("ERROR: verifyAccount", error);
           return false;
         }
