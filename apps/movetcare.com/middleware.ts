@@ -59,6 +59,8 @@ export function middleware(request: NextRequest) {
         getEmailAddressFromUrl(request)
     );
   else if (
+    request.nextUrl.pathname === "/booking/" ||
+    request.nextUrl.pathname === "/schedule/" ||
     request.nextUrl.pathname === "/book-an-appointment/" ||
     request.nextUrl.pathname === "/schedule-an-appointment/" ||
     request.nextUrl.pathname === "/appointment-booking/"

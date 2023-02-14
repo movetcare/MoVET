@@ -117,7 +117,11 @@ export const verifyAccount = functions
               })),
             ],
           };
-          if (alerts.errors.length > 0 && !authData?.email?.includes("+test")) {
+          if (
+            alerts.errors.length > 0 &&
+            !authData?.email?.includes("+test") &&
+            authData?.email !== null
+          ) {
             sendNotification({
               type: "slack",
               payload: {
@@ -150,7 +154,11 @@ export const verifyAccount = functions
                   "</b></p>",
               },
             });
-          } else if (alerts.warnings.length > 0) {
+          } else if (
+            alerts.warnings.length > 0 &&
+            !authData?.email?.includes("+test") &&
+            authData?.email !== null
+          ) {
             sendNotification({
               type: "slack",
               payload: {

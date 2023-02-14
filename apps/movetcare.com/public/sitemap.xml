@@ -9,6 +9,10 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://movetcare.com/hours</loc>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://movetcare.com/reviews</loc>
         <priority>0.8</priority>
     </url>

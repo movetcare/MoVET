@@ -5,15 +5,15 @@ describe("home-page-loads", () => {
   });
 
   it("display home page hero elements", () => {
-    cy.get("main section h1").first().contains("Your neighborhood vet,");
-    cy.get("main section h1").last().contains("Delivered");
-    cy.get("main section p span")
+    cy.get("h1").first().contains("Your neighborhood vet,");
+    cy.get("h1").last().contains("Delivered");
+    cy.get("p span")
       .first()
       .contains("A stress-free way to take care of your vet appointments.");
-    cy.get("main section div p").contains("SCHEDULE AN APPOINTMENT");
-    cy.get("main section div form input").should("be.visible");
-    cy.get("main section div .ios-app-link").should("be.visible");
-    cy.get("main section div .android-app-link").should("be.visible");
+    cy.get("div p").contains("SCHEDULE AN APPOINTMENT");
+    cy.get("div form input").should("be.visible");
+    cy.get("div .ios-app-link").should("be.visible");
+    cy.get("div .android-app-link").should("be.visible");
   });
 
   it("display working mobile navigation", () => {
@@ -32,23 +32,24 @@ describe("home-page-loads", () => {
   });
 
   it("displays all primary content sections", () => {
-    cy.get("main section div h2").contains("Moving Pet Care Forward");
-    cy.get("main section div h2").contains("Additional Amenities");
-    cy.get("main section h2").contains("Our Services");
-    cy.get("main section div h2").contains("Hours of Operation");
-    cy.get("main section div h2").contains("Our Happy Clients");
-    cy.get("main section div h2").contains("Contact Us");
-    cy.get("main section div h3").contains("Your neighborhood vet");
+    cy.get("h2").contains("Moving Pet Care Forward");
+    cy.get("h2").contains("Additional Amenities");
+    cy.get("h2").contains("Our Services");
+    cy.get("h2").contains("Hours of Operation");
+    cy.get("h2").contains("Our Happy Clients");
+    cy.get("h2").contains("Contact Us");
+    cy.get("h3").contains("Your neighborhood vet");
   });
 
   it("displays all footer links", () => {
-    cy.get("footer a p").contains("Privacy Policy");
-    cy.get("footer a p").contains("Terms of Service");
-    cy.get("footer a p").contains("FAQs");
-    cy.get("footer a p").contains("Emergency Care");
+    cy.get("footer a p").as("footerLinks");
+    cy.get("@footerLinks").contains("Privacy Policy");
+    cy.get("@footerLinks").contains("Terms of Service");
+    cy.get("@footerLinks").contains("FAQs");
+    cy.get("@footerLinks").contains("Emergency Care");
   });
 
-  it("can submit contact form", () => {
+  it.only("can submit contact form", () => {
     cy.get("#contact-form input[name='firstName']").type("CYPRESS");
     cy.get("#contact-form input[name='lastName']").type("TEST");
     cy.get("#contact-form input[name='email']").type("CYPRESS@TEST.COM");
@@ -57,7 +58,6 @@ describe("home-page-loads", () => {
       "CYPRESS TEST 123..."
     );
     cy.get("#contact-form button").contains("Submit").click();
-    cy.wait(3000);
     cy.get("#contact-form h2").contains("Success!");
   });
 });

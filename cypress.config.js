@@ -18,6 +18,7 @@ module.exports = defineConfig({
     existingClientWithPaymentLastName: "DO NOT DELETE",
     existingPatientWithNoVcprName: "NO VCPR TEST DOG",
     existingPatientWithVcprName: "VCPR REQUIRED TEST DOG",
+    contactFormTestUserEmail: "dev+test_cypress_contact_test@movetcare.com",
   },
   retries: {
     runMode: 4,

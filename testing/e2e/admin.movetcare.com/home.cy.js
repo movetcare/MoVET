@@ -4,6 +4,7 @@ describe("login-page-loads", () => {
   });
 
   it("display app login button", () => {
+    alert(Cypress.env().authUrlKey)
     cy.get("main button").contains("EMAIL").should("be.visible");
   });
 });

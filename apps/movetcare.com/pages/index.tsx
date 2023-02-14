@@ -67,7 +67,7 @@ export default function Home({
         <ServiceTypes />
         <Amenities />
         <Services />
-        <Hours winterMode={winterMode} />
+        <Hours winterMode={winterMode} embed />
         <Reviews />
         <Contact />
         <CallToAction />
