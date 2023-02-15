@@ -2,9 +2,6 @@ import {
   faUsersBetweenLines,
   faTrash,
   faEnvelope,
-  faUserCircle,
-  faPhone,
-  faCreditCard,
   faIdCard,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
