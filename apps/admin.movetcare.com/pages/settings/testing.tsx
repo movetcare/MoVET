@@ -21,17 +21,12 @@ import { Tooltip } from "react-tooltip";
 
 interface Client {
   id: string;
-  label: string;
-  firstName: string;
-  lastName: string;
   email: string;
-  phone: string;
-  customer: string;
 }
 
 const Testing = () => {
   const [testClients, setTestClients] = useState<Array<Client> | null>(null);
-  const [archivedClients, setArchivedClients] = useState<Array<Client> | null>(
+  const [archivedClients, setArchivedClients] = useState<Array<any> | null>(
     null
   );
   const [clientData, loading, error] = useCollection(
@@ -43,7 +38,7 @@ const Testing = () => {
   useEffect(() => {
     if (clientData) {
       const clients: Array<Client> = [];
-      const archivedClients: Array<Client> = [];
+      const archivedClients: Array<any> = [];
       clientData.docs.map((client: any) => {
         const { firstName, lastName, email, phone, customer, archived } =
           client.data();
@@ -54,12 +49,7 @@ const Testing = () => {
         )
           clients.push({
             id: client.id,
-            label: `${firstName} ${lastName}`,
-            firstName,
-            lastName,
             email,
-            phone,
-            customer,
           });
         else if (archived)
           archivedClients.push({
@@ -160,66 +150,6 @@ const Testing = () => {
                     {testClient?.email}
                   </h3>
                 )}
-                {(testClient?.firstName || testClient?.lastName) && (
-                  <div className="w-full flex flex-row items-center justify-center sm:w-4/5">
-                    <Tooltip anchorId="viewInProvet" />
-                    <a
-                      id="viewInProvet"
-                      data-tooltip-content="View Client in Provet"
-                      title="View Client in Provet"
-                      href={
-                        environment === "production"
-                          ? `https://us.provetcloud.com/4285/client/${testClient?.id}/`
-                          : `https://us.provetcloud.com/4285/client/${testClient?.id}/`
-                      }
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faUserCircle} />
-                    </a>
-                    <p>{testClient?.firstName}</p>
-                    <p className="ml-1">{testClient?.lastName}</p>
-                  </div>
-                )}
-                {testClient?.phone && (
-                  <div className="w-full flex flex-row items-center justify-center sm:w-4/5">
-                    <Tooltip anchorId="callPhone" />
-                    <a
-                      data-tooltip-content="Call Client"
-                      title="Call Client"
-                      id="callPhone"
-                      href={`${GOTO_PHONE_URL}/${testClient?.phone}`}
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faPhone} />
-                    </a>
-                    <p>{testClient?.phone}</p>
-                  </div>
-                )}
-                {testClient?.customer && (
-                  <div className="w-full flex flex-row items-center justify-center sm:w-4/5">
-                    <Tooltip anchorId="viewInStripe" />
-                    <a
-                      id="viewInStripe"
-                      data-tooltip-content="View Customer in Stripe"
-                      title="View Customer in Stripe"
-                      href={
-                        environment === "production"
-                          ? `https://dashboard.stripe.com/customers/${testClient?.customer}/`
-                          : `https://dashboard.stripe.com/test/customers/${testClient?.customer}/`
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"
-                    >
-                      <FontAwesomeIcon icon={faCreditCard} />
-                    </a>
-                    <p>{testClient?.customer}</p>
-                  </div>
-                )}
                 <div className="w-full flex flex-row justify-end -mt-10 sm:mt-0">
                   <a
                     href={
@@ -277,7 +207,7 @@ const Testing = () => {
           ) : (
             archivedClients &&
             archivedClients?.length > 0 &&
-            archivedClients.map((archivedClient: Client, index: number) => (
+            archivedClients.map((archivedClient: any, index: number) => (
               <li className="px-8 p-4 flex flex-col sm:flex-row" key={index}>
                 {archivedClient?.id && (
                   <h2 className="my-2 sm:my-0 w-full text-center sm:w-1/2 flex items-center justify-center">
