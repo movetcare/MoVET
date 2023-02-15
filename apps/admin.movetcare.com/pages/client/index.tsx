@@ -681,12 +681,12 @@ const Client = () => {
                     <div className="ml-4 sm:ml-8">
                       {errors && errors?.length > 0 && (
                         <div className="mt-2">
-                          <b>ERROR: </b>
+                          <b>ERRORS: </b>
                           <ul>
                             {errors.map((error: string, index: number) => (
                               <li
                                 key={index}
-                                className="font-bold text-movet-red"
+                                className="font-bold text-movet-red ml-2"
                               >
                                 - {error}
                               </li>
@@ -697,13 +697,13 @@ const Client = () => {
                       {client?.alerts?.warnings &&
                         client?.alerts?.warnings?.length > 0 && (
                           <div className="mt-2">
-                            <b>WARNING: </b>
+                            <b>WARNINGS: </b>
                             <ul>
                               {client?.alerts?.warnings.map(
                                 (warning: string, index: number) => (
                                   <li
                                     key={index}
-                                    className="font-bold text-movet-yellow text-sm"
+                                    className="font-bold text-movet-yellow text-sm ml-2"
                                   >
                                     - {warning}
                                   </li>

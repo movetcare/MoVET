@@ -111,6 +111,7 @@ export const verifyAccount = functions
               ...getNameWarnings({ authData, movetData, provetData }),
               ...getPhoneNumberWarnings({ authData, movetData, provetData }),
               ...getAddressWarnings({ movetData, provetData }),
+              ...getCustomerWarnings({ movetData, stripeData }),
               ...(await getPaymentMethodWarnings({
                 id,
                 stripeData,
@@ -126,7 +127,7 @@ export const verifyAccount = functions
               type: "slack",
               payload: {
                 message:
-                  `:fire_extinguisher: MoVET Account Errors Found for ${authData?.displayName}(${authData?.email})! Please Fix ASAP!\n\n` +
+                  `:fire_extinguisher: MoVET Account Errors Found for ${authData?.displayName} (${authData?.email})! Please Fix ASAP!\n\n` +
                   "```" +
                   JSON.stringify(alerts.errors) +
                   "```\n" +
@@ -415,6 +416,7 @@ const getNameErrors = ({
     movetData?.firstName !== undefined &&
     movetData?.lastName !== undefined &&
     authData?.displayName !== null &&
+    authData?.displayName !== undefined &&
     authData?.displayName !== `${movetData?.firstName} ${movetData?.lastName}`
   )
     errors.push(
@@ -425,6 +427,7 @@ const getNameErrors = ({
   if (
     provetData?.firstname !== undefined &&
     provetData?.lastname !== undefined &&
+    authData?.displayName !== undefined &&
     authData?.displayName !== null &&
     authData?.displayName !== `${provetData?.firstname} ${provetData?.lastname}`
   )
@@ -633,10 +636,6 @@ const getCustomerErrors = ({
   movetData: MovetData;
 }): Array<string | undefined> => {
   const errors: Array<string | undefined> = [];
-  if (movetData?.customer === undefined)
-    errors.push("No MoVET Customer ID Found");
-  if (stripeData.customer.length === 0)
-    errors.push("No Stripe Customer ID Found");
   if (stripeData.customer.length > 1)
     errors.push(
       "Multiple Stripe Customers Found: " + JSON.stringify(stripeData.customer)
@@ -694,6 +693,26 @@ const getPaymentMethodErrors = async ({
   }
   if (DEBUG) console.log("getPaymentMethodErrors", errors);
   return errors;
+};
+
+const getCustomerWarnings = ({
+  movetData,
+  stripeData,
+}: {
+  stripeData: StripeData;
+  movetData: MovetData;
+}) => {
+  const warnings: Array<string | undefined> = [];
+  if (movetData?.customer === undefined && stripeData.customer.length === 0)
+    warnings.push("No Customer ID Found");
+  else {
+    if (movetData?.customer === undefined)
+      warnings.push("No MoVET Customer ID Found");
+    if (stripeData.customer.length === 0)
+      warnings.push("No Stripe Customer ID Found");
+  }
+  if (DEBUG) console.log("getCustomerWarnings", warnings);
+  return warnings;
 };
 
 const getPaymentMethodWarnings = async ({
