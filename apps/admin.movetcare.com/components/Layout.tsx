@@ -1,18 +1,27 @@
-import Header from 'components/Header';
-import Footer from 'components/Footer';
-import AuthCheck from 'components/AuthCheck';
-import { useRouter } from 'next/router';
-import { useAnnouncementBanner } from 'hooks/useAnnouncementBanner';
-import { AnnouncementBannerContext } from 'contexts/AnnouncementBannerContext';
+import Header from "components/Header";
+import Footer from "components/Footer";
+import AuthCheck from "components/AuthCheck";
+import { useRouter } from "next/router";
+import { useAnnouncementBanner } from "hooks/useAnnouncementBanner";
+import { AnnouncementBannerContext } from "contexts/AnnouncementBannerContext";
 
 const Layout = ({ children }: any) => {
   const router = useRouter();
   const isAuthPage =
-    router.pathname === '/' ||
-    router.pathname === '/signout' ||
-    router.query.mode === 'embed';
+    router.pathname === "/" ||
+    router.pathname === "/signout" ||
+    router.pathname.includes("/test/login") ||
+    router.query.mode === "embed";
   const announcementBanner = useAnnouncementBanner();
-  return (
+  return router.pathname.includes("/test/login") ? (
+    <main
+      className={
+        "h-screen flex flex-grow items-center justify-center p-8 md:px-12 lg:px-24 bg-movet-white"
+      }
+    >
+      {children}
+    </main>
+  ) : (
     <AuthCheck>
       <AnnouncementBannerContext.Provider value={announcementBanner as any}>
         {!isAuthPage && <Header />}

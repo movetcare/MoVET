@@ -14,8 +14,8 @@
     "dev": "pnpm run start",
     "lint": "turbo run lint",
     "test": "pnpm run build && start-server-and-test start:test 3000 test:platform",
-    "test:platform": "sleep 45 && CYPRESS_DISPLAY_PATH_TIMEOUT=50000 CYPRESS_ONLY_TEST_ONE_PATIENT=false CYPRESS_SKIP_WELLNESS_CHECK=false npx cypress run --record --key 42971719-2adc-4f5e-8e73-44fcc68d57cc",
-    "open:test": "pnpm cypress open",
+    "test:platform": "sleep 45 && op run --no-masking --env-file='testing/.env' -- CYPRESS_DISPLAY_PATH_TIMEOUT=50000 CYPRESS_ONLY_TEST_ONE_PATIENT=false CYPRESS_SKIP_WELLNESS_CHECK=false npx cypress run --record --key 42971719-2adc-4f5e-8e73-44fcc68d57cc",
+    "open:test": "op run --no-masking --env-file='testing/.env' -- pnpm cypress open",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "config:env": "firebase use movet-care-staging && yes | cp -rf apps/.env apps/movetcare.com/.env.local && source apps/movetcare.com/.env.local && yes | cp -rf apps/.env apps/app.movetcare.com/.env.local && source apps/app.movetcare.com/.env.local && yes | cp -rf apps/.env apps/admin.movetcare.com/.env.local && source apps/admin.movetcare.com/.env.local",
     "update": "ncu -u && pnpm -r run update && pnpm clean",
@@ -47,15 +47,17 @@
   "devDependencies": {
     "@types/node": "^18.13.0",
     "concurrently": "^7.6.0",
-    "cypress": "^12.5.1",
-    "cypress-plugin-tab": "^1.0.5",
+    "cypress": "^12.6.0",
+    "cypress-firebase": "^3.0.1",
     "eslint-config-custom": "workspace:0.0.0",
+    "firebase-admin": "^11.5.0",
     "git-branch-is": "^4.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.2",
     "prettier": "^2.8.4",
     "start-server-and-test": "^1.15.4",
-    "turbo": "^1.7.4"
+    "turbo": "^1.7.4",
+    "x2js": "^3.4.4"
   },
   "engines": {
     "node": ">= 16.18.1"

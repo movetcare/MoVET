@@ -75,6 +75,7 @@ const importDefaultUsers = async (): Promise<boolean> =>
         email: "alex@movetcare.com",
         emailVerified: true,
         phoneNumber: "+3147360856",
+        password: "testing123",
         customClaims: { isSuperAdmin: true, isAdmin: true, isStaff: true },
         providerData: [
           {

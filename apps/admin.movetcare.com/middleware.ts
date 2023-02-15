@@ -3,7 +3,7 @@ export function middleware(request: NextRequest) {
   if (
     process.env.NODE_ENV !== "production" &&
     request.nextUrl.hostname === "localhost" &&
-    request.nextUrl.pathname === "/test/login"
+    request.nextUrl.pathname === "/test/login/"
   ) {
     return NextResponse.redirect(
       "http://localhost:3002/test/login/zfBGBJfVTADzCVq2pvd8t8X8YXi4Bv4a"

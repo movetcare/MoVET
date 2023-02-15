@@ -16,7 +16,6 @@ import "react-tooltip/dist/react-tooltip.css";
 import { Loader } from "ui";
 import { useCollection } from "react-firebase-hooks/firestore";
 import Error from "../../components/Error";
-import { GOTO_PHONE_URL } from "constants/urls";
 import { Tooltip } from "react-tooltip";
 
 interface Client {
@@ -40,8 +39,7 @@ const Testing = () => {
       const clients: Array<Client> = [];
       const archivedClients: Array<any> = [];
       clientData.docs.map((client: any) => {
-        const { firstName, lastName, email, phone, customer, archived } =
-          client.data();
+        const { email, archived } = client.data();
         if (
           email.includes("+test") &&
           email !== "dev+test@movetcare.com" &&
@@ -57,8 +55,6 @@ const Testing = () => {
             email,
           });
       });
-      console.log("clients", clients);
-      console.log("archivedClients", archivedClients);
       setTestClients(clients);
       setArchivedClients(archivedClients);
     }
@@ -95,7 +91,7 @@ const Testing = () => {
             <Error error={error} />
           ) : testClients && testClients?.length === 0 ? (
             <li className="text-center p-4">
-              <h1 className="text-base">Not Test Clients Found</h1>
+              <h1 className="text-lg">No Test Clients Found</h1>
               <h3 className="text-lg italic">
                 Use &quot;+test&quot; in the email address to make a new test
                 account
@@ -206,15 +202,15 @@ const Testing = () => {
               <li className="px-8 p-4 flex flex-col sm:flex-row" key={index}>
                 {archivedClient?.id && (
                   <h2 className="my-2 sm:my-0 w-full text-center sm:w-1/2 flex items-center justify-center">
-                    <Tooltip anchorId="openInProVet" />
+                    <Tooltip anchorId="viewClient" />
                     <a
-                      id="openInProVet"
-                      data-tooltip-content="View Client in Provet"
-                      title="View Client in Provet"
+                      id="viewClient"
+                      data-tooltip-content="View Client Verification"
+                      title="View Client Verification"
                       href={
                         environment === "production"
-                          ? `https://us.provetcloud.com/4285/client/${archivedClient?.id}/`
-                          : `https://us.provetcloud.com/4285/client/${archivedClient?.id}/`
+                          ? `https://app.movetcare.com/client/?id=${archivedClient?.id}/`
+                          : `http://localhost:3002/client/?id=${archivedClient?.id}/`
                       }
                       target="_blank"
                       className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"

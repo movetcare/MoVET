@@ -101,7 +101,7 @@ const Header: React.FC = () => {
               },
               {
                 link: "/billing",
-                text: "billing",
+                text: "Billing",
                 icon: faFileInvoiceDollar,
               },
               {
@@ -136,8 +136,13 @@ const Header: React.FC = () => {
               },
               {
                 link: "/billing",
-                text: "billing",
+                text: "Billing",
                 icon: faFileInvoiceDollar,
+              },
+              {
+                link: "/telehealth/chat",
+                text: "Telehealth",
+                icon: faHeadset,
               },
               {
                 link: "https://us.provetcloud.com/4285/dashboard/",
@@ -351,7 +356,7 @@ const Header: React.FC = () => {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-center h-16">
             <Link href="/">
               <div className="cursor-pointer mx-4">
                 <Image
@@ -378,7 +383,7 @@ const Header: React.FC = () => {
                 onClick={() => {
                   toggleMobileMenu(!mobileMenu);
                 }}
-                className="bg-transparent inline-flex items-center justify-center p-2 rounded-md text-movet-black hover:bg-transparent shadow-none"
+                className="mobile-nav-toggle bg-transparent inline-flex items-center justify-center p-2 rounded-md text-movet-black hover:bg-transparent shadow-none"
               >
                 <span className="sr-only">Open Navigation Menu - Mobile</span>
                 <svg

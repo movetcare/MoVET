@@ -576,11 +576,11 @@ const runThroughAppointmentRequestWorkflows = ({
   cy.get("#Home").contains("Home").click();
   cy.get("@submitButton").should("be.disabled");
   cy.get(".places-search").type("702 Westgate Ave");
-  cy.focused().tab();
+  // cy.focused().tab();
   cy.get(".places-search").type("{enter}");
   cy.get("@submitButton").should("be.disabled");
   cy.get(".places-search").type("4912 S Newport Street Denver");
-  cy.focused().tab();
+  //cy.focused().tab();
   cy.get("@submitButton").should("be.disabled");
   cy.get("#info").type("Apartment 2A (This is a test address)");
   cy.get("#Clinic").contains("Clinic").click();
