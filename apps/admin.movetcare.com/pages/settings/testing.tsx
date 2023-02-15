@@ -54,12 +54,7 @@ const Testing = () => {
         else if (archived)
           archivedClients.push({
             id: client.id,
-            label: `${firstName} ${lastName}`,
-            firstName,
-            lastName,
             email,
-            phone,
-            customer,
           });
       });
       console.log("clients", clients);
@@ -246,66 +241,6 @@ const Testing = () => {
                     </a>
                     {archivedClient?.email}
                   </h3>
-                )}
-                {(archivedClient?.firstName || archivedClient?.lastName) && (
-                  <div className="w-full flex flex-row items-center justify-center sm:w-4/5">
-                    <Tooltip anchorId="viewInProvet" />
-                    <a
-                      id="viewInProvet"
-                      data-tooltip-content="View Client in Provet"
-                      title="View Client in Provet"
-                      href={
-                        environment === "production"
-                          ? `https://us.provetcloud.com/4285/client/${archivedClient?.id}/`
-                          : `https://us.provetcloud.com/4285/client/${archivedClient?.id}/`
-                      }
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faUserCircle} />
-                    </a>
-                    <p>{archivedClient?.firstName}</p>
-                    <p className="ml-1">{archivedClient?.lastName}</p>
-                  </div>
-                )}
-                {archivedClient?.phone && (
-                  <div className="w-full flex flex-row items-center justify-center sm:w-4/5">
-                    <Tooltip anchorId="callPhone" />
-                    <a
-                      data-tooltip-content="Call Client"
-                      title="Call Client"
-                      id="callPhone"
-                      href={`${GOTO_PHONE_URL}/${archivedClient?.phone}`}
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faPhone} />
-                    </a>
-                    <p>{archivedClient?.phone}</p>
-                  </div>
-                )}
-                {archivedClient?.customer && (
-                  <div className="w-full flex flex-row items-center justify-center sm:w-4/5">
-                    <Tooltip anchorId="viewInStripe" />
-                    <a
-                      id="viewInStripe"
-                      data-tooltip-content="View Customer in Stripe"
-                      title="View Customer in Stripe"
-                      href={
-                        environment === "production"
-                          ? `https://dashboard.stripe.com/customers/${archivedClient?.customer}/`
-                          : `https://dashboard.stripe.com/test/customers/${archivedClient?.customer}/`
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"
-                    >
-                      <FontAwesomeIcon icon={faCreditCard} />
-                    </a>
-                    <p>{archivedClient?.customer}</p>
-                  </div>
                 )}
                 <div className="w-full flex flex-row justify-end -mt-10 sm:mt-0">
                   <a
