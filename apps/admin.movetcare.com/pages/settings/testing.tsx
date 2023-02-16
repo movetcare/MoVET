@@ -38,7 +38,7 @@ const Testing = () => {
       clientData.docs.map((client: any) => {
         const { email, archived } = client.data();
         if (
-          email.includes("+test") &&
+          email?.includes("+test") &&
           email !== "dev+test@movetcare.com" &&
           email !== "dev+test_vcpr_not_required@movetcare.com"
         )
@@ -52,6 +52,8 @@ const Testing = () => {
             email,
           });
       });
+      console.log("clients", clients);
+      console.log("archivedClients", archivedClients);
       setTestClients(clients);
       setArchivedClients(archivedClients);
     }

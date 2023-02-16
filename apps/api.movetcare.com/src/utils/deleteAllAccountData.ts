@@ -222,6 +222,10 @@ export const deleteAllAccountData = async (
     .then(() => DEBUG && console.log(`DELETED clients/${uid}/notifications`))
     .catch((error: any) => console.log(error));
 
+  deleteCollection(`clients/${uid}/chat`)
+    .then(() => DEBUG && console.log(`DELETED clients/${uid}/chat`))
+    .catch((error: any) => console.log(error));
+
   deleteCollection(`clients/${uid}/payment_methods`)
     .then(() => DEBUG && console.log(`DELETED clients/${uid}/payment_methods`))
     .catch((error: any) => console.log(error));
