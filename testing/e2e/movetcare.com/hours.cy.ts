@@ -7,10 +7,10 @@ describe("hours-page-loads", () => {
     cy.get("h3").contains("MoVET @ Belleview Station");
     cy.get("h3").contains("Clinic Walk-In Hours");
     cy.get("h3").contains("Housecalls");
-    cy.get("span").contains("View Parking Map");
-    cy.get("iframe[title='Google Map of MoVET @ Belleview Station']").should(
-      "be.visible"
-    );
+    // cy.get("span").contains("View Parking Map");
+    // cy.get("iframe[title='Google Map of MoVET @ Belleview Station']").should(
+    //   "be.visible"
+    // );
   });
   it("WINTER MODE - display hours list", () => {
     cy.request(
@@ -27,10 +27,10 @@ describe("hours-page-loads", () => {
     cy.get("h3").contains("MoVET @ Belleview Station");
     cy.get("h3").contains("Clinic Walk-In Hours");
     cy.get("h3").contains("Housecalls");
-    cy.get("span").contains("View Parking Map");
-    cy.get("iframe[title='Google Map of MoVET @ Belleview Station']").should(
-      "be.visible"
-    );
+    // cy.get("span").contains("View Parking Map");
+    // cy.get("iframe[title='Google Map of MoVET @ Belleview Station']").should(
+    //   "be.visible"
+    // );
     cy.get("p").contains(
       "Due to weather variability housecalls are by request only"
     );

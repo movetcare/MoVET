@@ -20,12 +20,10 @@ export const Header = () => {
   const [mainNavigationElements, setMainNavigationElements] = useState<
     NavigationItem[] | null
   >(null);
-  const origin =
-    typeof window !== "undefined" && window.location.origin
-      ? window.location.origin
-      : "https://movetcare.com";
+  const [origin, setOrigin] = useState<string | null>();
 
   useEffect(() => {
+    setOrigin(window.location.origin);
     setMainNavigationElements([
       {
         link: "/services",

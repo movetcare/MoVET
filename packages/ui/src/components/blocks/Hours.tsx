@@ -332,7 +332,7 @@ export const Hours = ({
                 </div>
               </div>
             </div>
-            <div className="sm:row-span-3 sm:px-6">
+            {/* <div className="sm:row-span-3 sm:px-6">
               <iframe
                 title="Google Map of MoVET @ Belleview Station"
                 loading="lazy"
@@ -358,7 +358,7 @@ export const Hours = ({
                 </span>
                 <span className="-mt-1">View Parking Map</span>
               </a>
-            </div>
+            </div> */}
             <div className="w-full max-w-lg  whitespace-nowrap">
               <h3 className="text-xl text-center font-bold">
                 Clinic Walk-In Hours
@@ -380,7 +380,7 @@ export const Hours = ({
                 </div>
               </div>
             </div>
-            <div className="w-full max-w-lg items-center">
+            <div className="w-full max-w-md items-center col-span-2 mx-auto">
               <h3 className="text-xl text-center">Housecalls</h3>
               {winterMode &&
               winterMode?.isActive &&
@@ -423,7 +423,7 @@ export const Hours = ({
           Boutique will stay open December 27 - 29.
         </h3> */}
           <div className="flex flex-col justify-center items-center rounded-xl bg-white p-8">
-            <div className="sm:px-6">
+            {/* <div className="sm:px-6">
               <iframe
                 title="Google Map of MoVET @ Belleview Station"
                 loading="lazy"
@@ -449,7 +449,7 @@ export const Hours = ({
                 </span>
                 <span>View Parking Map</span>
               </a>
-            </div>
+            </div> */}
             <div className="mt-8 w-full max-w-lg whitespace-nowrap">
               <h3 className="text-xl text-center font-bold pt-2">
                 MoVET @ Belleview Station

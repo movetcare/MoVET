@@ -90,7 +90,7 @@ const Testing = () => {
             <Error error={error} />
           ) : testClients && testClients?.length === 0 ? (
             <li className="text-center p-4">
-              <h1 className="text-lg">No Test Clients Found</h1>
+              <h1 className="text-lg italic">No Test Clients Found</h1>
               <h3 className="text-lg italic">
                 Use &quot;+test&quot; in the email address to make a new test
                 account
