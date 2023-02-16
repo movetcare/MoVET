@@ -177,7 +177,7 @@ const Header: React.FC = () => {
       headerClassName =
         pathName.toLowerCase() === data.text.toLowerCase()
           ? "text-left text-movet-red block px-3 py-2 rounded-md text-base font-medium cursor-pointer"
-          : "text- left text-movet-black group-hover:text-movet-red group-hover:bg-opacity-75 block px-3 py-2 rounded-md text-base font-medium cursor-pointer";
+          : "text-left text-movet-black group-hover:text-movet-red group-hover:bg-opacity-75 block px-3 py-2 rounded-md text-base font-medium cursor-pointer";
     }
     return (
       <div

@@ -206,8 +206,8 @@ const Testing = () => {
                       title="View Client Verification"
                       href={
                         environment === "production"
-                          ? `https://app.movetcare.com/client/?id=${archivedClient?.id}/`
-                          : `http://localhost:3002/client/?id=${archivedClient?.id}/`
+                          ? `https://admin.movetcare.com/client/?id=${archivedClient?.id}`
+                          : `http://localhost:3002/client/?id=${archivedClient?.id}`
                       }
                       target="_blank"
                       className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   if (
-    process.env.NODE_ENV !== "production" &&
     request.nextUrl.hostname === "localhost" &&
     request.nextUrl.pathname === "/test/login/"
   ) {
