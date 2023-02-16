@@ -16,7 +16,7 @@ describe("sitemap", () => {
               "https://app.movetcare.com",
               "http://localhost:3001"
             )
-          ).wait(1000, { log: false });
+          ).wait(3000, { log: false });
         });
       });
   });
