@@ -69,6 +69,7 @@ const sendAdminBookingRecoveryNotification = async (
     address,
     selectedPatients,
     selectedStaff,
+    step,
   }: any = booking;
   const { email, displayName, phone } = client;
 
@@ -112,7 +113,7 @@ const sendAdminBookingRecoveryNotification = async (
 
   const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
     ?.toDate()
-    ?.toString()}</p>${
+    ?.toString()}</p><p><b>Last Step:</b> ${step}</p>${
     displayName
       ? `<p><b>Client Name:</b> ${getClientFirstNameFromDisplayName(
           displayName
@@ -164,7 +165,7 @@ const sendAdminBookingRecoveryNotification = async (
         replyTo: email,
         subject: `${
           displayName ? displayName : email ? email : ""
-        } abandoned their appointment booking request ${
+        } abandoned their appointment booking request on step "${step}" ${
           type === "24_HOUR"
             ? "yesterday"
             : type === "72_HOUR"
