@@ -211,6 +211,38 @@ export const resetTestData: Promise<Response> = functions
           );
       } else if (request.body?.id === "winter-mode-off")
         await disableWinterMode();
+      else if (
+        request.body?.id ===
+        "require_payment_method_to_request_an_appointment_on"
+      )
+        await admin
+          .firestore()
+          .collection("configuration")
+          .doc("bookings")
+          .set(
+            {
+              requirePaymentMethodToRequestAnAppointment: true,
+              updatedOn: new Date(),
+            },
+            { merge: true }
+          )
+          .catch((error: any) => DEBUG && console.error(error));
+      else if (
+        request.body?.id ===
+        "require_payment_method_to_request_an_appointment_off"
+      )
+        await admin
+          .firestore()
+          .collection("configuration")
+          .doc("bookings")
+          .set(
+            {
+              requirePaymentMethodToRequestAnAppointment: false,
+              updatedOn: new Date(),
+            },
+            { merge: true }
+          )
+          .catch((error: any) => DEBUG && console.error(error));
     }
     return response.status(200).send();
   });

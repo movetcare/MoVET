@@ -43,6 +43,7 @@ export const configureBooking = async (): Promise<boolean> => {
             value: 121,
             label: "Virtual Meet & Greet",
           },
+          requirePaymentMethodToRequestAnAppointment: false,
           winterHousecallMode: {
             startDate: new Date(),
             endDate: new Date(today.setDate(today.getDate() + 5)),

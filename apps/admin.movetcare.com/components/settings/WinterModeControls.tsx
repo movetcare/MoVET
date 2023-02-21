@@ -16,8 +16,8 @@ import { classNames } from "utils/classNames";
 import toast from "react-hot-toast";
 import { onAuthStateChanged } from "firebase/auth";
 import { useDocument } from "react-firebase-hooks/firestore";
-import DateInput from "./inputs/DateInput";
-import TextInput from "./inputs/TextInput";
+import DateInput from "../inputs/DateInput";
+import TextInput from "../inputs/TextInput";
 
 export const WinterModeControls = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);

@@ -1,47 +1,11 @@
-const defaultPathnameTimeOut = Cypress.env().defaultPathnameTimeOut;
+const pathTimeout = Cypress.env().defaultPathnameTimeOut;
 const onlyTestOnePatient = Cypress.env().onlyTestOnePatient;
 const skipWellnessCheck = Cypress.env().skipWellnessCheck;
-console.log("endpointApiKey", Cypress.env().endpointApiKey);
-console.log("defaultPathnameTimeOut", Cypress.env().defaultPathnameTimeOut);
-console.log("onlyTestOnePatient", Cypress.env().onlyTestOnePatient);
-console.log("skipWellnessCheck", Cypress.env().skipWellnessCheck);
-console.log(
-  "existingClientNoPaymentEmail",
-  Cypress.env().existingClientNoPaymentEmail
-);
-console.log(
-  "existingClientNoPaymentFirstName",
-  Cypress.env().existingClientNoPaymentFirstName
-);
-console.log(
-  "existingClientNoPaymentLastName",
-  Cypress.env().existingClientNoPaymentLastName
-);
-console.log(
-  "existingClientNoPaymentId",
-  Cypress.env().existingClientNoPaymentId
-);
-console.log(
-  "existingClientWithPaymentEmail",
-  Cypress.env().existingClientWithPaymentEmail
-);
-console.log(
-  "existingClientWithPaymentFirstName",
-  Cypress.env().existingClientWithPaymentFirstName
-);
-console.log(
-  "existingClientWithPaymentLastName",
-  Cypress.env().existingClientWithPaymentLastName
-);
-console.log(
-  "existingClientWithPaymentId",
-  Cypress.env().existingClientWithPaymentId
-);
 describe(
   "standard-schedule-an-appointment-flow",
-  { defaultCommandTimeout: defaultPathnameTimeOut },
+  { defaultCommandTimeout: pathTimeout },
   () => {
-    it("Can schedule an appointment as a new client - VCPR REQUIRED", () => {
+    it.only("Can schedule an appointment as a new client - VCPR REQUIRED", () => {
       runThroughAppointmentRequestWorkflows({
         email: `dev+test_client_${Math.floor(
           Math.random() * 99999999999
@@ -50,6 +14,20 @@ describe(
         lastName: "Client (Can be Deleted)",
         petName: Cypress.env().existingPatientWithVcprName,
         id: null,
+        paymentRequired: false,
+      });
+    });
+
+    it("Can schedule an appointment as a new client - PAYMENT REQUIRED", () => {
+      runThroughAppointmentRequestWorkflows({
+        email: `dev+test_client_${Math.floor(
+          Math.random() * 99999999999
+        )}@movetcare.com`,
+        firstName: "Test",
+        lastName: "Client (Can be Deleted)",
+        petName: Cypress.env().existingPatientWithVcprName,
+        id: null,
+        paymentRequired: true,
       });
     });
 
@@ -69,6 +47,7 @@ describe(
           lastName: "Client (Can be Deleted)",
           petName: Cypress.env().existingPatientWithVcprName,
           id: Cypress.env().existingClientNoPaymentId,
+          paymentRequired: false,
         });
       });
 
@@ -88,7 +67,7 @@ describe(
       );
       cy.get("h2").as("heading").contains("Schedule an Appointment");
       cy.get("@heading").contains("Processing, please wait...");
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+      cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/pet-selection/"
       );
@@ -103,7 +82,7 @@ describe(
       cy.get("label").as("label").contains("NO VCPR TEST CAT").click();
       Cypress.on("fail", () => false);
       cy.get("button[type='submit']").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+      cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/location-selection/"
       );
@@ -113,7 +92,9 @@ describe(
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
       cy.get("@heading").contains("MoVET @ Belleview Station");
-      cy.get("a").contains("4912 S Newport St, Denver CO 80237");
+      cy.get("a")
+        .contains("4912 S Newport St, Denver CO 80237")
+        .wait(1500, { log: false });
       cy.get("button[type='submit']").as("submitButton").should("be.enabled");
       cy.get("#Virtually").contains("Virtually").click();
       cy.get("@heading").contains(
@@ -124,19 +105,21 @@ describe(
       cy.get("button").should("be.enabled");
       cy.get("#Home").contains("Home").click();
       cy.get("@submitButton").should("be.disabled");
-      cy.get(".places-search").type("702 Westgate Ave");
-      cy.wait(1000);
+      cy.get(".places-search")
+        .type("702 Westgate Ave")
+        .wait(1500, { log: false });
       cy.get("#react-select-3-option-0").click();
       cy.get("p.text-movet-red").contains(
         "MoVET does not currently service this area. Please enter a new address that is in (or near) the Denver Metro area."
       );
       cy.get("@submitButton").as("submit").should("be.disabled");
-      cy.get(".places-search").type("4912 S Newport Street Denver");
-      cy.wait(1000);
+      cy.get(".places-search")
+        .type("4912 S Newport Street Denver")
+        .wait(1500, { log: false });
       cy.get("#react-select-3-option-0").click();
       cy.get("#info").type("Apartment 2A (This is a test address)");
       cy.get("@submitButton").should("be.enabled").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+      cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/reason-selection/"
       );
@@ -149,7 +132,7 @@ describe(
       cy.wait(1000);
       cy.get("#react-select-3-option-1").click();
       cy.get("@submitButton").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+      cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/staff-selection/"
       );
@@ -159,7 +142,7 @@ describe(
       cy.get("button").contains("CANCEL").click();
       cy.get("@submitButton").should("be.enabled");
       cy.get("@submitButton").contains("Request").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+      cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/datetime-selection/"
       );
@@ -174,7 +157,7 @@ describe(
       cy.get(".time-input").type("1430");
       cy.get("@submitButton").should("be.enabled").click();
       cy.location("pathname", {
-        timeout: defaultPathnameTimeOut + 3000,
+        timeout: pathTimeout + 3000,
       }).should("eq", "/schedule-an-appointment/success/");
       cy.get("@heading").contains("Appointment Request Successful");
     });
@@ -183,7 +166,7 @@ describe(
 
 describe(
   "winter-mode-schedule-an-appointment-flow",
-  { defaultCommandTimeout: defaultPathnameTimeOut },
+  { defaultCommandTimeout: pathTimeout },
   () => {
     it("Can NOT request a housecall with VCPR required patient", () => {
       cy.request(
@@ -211,7 +194,7 @@ describe(
       );
       cy.get("h2").as("heading").contains("Schedule an Appointment");
       cy.get("@heading").contains("Processing, please wait...");
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+      cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/pet-selection/"
       );
@@ -224,7 +207,7 @@ describe(
         );
       cy.get("@label").contains("NO VCPR TEST DOG").click();
       cy.get("button[type='submit']").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+      cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/wellness-check/"
       );
@@ -238,7 +221,7 @@ describe(
 
       cy.get("button").contains("Skip").click();
       Cypress.on("fail", () => false);
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+      cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/location-selection/"
       );
@@ -256,7 +239,9 @@ describe(
       cy.get("button").should("be.enabled");
       cy.get("#Clinic").click();
       cy.get("@heading").contains("MoVET @ Belleview Station");
-      cy.get("a").contains("4912 S Newport St, Denver CO 80237");
+      cy.get("a")
+        .contains("4912 S Newport St, Denver CO 80237")
+        .wait(1500, { log: false });
       cy.get("button[type='submit']").as("submitButton").should("be.enabled");
       cy.get("#Home").should("not.exist");
       cy.request(
@@ -293,25 +278,26 @@ describe(
       cy.get("legend").contains("Your Pet");
       cy.get("label").contains("VCPR REQUIRED TEST CAT");
       cy.get("button[type='submit']").as("submit").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+      cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/wellness-check/"
       );
       cy.get("button").contains("Skip").click();
       Cypress.on("fail", () => false);
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+      cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/location-selection/"
       );
       Cypress.on("fail", () => true);
       cy.get("#Virtually").should("not.exist");
       cy.get("#Home").should("not.exist");
-      cy.get(".places-search").type("4912 S Newport Street Denver");
-      cy.wait(1000);
+      cy.get(".places-search")
+        .type("4912 S Newport Street Denver")
+        .wait(1500, { log: false });
       cy.get("#react-select-3-option-0").click();
       cy.get("#info").type("Apartment 2A (This is a test address)");
       cy.get("@submit").click();
-      cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+      cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/datetime-selection/"
       );
@@ -322,7 +308,7 @@ describe(
       cy.get(".time-input").type("1430");
       cy.get("@submit").should("be.enabled").click();
       cy.location("pathname", {
-        timeout: defaultPathnameTimeOut + 3000,
+        timeout: pathTimeout + 3000,
       }).should("eq", "/schedule-an-appointment/success/");
       cy.get("h2").contains("Housecall Request Successful");
       cy.request(
@@ -340,7 +326,26 @@ const runThroughAppointmentRequestWorkflows = ({
   firstName,
   lastName,
   petName,
+  paymentRequired,
 }) => {
+  cy.request(
+    "POST",
+    "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
+    {
+      apiKey: Cypress.env().endpointApiKey,
+      id: "require_payment_method_to_request_an_appointment_off",
+    }
+  );
+  if (paymentRequired) {
+    cy.request(
+      "POST",
+      "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
+      {
+        apiKey: Cypress.env().endpointApiKey,
+        id: "require_payment_method_to_request_an_appointment_on",
+      }
+    );
+  }
   cy.request(
     "POST",
     "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
@@ -356,7 +361,7 @@ const runThroughAppointmentRequestWorkflows = ({
   cy.get("h2").as("heading").contains("Schedule an Appointment");
   cy.get("button[type='submit']").as("submitButton").click();
   cy.get("@heading").contains("Processing, please wait...");
-  cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+  cy.location("pathname", { timeout: pathTimeout }).should(
     "eq",
     "/schedule-an-appointment/contact-info/"
   );
@@ -371,10 +376,10 @@ const runThroughAppointmentRequestWorkflows = ({
   cy.get("input[name='firstName']").type(firstName);
   cy.get("input[name='lastName']").type(lastName);
   cy.get("input[name='phone-number']").type(
-    Math.floor(100000000 + Math.random() * 900000000)
+    Math.floor(100000000 + Math.random() * 900000000).toString()
   );
   cy.get("@submitButton").click();
-  cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+  cy.location("pathname", { timeout: pathTimeout }).should(
     "eq",
     "/schedule-an-appointment/add-a-pet/"
   );
@@ -403,7 +408,7 @@ const runThroughAppointmentRequestWorkflows = ({
     .as("notes")
     .type("This is a test pet that is auto generated via Cypress...");
   cy.get("@submitButton").click();
-  cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+  cy.location("pathname", { timeout: pathTimeout }).should(
     "eq",
     "/schedule-an-appointment/pet-selection/"
   );
@@ -415,7 +420,7 @@ const runThroughAppointmentRequestWorkflows = ({
   cy.get("@text").contains("A pet selection is required");
   if (!onlyTestOnePatient) {
     cy.get("button").contains("Add a Pet").as("addAPetButton").click();
-    cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+    cy.location("pathname", { timeout: pathTimeout }).should(
       "eq",
       "/schedule-an-appointment/add-a-pet/"
     );
@@ -437,12 +442,12 @@ const runThroughAppointmentRequestWorkflows = ({
       "This is a test pet that is auto generated via Cypress..."
     );
     cy.get("@submitButton").click();
-    cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+    cy.location("pathname", { timeout: pathTimeout }).should(
       "eq",
       "/schedule-an-appointment/pet-selection/"
     );
     cy.get("@addAPetButton").click();
-    cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+    cy.location("pathname", { timeout: pathTimeout }).should(
       "eq",
       "/schedule-an-appointment/add-a-pet/"
     );
@@ -464,7 +469,7 @@ const runThroughAppointmentRequestWorkflows = ({
       "This is a test pet that is auto generated via Cypress..."
     );
     cy.get("@submitButton").click();
-    cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+    cy.location("pathname", { timeout: pathTimeout }).should(
       "eq",
       "/schedule-an-appointment/pet-selection/"
     );
@@ -488,7 +493,7 @@ const runThroughAppointmentRequestWorkflows = ({
     );
     cy.get("@submitButton").click();
   }
-  cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+  cy.location("pathname", { timeout: pathTimeout }).should(
     "eq",
     "/schedule-an-appointment/pet-selection/"
   );
@@ -501,7 +506,7 @@ const runThroughAppointmentRequestWorkflows = ({
     cy.get("@label").contains("TEST CAT 2").click();
   }
   cy.get("@submitButton").click();
-  cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+  cy.location("pathname", { timeout: pathTimeout }).should(
     "eq",
     "/schedule-an-appointment/wellness-check/"
   );
@@ -521,7 +526,7 @@ const runThroughAppointmentRequestWorkflows = ({
   else if (!skipWellnessCheck)
     cy.get("button").contains("My Pet DOES NOT need emergency care").click();
   if (!skipWellnessCheck) {
-    cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+    cy.location("pathname", { timeout: pathTimeout }).should(
       "eq",
       "/schedule-an-appointment/illness-selection/"
     );
@@ -544,7 +549,7 @@ const runThroughAppointmentRequestWorkflows = ({
     cy.get("@submitButton").click();
   }
   if (!onlyTestOnePatient && !skipWellnessCheck) {
-    cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+    cy.location("pathname", { timeout: pathTimeout }).should(
       "eq",
       "/schedule-an-appointment/illness-selection/"
     );
@@ -557,7 +562,7 @@ const runThroughAppointmentRequestWorkflows = ({
     cy.get("textarea[name='details']").type("Test symptom notes...");
     cy.get("button").contains("Continue").click();
   }
-  cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+  cy.location("pathname", { timeout: pathTimeout }).should(
     "eq",
     "/schedule-an-appointment/location-selection/"
   );
@@ -566,7 +571,9 @@ const runThroughAppointmentRequestWorkflows = ({
   cy.get("@heading").contains("Restart Appointment Booking?");
   cy.get("button").contains("CANCEL").click();
   cy.get("@heading").contains("MoVET @ Belleview Station");
-  cy.get("a").contains("4912 S Newport St, Denver CO 80237");
+  cy.get("a")
+    .contains("4912 S Newport St, Denver CO 80237")
+    .wait(1500, { log: false });
   cy.get("@submitButton").should("be.enabled");
   cy.get("#Virtually").contains("Virtually").click();
   cy.get("@heading").contains("What can I expect in a Virtual Consultation?");
@@ -575,17 +582,17 @@ const runThroughAppointmentRequestWorkflows = ({
   cy.get("button").should("be.enabled");
   cy.get("#Home").contains("Home").click();
   cy.get("@submitButton").should("be.disabled");
-  cy.get(".places-search").type("702 Westgate Ave");
-  // cy.focused().tab();
+  cy.get(".places-search").type("702 Westgate Ave").wait(1500, { log: false });
   cy.get(".places-search").type("{enter}");
   cy.get("@submitButton").should("be.disabled");
-  cy.get(".places-search").type("4912 S Newport Street Denver");
-  //cy.focused().tab();
+  cy.get(".places-search")
+    .type("4912 S Newport Street Denver")
+    .wait(1500, { log: false });
   cy.get("@submitButton").should("be.disabled");
   cy.get("#info").type("Apartment 2A (This is a test address)");
   cy.get("#Clinic").contains("Clinic").click();
   cy.get("@submitButton").should("be.enabled").click();
-  cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
+  cy.location("pathname", { timeout: pathTimeout }).should(
     "eq",
     "/schedule-an-appointment/datetime-selection/"
   );
@@ -599,16 +606,26 @@ const runThroughAppointmentRequestWorkflows = ({
   cy.get("button abbr").contains(String(tomorrow.getDate())).click();
   cy.get(".time-input").type("1430");
   cy.get("@submitButton").should("be.enabled").click();
-  cy.location("pathname", { timeout: defaultPathnameTimeOut }).should(
-    "eq",
-    "/schedule-an-appointment/payment-confirmation/"
-  );
-  cy.get("@heading").contains("of Payment Required");
-  cy.get("@text").contains(
-    "* You will not be charged until your appointment is completed."
-  );
-  cy.get("@submitButton").should("be.enabled").click();
-  cy.wait(100);
-  cy.visit("http://localhost:3001/schedule-an-appointment/success");
+  if (paymentRequired) {
+    cy.location("pathname", { timeout: pathTimeout }).should(
+      "eq",
+      "/schedule-an-appointment/payment-confirmation/"
+    );
+    cy.get("@heading").contains("of Payment Required");
+    cy.get("@text").contains(
+      "* You will not be charged until your appointment is completed."
+    );
+    cy.get("@submitButton").should("be.enabled").click();
+    cy.wait(100);
+    cy.visit("http://localhost:3001/schedule-an-appointment/success");
+  }
   cy.get("@heading").contains("Appointment Request Successful");
+  cy.request(
+    "POST",
+    "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
+    {
+      apiKey: Cypress.env().endpointApiKey,
+      id: "require_payment_method_to_request_an_appointment_off",
+    }
+  );
 };

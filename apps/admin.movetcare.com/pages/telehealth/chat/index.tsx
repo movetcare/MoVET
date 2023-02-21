@@ -274,9 +274,9 @@ const ChatSession = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                {isMounted && <Tooltip anchorId="clientVerification" />}
+                {isMounted && <Tooltip id="clientVerification" />}
                 <a
-                  id="clientVerification"
+                  data-tooltip-id="clientVerification"
                   data-tooltip-content="Verify Client Account"
                   title="Verify Client Account"
                   href={
@@ -292,9 +292,9 @@ const ChatSession = () => {
                 </a>
                 {router.query.mode !== "embed" && (
                   <>
-                    {isMounted && <Tooltip anchorId="viewProVet" />}
+                    {isMounted && <Tooltip id="viewProVet" />}
                     <a
-                      id="viewProVet"
+                      data-tooltip-id="viewProVet"
                       data-tooltip-content="View in ProVet"
                       title="View in ProVet"
                       href={
@@ -316,9 +316,9 @@ const ChatSession = () => {
                       paymentMethod.data()?.active &&
                       index === 0 && (
                         <>
-                          {isMounted && <Tooltip anchorId="viewCustomer" />}
+                          {isMounted && <Tooltip id="viewCustomer" />}
                           <a
-                            id="viewCustomer"
+                            data-tooltip-id="viewCustomer"
                             data-tooltip-content="View in Customer in Stripe"
                             title="View in Customer in Stripe"
                             key={index}
@@ -338,9 +338,9 @@ const ChatSession = () => {
                   )}
                 {session?.data()?.client?.phone && (
                   <>
-                    {isMounted && <Tooltip anchorId="callClient" />}
+                    {isMounted && <Tooltip id="callClient" />}
                     <a
-                      id="callClient"
+                      data-tooltip-id="callClient"
                       data-tooltip-content="Call Client"
                       title="Call Client"
                       href={`${GOTO_PHONE_URL}/${
@@ -356,9 +356,9 @@ const ChatSession = () => {
                 )}
                 {session?.data()?.client?.email && (
                   <>
-                    {isMounted && <Tooltip anchorId="emailClient" />}
+                    {isMounted && <Tooltip id="emailClient" />}
                     <a
-                      id="emailClient"
+                      data-tooltip-id="emailClient"
                       data-tooltip-content="Email Client"
                       title="Email Client"
                       href={`mailto:${session?.data()?.client?.email}`}
@@ -372,9 +372,9 @@ const ChatSession = () => {
                 )}
                 {router.query.mode !== "embed" && (
                   <>
-                    {isMounted && <Tooltip anchorId="endChat" />}
+                    {isMounted && <Tooltip id="endChat" />}
                     <div
-                      id="endChat"
+                      data-tooltip-id="endChat"
                       data-tooltip-content="End Client Chat - This will send them an email of the chat log!"
                       title="End Client Chat - This will send them an email of the chat log!"
                       onClick={() => endTelehealthChatSession()}

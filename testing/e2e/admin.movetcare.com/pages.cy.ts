@@ -66,7 +66,7 @@ describe("admin-app-pages", () => {
     cy.get("a[href='/signout/']").click();
     cy.get("main button").contains("EMAIL").should("be.enabled");
   });
-  it("no admin pages load for staff", () => {
+  it.only("no admin pages load for staff", () => {
     cy.visit("http://localhost:4000/auth");
     cy.get("button").eq(5).click().wait(1, { log: false });
     cy.get("div.mdc-menu-surface--open")
@@ -117,6 +117,56 @@ describe("admin-app-pages", () => {
     cy.location("pathname", {
       timeout: Cypress.env().defaultPathnameTimeOut,
     }).should("eq", "/settings/");
+    cy.get("p").contains("You do not have permission to view this page");
+    cy.visit("http://localhost:3002/settings/booking");
+    cy.location("pathname", {
+      timeout: Cypress.env().defaultPathnameTimeOut,
+    }).should("eq", "/settings/booking/");
+    cy.get("p").contains("You do not have permission to view this page");
+    cy.visit("http://localhost:3002/settings/booking/clinic");
+    cy.location("pathname", {
+      timeout: Cypress.env().defaultPathnameTimeOut,
+    }).should("eq", "/settings/booking/clinic/");
+    cy.get("p").contains("You do not have permission to view this page");
+    cy.visit("http://localhost:3002/settings/booking/housecall");
+    cy.location("pathname", {
+      timeout: Cypress.env().defaultPathnameTimeOut,
+    }).should("eq", "/settings/booking/housecall/");
+    cy.get("p").contains("You do not have permission to view this page");
+    cy.visit("http://localhost:3002/settings/booking/telehealth");
+    cy.location("pathname", {
+      timeout: Cypress.env().defaultPathnameTimeOut,
+    }).should("eq", "/settings/booking/telehealth/");
+    cy.get("p").contains("You do not have permission to view this page");
+    cy.visit("http://localhost:3002/settings/announcement-banner");
+    cy.location("pathname", {
+      timeout: Cypress.env().defaultPathnameTimeOut,
+    }).should("eq", "/settings/announcement-banner/");
+    cy.get("p").contains("You do not have permission to view this page");
+    cy.visit("http://localhost:3002/settings/request-an-appointment");
+    cy.location("pathname", {
+      timeout: Cypress.env().defaultPathnameTimeOut,
+    }).should("eq", "/settings/request-an-appointment/");
+    cy.get("p").contains("You do not have permission to view this page");
+    cy.visit("http://localhost:3002/settings/testing");
+    cy.location("pathname", {
+      timeout: Cypress.env().defaultPathnameTimeOut,
+    }).should("eq", "/settings/testing/");
+    cy.get("p").contains("You do not have permission to view this page");
+    cy.visit("http://localhost:3002/settings/tools");
+    cy.location("pathname", {
+      timeout: Cypress.env().defaultPathnameTimeOut,
+    }).should("eq", "/settings/tools/");
+    cy.get("p").contains("You do not have permission to view this page");
+    cy.visit("http://localhost:3002/settings/users");
+    cy.location("pathname", {
+      timeout: Cypress.env().defaultPathnameTimeOut,
+    }).should("eq", "/settings/users/");
+    cy.get("p").contains("You do not have permission to view this page");
+    cy.visit("http://localhost:3002/settings/winter-mode");
+    cy.location("pathname", {
+      timeout: Cypress.env().defaultPathnameTimeOut,
+    }).should("eq", "/settings/winter-mode/");
     cy.get("p").contains("You do not have permission to view this page");
     cy.get("a[href='/signout/']").click();
     cy.get("main button").contains("EMAIL").should("be.enabled");

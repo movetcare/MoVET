@@ -134,9 +134,9 @@ export const Waitlist = () => {
                     </div>
                     <div className="min-w-0 flex flex-row justify-center md:justify-between w-full">
                       <div className="flex flex-row items-center">
-                        {isMounted && <Tooltip anchorId="viewProVet" />}
+                        {isMounted && <Tooltip id="viewProVet" />}
                         <a
-                          id="viewProVet"
+                          data-tooltip-id="viewProVet"
                           data-tooltip-content="View in ProVet"
                           title="View in ProVet"
                           href={
@@ -162,9 +162,9 @@ export const Waitlist = () => {
                       <div className="hidden md:flex justify-end">
                         {client?.data()?.customerId && (
                           <>
-                            {isMounted && <Tooltip anchorId="ViewInStripe" />}
+                            {isMounted && <Tooltip id="ViewInStripe" />}
                             <a
-                              id="ViewInStripe"
+                              data-tooltip-id="ViewInStripe"
                               data-tooltip-content="View Customer in Stripe"
                               title="View Customer in Stripe"
                               href={
@@ -270,9 +270,9 @@ export const Waitlist = () => {
                         </div>
                       </div>
                     </div>
-                    {isMounted && <Tooltip anchorId="remove" />}
+                    {isMounted && <Tooltip id="remove" />}
                     <button
-                      id="remove"
+                      data-tooltip-id="remove"
                       data-tooltip-content="Remove from Waitlist"
                       title="Remove from Waitlist"
                       className="md:ml-6 md:mr-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -322,9 +322,9 @@ export const Waitlist = () => {
                   </div>
                   {client?.data()?.customerId && (
                     <>
-                      {isMounted && <Tooltip anchorId="viewStripe" />}
+                      {isMounted && <Tooltip id="viewStripe" />}
                       <a
-                        id="viewStripe"
+                        data-tooltip-id="viewStripe"
                         data-tooltip-content="View Customer in Stripe"
                         title="View Customer in Stripe"
                         href={
@@ -357,9 +357,9 @@ export const Waitlist = () => {
                   <div className="flex justify-center items-center mt-3 w-full">
                     {client?.data()?.id && (
                       <>
-                        {isMounted && <Tooltip anchorId="viewProvet" />}
+                        {isMounted && <Tooltip id="viewProvet" />}
                         <a
-                          id="viewProvet"
+                          data-tooltip-id="viewProvet"
                           data-tooltip-content="View in ProVet"
                           title="View in ProVet"
                           href={
@@ -381,9 +381,9 @@ export const Waitlist = () => {
                     )}
                     {client?.data()?.email && (
                       <>
-                        {isMounted && <Tooltip anchorId="sendEmail" />}
+                        {isMounted && <Tooltip id="sendEmail" />}
                         <a
-                          id="sendEmail"
+                          data-tooltip-id="sendEmail"
                           data-tooltip-content="Email Client"
                           title="Email Client"
                           href={`mailto://${client?.data()?.email}`}
@@ -397,9 +397,9 @@ export const Waitlist = () => {
                     )}
                     {client?.data()?.phone && (
                       <>
-                        {isMounted && <Tooltip anchorId="callClient" />}
+                        {isMounted && <Tooltip id="callClient" />}
                         <a
-                          id="callClient"
+                          data-tooltip-id="callClient"
                           data-tooltip-content="Call Client"
                           title="Call Client"
                           href={`${GOTO_PHONE_URL}/${client?.data()?.phone}`}
@@ -414,9 +414,9 @@ export const Waitlist = () => {
                     {client?.data()?.phone &&
                       client?.data()?.status === "complete" && (
                         <>
-                          {isMounted && <Tooltip anchorId="textClient" />}
+                          {isMounted && <Tooltip id="textClient" />}
                           <button
-                            id="textClient"
+                            data-tooltip-id="textClient"
                             data-tooltip-content="Send  `Ready for Appointment` to Client"
                             title="Send  `Ready for Appointment` to Client"
                             onClick={() => {

@@ -15,7 +15,13 @@ describe("sitemap", () => {
           const parsed = new URL(url.loc);
           cy.log(parsed.pathname);
           cy.visit(
-            url.loc.replaceAll("https://movetcare.com", "http://localhost:3000")
+            url.loc.replaceAll(
+              "https://movetcare.com",
+              "http://localhost:3000"
+            ),
+            {
+              retryOnStatusCodeFailure: true,
+            }
           ).wait(3000, { log: false });
         });
       });

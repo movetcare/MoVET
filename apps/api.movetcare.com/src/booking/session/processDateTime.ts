@@ -25,57 +25,87 @@ export const processDateTime = async (
         throwError(error);
         return await handleFailedBooking(error, "GET BOOKING DATA FAILED");
       });
-    const customer: string = await getCustomerId(session?.client?.uid);
-    if (DEBUG) console.log("customer", customer);
-    const validFormOfPayment = await verifyValidPaymentSource(
-      session?.client?.uid,
-      customer
-    );
-    if (DEBUG) console.log("validFormOfPayment", validFormOfPayment);
-    const checkoutSession =
-      validFormOfPayment === false
-        ? await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            mode: "setup",
-            customer,
-            client_reference_id: session?.client?.uid,
-            metadata: {
-              clientId: session?.client?.uid,
-            },
-            success_url:
-              (environment?.type === "development"
-                ? "http://localhost:3001"
-                : environment?.type === "production"
-                ? "https://app.movetcare.com"
-                : "https://stage.app.movetcare.com") +
-              "/schedule-an-appointment/success",
-            cancel_url:
-              (environment?.type === "development"
-                ? "http://localhost:3001"
-                : environment?.type === "production"
-                ? "https://app.movetcare.com"
-                : "https://stage.app.movetcare.com") +
-              "/schedule-an-appointment",
-          })
-        : null;
-    if (DEBUG) console.log("STRIPE CHECKOUT SESSION", checkoutSession);
-    await bookingRef
-      .set(
-        {
-          requestedDateTime,
-          checkoutSession: checkoutSession ? checkoutSession?.url : null,
-          step: checkoutSession
-            ? ("datetime-selection" as Booking["step"])
-            : "success",
-          updatedOn: new Date(),
-        },
-        { merge: true }
+    const paymentMethodIsRequired = await admin
+      .firestore()
+      .collection("configuration")
+      .doc("bookings")
+      .get()
+      .then(
+        (doc: any) => doc.data()?.requirePaymentMethodToRequestAnAppointment
       )
       .catch(async (error: any) => {
         throwError(error);
-        return await handleFailedBooking(error, "UPDATE DATE TIME FAILED");
+        return await handleFailedBooking(error, "PAYMENT CONFIGURATION FAILED");
       });
-
+    const customer: string = await getCustomerId(session?.client?.uid);
+    let validFormOfPayment = null,
+      checkoutSession = null;
+    if (DEBUG) console.log("customer", customer);
+    if (paymentMethodIsRequired) {
+      validFormOfPayment = await verifyValidPaymentSource(
+        session?.client?.uid,
+        customer
+      );
+      if (DEBUG) console.log("validFormOfPayment", validFormOfPayment);
+      checkoutSession =
+        validFormOfPayment === false
+          ? await stripe.checkout.sessions.create({
+              payment_method_types: ["card"],
+              mode: "setup",
+              customer,
+              client_reference_id: session?.client?.uid,
+              metadata: {
+                clientId: session?.client?.uid,
+              },
+              success_url:
+                (environment?.type === "development"
+                  ? "http://localhost:3001"
+                  : environment?.type === "production"
+                  ? "https://app.movetcare.com"
+                  : "https://stage.app.movetcare.com") +
+                "/schedule-an-appointment/success",
+              cancel_url:
+                (environment?.type === "development"
+                  ? "http://localhost:3001"
+                  : environment?.type === "production"
+                  ? "https://app.movetcare.com"
+                  : "https://stage.app.movetcare.com") +
+                "/schedule-an-appointment",
+            })
+          : null;
+      if (DEBUG) console.log("STRIPE CHECKOUT SESSION", checkoutSession);
+      await bookingRef
+        .set(
+          {
+            requestedDateTime,
+            checkoutSession: checkoutSession ? checkoutSession?.url : null,
+            step: checkoutSession
+              ? ("datetime-selection" as Booking["step"])
+              : "success",
+            updatedOn: new Date(),
+          },
+          { merge: true }
+        )
+        .catch(async (error: any) => {
+          throwError(error);
+          return await handleFailedBooking(error, "UPDATE DATE TIME FAILED");
+        });
+    } else {
+      await bookingRef
+        .set(
+          {
+            requestedDateTime,
+            checkoutSession: null,
+            step: "success",
+            updatedOn: new Date(),
+          },
+          { merge: true }
+        )
+        .catch(async (error: any) => {
+          throwError(error);
+          return await handleFailedBooking(error, "UPDATE DATE TIME FAILED");
+        });
+    }
     if (session && customer) {
       sendNotification({
         type: "slack",
@@ -127,8 +157,8 @@ export const processDateTime = async (
                 {
                   type: "plain_text",
                   text: checkoutSession
-                    ? JSON.stringify(checkoutSession)
-                    : `Customer has ${
+                    ? "ACTIVE"
+                    : `SKIPPED - Customer has ${
                         (validFormOfPayment as Array<any>)?.length
                       } Valid Payment Sources`,
                 },

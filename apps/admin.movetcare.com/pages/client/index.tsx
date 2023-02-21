@@ -454,42 +454,40 @@ const Client = () => {
                     </div>
                   </div>
                 </div>
+                {isMounted && <Tooltip id="resetPassword" />}
                 <div className="flex flex-row items-center justify-center space-x-2 mt-2">
                   {client?.email !== undefined &&
                     !client?.email?.toLowerCase().includes("missing") && (
-                      <>
-                        {isMounted && <Tooltip anchorId="resetPassword" />}
-                        <div
-                          id="resetPassword"
-                          data-tooltip-content="Re-send Account Verification Link (Contains a reset password link)"
-                          title="Re-send Account Verification Link (Contains a reset password link)"
-                          onClick={() => sendPasswordResetLink()}
-                          className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                        >
-                          {isLoadingSendPasswordResetLink ? (
-                            <FontAwesomeIcon
-                              icon={faSpinner}
-                              spin
-                              size="sm"
-                              className="text-movet-brown ml-4"
-                            />
-                          ) : (
-                            <FontAwesomeIcon
-                              icon={faPaperPlane}
-                              size="lg"
-                              className={
-                                !client?.emailVerified && !isLoadingAccount
-                                  ? "text-movet-yellow hover:text-movet-green"
-                                  : ""
-                              }
-                            />
-                          )}
-                        </div>
-                      </>
+                      <div
+                        data-tooltip-id="resetPassword"
+                        data-tooltip-content="Re-send Account Verification Link (Contains a reset password link)"
+                        title="Re-send Account Verification Link (Contains a reset password link)"
+                        onClick={() => sendPasswordResetLink()}
+                        className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                      >
+                        {isLoadingSendPasswordResetLink ? (
+                          <FontAwesomeIcon
+                            icon={faSpinner}
+                            spin
+                            size="sm"
+                            className="text-movet-brown"
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            icon={faPaperPlane}
+                            size="lg"
+                            className={
+                              !client?.emailVerified && !isLoadingAccount
+                                ? "text-movet-yellow hover:text-movet-green"
+                                : ""
+                            }
+                          />
+                        )}
+                      </div>
                     )}
-                  {isMounted && <Tooltip anchorId="viewInProvet" />}
+                  {isMounted && <Tooltip id="viewInProvet" />}
                   <a
-                    id="viewInProvet"
+                    data-tooltip-id="viewInProvet"
                     data-tooltip-content="View Client in Provet"
                     title="View Client in Provet"
                     href={
@@ -505,9 +503,9 @@ const Client = () => {
                   </a>
                   {client && client?.customer?.length > 0 && (
                     <>
-                      {isMounted && <Tooltip anchorId="viewInStripe" />}
+                      {isMounted && <Tooltip id="viewInStripe" />}
                       <a
-                        id="viewInStripe"
+                        data-tooltip-id="viewInStripe"
                         data-tooltip-content="View Customer in Stripe"
                         title="View Customer in Stripe"
                         href={
@@ -527,11 +525,11 @@ const Client = () => {
                     client?.phoneNumber &&
                     !client?.phoneNumber?.toLowerCase().includes("missing") && (
                       <>
-                        {isMounted && <Tooltip anchorId="callPhone" />}
+                        {isMounted && <Tooltip id="callPhone" />}
                         <a
                           data-tooltip-content="Call Client"
                           title="Call Client"
-                          id="callPhone"
+                          data-tooltip-id="callPhone"
                           href={`${GOTO_PHONE_URL}/${client?.phoneNumber}`}
                           target="_blank"
                           className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
@@ -545,9 +543,9 @@ const Client = () => {
                     client?.email &&
                     !client?.email?.toLowerCase()?.includes("missing") && (
                       <>
-                        {isMounted && <Tooltip anchorId="sendEmail" />}
+                        {isMounted && <Tooltip id="sendEmail" />}
                         <a
-                          id="sendEmail"
+                          data-tooltip-id="sendEmail"
                           data-tooltip-content="Email Client"
                           title="Email Client"
                           href={`mailto:${client?.email}`}
@@ -563,9 +561,9 @@ const Client = () => {
                     client?.email &&
                     !client?.email?.toLowerCase()?.includes("missing") && (
                       <>
-                        {isMounted && <Tooltip anchorId="chatWithClient" />}
+                        {isMounted && <Tooltip id="chatWithClient" />}
                         <div
-                          id="chatWithClient"
+                          data-tooltip-id="chatWithClient"
                           data-tooltip-content="Chat w/ Client"
                           title="Chat w/ Client"
                           onClick={() =>
@@ -581,9 +579,9 @@ const Client = () => {
                     !client?.street?.toLowerCase()?.includes("missing") &&
                     client?.street !== undefined && (
                       <>
-                        {isMounted && <Tooltip anchorId="viewOnMap" />}
+                        {isMounted && <Tooltip id="viewOnMap" />}
                         <a
-                          id="viewOnMap"
+                          data-tooltip-id="viewOnMap"
                           data-tooltip-content="View on Map"
                           title="View on Map"
                           href={`http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`}
@@ -595,9 +593,9 @@ const Client = () => {
                         </a>
                       </>
                     )}
-                  {isMounted && <Tooltip anchorId="viewInFirestore" />}
+                  {isMounted && <Tooltip id="viewInFirestore" />}
                   <a
-                    id="viewInFirestore"
+                    data-tooltip-id="viewInFirestore"
                     data-tooltip-content="View Database Record"
                     title="View Database Record"
                     href={
@@ -612,12 +610,12 @@ const Client = () => {
                   >
                     <FontAwesomeIcon icon={faFire} size="lg" />
                   </a>
-                  {isMounted && <Tooltip anchorId="deleteClient" />}
+                  {isMounted && <Tooltip id="deleteClient" />}
                   {client?.email !== "dev+test@movetcare.com" &&
                     client?.email !==
                       "dev+test_vcpr_not_required@movetcare.com" && (
                       <div
-                        id="deleteClient"
+                        data-tooltip-id="deleteClient"
                         data-tooltip-content="Delete Client"
                         title="Delete Client"
                         onClick={() =>
@@ -633,9 +631,9 @@ const Client = () => {
                         <FontAwesomeIcon icon={faTrash} size="lg" />
                       </div>
                     )}
-                  {isMounted && <Tooltip anchorId="reloadData" />}
+                  {isMounted && <Tooltip id="reloadData" />}
                   <div
-                    id="reloadData"
+                    data-tooltip-id="reloadData"
                     data-tooltip-content="Reload Client Data"
                     title="Reload Client Data"
                     onClick={() => reloadPage()}
@@ -805,9 +803,7 @@ const Client = () => {
                       </span>
                     ) : client?.email ? (
                       <span>
-                        {isMounted && (
-                          <Tooltip anchorId="verifyAccountIndicator" />
-                        )}
+                        {isMounted && <Tooltip id="verifyAccountIndicator" />}
                         <p className="group italic flex flex-row ml-2 items-center">
                           <a
                             href={`mailto://${client?.email}`}
@@ -826,7 +822,7 @@ const Client = () => {
                           ) : client?.emailVerified === false ? (
                             <>
                               <span
-                                id="verifyAccountIndicator"
+                                data-tooltip-id="verifyAccountIndicator"
                                 data-tooltip-content="This client has not verified their MoVET account or set up an account password!"
                                 title="This client has not verified their MoVET account or set up an account password! Click on the paper plane icon above to send them a new account verification email."
                               >

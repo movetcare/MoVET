@@ -17,6 +17,7 @@ import { NumberInput } from "components/inputs/NumberInput";
 import Button from "components/Button";
 import { useRouter } from "next/router";
 import environment from "utils/environment";
+import AdminCheck from "components/AdminCheck";
 
 const Tools = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -91,7 +92,7 @@ const Tools = () => {
   }, [id]);
 
   return (
-    <>
+    <AdminCheck>
       {environment === "development" && (
         <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
           <div className="flex flex-row items-center justify-center -mb-4">
@@ -231,7 +232,7 @@ const Tools = () => {
           </ul>
         )}
       </div>
-    </>
+    </AdminCheck>
   );
 };
 

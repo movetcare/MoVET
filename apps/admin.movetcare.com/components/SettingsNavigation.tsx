@@ -1,4 +1,5 @@
 import {
+  faArrowRightToBracket,
   faCalendar,
   faCogs,
   faFlag,
@@ -39,6 +40,14 @@ export const SettingsNavigation = () => {
       icon: faFlag,
       iconForeground: "text-movet-pink",
       iconBackground: "bg-movet-pink bg-opacity-50",
+    },
+    {
+      title: "Request an Appointment",
+      description: "Customize the Request an Appointment Flow",
+      href: "/settings/request-an-appointment/",
+      icon: faArrowRightToBracket,
+      iconForeground: "text-movet-magenta",
+      iconBackground: "bg-movet-magenta bg-opacity-50",
     },
     {
       title: "Winter Housecall Mode",

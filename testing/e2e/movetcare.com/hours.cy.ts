@@ -2,7 +2,7 @@ describe("hours-page-loads", () => {
   beforeEach(() => {
     cy.visit("http://localhost:3000/hours");
   });
-  it("display hours list", () => {
+  it.only("display hours list", () => {
     cy.get("h2").contains("Hours of Operation");
     cy.get("h3").contains("MoVET @ Belleview Station");
     cy.get("h3").contains("Clinic Walk-In Hours");
@@ -13,11 +13,11 @@ describe("hours-page-loads", () => {
     // );
   });
   it("WINTER MODE - display hours list", () => {
-    // cy.request(
-    //   "POST",
-    //   "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-    //   { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-off" }
-    // );
+    cy.request(
+      "POST",
+      "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
+      { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-off" }
+    );
     cy.request(
       "POST",
       "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
