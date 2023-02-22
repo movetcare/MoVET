@@ -256,9 +256,7 @@ export const Carousel = ({
                 </div>
               </button>
             </div>
-            <div
-              className={classNames(slideContainer, "w-full overflow-x-hidden")}
-            >
+            <div className={classNames(slideContainer, "overflow-x-hidden")}>
               <div
                 style={{
                   ...sliderStyle,
@@ -354,9 +352,6 @@ export const Carousel = ({
         </div>
       </div>
     );
-  } else if (children.length === 1) {
-    return <div>{children[0]}</div>;
-  } else {
-    return <div></div>;
-  }
+  } else if (children.length === 1) return <div>{children[0]}</div>;
+  else return <div></div>;
 };

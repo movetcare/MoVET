@@ -50,10 +50,10 @@ export const Amenities = () => (
       <div className="flex flex-col sm:flex-row mx-auto justify-center mt-4 mb-12 sm:mb-16 max-w-screen-lg">
         {amenities.map((service) => (
           <div
-            className="w-full py-4 sm:py-0 sm:mx-8 text-center"
+            className="w-full py-4 sm:py-0 sm:mx-8 text-center flex flex-col"
             key={service.name}
           >
-            <div className="w-36 h-32 sm:w-28 sm:h-24 mx-auto hover:animate-bounce duration-500">
+            <div className="mx-auto hover:animate-bounce duration-500">
               <Image
                 width={112}
                 height={112}
@@ -61,7 +61,7 @@ export const Amenities = () => (
                 alt={`${service.name} icon`}
               />
             </div>
-            <p className="text-center text-xl -mt-4 sm:mt-2 font-bold">
+            <p className="text-center text-xl m-0 sm:mt-2 font-bold">
               {service.name}
             </p>
           </div>
@@ -69,7 +69,7 @@ export const Amenities = () => (
       </div>
     </div>
     <div className="flex flex-col sm:flex-row mt-12 sm:-mt-12 -mb-4">
-      <div className="w-full sm:w-7/12 flex flex-col items-center relative z-20 -mt-8">
+      <div className="sm:w-7/12 flex flex-col items-center relative z-20 -mt-8">
         <div className="w-full">
           <div className="hidden sm:block">
             <Carousel

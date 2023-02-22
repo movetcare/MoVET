@@ -40,10 +40,10 @@ export const ServiceTypes = () => (
       <div className="flex flex-col sm:flex-row mx-auto justify-center mt-4 mb-12 sm:mb-16 max-w-screen-lg">
         {services.map((service) => (
           <div
-            className="w-full py-4 sm:py-0 sm:mx-8 text-center"
+            className="w-full py-4 sm:py-0 sm:mx-8 text-center flex flex-col"
             key={service.name}
           >
-            <div className="w-36 h-32 sm:w-28 sm:h-24 mx-auto hover:animate-bounce duration-500">
+            <div className="mx-auto hover:animate-bounce duration-500">
               <Image
                 src={service.icon}
                 alt={`${service.name} icon`}
@@ -51,7 +51,7 @@ export const ServiceTypes = () => (
                 height={112}
               />
             </div>
-            <p className="text-center text-xl font-bold -mt-4 sm:mt-2">
+            <p className="text-center text-xl font-bold m-0 sm:mt-2">
               {service.name}
             </p>
           </div>

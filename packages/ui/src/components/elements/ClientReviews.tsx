@@ -17,10 +17,7 @@ export const ClientReviews = ({
       <div
         className="group bg-white p-8 rounded-xl my-8 sm:my-4 cursor-pointer"
         onClick={() =>
-          window.open(
-            "https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556",
-            "_blank"
-          )
+          window.open("https://goo.gl/maps/MF5XNcxp1grNiWXU7", "_blank")
         }
       >
         <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
@@ -31,29 +28,99 @@ export const ClientReviews = ({
           <FontAwesomeIcon icon={faStar} />
         </div>
         <p className="text-xl text-center mb-4 group-hover:opacity-75">
-          A must have support service for any dog owner
+          The most caring, welcoming and loving vet
         </p>
         <i className="group-hover:opacity-75">
-          &quot;WOW. Doctor Abramson is a GODSEND. I don&apos;t know how people
-          navigate the veterinary healthcare system without a service like
-          MoVET. I was never one to care much about my vet choice beyond price.
-          My experience with MoVET completely changed my outlook on what
-          excellence in vet service could look like. [...] Thank you MoVET for
-          saving Bowie and providing me with so much care and support along the
-          way.&quot;
+          &quot;MoVET @ Belleview Station is the most caring, welcoming and
+          loving vet. We got a new puppy, took him there for his first checkup
+          and we&apos;ve been going back ever since. The puppy package is
+          fantastic and so helpful in the puppy raising process. We stop in even
+          when we are just walking by because my pup loves his vet so much. 100%
+          recommend!&quot;
         </i>
         <p className="text-center mt-4 group-hover:opacity-75">
           <a
-            href="https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556"
+            href="https://goo.gl/maps/MF5XNcxp1grNiWXU7"
             target="_blank"
             rel="noreferrer"
             className="flex flex-row justify-center items-center italic text-center text-movet-black"
           >
-            <FontAwesomeIcon
-              icon={faAppStore}
-              className="mr-2 text-movet-blue"
-            />{" "}
-            App Store Review
+            <FontAwesomeIcon icon={faGoogle} className="mr-2 text-movet-blue" />{" "}
+            Google Review
+          </a>
+        </p>
+      </div>
+      <div
+        className="group bg-white p-8 rounded-xl my-8 sm:my-4 cursor-pointer"
+        onClick={() =>
+          window.open("https://goo.gl/maps/igEwpBsZBNnPVuFk6", "_blank")
+        }
+      >
+        <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+        </div>
+        <p className="text-xl text-center mb-4 group-hover:opacity-75">
+          Super friendly and inviting staff
+        </p>
+        <i className="group-hover:opacity-75">
+          &quot;I moved all my animals to this clinic because we absolutely
+          adore Dr. Caldwell! She is very knowledgeable and makes you and your
+          babies feel right at home. She takes her time and makes sure all your
+          questions are answered. This is a gorgeous clinic with super friendly
+          and inviting staff. Everyone at this place is so amazing and you can
+          tell they love what they do. Thank you for taking care of my
+          babies!&quot;
+        </i>
+        <p className="text-center mt-4 group-hover:opacity-75">
+          <a
+            href="https://goo.gl/maps/igEwpBsZBNnPVuFk6"
+            target="_blank"
+            rel="noreferrer"
+            className="flex flex-row justify-center items-center italic text-center text-movet-black"
+          >
+            <FontAwesomeIcon icon={faGoogle} className="mr-2 text-movet-blue" />{" "}
+            Google Review
+          </a>
+        </p>
+      </div>
+      <div
+        className="group bg-white p-8 rounded-xl my-8 sm:my-4 cursor-pointer"
+        onClick={() =>
+          window.open("https://goo.gl/maps/cPraFhpcye9VFL37A", "_blank")
+        }
+      >
+        <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+        </div>
+        <p className="text-xl text-center mb-4 group-hover:opacity-75">
+          They got me in within 24 hours
+        </p>
+        <i className="group-hover:opacity-75">
+          &quot;I was browsing for a new veterinary practice for my pup as we
+          just recently moved to Denver. I called around a bit and a good chunk
+          of places were not accepting pets. I then stumbled upon MoVET and they
+          got me in within 24 hours as a new client. The whole process was easy
+          and smooth. The staff is amazing and will walk through any situation
+          with you and provide A+ care. Thanks team and see you soon for our
+          next visit&quot;
+        </i>
+        <p className="text-center mt-4 group-hover:opacity-75">
+          <a
+            href="https://goo.gl/maps/cPraFhpcye9VFL37A"
+            target="_blank"
+            rel="noreferrer"
+            className="flex flex-row justify-center items-center italic text-center text-movet-black"
+          >
+            <FontAwesomeIcon icon={faGoogle} className="mr-2 text-movet-blue" />{" "}
+            Google Review
           </a>
         </p>
       </div>
@@ -287,7 +354,7 @@ export const ClientReviews = ({
               <FontAwesomeIcon icon={faStar} />
             </div>
             <p className="text-xl text-center mb-4 group-hover:opacity-75">
-              WOW
+              A must have support service for any dog owner
             </p>
             <i className="group-hover:opacity-75">
               &quot;WOW. Doctor A is a GODSEND. I don&apos;t know how people
