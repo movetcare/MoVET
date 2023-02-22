@@ -74,42 +74,43 @@ const sendAdminBookingRecoveryNotification = async (
   const { email, displayName, phone } = client;
 
   let allPatients = "";
-  selectedPatients.forEach((selectedPatient: any) => {
-    patients.map((patient: any) => {
-      if (selectedPatient === patient?.id)
-        allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
-          patient?.name
-        }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
-          patient?.gender
-        }</p>${
-          patient?.illnessDetails
-            ? `<p><b>Minor Illness:</b> ${
-                patient?.illnessDetails
-                  ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                      patient?.illnessDetails?.notes
-                    }`
-                  : " None"
-              }</p>`
-            : ""
-        }${
-          patient.aggressionStatus
-            ? `<p><b>Aggression Status:</b> "${
-                patient?.aggressionStatus
-                  ? "IS AGGRESSIVE!"
-                  : "Is not aggressive" ||
-                    // eslint-disable-next-line quotes
-                    'UNKNOWN - Update "Is Aggressive" custom field on patient\'s profile in ProVet!'
-              } "</p>`
-            : ""
-        }${
-          patient.vcprRequired
-            ? `<p><b>VCPR Required:</b> ${
-                patient?.vcprRequired ? "Yes" : "No"
-              }</p>`
-            : ""
-        }<p></p><p></p>`;
+  if (selectedPatients)
+    selectedPatients?.forEach((selectedPatient: any) => {
+      patients.map((patient: any) => {
+        if (selectedPatient === patient?.id)
+          allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
+            patient?.name
+          }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
+            patient?.gender
+          }</p>${
+            patient?.illnessDetails
+              ? `<p><b>Minor Illness:</b> ${
+                  patient?.illnessDetails
+                    ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
+                        patient?.illnessDetails?.notes
+                      }`
+                    : " None"
+                }</p>`
+              : ""
+          }${
+            patient.aggressionStatus
+              ? `<p><b>Aggression Status:</b> "${
+                  patient?.aggressionStatus
+                    ? "IS AGGRESSIVE!"
+                    : "Is not aggressive" ||
+                      // eslint-disable-next-line quotes
+                      'UNKNOWN - Update "Is Aggressive" custom field on patient\'s profile in ProVet!'
+                } "</p>`
+              : ""
+          }${
+            patient.vcprRequired
+              ? `<p><b>VCPR Required:</b> ${
+                  patient?.vcprRequired ? "Yes" : "No"
+                }</p>`
+              : ""
+          }<p></p><p></p>`;
+      });
     });
-  });
 
   const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
     ?.toDate()
