@@ -1,5 +1,5 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-import { admin, DEBUG, throwError } from "../../config/config";
+import { admin, DEBUG } from "../../config/config";
 
 export const getAuthUserByEmail = async (
   email: string
@@ -12,6 +12,6 @@ export const getAuthUserByEmail = async (
       return userRecord;
     })
     .catch((error: any) => {
-      throwError(error);
+      if (DEBUG) console.log(error);
       return null;
     });
