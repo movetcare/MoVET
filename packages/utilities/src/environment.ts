@@ -1,3 +1,6 @@
+// IMPORTANT!!!
+// ONLY USE THIS VARIABLE WITHIN A "useEffect" OR ELSE IT WILL CAUSE REACT HYDRATION ERRORS!
+
 export const environment =
   typeof window !== "undefined" &&
   (window.location.hostname === "movetcare.com" ||
