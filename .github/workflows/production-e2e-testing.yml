@@ -1,5 +1,9 @@
 name: Test Production Environments E2E
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  repository_dispatch:
+  schedule:
+  - cron: "0 0 * * *"
 jobs:
   cypress-run:
     name: Cypress run

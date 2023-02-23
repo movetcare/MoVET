@@ -1,6 +1,6 @@
 describe("hours-page-loads", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/hours");
+    cy.visit("https://movetcare.com/hours");
   });
   it("display hours list", () => {
     cy.get("h2").contains("Hours of Operation");

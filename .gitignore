@@ -23,9 +23,9 @@ node_modules
 
 # testing
 coverage
-testing/results/screenshots/
-testing/results/videos/
-testing/results/downloads/
+testing/**/screenshots/
+testing/**/videos/
+testing/**/downloads/
 # next.js
 .next/
 out/

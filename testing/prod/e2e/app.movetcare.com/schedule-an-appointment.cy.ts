@@ -1,6 +1,6 @@
 const pathTimeout = Cypress.env().defaultPathnameTimeOut;
-const onlyTestOnePatient = Cypress.env().onlyTestOnePatient;
-const skipWellnessCheck = Cypress.env().skipWellnessCheck;
+const onlyTestOnePatient = false;
+const skipWellnessCheck = false;
 describe(
   "standard-schedule-an-appointment-flow",
   { defaultCommandTimeout: pathTimeout },
@@ -61,7 +61,7 @@ describe(
         }
       );
       cy.visit(
-        `http://localhost:3001/?email=${
+        `https://app.movetcare.com/?email=${
           Cypress.env().existingClientWithPaymentEmail
         }`
       );
@@ -188,7 +188,7 @@ describe(
         }
       );
       cy.visit(
-        `http://localhost:3001/?email=${
+        `https://app.movetcare.com/?email=${
           Cypress.env().existingClientWithPaymentEmail
         }`
       );
@@ -271,7 +271,7 @@ describe(
         }
       );
       cy.visit(
-        `http://localhost:3001/?email=${
+        `https://app.movetcare.com/?email=${
           Cypress.env().existingClientWithPaymentEmail
         }&mode=app&housecallRequest=1`
       );
@@ -356,7 +356,7 @@ const runThroughAppointmentRequestWorkflows = ({
     "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
     { apiKey: Cypress.env().endpointApiKey, id }
   );
-  cy.visit("http://localhost:3001/schedule-an-appointment");
+  cy.visit("https://app.movetcare.com/schedule-an-appointment");
   cy.get("input[name='email']").type(email);
   cy.get("h2").as("heading").contains("Schedule an Appointment");
   cy.get("button[type='submit']").as("submitButton").click();
@@ -617,7 +617,7 @@ const runThroughAppointmentRequestWorkflows = ({
     );
     cy.get("@submitButton").should("be.enabled").click();
     cy.wait(100);
-    cy.visit("http://localhost:3001/schedule-an-appointment/success");
+    cy.visit("https://app.movetcare.com/schedule-an-appointment/success");
   }
   cy.get("@heading").contains("Appointment Request Successful");
   cy.request(

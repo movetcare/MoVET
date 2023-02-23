@@ -66,7 +66,7 @@ describe("admin-app-pages", () => {
     cy.get("a[href='/signout/']").click();
     cy.get("main button").contains("EMAIL").should("be.enabled");
   });
-  it.only("no admin pages load for staff", () => {
+  it("no admin pages load for staff", () => {
     cy.visit("http://localhost:4000/auth");
     cy.get("button").eq(5).click().wait(1, { log: false });
     cy.get("div.mdc-menu-surface--open")

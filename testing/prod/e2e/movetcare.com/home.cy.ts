@@ -49,7 +49,7 @@ describe("home-page-loads", () => {
     cy.get("@footerLinks").contains("Emergency Care");
   });
 
-  it.only("can submit contact form", () => {
+  it("can submit contact form", () => {
     cy.get("#contact-form input[name='firstName']").type("CYPRESS");
     cy.get("#contact-form input[name='lastName']").type("TEST");
     cy.get("#contact-form input[name='email']").type("CYPRESS@TEST.COM");
