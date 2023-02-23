@@ -1,11 +1,9 @@
-name: Run Cypress E2E Tests on Production Environments
+name: Test Production Environments E2E
 on: workflow_dispatch
 jobs:
   cypress-run:
     name: Cypress run
     runs-on: ubuntu-latest
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -14,7 +12,7 @@ jobs:
           version: latest
       - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: latest
           cache: 'pnpm'
       - name: Cypress run
         uses: cypress-io/github-action@v5
@@ -25,9 +23,3 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: "#production-logs"
-        if: always()
