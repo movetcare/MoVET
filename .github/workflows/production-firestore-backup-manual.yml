@@ -5,7 +5,7 @@ jobs:
   backup-firestore:
     runs-on: ubuntu-latest
     env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
     steps:
       - uses: actions/checkout@master
       - id: "auth"
