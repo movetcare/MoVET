@@ -1,0 +1,31 @@
+name: PRODUCTION - Deploy Firestore Indexes
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "firestore.indexes.json"
+jobs:
+  deploy:
+    name: Deploy Firestore Indexes
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
+    steps:
+      - name: Checkout Repo
+        id: repo-checkout
+        uses: actions/checkout@v2.3.2
+      - name: Deploy to Firebase
+        id: deploy-indexes
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only firestore:indexes --non-interactive -f
+        env:
+          PROJECT_ID: movet-care
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_PRODUCTION }}
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#production-logs"
+        if: always()

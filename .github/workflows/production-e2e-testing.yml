@@ -35,7 +35,6 @@ jobs:
           parallel: true
           browser: chrome
           group: 'Chrome'
-          spec: 'testing/e2e/*'
         env:
           CYPRESS_ENVIRONMENT: "production"
           CYPRESS_TEST_API_URL: "https://us-central1-movet-care.cloudfunctions.net/resetTestData"
