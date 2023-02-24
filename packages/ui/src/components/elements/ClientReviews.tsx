@@ -321,9 +321,9 @@ export const ClientReviews = ({
               into the clinic. Dr A is very personable and very knowledgeable.
               You can do as much or as little as you want with NO pressure. I
               also love the app, super easy. Specially during COVID I am at my
-              house with my animals and I don’t have to be separated. The cats
-              are less stressed and the dogs get all the pets. Everyone loves
-              it&quot;
+              house with my animals and I don&apos;t have to be separated. The
+              cats are less stressed and the dogs get all the pets. Everyone
+              loves it&quot;
             </i>
             <p className="text-center mt-4 group-hover:opacity-75">
               <a
@@ -447,6 +447,78 @@ export const ClientReviews = ({
             <p className="text-center mt-4 group-hover:opacity-75">
               <a
                 href="https://goo.gl/maps/UbbFRExrmXQSZ8z27"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-row justify-center items-center italic text-center text-movet-black"
+              >
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  className="mr-2 text-movet-blue"
+                />{" "}
+                Google Review
+              </a>
+            </p>
+          </div>
+          <div
+            className="group bg-white p-8 rounded-xl my-8 sm:my-4 cursor-pointer"
+            onClick={() => window.open("https://g.co/kgs/drNAXy", "_blank")}
+          >
+            <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+            </div>
+            <p className="text-xl text-center mb-4 group-hover:opacity-75">
+              Super convenient location
+            </p>
+            <i className="group-hover:opacity-75">
+              &quot;We&apos;re so happy to have found this vet! They are so
+              gracious and went above and beyond to help my dog on short notice.
+              They also have a really cute little storefront with supplements
+              and toys. Super convenient location too. Definitely
+              recommend.&quot;
+            </i>
+            <p className="text-center mt-4 group-hover:opacity-75">
+              <a
+                href="https://g.co/kgs/drNAXy"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-row justify-center items-center italic text-center text-movet-black"
+              >
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  className="mr-2 text-movet-blue"
+                />{" "}
+                Google Review
+              </a>
+            </p>
+          </div>
+          <div
+            className="group bg-white p-8 rounded-xl my-8 sm:my-4 cursor-pointer"
+            onClick={() => window.open("https://g.co/kgs/q5ozp9", "_blank")}
+          >
+            <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+            </div>
+            <p className="text-xl text-center mb-4 group-hover:opacity-75">
+              They do Housecalls!
+            </p>
+            <i className="group-hover:opacity-75">
+              &quot;Excellent, knowledgeable, friendly women owned business for
+              our furry family members! If you are anywhere near I-25 and
+              Belleview this new veterinary center is for you! PLUS, they also
+              do housecalls! we have had both services and my chubchub cat loves
+              the ladies! Many thanks!&quot;
+            </i>
+            <p className="text-center mt-4 group-hover:opacity-75">
+              <a
+                href="https://g.co/kgs/q5ozp9"
                 target="_blank"
                 rel="noreferrer"
                 className="flex flex-row justify-center items-center italic text-center text-movet-black"

@@ -23,7 +23,7 @@ export const processClientWebhook = async (
       await sendNotification({
         type: "slack",
         payload: {
-          message: `:red_circle: Client #${id} has been DELETED in ProVet - Proceeding to DELETE ALL MoVET Account Data! https://admin.movetcare.com/client?id=${id}`,
+          message: `:red_circle: Client #${id} has been DELETED in ProVet!\nhttps://admin.movetcare.com/client?id=${id}`,
         },
       });
       await deleteAllAccountData(id);

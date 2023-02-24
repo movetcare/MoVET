@@ -23,7 +23,15 @@ jobs:
         with:
           record: true
           config-file: cypress.config.prod.js
+          build: npx cypress info
         env:
+          CYPRESS_TEST_ADMIN: false
+          CYPRESS_APP_URL: "https://app.movetcare.com"
+          CYPRESS_WEBSITE_URL: "https://movetcare.com"
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      - name: Print Cypress Cloud URL
+        run: |
+          echo Cypress finished with: ${{ steps.cypress.outcome }}
+          echo See results at ${{ steps.cypress.outputs.dashboardUrl }}

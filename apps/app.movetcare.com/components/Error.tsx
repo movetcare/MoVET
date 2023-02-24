@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { ServerResponse } from "types";
 import { Loader } from "ui";
-import { environment } from "utilities";
 
 export const Error = ({ error }: any) => {
   const router = useRouter();
@@ -66,22 +65,16 @@ export const Error = ({ error }: any) => {
           <p className={"mt-4 text-lg leading-6 text-movet-black"}>
             We&apos;re sorry, but something went wrong.
           </p>
-          {environment === "development" && (
-            <pre className="my-8 p-4">
-              {JSON.stringify({
-                error: { message: error?.message, code: error?.code },
-              })}
-            </pre>
-          )}
+          <pre className="my-8 p-4">
+            {JSON.stringify({
+              error: { message: error?.message, code: error?.code },
+            })}
+          </pre>
           {!isAppMode ? (
             <p>
               Please try again or{" "}
               <a
-                href={
-                  (environment === "production"
-                    ? "https://app.movetcare.com"
-                    : "http://localhost:3001") + "/contact"
-                }
+                href={"https://app.movetcare.com/contact"}
                 target="_blank"
                 rel="noreferrer"
               >

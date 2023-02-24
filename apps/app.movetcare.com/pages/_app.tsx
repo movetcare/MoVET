@@ -7,12 +7,17 @@ import dynamic from "next/dynamic";
 import Layout from "components/Layout";
 import { Toaster } from "react-hot-toast";
 import ErrorBoundary from "components/ErrorBoundary";
+import { useState, useEffect } from "react";
 
 const AnalyticsTracker = dynamic(() =>
   import("ui").then((mod) => mod.AnalyticsTracker)
 );
 
 const MoVET = ({ Component, pageProps }: AppProps) => {
+  const [loadAnalytics, setLoadAnalytics] = useState(false);
+  useEffect(() => {
+    if (environment === "production") setLoadAnalytics(true);
+  }, []);
   return (
     <ErrorBoundary>
       <Head>
@@ -22,9 +27,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
           content="Sign in to your MoVET account to manage and access your pet's data and schedule appointments!"
         />
       </Head>
-      {environment === "production" && (
-        <AnalyticsTracker trackerId="G-Y9896HXDFN" />
-      )}
+      {loadAnalytics && <AnalyticsTracker trackerId="G-Y9896HXDFN" />}
       <Layout>
         <Component {...pageProps} />
       </Layout>

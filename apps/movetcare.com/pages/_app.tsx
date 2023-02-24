@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import { environment } from "utilities";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import ErrorBoundary from "components/ErrorBoundary";
 // import { PopUpAd } from "ui";
 
 const AnalyticsTracker = dynamic(() =>
@@ -17,7 +18,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
     if (environment === "production") setLoadAnalytics(true);
   }, []);
   return (
-    <>
+    <ErrorBoundary>
       <Head>
         <title>MoVET - Your neighborhood vet, delivered</title>
         <meta
@@ -42,7 +43,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
         }
         ignoreUrlPath="/blog/black-friday-deal-2022/"
       /> */}
-    </>
+    </ErrorBoundary>
   );
 };
 

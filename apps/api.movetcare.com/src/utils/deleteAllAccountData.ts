@@ -265,7 +265,7 @@ export const deleteAllAccountData = async (
   sendNotification({
     type: "slack",
     payload: {
-      message: `MoVET Account and Data Archived for ${uid} =>\n\`\`\`${JSON.stringify(
+      message: `:red_circle: ALL MoVET Account & Data has been DELETED for Client #${uid} =>\n\`\`\`${JSON.stringify(
         {
           clientIds,
           patientIds,
