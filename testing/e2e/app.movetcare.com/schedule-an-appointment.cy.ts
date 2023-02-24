@@ -306,20 +306,22 @@ const runThroughAppointmentRequestWorkflows = ({
   petName,
   paymentRequired,
 }) => {
-  cy.request("POST", Cypress.env().testApiUrl, {
-    apiKey: Cypress.env().endpointApiKey,
-    id: "require_payment_method_to_request_an_appointment_off",
-  });
+  
   if (paymentRequired) {
+    cy.request("POST", Cypress.env().testApiUrl, {
+      apiKey: Cypress.env().endpointApiKey,
+      id: "require_payment_method_to_request_an_appointment_off",
+    });
     cy.request("POST", Cypress.env().testApiUrl, {
       apiKey: Cypress.env().endpointApiKey,
       id: "require_payment_method_to_request_an_appointment_on",
     });
   }
-  cy.request("POST", Cypress.env().testApiUrl, {
-    apiKey: Cypress.env().endpointApiKey,
-    id: "winter-mode-off",
-  });
+  if (Cypress.env().environment === "development")
+    cy.request("POST", Cypress.env().testApiUrl, {
+      apiKey: Cypress.env().endpointApiKey,
+      id: "winter-mode-off",
+    });
   cy.request("POST", Cypress.env().testApiUrl, {
     apiKey: Cypress.env().endpointApiKey,
     id,

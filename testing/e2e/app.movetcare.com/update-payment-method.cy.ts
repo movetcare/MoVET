@@ -18,9 +18,10 @@ describe("update-payment-method", () => {
       Cypress.env().existingClientWithPaymentEmail
     );
     cy.get("button[type='submit']").contains("Add a Payment Method").click();
-    cy.origin("https://payment.movetcare.com", () => {
-      cy.on("uncaught:exception", () => false);
-    });
+    if (Cypress.env().environment === "development")
+      cy.origin("https://payment.movetcare.com", () => {
+        cy.on("uncaught:exception", () => false);
+      });
   });
 
   it("Can redirect to stripe checkout as existing client NO valid payment on file", () => {
@@ -29,9 +30,10 @@ describe("update-payment-method", () => {
       Cypress.env().existingClientNoPaymentEmail
     );
     cy.get("button[type='submit']").contains("Add a Payment Method").click();
-    cy.origin("https://payment.movetcare.com", () => {
-      cy.on("uncaught:exception", () => false);
-    });
+    if (Cypress.env().environment === "development")
+      cy.origin("https://payment.movetcare.com", () => {
+        cy.on("uncaught:exception", () => false);
+      });
   });
 
   it("Success page loads", () => {
