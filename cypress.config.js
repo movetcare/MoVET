@@ -3,11 +3,14 @@ const { defineConfig } = require("cypress");
 module.exports = defineConfig({
   projectId: "isemvz",
   env: {
-    testAdminApp: process.env.CYPRESS_TEST_ADMIN || true,
+    environment: process.env.CYPRESS_ENVIRONMENT || "development",
     adminUrl: process.env.CYPRESS_ADMIN_URL || "http://localhost:3002",
     appUrl: process.env.CYPRESS_APP_URL || "http://localhost:3001",
     websiteUrl: process.env.CYPRESS_WEBSITE_URL || "http://localhost:3000",
     emulatorUrl: "http://localhost:4000",
+    testApiUrl:
+      process.env.CYPRESS_TEST_API_URL ||
+      "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
     defaultPathnameTimeOut:
       Number(process.env.CYPRESS_DISPLAY_PATH_TIMEOUT) || 15000,
     onlyTestOnePatient: process.env.CYPRESS_ONLY_TEST_ONE_PATIENT || true,

@@ -16,10 +16,12 @@ describe("sitemap", () => {
           cy.log(parsed.pathname);
           Cypress.on("fail", () => false);
           cy.visit(
-            url.loc.replaceAll(
-              "https://movetcare.com",
-              Cypress.env().websiteUrl
-            ),
+            Cypress.env().environment === "development"
+              ? url.loc.replaceAll(
+                  "https://movetcare.com",
+                  Cypress.env().websiteUrl
+                )
+              : url.loc,
             {
               retryOnStatusCodeFailure: true,
             }

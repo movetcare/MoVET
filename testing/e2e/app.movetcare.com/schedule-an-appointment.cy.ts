@@ -33,14 +33,10 @@ describe(
 
     if (!onlyTestOnePatient)
       it("Can schedule an appointment as existing client - VCPR REQUIRED", () => {
-        cy.request(
-          "POST",
-          "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-          {
-            apiKey: Cypress.env().endpointApiKey,
-            id: Cypress.env().existingClientNoPaymentId,
-          }
-        );
+        cy.request("POST", Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: Cypress.env().existingClientNoPaymentId,
+        });
         runThroughAppointmentRequestWorkflows({
           email: Cypress.env().existingClientNoPaymentEmail,
           firstName: "Test",
@@ -52,14 +48,10 @@ describe(
       });
 
     it("Can schedule an appointment as an existing client - VCPR NOT REQUIRED", () => {
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        {
-          apiKey: Cypress.env().endpointApiKey,
-          id: Cypress.env().existingClientWithPaymentId,
-        }
-      );
+      cy.request("POST", Cypress.env().testApiUrl, {
+        apiKey: Cypress.env().endpointApiKey,
+        id: Cypress.env().existingClientWithPaymentId,
+      });
       cy.visit(
         `Cypress.env().appUrl/?email=${
           Cypress.env().existingClientWithPaymentEmail
@@ -169,24 +161,18 @@ describe(
   { defaultCommandTimeout: pathTimeout },
   () => {
     it("Can NOT request a housecall with VCPR required patient", () => {
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-off" }
-      );
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-on" }
-      );
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        {
-          apiKey: Cypress.env().endpointApiKey,
-          id: Cypress.env().existingClientWithPaymentId,
-        }
-      );
+      cy.request("POST", Cypress.env().testApiUrl, {
+        apiKey: Cypress.env().endpointApiKey,
+        id: "winter-mode-off",
+      });
+      cy.request("POST", Cypress.env().testApiUrl, {
+        apiKey: Cypress.env().endpointApiKey,
+        id: "winter-mode-on",
+      });
+      cy.request("POST", Cypress.env().testApiUrl, {
+        apiKey: Cypress.env().endpointApiKey,
+        id: Cypress.env().existingClientWithPaymentId,
+      });
       cy.visit(
         `Cypress.env().appUrl/?email=${
           Cypress.env().existingClientWithPaymentEmail
@@ -244,32 +230,25 @@ describe(
         .wait(1500, { log: false });
       cy.get("button[type='submit']").as("submitButton").should("be.enabled");
       cy.get("#Home").should("not.exist");
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-off" }
-      );
+      cy.request("POST", Cypress.env().testApiUrl, {
+        apiKey: Cypress.env().endpointApiKey,
+        id: "winter-mode-off",
+      });
     });
 
     it("(MOBILE WEBVIEW) Can request a housecall with VCPR required patient", () => {
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-off" }
-      );
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-on" }
-      );
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        {
-          apiKey: Cypress.env().endpointApiKey,
-          id: Cypress.env().existingClientWithPaymentId,
-        }
-      );
+      cy.request("POST", Cypress.env().testApiUrl, {
+        apiKey: Cypress.env().endpointApiKey,
+        id: "winter-mode-off",
+      });
+      cy.request("POST", Cypress.env().testApiUrl, {
+        apiKey: Cypress.env().endpointApiKey,
+        id: "winter-mode-on",
+      });
+      cy.request("POST", Cypress.env().testApiUrl, {
+        apiKey: Cypress.env().endpointApiKey,
+        id: Cypress.env().existingClientWithPaymentId,
+      });
       cy.visit(
         `Cypress.env().appUrl/?email=${
           Cypress.env().existingClientWithPaymentEmail
@@ -311,11 +290,10 @@ describe(
         timeout: pathTimeout + 3000,
       }).should("eq", "/schedule-an-appointment/success/");
       cy.get("h2").contains("Housecall Request Successful");
-      cy.request(
-        "POST",
-        "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-        { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-off" }
-      );
+      cy.request("POST", Cypress.env().testApiUrl, {
+        apiKey: Cypress.env().endpointApiKey,
+        id: "winter-mode-off",
+      });
     });
   }
 );
@@ -328,34 +306,24 @@ const runThroughAppointmentRequestWorkflows = ({
   petName,
   paymentRequired,
 }) => {
-  cy.request(
-    "POST",
-    "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-    {
-      apiKey: Cypress.env().endpointApiKey,
-      id: "require_payment_method_to_request_an_appointment_off",
-    }
-  );
+  cy.request("POST", Cypress.env().testApiUrl, {
+    apiKey: Cypress.env().endpointApiKey,
+    id: "require_payment_method_to_request_an_appointment_off",
+  });
   if (paymentRequired) {
-    cy.request(
-      "POST",
-      "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-      {
-        apiKey: Cypress.env().endpointApiKey,
-        id: "require_payment_method_to_request_an_appointment_on",
-      }
-    );
+    cy.request("POST", Cypress.env().testApiUrl, {
+      apiKey: Cypress.env().endpointApiKey,
+      id: "require_payment_method_to_request_an_appointment_on",
+    });
   }
-  cy.request(
-    "POST",
-    "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-    { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-off" }
-  );
-  cy.request(
-    "POST",
-    "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-    { apiKey: Cypress.env().endpointApiKey, id }
-  );
+  cy.request("POST", Cypress.env().testApiUrl, {
+    apiKey: Cypress.env().endpointApiKey,
+    id: "winter-mode-off",
+  });
+  cy.request("POST", Cypress.env().testApiUrl, {
+    apiKey: Cypress.env().endpointApiKey,
+    id,
+  });
   cy.visit(Cypress.env().appUrl + "/schedule-an-appointment");
   cy.get("input[name='email']").type(email);
   cy.get("h2").as("heading").contains("Schedule an Appointment");
@@ -620,12 +588,8 @@ const runThroughAppointmentRequestWorkflows = ({
     cy.visit(Cypress.env().appUrl + "/schedule-an-appointment/success");
   }
   cy.get("@heading").contains("Appointment Request Successful");
-  cy.request(
-    "POST",
-    "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-    {
-      apiKey: Cypress.env().endpointApiKey,
-      id: "require_payment_method_to_request_an_appointment_off",
-    }
-  );
+  cy.request("POST", Cypress.env().testApiUrl, {
+    apiKey: Cypress.env().endpointApiKey,
+    id: "require_payment_method_to_request_an_appointment_off",
+  });
 };

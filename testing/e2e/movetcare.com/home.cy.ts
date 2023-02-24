@@ -27,9 +27,10 @@ describe("home-page-loads", () => {
     cy.get("#mobile-request-appointment-cta").should("be.visible");
   });
 
-  it("display working announcement banner", () => {
-    cy.get('[aria-label="Announcement Link"] p').first().contains("Welcome!");
-  });
+  if (Cypress.env().environment === "development")
+    it("display working announcement banner", () => {
+      cy.get('[aria-label="Announcement Link"] p').first().contains("Welcome!");
+    });
 
   it("displays all primary content sections", () => {
     cy.get("h2").contains("Moving Pet Care Forward");

@@ -12,10 +12,15 @@ describe("sitemap", () => {
           const parsed = new URL(url.loc);
           cy.log(parsed.pathname);
           cy.visit(
-            url.loc.replaceAll(
-              "https://app.movetcare.com",
-              Cypress.env().appUrl
-            )
+            Cypress.env().environment === "development"
+              ? url.loc.replaceAll(
+                  "https://app.movetcare.com",
+                  Cypress.env().appUrl
+                )
+              : url.loc,
+            {
+              retryOnStatusCodeFailure: true,
+            }
           ).wait(3000, { log: false });
         });
       });

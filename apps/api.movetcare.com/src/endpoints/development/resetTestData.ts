@@ -16,11 +16,7 @@ const DEBUG = environment.type === "production";
 export const resetTestData: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {
-    if (
-      environment.type === "development" &&
-      request.headers.host === "localhost:5001" &&
-      request.body?.apiKey === mobileClientApiKey
-    ) {
+    if (request.body?.apiKey === mobileClientApiKey) {
       if (request.body?.id === 5768) {
         await admin
           .firestore()

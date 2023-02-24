@@ -4,6 +4,9 @@ on:
   repository_dispatch:
   schedule:
   - cron: "0 0 * * *"
+  push:
+    branches:
+      - main
 jobs:
   cypress-run:
     name: Cypress run
@@ -34,7 +37,8 @@ jobs:
           group: 'Chrome'
           spec: 'testing/e2e/*'
         env:
-          CYPRESS_TEST_ADMIN: false
+          CYPRESS_ENVIRONMENT: "production"
+          CYPRESS_TEST_API_URL: "https://us-central1-movet-care.cloudfunctions.net/resetTestData"
           CYPRESS_APP_URL: "https://app.movetcare.com"
           CYPRESS_WEBSITE_URL: "https://movetcare.com"
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}

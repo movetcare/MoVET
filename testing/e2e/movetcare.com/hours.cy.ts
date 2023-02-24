@@ -13,16 +13,14 @@ describe("hours-page-loads", () => {
     // );
   });
   it("WINTER MODE - display hours list", () => {
-    cy.request(
-      "POST",
-      "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-      { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-off" }
-    );
-    cy.request(
-      "POST",
-      "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-      { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-on" }
-    ).wait(3000, { log: false });
+    cy.request("POST", Cypress.env().testApiUrl, {
+      apiKey: Cypress.env().endpointApiKey,
+      id: "winter-mode-off",
+    });
+    cy.request("POST", Cypress.env().testApiUrl, {
+      apiKey: Cypress.env().endpointApiKey,
+      id: "winter-mode-on",
+    }).wait(3000, { log: false });
     cy.get("h2").contains("Hours of Operation");
     cy.get("h3").contains("MoVET @ Belleview Station");
     cy.get("h3").contains("Clinic Walk-In Hours");
@@ -34,10 +32,9 @@ describe("hours-page-loads", () => {
     cy.get("p").contains(
       "Due to weather variability housecalls are by request only"
     );
-    cy.request(
-      "POST",
-      "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
-      { apiKey: Cypress.env().endpointApiKey, id: "winter-mode-off" }
-    );
+    cy.request("POST", Cypress.env().testApiUrl, {
+      apiKey: Cypress.env().endpointApiKey,
+      id: "winter-mode-off",
+    });
   });
 });

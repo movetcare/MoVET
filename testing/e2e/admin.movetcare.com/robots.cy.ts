@@ -1,4 +1,4 @@
-if (Cypress.env().testAdminApp)
+if (Cypress.env().environment === "development")
   describe("robots", () => {
     it("robots file exists", () =>
       cy

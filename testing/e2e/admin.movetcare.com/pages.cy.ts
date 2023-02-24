@@ -1,4 +1,4 @@
-if (Cypress.env().testAdminApp)
+if (Cypress.env().environment === "development")
   describe("admin-app-pages", () => {
     it("display app login button", () => {
       cy.visit(Cypress.env().adminUrl);

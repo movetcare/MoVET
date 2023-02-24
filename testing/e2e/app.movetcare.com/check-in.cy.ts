@@ -48,7 +48,7 @@ describe("appointment-check-in", () => {
   // it("Existing client can check in w/ no payment on file", () => {
   //   cy.request(
   //     "POST",
-  //     "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
+  //     Cypress.env().testApiUrl,
   //     { apiKey: Cypress.env().endpointApiKey, id: 5125 }
   //   );
   //   runThroughCheckInWorkflows(Cypress.env().existingClientNoPayment, true);
