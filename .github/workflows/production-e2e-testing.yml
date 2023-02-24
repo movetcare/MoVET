@@ -8,6 +8,8 @@ jobs:
   cypress-run:
     name: Cypress run
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
     container: cypress/browsers:node12.18.3-chrome87-ff82
     strategy:
       fail-fast: false
@@ -30,6 +32,7 @@ jobs:
           parallel: true
           browser: chrome
           group: 'Chrome'
+          spec: 'testing/e2e/*'
         env:
           CYPRESS_TEST_ADMIN: false
           CYPRESS_APP_URL: "https://app.movetcare.com"
@@ -41,3 +44,9 @@ jobs:
         run: |
           echo Cypress finished with: ${{ steps.cypress.outcome }}
           echo See results at ${{ steps.cypress.outputs.dashboardUrl }}
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#production-logs"
+        if: always()
