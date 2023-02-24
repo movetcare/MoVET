@@ -5,9 +5,31 @@ on:
   schedule:
   - cron: "0 0 * * *"
 jobs:
+  install:
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node12.18.3-chrome87-ff82
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Cypress install
+        uses: cypress-io/github-action@v5
+        with:
+          runTests: false
+      - name: Save build folder
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          if-no-files-found: error
+          path: build
   cypress-run:
     name: Cypress run
     runs-on: ubuntu-latest
+    container: cypress/browsers:node12.18.3-chrome87-ff82
+    needs: install
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3, 4, 5]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -18,12 +40,19 @@ jobs:
         with:
           node-version: latest
           cache: 'pnpm'
+      - name: Download the build folders
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: build
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
+          install: false
           record: true
-          config-file: cypress.config.prod.js
+          parallel: true
           build: npx cypress info
+          group: 'Chrome'
         env:
           CYPRESS_TEST_ADMIN: false
           CYPRESS_APP_URL: "https://app.movetcare.com"
