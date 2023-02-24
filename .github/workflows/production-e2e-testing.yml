@@ -5,28 +5,10 @@ on:
   schedule:
   - cron: "0 0 * * *"
 jobs:
-  install:
-    runs-on: ubuntu-latest
-    container: cypress/browsers:node12.18.3-chrome87-ff82
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: latest
-      - uses: actions/setup-node@v3
-        with:
-          node-version: latest
-          cache: 'pnpm'
-      - name: Cypress install
-        uses: cypress-io/github-action@v5
-        with:
-          runTests: false
   cypress-run:
     name: Cypress run
     runs-on: ubuntu-latest
     container: cypress/browsers:node12.18.3-chrome87-ff82
-    needs: install
     strategy:
       fail-fast: false
       matrix:
@@ -44,10 +26,9 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
-          install: false
           record: true
           parallel: true
-          build: npx cypress info
+          browser: chrome
           group: 'Chrome'
         env:
           CYPRESS_TEST_ADMIN: false
