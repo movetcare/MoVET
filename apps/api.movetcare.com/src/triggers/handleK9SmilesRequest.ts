@@ -1,12 +1,12 @@
 import { sendNotification } from "../notifications/sendNotification";
-import { functions } from "../config/config";
+import { environment, functions } from "../config/config";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { getAuthUserByEmail } from "../utils/auth/getAuthUserByEmail";
 import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { createProVetClient } from "../integrations/provet/entities/client/createProVetClient";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
-const DEBUG = true;
+const DEBUG = environment?.type === "production";
 export const handleK9SmilesRequest = functions.firestore
   .document("k9_smiles/{id}")
   .onWrite(async (change: any, context: any) => {
