@@ -41,6 +41,7 @@ export const handleK9SmilesRequest = functions.firestore
       sendNotification({
         type: "slack",
         payload: {
+          channel: "appointment-request",
           message: [
             {
               type: "section",
