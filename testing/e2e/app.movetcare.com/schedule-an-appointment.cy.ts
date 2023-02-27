@@ -551,22 +551,26 @@ const runThroughAppointmentRequestWorkflows = ({
   cy.get("@text").contains("What is VCPR?").click();
   cy.get("button").contains("CLOSE").click();
   cy.get("button").should("be.enabled");
-  cy.get("#Home").contains("Home").click();
-  cy.get("@submitButton").should("be.disabled");
-  cy.get(".places-search").type("702 Westgate Ave").wait(1500, { log: false });
-  cy.get(".places-search").type("{enter}");
-  cy.get("@submitButton").should("be.disabled");
-  cy.get(".places-search")
-    .type("4912 S Newport Street Denver")
-    .wait(1500, { log: false });
-  cy.get("@submitButton").should("be.disabled");
-  cy.get("#info").type("Apartment 2A (This is a test address)");
+  if (isDevelopmentEnvironment) {
+    cy.get("#Home").contains("Home").click();
+    cy.get("@submitButton").should("be.disabled");
+    cy.get(".places-search")
+      .type("702 Westgate Ave")
+      .wait(1500, { log: false });
+    cy.get(".places-search").type("{enter}");
+    cy.get("@submitButton").should("be.disabled");
+    cy.get(".places-search")
+      .type("4912 S Newport Street Denver")
+      .wait(1500, { log: false });
+    cy.get("@submitButton").should("be.disabled");
+    cy.get("#info").type("Apartment 2A (This is a test address)");
+  }
   cy.get("#Clinic").contains("Clinic").click();
   cy.get("@submitButton").should("be.enabled").click();
-  cy.location("pathname", { timeout: pathTimeout }).should(
-    "eq",
-    "/schedule-an-appointment/datetime-selection/"
-  );
+    cy.location("pathname", { timeout: pathTimeout }).should(
+      "eq",
+      "/schedule-an-appointment/datetime-selection/"
+    );
   cy.get("@heading").contains("Request a Time");
   cy.get("#restart").contains("Restart").click();
   cy.get("@heading").contains("Restart Appointment Booking?");

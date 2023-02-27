@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Checkout Repo
         id: repo-checkout
-        uses: actions/checkout@v2.3.2
+        uses: actions/checkout@master
       - name: Deploy to Firebase
         id: deploy-rules
         uses: w9jds/firebase-action@master
