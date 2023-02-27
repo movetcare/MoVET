@@ -1,0 +1,52 @@
+name: (SCHEDULED) Test Production Environments E2E
+on:
+  workflow_dispatch:
+  repository_dispatch:
+  schedule:
+  - cron: "0 5 * * 0"
+jobs:
+  cypress-run:
+    name: Cypress run
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
+    container: cypress/browsers:node12.18.3-chrome87-ff82
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3, 4, 5]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+      - uses: actions/setup-node@v3
+        with:
+          node-version: latest
+          cache: 'pnpm'
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          record: true
+          parallel: true
+          browser: chrome
+          group: 'Chrome'
+        env:
+          CYPRESS_ENVIRONMENT: "production"
+          CYPRESS_TEST_API_URL: "https://us-central1-movet-care.cloudfunctions.net/resetTestData"
+          CYPRESS_APP_URL: "https://app.movetcare.com"
+          CYPRESS_WEBSITE_URL: "https://movetcare.com"
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      - name: Print Cypress Cloud URL
+        run: |
+          echo Cypress finished with: ${{ steps.cypress.outcome }}
+          echo See results at ${{ steps.cypress.outputs.dashboardUrl }}
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#production-logs"
+        if: always()
