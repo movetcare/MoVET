@@ -105,7 +105,10 @@ export const sendNotification = async ({
               emailConfig.from
             }\n\nSUBJECT: ${emailConfig.subject}`
           );
-        else
+        else if (
+          !emailConfig?.to?.toLowerCase()?.includes("+test") &&
+          !emailConfig?.replyTo?.toLowerCase()?.includes("+test")
+        )
           emailClient
             .send(emailConfig)
             .then(() => {

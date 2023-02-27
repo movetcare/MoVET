@@ -10,6 +10,27 @@ import { CallToAction } from "ui";
 const posts = [
   {
     isFeatured: true,
+    title: "K-9 Smiles Teeth Cleaning Clinic @ MoVET",
+    href: "/blog/k9-smiles-clinic-for-cats-and-dogs",
+    category: {
+      name: "Health & Wellness",
+      href: "#",
+      color: "bg-movet-yellow",
+    },
+    description:
+      "MoVET is partnering with K-9 Smiles to offer a safe and affordable teeth cleaning clinic for your dog or cat on April 15th from 9:30 AM to 3:30 PM! Their trained technicians clean your pet's teeth under the supervision of one of MoVET's licensed veterinarians. Click to learn more and schedule an appointment!",
+    date: "Feb 27th, 2023",
+    datetime: "2023-02-27",
+    imageUrl: "/images/blog/k9-smiles-logo.png",
+    readingTime: "1 min",
+    author: {
+      name: "Dr A",
+      href: "#",
+      imageUrl: "/images/blog/dr-a.png",
+    },
+  },
+  {
+    isFeatured: false,
     title: "I Chews You!",
     href: "/blog/i-chews-you",
     category: { name: "Community", href: "#", color: "bg-movet-magenta" },
@@ -150,7 +171,7 @@ export default function Blog() {
               From The Blog
             </h2>
           </div>
-          <div className="mx-auto mt-8 sm:pb-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
+          <div className="mx-auto mt-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
             {posts.map((post: BlogPost, index: number) =>
               post.isFeatured ? (
                 <div
@@ -163,8 +184,8 @@ export default function Blog() {
                         className="hover:opacity-75 cursor-pointer"
                         src={post.imageUrl}
                         alt=""
-                        height={334}
-                        width={520}
+                        height={510}
+                        width={510}
                       />
                     </Link>
                   </div>

@@ -31,6 +31,12 @@ export function middleware(request: NextRequest) {
   }
   if (request.nextUrl.pathname === "/pharmacy/")
     return NextResponse.redirect("https://movetcare.vetsfirstchoice.com/");
+  if (request.nextUrl.pathname === "/k9-smiles/")
+    return NextResponse.redirect(
+      (request.nextUrl.hostname === "localhost"
+        ? "http://localhost:3000"
+        : "https://movetcare.com") + "/blog/k9-smiles-clinic-for-cats-and-dogs/"
+    );
   else if (
     request.nextUrl.pathname === "/checkin/" ||
     request.nextUrl.pathname === "/check-in/"

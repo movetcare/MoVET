@@ -64,72 +64,74 @@ export const sendAppointmentReminderNotification = async (
       "phoneNumber",
       "displayName",
     ]);
-    const customerId = await getCustomerId(`${client}`);
-    let doesHaveValidPaymentOnFile: false | Array<any> = false;
-    if (customerId)
-      doesHaveValidPaymentOnFile = await verifyValidPaymentSource(
-        `${client}`,
-        customerId
-      );
-    const userNotificationSettings: UserNotificationSettings | false =
-      await getClientNotificationSettings(`${client}`);
-    const clientProvetRecord = await fetchEntity("client", client);
-    const petNames =
-      patients.length > 1
-        ? patients.map((patient: any, index: number) =>
-            index !== patients.length - 1
-              ? `${patient?.name} `
-              : ` and ${patient?.name}`
-          )
-        : patients[0].name;
-    if (DEBUG) {
-      console.log("clientProvetRecord", clientProvetRecord);
-      console.log("petNames -> ", petNames);
-      console.log("send24HourReminder", send24HourReminder);
-      console.log("send30MinReminder", send30MinReminder);
+    if (!userDetails?.email?.toLowerCase()?.includes("+test")) {
+      const customerId = await getCustomerId(`${client}`);
+      let doesHaveValidPaymentOnFile: false | Array<any> = false;
+      if (customerId)
+        doesHaveValidPaymentOnFile = await verifyValidPaymentSource(
+          `${client}`,
+          customerId
+        );
+      const userNotificationSettings: UserNotificationSettings | false =
+        await getClientNotificationSettings(`${client}`);
+      const clientProvetRecord = await fetchEntity("client", client);
+      const petNames =
+        patients.length > 1
+          ? patients.map((patient: any, index: number) =>
+              index !== patients.length - 1
+                ? `${patient?.name} `
+                : ` and ${patient?.name}`
+            )
+          : patients[0].name;
+      if (DEBUG) {
+        console.log("clientProvetRecord", clientProvetRecord);
+        console.log("petNames -> ", petNames);
+        console.log("send24HourReminder", send24HourReminder);
+        console.log("send30MinReminder", send30MinReminder);
+      }
+      if (send24HourReminder)
+        await send24HourAppointmentNotification(
+          appointmentDetails,
+          userDetails,
+          userNotificationSettings,
+          doesHaveValidPaymentOnFile,
+          clientProvetRecord,
+          petNames
+        );
+      if (send30MinReminder)
+        await send30MinAppointmentNotification(
+          appointmentDetails,
+          userDetails,
+          userNotificationSettings,
+          doesHaveValidPaymentOnFile,
+          clientProvetRecord,
+          petNames
+        );
+    } else {
+      if (DEBUG)
+        console.log(
+          `${
+            appointmentDetails?.active
+              ? "Appointment Archived"
+              : appointmentDetails?.start.toDate() < new Date()
+              ? "Appointment Passed"
+              : "UNKNOWN APPOINTMENT ISSUE"
+          } - DID NOT send appointment reminder...`,
+          appointmentDetails
+        );
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: `:x: ${
+            appointmentDetails?.active
+              ? "Appointment Archived"
+              : appointmentDetails?.start.toDate() < new Date()
+              ? "Appointment Passed"
+              : "UNKNOWN APPOINTMENT ISSUE"
+          } - DID NOT send appointment reminder...`,
+        },
+      });
     }
-    if (send24HourReminder)
-      await send24HourAppointmentNotification(
-        appointmentDetails,
-        userDetails,
-        userNotificationSettings,
-        doesHaveValidPaymentOnFile,
-        clientProvetRecord,
-        petNames
-      );
-    if (send30MinReminder)
-      await send30MinAppointmentNotification(
-        appointmentDetails,
-        userDetails,
-        userNotificationSettings,
-        doesHaveValidPaymentOnFile,
-        clientProvetRecord,
-        petNames
-      );
-  } else {
-    if (DEBUG)
-      console.log(
-        `${
-          appointmentDetails?.active
-            ? "Appointment Archived"
-            : appointmentDetails?.start.toDate() < new Date()
-            ? "Appointment Passed"
-            : "UNKNOWN APPOINTMENT ISSUE"
-        } - DID NOT send appointment reminder...`,
-        appointmentDetails
-      );
-    sendNotification({
-      type: "slack",
-      payload: {
-        message: `:x: ${
-          appointmentDetails?.active
-            ? "Appointment Archived"
-            : appointmentDetails?.start.toDate() < new Date()
-            ? "Appointment Passed"
-            : "UNKNOWN APPOINTMENT ISSUE"
-        } - DID NOT send appointment reminder...`,
-      },
-    });
   }
 };
 

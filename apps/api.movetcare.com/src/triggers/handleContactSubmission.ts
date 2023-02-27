@@ -94,7 +94,7 @@ export const handleContactSubmission = functions.firestore
         });
         const isClient = await getAuthUserByEmail(email);
         if (DEBUG) console.log("isClient", isClient);
-        if (!email?.toLowerCase()?.includes("test")) {
+        if (!email?.toLowerCase()?.includes("+test")) {
           sendNotification({
             type: "email",
             payload: {

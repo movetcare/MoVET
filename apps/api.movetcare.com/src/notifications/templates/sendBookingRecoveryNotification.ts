@@ -26,25 +26,27 @@ export const sendBookingRecoveryNotification = async ({
       .then((doc: any) => {
         return { id, ...doc.data() } as Booking;
       });
-    switch (type) {
-      case "1_HOUR":
-        sendOneHourBookingRecoveryNotification(booking);
-        sendAdminBookingRecoveryNotification(booking, type);
-        break;
-      case "24_HOUR":
-        sendTwentyFourHourBookingRecoveryNotification(booking);
-        break;
-      case "72_HOUR":
-        sendSeventyTwoHourBookingRecoveryNotification(booking);
-        break;
-      default:
-        if (DEBUG)
-          console.log(
-            // eslint-disable-next-line quotes
-            "FAILED TO SEND BOOKING ABANDONMENT RECOVERY NOTIFICATION - INCORRECT \"TYPE\" ( '1_HOUR' | '24_HOUR' | '72_HOUR')",
-            type
-          );
-        break;
+    if (!booking?.client?.email?.toLowerCase()?.includes("+test")) {
+      switch (type) {
+        case "1_HOUR":
+          sendOneHourBookingRecoveryNotification(booking);
+          sendAdminBookingRecoveryNotification(booking, type);
+          break;
+        case "24_HOUR":
+          sendTwentyFourHourBookingRecoveryNotification(booking);
+          break;
+        case "72_HOUR":
+          sendSeventyTwoHourBookingRecoveryNotification(booking);
+          break;
+        default:
+          if (DEBUG)
+            console.log(
+              // eslint-disable-next-line quotes
+              "FAILED TO SEND BOOKING ABANDONMENT RECOVERY NOTIFICATION - INCORRECT \"TYPE\" ( '1_HOUR' | '24_HOUR' | '72_HOUR')",
+              type
+            );
+          break;
+      }
     }
   } else if (DEBUG)
     console.log(

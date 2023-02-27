@@ -1,6 +1,7 @@
 const pathTimeout = Cypress.env().defaultPathnameTimeOut;
 const onlyTestOnePatient = Cypress.env().onlyTestOnePatient;
 const skipWellnessCheck = Cypress.env().skipWellnessCheck;
+const isDevelopmentEnvironment = Cypress.env().environment === "development";
 describe(
   "standard-schedule-an-appointment-flow",
   { defaultCommandTimeout: pathTimeout },
@@ -155,148 +156,149 @@ describe(
     });
   }
 );
-
-describe(
-  "winter-mode-schedule-an-appointment-flow",
-  { defaultCommandTimeout: pathTimeout },
-  () => {
-    it("Can NOT request a housecall with VCPR required patient", () => {
-      cy.request("POST", Cypress.env().testApiUrl, {
-        apiKey: Cypress.env().endpointApiKey,
-        id: "winter-mode-off",
-      });
-      cy.request("POST", Cypress.env().testApiUrl, {
-        apiKey: Cypress.env().endpointApiKey,
-        id: "winter-mode-on",
-      });
-      cy.request("POST", Cypress.env().testApiUrl, {
-        apiKey: Cypress.env().endpointApiKey,
-        id: Cypress.env().existingClientWithPaymentId,
-      });
-      cy.visit(
-        `Cypress.env().appUrl/?email=${
-          Cypress.env().existingClientWithPaymentEmail
-        }`
-      );
-      cy.get("h2").as("heading").contains("Schedule an Appointment");
-      cy.get("@heading").contains("Processing, please wait...");
-      cy.location("pathname", { timeout: pathTimeout }).should(
-        "eq",
-        "/schedule-an-appointment/pet-selection/"
-      );
-      cy.get("label").as("label").contains("NO VCPR TEST DOG").click();
-      cy.get("@label").contains("VCPR REQUIRED TEST CAT").click();
-      cy.get("p")
-        .as("text")
-        .contains(
-          "Only pets that require an Establish Care Exam may be selected"
+if (isDevelopmentEnvironment)
+  describe(
+    "winter-mode-schedule-an-appointment-flow",
+    { defaultCommandTimeout: pathTimeout },
+    () => {
+      it("Can NOT request a housecall with VCPR required patient", () => {
+        cy.request("POST", Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: "winter-mode-off",
+        });
+        cy.request("POST", Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: "winter-mode-on",
+        });
+        cy.request("POST", Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: Cypress.env().existingClientWithPaymentId,
+        });
+        cy.visit(
+          `Cypress.env().appUrl/?email=${
+            Cypress.env().existingClientWithPaymentEmail
+          }`
         );
-      cy.get("@label").contains("NO VCPR TEST DOG").click();
-      cy.get("button[type='submit']").click();
-      cy.location("pathname", { timeout: pathTimeout }).should(
-        "eq",
-        "/schedule-an-appointment/wellness-check/"
-      );
-      cy.get("#restart").contains("Restart").click();
-      cy.get("@heading").contains("Restart Appointment Booking?");
-      cy.get("button").contains("CANCEL").click();
-      cy.get("@heading").contains("Pet Wellness Check");
-      cy.get("span").contains("What are symptoms of minor illness?").click();
-      cy.get("@heading").contains("Minor Illness Symptoms");
-      cy.get("button").contains("CLOSE").click();
+        cy.get("h2").as("heading").contains("Schedule an Appointment");
+        cy.get("@heading").contains("Processing, please wait...");
+        cy.location("pathname", { timeout: pathTimeout }).should(
+          "eq",
+          "/schedule-an-appointment/pet-selection/"
+        );
+        cy.get("label").as("label").contains("NO VCPR TEST DOG").click();
+        cy.get("@label").contains("VCPR REQUIRED TEST CAT").click();
+        cy.get("p")
+          .as("text")
+          .contains(
+            "Only pets that require an Establish Care Exam may be selected"
+          );
+        cy.get("@label").contains("NO VCPR TEST DOG").click();
+        cy.get("button[type='submit']").click();
+        cy.location("pathname", { timeout: pathTimeout }).should(
+          "eq",
+          "/schedule-an-appointment/wellness-check/"
+        );
+        cy.get("#restart").contains("Restart").click();
+        cy.get("@heading").contains("Restart Appointment Booking?");
+        cy.get("button").contains("CANCEL").click();
+        cy.get("@heading").contains("Pet Wellness Check");
+        cy.get("span").contains("What are symptoms of minor illness?").click();
+        cy.get("@heading").contains("Minor Illness Symptoms");
+        cy.get("button").contains("CLOSE").click();
 
-      cy.get("button").contains("Skip").click();
-      Cypress.on("fail", () => false);
-      cy.location("pathname", { timeout: pathTimeout }).should(
-        "eq",
-        "/schedule-an-appointment/location-selection/"
-      );
-      Cypress.on("fail", () => true);
-      cy.get("@heading").contains("Choose a Location");
-      cy.get("#restart").contains("Restart").click();
-      cy.get("@heading").contains("Restart Appointment Booking?");
-      cy.get("button").contains("CANCEL").click();
-      cy.get("#Virtually").click();
-      cy.get("@heading").contains(
-        "What can I expect in a Virtual Consultation?"
-      );
-      cy.get("@text").contains("What is VCPR?").click();
-      cy.get("button").contains("CLOSE").click();
-      cy.get("button").should("be.enabled");
-      cy.get("#Clinic").click();
-      cy.get("@heading").contains("MoVET @ Belleview Station");
-      cy.get("a")
-        .contains("4912 S Newport St, Denver CO 80237")
-        .wait(1500, { log: false });
-      cy.get("button[type='submit']").as("submitButton").should("be.enabled");
-      cy.get("#Home").should("not.exist");
-      cy.request("POST", Cypress.env().testApiUrl, {
-        apiKey: Cypress.env().endpointApiKey,
-        id: "winter-mode-off",
+        cy.get("button").contains("Skip").click();
+        Cypress.on("fail", () => false);
+        cy.location("pathname", { timeout: pathTimeout }).should(
+          "eq",
+          "/schedule-an-appointment/location-selection/"
+        );
+        Cypress.on("fail", () => true);
+        cy.get("@heading").contains("Choose a Location");
+        cy.get("#restart").contains("Restart").click();
+        cy.get("@heading").contains("Restart Appointment Booking?");
+        cy.get("button").contains("CANCEL").click();
+        cy.get("#Virtually").click();
+        cy.get("@heading").contains(
+          "What can I expect in a Virtual Consultation?"
+        );
+        cy.get("@text").contains("What is VCPR?").click();
+        cy.get("button").contains("CLOSE").click();
+        cy.get("button").should("be.enabled");
+        cy.get("#Clinic").click();
+        cy.get("@heading").contains("MoVET @ Belleview Station");
+        cy.get("a")
+          .contains("4912 S Newport St, Denver CO 80237")
+          .wait(1500, { log: false });
+        cy.get("button[type='submit']").as("submitButton").should("be.enabled");
+        cy.get("#Home").should("not.exist");
+        cy.request("POST", Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: "winter-mode-off",
+        });
       });
-    });
 
-    it("(MOBILE WEBVIEW) Can request a housecall with VCPR required patient", () => {
-      cy.request("POST", Cypress.env().testApiUrl, {
-        apiKey: Cypress.env().endpointApiKey,
-        id: "winter-mode-off",
+      it("(MOBILE WEBVIEW) Can request a housecall with VCPR required patient", () => {
+        cy.request("POST", Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: "winter-mode-off",
+        });
+        cy.request("POST", Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: "winter-mode-on",
+        });
+        cy.request("POST", Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: Cypress.env().existingClientWithPaymentId,
+        });
+        cy.visit(
+          Cypress.env().appUrl +
+            `/?email=${
+              Cypress.env().existingClientWithPaymentEmail
+            }&mode=app&housecallRequest=1`
+        );
+        cy.get("legend").contains("Your Pet");
+        cy.get("label").contains("VCPR REQUIRED TEST CAT");
+        cy.get("button[type='submit']").as("submit").click();
+        cy.location("pathname", { timeout: pathTimeout }).should(
+          "eq",
+          "/schedule-an-appointment/wellness-check/"
+        );
+        cy.get("button").contains("Skip").click();
+        Cypress.on("fail", () => false);
+        cy.location("pathname", { timeout: pathTimeout }).should(
+          "eq",
+          "/schedule-an-appointment/location-selection/"
+        );
+        Cypress.on("fail", () => true);
+        cy.get("#Virtually").should("not.exist");
+        cy.get("#Home").should("not.exist");
+        cy.get(".places-search")
+          .type("4912 S Newport Street Denver")
+          .wait(1500, { log: false });
+        cy.get("#react-select-3-option-0").click();
+        cy.get("#info").type("Apartment 2A (This is a test address)");
+        cy.get("@submit").click();
+        cy.location("pathname", { timeout: pathTimeout }).should(
+          "eq",
+          "/schedule-an-appointment/datetime-selection/"
+        );
+        cy.get("@submit").should("be.disabled");
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        cy.get("button abbr").contains(String(tomorrow.getDate())).click();
+        cy.get(".time-input").type("1430");
+        cy.get("@submit").should("be.enabled").click();
+        cy.location("pathname", {
+          timeout: pathTimeout + 3000,
+        }).should("eq", "/schedule-an-appointment/success/");
+        cy.get("h2").contains("Housecall Request Successful");
+        cy.request("POST", Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: "winter-mode-off",
+        });
       });
-      cy.request("POST", Cypress.env().testApiUrl, {
-        apiKey: Cypress.env().endpointApiKey,
-        id: "winter-mode-on",
-      });
-      cy.request("POST", Cypress.env().testApiUrl, {
-        apiKey: Cypress.env().endpointApiKey,
-        id: Cypress.env().existingClientWithPaymentId,
-      });
-      cy.visit(
-        `Cypress.env().appUrl/?email=${
-          Cypress.env().existingClientWithPaymentEmail
-        }&mode=app&housecallRequest=1`
-      );
-      cy.get("legend").contains("Your Pet");
-      cy.get("label").contains("VCPR REQUIRED TEST CAT");
-      cy.get("button[type='submit']").as("submit").click();
-      cy.location("pathname", { timeout: pathTimeout }).should(
-        "eq",
-        "/schedule-an-appointment/wellness-check/"
-      );
-      cy.get("button").contains("Skip").click();
-      Cypress.on("fail", () => false);
-      cy.location("pathname", { timeout: pathTimeout }).should(
-        "eq",
-        "/schedule-an-appointment/location-selection/"
-      );
-      Cypress.on("fail", () => true);
-      cy.get("#Virtually").should("not.exist");
-      cy.get("#Home").should("not.exist");
-      cy.get(".places-search")
-        .type("4912 S Newport Street Denver")
-        .wait(1500, { log: false });
-      cy.get("#react-select-3-option-0").click();
-      cy.get("#info").type("Apartment 2A (This is a test address)");
-      cy.get("@submit").click();
-      cy.location("pathname", { timeout: pathTimeout }).should(
-        "eq",
-        "/schedule-an-appointment/datetime-selection/"
-      );
-      cy.get("@submit").should("be.disabled");
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      cy.get("button abbr").contains(String(tomorrow.getDate())).click();
-      cy.get(".time-input").type("1430");
-      cy.get("@submit").should("be.enabled").click();
-      cy.location("pathname", {
-        timeout: pathTimeout + 3000,
-      }).should("eq", "/schedule-an-appointment/success/");
-      cy.get("h2").contains("Housecall Request Successful");
-      cy.request("POST", Cypress.env().testApiUrl, {
-        apiKey: Cypress.env().endpointApiKey,
-        id: "winter-mode-off",
-      });
-    });
-  }
-);
+    }
+  );
 
 const runThroughAppointmentRequestWorkflows = ({
   email,
@@ -306,8 +308,7 @@ const runThroughAppointmentRequestWorkflows = ({
   petName,
   paymentRequired,
 }) => {
-  
-  if (paymentRequired) {
+  if (paymentRequired && isDevelopmentEnvironment) {
     cy.request("POST", Cypress.env().testApiUrl, {
       apiKey: Cypress.env().endpointApiKey,
       id: "require_payment_method_to_request_an_appointment_off",
@@ -317,7 +318,7 @@ const runThroughAppointmentRequestWorkflows = ({
       id: "require_payment_method_to_request_an_appointment_on",
     });
   }
-  if (Cypress.env().environment === "development")
+  if (isDevelopmentEnvironment)
     cy.request("POST", Cypress.env().testApiUrl, {
       apiKey: Cypress.env().endpointApiKey,
       id: "winter-mode-off",
@@ -590,8 +591,9 @@ const runThroughAppointmentRequestWorkflows = ({
     cy.visit(Cypress.env().appUrl + "/schedule-an-appointment/success");
   }
   cy.get("@heading").contains("Appointment Request Successful");
-  cy.request("POST", Cypress.env().testApiUrl, {
-    apiKey: Cypress.env().endpointApiKey,
-    id: "require_payment_method_to_request_an_appointment_off",
-  });
+  if (isDevelopmentEnvironment && paymentRequired)
+    cy.request("POST", Cypress.env().testApiUrl, {
+      apiKey: Cypress.env().endpointApiKey,
+      id: "require_payment_method_to_request_an_appointment_off",
+    });
 };

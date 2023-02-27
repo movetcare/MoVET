@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   repository_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 5 * * *"
 jobs:
   backup-firestore:
     runs-on: ubuntu-latest

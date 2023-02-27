@@ -1,8 +1,10 @@
 name: PRODUCTION - Deploy Cloud Functions
 on:
+  workflow_dispatch:
+  repository_dispatch:
   push:
     branches:
-      - disabled
+      - main
     paths:
       - "apps/api.movetcare.com/**"
 jobs:

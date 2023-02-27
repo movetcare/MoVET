@@ -45,9 +45,9 @@
     "ping:deploy:success:prod": "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\":tada: *Firebase PRODUCTION Deployment Complete!*\n\n*Updated:*\n\n:building_construction: Cloud Functions\n\n:closed_lock_with_key: Firestore Security Rules\n\n:file_cabinet: Storage Security Rules\n\n:card_file_box: Firestore Indexes\n\n\"}' https://hooks.slack.com/services/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"
   },
   "devDependencies": {
-    "@types/node": "^18.14.1",
+    "@types/node": "^18.14.2",
     "concurrently": "^7.6.0",
-    "cypress": "^12.6.0",
+    "cypress": "^12.7.0",
     "cypress-firebase": "^3.0.1",
     "eslint-config-custom": "workspace:0.0.0",
     "firebase-admin": "^11.5.0",
@@ -55,7 +55,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^13.1.2",
     "prettier": "^2.8.4",
-    "start-server-and-test": "^1.15.4",
+    "start-server-and-test": "^2.0.0",
     "turbo": "^1.8.2",
     "typescript": "^4.9.5",
     "x2js": "^3.4.4"
