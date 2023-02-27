@@ -1,12 +1,12 @@
 import { sendNotification } from "../notifications/sendNotification";
-import { environment, functions } from "../config/config";
+import { functions } from "../config/config";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { getAuthUserByEmail } from "../utils/auth/getAuthUserByEmail";
 import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { createProVetClient } from "../integrations/provet/entities/client/createProVetClient";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
-const DEBUG = environment?.type === "production";
+const DEBUG = true;
 export const handleK9SmilesRequest = functions.firestore
   .document("k9_smiles/{id}")
   .onWrite(async (change: any, context: any) => {
@@ -20,6 +20,7 @@ export const handleK9SmilesRequest = functions.firestore
     const { email, firstName, lastName, phone, source, status } = data || {};
     const authUser: UserRecord | null = await getAuthUserByEmail(email);
     let didUpdateClientInfo = false;
+    if (DEBUG) console.log("authUser", authUser);
     if (authUser === null) {
       const proVetClientData: any = await createProVetClient({
         email,
@@ -27,6 +28,7 @@ export const handleK9SmilesRequest = functions.firestore
         lastname: lastName,
         zip_code: null,
       });
+      if (DEBUG) console.log("proVetClientData", proVetClientData);
       didUpdateClientInfo = await updateProVetClient({
         phone,
         id: proVetClientData?.id,
@@ -37,6 +39,7 @@ export const handleK9SmilesRequest = functions.firestore
         id: authUser?.uid,
       });
     }
+    if (DEBUG) console.log("proVetClientData", didUpdateClientInfo);
     if (!email?.toLowerCase()?.includes("+test") && didUpdateClientInfo) {
       sendNotification({
         type: "slack",

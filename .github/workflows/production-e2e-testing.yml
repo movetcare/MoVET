@@ -1,14 +1,11 @@
 name: Test Production Environments E2E
 on:
-  workflow_dispatch:
-  repository_dispatch:
-  schedule:
-  - cron: "0 5 * * 0"
   push:
     branches:
       - main
     paths:
-      - "apps/**"
+      - "apps/movetcare.com/**"
+      - "apps/app.movetcare.com/**"
       - "packages/**"
       - "testing/**"
 jobs:
