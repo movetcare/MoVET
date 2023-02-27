@@ -10,7 +10,7 @@
     "update": "ncu -u --reject axios",
     "lint": "eslint src/",
     "fix": "eslint src/ --fix",
-    "build": "pnpm run config:env && tsc",
+    "build": "tsc",
     "config:env": "op inject -i runtimeconfig.json -o .runtimeconfig.json --force",
     "dev": "pnpm run config:env && pnpm run emulate",
     "dev:test": "pnpm run config:env && pnpm run emulate",

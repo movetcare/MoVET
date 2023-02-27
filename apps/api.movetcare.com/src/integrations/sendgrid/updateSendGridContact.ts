@@ -65,7 +65,9 @@ export const updateSendGridContact = async ({
           }
           sendNotification({
             type: "slack",
-            payload: { message: `:tada: ${email} has bee updated in SendGrid` },
+            payload: {
+              message: `:tada: ${email} has been updated in SendGrid`,
+            },
           });
           return true;
         })

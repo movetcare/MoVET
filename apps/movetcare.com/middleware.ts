@@ -31,7 +31,13 @@ export function middleware(request: NextRequest) {
   }
   if (request.nextUrl.pathname === "/pharmacy/")
     return NextResponse.redirect("https://movetcare.vetsfirstchoice.com/");
-  if (request.nextUrl.pathname === "/k9-smiles/")
+  if (
+    request.nextUrl.pathname === "/k9-smiles/" ||
+    request.nextUrl.pathname === "/k9smiles/" ||
+    request.nextUrl.pathname === "/k9-smile/" ||
+    request.nextUrl.pathname === "/smile/" ||
+    request.nextUrl.pathname === "/smiles/"
+  )
     return NextResponse.redirect(
       (request.nextUrl.hostname === "localhost"
         ? "http://localhost:3000"
