@@ -1,4 +1,4 @@
-name: Test Production Environments E2E (W/FUNCTIONS))
+name: Test Production Environments E2E (W/FUNCTIONS)
 on:
   push:
     branches:
