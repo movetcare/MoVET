@@ -6,7 +6,7 @@ on:
     paths:
       - "apps/api.movetcare.com/**"
 jobs:
-  deploy:
+  deploy_functions:
     name: Deploy API via Firebase Cloud Functions
     runs-on: ubuntu-latest
     env:
@@ -47,9 +47,9 @@ jobs:
           channel: "#production-logs"
         if: always()
   cypress-run:
-    name: Cypress run
+    needs: delpoy_functions
+    name: Run E2E Cypress Tests
     runs-on: ubuntu-latest
-    needs: delpoy
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
     container: cypress/browsers:node12.18.3-chrome87-ff82
