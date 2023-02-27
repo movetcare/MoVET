@@ -5,7 +5,6 @@ import { getAuthUserByEmail } from "../utils/auth/getAuthUserByEmail";
 import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { createProVetClient } from "../integrations/provet/entities/client/createProVetClient";
-import { createAuthClient } from "../integrations/provet/entities/client/createAuthClient";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
 
 export const handleK9SmilesRequest = functions.firestore
@@ -109,7 +108,7 @@ export const handleK9SmilesRequest = functions.firestore
         message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
           phone
         )}</a></p><p><b>Source:</b> ${source}</p>`,
-        client: authUser?.uid,
+        client: authUser?.uid as string,
         patients: [],
       });
       return true;
