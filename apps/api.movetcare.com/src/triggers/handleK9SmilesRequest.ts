@@ -35,6 +35,8 @@ export const handleK9SmilesRequest = functions.firestore
       });
     } else {
       didUpdateClientInfo = await updateProVetClient({
+        firstname: firstName,
+        lastname: lastName,
         phone,
         id: authUser?.uid,
       });
