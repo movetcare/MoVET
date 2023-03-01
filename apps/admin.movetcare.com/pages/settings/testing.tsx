@@ -53,8 +53,6 @@ const Testing = () => {
             email,
           });
       });
-      console.log("clients", clients);
-      console.log("archivedClients", archivedClients);
       setTestClients(clients);
       setArchivedClients(archivedClients);
     }
@@ -71,6 +69,25 @@ const Testing = () => {
               size="lg"
             />
             <h1 className="ml-2 my-4 text-lg">Test Accounts</h1>
+            <div
+              onClick={() =>
+                testClients &&
+                testClients?.length > 0 &&
+                testClients.forEach((testClient: Client) =>
+                  window.open(
+                    `https://us.provetcloud.com/4285/client/${testClient?.id}/forget`,
+                    "_blank"
+                  )
+                )
+              }
+              className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"
+              data-tooltip-id="deleteClients"
+              data-tooltip-content="Delete ALL Clients"
+              title="Delete ALL Client"
+            >
+              <Tooltip id="deleteClients" />
+              <FontAwesomeIcon icon={faTrash} />
+            </div>
           </div>
         </div>
         <ul
