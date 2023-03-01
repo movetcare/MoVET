@@ -92,32 +92,39 @@ axios.defaults.baseURL = func.config()?.provet_cloud?.api_base;
 (axios.defaults.headers as any).common["User-Agent"] = "MoVET/2.0";
 (axios.defaults.headers as any).post["Content-Type"] = "application/json";
 
-export const projectApiKey: string = func.config()?.project?.api_key;
-export const mobileClientApiKey: string = func.config()?.events?.api_key;
-export const expoWebhookSecret: string = func.config()?.expo?.webhook_secret;
-export const expoAccessToken: string = func.config()?.expo.access_token;
-export const proVetAppUrl: string = func.config()?.provet_cloud?.app_url;
-export const proVetApiUrl: string = func.config()?.provet_cloud?.api_base;
-export const recaptchaSecretKey: string = func.config()?.recaptcha?.secret_key;
+export const projectApiKey: string = func.config()?.project?.api_key as string;
+export const mobileClientApiKey: string = func.config()?.events
+  ?.api_key as string;
+export const expoWebhookSecret: string = func.config()?.expo
+  ?.webhook_secret as string;
+export const expoAccessToken: string = func.config()?.expo
+  .access_token as string;
+export const proVetAppUrl: string = func.config()?.provet_cloud
+  ?.app_url as string;
+export const proVetApiUrl: string = func.config()?.provet_cloud
+  ?.api_base as string;
+export const recaptchaSecretKey: string = func.config()?.recaptcha
+  ?.secret_key as string;
 export const request: any = axios;
 export const admin: any =
   environment.type !== "staging" ? productionInstance : stagingInstance;
 export const functions: any = func;
-export const stripeApiVersion: any = func.config()?.stripe?.api_version;
-export const stripeWebhookSecret = func.config()?.stripe?.webhook_secret;
-export const stripe = new Stripe(func.config()?.stripe?.secret_key, {
+export const stripeApiVersion: string = func.config()?.stripe?.api_version;
+export const stripeWebhookSecret: string =
+  func.config()?.stripe?.webhook_secret;
+export const stripe = new Stripe(func.config()?.stripe?.secret_key as string, {
   apiVersion: stripeApiVersion,
 });
-email.setApiKey(func.config()?.sendgrid.api_key);
-client.setApiKey(func.config()?.sendgrid.api_key);
+email.setApiKey(func.config()?.sendgrid.api_key as string);
+client.setApiKey(func.config()?.sendgrid.api_key as string);
 export const emailClient = email;
 export const sendGridAPI = client;
 const sms = require("twilio")(
-  func.config()?.twilio.account_sid,
-  func.config()?.twilio.auth_token
+  func.config()?.twilio.account_sid as string,
+  func.config()?.twilio.auth_token as string
 );
 export const smsClient = sms;
-export const slackBotToken = func.config()?.slack.o_auth_bot_token;
+export const slackBotToken: string = func.config()?.slack.o_auth_bot_token;
 export const slackClient = new WebClient(slackBotToken, {
   logLevel: DEBUG ? LogLevel.DEBUG : undefined,
 });

@@ -67,12 +67,12 @@
   "typeCoverage": {
     "atLeast": 75,
     "ignoreFiles": [
-      "tools/*.ts",
-      "testing/*.ts",
-      "runner-results/*.ts",
-      "docs/*.ts",
-      "node_modules/*.ts",
-      "coverage-ts/*.ts"
+      "tools/**/*.ts",
+      "testing/**/*.ts",
+      "runner-results/**/*.ts",
+      "docs/**/*.ts",
+      "node_modules/**/*.ts",
+      "coverage-ts/**/*.ts"
     ]
   },
   "engines": {
