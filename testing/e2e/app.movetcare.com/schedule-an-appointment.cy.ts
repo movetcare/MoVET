@@ -55,9 +55,8 @@ describe(
         id: Cypress.env().existingClientWithPaymentId,
       });
       cy.visit(
-        `Cypress.env().appUrl/?email=${
-          Cypress.env().existingClientWithPaymentEmail
-        }`
+        Cypress.env().appUrl +
+          `/?email=${Cypress.env().existingClientWithPaymentEmail}`
       );
       cy.get("h2").as("heading").contains("Schedule an Appointment");
       cy.get("@heading").contains("Processing, please wait...");
@@ -176,9 +175,8 @@ if (isDevelopmentEnvironment)
           id: Cypress.env().existingClientWithPaymentId,
         });
         cy.visit(
-          `Cypress.env().appUrl/?email=${
-            Cypress.env().existingClientWithPaymentEmail
-          }`
+          Cypress.env().appUrl +
+            `/?email=${Cypress.env().existingClientWithPaymentEmail}`
         );
         cy.get("h2").as("heading").contains("Schedule an Appointment");
         cy.get("@heading").contains("Processing, please wait...");
