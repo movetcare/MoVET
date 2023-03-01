@@ -1,12 +1,12 @@
 import { sendNotification } from "../notifications/sendNotification";
-import { functions } from "../config/config";
+import { environment, functions } from "../config/config";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { getAuthUserByEmail } from "../utils/auth/getAuthUserByEmail";
 import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { createProVetClient } from "../integrations/provet/entities/client/createProVetClient";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
-const DEBUG = true; //environment?.type === "production";
+const DEBUG = environment?.type === "production";
 export const handleK9SmilesRequest = functions.firestore
   .document("k9_smiles/{id}")
   .onWrite(async (change: any, context: any) => {
@@ -19,7 +19,7 @@ export const handleK9SmilesRequest = functions.firestore
       });
     const { email, firstName, lastName, phone, source, status } = data || {};
     if (status === "started") {
-      const authUser: UserRecord | null = await getAuthUserByEmail(email);
+      const authUser: UserRecord | any = await getAuthUserByEmail(email);
       let didUpdateClientInfo = false;
       if (DEBUG) console.log("authUser", authUser);
       if (authUser === null) {
@@ -29,11 +29,12 @@ export const handleK9SmilesRequest = functions.firestore
           lastname: lastName,
           zip_code: null,
         });
-        if (DEBUG) console.log("proVetClientData", proVetClientData);
+        if (DEBUG) console.log("proVetClientData?.id", proVetClientData?.id);
         didUpdateClientInfo = await updateProVetClient({
           phone,
           id: proVetClientData?.id,
         });
+        authUser.uid = proVetClientData?.id;
       } else {
         didUpdateClientInfo = await updateProVetClient({
           firstname: firstName,
@@ -42,8 +43,12 @@ export const handleK9SmilesRequest = functions.firestore
           id: authUser?.uid,
         });
       }
-      if (DEBUG) console.log("proVetClientData", didUpdateClientInfo);
-      if (!email?.toLowerCase()?.includes("+test") && didUpdateClientInfo) {
+      if (DEBUG) console.log("didUpdateClientInfo", didUpdateClientInfo);
+      if (
+        !email?.toLowerCase()?.includes("+test") &&
+        didUpdateClientInfo &&
+        authUser?.uid !== null
+      ) {
         sendNotification({
           type: "slack",
           payload: {
@@ -111,6 +116,14 @@ export const handleK9SmilesRequest = functions.firestore
           patients: [],
         });
         return true;
-      } else return false;
+      } else {
+        if (DEBUG)
+          console.log("SKIPPED NOTIFICATION", {
+            email: !email?.toLowerCase()?.includes("+test"),
+            didUpdateClientInfo,
+            authUserUid: authUser?.uid,
+          });
+        return false;
+      }
     } else return false;
   });

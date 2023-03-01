@@ -8,12 +8,47 @@ on:
       - "packages/**"
       - "testing/**"
 jobs:
-  deploy_functions:
-    name: Deploy API via Firebase Cloud Functions
+  backup_firestore:
     runs-on: ubuntu-latest
     env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
     steps:
+      - uses: act10ns/slack@master
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          config: .github/config/slack.yml
+          channel: "#production-logs"
+        if: always()
+      - uses: actions/checkout@master
+      - id: "auth"
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+      - name: Backup Firestore
+        id: backup-firestore
+        run: gcloud firestore export gs://movet-care-backups
+      - uses: act10ns/slack@master
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          config: .github/config/slack.yml
+          channel: "#production-logs"
+        if: always()
+  deploy_functions:
+    name: Deploy API via Firebase Cloud Functions
+    needs: backup_firestore
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
+    steps:
+      - uses: act10ns/slack@master
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          config: .github/config/slack.yml
+          channel: "#production-logs"
+        if: always()
       - name: Checkout Repo
         id: repo-checkout
         uses: actions/checkout@master
@@ -46,6 +81,7 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
+          config: .github/config/slack.yml
           channel: "#production-logs"
         if: always()
   cypress_run:
@@ -60,6 +96,13 @@ jobs:
       matrix:
         containers: [1, 2, 3, 4, 5]
     steps:
+      - uses: act10ns/slack@master
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          config: .github/config/slack.yml
+          channel: "#production-logs"
+        if: always()
       - name: Checkout
         uses: actions/checkout@master
       - uses: pnpm/action-setup@master
@@ -92,5 +135,6 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
+          config: .github/config/slack.yml
           channel: "#production-logs"
         if: always()

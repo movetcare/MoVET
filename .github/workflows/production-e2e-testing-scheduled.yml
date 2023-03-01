@@ -16,6 +16,13 @@ jobs:
       matrix:
         containers: [1, 2, 3, 4, 5]
     steps:
+      - uses: act10ns/slack@master
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#production-logs"
+          config: .github/config/slack.yml
+        if: always()
       - name: Checkout
         uses: actions/checkout@master
       - uses: pnpm/action-setup@master
@@ -49,4 +56,5 @@ jobs:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
           channel: "#production-logs"
+          config: .github/config/slack.yml
         if: always()

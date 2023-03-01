@@ -14,6 +14,14 @@ jobs:
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
     steps:
+      - uses: act10ns/slack@master
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#production-logs"
+          config: .github/config/slack.yml
+        if: always()
+
       - name: Checkout Repo
         id: repo-checkout
         uses: actions/checkout@master
@@ -30,4 +38,5 @@ jobs:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
           channel: "#production-logs"
+          config: .github/config/slack.yml
         if: always()

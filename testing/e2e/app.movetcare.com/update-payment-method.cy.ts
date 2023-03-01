@@ -8,7 +8,7 @@ describe("update-payment-method", () => {
     cy.get("input[name='email']").type("CYPRESSTEST");
     cy.get("button[type='submit']").contains("Add a Payment Method").click();
     cy.get("p.text-movet-red").contains("Email must be a valid email address");
-    cy.get("input[name='email']").type("CYPRESS@TEST.COM");
+    cy.get("input[name='email']").type("CYPRESS+test@TEST.COM");
     cy.get("button[type='submit']").contains("Add a Payment Method").click();
   });
 

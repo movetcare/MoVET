@@ -33,7 +33,7 @@ describe("k9-smiles-page", () => {
     cy.get("form.grid input[name='email']").type("CYPRESS");
     cy.get("@submit").contains("Schedule an Appointment").click();
     cy.get("p.text-movet-red").contains("Email must be a valid email address");
-    cy.get("form.grid input[name='email']").type("CYPRESS@MOVETCARE.COM");
+    cy.get("form.grid input[name='email']").type("CYPRESS+test@TEST.COM");
     cy.get("p.text-movet-red")
       .contains("Email must be a valid email address")
       .should("not.exist");

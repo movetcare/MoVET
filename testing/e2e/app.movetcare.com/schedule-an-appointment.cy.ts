@@ -19,18 +19,19 @@ describe(
       });
     });
 
-    it("Can schedule an appointment as a new client - PAYMENT REQUIRED", () => {
-      runThroughAppointmentRequestWorkflows({
-        email: `dev+test_client_${Math.floor(
-          Math.random() * 99999999999
-        )}@movetcare.com`,
-        firstName: "Test",
-        lastName: "Client (Can be Deleted)",
-        petName: Cypress.env().existingPatientWithVcprName,
-        id: null,
-        paymentRequired: true,
-      });
-    });
+   if (isDevelopmentEnvironment)
+     it("Can schedule an appointment as a new client - PAYMENT REQUIRED", () => {
+       runThroughAppointmentRequestWorkflows({
+         email: `dev+test_client_${Math.floor(
+           Math.random() * 99999999999
+         )}@movetcare.com`,
+         firstName: "Test",
+         lastName: "Client (Can be Deleted)",
+         petName: Cypress.env().existingPatientWithVcprName,
+         id: null,
+         paymentRequired: true,
+       });
+     });
 
     if (!onlyTestOnePatient)
       it("Can schedule an appointment as existing client - VCPR REQUIRED", () => {
