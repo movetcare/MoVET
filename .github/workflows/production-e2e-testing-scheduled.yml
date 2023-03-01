@@ -17,11 +17,11 @@ jobs:
         containers: [1, 2, 3, 4, 5]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+        uses: actions/checkout@master
+      - uses: pnpm/action-setup@master
         with:
           version: latest
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@master
         with:
           node-version: latest
           cache: 'pnpm'
@@ -44,7 +44,7 @@ jobs:
         run: |
           echo Cypress finished with: ${{ steps.cypress.outcome }}
           echo See results at ${{ steps.cypress.outputs.dashboardUrl }}
-      - uses: act10ns/slack@v1
+      - uses: act10ns/slack@master
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}

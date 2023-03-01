@@ -25,7 +25,7 @@ jobs:
         env:
           PROJECT_ID: movet-care
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_PRODUCTION }}
-      - uses: act10ns/slack@v1
+      - uses: act10ns/slack@master
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}

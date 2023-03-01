@@ -4,13 +4,53 @@ on:
     branches:
       - main
     paths:
-      - "apps/movetcare.com/**"
-      - "apps/app.movetcare.com/**"
+      - "apps/**"
       - "packages/**"
       - "testing/**"
 jobs:
-  cypress-run:
-    name: Cypress run
+  deploy_functions:
+    name: Deploy API via Firebase Cloud Functions
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION }}
+    steps:
+      - name: Checkout Repo
+        id: repo-checkout
+        uses: actions/checkout@master
+      - uses: pnpm/action-setup@master
+        with:
+          version: latest
+      - uses: actions/setup-node@master
+        with:
+          node-version: latest
+          cache: 'pnpm'
+      - name: Install Global Dependencies
+        id: install-global-dependencies
+        run: pnpm add -g firebase-tools
+      - name: Install Dependencies
+        id: install-dependencies
+        run: pnpm install
+      - name: Lint Cloud Functions
+        id: lint
+        run: pnpm -F api.movetcare.com run lint
+      - name: Build Cloud Functions
+        id: build
+        run: pnpm -F api.movetcare.com run build
+      - name: Deploy to Firebase
+        id: deploy-cloud-functions
+        run: firebase use movet-care --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}" && firebase deploy --only functions --non-interactive -f --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}"
+      - name: Resync ProVet Configurations
+        id: reset-provet-configs
+        run: npm run init:config:prod
+      - uses: act10ns/slack@master
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#production-logs"
+        if: always()
+  cypress_run:
+    name: Run E2E Cypress Tests
+    needs: deploy_functions
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
@@ -21,11 +61,11 @@ jobs:
         containers: [1, 2, 3, 4, 5]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+        uses: actions/checkout@master
+      - uses: pnpm/action-setup@master
         with:
           version: latest
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@master
         with:
           node-version: latest
           cache: 'pnpm'
@@ -48,7 +88,7 @@ jobs:
         run: |
           echo Cypress finished with: ${{ steps.cypress.outcome }}
           echo See results at ${{ steps.cypress.outputs.dashboardUrl }}
-      - uses: act10ns/slack@v1
+      - uses: act10ns/slack@master
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
