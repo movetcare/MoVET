@@ -46,9 +46,9 @@ jobs:
           steps: ${{ toJson(steps) }}
           channel: "#production-logs"
         if: always()
-  cypress-run:
-    needs: delpoy_functions
+  cypress_run:
     name: Run E2E Cypress Tests
+    needs: deploy_functions
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
