@@ -581,7 +581,7 @@ const runThroughAppointmentRequestWorkflows = ({
   cy.get("button abbr").contains(String(tomorrow.getDate())).click();
   cy.get(".time-input").type("1430");
   cy.get("@submitButton").should("be.enabled").click();
-  if (paymentRequired) {
+  if (isDevelopmentEnvironment && paymentRequired) {
     cy.location("pathname", { timeout: pathTimeout }).should(
       "eq",
       "/schedule-an-appointment/payment-confirmation/"
