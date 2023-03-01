@@ -15,7 +15,7 @@
     "lint": "turbo run lint",
     "cypress:run": "CYPRESS_DISPLAY_PATH_TIMEOUT=50000 CYPRESS_ONLY_TEST_ONE_PATIENT=false CYPRESS_SKIP_WELLNESS_CHECK=false npx cypress run",
     "test": "pnpm run build && start-server-and-test start:test 3000 test:platform",
-    "test:platform": "sleep 45 && cypress-parallel -s cypress:run -t 4 -d 'testing/e2e' -v -a\"--record --key 42971719-2adc-4f5e-8e73-44fcc68d57cc\"",
+    "test:platform": "sleep 45 && cypress-parallel -s cypress:run -t 4 -d 'testing/e2e'",
     "open:test": "pnpm cypress open",
     "ts-coverage": "typescript-coverage-report",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
