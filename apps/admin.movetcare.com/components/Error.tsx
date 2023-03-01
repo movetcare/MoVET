@@ -3,7 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import environment from "utils/environment";
 import ReportABug from "./ReportABug";
 
-const Error = ({ error }: { error: any }) => (
+const Error = ({
+  error,
+}: {
+  error: { name: string; code: string; message: string };
+}) => (
   <div className="rounded-md bg-movet-red p-4 text-movet-white max-w-md mx-auto">
     <div className="flex justify-center items-center mb-8">
       <div className="flex-shrink-0">

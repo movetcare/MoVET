@@ -13,9 +13,11 @@
     "build": "pnpm run config:env && turbo run build",
     "dev": "pnpm run start",
     "lint": "turbo run lint",
+    "cypress:run": "CYPRESS_DISPLAY_PATH_TIMEOUT=50000 CYPRESS_ONLY_TEST_ONE_PATIENT=false CYPRESS_SKIP_WELLNESS_CHECK=false npx cypress run",
     "test": "pnpm run build && start-server-and-test start:test 3000 test:platform",
-    "test:platform": "sleep 45 && CYPRESS_DISPLAY_PATH_TIMEOUT=50000 CYPRESS_ONLY_TEST_ONE_PATIENT=false CYPRESS_SKIP_WELLNESS_CHECK=false npx cypress run --record --key 42971719-2adc-4f5e-8e73-44fcc68d57cc",
+    "test:platform": "sleep 45 && cypress-parallel -s cypress:run -t 4 -d 'testing/e2e' -v -a\"--record --key 42971719-2adc-4f5e-8e73-44fcc68d57cc\"",
     "open:test": "pnpm cypress open",
+    "ts-coverage": "typescript-coverage-report",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "config:env": "firebase use movet-care-staging && yes | cp -rf apps/.env apps/movetcare.com/.env.local && source apps/movetcare.com/.env.local && yes | cp -rf apps/.env apps/app.movetcare.com/.env.local && source apps/app.movetcare.com/.env.local && yes | cp -rf apps/.env apps/admin.movetcare.com/.env.local && source apps/admin.movetcare.com/.env.local",
     "update": "ncu -u && pnpm -r run update && pnpm clean",
@@ -48,17 +50,30 @@
     "@types/node": "^18.14.2",
     "concurrently": "^7.6.0",
     "cypress": "^12.7.0",
-    "cypress-firebase": "^3.0.1",
+    "cypress-multi-reporters": "^1.6.2",
+    "cypress-parallel": "^0.12.0",
     "eslint-config-custom": "workspace:0.0.0",
-    "firebase-admin": "^11.5.0",
     "git-branch-is": "^4.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.2",
+    "mocha": "^10.2.0",
     "prettier": "^2.8.4",
     "start-server-and-test": "^2.0.0",
     "turbo": "^1.8.3",
     "typescript": "^4.9.5",
+    "typescript-coverage-report": "^0.7.0",
     "x2js": "^3.4.4"
+  },
+  "typeCoverage": {
+    "atLeast": 75,
+    "ignoreFiles": [
+      "tools/*.ts",
+      "testing/*.ts",
+      "runner-results/*.ts",
+      "docs/*.ts",
+      "node_modules/*.ts",
+      "coverage-ts/*.ts"
+    ]
   },
   "engines": {
     "node": ">= 16.18.1"

@@ -2,7 +2,14 @@ import { firestore } from "../firebase";
 const DEBUG = false;
 export const getWinterMode = async () => {
   try {
-    const winterMode = await firestore
+    const winterMode: {
+      enableForNewPatientsOnly: string;
+      endDate: any;
+      startDate: any;
+      isActiveOnWebApp: boolean;
+      isActiveOnWebsite: boolean;
+      message: string;
+    } = await firestore
       .collection("configuration")
       .doc("bookings")
       .get()
@@ -14,7 +21,7 @@ export const getWinterMode = async () => {
       isActiveOnWebApp,
       isActiveOnWebsite,
       message,
-    } = winterMode || {};
+    } = winterMode;
     if (DEBUG)
       console.log("(SSG) FIRESTORE QUERY -> getWinterMode() =>", {
         enableForNewPatientsOnly,

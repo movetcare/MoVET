@@ -8,7 +8,15 @@ export const getAnnouncement = async () => {
       .get()
       .then((doc) => doc.data());
     const { color, message, title, link, isActive, isActiveMobile, icon } =
-      announcement || {};
+      announcement as {
+        color: string;
+        message: string;
+        title: string;
+        link: string;
+        isActive: boolean;
+        isActiveMobile: boolean;
+        icon: string;
+      };
     if (DEBUG)
       console.log("(SSG) FIRESTORE QUERY -> getAnnouncement() =>", {
         color,
@@ -28,8 +36,8 @@ export const getAnnouncement = async () => {
       isActiveMobile: isActiveMobile || false,
       icon: icon || null,
     };
-  } catch (error) {
+  } catch (error: { message: string }) {
     console.error(error);
-    return { error: (error as any)?.message || JSON.stringify(error) };
+    return { error: error?.message || JSON.stringify(error) };
   }
 };

@@ -9,7 +9,7 @@ import { WebClient, LogLevel } from "@slack/web-api";
 
 let stagingInstance: any = null;
 let productionInstance: any = null;
-export const environment: any = func.config()?.environment;
+export const environment: { type: string } = func.config()?.environment;
 export const DEBUG =
   environment.type !== "production" && environment.type !== "development";
 

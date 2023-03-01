@@ -38,6 +38,8 @@ build
 lib
 .runtimeconfig.json
 .vscode
+/runner-results
+/coverage-ts
 
 # debug
 npm-debug.log*
