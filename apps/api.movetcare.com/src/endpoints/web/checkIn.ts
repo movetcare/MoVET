@@ -16,7 +16,7 @@ import { sendNotification } from "../../notifications/sendNotification";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const checkIn = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<any> => {

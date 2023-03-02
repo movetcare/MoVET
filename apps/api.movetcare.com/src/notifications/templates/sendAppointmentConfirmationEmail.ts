@@ -6,7 +6,7 @@ import { getDateStringFromDate } from "../../utils/getDateStringFromDate";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { EmailConfiguration } from "../../types/email.d";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const sendAppointmentConfirmationEmail = async (
   clientId: string,
   appointmentId: string

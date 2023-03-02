@@ -1,5 +1,5 @@
 import { admin, throwError } from "./../../config/config";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const paymentMethodUpdated = (event: any): void => {
   const { customer, card, id, type, billing_details } =
     event?.data?.object || {};

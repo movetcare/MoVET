@@ -4,7 +4,7 @@ import { sendNotification } from "../../../notifications/sendNotification";
 import type { EmailConfiguration } from "../../../types/email";
 import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { requestIsAuthorized } from "../pos/requestIsAuthorized";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const sendPaymentLink = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

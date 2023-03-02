@@ -1,5 +1,5 @@
 import { admin, throwError } from "../../../config/config";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const terminalReaderDisconnected = (event: any): void =>
   admin
     .firestore()

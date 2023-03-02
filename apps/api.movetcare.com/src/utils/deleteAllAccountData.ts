@@ -8,7 +8,7 @@ import { sendNotification } from "../notifications/sendNotification";
 import { getCustomerId } from "./getCustomerId";
 import { getProVetIdFromUrl } from "./getProVetIdFromUrl";
 import { deleteCollection } from "./deleteCollection";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const deleteAllAccountData = async (
   uid: string,
   deleteAuthAccount = true

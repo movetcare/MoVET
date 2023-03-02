@@ -7,9 +7,7 @@ importers:
       '@types/node': ^18.14.4
       concurrently: ^7.6.0
       cypress: ^12.7.0
-      cypress-firebase: ^3.0.1
       eslint-config-custom: workspace:0.0.0
-      firebase-admin: ^11.5.0
       git-branch-is: ^4.0.0
       husky: ^8.0.3
       lint-staged: ^13.1.2
@@ -23,9 +21,7 @@ importers:
       '@types/node': 18.14.4
       concurrently: 7.6.0
       cypress: 12.7.0
-      cypress-firebase: 3.0.1_firebase-admin@11.5.0
       eslint-config-custom: link:packages/eslint-config-custom
-      firebase-admin: 11.5.0
       git-branch-is: 4.0.0
       husky: 8.0.3
       lint-staged: 13.1.2
@@ -3084,14 +3080,6 @@ packages:
       lodash: 4.17.21
       strip-bom: 2.0.0
     dev: false
-
-  /cypress-firebase/3.0.1_firebase-admin@11.5.0:
-    resolution: {integrity: sha512-Hc+x71gwD6MFPG/CtvT+1hMmRcc78/qasqCBWhwi4XmXfhMAx5e3fBAZIHMHEJrphCgkf9AJoO2DSFaPMawSjw==}
-    peerDependencies:
-      firebase-admin: ^11.0.0
-    dependencies:
-      firebase-admin: 11.5.0
-    dev: true
 
   /cypress/12.7.0:
     resolution: {integrity: sha512-7rq+nmhzz0u6yabCFyPtADU2OOrYt6pvUau9qV7xyifJ/hnsaw/vkr0tnLlcuuQKUAOC1v1M1e4Z0zG7S0IAvA==}

@@ -1,7 +1,7 @@
 import { admin, throwError } from "../../../../config/config";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { fetchEntity } from "../fetchEntity";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const configureInvoices = async (): Promise<boolean> => {
   const alreadyHasClientInvoiceConfiguration = await admin
     .firestore()

@@ -5,7 +5,7 @@ import { CONTACT_STATUS } from "../constant";
 import type { ContactForm } from "../types/forms";
 import { getAuthUserByEmail } from "../utils/auth/getAuthUserByEmail";
 import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const handleContactSubmission = functions.firestore
   .document("contact/{id}")
   .onCreate(async (snapshot: any, context: any) => {

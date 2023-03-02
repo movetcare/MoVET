@@ -1,5 +1,5 @@
 import { admin, stripe, throwError } from "../../../config/config";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const checkoutSessionCompleted = (event: any) =>
   admin
     .firestore()

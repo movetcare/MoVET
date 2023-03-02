@@ -12,7 +12,7 @@ import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
 import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
 import { requestIsAuthorized } from "../../admin/pos/requestIsAuthorized";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 interface AccountData {
   email: string;
   displayName: string;

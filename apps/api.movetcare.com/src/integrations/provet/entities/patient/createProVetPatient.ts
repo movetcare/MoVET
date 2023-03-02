@@ -3,7 +3,7 @@ import { request, throwError, proVetApiUrl } from "../../../../config/config";
 import { toIsoString } from "../../../../utils/toIsoString";
 import { capitalizeFirstLetter } from "../../../../utils/capitalizeFirstLetter";
 import { updateCustomField } from "./updateCustomField";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const createProVetPatient = async (data: {
   client: string;
   name: string;

@@ -6,7 +6,7 @@ import {
   admin,
 } from "../../../config/config";
 import { requestIsAuthorized } from "./requestIsAuthorized";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const refundPaymentIntent = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

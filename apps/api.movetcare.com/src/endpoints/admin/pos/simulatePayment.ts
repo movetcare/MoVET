@@ -5,7 +5,7 @@ import {
   request,
 } from "../../../config/config";
 import { requestIsAuthorized } from "./requestIsAuthorized";
-const DEBUG = false; // environment.type === "production";
+const DEBUG = false; 
 export const simulatePayment = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
