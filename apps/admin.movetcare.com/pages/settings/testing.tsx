@@ -15,6 +15,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import Error from "../../components/Error";
 import { Tooltip } from "react-tooltip";
 import AdminCheck from "components/AdminCheck";
+import { ClientSearch } from "components/ClientSearch";
 
 interface Client {
   id: string;
@@ -60,6 +61,7 @@ const Testing = () => {
 
   return (
     <AdminCheck>
+      <ClientSearch />
       <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
         <div className="flex flex-col sm:flex-row items-center justify-center mt-1 px-8">
           <div className="flex flex-row items-center">

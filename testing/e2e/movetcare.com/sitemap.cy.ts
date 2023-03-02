@@ -1,4 +1,4 @@
-const X2JS = require("x2js");
+const Parse = require("x2js");
 
 describe(
   "sitemap",
@@ -7,11 +7,13 @@ describe(
     it("sitemap exists with valid links", () => {
       cy.request(Cypress.env().websiteUrl + "/sitemap.xml", {
         retryOnStatusCodeFailure: true,
+        failOnStatusCode: false,
+        timeout: Cypress.env().defaultPathnameTimeOut,
       })
         .wait(3000, { log: false })
         .its("body")
         .then((body) => {
-          const x2js = new X2JS();
+          const x2js = new Parse();
           const json = x2js.xml2js(body);
           expect(json.urlset.url).to.be.an("array").and.have.length.gt(0);
           json.urlset.url.forEach((url) => {

@@ -26,7 +26,7 @@ export const handleK9SmilesRequest = functions.firestore
       status: string;
     };
     if (status === "started") {
-      const authUser: UserRecord | any = await getAuthUserByEmail(email);
+      const authUser: UserRecord | null = await getAuthUserByEmail(email);
       let didUpdateClientInfo = false;
       if (DEBUG) console.log("authUser", authUser);
       if (authUser === null) {
@@ -41,7 +41,8 @@ export const handleK9SmilesRequest = functions.firestore
           phone,
           id: proVetClientData?.id,
         });
-        authUser.uid = proVetClientData?.id;
+        (authUser as any) = { uid: null };
+        (authUser as any).uid = proVetClientData?.id;
       } else {
         didUpdateClientInfo = await updateProVetClient({
           firstname: firstName,
