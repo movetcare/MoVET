@@ -3,27 +3,33 @@ import {
   faHouse,
   faHeadset,
   faCalendarCheck,
-} from '@fortawesome/free-solid-svg-icons';
+  faCalendarDay,
+} from "@fortawesome/free-solid-svg-icons";
 
 export const subNavigation = [
   {
-    name: 'Services',
-    href: '/settings/booking/',
+    name: "Services",
+    href: "/settings/booking/",
     icon: faCalendarCheck,
   },
   {
-    name: 'Clinic',
-    href: '/settings/booking/clinic',
+    name: "Schedule",
+    href: "/settings/booking/manage-schedule",
+    icon: faCalendarDay,
+  },
+  {
+    name: "Clinic",
+    href: "/settings/booking/clinic",
     icon: faHospitalAlt,
   },
   {
-    name: 'Housecalls',
-    href: '/settings/booking/housecall',
+    name: "Housecalls",
+    href: "/settings/booking/housecall",
     icon: faHouse,
   },
   {
-    name: 'Telehealth',
-    href: '/settings/booking/telehealth',
+    name: "Telehealth",
+    href: "/settings/booking/telehealth",
     icon: faHeadset,
   },
 ];
