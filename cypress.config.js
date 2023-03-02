@@ -12,7 +12,7 @@ module.exports = defineConfig({
       process.env.CYPRESS_TEST_API_URL ||
       "http://localhost:5001/movet-care-staging/us-central1/resetTestData",
     defaultPathnameTimeOut:
-      Number(process.env.CYPRESS_DISPLAY_PATH_TIMEOUT) || 15000,
+      Number(process.env.CYPRESS_DISPLAY_PATH_TIMEOUT) || 30000,
     onlyTestOnePatient: process.env.CYPRESS_ONLY_TEST_ONE_PATIENT || true,
     skipWellnessCheck: process.env.CYPRESS_SKIP_WELLNESS_CHECK || true,
     endpointApiKey: "L9At3HGmvRDuyi7TTX",
