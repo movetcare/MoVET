@@ -15,7 +15,7 @@
     "lint": "turbo run lint",
     "ts-coverage": "typescript-coverage-report",
     "test": "pnpm run build && start-server-and-test start:test 3000 test:platform",
-    "test:platform": "sleep 45 && CYPRESS_DISPLAY_PATH_TIMEOUT=50000 CYPRESS_ONLY_TEST_ONE_PATIENT=false CYPRESS_SKIP_WELLNESS_CHECK=false npx cypress run --record --key 42971719-2adc-4f5e-8e73-44fcc68d57cc",
+    "test:platform": "sleep 60 && CYPRESS_DISPLAY_PATH_TIMEOUT=50000 CYPRESS_ONLY_TEST_ONE_PATIENT=false CYPRESS_SKIP_WELLNESS_CHECK=false npx cypress run --record --key 42971719-2adc-4f5e-8e73-44fcc68d57cc",
     "open:test": "pnpm cypress open",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "config:env": "firebase use movet-care-staging && yes | cp -rf apps/.env apps/movetcare.com/.env.local && source apps/movetcare.com/.env.local && yes | cp -rf apps/.env apps/app.movetcare.com/.env.local && source apps/app.movetcare.com/.env.local && yes | cp -rf apps/.env apps/admin.movetcare.com/.env.local && source apps/admin.movetcare.com/.env.local",
