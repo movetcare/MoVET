@@ -1,0 +1,291 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>TelehealthChatStatus.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/admin.movetcare.com/components/TelehealthChatStatus.tsx</td><td class="">97.50%</td><td class="">75%</td><td class="">320</td><td class="">312</td><td class="">8</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  faBell,
+  faBellSlash,
+  faCalendar,
+  faCaretDown,
+  faCaretUp,
+  faCircleCheck,
+  faCircleExclamation,
+  faClockFour,
+  faEdit,
+  faSignal,
+  faUsers,
+  faWrench,
+} from &#x27;@fortawesome/free-solid-svg-icons&#x27;;
+import { FontAwesomeIcon } from &#x27;@fortawesome/react-fontawesome&#x27;;
+import { Transition, Switch } from &#x27;@headlessui/react&#x27;;
+import { doc, updateDoc, serverTimestamp } from &#x27;firebase/firestore&#x27;;
+import { useEffect, useState } from &#x27;react&#x27;;
+import { useDocument } from &#x27;react-firebase-hooks/firestore&#x27;;
+import { Controller, useForm } from &#x27;react-hook-form&#x27;;
+import toast from &#x27;react-hot-toast&#x27;;
+import { firestore } from &#x27;services/firebase&#x27;;
+import { classNames } from &#x27;utils/classNames&#x27;;
+import Error from &#x27;components/Error&#x27;;
+
+const TelehealthChatStatus = () =&gt; {
+  const [showTelehealthSettingsMenu, setShowTelehealthSettingsMenu] =
+    useState&lt;boolean&gt;(false);
+  const [settings, loadingSettings, errorSettings] = useDocument(
+    doc(firestore, &#x27;alerts/telehealth&#x27;)
+  );
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    reset,
+    formState: { isValid, isSubmitting, isDirty },
+  } = useForm({
+    mode: &#x27;onChange&#x27;,
+    defaultValues: {
+      message: null,
+      queueSize: 0,
+      isOnline: false,
+      waitTime: 0,
+      onlineAutoReply: &#x27;&#x27;,
+      offlineAutoReply: &#x27;&#x27;,
+    },
+  });
+
+  const isOnline = watch(&#x27;isOnline&#x27;);
+
+  useEffect(() =&gt; {
+    if (settings &amp;&amp; settings.data()) reset(settings.data());
+  }, [settings, reset]);
+
+  const onSubmit = async (data: {
+    message: string;
+    queueSize: number;
+    isOnline: boolean;
+    waitTime: number;
+    onlineAutoReply: string;
+    offlineAutoReply: string;
+  }) =&gt;
+    await updateDoc(doc(firestore, &#x27;alerts/telehealth&#x27;), {
+      updatedOn: serverTimestamp(),
+      ...data,
+    })
+      .then(() =&gt;
+        toast(&#x27;Telehealth settings have been updated!&#x27;, {
+          icon: (
+            &lt;FontAwesomeIcon
+              icon={faCircleCheck}
+              size=&quot;sm&quot;
+              className=&quot;text-movet-green&quot;
+            /&gt;
+          ),
+        })
+      )
+      .catch((error: any) =&gt;
+        toast(error?.message, {
+          icon: (
+            &lt;FontAwesomeIcon
+              icon={faCircleExclamation}
+              size=&quot;sm&quot;
+              className=&quot;text-movet-red&quot;
+            /&gt;
+          ),
+        })
+      );
+  return (
+    &lt;&gt;
+      {loadingSettings &amp;&amp; (
+        &lt;div className=&quot;text-center text-sm -mt-2 cursor-pointer hover:text-movet-red&quot;&gt;
+          &lt;h2 className=&quot;text-center text-sm -mt-2&quot;&gt;
+            Loading Telehealth Settings...
+          &lt;/h2&gt;
+        &lt;/div&gt;
+      )}
+      {errorSettings &amp;&amp; (
+        &lt;div className=&quot;text-center text-sm -mt-2 cursor-pointer hover:text-movet-red&quot;&gt;
+          &lt;Error error={errorSettings} /&gt;
+        &lt;/div&gt;
+      )}
+      {settings &amp;&amp; !loadingSettings &amp;&amp; !errorSettings &amp;&amp; (
+        &lt;div
+          className=&quot;text-center text-sm -mt-2 cursor-pointer hover:text-movet-red&quot;
+          onClick={() =&gt;
+            setShowTelehealthSettingsMenu(!showTelehealthSettingsMenu)
+          }
+        &gt;
+          &lt;h2 className=&quot;text-center text-sm -mt-2&quot;&gt;
+            &lt;FontAwesomeIcon icon={faEdit} size=&quot;xs&quot; /&gt;
+            &lt;span className=&quot;ml-2&quot;&gt;Status: &lt;/span&gt;
+            &lt;span
+              className={`mr-2 italic${
+                settings?.data()?.isOnline
+                  ? &#x27; text-movet-green&#x27;
+                  : &#x27; text-movet-red&#x27;
+              }`}
+            &gt;
+              {settings?.data()?.isOnline ? &#x27;ONLINE&#x27; : &#x27;OFFLINE&#x27;}
+            &lt;/span&gt;
+            &lt;FontAwesomeIcon
+              icon={showTelehealthSettingsMenu ? faCaretDown : faCaretUp}
+              size=&quot;xs&quot;
+            /&gt;
+          &lt;/h2&gt;
+          {/* &lt;h3 className=&quot;text-center text-xs&quot;&gt;
+            &lt;FontAwesomeIcon icon={faUsers} /&gt;
+            &lt;span className=&quot;mx-2&quot;&gt;{settings?.data()?.queueSize}&lt;/span&gt;
+            &lt;FontAwesomeIcon icon={faClockFour} /&gt;
+            &lt;span className=&quot;ml-2&quot;&gt;{settings?.data()?.waitTime}&lt;/span&gt;
+          &lt;/h3&gt; */}
+        &lt;/div&gt;
+      )}
+      &lt;menu className=&quot;mt-4&quot;&gt;
+        &lt;Transition
+          show={showTelehealthSettingsMenu}
+          enter=&quot;transition ease-in duration-250&quot;
+          leave=&quot;transition ease-out duration-250&quot;
+          leaveTo=&quot;opacity-10&quot;
+          enterFrom=&quot;opacity-0&quot;
+          enterTo=&quot;opacity-100&quot;
+          leaveFrom=&quot;opacity-100&quot;
+        &gt;
+          &lt;form
+            onSubmit={handleSubmit(onSubmit as any)}
+            className=&quot;flex flex-col w-full mx-auto mt-8 px-4 md:px-8&quot;
+          &gt;
+            &lt;div className=&quot;flex flex-col w-full justify-center items-center pt-4 mb-4 border-t border-movet-gray&quot;&gt;
+              &lt;label className=&quot;italic mt-2 mb-2 text-sm&quot;&gt;
+                &lt;FontAwesomeIcon
+                  icon={faSignal}
+                  size=&quot;sm&quot;
+                  color={isOnline ? &#x27;#00A36C&#x27; : &#x27;#E76159&#x27;}
+                /&gt;
+                &lt;span className=&quot;ml-2&quot;&gt;
+                  Status:{&#x27; &#x27;}
+                  &lt;span
+                    className={`italic${
+                      isOnline ? &#x27;text-movet-green&#x27; : &#x27; text-movet-red&#x27;
+                    }`}
+                  &gt;
+                    {isOnline ? &#x27;ONLINE&#x27; : &#x27;OFFLINE&#x27;}
+                  &lt;/span&gt;
+                &lt;/span&gt;
+              &lt;/label&gt;
+              &lt;Controller
+                name=&quot;isOnline&quot;
+                control={control}
+                render={({ field: { onChange, onBlur, value } }: any) =&gt; (
+                  &lt;Switch
+                    checked={value}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    className={classNames(
+                      isOnline ? &#x27;bg-movet-green&#x27; : &#x27;bg-movet-red&#x27;,
+                      &#x27;relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200&#x27;
+                    )}
+                  &gt;
+                    &lt;span
+                      aria-hidden=&quot;true&quot;
+                      className={classNames(
+                        isOnline ? &#x27;translate-x-5&#x27; : &#x27;translate-x-0&#x27;,
+                        &#x27;inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200&#x27;
+                      )}
+                    /&gt;
+                  &lt;/Switch&gt;
+                )}
+              /&gt;
+            &lt;/div&gt;
+            &lt;label className=&quot;italic my-2 text-sm&quot;&gt;
+              &lt;FontAwesomeIcon icon={faBell} size=&quot;sm&quot; /&gt;
+              &lt;span className=&quot;ml-2&quot;&gt;Online Auto-Reply Message&lt;/span&gt;
+            &lt;/label&gt;
+            &lt;input
+              type=&quot;text&quot;
+              placeholder=&quot;Write Something...&quot;
+              className=&quot;mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full&quot;
+              {...register(&#x27;onlineAutoReply&#x27;)}
+            /&gt;
+            &lt;label className=&quot;italic my-2 text-sm&quot;&gt;
+              &lt;FontAwesomeIcon icon={faBellSlash} size=&quot;sm&quot; /&gt;
+              &lt;span className=&quot;ml-2&quot;&gt;Offline Auto-Reply Message&lt;/span&gt;
+            &lt;/label&gt;
+            &lt;input
+              type=&quot;text&quot;
+              placeholder=&quot;Write Something...&quot;
+              className=&quot;mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full&quot;
+              {...register(&#x27;offlineAutoReply&#x27;)}
+            /&gt;
+            &lt;label className=&quot;italic my-2 text-sm&quot;&gt;
+              &lt;FontAwesomeIcon icon={faCalendar} size=&quot;sm&quot; /&gt;
+              &lt;span className=&quot;ml-2&quot;&gt;Todays Hours of Operation&lt;/span&gt;
+            &lt;/label&gt;
+            &lt;input
+              type=&quot;text&quot;
+              placeholder=&quot;Write Something...&quot;
+              className=&quot;mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full&quot;
+              {...register(&#x27;message&#x27;)}
+            /&gt;
+            &lt;div className=&quot;flex flex-row&quot;&gt;
+              &lt;div className=&quot;mr-2 w-1/2&quot;&gt;
+                &lt;label className=&quot;italic mt-2 mb-4 text-sm&quot;&gt;
+                  &lt;FontAwesomeIcon icon={faUsers} size=&quot;sm&quot; /&gt;
+                  &lt;span className=&quot;ml-2&quot;&gt;Queue Size&lt;/span&gt;
+                &lt;/label&gt;
+                &lt;input
+                  type=&quot;text&quot;
+                  placeholder=&quot;Write Something...&quot;
+                  className=&quot;mt-2 mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full&quot;
+                  {...register(&#x27;queueSize&#x27;)}
+                /&gt;
+              &lt;/div&gt;
+              &lt;div className=&quot;ml-2 w-1/2&quot;&gt;
+                &lt;label className=&quot;italic my-2 text-sm&quot;&gt;
+                  &lt;FontAwesomeIcon icon={faClockFour} size=&quot;sm&quot; /&gt;
+                  &lt;span className=&quot;ml-2&quot;&gt;Wait Time&lt;/span&gt;{&#x27; &#x27;}
+                  &lt;span className=&quot;hidden md:inline&quot;&gt; - Minutes&lt;/span&gt;
+                &lt;/label&gt;
+                &lt;input
+                  type=&quot;text&quot;
+                  placeholder=&quot;Write Something...&quot;
+                  className=&quot;mt-2 mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full&quot;
+                  {...register(&#x27;waitTime&#x27;)}
+                /&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;button
+              type=&quot;submit&quot;
+              onClick={() =&gt;
+                setShowTelehealthSettingsMenu(!showTelehealthSettingsMenu)
+              }
+              disabled={!isDirty || isSubmitting || !isValid}
+              className={
+                !isDirty || isSubmitting || !isValid
+                  ? &#x27;w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4&#x27;
+                  : &#x27;w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4&#x27;
+              }
+            &gt;
+              &lt;FontAwesomeIcon icon={faWrench} size=&quot;lg&quot; /&gt;
+              &lt;span className=&quot;ml-2&quot;&gt;Save Changes&lt;/span&gt;
+            &lt;/button&gt;
+          &lt;/form&gt;
+        &lt;/Transition&gt;
+      &lt;/menu&gt;
+    &lt;/&gt;
+  );
+};
+
+export default TelehealthChatStatus;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatStatus.tsx&quot;,&quot;line&quot;:80,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatStatus.tsx&quot;,&quot;line&quot;:81,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatStatus.tsx&quot;,&quot;line&quot;:81,&quot;character&quot;:21,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatStatus.tsx&quot;,&quot;line&quot;:117,&quot;character&quot;:34,&quot;text&quot;:&quot;isOnline&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatStatus.tsx&quot;,&quot;line&quot;:122,&quot;character&quot;:33,&quot;text&quot;:&quot;isOnline&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatStatus.tsx&quot;,&quot;line&quot;:172,&quot;character&quot;:36,&quot;text&quot;:&quot;onChange&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatStatus.tsx&quot;,&quot;line&quot;:172,&quot;character&quot;:46,&quot;text&quot;:&quot;onBlur&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatStatus.tsx&quot;,&quot;line&quot;:172,&quot;character&quot;:54,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

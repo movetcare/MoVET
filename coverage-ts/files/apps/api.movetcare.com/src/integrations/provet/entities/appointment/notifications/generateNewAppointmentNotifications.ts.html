@@ -1,0 +1,197 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>generateNewAppointmentNotifications.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts</td><td class="">39.46%</td><td class="">75%</td><td class="">185</td><td class="">73</td><td class="">112</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { admin, DEBUG } from &quot;../../../../../config/config&quot;;
+import { sendNotification } from &quot;../../../../../notifications/sendNotification&quot;;
+import { subtractMinutesFromDate } from &quot;../../../../../utils/subtractMinutesFromDate&quot;;
+
+export const generateNewAppointmentNotifications = async (
+  appointmentData: any
+) =&gt; {
+  const didNotSend30MinNotificationYet = await admin
+    .firestore()
+    .collection(&quot;tasks_completed&quot;)
+    .doc(`${appointmentData.id}_30_min_appointment_notification`)
+    .get()
+    .then((document: any) =&gt; !document.exists)
+    .catch((error: any) =&gt; {
+      console.log(&quot;error&quot;, error);
+      return true;
+    });
+
+  const didNotSend24HourNotificationYet = await admin
+    .firestore()
+    .collection(&quot;tasks_completed&quot;)
+    .doc(`${appointmentData.id}_24_hour_appointment_notification`)
+    .get()
+    .then((document: any) =&gt; !document.exists)
+    .catch((error: any) =&gt; {
+      console.log(&quot;error&quot;, error);
+      return true;
+    });
+
+  if (DEBUG) {
+    console.log(
+      &quot;didNotSend30MinNotificationYet&quot;,
+      didNotSend30MinNotificationYet
+    );
+    console.log(
+      &quot;appointmentData?.send30MinReminder&quot;,
+      appointmentData?.send30MinReminder
+    );
+    console.log(
+      &quot;didNotSend24HourNotificationYet&quot;,
+      didNotSend24HourNotificationYet
+    );
+
+    console.log(
+      &quot;appointmentData?.send24HourReminder&quot;,
+      appointmentData?.send24HourReminder
+    );
+  }
+  if (appointmentData?.send30MinReminder)
+    if (didNotSend30MinNotificationYet)
+       admin
+         .firestore()
+         .collection(&quot;tasks_queue&quot;)
+         .doc(`${appointmentData.id}_30_min_appointment_notification`)
+         .set(
+           {
+             options: {
+               ...appointmentData,
+             },
+             worker: &quot;30_min_appointment_notification&quot;,
+             status: &quot;scheduled&quot;,
+             performAt: subtractMinutesFromDate(appointmentData.start, 30),
+             createdOn: new Date(),
+           },
+           { merge: true }
+         )
+         .then(async () =&gt; {
+           if (DEBUG)
+             console.log(
+               &quot;UPDATED 30 MIN APPOINTMENT NOTIFICATION FOR &quot;,
+               appointmentData.id
+             );
+           sendNotification({
+             type: &quot;slack&quot;,
+             payload: {
+               message: `:bell: Update 30 Minute Appointment Notifications for Appointment ${appointmentData.id}`,
+             },
+           });
+         })
+         .catch((error: any) =&gt; {
+           if (DEBUG)
+             console.log(
+               `COULD NOT CREATE 30 MIN APPOINTMENT NOTIFICATION FOR ${appointmentData.id}`,
+               error?.message
+             );
+           sendNotification({
+             type: &quot;slack&quot;,
+             payload: {
+               message: `:bell: ERROR Updating 30 Minute Appointment Notification for Appointment ${appointmentData.id} - &quot;${error.message}&quot;`,
+             },
+           });
+         });
+    else {
+      if (DEBUG)
+        console.log(
+          `DID NOT CREATE 30 MIN APPOINTMENT NOTIFICATION FOR ${appointmentData.id}`,
+          appointmentData
+        );
+      sendNotification({
+        type: &quot;slack&quot;,
+        payload: {
+          message: `:bell: SKIPPED Updating 30 Minute Appointment Notification for Appointment ${
+            appointmentData.id
+          }\nReason: ${
+            didNotSend30MinNotificationYet
+              ? appointmentData?.send30MinReminder
+                ? &quot;&quot;
+                : &quot;Reminder disabled&quot;
+              : &quot;Already sent reminder&quot;
+          }`,
+        },
+      });
+    }
+  if (appointmentData?.send24HourReminder)
+    if (didNotSend24HourNotificationYet)
+       admin
+         .firestore()
+         .collection(&quot;tasks_queue&quot;)
+         .doc(`${appointmentData.id}_24_hour_appointment_notification`)
+         .set(
+           {
+             options: {
+               ...appointmentData,
+             },
+             worker: &quot;24_hour_appointment_notification&quot;,
+             status: &quot;scheduled&quot;,
+             performAt: subtractMinutesFromDate(appointmentData.start, 1440),
+             createdOn: new Date(),
+           },
+           { merge: true }
+         )
+         .then(async () =&gt; {
+           if (DEBUG)
+             console.log(
+               &quot;UPDATED 24 HOUR APPOINTMENT NOTIFICATION FOR &quot;,
+               appointmentData.id
+             );
+           sendNotification({
+             type: &quot;slack&quot;,
+             payload: {
+               message: `:bell: Updated 24 Hour Appointment Notification for Appointment ${appointmentData.id}`,
+             },
+           });
+         })
+         .catch((error: any) =&gt; {
+           if (DEBUG)
+             console.log(
+               `COULD NOT CREATE 24 HOUR APPOINTMENT NOTIFICATION FOR ${appointmentData.id}`,
+               error?.message
+             );
+           sendNotification({
+             type: &quot;slack&quot;,
+             payload: {
+               message: `:bell: ERROR Updating 24 Hour Appointment Notification for Appointment ${appointmentData.id} - &quot;${error.message}&quot;`,
+             },
+           });
+         });
+    else {
+      if (DEBUG)
+        console.log(
+          `DID NOT CREATE 24 HOUR APPOINTMENT NOTIFICATION FOR ${appointmentData.id}`,
+          appointmentData
+        );
+      sendNotification({
+        type: &quot;slack&quot;,
+        payload: {
+          message: `:bell: SKIPPED Updating 24 Hour Appointment Notification for Appointment ${
+            appointmentData.id
+          }\nReason:  ${
+            didNotSend24HourNotificationYet
+              ? appointmentData?.send24HourReminder
+                ? &quot;&quot;
+                : &quot;Reminder disabled&quot;
+              : &quot;Already sent reminder&quot;
+          }`,
+        },
+      });
+    }
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:0,&quot;character&quot;:9,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:5,&quot;character&quot;:2,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:8,&quot;text&quot;:&quot;didNotSend30MinNotificationYet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:47,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:8,&quot;character&quot;:5,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:5,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:5,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:12,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:28,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:5,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:5,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:11,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:30,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:39,&quot;text&quot;:&quot;exists&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:5,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:27,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:8,&quot;text&quot;:&quot;didNotSend24HourNotificationYet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:48,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:19,&quot;character&quot;:5,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:20,&quot;character&quot;:5,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:5,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:12,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:28,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:22,&quot;character&quot;:5,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:23,&quot;character&quot;:5,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:23,&quot;character&quot;:11,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:23,&quot;character&quot;:30,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:23,&quot;character&quot;:39,&quot;text&quot;:&quot;exists&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:24,&quot;character&quot;:5,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:24,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:25,&quot;character&quot;:27,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:6,&quot;text&quot;:&quot;didNotSend30MinNotificationYet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:6,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:23,&quot;text&quot;:&quot;send30MinReminder&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:6,&quot;text&quot;:&quot;didNotSend24HourNotificationYet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:6,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:23,&quot;text&quot;:&quot;send24HourReminder&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:6,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:23,&quot;text&quot;:&quot;send30MinReminder&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:8,&quot;text&quot;:&quot;didNotSend30MinNotificationYet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:7,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:10,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:10,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:10,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:17,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:33,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:10,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:13,&quot;text&quot;:&quot;options&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:57,&quot;character&quot;:18,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:61,&quot;character&quot;:48,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:61,&quot;character&quot;:64,&quot;text&quot;:&quot;start&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:66,&quot;character&quot;:10,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:70,&quot;character&quot;:15,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:70,&quot;character&quot;:31,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:93,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:109,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:79,&quot;character&quot;:10,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:79,&quot;character&quot;:17,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:82,&quot;character&quot;:71,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:82,&quot;character&quot;:87,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:83,&quot;character&quot;:15,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:83,&quot;character&quot;:22,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:100,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:116,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:125,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:131,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:95,&quot;character&quot;:64,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:95,&quot;character&quot;:80,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:96,&quot;character&quot;:10,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:102,&quot;character&quot;:12,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:102,&quot;character&quot;:28,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:104,&quot;character&quot;:12,&quot;text&quot;:&quot;didNotSend30MinNotificationYet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:105,&quot;character&quot;:16,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:105,&quot;character&quot;:33,&quot;text&quot;:&quot;send30MinReminder&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:113,&quot;character&quot;:6,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:113,&quot;character&quot;:23,&quot;text&quot;:&quot;send24HourReminder&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:8,&quot;text&quot;:&quot;didNotSend24HourNotificationYet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:115,&quot;character&quot;:7,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:116,&quot;character&quot;:10,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:10,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:10,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:17,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:33,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:10,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:13,&quot;text&quot;:&quot;options&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:18,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:48,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:64,&quot;text&quot;:&quot;start&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:10,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:135,&quot;character&quot;:15,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:135,&quot;character&quot;:31,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:140,&quot;character&quot;:91,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:140,&quot;character&quot;:107,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:144,&quot;character&quot;:10,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:144,&quot;character&quot;:17,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:147,&quot;character&quot;:72,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:147,&quot;character&quot;:88,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:15,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:22,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:98,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:114,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:123,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:129,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:160,&quot;character&quot;:65,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:160,&quot;character&quot;:81,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:10,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:167,&quot;character&quot;:12,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:167,&quot;character&quot;:28,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:169,&quot;character&quot;:12,&quot;text&quot;:&quot;didNotSend24HourNotificationYet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:170,&quot;character&quot;:16,&quot;text&quot;:&quot;appointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/notifications/generateNewAppointmentNotifications.ts&quot;,&quot;line&quot;:170,&quot;character&quot;:33,&quot;text&quot;:&quot;send24HourReminder&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

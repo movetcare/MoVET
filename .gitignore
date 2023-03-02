@@ -26,6 +26,8 @@ coverage
 testing/**/screenshots/
 testing/**/videos/
 testing/**/downloads/
+ts-coverage/
+
 # next.js
 .next/
 out/

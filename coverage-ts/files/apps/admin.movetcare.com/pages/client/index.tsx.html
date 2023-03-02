@@ -1,0 +1,1199 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>index.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/admin.movetcare.com/pages/client/index.tsx</td><td class="">74.36%</td><td class="">75%</td><td class="">1486</td><td class="">1105</td><td class="">381</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { useRouter } from &quot;next/router&quot;;
+import { useEffect, useRef, useState } from &quot;react&quot;;
+import {
+  faPaw,
+  faCreditCard,
+  faPhone,
+  faEnvelope,
+  faUser,
+  faRedo,
+  faAppleAlt,
+  faSms,
+  faCheck,
+  faEnvelopeSquare,
+  faCircleExclamation,
+  faSpinner,
+  faCheckCircle,
+  faPaperPlane,
+  faMapLocation,
+  faTrash,
+  faFire,
+  faMessage,
+  faIdCard,
+  faAddressBook,
+  faEnvelopesBulk,
+} from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import { GOTO_PHONE_URL } from &quot;constants/urls&quot;;
+import environment from &quot;utils/environment&quot;;
+import { doc, serverTimestamp, setDoc } from &quot;firebase/firestore&quot;;
+import { useDocument } from &quot;react-firebase-hooks/firestore&quot;;
+import { firestore, functions } from &quot;services/firebase&quot;;
+import { Button, Loader, Modal } from &quot;ui&quot;;
+import Error from &quot;components/Error&quot;;
+import { timeSince } from &quot;utils/timeSince&quot;;
+import { capitalizeFirstLetter } from &quot;utils/capitalizeFirstLetter&quot;;
+import toast from &quot;react-hot-toast&quot;;
+import { httpsCallable } from &quot;firebase/functions&quot;;
+import { formatPhoneNumber } from &quot;utils/formatPhoneNumber&quot;;
+import { Transition } from &quot;@headlessui/react&quot;;
+import { ClientSearch } from &quot;components/ClientSearch&quot;;
+import { isNumeric } from &quot;utilities&quot;;
+import { Tooltip } from &quot;react-tooltip&quot;;
+import &quot;react-tooltip/dist/react-tooltip.css&quot;;
+
+const Client = () =&gt; {
+  const router = useRouter();
+  const { query } = router;
+  const [errors, setErrors] = useState&lt;Array&lt;string&gt; | null&gt;(null);
+  const [client, setClient] = useState&lt;any&gt;(null);
+  const [isMounted, setIsMounted] = useState(false);
+  const cancelButtonRef = useRef(null);
+  const [showDeleteClientModal, setShowDeleteClientModal] =
+    useState&lt;boolean&gt;(false);
+  const [isLoadingAccount, setIsLoadingAccount] = useState&lt;boolean&gt;(true);
+  const [isLoadingSendPasswordResetLink, setIsLoadingSendPasswordResetLink] =
+    useState&lt;boolean&gt;(false);
+  const [isLoadingSendPaymentLink, setIsLoadingSendPaymentLink] =
+    useState&lt;boolean&gt;(false);
+  const [isLoadingAddingToWaitlist, setIsAddingToWaitlist] =
+    useState&lt;boolean&gt;(false);
+  const [isLoading, setIsLoading] = useState&lt;boolean&gt;(true);
+  const [clientData, isLoadingClient, errorClient] = useDocument(
+    doc(firestore, `clients/${query?.id}`)
+  );
+
+  useEffect(() =&gt; {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() =&gt; {
+    if (query.id) {
+      const showError = () =&gt; {
+        setIsLoading(false);
+        setIsLoadingAccount(false);
+        setErrors([&quot;Invalid Client ID!&quot;]);
+        setClient([]);
+      };
+      if (!isNumeric(query.id as string)) showError();
+      else if (query.id.length &lt; 3 || query.id.length &gt; 5) showError();
+    }
+  }, [query]);
+
+  useEffect(() =&gt; {
+    if (!isLoadingClient) setIsLoading(false);
+    if (clientData) {
+      const verifyAccount = httpsCallable(functions, &quot;verifyAccount&quot;);
+      verifyAccount({
+        id: query?.id,
+      })
+        .then((result: any) =&gt; {
+          if (
+            (result.data?.alerts?.errors &amp;&amp;
+              result.data?.alerts?.errors.length &gt; 0) ||
+            result.data === false
+          ) {
+            setErrors(result.data?.alerts?.errors || [&quot;Client Not Found...&quot;]);
+          }
+          setClient({
+            ...result.data,
+            createdOn: clientData.data()?.createdOn,
+            updatedOn: clientData.data()?.updatedOn,
+          });
+        })
+        .catch((error: any) =&gt; {
+          toast(error?.message, {
+            position: &quot;top-center&quot;,
+            duration: 3500,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faCircleExclamation}
+                className=&quot;text-movet-red&quot;
+              /&gt;
+            ),
+          });
+          setErrors([&quot;verifyAccount - &quot; + error?.message]);
+        })
+        .finally(() =&gt; setIsLoadingAccount(false));
+    }
+  }, [isLoadingClient, clientData, query]);
+
+  const sendPaymentLink = (mode: &quot;SMS&quot; | &quot;EMAIL&quot;) =&gt; {
+    setIsLoadingSendPaymentLink(true);
+    toast(
+      `SENDING PAYMENT LINK ${mode} TO ${
+        mode === &quot;SMS&quot;
+          ? client?.phone !== undefined
+            ? formatPhoneNumber(client?.phone)
+            : client?.phoneNumber
+          : client?.email
+      }`,
+      {
+        position: &quot;top-center&quot;,
+        duration: 1500,
+        icon: (
+          &lt;FontAwesomeIcon
+            icon={mode === &quot;SMS&quot; ? faSms : faEnvelopeSquare}
+            size=&quot;lg&quot;
+            className=&quot;text-movet-yellow&quot;
+          /&gt;
+        ),
+      }
+    );
+    const sendPaymentLink = httpsCallable(functions, &quot;sendPaymentLink&quot;);
+    sendPaymentLink({
+      id: query?.id,
+      mode,
+    })
+      .then((result: any) =&gt; {
+        if (result.data)
+          toast(
+            `SENT PAYMENT LINK ${mode} TO ${
+              mode === &quot;SMS&quot;
+                ? client?.phone !== undefined
+                  ? formatPhoneNumber(client?.phone)
+                  : client?.phoneNumber
+                : client?.email
+            }`,
+            {
+              position: &quot;top-center&quot;,
+              duration: 5000,
+              icon: (
+                &lt;FontAwesomeIcon
+                  icon={mode === &quot;SMS&quot; ? faSms : faEnvelopeSquare}
+                  size=&quot;lg&quot;
+                  className=&quot;text-movet-green&quot;
+                /&gt;
+              ),
+            }
+          );
+        else
+          toast(&quot;SOMETHING WENT WRONG SENDING PAYMENT LINK!&quot;, {
+            position: &quot;top-center&quot;,
+            duration: 5000,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faCircleExclamation}
+                className=&quot;text-movet-red&quot;
+              /&gt;
+            ),
+          });
+      })
+      .catch((error: any) =&gt; {
+        toast(error?.message, {
+          position: &quot;top-center&quot;,
+          duration: 5000,
+          icon: (
+            &lt;FontAwesomeIcon
+              icon={faCircleExclamation}
+              className=&quot;text-movet-red&quot;
+            /&gt;
+          ),
+        });
+      })
+      .finally(() =&gt; setIsLoadingSendPaymentLink(false));
+  };
+
+  const addToWaitlist = async () =&gt; {
+    setIsAddingToWaitlist(true);
+    if (client?.email &amp;&amp; !client?.email?.toLowerCase().includes(&quot;missing&quot;))
+      await setDoc(
+        doc(firestore, `waitlist/${client?.email}`),
+        {
+          id: query?.id,
+          email: client?.email,
+          firstName: client?.displayName
+            ? client?.displayName
+            : client?.firstName,
+          lastName: client?.displayName ? &quot;&quot; : client?.lastName,
+          phone:
+            client?.phone !== undefined
+              ? formatPhoneNumber(client?.phone)
+              : client?.phoneNumber
+              ? client?.phoneNumber
+              : &quot;UNKNOWN&quot;,
+          status: &quot;complete&quot;,
+          isActive: true,
+          customerId: JSON.stringify(client?.customer),
+          paymentMethod:
+            client?.paymentMethods?.length &gt; 0 &amp;&amp; client?.paymentMethods[0]
+              ? [
+                  `${client?.paymentMethods[0]?.card?.brand?.toUpperCase()} - ${
+                    client?.paymentMethods[0]?.card?.last4
+                  }`,
+                ]
+              : [],
+          updatedOn: serverTimestamp(),
+        },
+        { merge: true }
+      )
+        .then(() =&gt; {
+          toast(`CLIENT ADDED TO WAITLIST`, {
+            position: &quot;top-center&quot;,
+            duration: 3500,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faCheck}
+                size=&quot;lg&quot;
+                className=&quot;text-movet-green&quot;
+              /&gt;
+            ),
+          });
+          router.push(&quot;/dashboard&quot;);
+        })
+        .catch((error: any) =&gt;
+          toast(error?.message, {
+            position: &quot;top-center&quot;,
+            duration: 5000,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faCircleExclamation}
+                className=&quot;text-movet-red&quot;
+              /&gt;
+            ),
+          })
+        )
+        .finally(() =&gt; setIsAddingToWaitlist(false));
+    else {
+      setIsAddingToWaitlist(false);
+      toast(&quot;FAILED TO CHECK IN CLIENT - MISSING EMAIL ADDRESS!&quot;, {
+        position: &quot;top-center&quot;,
+        duration: 5000,
+        icon: (
+          &lt;FontAwesomeIcon
+            icon={faCircleExclamation}
+            className=&quot;text-movet-red&quot;
+          /&gt;
+        ),
+      });
+    }
+  };
+  const reloadPage = () =&gt; {
+    toast(`RELOADING DATA...`, {
+      position: &quot;top-center&quot;,
+      duration: 3500,
+      icon: &lt;FontAwesomeIcon icon={faRedo} size=&quot;lg&quot; /&gt;,
+    });
+    router.reload();
+  };
+
+  const sendPasswordResetLink = async () =&gt; {
+    setIsLoadingSendPasswordResetLink(true);
+    toast(`SENDING PASSWORD REST LINK TO ${client?.email}`, {
+      position: &quot;top-center&quot;,
+      duration: 1500,
+      icon: (
+        &lt;FontAwesomeIcon
+          icon={faEnvelopeSquare}
+          size=&quot;lg&quot;
+          className=&quot;text-movet-yellow&quot;
+        /&gt;
+      ),
+    });
+    const sendPasswordResetLink = httpsCallable(
+      functions,
+      &quot;sendPasswordResetLink&quot;
+    );
+    sendPasswordResetLink({
+      email: client?.email,
+    })
+      .then((result: any) =&gt; {
+        if (result.data)
+          toast(`SENT PASSWORD RESET LINK TO ${client?.email}`, {
+            position: &quot;top-center&quot;,
+            duration: 5000,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faEnvelopeSquare}
+                size=&quot;lg&quot;
+                className=&quot;text-movet-green&quot;
+              /&gt;
+            ),
+          });
+        else
+          toast(&quot;SOMETHING WENT WRONG SENDING PASSWORD RESET LINK!&quot;, {
+            position: &quot;top-center&quot;,
+            duration: 5000,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faCircleExclamation}
+                className=&quot;text-movet-red&quot;
+              /&gt;
+            ),
+          });
+      })
+      .catch((error: any) =&gt; {
+        toast(error?.message, {
+          position: &quot;top-center&quot;,
+          duration: 5000,
+          icon: (
+            &lt;FontAwesomeIcon
+              icon={faCircleExclamation}
+              className=&quot;text-movet-red&quot;
+            /&gt;
+          ),
+        });
+      })
+      .finally(() =&gt; setIsLoadingSendPasswordResetLink(false));
+  };
+  const deleteClient = async () =&gt; {
+    toast(`DELETING CLIENT #${query?.id}...`, {
+      position: &quot;top-center&quot;,
+      duration: 3000,
+      icon: (
+        &lt;FontAwesomeIcon
+          icon={faTrash}
+          size=&quot;lg&quot;
+          className=&quot;text-movet-yellow&quot;
+        /&gt;
+      ),
+    });
+    const deleteAccount = httpsCallable(functions, &quot;deleteAccount&quot;);
+    deleteAccount({
+      id: query?.id,
+    })
+      .then((result: any) =&gt; {
+        if (result.data) {
+          toast(`CLIENT #${query?.id} HAS BEEN DELETED!`, {
+            position: &quot;top-center&quot;,
+            duration: 5000,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faTrash}
+                size=&quot;lg&quot;
+                className=&quot;text-movet-green&quot;
+              /&gt;
+            ),
+          });
+          router.push(&quot;/dashboard&quot;);
+        } else
+          toast(&quot;SOMETHING WENT WRONG!&quot;, {
+            position: &quot;top-center&quot;,
+            duration: 5000,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faCircleExclamation}
+                className=&quot;text-movet-red&quot;
+              /&gt;
+            ),
+          });
+      })
+      .catch((error: any) =&gt;
+        toast(error?.message, {
+          position: &quot;top-center&quot;,
+          duration: 5000,
+          icon: (
+            &lt;FontAwesomeIcon
+              icon={faCircleExclamation}
+              className=&quot;text-movet-red&quot;
+            /&gt;
+          ),
+        })
+      );
+  };
+  const Divider = () =&gt; &lt;hr className=&quot;my-4 border-movet-brown/50&quot; /&gt;;
+  return (
+    &lt;&gt;
+      &lt;ClientSearch /&gt;
+      &lt;div className=&quot;flex flex-col md:flex-row max-w-2xl mx-auto&quot;&gt;
+        &lt;div
+          className={`flex flex-col justify-between bg-white shadow overflow-hidden rounded-lg text-movet-black w-full`}
+        &gt;
+          {isLoading || client === null ? (
+            &lt;Loader message=&quot;Loading Client Account...&quot; /&gt;
+          ) : errorClient ? (
+            &lt;Error error={errorClient} /&gt;
+          ) : (
+            &lt;&gt;
+              &lt;div className=&quot;flex flex-col sm:items-center justify-between border-b border-movet-gray px-8 py-4&quot;&gt;
+                &lt;div className=&quot;flex items-center justify-center space-x-4&quot;&gt;
+                  {/* &lt;Image
+                    src=&quot;/images/logo/logo-paw-black.png&quot;
+                    alt=&quot;&quot;
+                    className=&quot;hidden md:block w-10 sm:w-16 h-10 sm:h-16 mr-4&quot;
+                    priority
+                    height={50}
+                    width={50}
+                  /&gt; */}
+                  &lt;div className=&quot;flex flex-col text-center&quot;&gt;
+                    {client &amp;&amp; (
+                      &lt;div className=&quot;flex justify-center items-center&quot;&gt;
+                        &lt;h1 className=&quot;mr-3 font-abside text-lg mt-2&quot;&gt;
+                          {client?.firstName !== undefined
+                            ? client?.firstName
+                            : &quot;&quot;}{&quot; &quot;}
+                          {client?.lastName !== undefined
+                            ? client?.lastName
+                            : &quot;&quot;}
+                          {client?.displayName !== undefined
+                            ? client?.displayName
+                            : client?.firstName === undefined &amp;&amp;
+                              client?.lastName === undefined
+                            ? &quot;UNKNOWN CLIENT&quot;
+                            : &quot;&quot;}
+                        &lt;/h1&gt;
+                      &lt;/div&gt;
+                    )}
+                    &lt;div className=&quot;flex flex-col sm:flex-row text-center text-xs&quot;&gt;
+                      &lt;div className=&quot;mt-2&quot;&gt;
+                        &lt;b&gt;Joined: &lt;/b&gt;
+                        &lt;span className=&quot;italic mr-4&quot;&gt;
+                          {client?.createdOn
+                            ? timeSince(client?.createdOn?.toDate())
+                            : &quot;UNKNOWN&quot;}
+                        &lt;/span&gt;
+                      &lt;/div&gt;
+                      &lt;div className=&quot;mt-2&quot;&gt;
+                        &lt;b&gt;Last Updated: &lt;/b&gt;
+                        &lt;span className=&quot;italic&quot;&gt;
+                          {client?.updatedOn
+                            ? timeSince(client?.updatedOn?.toDate())
+                            : &quot;UNKNOWN&quot;}
+                        &lt;/span&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+                {isMounted &amp;&amp; &lt;Tooltip id=&quot;resetPassword&quot; /&gt;}
+                &lt;div className=&quot;flex flex-row items-center justify-center space-x-2 mt-2&quot;&gt;
+                  {client?.email !== undefined &amp;&amp;
+                    !client?.email?.toLowerCase().includes(&quot;missing&quot;) &amp;&amp; (
+                      &lt;div
+                        data-tooltip-id=&quot;resetPassword&quot;
+                        data-tooltip-content=&quot;Re-send Account Verification Link (Contains a reset password link)&quot;
+                        title=&quot;Re-send Account Verification Link (Contains a reset password link)&quot;
+                        onClick={() =&gt; sendPasswordResetLink()}
+                        className=&quot;cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                      &gt;
+                        {isLoadingSendPasswordResetLink ? (
+                          &lt;FontAwesomeIcon
+                            icon={faSpinner}
+                            spin
+                            size=&quot;sm&quot;
+                            className=&quot;text-movet-brown&quot;
+                          /&gt;
+                        ) : (
+                          &lt;FontAwesomeIcon
+                            icon={faPaperPlane}
+                            size=&quot;lg&quot;
+                            className={
+                              !client?.emailVerified &amp;&amp; !isLoadingAccount
+                                ? &quot;text-movet-yellow hover:text-movet-green&quot;
+                                : &quot;&quot;
+                            }
+                          /&gt;
+                        )}
+                      &lt;/div&gt;
+                    )}
+                  {isMounted &amp;&amp; &lt;Tooltip id=&quot;viewInProvet&quot; /&gt;}
+                  &lt;a
+                    data-tooltip-id=&quot;viewInProvet&quot;
+                    data-tooltip-content=&quot;View Client in Provet&quot;
+                    title=&quot;View Client in Provet&quot;
+                    href={
+                      environment === &quot;production&quot;
+                        ? `https://us.provetcloud.com/4285/client/${query?.id}/`
+                        : `https://us.provetcloud.com/4285/client/${query?.id}/`
+                    }
+                    target=&quot;_blank&quot;
+                    className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                    rel=&quot;noreferrer&quot;
+                  &gt;
+                    &lt;FontAwesomeIcon icon={faPaw} size=&quot;lg&quot; /&gt;
+                  &lt;/a&gt;
+                  {client &amp;&amp; client?.customer?.length &gt; 0 &amp;&amp; (
+                    &lt;&gt;
+                      {isMounted &amp;&amp; &lt;Tooltip id=&quot;viewInStripe&quot; /&gt;}
+                      &lt;a
+                        data-tooltip-id=&quot;viewInStripe&quot;
+                        data-tooltip-content=&quot;View Customer in Stripe&quot;
+                        title=&quot;View Customer in Stripe&quot;
+                        href={
+                          environment === &quot;production&quot;
+                            ? `https://dashboard.stripe.com/customers/${client?.customer}/`
+                            : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                        }
+                        target=&quot;_blank&quot;
+                        rel=&quot;noreferrer&quot;
+                        className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                      &gt;
+                        &lt;FontAwesomeIcon icon={faCreditCard} size=&quot;lg&quot; /&gt;
+                      &lt;/a&gt;
+                    &lt;/&gt;
+                  )}
+                  {client &amp;&amp;
+                    client?.phoneNumber &amp;&amp;
+                    !client?.phoneNumber?.toLowerCase().includes(&quot;missing&quot;) &amp;&amp; (
+                      &lt;&gt;
+                        {isMounted &amp;&amp; &lt;Tooltip id=&quot;callPhone&quot; /&gt;}
+                        &lt;a
+                          data-tooltip-content=&quot;Call Client&quot;
+                          title=&quot;Call Client&quot;
+                          data-tooltip-id=&quot;callPhone&quot;
+                          href={`${GOTO_PHONE_URL}/${client?.phoneNumber}`}
+                          target=&quot;_blank&quot;
+                          className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                          rel=&quot;noreferrer&quot;
+                        &gt;
+                          &lt;FontAwesomeIcon icon={faPhone} size=&quot;lg&quot; /&gt;
+                        &lt;/a&gt;
+                      &lt;/&gt;
+                    )}
+                  {client &amp;&amp;
+                    client?.email &amp;&amp;
+                    !client?.email?.toLowerCase()?.includes(&quot;missing&quot;) &amp;&amp; (
+                      &lt;&gt;
+                        {isMounted &amp;&amp; &lt;Tooltip id=&quot;sendEmail&quot; /&gt;}
+                        &lt;a
+                          data-tooltip-id=&quot;sendEmail&quot;
+                          data-tooltip-content=&quot;Email Client&quot;
+                          title=&quot;Email Client&quot;
+                          href={`mailto:${client?.email}`}
+                          target=&quot;_blank&quot;
+                          className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                          rel=&quot;noreferrer&quot;
+                        &gt;
+                          &lt;FontAwesomeIcon icon={faEnvelope} size=&quot;lg&quot; /&gt;
+                        &lt;/a&gt;
+                      &lt;/&gt;
+                    )}
+                  {client &amp;&amp;
+                    client?.email &amp;&amp;
+                    !client?.email?.toLowerCase()?.includes(&quot;missing&quot;) &amp;&amp; (
+                      &lt;&gt;
+                        {isMounted &amp;&amp; &lt;Tooltip id=&quot;chatWithClient&quot; /&gt;}
+                        &lt;div
+                          data-tooltip-id=&quot;chatWithClient&quot;
+                          data-tooltip-content=&quot;Chat w/ Client&quot;
+                          title=&quot;Chat w/ Client&quot;
+                          onClick={() =&gt;
+                            router.push(`/telehealth/chat/?id=${query?.id}`)
+                          }
+                          className=&quot;cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                        &gt;
+                          &lt;FontAwesomeIcon icon={faMessage} size=&quot;lg&quot; /&gt;
+                        &lt;/div&gt;
+                      &lt;/&gt;
+                    )}
+                  {client &amp;&amp;
+                    !client?.street?.toLowerCase()?.includes(&quot;missing&quot;) &amp;&amp;
+                    client?.street !== undefined &amp;&amp; (
+                      &lt;&gt;
+                        {isMounted &amp;&amp; &lt;Tooltip id=&quot;viewOnMap&quot; /&gt;}
+                        &lt;a
+                          data-tooltip-id=&quot;viewOnMap&quot;
+                          data-tooltip-content=&quot;View on Map&quot;
+                          title=&quot;View on Map&quot;
+                          href={`http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`}
+                          target=&quot;_blank&quot;
+                          className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                          rel=&quot;noreferrer&quot;
+                        &gt;
+                          &lt;FontAwesomeIcon icon={faMapLocation} size=&quot;lg&quot; /&gt;
+                        &lt;/a&gt;
+                      &lt;/&gt;
+                    )}
+                  {isMounted &amp;&amp; &lt;Tooltip id=&quot;viewInFirestore&quot; /&gt;}
+                  &lt;a
+                    data-tooltip-id=&quot;viewInFirestore&quot;
+                    data-tooltip-content=&quot;View Database Record&quot;
+                    title=&quot;View Database Record&quot;
+                    href={
+                      window.location.hostname === &quot;localhost&quot;
+                        ? &quot;http://localhost:4000/firestore/data/clients/&quot; +
+                          query.id
+                        : `https://console.firebase.google.com/u/0/project/movet-care/firestore/data/~2Fclients~2F${query.id}`
+                    }
+                    target=&quot;_blank&quot;
+                    className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                    rel=&quot;noreferrer&quot;
+                  &gt;
+                    &lt;FontAwesomeIcon icon={faFire} size=&quot;lg&quot; /&gt;
+                  &lt;/a&gt;
+                  {isMounted &amp;&amp; &lt;Tooltip id=&quot;deleteClient&quot; /&gt;}
+                  {client?.email !== &quot;dev+test@movetcare.com&quot; &amp;&amp;
+                    client?.email !==
+                      &quot;dev+test_vcpr_not_required@movetcare.com&quot; &amp;&amp; (
+                      &lt;div
+                        data-tooltip-id=&quot;deleteClient&quot;
+                        data-tooltip-content=&quot;Delete Client&quot;
+                        title=&quot;Delete Client&quot;
+                        onClick={() =&gt;
+                          client?.email.includes(&quot;+test&quot;)
+                            ? window.open(
+                                `https://us.provetcloud.com/4285/client/${query?.id}/forget`,
+                                &quot;_blank&quot;
+                              )
+                            : setShowDeleteClientModal(true)
+                        }
+                        className=&quot;cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                      &gt;
+                        &lt;FontAwesomeIcon icon={faTrash} size=&quot;lg&quot; /&gt;
+                      &lt;/div&gt;
+                    )}
+                  {isMounted &amp;&amp; &lt;Tooltip id=&quot;reloadData&quot; /&gt;}
+                  &lt;div
+                    data-tooltip-id=&quot;reloadData&quot;
+                    data-tooltip-content=&quot;Reload Client Data&quot;
+                    title=&quot;Reload Client Data&quot;
+                    onClick={() =&gt; reloadPage()}
+                    className=&quot;cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                  &gt;
+                    &lt;FontAwesomeIcon icon={faRedo} size=&quot;lg&quot; /&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+              {isLoadingAccount ? (
+                &lt;Loader message=&quot;Loading Client Account...&quot; /&gt;
+              ) : (
+                &lt;div className=&quot;flex-1 px-4 sm:px-8&quot;&gt;
+                  &lt;div className=&quot;flex flex-row items-center w-full pt-4 ml-2&quot;&gt;
+                    &lt;h3 className=&quot;text-lg m-0 font-extrabold flex-wrap&quot;&gt;
+                      &lt;FontAwesomeIcon icon={faUser} className=&quot;mr-4&quot; /&gt;
+                      ACCOUNT STATUS:
+                    &lt;/h3&gt;
+                    {isLoadingAccount ? (
+                      &lt;FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size=&quot;lg&quot;
+                        className=&quot;text-movet-brown ml-4&quot;
+                      /&gt;
+                    ) : Array.isArray(errors) &amp;&amp;
+                      errors[0].includes(&quot;verifyAccount&quot;) ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        STATUS UNKNOWN
+                      &lt;/span&gt;
+                    ) : errors ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        NEEDS REPAIR
+                      &lt;/span&gt;
+                    ) : (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        READY
+                      &lt;/span&gt;
+                    )}
+                  &lt;/div&gt;
+                  {client &amp;&amp; (
+                    &lt;div className=&quot;ml-4 sm:ml-8&quot;&gt;
+                      {errors &amp;&amp; errors?.length &gt; 0 &amp;&amp; (
+                        &lt;div className=&quot;mt-2&quot;&gt;
+                          &lt;b&gt;ERRORS: &lt;/b&gt;
+                          &lt;ul&gt;
+                            {errors.map((error: string, index: number) =&gt; (
+                              &lt;li
+                                key={index}
+                                className=&quot;font-bold text-movet-red ml-2&quot;
+                              &gt;
+                                - {error}
+                              &lt;/li&gt;
+                            ))}
+                          &lt;/ul&gt;
+                        &lt;/div&gt;
+                      )}
+                      {client?.alerts?.warnings &amp;&amp;
+                        client?.alerts?.warnings?.length &gt; 0 &amp;&amp; (
+                          &lt;div className=&quot;mt-2&quot;&gt;
+                            &lt;b&gt;WARNINGS: &lt;/b&gt;
+                            &lt;ul&gt;
+                              {client?.alerts?.warnings.map(
+                                (warning: string, index: number) =&gt; (
+                                  &lt;li
+                                    key={index}
+                                    className=&quot;font-bold text-movet-yellow text-sm ml-2&quot;
+                                  &gt;
+                                    - {warning}
+                                  &lt;/li&gt;
+                                )
+                              )}
+                            &lt;/ul&gt;
+                          &lt;/div&gt;
+                        )}
+                    &lt;/div&gt;
+                  )}
+                  &lt;Divider /&gt;
+                  &lt;div className=&quot;flex flex-row items-center w-full mt-2 ml-2&quot;&gt;
+                    &lt;h3 className=&quot;text-lg m-0 font-extrabold&quot;&gt;
+                      &lt;FontAwesomeIcon icon={faIdCard} className=&quot;mr-4&quot; /&gt;
+                      ACCOUNT ID:
+                    &lt;/h3&gt;
+                    {isLoadingAccount ? (
+                      &lt;FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size=&quot;lg&quot;
+                        className=&quot;text-movet-brown ml-4&quot;
+                      /&gt;
+                    ) : query?.id === undefined ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        UNKNOWN
+                      &lt;/span&gt;
+                    ) : query?.id ? (
+                      &lt;span className=&quot;ml-2 italic&quot;&gt;{query?.id}&lt;/span&gt;
+                    ) : (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        ERROR
+                      &lt;/span&gt;
+                    )}
+                  &lt;/div&gt;
+                  &lt;Divider /&gt;
+                  &lt;div className=&quot;flex flex-row items-center w-full mt-2 ml-2&quot;&gt;
+                    &lt;h3 className=&quot;text-lg m-0 font-extrabold&quot;&gt;
+                      &lt;FontAwesomeIcon icon={faCreditCard} className=&quot;mr-4&quot; /&gt;
+                      CUSTOMER ID:
+                    &lt;/h3&gt;
+                    {isLoadingAccount ? (
+                      &lt;FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size=&quot;lg&quot;
+                        className=&quot;text-movet-brown ml-4&quot;
+                      /&gt;
+                    ) : client?.customer === undefined ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        DOES NOT EXIST
+                      &lt;/span&gt;
+                    ) : client?.customer ? (
+                      &lt;span className=&quot;ml-4&quot;&gt;
+                        {client?.customer ? (
+                          Array.isArray(client?.customer) &amp;&amp;
+                          client?.customer.length &gt; 1 ? (
+                            JSON.stringify(client?.customer)
+                          ) : Array.isArray(client?.customer) &amp;&amp;
+                            client?.customer.length === 1 ? (
+                            client?.customer[0]
+                          ) : Array.isArray(client?.customer) &amp;&amp;
+                            client?.customer.length === 0 ? (
+                            &lt;span className=&quot;inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                              DOES NOT EXIST
+                            &lt;/span&gt;
+                          ) : (
+                            client?.customer
+                          )
+                        ) : client?.customer?.id ? (
+                          client?.customer?.id
+                        ) : (
+                          &lt;span className=&quot;inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                            DOES NOT EXIST
+                          &lt;/span&gt;
+                        )}
+                      &lt;/span&gt;
+                    ) : (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        DISABLED
+                      &lt;/span&gt;
+                    )}
+                  &lt;/div&gt;
+                  &lt;Divider /&gt;
+                  &lt;div className=&quot;flex flex-row items-center w-full mt-2 ml-2&quot;&gt;
+                    &lt;h3 className=&quot;text-lg m-0 font-extrabold&quot;&gt;
+                      &lt;FontAwesomeIcon icon={faEnvelope} className=&quot;mr-4&quot; /&gt;
+                      EMAIL ADDRESS:
+                    &lt;/h3&gt;
+                    {isLoadingAccount ? (
+                      &lt;FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size=&quot;lg&quot;
+                        className=&quot;text-movet-brown ml-4&quot;
+                      /&gt;
+                    ) : client?.email === undefined ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        UNKNOWN
+                      &lt;/span&gt;
+                    ) : client?.email ? (
+                      &lt;span&gt;
+                        {isMounted &amp;&amp; &lt;Tooltip id=&quot;verifyAccountIndicator&quot; /&gt;}
+                        &lt;p className=&quot;group italic flex flex-row ml-2 items-center&quot;&gt;
+                          &lt;a
+                            href={`mailto://${client?.email}`}
+                            target=&quot;_blank&quot;
+                            rel=&quot;noreferrer&quot;
+                            className=&quot;hover:text-movet-red hover:underline ease-in-out duration-300&quot;
+                            title=&quot;Send an Email to Client&quot;
+                          &gt;
+                            {client?.email}
+                          &lt;/a&gt;
+                          {client?.emailVerified ? (
+                            &lt;FontAwesomeIcon
+                              icon={faCheckCircle}
+                              className=&quot;text-movet-green ml-2&quot;
+                            /&gt;
+                          ) : client?.emailVerified === false ? (
+                            &lt;&gt;
+                              &lt;span
+                                data-tooltip-id=&quot;verifyAccountIndicator&quot;
+                                data-tooltip-content=&quot;This client has not verified their MoVET account or set up an account password!&quot;
+                                title=&quot;This client has not verified their MoVET account or set up an account password! Click on the paper plane icon above to send them a new account verification email.&quot;
+                              &gt;
+                                &lt;FontAwesomeIcon
+                                  icon={faCircleExclamation}
+                                  className=&quot;text-movet-yellow ml-2&quot;
+                                /&gt;
+                              &lt;/span&gt;
+                            &lt;/&gt;
+                          ) : (
+                            &quot;&quot;
+                          )}
+                        &lt;/p&gt;
+                      &lt;/span&gt;
+                    ) : (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        UNKNOWN
+                      &lt;/span&gt;
+                    )}
+                  &lt;/div&gt;
+                  &lt;Divider /&gt;
+                  &lt;div className=&quot;flex flex-row items-center w-full mt-2 ml-2&quot;&gt;
+                    &lt;h3 className=&quot;text-lg m-0 font-extrabold&quot;&gt;
+                      &lt;FontAwesomeIcon
+                        icon={faEnvelopesBulk}
+                        className=&quot;mr-4&quot;
+                      /&gt;
+                      EMAIL NOTIFICATIONS:
+                    &lt;/h3&gt;
+                    {isLoadingAccount ? (
+                      &lt;FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size=&quot;lg&quot;
+                        className=&quot;text-movet-brown ml-4&quot;
+                      /&gt;
+                    ) : client?.sendEmail === undefined ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        UNKNOWN
+                      &lt;/span&gt;
+                    ) : client?.sendEmail ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        ACTIVE
+                      &lt;/span&gt;
+                    ) : (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        DISABLED
+                      &lt;/span&gt;
+                    )}
+                  &lt;/div&gt;
+                  &lt;Divider /&gt;
+                  &lt;div className=&quot;flex flex-row items-center w-full mt-2 ml-2&quot;&gt;
+                    &lt;h3 className=&quot;text-lg m-0 font-extrabold&quot;&gt;
+                      &lt;FontAwesomeIcon icon={faPhone} className=&quot;mr-4&quot; /&gt;
+                      PHONE NUMBER:
+                    &lt;/h3&gt;
+                    {isLoadingAccount ? (
+                      &lt;FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size=&quot;lg&quot;
+                        className=&quot;text-movet-brown ml-4&quot;
+                      /&gt;
+                    ) : client?.phoneNumber === undefined ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        UNKNOWN
+                      &lt;/span&gt;
+                    ) : client?.phoneNumber &amp;&amp;
+                      !client?.phoneNumber
+                        ?.toLowerCase()
+                        .includes(&quot;missing&quot;) ? (
+                      &lt;a
+                        href={`https://app.goto.com/domain/ed586a2b-6975-4613-8df0-c3de59fefc65/${client?.phoneNumber
+                          ?.replaceAll(&quot;-&quot;, &quot;&quot;)
+                          ?.replaceAll(&quot;(&quot;, &quot;&quot;)
+                          ?.replaceAll(&quot;)&quot;, &quot;&quot;)
+                          ?.replaceAll(&quot;+1&quot;, &quot;&quot;)}`}
+                        target=&quot;_blank&quot;
+                        rel=&quot;noreferrer&quot;
+                        className=&quot;hover:text-movet-red hover:underline ease-in-out duration-300 ml-2&quot;
+                        title=&quot;Call Client&quot;
+                      &gt;
+                        &lt;span className=&quot;italic&quot;&gt;
+                          {client?.phoneNumber
+                            ? client?.phoneNumber
+                            : &quot;UNKNOWN&quot;}
+                        &lt;/span&gt;
+                      &lt;/a&gt;
+                    ) : (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        UNKNOWN
+                      &lt;/span&gt;
+                    )}
+                  &lt;/div&gt;
+                  &lt;Divider /&gt;
+                  &lt;div className=&quot;flex flex-row items-center w-full mt-2 ml-2&quot;&gt;
+                    &lt;h3 className=&quot;text-lg m-0 font-extrabold&quot;&gt;
+                      &lt;FontAwesomeIcon icon={faSms} className=&quot;mr-4&quot; /&gt;
+                      SMS NOTIFICATIONS:
+                    &lt;/h3&gt;
+                    {isLoadingAccount ? (
+                      &lt;FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size=&quot;lg&quot;
+                        className=&quot;text-movet-brown ml-4&quot;
+                      /&gt;
+                    ) : client?.sendSms === undefined ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        UNKNOWN
+                      &lt;/span&gt;
+                    ) : client?.sendSms ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        ACTIVE
+                      &lt;/span&gt;
+                    ) : (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        DISABLED
+                      &lt;/span&gt;
+                    )}
+                  &lt;/div&gt;
+                  &lt;Divider /&gt;
+                  &lt;div className=&quot;flex flex-row items-center w-full mt-2 ml-2&quot;&gt;
+                    &lt;h3 className=&quot;text-lg m-0 font-extrabold&quot;&gt;
+                      &lt;FontAwesomeIcon icon={faAddressBook} className=&quot;mr-4&quot; /&gt;
+                      ADDRESS:
+                    &lt;/h3&gt;
+                    {isLoadingAccount ? (
+                      &lt;FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size=&quot;lg&quot;
+                        className=&quot;text-movet-brown ml-4&quot;
+                      /&gt;
+                    ) : client?.street === undefined ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        UNKNOWN
+                      &lt;/span&gt;
+                    ) : client?.street ? (
+                      &lt;a
+                        id=&quot;viewOnMap&quot;
+                        data-tooltip-content=&quot;View on Map&quot;
+                        title=&quot;View Address on Map&quot;
+                        href={
+                          !client?.street?.toLowerCase()?.includes(&quot;missing&quot;) &amp;&amp;
+                          client?.street !== undefined
+                            ? `http://maps.google.com/?q=${client?.street} ${client?.city} ${client?.state} ${client?.zipCode}`
+                            : &quot;#&quot;
+                        }
+                        target={
+                          !client?.street?.toLowerCase()?.includes(&quot;missing&quot;) &amp;&amp;
+                          client?.street !== undefined
+                            ? &quot;_blank&quot;
+                            : undefined
+                        }
+                        className=&quot;hover:underline duration-300 ease-in-out hover:text-movet-red&quot;
+                        rel=&quot;noreferrer&quot;
+                      &gt;
+                        &lt;span className=&quot;italic ml-2&quot;&gt;
+                          {client?.street
+                            ? client?.street
+                            : &quot;STREET UNKNOWN - &quot;}
+                        &lt;/span&gt;
+                        &lt;span className=&quot;italic&quot;&gt;
+                          {&quot; &quot;}
+                          {client?.city ? client?.city : &quot;CITY UNKNOWN - &quot;}
+                        &lt;/span&gt;
+                        &lt;span className=&quot;italic&quot;&gt;
+                          {&quot; &quot;}
+                          {client?.state ? client?.state : &quot;STATE UNKNOWN - &quot;}
+                        &lt;/span&gt;
+                        &lt;span className=&quot;italic&quot;&gt;
+                          {&quot; &quot;}
+                          {client?.zipCode
+                            ? client?.zipCode
+                            : &quot;ZIPCODE UNKNOWN&quot;}
+                        &lt;/span&gt;
+                      &lt;/a&gt;
+                    ) : (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        UNKNOWN
+                      &lt;/span&gt;
+                    )}
+                  &lt;/div&gt;
+                  &lt;Divider /&gt;
+                  &lt;div className=&quot;flex flex-row items-center w-full mt-2 ml-2&quot;&gt;
+                    &lt;FontAwesomeIcon
+                      icon={faCreditCard}
+                      className=&quot;mr-4&quot;
+                      size=&quot;lg&quot;
+                    /&gt;
+                    &lt;h3 className=&quot;text-lg m-0 font-extrabold&quot;&gt;
+                      PAYMENT METHOD:
+                    &lt;/h3&gt;
+                    {isLoadingAccount ? (
+                      &lt;FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size=&quot;lg&quot;
+                        className=&quot;text-movet-brown ml-4&quot;
+                      /&gt;
+                    ) : client?.paymentMethods === undefined ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        STATUS UNKNOWN
+                      &lt;/span&gt;
+                    ) : client?.paymentMethods?.length === 0 ? (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        NEEDS A PAYMENT METHOD
+                      &lt;/span&gt;
+                    ) : (
+                      &lt;span className=&quot;ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center&quot;&gt;
+                        READY
+                      &lt;/span&gt;
+                    )}
+                    {isLoadingSendPaymentLink ? (
+                      &lt;FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size=&quot;sm&quot;
+                        className=&quot;text-movet-brown ml-4&quot;
+                      /&gt;
+                    ) : (
+                      &lt;&gt;
+                        {client?.sendSms &amp;&amp; (
+                          &lt;div
+                            onClick={() =&gt; sendPaymentLink(&quot;SMS&quot;)}
+                            className=&quot;ml-4 cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                          &gt;
+                            &lt;FontAwesomeIcon icon={faSms} size=&quot;lg&quot; /&gt;
+                          &lt;/div&gt;
+                        )}
+                        {client?.sendEmail &amp;&amp; (
+                          &lt;div
+                            onClick={() =&gt; sendPaymentLink(&quot;EMAIL&quot;)}
+                            className=&quot;ml-1 cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                          &gt;
+                            &lt;FontAwesomeIcon
+                              icon={faEnvelopeSquare}
+                              size=&quot;lg&quot;
+                            /&gt;
+                          &lt;/div&gt;
+                        )}
+                      &lt;/&gt;
+                    )}
+                  &lt;/div&gt;
+                  &lt;div className=&quot;ml-4 sm:ml-8 mb-6&quot;&gt;
+                    &lt;ul&gt;
+                      {client &amp;&amp;
+                        client?.paymentMethods &amp;&amp;
+                        client?.paymentMethods?.map((paymentMethod: any) =&gt; (
+                          &lt;li
+                            key={paymentMethod?.id}
+                            className=&quot;list-disc ml-4&quot;
+                          &gt;
+                            &lt;a
+                              href={
+                                environment === &quot;production&quot;
+                                  ? `https://dashboard.stripe.com/customers/${client?.customer}/`
+                                  : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                              }
+                              target=&quot;_blank&quot;
+                              rel=&quot;noreferrer&quot;
+                            &gt;
+                              &lt;div className=&quot;mt-2 flex flex-row items-center&quot;&gt;
+                                &lt;b&gt;
+                                  {capitalizeFirstLetter(
+                                    paymentMethod?.card?.funding
+                                  )}{&quot; &quot;}
+                                  {capitalizeFirstLetter(paymentMethod?.type)}:
+                                &lt;/b&gt;
+                                &lt;span className=&quot;italic ml-2&quot;&gt;
+                                  {capitalizeFirstLetter(
+                                    paymentMethod?.card?.brand
+                                  )}
+                                &lt;/span&gt;
+                                &lt;span className=&quot;italic ml-2&quot;&gt;
+                                  - {paymentMethod?.card?.last4}
+                                &lt;/span&gt;
+                                &lt;span className=&quot;italic ml-2&quot;&gt;
+                                  - {paymentMethod?.card?.exp_month}/
+                                  {paymentMethod?.card?.exp_year}
+                                  {paymentMethod?.card?.wallet?.apple_pay &amp;&amp; (
+                                    &lt;FontAwesomeIcon
+                                      icon={faAppleAlt}
+                                      className=&quot;ml-2&quot;
+                                      size=&quot;xs&quot;
+                                    /&gt;
+                                  )}
+                                &lt;/span&gt;
+                              &lt;/div&gt;
+                            &lt;/a&gt;
+                          &lt;/li&gt;
+                        ))}
+                    &lt;/ul&gt;
+                  &lt;/div&gt;
+                  {client?.paymentMethods !== undefined ||
+                  (errors !== null &amp;&amp; errors[0] !== &quot;Client Not Found...&quot;) ? (
+                    &lt;Divider /&gt;
+                  ) : (
+                    &lt;div className=&quot;mt-6&quot;&gt;&lt;/div&gt;
+                  )}
+                &lt;/div&gt;
+              )}
+              &lt;Transition
+                show={
+                  client?.paymentMethods !== undefined ||
+                  (errors !== null &amp;&amp;
+                    errors[0] !== &quot;Client Not Found...&quot; &amp;&amp;
+                    errors[0] !== &quot;Invalid Client ID!&quot;)
+                }
+                enter=&quot;transition ease-in duration-1000&quot;
+                leave=&quot;transition ease-out duration-1000&quot;
+                leaveTo=&quot;opacity-10&quot;
+                enterFrom=&quot;opacity-0&quot;
+                enterTo=&quot;opacity-100&quot;
+                leaveFrom=&quot;opacity-100&quot;
+              &gt;
+                &lt;Button
+                  text=&quot;Check In Client&quot;
+                  color=&quot;black&quot;
+                  icon={faCheck}
+                  loading={isLoadingAddingToWaitlist}
+                  disabled={isLoadingAddingToWaitlist}
+                  onClick={() =&gt; addToWaitlist()}
+                  className=&quot;hover:bg-movet-green mt-2 mb-6&quot;
+                /&gt;
+              &lt;/Transition&gt;
+            &lt;/&gt;
+          )}
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;Modal
+        showModal={showDeleteClientModal}
+        setShowModal={setShowDeleteClientModal}
+        cancelButtonRef={cancelButtonRef}
+        isLoading={isLoading}
+        loadingMessage=&quot;Deleting Client, Please Wait...&quot;
+        content={
+          &lt;p className=&quot;text-lg&quot;&gt;
+            Are you sure you want to delete this client?{&quot; &quot;}
+            &lt;span className=&quot;text-lg italic font-bold&quot;&gt;
+              This action cannot be undone!
+            &lt;/span&gt;
+          &lt;/p&gt;
+        }
+        title={`Delete Client #${query?.id}`}
+        icon={faTrash}
+        action={deleteClient}
+        yesButtonText=&quot;YES&quot;
+        noButtonText=&quot;CANCEL&quot;
+      /&gt;
+    &lt;/&gt;
+  );
+};
+
+export default Client;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:48,&quot;character&quot;:9,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:89,&quot;character&quot;:15,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:91,&quot;character&quot;:13,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:91,&quot;character&quot;:20,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:91,&quot;character&quot;:26,&quot;text&quot;:&quot;alerts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:91,&quot;character&quot;:34,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:92,&quot;character&quot;:14,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:92,&quot;character&quot;:21,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:92,&quot;character&quot;:27,&quot;text&quot;:&quot;alerts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:92,&quot;character&quot;:35,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:92,&quot;character&quot;:42,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:93,&quot;character&quot;:12,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:93,&quot;character&quot;:19,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:95,&quot;character&quot;:22,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:95,&quot;character&quot;:29,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:95,&quot;character&quot;:35,&quot;text&quot;:&quot;alerts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:95,&quot;character&quot;:43,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:98,&quot;character&quot;:15,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:98,&quot;character&quot;:22,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:99,&quot;character&quot;:12,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:99,&quot;character&quot;:42,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:100,&quot;character&quot;:12,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:100,&quot;character&quot;:42,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:103,&quot;character&quot;:16,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:104,&quot;character&quot;:16,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:104,&quot;character&quot;:23,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:114,&quot;character&quot;:42,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:114,&quot;character&quot;:49,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:125,&quot;character&quot;:12,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:125,&quot;character&quot;:20,&quot;text&quot;:&quot;phone&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:126,&quot;character&quot;:32,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:126,&quot;character&quot;:40,&quot;text&quot;:&quot;phone&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:127,&quot;character&quot;:14,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:127,&quot;character&quot;:22,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:128,&quot;character&quot;:12,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:128,&quot;character&quot;:20,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:147,&quot;character&quot;:13,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:148,&quot;character&quot;:12,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:148,&quot;character&quot;:19,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:152,&quot;character&quot;:18,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:152,&quot;character&quot;:26,&quot;text&quot;:&quot;phone&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:153,&quot;character&quot;:38,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:153,&quot;character&quot;:46,&quot;text&quot;:&quot;phone&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:154,&quot;character&quot;:20,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:154,&quot;character&quot;:28,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:155,&quot;character&quot;:18,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:155,&quot;character&quot;:26,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:181,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:182,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:182,&quot;character&quot;:21,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:198,&quot;character&quot;:8,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:198,&quot;character&quot;:16,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:198,&quot;character&quot;:26,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:198,&quot;character&quot;:34,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:198,&quot;character&quot;:41,&quot;text&quot;:&quot;toLowerCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:198,&quot;character&quot;:55,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:200,&quot;character&quot;:35,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:200,&quot;character&quot;:43,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:203,&quot;character&quot;:10,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:203,&quot;character&quot;:17,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:203,&quot;character&quot;:25,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:204,&quot;character&quot;:10,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:204,&quot;character&quot;:21,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:204,&quot;character&quot;:29,&quot;text&quot;:&quot;displayName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:205,&quot;character&quot;:14,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:205,&quot;character&quot;:22,&quot;text&quot;:&quot;displayName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:206,&quot;character&quot;:14,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:206,&quot;character&quot;:22,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:207,&quot;character&quot;:10,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:207,&quot;character&quot;:20,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:207,&quot;character&quot;:28,&quot;text&quot;:&quot;displayName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:207,&quot;character&quot;:47,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:207,&quot;character&quot;:55,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:208,&quot;character&quot;:10,&quot;text&quot;:&quot;phone&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:209,&quot;character&quot;:12,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:209,&quot;character&quot;:20,&quot;text&quot;:&quot;phone&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:210,&quot;character&quot;:34,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:210,&quot;character&quot;:42,&quot;text&quot;:&quot;phone&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:211,&quot;character&quot;:16,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:211,&quot;character&quot;:24,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:212,&quot;character&quot;:16,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:212,&quot;character&quot;:24,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:216,&quot;character&quot;:37,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:216,&quot;character&quot;:45,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:218,&quot;character&quot;:12,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:218,&quot;character&quot;:20,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:218,&quot;character&quot;:36,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:218,&quot;character&quot;:50,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:218,&quot;character&quot;:58,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:220,&quot;character&quot;:21,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:220,&quot;character&quot;:29,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:220,&quot;character&quot;:48,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:220,&quot;character&quot;:54,&quot;text&quot;:&quot;brand&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:220,&quot;character&quot;:61,&quot;text&quot;:&quot;toUpperCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:221,&quot;character&quot;:20,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:221,&quot;character&quot;:28,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:221,&quot;character&quot;:47,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:221,&quot;character&quot;:53,&quot;text&quot;:&quot;last4&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:243,&quot;character&quot;:16,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:244,&quot;character&quot;:16,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:244,&quot;character&quot;:23,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:281,&quot;character&quot;:43,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:281,&quot;character&quot;:51,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:297,&quot;character&quot;:6,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:297,&quot;character&quot;:13,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:297,&quot;character&quot;:21,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:299,&quot;character&quot;:13,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:300,&quot;character&quot;:12,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:300,&quot;character&quot;:19,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:301,&quot;character&quot;:47,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:301,&quot;character&quot;:55,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:324,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:325,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:325,&quot;character&quot;:21,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:354,&quot;character&quot;:13,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:355,&quot;character&quot;:12,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:355,&quot;character&quot;:19,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:380,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:381,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:381,&quot;character&quot;:21,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:401,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:418,&quot;character&quot;:21,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:421,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:421,&quot;character&quot;:35,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:422,&quot;character&quot;:30,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:422,&quot;character&quot;:38,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:424,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:424,&quot;character&quot;:35,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:425,&quot;character&quot;:30,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:425,&quot;character&quot;:38,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:427,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:427,&quot;character&quot;:35,&quot;text&quot;:&quot;displayName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:428,&quot;character&quot;:30,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:428,&quot;character&quot;:38,&quot;text&quot;:&quot;displayName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:429,&quot;character&quot;:30,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:429,&quot;character&quot;:38,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:430,&quot;character&quot;:30,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:430,&quot;character&quot;:38,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:440,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:440,&quot;character&quot;:35,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:441,&quot;character&quot;:40,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:441,&quot;character&quot;:48,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:441,&quot;character&quot;:59,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:448,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:448,&quot;character&quot;:35,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:449,&quot;character&quot;:40,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:449,&quot;character&quot;:48,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:449,&quot;character&quot;:59,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:458,&quot;character&quot;:19,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:458,&quot;character&quot;:27,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:459,&quot;character&quot;:21,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:459,&quot;character&quot;:29,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:459,&quot;character&quot;:36,&quot;text&quot;:&quot;toLowerCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:459,&quot;character&quot;:50,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:479,&quot;character&quot;:31,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:479,&quot;character&quot;:39,&quot;text&quot;:&quot;emailVerified&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:503,&quot;character&quot;:19,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:503,&quot;character&quot;:29,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:503,&quot;character&quot;:37,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:503,&quot;character&quot;:47,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:512,&quot;character&quot;:72,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:512,&quot;character&quot;:80,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:513,&quot;character&quot;:77,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:513,&quot;character&quot;:85,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:523,&quot;character&quot;:19,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:524,&quot;character&quot;:20,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:524,&quot;character&quot;:28,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:525,&quot;character&quot;:21,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:525,&quot;character&quot;:29,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:525,&quot;character&quot;:42,&quot;text&quot;:&quot;toLowerCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:525,&quot;character&quot;:56,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:532,&quot;character&quot;:53,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:532,&quot;character&quot;:61,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:541,&quot;character&quot;:19,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:542,&quot;character&quot;:20,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:542,&quot;character&quot;:28,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:543,&quot;character&quot;:21,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:543,&quot;character&quot;:29,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:543,&quot;character&quot;:36,&quot;text&quot;:&quot;toLowerCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:543,&quot;character&quot;:51,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:550,&quot;character&quot;:42,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:550,&quot;character&quot;:50,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:559,&quot;character&quot;:19,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:560,&quot;character&quot;:20,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:560,&quot;character&quot;:28,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:561,&quot;character&quot;:21,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:561,&quot;character&quot;:29,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:561,&quot;character&quot;:36,&quot;text&quot;:&quot;toLowerCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:561,&quot;character&quot;:51,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:577,&quot;character&quot;:19,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:578,&quot;character&quot;:21,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:578,&quot;character&quot;:29,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:578,&quot;character&quot;:37,&quot;text&quot;:&quot;toLowerCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:578,&quot;character&quot;:52,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:579,&quot;character&quot;:20,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:579,&quot;character&quot;:28,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:586,&quot;character&quot;:61,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:586,&quot;character&quot;:69,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:586,&quot;character&quot;:79,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:586,&quot;character&quot;:87,&quot;text&quot;:&quot;city&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:586,&quot;character&quot;:95,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:586,&quot;character&quot;:103,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:586,&quot;character&quot;:112,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:586,&quot;character&quot;:120,&quot;text&quot;:&quot;zipCode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:613,&quot;character&quot;:19,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:613,&quot;character&quot;:27,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:614,&quot;character&quot;:20,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:614,&quot;character&quot;:28,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:621,&quot;character&quot;:26,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:621,&quot;character&quot;:34,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:621,&quot;character&quot;:40,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:676,&quot;character&quot;:19,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:693,&quot;character&quot;:23,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:693,&quot;character&quot;:31,&quot;text&quot;:&quot;alerts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:693,&quot;character&quot;:39,&quot;text&quot;:&quot;warnings&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:694,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:694,&quot;character&quot;:32,&quot;text&quot;:&quot;alerts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:694,&quot;character&quot;:40,&quot;text&quot;:&quot;warnings&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:694,&quot;character&quot;:50,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:698,&quot;character&quot;:31,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:698,&quot;character&quot;:39,&quot;text&quot;:&quot;alerts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:698,&quot;character&quot;:47,&quot;text&quot;:&quot;warnings&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:698,&quot;character&quot;:56,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:751,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:751,&quot;character&quot;:32,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:755,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:755,&quot;character&quot;:32,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:757,&quot;character&quot;:25,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:757,&quot;character&quot;:33,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:758,&quot;character&quot;:40,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:758,&quot;character&quot;:48,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:759,&quot;character&quot;:26,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:759,&quot;character&quot;:34,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:759,&quot;character&quot;:43,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:760,&quot;character&quot;:43,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:760,&quot;character&quot;:51,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:761,&quot;character&quot;:44,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:761,&quot;character&quot;:52,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:762,&quot;character&quot;:28,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:762,&quot;character&quot;:36,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:762,&quot;character&quot;:45,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:763,&quot;character&quot;:28,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:763,&quot;character&quot;:36,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:764,&quot;character&quot;:44,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:764,&quot;character&quot;:52,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:765,&quot;character&quot;:28,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:765,&quot;character&quot;:36,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:765,&quot;character&quot;:45,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:770,&quot;character&quot;:28,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:770,&quot;character&quot;:36,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:772,&quot;character&quot;:28,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:772,&quot;character&quot;:36,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:772,&quot;character&quot;:46,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:773,&quot;character&quot;:26,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:773,&quot;character&quot;:34,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:773,&quot;character&quot;:44,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:799,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:799,&quot;character&quot;:32,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:803,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:803,&quot;character&quot;:32,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:808,&quot;character&quot;:46,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:808,&quot;character&quot;:54,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:814,&quot;character&quot;:29,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:814,&quot;character&quot;:37,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:816,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:816,&quot;character&quot;:35,&quot;text&quot;:&quot;emailVerified&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:821,&quot;character&quot;:30,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:821,&quot;character&quot;:38,&quot;text&quot;:&quot;emailVerified&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:861,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:861,&quot;character&quot;:32,&quot;text&quot;:&quot;sendEmail&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:865,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:865,&quot;character&quot;:32,&quot;text&quot;:&quot;sendEmail&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:888,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:888,&quot;character&quot;:32,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:892,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:892,&quot;character&quot;:32,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:893,&quot;character&quot;:23,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:893,&quot;character&quot;:31,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:894,&quot;character&quot;:26,&quot;text&quot;:&quot;toLowerCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:895,&quot;character&quot;:25,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:897,&quot;character&quot;:98,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:897,&quot;character&quot;:106,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:898,&quot;character&quot;:28,&quot;text&quot;:&quot;replaceAll&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:899,&quot;character&quot;:28,&quot;text&quot;:&quot;replaceAll&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:900,&quot;character&quot;:28,&quot;text&quot;:&quot;replaceAll&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:901,&quot;character&quot;:28,&quot;text&quot;:&quot;replaceAll&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:908,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:908,&quot;character&quot;:35,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:909,&quot;character&quot;:30,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:909,&quot;character&quot;:38,&quot;text&quot;:&quot;phoneNumber&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:932,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:932,&quot;character&quot;:32,&quot;text&quot;:&quot;sendSms&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:936,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:936,&quot;character&quot;:32,&quot;text&quot;:&quot;sendSms&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:959,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:959,&quot;character&quot;:32,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:963,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:963,&quot;character&quot;:32,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:969,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:969,&quot;character&quot;:35,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:969,&quot;character&quot;:43,&quot;text&quot;:&quot;toLowerCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:969,&quot;character&quot;:58,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:970,&quot;character&quot;:26,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:970,&quot;character&quot;:34,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:971,&quot;character&quot;:59,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:971,&quot;character&quot;:67,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:971,&quot;character&quot;:77,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:971,&quot;character&quot;:85,&quot;text&quot;:&quot;city&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:971,&quot;character&quot;:93,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:971,&quot;character&quot;:101,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:971,&quot;character&quot;:110,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:971,&quot;character&quot;:118,&quot;text&quot;:&quot;zipCode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:975,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:975,&quot;character&quot;:35,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:975,&quot;character&quot;:43,&quot;text&quot;:&quot;toLowerCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:975,&quot;character&quot;:58,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:976,&quot;character&quot;:26,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:976,&quot;character&quot;:34,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:984,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:984,&quot;character&quot;:35,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:985,&quot;character&quot;:30,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:985,&quot;character&quot;:38,&quot;text&quot;:&quot;street&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:990,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:990,&quot;character&quot;:35,&quot;text&quot;:&quot;city&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:990,&quot;character&quot;:42,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:990,&quot;character&quot;:50,&quot;text&quot;:&quot;city&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:994,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:994,&quot;character&quot;:35,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:994,&quot;character&quot;:43,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:994,&quot;character&quot;:51,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:998,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:998,&quot;character&quot;:35,&quot;text&quot;:&quot;zipCode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:999,&quot;character&quot;:30,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:999,&quot;character&quot;:38,&quot;text&quot;:&quot;zipCode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1026,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1026,&quot;character&quot;:32,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1030,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1030,&quot;character&quot;:32,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1030,&quot;character&quot;:48,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1048,&quot;character&quot;:25,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1048,&quot;character&quot;:33,&quot;text&quot;:&quot;sendSms&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1056,&quot;character&quot;:25,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1056,&quot;character&quot;:33,&quot;text&quot;:&quot;sendEmail&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1072,&quot;character&quot;:23,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1073,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1073,&quot;character&quot;:32,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1074,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1074,&quot;character&quot;:32,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1074,&quot;character&quot;:48,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1074,&quot;character&quot;:53,&quot;text&quot;:&quot;paymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1076,&quot;character&quot;:33,&quot;text&quot;:&quot;paymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1076,&quot;character&quot;:48,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1082,&quot;character&quot;:78,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1082,&quot;character&quot;:86,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1083,&quot;character&quot;:83,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1083,&quot;character&quot;:91,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1091,&quot;character&quot;:36,&quot;text&quot;:&quot;paymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1091,&quot;character&quot;:51,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1091,&quot;character&quot;:57,&quot;text&quot;:&quot;funding&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1093,&quot;character&quot;:57,&quot;text&quot;:&quot;paymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1093,&quot;character&quot;:72,&quot;text&quot;:&quot;type&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1097,&quot;character&quot;:36,&quot;text&quot;:&quot;paymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1097,&quot;character&quot;:51,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1097,&quot;character&quot;:57,&quot;text&quot;:&quot;brand&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1101,&quot;character&quot;:37,&quot;text&quot;:&quot;paymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1101,&quot;character&quot;:52,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1101,&quot;character&quot;:58,&quot;text&quot;:&quot;last4&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1104,&quot;character&quot;:37,&quot;text&quot;:&quot;paymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1104,&quot;character&quot;:52,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1104,&quot;character&quot;:58,&quot;text&quot;:&quot;exp_month&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1105,&quot;character&quot;:35,&quot;text&quot;:&quot;paymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1105,&quot;character&quot;:50,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1105,&quot;character&quot;:56,&quot;text&quot;:&quot;exp_year&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1106,&quot;character&quot;:35,&quot;text&quot;:&quot;paymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1106,&quot;character&quot;:50,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1106,&quot;character&quot;:56,&quot;text&quot;:&quot;wallet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1106,&quot;character&quot;:64,&quot;text&quot;:&quot;apple_pay&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1120,&quot;character&quot;:19,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1120,&quot;character&quot;:27,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1130,&quot;character&quot;:18,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/client/index.tsx&quot;,&quot;line&quot;:1130,&quot;character&quot;:26,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

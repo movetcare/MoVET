@@ -5,7 +5,7 @@ export const getAuthUserById = async (
   values: Array<
     "uid" | "email" | "phoneNumber" | "emailVerified" | "displayName"
   > = []
-) =>
+): Promise<any> =>
   await admin
     .auth()
     .getUser(id)

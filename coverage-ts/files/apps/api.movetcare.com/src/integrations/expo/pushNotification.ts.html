@@ -1,0 +1,54 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>pushNotification.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/integrations/expo/pushNotification.ts</td><td class="">73.61%</td><td class="">75%</td><td class="">72</td><td class="">53</td><td class="">19</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {DEBUG, expoAccessToken, throwError} from &quot;../../config/config&quot;;
+import {Expo} from &quot;expo-server-sdk&quot;;
+import {Request, Response} from &quot;express&quot;;
+
+const expo = new Expo({accessToken: expoAccessToken});
+
+export const pushNotification = async (
+  request: Request,
+  response: Response
+): Promise&lt;any&gt; =&gt; {
+  const {to, sound, title, body, data} = request.body;
+  if (DEBUG) console.log(&quot;NEW PUSH REQUEST: &quot;, {to, sound, title, body, data});
+  const messages = [];
+  if (!Expo.isExpoPushToken(to))
+    console.error(`Push token ${to} is not a valid Expo push token`);
+
+  messages.push({
+    to,
+    sound,
+    body: JSON.stringify(body),
+    title,
+    data,
+  });
+  const chunks = expo.chunkPushNotifications(messages);
+  const tickets = [];
+  for (const chunk of chunks) {
+    try {
+      const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+      if (DEBUG) console.log(&quot;TICKET: &quot;, ticketChunk);
+      tickets.push(...ticketChunk);
+    } catch (error: any) {
+      return throwError(error);
+    }
+  }
+  return response.status(200).send();
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:9,&quot;text&quot;:&quot;to&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:13,&quot;text&quot;:&quot;sound&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:20,&quot;text&quot;:&quot;title&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:27,&quot;text&quot;:&quot;body&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:33,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:49,&quot;text&quot;:&quot;body&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:48,&quot;text&quot;:&quot;to&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:52,&quot;text&quot;:&quot;sound&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:59,&quot;text&quot;:&quot;title&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:66,&quot;text&quot;:&quot;body&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:72,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:32,&quot;text&quot;:&quot;to&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:4,&quot;text&quot;:&quot;to&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:4,&quot;text&quot;:&quot;sound&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:19,&quot;character&quot;:25,&quot;text&quot;:&quot;body&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:20,&quot;character&quot;:4,&quot;text&quot;:&quot;title&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:4,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:24,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/expo/pushNotification.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:13,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

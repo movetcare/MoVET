@@ -1,0 +1,127 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>sendgridWebhook.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts</td><td class="">45.16%</td><td class="">75%</td><td class="">31</td><td class="">14</td><td class="">17</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  functions,
+  defaultRuntimeOptions,
+  DEBUG,
+  throwError,
+  //environment,
+} from &quot;../../config/config&quot;;
+import { Response } from &quot;express&quot;;
+// import { EventWebhook, EventWebhookHeader } from &quot;@sendgrid/eventwebhook&quot;;
+// import { findSlackChannel } from &quot;../../utils/logging/findSlackChannel&quot;;
+// import { sendSlackMessage } from &quot;../../utils/logging/sendSlackMessage&quot;;
+
+// const verifyRequest = function (
+//   publicKey: string,
+//   payload: any,
+//   signature: string,
+//   timestamp: string
+// ) {
+//   const eventWebhook = new EventWebhook();
+//   const ecPublicKey = eventWebhook.convertPublicKeyToECDSA(publicKey);
+//   return eventWebhook.verifySignature(
+//     ecPublicKey,
+//     payload,
+//     signature,
+//     timestamp
+//   );
+// };
+
+export const sendgridWebhook: Promise&lt;Response&gt; = functions
+  .runWith(defaultRuntimeOptions)
+  .https.onRequest(async (request: any, response: any) =&gt; {
+    if (DEBUG) {
+      console.log(&quot;request.headers&quot;, request.headers);
+      console.log(&quot;request.body&quot;, request.body);
+    }
+    try {
+      //const key = &quot;MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE8o+9otYX5aBXK8fwPu2PDWfx+hFw6zeur/8JA7mx6nimH6aKLoxD3zMHeSSsCi3x8J7f03Hj2M9KRzCW7qbFfw==&quot;;
+      // const signature = request.get(EventWebhookHeader.SIGNATURE());
+      // const timestamp = request.get(EventWebhookHeader.TIMESTAMP());
+      // const requestBody = request.rawBody;
+      // if (verifyRequest(key, requestBody, signature, timestamp)) {
+      //   const channelId: any = await findSlackChannel(
+      //     environment.type === &quot;production&quot;
+      //       ? &quot;production-email-logs&quot;
+      //       : &quot;staging-email-logs&quot;
+      //   );
+      //   for (const [key, value] of Object.entries(request?.body)) {
+      //     if (DEBUG) console.log(`${key}: ${JSON.stringify(value)}`);
+      //     const { email, event, sg_event_id, sg_message_id } =
+      //       request.body[key];
+      //     if (
+      //       email !== &quot;support@movetcare.com&quot; &amp;&amp;
+      //       email !== &quot;info@movetcare.com&quot; &amp;&amp;
+      //       email !== &quot;dev@movetcare.com&quot;
+      //     ) {
+      //       sendSlackMessage(channelId, null, [
+      //         {
+      //           type: &quot;section&quot;,
+      //           text: {
+      //             text: &quot;*NEW* _SendGrid Log_&quot;,
+      //             type: &quot;mrkdwn&quot;,
+      //           },
+      //           fields: [
+      //             {
+      //               type: &quot;mrkdwn&quot;,
+      //               text: &quot;*Email*&quot;,
+      //             },
+      //             {
+      //               type: &quot;plain_text&quot;,
+      //               text: email,
+      //             },
+      //             {
+      //               type: &quot;mrkdwn&quot;,
+      //               text: &quot;*Event Type*&quot;,
+      //             },
+      //             {
+      //               type: &quot;plain_text&quot;,
+      //               text: event,
+      //             },
+      //             {
+      //               type: &quot;mrkdwn&quot;,
+      //               text: &quot;*Event Id*&quot;,
+      //             },
+      //             {
+      //               type: &quot;plain_text&quot;,
+      //               text: sg_event_id,
+      //             },
+      //             {
+      //               type: &quot;mrkdwn&quot;,
+      //               text: &quot;*MessageId*&quot;,
+      //             },
+      //             {
+      //               type: &quot;plain_text&quot;,
+      //               text: sg_message_id,
+      //             },
+      //           ],
+      //         },
+      //       ]);
+      //     }
+      //   }
+      //   return response.sendStatus(204);
+      // } else {
+      //   return response.sendStatus(403);
+      // }
+    } catch (error) {
+      throwError(error);
+      return response.status(500).send(error);
+    }
+  });
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:1,&quot;character&quot;:2,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:50,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:3,&quot;text&quot;:&quot;runWith&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:3,&quot;text&quot;:&quot;https&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:9,&quot;text&quot;:&quot;onRequest&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:26,&quot;text&quot;:&quot;request&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:40,&quot;text&quot;:&quot;response&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:37,&quot;text&quot;:&quot;request&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:45,&quot;text&quot;:&quot;headers&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:34,&quot;text&quot;:&quot;request&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:42,&quot;text&quot;:&quot;body&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:105,&quot;character&quot;:17,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:106,&quot;character&quot;:13,&quot;text&quot;:&quot;response&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:106,&quot;character&quot;:22,&quot;text&quot;:&quot;status&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:106,&quot;character&quot;:34,&quot;text&quot;:&quot;send&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:106,&quot;character&quot;:39,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/webhooks/sendgridWebhook.ts&quot;,&quot;line&quot;:104,&quot;character&quot;:13,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

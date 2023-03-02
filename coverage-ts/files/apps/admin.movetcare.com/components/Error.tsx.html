@@ -1,0 +1,67 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Error.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/admin.movetcare.com/components/Error.tsx</td><td class="">69.70%</td><td class="">75%</td><td class="">66</td><td class="">46</td><td class="">20</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { faTriangleExclamation } from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import environment from &quot;utils/environment&quot;;
+import ReportABug from &quot;./ReportABug&quot;;
+
+const Error = ({ error }: { error: any }) =&gt; (
+  &lt;div className=&quot;rounded-md bg-movet-red p-4 text-movet-white max-w-md mx-auto&quot;&gt;
+    &lt;div className=&quot;flex justify-center items-center mb-8&quot;&gt;
+      &lt;div className=&quot;flex-shrink-0&quot;&gt;
+        &lt;FontAwesomeIcon icon={faTriangleExclamation} size=&quot;2x&quot; /&gt;
+      &lt;/div&gt;
+      &lt;div className=&quot;ml-3&quot;&gt;
+        {environment === &quot;development&quot; ? (
+          &lt;&gt;
+            &lt;h3 className=&quot;text font-medium&quot;&gt;
+              {error?.name === &quot;FirebaseError&quot;
+                ? `Firebase Error: ${error?.code}`
+                : &quot;Something Went Wrong...&quot;}
+            &lt;/h3&gt;
+            {error?.message &amp;&amp; (
+              &lt;div className=&quot;text-sm&quot;&gt;
+                &lt;p className=&quot;italic&quot;&gt;{error?.message}&lt;/p&gt;
+              &lt;/div&gt;
+            )}
+          &lt;/&gt;
+        ) : (
+          &lt;&gt;
+            &lt;h3 className=&quot;text font-medium&quot;&gt;
+              {error?.name === &quot;FirebaseError&quot;
+                ? `Server Error: ${error?.code}`
+                : &quot;Something Went Wrong...&quot;}
+            &lt;/h3&gt;
+            {error?.message &amp;&amp; error?.code !== &quot;permission-denied&quot; ? (
+              &lt;div className=&quot;text-sm&quot;&gt;
+                &lt;p&gt;{error?.message}&lt;/p&gt;
+              &lt;/div&gt;
+            ) : (
+              &lt;div className=&quot;text-sm&quot;&gt;
+                &lt;p&gt;You do not have permission to access this information...&lt;/p&gt;
+              &lt;/div&gt;
+            )}
+          &lt;/&gt;
+        )}
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;ReportABug /&gt;
+  &lt;/div&gt;
+);
+export default Error;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:5,&quot;character&quot;:17,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:5,&quot;character&quot;:28,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:15,&quot;character&quot;:15,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:15,&quot;character&quot;:22,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:16,&quot;character&quot;:37,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:16,&quot;character&quot;:44,&quot;text&quot;:&quot;code&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:19,&quot;character&quot;:13,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:19,&quot;character&quot;:20,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:21,&quot;character&quot;:39,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:21,&quot;character&quot;:46,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:28,&quot;character&quot;:15,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:28,&quot;character&quot;:22,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:29,&quot;character&quot;:35,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:29,&quot;character&quot;:42,&quot;text&quot;:&quot;code&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:32,&quot;character&quot;:13,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:32,&quot;character&quot;:20,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:32,&quot;character&quot;:31,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:32,&quot;character&quot;:38,&quot;text&quot;:&quot;code&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:34,&quot;character&quot;:20,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:34,&quot;character&quot;:27,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

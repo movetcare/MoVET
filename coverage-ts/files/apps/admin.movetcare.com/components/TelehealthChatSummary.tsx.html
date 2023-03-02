@@ -1,0 +1,382 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>TelehealthChatSummary.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/admin.movetcare.com/components/TelehealthChatSummary.tsx</td><td class="">68.19%</td><td class="">75%</td><td class="">481</td><td class="">328</td><td class="">153</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { collection, limit, query, where } from &#x27;firebase/firestore&#x27;;
+import { useCollection } from &#x27;react-firebase-hooks/firestore&#x27;;
+import { Loader } from &quot;ui&quot;;
+import { firestore } from &#x27;services/firebase&#x27;;
+import { FontAwesomeIcon } from &#x27;@fortawesome/react-fontawesome&#x27;;
+import {
+  faCheckCircle,
+  faChevronCircleRight,
+  faCaretDown,
+  faCaretUp,
+  faCircleUser,
+  faClockFour,
+  faCommentMedical,
+} from &#x27;@fortawesome/free-solid-svg-icons&#x27;;
+import { timeSince } from &#x27;utils/timeSince&#x27;;
+import Link from &#x27;next/link&#x27;;
+import Error from &#x27;components/Error&#x27;;
+import TelehealthChatStatus from &#x27;./TelehealthChatStatus&#x27;;
+import { useState } from &#x27;react&#x27;;
+
+const TelehealthChatSummary = ({ mode }: { mode?: &#x27;sidebar&#x27; }) =&gt; {
+  const [showArchive, setShowArchive] = useState&lt;boolean&gt;(false);
+  const [activeChats, loadingActiveChats, errorActiveChats] = useCollection(
+    query(
+      collection(firestore, &#x27;telehealth_chat&#x27;),
+      where(&#x27;status&#x27;, &#x27;==&#x27;, &#x27;active&#x27;)
+    ),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    }
+  );
+
+  const [completedChats, loadingCompletedChats, errorCompletedChats] =
+    useCollection(
+      query(
+        collection(firestore, &#x27;telehealth_chat&#x27;),
+        where(&#x27;status&#x27;, &#x27;==&#x27;, &#x27;complete&#x27;),
+        limit(50)
+      ),
+      {
+        snapshotListenOptions: { includeMetadataChanges: true },
+      }
+    );
+
+  return (
+    &lt;div&gt;
+      &lt;div className=&quot;bg-white shadow overflow-hidden rounded-lg&quot;&gt;
+        &lt;div className=&quot;flex flex-row items-center justify-center&quot;&gt;
+          &lt;FontAwesomeIcon
+            icon={faCommentMedical}
+            className=&quot;text-movet-yellow&quot;
+            size=&quot;lg&quot;
+          /&gt;
+          &lt;h1 className=&quot;ml-2 my-4 text-lg&quot;&gt;
+            {loadingActiveChats ? &quot;Loading Chats...&quot; : &quot;Active Chats&quot;}
+          &lt;/h1&gt;
+        &lt;/div&gt;
+        &lt;TelehealthChatStatus /&gt;
+        {loadingActiveChats ? (
+          &lt;div className=&quot;mb-6&quot;&gt;
+            &lt;Loader height={200} width={200} /&gt;
+          &lt;/div&gt;
+        ) : errorActiveChats ? (
+          &lt;div className=&quot;px-8 pb-8&quot;&gt;
+            &lt;Error error={errorActiveChats} /&gt;
+          &lt;/div&gt;
+        ) : (
+          &lt;ul
+            role=&quot;list&quot;
+            className=&quot;divide-y divide-movet-gray border-t border-movet-gray mt-4&quot;
+          &gt;
+            {activeChats &amp;&amp; activeChats.docs.length &lt; 1 &amp;&amp; (
+              &lt;p className=&quot;text-lg italic text-movet-red opacity-50 text-center mx-8 mt-4 mb-4&quot;&gt;
+                There are no active chat sessions...
+              &lt;/p&gt;
+            )}
+            {activeChats &amp;&amp;
+              activeChats.docs.map((session: any, index: number) =&gt; (
+                &lt;li
+                  key={index}
+                  className=&quot;block hover:bg-movet-red hover:text-movet-white cursor-pointer&quot;
+                &gt;
+                  &lt;Link href={`/telehealth/chat/?id=${session.id}`}&gt;
+                    &lt;div className=&quot;flex items-center px-4 py-4 sm:px-6&quot;&gt;
+                      &lt;div className=&quot;min-w-0 flex-1 flex items-center&quot;&gt;
+                        &lt;div className=&quot;flex-shrink-0 cursor-pointer&quot;&gt;
+                          &lt;FontAwesomeIcon icon={faCircleUser} size=&quot;2x&quot; /&gt;
+                        &lt;/div&gt;
+                        &lt;div className=&quot;min-w-0 flex flex-row px-8 w-full items-center justify-between&quot;&gt;
+                          &lt;div className=&quot;w-full&quot;&gt;
+                            {session?.data()?.client?.firstName ? (
+                              &lt;p className=&quot;text-lg font-bold&quot;&gt;
+                                {session?.data()?.client?.firstName}{&quot; &quot;}
+                                {session?.data()?.client?.lastName}
+                              &lt;/p&gt;
+                            ) : (
+                              &lt;p className=&quot;italic&quot;&gt;Unknown Client&lt;/p&gt;
+                            )}
+                            {mode !== &quot;sidebar&quot; &amp;&amp; (
+                              &lt;p className=&quot;flex-row items-center overflow-hidden italic&quot;&gt;
+                                &amp;quot;{session?.data()?.question}&amp;quot;
+                              &lt;/p&gt;
+                            )}
+                            &lt;p className=&quot;md:hidden flex flex-row items-center text-sm&quot;&gt;
+                              &lt;span className=&quot;flex-shrink-0 cursor-pointer mr-2&quot;&gt;
+                                &lt;FontAwesomeIcon icon={faClockFour} size=&quot;sm&quot; /&gt;
+                              &lt;/span&gt;
+                              {session?.data()?.updatedOn ? (
+                                &lt;time
+                                  dateTime={session
+                                    ?.data()
+                                    ?.updatedOn?.toDate()
+                                    ?.toString()}
+                                &gt;
+                                  {timeSince(
+                                    session?.data()?.updatedOn?.toDate()
+                                  )}
+                                &lt;/time&gt;
+                              ) : session?.data()?.createdAt ? (
+                                &lt;time
+                                  dateTime={session
+                                    ?.data()
+                                    ?.createdAt?.toDate()
+                                    ?.toString()}
+                                &gt;
+                                  {timeSince(
+                                    session?.data()?.createdAt?.toDate()
+                                  )}
+                                &lt;/time&gt;
+                              ) : (
+                                &lt;time
+                                  dateTime={session
+                                    ?.data()
+                                    ?.createdOn?.toDate()
+                                    ?.toString()}
+                                &gt;
+                                  {timeSince(
+                                    session?.data()?.createdOn?.toDate()
+                                  )}
+                                &lt;/time&gt;
+                              )}
+                            &lt;/p&gt;
+                          &lt;/div&gt;
+                          &lt;div className=&quot;hidden md:flex w-full justify-end&quot;&gt;
+                            {mode !== &quot;sidebar&quot; &amp;&amp; (
+                              &lt;p className=&quot;flex flex-row justify-center h-full items-center&quot;&gt;
+                                &lt;span className=&quot;flex-shrink-0 cursor-pointer mr-2&quot;&gt;
+                                  &lt;FontAwesomeIcon
+                                    icon={faClockFour}
+                                    size=&quot;sm&quot;
+                                  /&gt;
+                                &lt;/span&gt;
+                                {session?.data()?.updatedOn ? (
+                                  &lt;time
+                                    dateTime={session
+                                      ?.data()
+                                      ?.updatedOn?.toDate()
+                                      ?.toString()}
+                                  &gt;
+                                    {timeSince(
+                                      session?.data()?.updatedOn?.toDate()
+                                    )}
+                                  &lt;/time&gt;
+                                ) : session?.data()?.createdAt ? (
+                                  &lt;time
+                                    dateTime={session
+                                      ?.data()
+                                      ?.createdAt?.toDate()
+                                      ?.toString()}
+                                  &gt;
+                                    {timeSince(
+                                      session?.data()?.createdAt?.toDate()
+                                    )}
+                                  &lt;/time&gt;
+                                ) : (
+                                  &lt;time
+                                    dateTime={session
+                                      ?.data()
+                                      ?.createdOn?.toDate()
+                                      ?.toString()}
+                                  &gt;
+                                    {timeSince(
+                                      session?.data()?.createdOn?.toDate()
+                                    )}
+                                  &lt;/time&gt;
+                                )}
+                              &lt;/p&gt;
+                            )}
+                          &lt;/div&gt;
+                        &lt;/div&gt;
+                      &lt;/div&gt;
+                      &lt;FontAwesomeIcon icon={faChevronCircleRight} /&gt;
+                    &lt;/div&gt;
+                  &lt;/Link&gt;
+                &lt;/li&gt;
+              ))}
+          &lt;/ul&gt;
+        )}
+      &lt;/div&gt;
+      {completedChats &amp;&amp; completedChats.docs.length &gt; 0 &amp;&amp; (
+        &lt;div className=&quot;bg-white shadow overflow-hidden rounded-lg&quot;&gt;
+          &lt;div
+            className=&quot;group w-full flex flex-row items-center justify-center -mb-4 hover:text-movet-white hover:bg-movet-black hover:cursor-pointer border-t-movet-gray border-t&quot;
+            onClick={() =&gt; setShowArchive(!showArchive)}
+          &gt;
+            &lt;div className=&quot;hidden group-hover:block&quot;&gt;
+              &lt;FontAwesomeIcon
+                icon={faCheckCircle}
+                className=&quot;text-movet-green&quot;
+                size=&quot;sm&quot;
+              /&gt;
+            &lt;/div&gt;
+            &lt;h2 className=&quot;ml-2 text-sm my-3 font-bold&quot;&gt;
+              {loadingCompletedChats ? &quot;Loading Chats...&quot; : &quot;Archived Chats&quot;}
+            &lt;/h2&gt;
+            &lt;div className=&quot;hidden group-hover:block ml-2&quot;&gt;
+              {showArchive ? (
+                &lt;FontAwesomeIcon icon={faCaretDown} size=&quot;xs&quot; /&gt;
+              ) : (
+                &lt;FontAwesomeIcon icon={faCaretUp} size=&quot;xs&quot; /&gt;
+              )}
+            &lt;/div&gt;
+          &lt;/div&gt;
+          {loadingCompletedChats ? (
+            &lt;div className=&quot;mb-6&quot;&gt;
+              &lt;Loader height={200} width={200} /&gt;
+            &lt;/div&gt;
+          ) : errorCompletedChats ? (
+            &lt;div className=&quot;px-8 pb-8&quot;&gt;
+              &lt;Error error={errorCompletedChats} /&gt;
+            &lt;/div&gt;
+          ) : (
+            &lt;ul
+              role=&quot;list&quot;
+              className=&quot;divide-y divide-movet-gray border-t border-movet-gray mt-4&quot;
+            &gt;
+              {showArchive &amp;&amp;
+                completedChats &amp;&amp;
+                completedChats.docs.map((session: any, index: number) =&gt; (
+                  &lt;li
+                    key={index}
+                    className=&quot;block hover:bg-movet-red hover:text-movet-white cursor-pointer&quot;
+                  &gt;
+                    &lt;Link href={`/telehealth/chat/?id=${session.id}`}&gt;
+                      &lt;div className=&quot;flex items-center px-4 py-4 sm:px-6&quot;&gt;
+                        &lt;div className=&quot;min-w-0 flex-1 flex items-center&quot;&gt;
+                          &lt;div className=&quot;flex-shrink-0 cursor-pointer&quot;&gt;
+                            &lt;FontAwesomeIcon icon={faCircleUser} size=&quot;2x&quot; /&gt;
+                          &lt;/div&gt;
+                          &lt;div className=&quot;min-w-0 flex flex-row px-8 items-center justify-between w-full&quot;&gt;
+                            &lt;div&gt;
+                              {session?.data()?.client?.firstName ? (
+                                &lt;p className=&quot;text-lg font-bold&quot;&gt;
+                                  {session?.data()?.client?.firstName}{&quot; &quot;}
+                                  {session?.data()?.client?.lastName}
+                                &lt;/p&gt;
+                              ) : (
+                                &lt;p className=&quot;italic&quot;&gt;Unknown Client&lt;/p&gt;
+                              )}
+                              &lt;p className=&quot;md:hidden flex flex-row items-center text-sm&quot;&gt;
+                                &lt;span className=&quot;flex-shrink-0 cursor-pointer mr-2&quot;&gt;
+                                  &lt;FontAwesomeIcon
+                                    icon={faClockFour}
+                                    size=&quot;sm&quot;
+                                  /&gt;
+                                &lt;/span&gt;
+                                {session?.data()?.updatedOn ? (
+                                  &lt;time
+                                    dateTime={session
+                                      ?.data()
+                                      ?.updatedOn?.toDate()
+                                      ?.toString()}
+                                  &gt;
+                                    {timeSince(
+                                      session?.data()?.updatedOn?.toDate()
+                                    )}
+                                  &lt;/time&gt;
+                                ) : session?.data()?.createdAt ? (
+                                  &lt;time
+                                    dateTime={session
+                                      ?.data()
+                                      ?.createdAt?.toDate()
+                                      ?.toString()}
+                                  &gt;
+                                    {timeSince(
+                                      session?.data()?.createdAt?.toDate()
+                                    )}
+                                  &lt;/time&gt;
+                                ) : (
+                                  &lt;time
+                                    dateTime={session
+                                      ?.data()
+                                      ?.createdOn?.toDate()
+                                      ?.toString()}
+                                  &gt;
+                                    {timeSince(
+                                      session?.data()?.createdOn?.toDate()
+                                    )}
+                                  &lt;/time&gt;
+                                )}
+                              &lt;/p&gt;
+                            &lt;/div&gt;
+                            &lt;div className=&quot;hidden md:block&quot;&gt;
+                              {mode !== &quot;sidebar&quot; &amp;&amp; (
+                                &lt;p className=&quot;flex flex-row justify-center h-full items-center&quot;&gt;
+                                  &lt;span className=&quot;flex-shrink-0 cursor-pointer mr-2&quot;&gt;
+                                    &lt;FontAwesomeIcon
+                                      icon={faClockFour}
+                                      size=&quot;sm&quot;
+                                    /&gt;
+                                  &lt;/span&gt;
+                                  {session?.data()?.updatedOn ? (
+                                    &lt;time
+                                      dateTime={session
+                                        ?.data()
+                                        ?.updatedOn?.toDate()
+                                        ?.toString()}
+                                    &gt;
+                                      {timeSince(
+                                        session?.data()?.updatedOn?.toDate()
+                                      )}
+                                    &lt;/time&gt;
+                                  ) : session?.data()?.createdAt ? (
+                                    &lt;time
+                                      dateTime={session
+                                        ?.data()
+                                        ?.createdAt?.toDate()
+                                        ?.toString()}
+                                    &gt;
+                                      {timeSince(
+                                        session?.data()?.createdAt?.toDate()
+                                      )}
+                                    &lt;/time&gt;
+                                  ) : (
+                                    &lt;time
+                                      dateTime={session
+                                        ?.data()
+                                        ?.createdOn?.toDate()
+                                        ?.toString()}
+                                    &gt;
+                                      {timeSince(
+                                        session?.data()?.createdOn?.toDate()
+                                      )}
+                                    &lt;/time&gt;
+                                  )}
+                                &lt;/p&gt;
+                              )}
+                            &lt;/div&gt;
+                          &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;FontAwesomeIcon icon={faChevronCircleRight} /&gt;
+                      &lt;/div&gt;
+                    &lt;/Link&gt;
+                  &lt;/li&gt;
+                ))}
+            &lt;/ul&gt;
+          )}
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+
+export default TelehealthChatSummary;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:77,&quot;character&quot;:36,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:82,&quot;character&quot;:54,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:82,&quot;character&quot;:62,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:90,&quot;character&quot;:29,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:90,&quot;character&quot;:38,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:90,&quot;character&quot;:46,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:90,&quot;character&quot;:54,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:92,&quot;character&quot;:33,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:92,&quot;character&quot;:42,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:92,&quot;character&quot;:50,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:92,&quot;character&quot;:58,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:93,&quot;character&quot;:33,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:93,&quot;character&quot;:42,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:93,&quot;character&quot;:50,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:93,&quot;character&quot;:58,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:100,&quot;character&quot;:39,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:100,&quot;character&quot;:48,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:100,&quot;character&quot;:56,&quot;text&quot;:&quot;question&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:107,&quot;character&quot;:31,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:107,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:107,&quot;character&quot;:48,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:109,&quot;character&quot;:44,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:110,&quot;character&quot;:38,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:111,&quot;character&quot;:38,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:111,&quot;character&quot;:49,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:115,&quot;character&quot;:36,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:115,&quot;character&quot;:45,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:115,&quot;character&quot;:53,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:115,&quot;character&quot;:64,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:118,&quot;character&quot;:34,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:118,&quot;character&quot;:43,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:118,&quot;character&quot;:51,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:120,&quot;character&quot;:44,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:121,&quot;character&quot;:38,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:122,&quot;character&quot;:38,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:122,&quot;character&quot;:49,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:126,&quot;character&quot;:36,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:126,&quot;character&quot;:45,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:126,&quot;character&quot;:53,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:126,&quot;character&quot;:64,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:131,&quot;character&quot;:44,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:132,&quot;character&quot;:38,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:133,&quot;character&quot;:38,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:133,&quot;character&quot;:49,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:137,&quot;character&quot;:36,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:137,&quot;character&quot;:45,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:137,&quot;character&quot;:53,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:137,&quot;character&quot;:64,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:152,&quot;character&quot;:33,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:152,&quot;character&quot;:42,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:152,&quot;character&quot;:50,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:154,&quot;character&quot;:46,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:155,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:156,&quot;character&quot;:40,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:156,&quot;character&quot;:51,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:160,&quot;character&quot;:38,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:160,&quot;character&quot;:47,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:160,&quot;character&quot;:55,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:160,&quot;character&quot;:66,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:163,&quot;character&quot;:36,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:163,&quot;character&quot;:45,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:163,&quot;character&quot;:53,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:165,&quot;character&quot;:46,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:166,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:167,&quot;character&quot;:40,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:167,&quot;character&quot;:51,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:171,&quot;character&quot;:38,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:171,&quot;character&quot;:47,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:171,&quot;character&quot;:55,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:171,&quot;character&quot;:66,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:176,&quot;character&quot;:46,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:177,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:178,&quot;character&quot;:40,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:178,&quot;character&quot;:51,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:182,&quot;character&quot;:38,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:182,&quot;character&quot;:47,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:182,&quot;character&quot;:55,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:182,&quot;character&quot;:66,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:238,&quot;character&quot;:41,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:243,&quot;character&quot;:56,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:243,&quot;character&quot;:64,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:251,&quot;character&quot;:31,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:251,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:251,&quot;character&quot;:48,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:251,&quot;character&quot;:56,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:253,&quot;character&quot;:35,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:253,&quot;character&quot;:44,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:253,&quot;character&quot;:52,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:253,&quot;character&quot;:60,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:254,&quot;character&quot;:35,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:254,&quot;character&quot;:44,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:254,&quot;character&quot;:52,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:254,&quot;character&quot;:60,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:266,&quot;character&quot;:33,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:266,&quot;character&quot;:42,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:266,&quot;character&quot;:50,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:268,&quot;character&quot;:46,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:269,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:270,&quot;character&quot;:40,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:270,&quot;character&quot;:51,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:274,&quot;character&quot;:38,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:274,&quot;character&quot;:47,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:274,&quot;character&quot;:55,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:274,&quot;character&quot;:66,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:277,&quot;character&quot;:36,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:277,&quot;character&quot;:45,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:277,&quot;character&quot;:53,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:279,&quot;character&quot;:46,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:280,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:281,&quot;character&quot;:40,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:281,&quot;character&quot;:51,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:285,&quot;character&quot;:38,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:285,&quot;character&quot;:47,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:285,&quot;character&quot;:55,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:285,&quot;character&quot;:66,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:290,&quot;character&quot;:46,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:291,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:292,&quot;character&quot;:40,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:292,&quot;character&quot;:51,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:296,&quot;character&quot;:38,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:296,&quot;character&quot;:47,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:296,&quot;character&quot;:55,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:296,&quot;character&quot;:66,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:311,&quot;character&quot;:35,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:311,&quot;character&quot;:44,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:311,&quot;character&quot;:52,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:313,&quot;character&quot;:48,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:314,&quot;character&quot;:42,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:315,&quot;character&quot;:42,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:315,&quot;character&quot;:53,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:319,&quot;character&quot;:40,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:319,&quot;character&quot;:49,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:319,&quot;character&quot;:57,&quot;text&quot;:&quot;updatedOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:319,&quot;character&quot;:68,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:322,&quot;character&quot;:38,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:322,&quot;character&quot;:47,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:322,&quot;character&quot;:55,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:324,&quot;character&quot;:48,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:325,&quot;character&quot;:42,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:326,&quot;character&quot;:42,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:326,&quot;character&quot;:53,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:330,&quot;character&quot;:40,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:330,&quot;character&quot;:49,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:330,&quot;character&quot;:57,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:330,&quot;character&quot;:68,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:335,&quot;character&quot;:48,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:336,&quot;character&quot;:42,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:337,&quot;character&quot;:42,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:337,&quot;character&quot;:53,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:341,&quot;character&quot;:40,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:341,&quot;character&quot;:49,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:341,&quot;character&quot;:57,&quot;text&quot;:&quot;createdOn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/TelehealthChatSummary.tsx&quot;,&quot;line&quot;:341,&quot;character&quot;:68,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

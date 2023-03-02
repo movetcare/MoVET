@@ -1,0 +1,303 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>testing.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/admin.movetcare.com/pages/settings/testing.tsx</td><td class="">90.03%</td><td class="">75%</td><td class="">351</td><td class="">316</td><td class="">35</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  faUsersBetweenLines,
+  faTrash,
+  faEnvelope,
+  faIdCard,
+} from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import { useEffect, useState } from &quot;react&quot;;
+import { collection } from &quot;firebase/firestore&quot;;
+import { firestore } from &quot;services/firebase&quot;;
+import environment from &quot;utils/environment&quot;;
+import &quot;react-tooltip/dist/react-tooltip.css&quot;;
+import { Loader } from &quot;ui&quot;;
+import { useCollection } from &quot;react-firebase-hooks/firestore&quot;;
+import Error from &quot;../../components/Error&quot;;
+import { Tooltip } from &quot;react-tooltip&quot;;
+import AdminCheck from &quot;components/AdminCheck&quot;;
+
+interface Client {
+  id: string;
+  email: string;
+}
+
+const Testing = () =&gt; {
+  const [testClients, setTestClients] = useState&lt;Array&lt;Client&gt; | null&gt;(null);
+  const [archivedClients, setArchivedClients] = useState&lt;Array&lt;any&gt; | null&gt;(
+    null
+  );
+  const [clientData, loading, error] = useCollection(
+    collection(firestore, &quot;clients&quot;),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    }
+  );
+  useEffect(() =&gt; {
+    if (clientData) {
+      const clients: Array&lt;Client&gt; = [];
+      const archivedClients: Array&lt;any&gt; = [];
+      clientData.docs.map((client: any) =&gt; {
+        const { email, archived } = client.data();
+        if (
+          email?.includes(&quot;+test&quot;) &amp;&amp;
+          email !== &quot;dev+test@movetcare.com&quot; &amp;&amp;
+          email !== &quot;dev+test_vcpr_not_required@movetcare.com&quot;
+        )
+          clients.push({
+            id: client.id,
+            email,
+          });
+        else if (archived)
+          archivedClients.push({
+            id: client.id,
+            email,
+          });
+      });
+      setTestClients(clients);
+      setArchivedClients(archivedClients);
+    }
+  }, [clientData]);
+
+  return (
+    &lt;AdminCheck&gt;
+      &lt;div className=&quot;bg-white shadow overflow-hidden rounded-lg mb-4&quot;&gt;
+        &lt;div className=&quot;flex flex-col sm:flex-row items-center justify-center mt-1 px-8&quot;&gt;
+          &lt;div className=&quot;flex flex-row items-center&quot;&gt;
+            &lt;FontAwesomeIcon
+              icon={faUsersBetweenLines}
+              className={&quot;text-movet-red&quot;}
+              size=&quot;lg&quot;
+            /&gt;
+            &lt;h1 className=&quot;ml-2 my-4 text-lg&quot;&gt;Test Accounts&lt;/h1&gt;
+            &lt;div
+              onClick={() =&gt;
+                testClients &amp;&amp;
+                testClients?.length &gt; 0 &amp;&amp;
+                testClients.forEach((testClient: Client) =&gt;
+                  window.open(
+                    `https://us.provetcloud.com/4285/client/${testClient?.id}/forget`,
+                    &quot;_blank&quot;
+                  )
+                )
+              }
+              className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2&quot;
+              data-tooltip-id=&quot;deleteClients&quot;
+              data-tooltip-content=&quot;Delete ALL Clients&quot;
+              title=&quot;Delete ALL Client&quot;
+            &gt;
+              &lt;Tooltip id=&quot;deleteClients&quot; /&gt;
+              &lt;FontAwesomeIcon icon={faTrash} /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;ul
+          role=&quot;list&quot;
+          className=&quot;divide-y divide-movet-gray border-t border-movet-gray mt-2&quot;
+        &gt;
+          {loading ? (
+            &lt;li&gt;
+              &lt;Loader
+                message={
+                  loading
+                    ? &quot;Loading All MoVET Test Accounts...&quot;
+                    : &quot;Processing Deletion, Please Wait...&quot;
+                }
+              /&gt;
+            &lt;/li&gt;
+          ) : error ? (
+            &lt;Error error={error} /&gt;
+          ) : testClients &amp;&amp; testClients?.length === 0 ? (
+            &lt;li className=&quot;text-center p-4&quot;&gt;
+              &lt;h1 className=&quot;text-lg italic&quot;&gt;No Test Clients Found&lt;/h1&gt;
+              &lt;h3 className=&quot;text-lg italic&quot;&gt;
+                Use &amp;quot;+test&amp;quot; in the email address to make a new test
+                account
+              &lt;/h3&gt;
+              &lt;pre&gt;ex: &amp;quot;info+test@movetcare.com&amp;quot;&lt;/pre&gt;
+            &lt;/li&gt;
+          ) : (
+            testClients &amp;&amp;
+            testClients?.length &gt; 0 &amp;&amp;
+            testClients.map((testClient: Client, index: number) =&gt; (
+              &lt;li className=&quot;px-8 p-4 flex flex-col sm:flex-row&quot; key={index}&gt;
+                {testClient?.id &amp;&amp; (
+                  &lt;h2 className=&quot;my-2 sm:my-0 w-full text-center sm:w-1/2 flex items-center justify-center&quot;&gt;
+                    &lt;Tooltip id=&quot;openInProVet&quot; /&gt;
+                    &lt;a
+                      data-tooltip-id=&quot;openInProVet&quot;
+                      data-tooltip-content=&quot;View Client in Provet&quot;
+                      title=&quot;View Client in Provet&quot;
+                      href={
+                        environment === &quot;production&quot;
+                          ? `https://us.provetcloud.com/4285/client/${testClient?.id}/`
+                          : `https://us.provetcloud.com/4285/client/${testClient?.id}/`
+                      }
+                      target=&quot;_blank&quot;
+                      className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2&quot;
+                      rel=&quot;noreferrer&quot;
+                    &gt;
+                      &lt;FontAwesomeIcon icon={faIdCard} /&gt;
+                    &lt;/a&gt;
+                    {testClient?.id}
+                  &lt;/h2&gt;
+                )}
+                {testClient?.email &amp;&amp; (
+                  &lt;h3 className=&quot;my-2 sm:my-0 w-full text-center sm:w-1/2 flex items-center justify-center&quot;&gt;
+                    &lt;Tooltip id=&quot;sendEmail&quot; /&gt;
+                    &lt;a
+                      data-tooltip-id=&quot;sendEmail&quot;
+                      data-tooltip-content=&quot;Email Client&quot;
+                      title=&quot;Email Client&quot;
+                      href={`mailto:${testClient?.email}`}
+                      target=&quot;_blank&quot;
+                      className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                      rel=&quot;noreferrer&quot;
+                    &gt;
+                      &lt;FontAwesomeIcon icon={faEnvelope} /&gt;
+                    &lt;/a&gt;
+                    {testClient?.email}
+                  &lt;/h3&gt;
+                )}
+                &lt;div className=&quot;w-full flex flex-row justify-end -mt-10 sm:mt-0&quot;&gt;
+                  &lt;a
+                    href={
+                      environment === &quot;production&quot;
+                        ? `https://us.provetcloud.com/4285/client/${testClient?.id}/forget`
+                        : `https://us.provetcloud.com/4285/client/${testClient?.id}/forget`
+                    }
+                    target=&quot;_blank&quot;
+                    className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2&quot;
+                    rel=&quot;noreferrer&quot;
+                    data-tooltip-id=&quot;deleteClient&quot;
+                    data-tooltip-content=&quot;Delete Client&quot;
+                    title=&quot;Delete Client&quot;
+                  &gt;
+                    &lt;Tooltip id=&quot;deleteClient&quot; /&gt;
+                    &lt;FontAwesomeIcon icon={faTrash} /&gt;
+                  &lt;/a&gt;
+                &lt;/div&gt;
+              &lt;/li&gt;
+            ))
+          )}
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;div className=&quot;bg-white shadow overflow-hidden rounded-lg mb-4&quot;&gt;
+        &lt;div className=&quot;flex flex-col sm:flex-row items-center justify-center mt-1 px-8&quot;&gt;
+          &lt;div className=&quot;flex flex-row items-center&quot;&gt;
+            &lt;FontAwesomeIcon
+              icon={faUsersBetweenLines}
+              className={&quot;text-movet-red&quot;}
+              size=&quot;lg&quot;
+            /&gt;
+            &lt;h1 className=&quot;ml-2 my-4 text-lg&quot;&gt;Archived Clients&lt;/h1&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;ul
+          role=&quot;list&quot;
+          className=&quot;divide-y divide-movet-gray border-t border-movet-gray mt-2&quot;
+        &gt;
+          {loading ? (
+            &lt;li&gt;
+              &lt;Loader
+                message={
+                  loading
+                    ? &quot;Loading All MoVET Test Accounts...&quot;
+                    : &quot;Processing Deletion, Please Wait...&quot;
+                }
+              /&gt;
+            &lt;/li&gt;
+          ) : error ? (
+            &lt;Error error={error} /&gt;
+          ) : archivedClients &amp;&amp; archivedClients?.length === 0 ? (
+            &lt;li className=&quot;text-center p-4&quot;&gt;
+              &lt;h1 className=&quot;text-sm italic&quot;&gt;No Archived Clients Found...&lt;/h1&gt;
+            &lt;/li&gt;
+          ) : (
+            archivedClients &amp;&amp;
+            archivedClients?.length &gt; 0 &amp;&amp;
+            archivedClients.map((archivedClient: any, index: number) =&gt; (
+              &lt;li className=&quot;px-8 p-4 flex flex-col sm:flex-row&quot; key={index}&gt;
+                {archivedClient?.id &amp;&amp; (
+                  &lt;h2 className=&quot;my-2 sm:my-0 w-full text-center sm:w-1/2 flex items-center justify-center&quot;&gt;
+                    &lt;Tooltip id=&quot;viewClient&quot; /&gt;
+                    &lt;a
+                      data-tooltip-id=&quot;viewClient&quot;
+                      data-tooltip-content=&quot;View Client Verification&quot;
+                      title=&quot;View Client Verification&quot;
+                      href={
+                        environment === &quot;production&quot;
+                          ? `https://admin.movetcare.com/client/?id=${archivedClient?.id}`
+                          : `http://localhost:3002/client/?id=${archivedClient?.id}`
+                      }
+                      target=&quot;_blank&quot;
+                      className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2&quot;
+                      rel=&quot;noreferrer&quot;
+                    &gt;
+                      &lt;FontAwesomeIcon icon={faIdCard} /&gt;
+                    &lt;/a&gt;
+                    {archivedClient?.id}
+                  &lt;/h2&gt;
+                )}
+                {archivedClient?.email &amp;&amp; (
+                  &lt;h3 className=&quot;my-2 sm:my-0 w-full text-center sm:w-1/2 flex items-center justify-center&quot;&gt;
+                    &lt;Tooltip id=&quot;sendEmail&quot; /&gt;
+                    &lt;a
+                      data-tooltip-id=&quot;sendEmail&quot;
+                      data-tooltip-content=&quot;Email Client&quot;
+                      title=&quot;Email Client&quot;
+                      href={`mailto:${archivedClient?.email}`}
+                      target=&quot;_blank&quot;
+                      className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red&quot;
+                      rel=&quot;noreferrer&quot;
+                    &gt;
+                      &lt;FontAwesomeIcon icon={faEnvelope} /&gt;
+                    &lt;/a&gt;
+                    {archivedClient?.email}
+                  &lt;/h3&gt;
+                )}
+                &lt;div className=&quot;w-full flex flex-row justify-end -mt-10 sm:mt-0&quot;&gt;
+                  &lt;a
+                    href={
+                      environment === &quot;production&quot;
+                        ? `https://us.provetcloud.com/4285/client/${archivedClient?.id}/forget`
+                        : `https://us.provetcloud.com/4285/client/${archivedClient?.id}/forget`
+                    }
+                    target=&quot;_blank&quot;
+                    className=&quot;inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2&quot;
+                    rel=&quot;noreferrer&quot;
+                    data-tooltip-id=&quot;deleteClient&quot;
+                    data-tooltip-content=&quot;Delete Client&quot;
+                    title=&quot;Delete Client&quot;
+                  &gt;
+                    &lt;Tooltip id=&quot;deleteClient&quot; /&gt;
+                    &lt;FontAwesomeIcon icon={faTrash} /&gt;
+                  &lt;/a&gt;
+                &lt;/div&gt;
+              &lt;/li&gt;
+            ))
+          )}
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/AdminCheck&gt;
+  );
+};
+
+export default Testing;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:38,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:39,&quot;character&quot;:16,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:39,&quot;character&quot;:23,&quot;text&quot;:&quot;archived&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:39,&quot;character&quot;:36,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:39,&quot;character&quot;:43,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:41,&quot;character&quot;:10,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:41,&quot;character&quot;:17,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:42,&quot;character&quot;:10,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:43,&quot;character&quot;:10,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:46,&quot;character&quot;:16,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:46,&quot;character&quot;:23,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:49,&quot;character&quot;:17,&quot;text&quot;:&quot;archived&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:51,&quot;character&quot;:12,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:51,&quot;character&quot;:16,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:51,&quot;character&quot;:23,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:52,&quot;character&quot;:12,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:217,&quot;character&quot;:33,&quot;text&quot;:&quot;archivedClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:219,&quot;character&quot;:17,&quot;text&quot;:&quot;archivedClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:219,&quot;character&quot;:33,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:228,&quot;character&quot;:70,&quot;text&quot;:&quot;archivedClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:228,&quot;character&quot;:86,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:229,&quot;character&quot;:64,&quot;text&quot;:&quot;archivedClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:229,&quot;character&quot;:80,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:237,&quot;character&quot;:21,&quot;text&quot;:&quot;archivedClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:237,&quot;character&quot;:37,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:240,&quot;character&quot;:17,&quot;text&quot;:&quot;archivedClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:240,&quot;character&quot;:33,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:247,&quot;character&quot;:38,&quot;text&quot;:&quot;archivedClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:247,&quot;character&quot;:54,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:254,&quot;character&quot;:21,&quot;text&quot;:&quot;archivedClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:254,&quot;character&quot;:37,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:261,&quot;character&quot;:68,&quot;text&quot;:&quot;archivedClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:261,&quot;character&quot;:84,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:262,&quot;character&quot;:68,&quot;text&quot;:&quot;archivedClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/pages/settings/testing.tsx&quot;,&quot;line&quot;:262,&quot;character&quot;:84,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

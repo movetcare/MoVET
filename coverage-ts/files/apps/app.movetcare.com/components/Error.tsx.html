@@ -1,0 +1,117 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Error.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/app.movetcare.com/components/Error.tsx</td><td class="">85.60%</td><td class="">75%</td><td class="">125</td><td class="">107</td><td class="">18</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { faCircleExclamation, faRedo } from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import { useRouter } from &quot;next/router&quot;;
+import { useState } from &quot;react&quot;;
+import { ServerResponse } from &quot;types&quot;;
+import { Loader } from &quot;ui&quot;;
+
+export const Error = ({ error }: any) =&gt; {
+  const router = useRouter();
+  const { mode } = router.query || {};
+  const isAppMode = mode === &quot;app&quot;;
+  const [isLoading, setIsLoading] = useState&lt;boolean&gt;(false);
+  const [restartError, setRestartError] = useState&lt;any&gt;(null);
+
+  const restartBooking = () =&gt; {
+    setIsLoading(true);
+    const processAppointmentBookingRestart = async () =&gt;
+      (
+        await fetch(&quot;/api/schedule-an-appointment&quot;, {
+          method: &quot;POST&quot;,
+          body: JSON.stringify({
+            id: JSON.parse(
+              window.localStorage.getItem(&quot;bookingSession&quot;) as string
+            )?.id,
+            step: &quot;restart&quot;,
+          }),
+        })
+      ).json();
+    processAppointmentBookingRestart()
+      .then((response: ServerResponse) =&gt; {
+        if (response.error) {
+          handleError({ message: response.error });
+        } else {
+          localStorage.removeItem(&quot;email&quot;);
+          localStorage.removeItem(&quot;bookingSession&quot;);
+          router.push(&quot;/schedule-an-appointment&quot;);
+        }
+      })
+      .catch((error) =&gt; handleError(error))
+      .finally(() =&gt; {
+        setIsLoading(false);
+      });
+  };
+  const handleError = (error: any) =&gt; {
+    console.error(error);
+    setRestartError(error);
+    setIsLoading(false);
+  };
+  return (
+    &lt;div className=&quot;text-center&quot;&gt;
+      {isLoading ? (
+        &lt;Loader message={&quot;Loading, please wait...&quot;} /&gt;
+      ) : restartError ? (
+        &lt;Error error={restartError} isAppMode={isAppMode} /&gt;
+      ) : (
+        &lt;&gt;
+          &lt;FontAwesomeIcon
+            icon={faCircleExclamation}
+            size=&quot;3x&quot;
+            className=&quot;text-movet-red&quot;
+          /&gt;
+          &lt;h2 className=&quot;text-2xl font-extrabold tracking-tight text-movet-black sm:text-4xl font-parkinson mb-4&quot;&gt;
+            Whoops!
+          &lt;/h2&gt;
+          &lt;p className={&quot;mt-4 text-lg leading-6 text-movet-black&quot;}&gt;
+            We&amp;apos;re sorry, but something went wrong.
+          &lt;/p&gt;
+          &lt;pre className=&quot;my-8 p-4&quot;&gt;
+            {JSON.stringify({
+              error: { message: error?.message, code: error?.code },
+            })}
+          &lt;/pre&gt;
+          {!isAppMode ? (
+            &lt;p&gt;
+              Please try again or{&quot; &quot;}
+              &lt;a
+                href={&quot;https://app.movetcare.com/contact&quot;}
+                target=&quot;_blank&quot;
+                rel=&quot;noreferrer&quot;
+              &gt;
+                contact support
+              &lt;/a&gt;{&quot; &quot;}
+              for assistance.
+            &lt;/p&gt;
+          ) : (
+            &lt;p&gt;Please try again &lt;/p&gt;
+          )}
+          &lt;div
+            className=&quot;flex flex-row justify-center items-center my-4 cursor-pointer&quot;
+            onClick={() =&gt; restartBooking()}
+          &gt;
+            &lt;FontAwesomeIcon icon={faRedo} /&gt;
+            &lt;p className=&quot;ml-2&quot;&gt;Try Again&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:7,&quot;character&quot;:24,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:12,&quot;character&quot;:9,&quot;text&quot;:&quot;restartError&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:21,&quot;character&quot;:12,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:23,&quot;character&quot;:15,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:38,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:38,&quot;character&quot;:36,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:43,&quot;character&quot;:23,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:44,&quot;character&quot;:18,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:45,&quot;character&quot;:20,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:52,&quot;character&quot;:10,&quot;text&quot;:&quot;restartError&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:53,&quot;character&quot;:15,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:53,&quot;character&quot;:22,&quot;text&quot;:&quot;restartError&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:23,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:32,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:39,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:48,&quot;text&quot;:&quot;code&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:54,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/Error.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:61,&quot;text&quot;:&quot;code&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

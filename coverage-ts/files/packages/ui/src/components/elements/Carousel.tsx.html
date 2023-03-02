@@ -1,0 +1,375 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Carousel.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">packages/ui/src/components/elements/Carousel.tsx</td><td class="">100.00%</td><td class="">75%</td><td class="">469</td><td class="">469</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  faChevronLeft,
+  faChevronRight,
+  faCircle,
+  faCircleDot,
+} from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import { Transition } from &quot;@headlessui/react&quot;;
+import Image from &quot;next/image&quot;;
+import { ReactNode, useEffect, useRef, useState } from &quot;react&quot;;
+import { useSwipeable } from &quot;react-swipeable&quot;;
+import { classNames } from &quot;../../utils&quot;;
+
+export interface imageInfo {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+interface CarouselProps {
+  children: ReactNode[];
+  name: string;
+  infinite?: boolean;
+  autoScroll?: boolean;
+  showIndicators?: boolean;
+  interval?: number;
+  itemsPerRow?: number;
+  customClasses?: Partial&lt;CustomClasses&gt;;
+  transitionType?: &quot;elastic&quot;;
+  transitionDuration?: number;
+  slideLabels?: string[];
+  slideImages?: string[]; //(i: number) =&gt; ReactNode;
+}
+type CustomClasses = {
+  parent: string;
+  slideContainer: string;
+  slide: string;
+  leftButton: string;
+  rightButton: string;
+};
+
+function threshold(target: EventTarget) {
+  const width = (target as HTMLElement).clientWidth;
+  return width / 5;
+}
+
+export const Carousel = ({
+  infinite = false,
+  autoScroll = false,
+  showIndicators = false,
+  interval = 5000,
+  itemsPerRow = 1,
+  children,
+  name,
+  customClasses = {},
+  transitionDuration = 400,
+  slideLabels,
+  slideImages,
+}: CarouselProps) =&gt; {
+  const [startIndex, setStartIndex] = useState(0);
+  const [desiredStartIndex, setDesiredStartIndex] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const invertDirection = useRef(false);
+  const { parent, slideContainer, slide, leftButton, rightButton } =
+    customClasses;
+  const handlers = useSwipeable({
+    onSwiping(e) {
+      if (e.absX &lt; (e.event.target as HTMLElement).clientWidth) {
+        setOffset(e.deltaX);
+      }
+    },
+    onSwiped(e) {
+      if (e.event.target !== null) {
+        const t = threshold(e.event.target);
+        const dir = Math.sign(e.deltaX);
+        const d = dir * e.deltaX;
+        if (d &gt;= t) {
+          dir &gt; 0 ? prev() : next();
+        } else {
+          setOffset(0);
+        }
+      }
+    },
+    delta: 20,
+    trackMouse: false,
+    trackTouch: true,
+  });
+
+  useEffect(() =&gt; {
+    if (autoScroll) {
+      const id = setTimeout(() =&gt; next(), interval);
+      return () =&gt; clearTimeout(id);
+    }
+    return;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offset, startIndex]);
+
+  useEffect(() =&gt; {
+    const id = setTimeout(() =&gt; {
+      setOffset(NaN);
+      setStartIndex(desiredStartIndex);
+      if (invertDirection.current) invertDirection.current = false;
+    }, transitionDuration);
+    return () =&gt; clearTimeout(id);
+  }, [desiredStartIndex, transitionDuration]);
+
+  const next = () =&gt; {
+    if (startIndex + 1 &gt;= children.length &amp;&amp; infinite) {
+      setDesiredStartIndex(0);
+      return;
+    }
+    if (startIndex + itemsPerRow &gt;= children.length &amp;&amp; !infinite) {
+      return;
+    } else {
+      setDesiredStartIndex(startIndex + 1);
+    }
+  };
+  const prev = () =&gt; {
+    if (startIndex === 0) {
+      if (infinite) {
+        if (children.length &lt;= 2) invertDirection.current = true;
+        setDesiredStartIndex(children.length - 1);
+        return;
+      } else return;
+    } else {
+      if (children.length &lt;= 2) invertDirection.current = true;
+      setDesiredStartIndex(startIndex - 1);
+    }
+  };
+
+  const sliderStyle = {
+    width: `${(100 * (children.length + itemsPerRow + 1)) / itemsPerRow}%`,
+    transform: &quot;translateX(0)&quot;,
+    left: `-${((startIndex + 1) * 100) / itemsPerRow}%`,
+  };
+
+  if (startIndex !== desiredStartIndex) {
+    const dist = Math.abs(startIndex - desiredStartIndex);
+    const wrapping =
+      (startIndex === 0 &amp;&amp;
+        desiredStartIndex === children.length - 1 &amp;&amp;
+        children.length &gt; 2) ||
+      (startIndex === children.length - 1 &amp;&amp; desiredStartIndex === 0);
+    const dir =
+      (invertDirection.current ? -1 : 1) *
+      (wrapping ? 1 : -1) *
+      Math.sign(desiredStartIndex - startIndex);
+    let shift = (100 * dir) / (children.length + itemsPerRow + 1);
+    if (dist &gt; 1 &amp;&amp; !wrapping) {
+      shift = shift * dist;
+    }
+    sliderStyle.transform = `translateX(${shift}%)`;
+  } else if (!isNaN(offset)) {
+    if (offset !== 0) {
+      sliderStyle.transform = `translateX(${offset}px)`;
+    }
+  }
+
+  const itemWrapper = (item: ReactNode, index: number, pseudo: boolean) =&gt; (
+    &lt;div
+      className={slide ? slide : &quot;w-full flex justify-center&quot;}
+      key={
+        pseudo
+          ? `carousel-${name}-pseudo-item-${index}`
+          : `carousel-${name}-item-${index}`
+      }
+      data-cy={
+        pseudo
+          ? `carousel-${name}-pseudo-item-${index}`
+          : `carousel-${name}-item-${index}`
+      }
+    &gt;
+      {item}
+    &lt;/div&gt;
+  );
+  if (children.length &gt; 1) {
+    return (
+      &lt;div className={classNames(parent, &quot;flex relative&quot;)}&gt;
+        {slideImages &amp;&amp; (
+          &lt;div className=&quot;relative w-5/12 flex justify-center items-end&quot;&gt;
+            {slideImages.map((image, i) =&gt; {
+              return (
+                &lt;Transition
+                  key={i}
+                  show={
+                    startIndex === desiredStartIndex
+                      ? startIndex === i
+                      : desiredStartIndex === i
+                  }
+                  enter=&quot;transition ease-in duration-300 absolute bottom-0&quot;
+                  enterFrom=&quot;opacity-0&quot;
+                  enterTo=&quot;opacity-100&quot;
+                  leave=&quot;transition ease-in duration-300 &quot;
+                  leaveFrom=&quot;opacity-100&quot;
+                  leaveTo=&quot;opacity-0&quot;
+                  className=&quot;min-w-[12rem]&quot;
+                &gt;
+                  &lt;Image
+                    src={image}
+                    alt={name + &quot;-image&quot;}
+                    className=&quot;rounded-full&quot;
+                    height={300}
+                    width={300}
+                  /&gt;
+                &lt;/Transition&gt;
+              );
+            })}
+          &lt;/div&gt;
+        )}
+        &lt;div className={classNames(slideImages ? &quot;w-7/12&quot; : &quot;w-full&quot;)}&gt;
+          &lt;div className=&quot;hidden sm:ml-[12.5%] sm:block mb-6&quot;&gt;
+            {slideLabels?.map((label, i) =&gt; (
+              &lt;p
+                key={label}
+                className={classNames(
+                  desiredStartIndex === i ||
+                    (desiredStartIndex !== startIndex &amp;&amp;
+                      desiredStartIndex === i)
+                    ? &quot;text-movet-yellow&quot;
+                    : &quot;text-movet-gray hover:text-movet-yellow hover:text-opacity-40&quot;,
+                  &quot;font-semibold cursor-pointer text-lg italic&quot;
+                )}
+                onClick={() =&gt; {
+                  setDesiredStartIndex(i);
+                }}
+              &gt;
+                {label.toUpperCase()}
+              &lt;/p&gt;
+            ))}
+          &lt;/div&gt;
+          &lt;div className=&quot;flex items-center justify-between&quot;&gt;
+            &lt;div className=&quot;grow min-w-min flex justify-center&quot;&gt;
+              &lt;button
+                aria-label=&quot;Advance Carousel Button&quot;
+                className={classNames(
+                  leftButton,
+                  !infinite &amp;&amp;
+                    (startIndex === 0 || desiredStartIndex === 0) &amp;&amp;
+                    (startIndex === desiredStartIndex ||
+                      desiredStartIndex &lt; startIndex) &amp;&amp;
+                    &quot;invisible cursor-default&quot;,
+                  &quot;px-2&quot;
+                )}
+                data-cy={`carousel-${name}-next-button`}
+                onClick={() =&gt; {
+                  prev();
+                }}
+              &gt;
+                &lt;div&gt;
+                  &lt;FontAwesomeIcon
+                    icon={faChevronLeft}
+                    size=&quot;lg&quot;
+                    className=&quot;text-movet-yellow w-4 hover:text-movet-brown ease-in-out duration-500&quot;
+                  /&gt;
+                &lt;/div&gt;
+              &lt;/button&gt;
+            &lt;/div&gt;
+            &lt;div className={classNames(slideContainer, &quot;overflow-x-hidden&quot;)}&gt;
+              &lt;div
+                style={{
+                  ...sliderStyle,
+                  transitionDuration:
+                    startIndex !== desiredStartIndex || offset === 0
+                      ? transitionDuration + &quot;ms&quot;
+                      : undefined,
+                }}
+                className={classNames(
+                  (startIndex !== desiredStartIndex || offset === 0) &amp;&amp;
+                    &quot;transition-transform&quot;,
+                  &quot;inline-flex relative&quot;
+                )}
+                {...handlers}
+              &gt;
+                &lt;&gt;
+                  {itemWrapper(
+                    children[children.length - 1],
+                    children.length - 1,
+                    true
+                  )}
+                  {children.map((item, index) =&gt;
+                    itemWrapper(item, index, false)
+                  )}
+                  {children
+                    .slice(0, itemsPerRow)
+                    .map((item, index) =&gt; itemWrapper(item, index, true))}
+                &lt;/&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;grow min-w-min flex justify-center&quot;&gt;
+              &lt;button
+                aria-label=&quot;Advance Carousel Button&quot;
+                className={classNames(
+                  rightButton,
+                  !infinite &amp;&amp;
+                    (startIndex === children.length - 1 ||
+                      desiredStartIndex === children.length - 1) &amp;&amp;
+                    (startIndex === desiredStartIndex ||
+                      desiredStartIndex &gt; startIndex) &amp;&amp;
+                    &quot;invisible cursor-default&quot;,
+                  &quot;px-2&quot;
+                )}
+                data-cy={`carousel-${name}-next-button`}
+                onClick={() =&gt; {
+                  next();
+                }}
+              &gt;
+                &lt;FontAwesomeIcon
+                  icon={faChevronRight}
+                  size=&quot;1x&quot;
+                  className=&quot;text-movet-yellow w-4 hover:text-movet-brown ease-in-out duration-500&quot;
+                /&gt;
+              &lt;/button&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          {showIndicators &amp;&amp; (
+            &lt;div className=&quot;flex items-center justify-center space-x-1 mt-6&quot;&gt;
+              {children.map((_, index) =&gt; {
+                if (
+                  startIndex !== desiredStartIndex
+                    ? index === desiredStartIndex
+                    : index === startIndex
+                ) {
+                  return (
+                    &lt;FontAwesomeIcon
+                      key={`indicator-${index}`}
+                      icon={faCircleDot}
+                      color=&quot;gray&quot;
+                      size=&quot;1x&quot;
+                    /&gt;
+                  );
+                } else if (
+                  infinite ||
+                  index &lt; children.length - itemsPerRow + 1
+                ) {
+                  return (
+                    &lt;FontAwesomeIcon
+                      key={`indicator-${index}`}
+                      icon={faCircle}
+                      color=&quot;gray&quot;
+                      size=&quot;1x&quot;
+                      className=&quot;cursor-pointer&quot;
+                      onClick={() =&gt; {
+                        setDesiredStartIndex(index);
+                      }}
+                    /&gt;
+                  );
+                } else return &lt;&gt;&lt;/&gt;;
+              })}
+            &lt;/div&gt;
+          )}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    );
+  } else if (children.length === 1) return &lt;div&gt;{children[0]}&lt;/div&gt;;
+  else return &lt;div&gt;&lt;/div&gt;;
+};
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

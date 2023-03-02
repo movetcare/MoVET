@@ -8,16 +8,16 @@ import {
 } from "../../config/config";
 // https://github.com/firebase/firebase-admin-node/issues/46#issuecomment-625026299
 // https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/sendOobCode
-const exchangeCustomTokenEndpoint =
+const exchangeCustomTokenEndpoint: string =
   environment.type === "development"
     ? `http://localhost:9099/identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${projectApiKey}`
     : `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${projectApiKey}`;
-const sendEmailVerificationEndpoint =
+const sendEmailVerificationEndpoint: string =
   environment.type === "development"
     ? `http://localhost:9099/identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${projectApiKey}`
     : `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${projectApiKey}`;
 
-export const sendVerificationEmail = async (user: any) => {
+export const sendVerificationEmail = async (user: any): Promise<void> => {
   if (DEBUG) console.log("USER INFO = ", user);
   if (!user?.emailVerified) {
     const customToken = await admin
@@ -33,7 +33,7 @@ export const sendVerificationEmail = async (user: any) => {
         },
         { headers: { "Content-Type": "application/json", Authorization: "" } }
       )
-      .then((response: any) => response.data)
+      .then((response: { data: { idToken: string } }) => response.data)
       .catch((error: any) => throwError(error));
     if (idToken) {
       const response = await request
@@ -45,9 +45,9 @@ export const sendVerificationEmail = async (user: any) => {
           },
           { headers: { "Content-Type": "application/json", Authorization: "" } }
         )
-        .then((response: any) => response.data)
+        .then((response: { data: { email: string } }) => response.data)
         .catch((error: any) => throwError(error));
-      if (DEBUG) console.log(`Sent email verification to ${response.email}`);
+      if (DEBUG) console.log(`Sent email verification to ${response?.email}`);
     }
   }
 };

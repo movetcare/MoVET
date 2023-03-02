@@ -7,7 +7,7 @@ import { generateNewAppointmentNotifications } from "./notifications/generateNew
 import type { Appointment } from "../../../../types/appointment";
 // import {getAuthUserById} from '../../../../utils/auth/getAuthUserById';
 // import {getDateStringFromDate} from '../../../../utils/getDateStringFromDate';
-const DEBUG = environment.type === "production";
+const DEBUG = false; // environment.type === "production";
 export const saveAppointment = async (
   proVetAppointmentData: Appointment,
   movetAppointmentData?: any

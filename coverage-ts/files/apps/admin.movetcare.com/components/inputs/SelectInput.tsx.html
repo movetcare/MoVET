@@ -1,0 +1,165 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>SelectInput.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/admin.movetcare.com/components/inputs/SelectInput.tsx</td><td class="">88.89%</td><td class="">75%</td><td class="">153</td><td class="">136</td><td class="">17</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Controller } from &#x27;react-hook-form&#x27;;
+import { Fragment } from &#x27;react&#x27;;
+import { Listbox, Transition } from &#x27;@headlessui/react&#x27;;
+import { FontAwesomeIcon } from &#x27;@fortawesome/react-fontawesome&#x27;;
+import { faCheck, faList } from &#x27;@fortawesome/free-solid-svg-icons&#x27;;
+import { classNames } from &#x27;utils/classNames&#x27;;
+import ErrorMessage from &#x27;./ErrorMessage&#x27;;
+
+const SelectInput = ({
+  label,
+  required = false,
+  control,
+  errors,
+  name,
+  values,
+  disabled = false,
+}: {
+  label: string;
+  required?: boolean;
+  control: any;
+  errors: any;
+  name: string;
+  values: any;
+  disabled?: boolean;
+}) =&gt; {
+  return (
+    &lt;&gt;
+      &lt;Controller
+        control={control}
+        rules={
+          required
+            ? {
+                required: &#x27;Field is required&#x27;,
+              }
+            : undefined
+        }
+        render={({ field: { onChange, onBlur, value } }) =&gt; (
+          &lt;Listbox disabled={disabled} value={value} onChange={onChange}&gt;
+            {({ open }) =&gt; (
+              &lt;&gt;
+                {label &amp;&amp; (
+                  &lt;Listbox.Label
+                    htmlFor={label}
+                    className=&quot;block text-sm font-medium text-movet-black font-abside mb-2&quot;
+                  &gt;
+                    {label}{&#x27; &#x27;}
+                    {required &amp;&amp; &lt;span className=&quot;text-movet-red&quot;&gt;*&lt;/span&gt;}
+                  &lt;/Listbox.Label&gt;
+                )}
+                &lt;div className=&quot;mt-1 relative bg-white w-full&quot;&gt;
+                  &lt;Listbox.Button
+                    onBlur={onBlur}
+                    className={classNames(
+                      disabled
+                        ? &#x27;border-movet-gray bg-transparent&#x27;
+                        : &#x27;border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown&#x27;,
+                      &#x27;relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm&#x27;
+                    )}
+                  &gt;
+                    &lt;span
+                      className={classNames(
+                        disabled ? &#x27;text-movet-gray&#x27; : &#x27;text-movet-black&#x27;,
+                        &#x27;block truncate font-abside-smooth text-base h-7 mt-1 ml-1&#x27;
+                      )}
+                    &gt;
+                      {value.name}
+                    &lt;/span&gt;
+                    &lt;span className=&quot;absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none&quot;&gt;
+                      {!disabled &amp;&amp; (
+                        &lt;FontAwesomeIcon
+                          icon={faList}
+                          className=&quot;h-4 w-4 mr-2&quot;
+                          size=&quot;sm&quot;
+                        /&gt;
+                      )}
+                    &lt;/span&gt;
+                  &lt;/Listbox.Button&gt;
+                  &lt;Transition
+                    show={open}
+                    as={Fragment}
+                    enter=&quot;transition duration-100 ease-out&quot;
+                    enterFrom=&quot;transform scale-95 opacity-0&quot;
+                    enterTo=&quot;transform scale-100 opacity-100&quot;
+                    leave=&quot;transition duration-75 ease-out&quot;
+                    leaveFrom=&quot;transform scale-100 opacity-100&quot;
+                    leaveTo=&quot;transform scale-95 opacity-0&quot;
+                  &gt;
+                    &lt;Listbox.Options className=&quot;absolute z-50 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-movet-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm&quot;&gt;
+                      {values.map((item: { id: string; name: string }) =&gt; (
+                        &lt;Listbox.Option
+                          key={item.id}
+                          className={({ active }) =&gt;
+                            classNames(
+                              active
+                                ? &#x27;text-movet-white bg-movet-brown&#x27;
+                                : &#x27;text-movet-black&#x27;,
+                              &#x27;text-left cursor-default select-none relative py-2 pl-4 pr-4&#x27;
+                            )
+                          }
+                          value={item}
+                        &gt;
+                          {({ active, selected }) =&gt; (
+                            &lt;&gt;
+                              &lt;span
+                                className={classNames(
+                                  selected ? &#x27;font-semibold&#x27; : &#x27;font-normal&#x27;,
+                                  &#x27;block truncate&#x27;
+                                )}
+                              &gt;
+                                {item.name}
+                              &lt;/span&gt;
+                              {selected ? (
+                                &lt;span
+                                  className={classNames(
+                                    active ? &#x27;text-white&#x27; : &#x27;text-movet-black&#x27;,
+                                    &#x27;absolute inset-y-0 left-0 flex items-center pl-1.5&#x27;
+                                  )}
+                                &gt;
+                                  &lt;FontAwesomeIcon
+                                    icon={faCheck}
+                                    spin
+                                    className=&quot;h-4 w-4&quot;
+                                    size=&quot;sm&quot;
+                                  /&gt;
+                                &lt;/span&gt;
+                              ) : null}
+                            &lt;/&gt;
+                          )}
+                        &lt;/Listbox.Option&gt;
+                      ))}
+                    &lt;/Listbox.Options&gt;
+                  &lt;/Transition&gt;
+                &lt;/div&gt;
+              &lt;/&gt;
+            )}
+          &lt;/Listbox&gt;
+        )}
+        name={name}
+      /&gt;
+      {errors[name]?.message &amp;&amp; (
+        &lt;ErrorMessage errorMessage={errors[name].message} /&gt;
+      )}
+    &lt;/&gt;
+  );
+};
+
+export default SelectInput;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:11,&quot;character&quot;:2,&quot;text&quot;:&quot;control&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:12,&quot;character&quot;:2,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:14,&quot;character&quot;:2,&quot;text&quot;:&quot;values&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:19,&quot;character&quot;:2,&quot;text&quot;:&quot;control&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:20,&quot;character&quot;:2,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:22,&quot;character&quot;:2,&quot;text&quot;:&quot;values&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:36,&quot;character&quot;:46,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:37,&quot;character&quot;:39,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:37,&quot;character&quot;:46,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:23,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:29,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:88,&quot;character&quot;:23,&quot;text&quot;:&quot;values&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:88,&quot;character&quot;:30,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:139,&quot;character&quot;:7,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:139,&quot;character&quot;:21,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:140,&quot;character&quot;:36,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/SelectInput.tsx&quot;,&quot;line&quot;:140,&quot;character&quot;:49,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

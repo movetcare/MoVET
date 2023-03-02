@@ -1,0 +1,94 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>verifyValidPaymentSource.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts</td><td class="">55.63%</td><td class="">75%</td><td class="">142</td><td class="">79</td><td class="">63</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { admin, stripe, throwError } from &quot;../config/config&quot;;
+const DEBUG = false; // environment.type === &quot;production&quot;;
+export const verifyValidPaymentSource = async (
+  client: string,
+  customerId: string,
+  details = false
+): Promise&lt;Array&lt;any&gt; | false&gt; =&gt; {
+  if (DEBUG) console.log(&quot;verifyValidPaymentSource =&gt; &quot;, customerId);
+  const paymentMethods: any = await stripe.customers.listPaymentMethods(
+    customerId
+  );
+  const validPaymentMethods: Array&lt;any&gt; = [];
+  for (let i = 0; i &lt; paymentMethods?.data.length; i++) {
+    const cardExpiryDate = new Date(
+      paymentMethods?.data[i]?.card?.exp_year as any,
+      (paymentMethods?.data[i]?.card?.exp_month as any) - 1
+    );
+    if (cardExpiryDate &gt; new Date())
+      validPaymentMethods.push(paymentMethods?.data[i]);
+  }
+  if (DEBUG) {
+    console.log(&quot;paymentMethods.data&quot;, paymentMethods.data);
+    console.log(&quot;validPaymentMethods&quot;, validPaymentMethods);
+  }
+  if (validPaymentMethods.length &gt; 0) {
+    if (DEBUG) console.log(&quot;CHECKING INVOICE PAYMENT METHODS&quot;);
+    const validInvoicePaymentMethods: Array&lt;any&gt; = [];
+    const invoicePaymentMethods: any = await getInvoicePaymentMethods(client);
+    validPaymentMethods.map((stripePaymentMethod: any) =&gt;
+      invoicePaymentMethods.map((invoicePaymentMethod: any) =&gt; {
+        if (DEBUG) {
+          console.log(&quot;stripePaymentMethod&quot;, stripePaymentMethod);
+          console.log(&quot;invoicePaymentMethod&quot;, invoicePaymentMethod);
+        }
+        if (invoicePaymentMethod.id === stripePaymentMethod.id) {
+          if (DEBUG)
+            console.log(
+              &quot;VALID PAYMENT METHOD FOUND!&quot;,
+              `${stripePaymentMethod?.card?.brand?.toUpperCase()} - ${
+                stripePaymentMethod?.card?.last4
+              }`
+            );
+          if (details) validInvoicePaymentMethods.push(stripePaymentMethod);
+          else
+            validInvoicePaymentMethods.push(
+              `${stripePaymentMethod?.card?.brand?.toUpperCase()} - ${
+                stripePaymentMethod?.card?.last4
+              }`
+            );
+        }
+      })
+    );
+    if (DEBUG)
+      console.log(&quot;validInvoicePaymentMethods&quot;, validInvoicePaymentMethods);
+    return validInvoicePaymentMethods;
+  } else {
+    if (DEBUG) console.log(&quot;NO VALID PAYMENT METHODS FOUND&quot;);
+    return false;
+  }
+};
+
+const getInvoicePaymentMethods = async (client: string): Promise&lt;any&gt; =&gt;
+  await admin
+    .firestore()
+    .collection(&quot;clients&quot;)
+    .doc(client)
+    .collection(&quot;payment_methods&quot;)
+    .get()
+    .then((snapshot: any) =&gt; {
+      const paymentMethods: Array&lt;any&gt; = [];
+      snapshot.docs.map((doc: any) =&gt; {
+        if (doc.data().active) paymentMethods.push(doc.data());
+      });
+      return paymentMethods;
+    })
+    .catch((error: any) =&gt; throwError(error));
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:0,&quot;character&quot;:9,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:8,&quot;character&quot;:8,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:22,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:38,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:43,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:6,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:22,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:31,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:37,&quot;text&quot;:&quot;exp_year&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:7,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:23,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:32,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:38,&quot;text&quot;:&quot;exp_month&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:31,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:47,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:39,&quot;text&quot;:&quot;paymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:54,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:27,&quot;character&quot;:10,&quot;text&quot;:&quot;invoicePaymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:29,&quot;text&quot;:&quot;stripePaymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:6,&quot;text&quot;:&quot;invoicePaymentMethods&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:28,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:33,&quot;text&quot;:&quot;invoicePaymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:45,&quot;text&quot;:&quot;stripePaymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:46,&quot;text&quot;:&quot;invoicePaymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:34,&quot;character&quot;:12,&quot;text&quot;:&quot;invoicePaymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:34,&quot;character&quot;:33,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:34,&quot;character&quot;:40,&quot;text&quot;:&quot;stripePaymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:34,&quot;character&quot;:60,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:17,&quot;text&quot;:&quot;stripePaymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:38,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:44,&quot;text&quot;:&quot;brand&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:51,&quot;text&quot;:&quot;toUpperCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:16,&quot;text&quot;:&quot;stripePaymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:37,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:43,&quot;text&quot;:&quot;last4&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:55,&quot;text&quot;:&quot;stripePaymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:17,&quot;text&quot;:&quot;stripePaymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:38,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:44,&quot;text&quot;:&quot;brand&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:51,&quot;text&quot;:&quot;toUpperCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:16,&quot;text&quot;:&quot;stripePaymentMethod&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:37,&quot;text&quot;:&quot;card&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:43,&quot;text&quot;:&quot;last4&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:8,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:63,&quot;character&quot;:5,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:64,&quot;character&quot;:5,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:5,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:66,&quot;character&quot;:5,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:67,&quot;character&quot;:5,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:68,&quot;character&quot;:5,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:68,&quot;character&quot;:11,&quot;text&quot;:&quot;snapshot&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:70,&quot;character&quot;:6,&quot;text&quot;:&quot;snapshot&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:70,&quot;character&quot;:15,&quot;text&quot;:&quot;docs&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:70,&quot;character&quot;:20,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:70,&quot;character&quot;:25,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:12,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:16,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:23,&quot;text&quot;:&quot;active&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:51,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:55,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:5,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/verifyValidPaymentSource.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:38,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

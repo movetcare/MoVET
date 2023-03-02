@@ -1,0 +1,237 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>cancelBooking.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts</td><td class="">78.63%</td><td class="">75%</td><td class="">234</td><td class="">184</td><td class="">50</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { admin, throwError, DEBUG } from &quot;../../config/config&quot;;
+import { createProVetNote } from &quot;../../integrations/provet/entities/note/createProVetNote&quot;;
+import { sendNotification } from &quot;../../notifications/sendNotification&quot;;
+import type { Booking } from &quot;../../types/booking&quot;;
+import { formatPhoneNumber } from &quot;../../utils/formatPhoneNumber&quot;;
+import { getYYMMDDFromString } from &quot;../../utils/getYYMMDDFromString&quot;;
+export const cancelBooking = (
+  id: string,
+  {
+    client,
+    createdAt,
+    patients,
+    reason,
+    requestedDateTime,
+    location,
+    address,
+    selectedStaff,
+    step,
+    selectedPatients,
+  }: Booking
+) =&gt; {
+  if (DEBUG)
+    console.log(&quot;ARCHIVING BOOKING DATA&quot;, {
+      id,
+    });
+  admin
+    .firestore()
+    .collection(&quot;bookings&quot;)
+    .doc(id)
+    .set(
+      {
+        isActive: false,
+        updatedOn: new Date(),
+      },
+      { merge: true }
+    )
+    .then(async () =&gt; {
+      if (DEBUG)
+        console.log(&quot;SUCCESSFULLY ARCHIVED BOOKING&quot;, {
+          id,
+        });
+      if (step === &quot;cancelled-client&quot;) {
+        let message = `&lt;p&gt;&lt;b&gt;Session ID:&lt;/b&gt; ${id}&lt;/p&gt;&lt;p&gt;&lt;b&gt;Started At:&lt;/b&gt; ${createdAt
+          ?.toDate()
+          ?.toString()}&lt;/p&gt;`;
+        let allPatients = &quot;&quot;;
+        if (Array.isArray(selectedPatients) &amp;&amp; Array.isArray(patients))
+          selectedPatients.forEach((selectedPatient: any) =&gt; {
+            patients.map((patient: any) =&gt; {
+              if (selectedPatient === patient?.id)
+                allPatients += `&lt;p&gt;&lt;b&gt;------------- PATIENT -------------&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;Name:&lt;/b&gt; ${
+                  patient?.name
+                }&lt;/p&gt;&lt;p&gt;&lt;b&gt;Species:&lt;/b&gt; ${
+                  patient?.species
+                }&lt;/p&gt;&lt;p&gt;&lt;b&gt;Gender:&lt;/b&gt; ${patient?.gender}&lt;/p&gt;${
+                  patient?.illnessDetails
+                    ? `&lt;p&gt;&lt;b&gt;Minor Illness:&lt;/b&gt; ${
+                        patient?.illnessDetails
+                          ? `${JSON.stringify(
+                              patient?.illnessDetails?.symptoms
+                            )} - ${patient?.illnessDetails?.notes}`
+                          : &quot; None&quot;
+                      }&lt;/p&gt;`
+                    : &quot;&quot;
+                }&lt;p&gt;&lt;b&gt;-----------------------------------&lt;/b&gt;&lt;/p&gt;`;
+            });
+          });
+
+        if (client)
+          message += `${
+            client?.firstName &amp;&amp; client?.lastName
+              ? `&lt;p&gt;&lt;b&gt;Name:&lt;/b&gt; ${client?.firstName} ${client?.lastName}&lt;/p&gt;`
+              : &quot;&quot;
+          }&lt;p&gt;&lt;b&gt;Email:&lt;/b&gt; ${client.email}&lt;/p&gt;${
+            client.phone
+              ? `&lt;p&gt;&lt;b&gt;Phone:&lt;/b&gt; &lt;a href=&quot;tel://${
+                  client.phone
+                }&quot;&gt;${formatPhoneNumber(
+                  client.phone?.replaceAll(&quot;+1&quot;, &quot;&quot;)
+                )}&lt;/a&gt;&lt;/p&gt;`
+              : &quot;&quot;
+          }${allPatients}
+   ${
+     reason
+       ? `&lt;p&gt;&lt;b&gt;Reason:&lt;/b&gt; ${reason.label}&lt;/p&gt;`
+       : &quot;&lt;p&gt;&lt;b&gt;Reason:&lt;/b&gt; Establish Care Exam&lt;/p&gt;&quot;
+   }
+    ${
+      requestedDateTime?.date
+        ? `&lt;p&gt;&lt;b&gt;Requested Date:&lt;/b&gt; ${getYYMMDDFromString(
+            requestedDateTime.date
+          )}&lt;/p&gt;`
+        : &quot;&quot;
+    }${
+            requestedDateTime?.time
+              ? `&lt;p&gt;&lt;b&gt;Requested Time:&lt;/b&gt; ${requestedDateTime.time}&lt;/p&gt;`
+              : &quot;&quot;
+          }${
+            location
+              ? `&lt;p&gt;&lt;b&gt;Requested Location:&lt;/b&gt; ${location} ${
+                  address ? `- ${address?.full} (${address?.info})` : &quot;&quot;
+                }&lt;/p&gt;`
+              : &quot;&quot;
+          }${
+            selectedStaff
+              ? `&lt;p&gt;&lt;b&gt;Requested Expert:&lt;/b&gt; ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}&lt;/p&gt;`
+              : &quot;&quot;
+          }&lt;p&gt;&lt;/p&gt;&lt;p&gt;We look forward to seeing you soon!&lt;/p&gt;&lt;p&gt;- The MoVET Team&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;CANCELLATION REASON: NOT PROVIDED&lt;/p&gt;&lt;p&gt;CANCELLATION DETAILS: NOT PROVIDED&lt;/p&gt;`;
+
+        const subject = `${
+          client?.firstName &amp;&amp; client?.lastName
+            ? `${client?.firstName} ${client?.lastName}`
+            : client?.email
+            ? client?.email
+            : &quot;Unknown Client&quot;
+        } has Cancelled their Appointment Booking Request`;
+
+        const allPatientIds: any = [];
+        if (Array.isArray(selectedPatients) &amp;&amp; Array.isArray(patients))
+          selectedPatients.forEach((selectedPatient: any) =&gt; {
+            patients.map((patient: any) =&gt; {
+              if (selectedPatient === patient?.id)
+                allPatientIds.push(patient?.id || patient?.value);
+            });
+          });
+
+        if (DEBUG)
+          console.log(&quot;createProVetNote() =&gt;&quot;, {
+            type: 12,
+            subject,
+            message,
+            client: `${client?.uid}`,
+            patients: Array.isArray(selectedPatients) ? allPatientIds : [],
+          });
+        createProVetNote({
+          type: 12,
+          subject,
+          message,
+          client: `${client?.uid}`,
+          patients: Array.isArray(selectedPatients) ? allPatientIds : [],
+        });
+
+        sendNotification({
+          type: &quot;slack&quot;,
+          payload: {
+            channel: &quot;appointment-request&quot;,
+            message: [
+              {
+                type: &quot;section&quot;,
+                text: {
+                  text: &quot;:book: _Appointment Booking_ *CANCELLED*&quot;,
+                  type: &quot;mrkdwn&quot;,
+                },
+                fields: [
+                  {
+                    type: &quot;mrkdwn&quot;,
+                    text: &quot;*Session ID*&quot;,
+                  },
+                  {
+                    type: &quot;plain_text&quot;,
+                    text: id,
+                  },
+                  {
+                    type: &quot;mrkdwn&quot;,
+                    text: &quot;*Step*&quot;,
+                  },
+                  {
+                    type: &quot;plain_text&quot;,
+                    text: &quot;CANCELLED BY CLIENT&quot;,
+                  },
+                  {
+                    type: &quot;mrkdwn&quot;,
+                    text: &quot;*Reason*&quot;,
+                  },
+                  {
+                    type: &quot;plain_text&quot;,
+                    text: &quot;Not Provided&quot;,
+                  },
+                ],
+              },
+            ],
+          },
+        });
+      } else
+        sendNotification({
+          type: &quot;slack&quot;,
+          payload: {
+            message: [
+              {
+                type: &quot;section&quot;,
+                text: {
+                  text: &quot;:book: _Appointment Booking_ *RESTARTED*&quot;,
+                  type: &quot;mrkdwn&quot;,
+                },
+                fields: [
+                  {
+                    type: &quot;mrkdwn&quot;,
+                    text: &quot;*Session ID*&quot;,
+                  },
+                  {
+                    type: &quot;plain_text&quot;,
+                    text: id,
+                  },
+                  {
+                    type: &quot;mrkdwn&quot;,
+                    text: &quot;*Step*&quot;,
+                  },
+                  {
+                    type: &quot;plain_text&quot;,
+                    text: step,
+                  },
+                ],
+              },
+            ],
+          },
+        });
+    })
+    .catch((error: any) =&gt; throwError(error));
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:0,&quot;character&quot;:9,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:4,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:25,&quot;character&quot;:2,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:5,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:27,&quot;character&quot;:5,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:5,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:5,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:5,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:78,&quot;text&quot;:&quot;createdAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:12,&quot;text&quot;:&quot;toDate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:36,&quot;text&quot;:&quot;selectedPatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:26,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:18,&quot;text&quot;:&quot;selectedPatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:38,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:47,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:18,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:27,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:18,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:27,&quot;text&quot;:&quot;species&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:41,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:50,&quot;text&quot;:&quot;gender&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:18,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:27,&quot;text&quot;:&quot;illnessDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:57,&quot;character&quot;:24,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:57,&quot;character&quot;:33,&quot;text&quot;:&quot;illnessDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:59,&quot;character&quot;:30,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:59,&quot;character&quot;:39,&quot;text&quot;:&quot;illnessDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:59,&quot;character&quot;:55,&quot;text&quot;:&quot;symptoms&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:60,&quot;character&quot;:35,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:60,&quot;character&quot;:44,&quot;text&quot;:&quot;illnessDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:60,&quot;character&quot;:60,&quot;text&quot;:&quot;notes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:25,&quot;text&quot;:&quot;date&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:30,&quot;text&quot;:&quot;date&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:14,&quot;text&quot;:&quot;allPatientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:36,&quot;text&quot;:&quot;selectedPatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:120,&quot;character&quot;:26,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:18,&quot;text&quot;:&quot;selectedPatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:38,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:47,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:16,&quot;text&quot;:&quot;allPatientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:30,&quot;text&quot;:&quot;push&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:35,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:44,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:50,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:59,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:132,&quot;character&quot;:12,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:132,&quot;character&quot;:56,&quot;text&quot;:&quot;allPatientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:217,&quot;character&quot;:5,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:217,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/abandonment/cancelBooking.ts&quot;,&quot;line&quot;:217,&quot;character&quot;:38,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

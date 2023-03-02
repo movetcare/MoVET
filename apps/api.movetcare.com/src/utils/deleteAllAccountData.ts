@@ -1,5 +1,5 @@
 import { getAuthUserById } from "./auth/getAuthUserById";
-import { admin, environment, stripe } from "../config/config";
+import { admin, stripe } from "../config/config";
 import { updateProVetAppointment } from "../integrations/provet/entities/appointment/updateProVetAppointment";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
 import { fetchEntity } from "../integrations/provet/entities/fetchEntity";
@@ -8,7 +8,7 @@ import { sendNotification } from "../notifications/sendNotification";
 import { getCustomerId } from "./getCustomerId";
 import { getProVetIdFromUrl } from "./getProVetIdFromUrl";
 import { deleteCollection } from "./deleteCollection";
-const DEBUG = environment.type === "production";
+const DEBUG = false; // environment.type === "production";
 export const deleteAllAccountData = async (
   uid: string,
   deleteAuthAccount = true

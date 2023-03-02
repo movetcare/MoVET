@@ -1,0 +1,83 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>PhoneInput.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/app.movetcare.com/components/inputs/PhoneInput.tsx</td><td class="">87.65%</td><td class="">75%</td><td class="">81</td><td class="">71</td><td class="">10</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Controller } from &quot;react-hook-form&quot;;
+import { PatternFormat } from &quot;react-number-format&quot;;
+import { classNames } from &quot;utilities&quot;;
+import ErrorMessage from &quot;./ErrorMessage&quot;;
+
+const PhoneInput = ({
+  label = null,
+  control,
+  errors,
+  name,
+  autoFocus = false,
+  required = false,
+  disabled = false,
+  readOnly = false,
+}: {
+  label: string | null;
+  control: any;
+  errors: any;
+  autoFocus?: boolean;
+  required?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  name: string;
+}) =&gt; (
+  &lt;label htmlFor={name || &quot;phone&quot;}&gt;
+    &lt;p className=&quot;block text-sm font-medium text-movet-black font-abside m-0  mb-2&quot;&gt;
+      {label} {required &amp;&amp; &lt;span className=&quot;text-movet-red&quot;&gt;*&lt;/span&gt;}
+    &lt;/p&gt;
+    &lt;div className=&quot;mt-1 relative rounded-xl font-abside-smooth&quot;&gt;
+      &lt;Controller
+        name={name}
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) =&gt; (
+          &lt;PatternFormat
+            name={`${name}-number`}
+            type=&quot;tel&quot;
+            allowEmptyFormatting
+            valueIsNumericString
+            patternChar=&quot;#&quot;
+            format=&quot;+1 (###) ###-####&quot;
+            mask=&quot;_&quot;
+            onBlur={onBlur}
+            value={value}
+            onValueChange={(target: any) =&gt; {
+              onChange(target.value);
+            }}
+            disabled={disabled}
+            readOnly={readOnly}
+            autoFocus={autoFocus}
+            required={required}
+            className={classNames(
+              disabled
+                ? &quot;border-movet-gray text-movet-gray&quot;
+                : &quot;focus:ring-movet-brown focus:border-movet-brown&quot;,
+              &quot;py-3 px-4 block w-full rounded-xl placeholder-movet-gray font-abside-smooth&quot;
+            )}
+          /&gt;
+        )}
+      /&gt;
+      &lt;ErrorMessage errorMessage={errors[name]?.message} /&gt;
+    &lt;/div&gt;
+  &lt;/label&gt;
+);
+
+export default PhoneInput;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/PhoneInput.tsx&quot;,&quot;line&quot;:7,&quot;character&quot;:2,&quot;text&quot;:&quot;control&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/PhoneInput.tsx&quot;,&quot;line&quot;:8,&quot;character&quot;:2,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/PhoneInput.tsx&quot;,&quot;line&quot;:16,&quot;character&quot;:2,&quot;text&quot;:&quot;control&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/PhoneInput.tsx&quot;,&quot;line&quot;:17,&quot;character&quot;:2,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/PhoneInput.tsx&quot;,&quot;line&quot;:32,&quot;character&quot;:46,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/PhoneInput.tsx&quot;,&quot;line&quot;:43,&quot;character&quot;:28,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/PhoneInput.tsx&quot;,&quot;line&quot;:44,&quot;character&quot;:23,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/PhoneInput.tsx&quot;,&quot;line&quot;:44,&quot;character&quot;:30,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/PhoneInput.tsx&quot;,&quot;line&quot;:59,&quot;character&quot;:34,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/PhoneInput.tsx&quot;,&quot;line&quot;:59,&quot;character&quot;:48,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

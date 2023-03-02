@@ -1,0 +1,178 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>assignRoles.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts</td><td class="">72.99%</td><td class="">75%</td><td class="">211</td><td class="">154</td><td class="">57</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {UserRecord} from &quot;firebase-admin/lib/auth/user-record&quot;;
+import { functions, admin, throwError, DEBUG } from &quot;../../../config/config&quot;;
+import { sendNotification } from &quot;../../../notifications/sendNotification&quot;;
+
+export const assignRoles = functions.auth
+  .user()
+  .onCreate(async (user: UserRecord) =&gt; {
+    const adminUsers = await admin
+      .firestore()
+      .collection(&quot;admins&quot;)
+      .get()
+      .then((snapshot: any) =&gt; {
+        const admins: Array&lt;any&gt; = [];
+        snapshot.forEach((doc: any) =&gt; {
+          admins.push(doc.data());
+        });
+        return admins;
+      })
+      .catch((error: any) =&gt; throwError(error));
+    if (DEBUG) console.log(&quot;ADMIN USERS =&gt; &quot;, adminUsers);
+    let isMoVETStaff = false;
+    if (adminUsers &amp;&amp; adminUsers.length &gt; 0) {
+      adminUsers.forEach(
+        (
+          adminUser: {
+            id: string;
+            roles: Array&lt;&quot;superAdmin&quot; | &quot;admin&quot; | &quot;staff&quot;&gt;;
+          },
+          index: number
+        ) =&gt; {
+          if (DEBUG)
+            console.log(
+              `CHECKING IF USER (${
+                user?.email || user?.phoneNumber
+              }) SHOULD BE ADMIN =&gt; `
+            );
+          if (
+            (adminUser?.id === user?.email &amp;&amp; user?.emailVerified) ||
+            adminUser?.id === user?.phoneNumber?.replace(&quot;+1&quot;, &quot;&quot;)
+          ) {
+            isMoVETStaff = true;
+            assignMoVETStaffRoles({
+              user,
+              adminUser,
+            });
+          }
+          if (
+            index === adminUsers.length - 1 &amp;&amp;
+            isMoVETStaff === false &amp;&amp;
+            user?.providerData &amp;&amp;
+            user?.providerData.length &gt; 0
+          )
+            user?.providerData.forEach(
+              async (provider: { providerId: string }) =&gt; {
+                if (
+                  provider?.providerId === &quot;google.com&quot; ||
+                  provider?.providerId === &quot;phone&quot;
+                ) {
+                  disableAuthAccount(user);
+                }
+              }
+            );
+        }
+      );
+    } else if (user?.providerData &amp;&amp; user?.providerData.length &gt; 0)
+      user?.providerData.forEach((provider: { providerId: string }) =&gt; {
+        if (DEBUG)
+          if (
+            provider?.providerId === &quot;google.com&quot; ||
+            provider?.providerId === &quot;password&quot; ||
+            provider?.providerId === &quot;phone&quot;
+          ) {
+            disableAuthAccount(user);
+          }
+      });
+    return null;
+  });
+
+const disableAuthAccount = (user: UserRecord): void =&gt; {
+  admin
+    .auth()
+    .updateUser(user?.uid, {
+      disabled: true,
+    })
+    .then(
+      () =&gt;
+        DEBUG &amp;&amp;
+        console.log(
+          `DISABLED &quot;${user?.email || user?.phoneNumber}&quot; AUTH ACCOUNT!`
+        )
+    )
+    .then(() =&gt;
+      sendNotification({
+        type: &quot;slack&quot;,
+        payload: {
+          message: `:interrobang: ADMIN APP ACCESS FAILED!\n\nEmail: ${
+            user?.email
+          }\n\nPhone: ${user?.phoneNumber}\n\nProvider: ${JSON.stringify(
+            user?.providerData
+          )}`,
+        },
+      })
+    )
+    .catch((error: any) =&gt; throwError(error));
+};
+
+const assignMoVETStaffRoles = ({
+  user,
+  adminUser,
+}: {
+  user: UserRecord;
+  adminUser: {
+    id: string;
+    roles: Array&lt;&quot;superAdmin&quot; | &quot;admin&quot; | &quot;staff&quot;&gt;;
+  };
+}): void =&gt; {
+  if (DEBUG) console.log(`ADMIN MATCH FOR ${adminUser?.id})!`);
+  const userRoles: any = {};
+  adminUser?.roles?.forEach((role: string) =&gt; {
+    switch (role) {
+      case &quot;superAdmin&quot;:
+        userRoles.isSuperAdmin = true;
+        break;
+      case &quot;admin&quot;:
+        userRoles.isAdmin = true;
+        break;
+      case &quot;staff&quot;:
+        userRoles.isStaff = true;
+        break;
+      default:
+        break;
+    }
+  });
+  if (DEBUG) console.log(&quot;ROLES MATCHED =&gt;&quot;, userRoles);
+  admin
+    .auth()
+    .setCustomUserClaims(user?.uid, userRoles)
+    .then(
+      async () =&gt;
+        DEBUG &amp;&amp;
+        console.log(
+          `ADDED ${JSON.stringify(userRoles)} CLAIM TO ${
+            user?.email || user?.phoneNumber
+          }`
+        )
+    )
+    .then(() =&gt;
+      sendNotification({
+        type: &quot;slack&quot;,
+        payload: {
+          message: `:white_check_mark: ADMIN APP ACCESS GRANTED!\n\nEmail: ${
+            user?.email
+          }\n\nPhone: ${user?.phoneNumber}\n\nProvider: ${JSON.stringify(
+            user?.providerData
+          )}\n\nRoles: ${JSON.stringify(userRoles)}`,
+        },
+      })
+    )
+    .catch((error: any) =&gt; throwError(error));
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:1,&quot;character&quot;:9,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:1,&quot;character&quot;:20,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:4,&quot;character&quot;:13,&quot;text&quot;:&quot;assignRoles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:4,&quot;character&quot;:27,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:4,&quot;character&quot;:37,&quot;text&quot;:&quot;auth&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:5,&quot;character&quot;:3,&quot;text&quot;:&quot;user&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:6,&quot;character&quot;:3,&quot;text&quot;:&quot;onCreate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:10,&quot;text&quot;:&quot;adminUsers&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:29,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:8,&quot;character&quot;:7,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:7,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:7,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:7,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:13,&quot;text&quot;:&quot;snapshot&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:8,&quot;text&quot;:&quot;snapshot&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:17,&quot;text&quot;:&quot;forEach&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:26,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:22,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:26,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:7,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:40,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:19,&quot;character&quot;:46,&quot;text&quot;:&quot;adminUsers&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:8,&quot;text&quot;:&quot;adminUsers&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:22,&quot;text&quot;:&quot;adminUsers&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:33,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:22,&quot;character&quot;:6,&quot;text&quot;:&quot;adminUsers&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:22,&quot;character&quot;:17,&quot;text&quot;:&quot;forEach&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:22,&quot;text&quot;:&quot;adminUsers&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:33,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:79,&quot;character&quot;:2,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:80,&quot;character&quot;:5,&quot;text&quot;:&quot;auth&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:81,&quot;character&quot;:5,&quot;text&quot;:&quot;updateUser&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:5,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:5,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:103,&quot;character&quot;:5,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:103,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:103,&quot;character&quot;:38,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:8,&quot;text&quot;:&quot;userRoles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:8,&quot;text&quot;:&quot;userRoles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:18,&quot;text&quot;:&quot;isSuperAdmin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:8,&quot;text&quot;:&quot;userRoles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:18,&quot;text&quot;:&quot;isAdmin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:8,&quot;text&quot;:&quot;userRoles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:18,&quot;text&quot;:&quot;isStaff&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:45,&quot;text&quot;:&quot;userRoles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:2,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:135,&quot;character&quot;:5,&quot;text&quot;:&quot;auth&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:5,&quot;text&quot;:&quot;setCustomUserClaims&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:36,&quot;text&quot;:&quot;userRoles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:5,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:141,&quot;character&quot;:34,&quot;text&quot;:&quot;userRoles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:146,&quot;character&quot;:5,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:154,&quot;character&quot;:40,&quot;text&quot;:&quot;userRoles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:158,&quot;character&quot;:5,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:158,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/assignRoles.ts&quot;,&quot;line&quot;:158,&quot;character&quot;:38,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

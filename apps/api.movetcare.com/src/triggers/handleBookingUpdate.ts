@@ -1,10 +1,10 @@
 import { removeBookingAbandonmentNotifications } from "../booking/abandonment/removeBookingAbandonmentNotifications";
 import { cancelBooking } from "../booking/abandonment/cancelBooking";
-import { environment, functions } from "./../config/config";
+import { functions } from "./../config/config";
 import { archiveBooking } from "../booking/session/archiveBooking";
 import type { Booking } from "../types/booking";
 import { updateBookingCancellation } from "../booking/abandonment/updateBookingCancellation";
-const DEBUG = environment.type === "production";
+const DEBUG = false; // environment.type === "production";
 export const handleBookingUpdate = functions.firestore
   .document("bookings/{id}")
   .onWrite(async (change: any, context: any) => {

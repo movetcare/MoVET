@@ -1,12 +1,11 @@
 import {
   defaultRuntimeOptions,
-  environment,
   functions,
   throwError,
 } from "../../../config/config";
 import { configureTerminals } from "../../../config/configureTerminals";
 import { requestIsAuthorized } from "./requestIsAuthorized";
-const DEBUG = environment.type === "production";
+const DEBUG = false; // environment.type === "production";
 export const resetTerminal = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

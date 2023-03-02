@@ -1,0 +1,82 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>home.cy.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">testing/e2e/movetcare.com/home.cy.ts</td><td class="">98.41%</td><td class="">75%</td><td class="">126</td><td class="">124</td><td class="">2</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">/* eslint-disable quotes */
+describe(&quot;home-page-loads&quot;, () =&gt; {
+  beforeEach(() =&gt; {
+    cy.visit(Cypress.env().websiteUrl);
+  });
+
+  it(&quot;display home page hero elements&quot;, () =&gt; {
+    cy.get(&quot;h1&quot;).first().contains(&quot;Your neighborhood vet,&quot;);
+    cy.get(&quot;h1&quot;).last().contains(&quot;Delivered&quot;);
+    cy.get(&quot;p span&quot;)
+      .first()
+      .contains(&quot;A stress-free way to take care of your vet appointments.&quot;);
+    cy.get(&quot;div p&quot;).contains(&quot;SCHEDULE AN APPOINTMENT&quot;);
+    cy.get(&quot;div form input&quot;).should(&quot;be.visible&quot;);
+    cy.get(&quot;div .ios-app-link&quot;).should(&quot;be.visible&quot;);
+    cy.get(&quot;div .android-app-link&quot;).should(&quot;be.visible&quot;);
+  });
+
+  it(&quot;display working mobile navigation&quot;, () =&gt; {
+    cy.get(&quot;#mobile-navigation&quot;).click();
+    cy.get(&quot;#mobile-reviews&quot;).should(&quot;be.visible&quot;);
+    cy.get(&quot;#mobile-services&quot;).should(&quot;be.visible&quot;);
+    cy.get(&quot;#mobile-careers&quot;).should(&quot;be.visible&quot;);
+    cy.get(&quot;#mobile-contact&quot;).should(&quot;be.visible&quot;);
+    cy.get(&quot;#mobile-blog&quot;).should(&quot;be.visible&quot;);
+    cy.get(&quot;#mobile-text-us-cta&quot;).should(&quot;be.visible&quot;);
+    cy.get(&quot;#mobile-request-appointment-cta&quot;).should(&quot;be.visible&quot;);
+  });
+
+  if (Cypress.env().environment === &quot;development&quot;)
+    it(&quot;display working announcement banner&quot;, () =&gt; {
+      cy.get(&#x27;[aria-label=&quot;Announcement Link&quot;] p&#x27;).first().contains(&quot;Welcome!&quot;);
+    });
+
+  it(&quot;displays all primary content sections&quot;, () =&gt; {
+    cy.get(&quot;h2&quot;).contains(&quot;Moving Pet Care Forward&quot;);
+    cy.get(&quot;h2&quot;).contains(&quot;Additional Amenities&quot;);
+    cy.get(&quot;h2&quot;).contains(&quot;Our Services&quot;);
+    cy.get(&quot;h2&quot;).contains(&quot;Hours of Operation&quot;);
+    cy.get(&quot;h2&quot;).contains(&quot;Our Happy Clients&quot;);
+    cy.get(&quot;h2&quot;).contains(&quot;Contact Us&quot;);
+    cy.get(&quot;h3&quot;).contains(&quot;Your neighborhood vet&quot;);
+  });
+
+  it(&quot;displays all footer links&quot;, () =&gt; {
+    cy.get(&quot;footer a p&quot;).as(&quot;footerLinks&quot;);
+    cy.get(&quot;@footerLinks&quot;).contains(&quot;Privacy Policy&quot;);
+    cy.get(&quot;@footerLinks&quot;).contains(&quot;Terms of Service&quot;);
+    cy.get(&quot;@footerLinks&quot;).contains(&quot;FAQs&quot;);
+    cy.get(&quot;@footerLinks&quot;).contains(&quot;Emergency Care&quot;);
+  });
+
+  it(&quot;can submit contact form&quot;, () =&gt; {
+    cy.get(&quot;#contact-form input[name=&#x27;firstName&#x27;]&quot;).type(&quot;CYPRESS&quot;);
+    cy.get(&quot;#contact-form input[name=&#x27;lastName&#x27;]&quot;).type(&quot;TEST&quot;);
+    cy.get(&quot;#contact-form input[name=&#x27;email&#x27;]&quot;).type(&quot;CYPRESS+test@TEST.COM&quot;);
+    cy.get(&quot;#contact-form input[name=&#x27;phone-number&#x27;]&quot;).type(&quot;9999999999&quot;);
+    cy.get(&quot;#contact-form textarea[name=&#x27;message&#x27;]&quot;).type(
+      &quot;CYPRESS TEST 123...&quot;
+    );
+    cy.get(&quot;#contact-form button&quot;).contains(&quot;Submit&quot;).click();
+    cy.get(&quot;#contact-form h2&quot;).contains(&quot;Success!&quot;);
+  });
+});
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;testing/e2e/movetcare.com/home.cy.ts&quot;,&quot;line&quot;:3,&quot;character&quot;:27,&quot;text&quot;:&quot;websiteUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/movetcare.com/home.cy.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:20,&quot;text&quot;:&quot;environment&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

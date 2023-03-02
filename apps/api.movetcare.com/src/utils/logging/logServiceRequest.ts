@@ -1,10 +1,10 @@
-import {admin, throwError} from "../../config/config";
+import { admin, throwError } from "../../config/config";
 
 export const logServiceRequest = (data: {
   email: string;
   zipcode: string;
   inState: boolean;
-}) =>
+}): void =>
   admin
     .firestore()
     .collection(

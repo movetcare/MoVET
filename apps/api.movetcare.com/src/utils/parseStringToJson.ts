@@ -1,11 +1,11 @@
-export const parseStringToJson = (jsonString: string) => {
+export const parseStringToJson = (jsonString: string): boolean | object => {
   try {
-    const object = JSON.parse(jsonString);
+    const object: object = JSON.parse(jsonString);
     if (object && typeof object === "object") {
       return object;
     }
   } catch {
-    false;
+    return false;
   }
   return false;
 };

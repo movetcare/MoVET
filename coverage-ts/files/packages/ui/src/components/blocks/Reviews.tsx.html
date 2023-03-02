@@ -1,0 +1,145 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Reviews.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">packages/ui/src/components/blocks/Reviews.tsx</td><td class="">100.00%</td><td class="">75%</td><td class="">143</td><td class="">143</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { faPencil } from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import { ClientReviews } from &quot;../elements/ClientReviews&quot;;
+import Image from &quot;next/image&quot;;
+
+export const Reviews = () =&gt; (
+  &lt;section className=&quot;relative bg-movet-black py-12 px-4 sm:px-8 md:px-0 w-full&quot;&gt;
+    &lt;div className=&quot;relative z-40&quot;&gt;
+      &lt;div className=&quot;flex justify-center items-stretch w-full pt-2 max-w-screen-2xl mx-auto&quot;&gt;
+        &lt;div className=&quot;hidden md:flex grow&quot;&gt;
+          &lt;div className=&quot;w-full max-w-[16rem] relative mt-24 mx-auto&quot;&gt;
+            &lt;div className=&quot;paw paw-l&quot;&gt;
+              &lt;div className=&quot;claw&quot;&gt;
+                &lt;div className=&quot;rotate-[54deg]&quot;&gt;
+                  &lt;Image
+                    src=&quot;/images/pets/puppy-2.jpg&quot;
+                    alt=&quot;dog&quot;
+                    height={100}
+                    width={100}
+                    className=&quot;rounded-full&quot;
+                  /&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+              &lt;div className=&quot;claw&quot;&gt;
+                &lt;div className=&quot;rotate-[15deg]&quot;&gt;
+                  &lt;Image
+                    src=&quot;/images/pets/puppy-1.jpg&quot;
+                    alt=&quot;dog&quot;
+                    height={100}
+                    width={100}
+                    className=&quot;rounded-full&quot;
+                  /&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+              &lt;div className=&quot;claw&quot;&gt;
+                &lt;div className=&quot;rotate-[-24deg]&quot;&gt;
+                  &lt;Image
+                    src=&quot;/images/pets/puppy-3.jpg&quot;
+                    alt=&quot;dog&quot;
+                    height={100}
+                    width={100}
+                    className=&quot;rounded-full&quot;
+                  /&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+              &lt;Image
+                src=&quot;/images/pets/holding-dog-home.png&quot;
+                alt=&quot;dog&quot;
+                height={200}
+                width={200}
+                className=&quot;rounded-full&quot;
+              /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;text-center text-white max-w-lg relative z-20&quot;&gt;
+          &lt;h2 className=&quot;text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white&quot;&gt;
+            Our Happy Clients
+          &lt;/h2&gt;
+          &lt;p className=&quot;text-lg&quot;&gt;
+            Online reviews from great clients like you help others to feel
+            confident about choosing MoVET and will help our business grow.
+          &lt;/p&gt;
+          &lt;a
+            className=&quot;text-center ease-in-out duration-500 w-full sm:w-2/3 mx-auto mt-8 flex justify-center items-center border border-transparent shadow-sm text-movet-white text-sm font-medium font-abside uppercase bg-movet-brown group-hover:bg-movet-dark-brown hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-brown py-2 px-6 rounded-full&quot;
+            target=&quot;_blank&quot;
+            href=&quot;https://g.page/r/CbtAdHSVgeMfEB0/review&quot;
+            rel=&quot;noopener noreferrer&quot;
+          &gt;
+            &lt;FontAwesomeIcon icon={faPencil} size=&quot;lg&quot; className=&quot;mr-2&quot; /&gt;
+            Add a Review
+          &lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;hidden md:block grow&quot;&gt;
+          &lt;div className=&quot;w-full max-w-[16rem] relative mt-24 mx-auto&quot;&gt;
+            &lt;div className=&quot;paw paw-r&quot;&gt;
+              &lt;div className=&quot;claw&quot;&gt;
+                &lt;div className=&quot;rotate-[24deg]&quot;&gt;
+                  &lt;Image
+                    src=&quot;/images/pets/cat-1.jpg&quot;
+                    alt=&quot;dog&quot;
+                    height={100}
+                    width={100}
+                    className=&quot;rounded-full&quot;
+                  /&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+              &lt;div className=&quot;claw&quot;&gt;
+                &lt;div className=&quot;rotate-[-15deg]&quot;&gt;
+                  &lt;Image
+                    src=&quot;/images/pets/cat-2.png&quot;
+                    alt=&quot;dog&quot;
+                    height={100}
+                    width={100}
+                    className=&quot;rounded-full&quot;
+                  /&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+              &lt;div className=&quot;rotate-45 claw&quot;&gt;
+                &lt;div className=&quot;rotate-[-54deg]&quot;&gt;
+                  &lt;Image
+                    src=&quot;/images/pets/cat-3.png&quot;
+                    alt=&quot;dog&quot;
+                    height={100}
+                    width={100}
+                    className=&quot;rounded-full&quot;
+                  /&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+              &lt;Image
+                src=&quot;/images/pets/client-w-dog.jpg&quot;
+                alt=&quot;dog&quot;
+                height={200}
+                width={200}
+                className=&quot;rounded-full&quot;
+              /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div className=&quot;flex flex-col justify-center items-center max-w-7xl mx-auto sm:p-4 mt-20&quot;&gt;
+        &lt;ClientReviews /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div className=&quot;curve z-10 h-12 before:w-[75%] before:h-28 before:bg-movet-black before:translate-x-[65%] before:translate-y-[-47%] before:rounded-[100%_100%_100%_100%_/_100%_0%_110%_62%] after:w-[78%] after:bg-movet-white after:translate-x-[-16%] after:translate-y-[54%]&quot;&gt;&lt;/div&gt;
+  &lt;/section&gt;
+);
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

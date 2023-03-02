@@ -1,0 +1,287 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Footer.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/admin.movetcare.com/components/Footer.tsx</td><td class="">70.17%</td><td class="">75%</td><td class="">362</td><td class="">254</td><td class="">108</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  faArrowRight,
+  faArrowRightFromBracket,
+  faBell,
+  faBookMedical,
+  faBug,
+  faBullhorn,
+  faCogs,
+  faExclamationCircle,
+  faFaceSmile,
+  faIcons,
+  faInfoCircle,
+  faPlug,
+  faStar,
+  faTimes,
+} from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import { Transition } from &quot;@headlessui/react&quot;;
+import { AnnouncementBannerContext } from &quot;contexts/AnnouncementBannerContext&quot;;
+import { onAuthStateChanged } from &quot;firebase/auth&quot;;
+import Link from &quot;next/link&quot;;
+import { useContext, useEffect, useState } from &quot;react&quot;;
+import { auth } from &quot;services/firebase&quot;;
+
+const Footer: React.FC = () =&gt; {
+  const {
+    announcementPreview,
+    showAnnouncementPreview,
+    setShowAnnouncementPreview,
+  }: any = useContext(AnnouncementBannerContext);
+  const [isAdmin, setIsAdmin] = useState&lt;boolean&gt;(false);
+
+  const announcementBannerBackgroundColor =
+    announcementPreview?.color?.id === &quot;#DAAA00&quot;
+      ? &quot;bg-movet-yellow&quot;
+      : announcementPreview?.color?.id === &quot;#2C3C72&quot;
+      ? &quot;bg-movet-dark-blue&quot;
+      : announcementPreview?.color?.id === &quot;#E76159&quot;
+      ? &quot;bg-movet-red&quot;
+      : announcementPreview?.color?.id === &quot;#232127&quot;
+      ? &quot;bg-movet-black&quot;
+      : announcementPreview?.color?.id === &quot;#00A36C&quot;
+      ? &quot;bg-movet-green&quot;
+      : announcementPreview?.color?.id === &quot;#A15643&quot;
+      ? &quot;bg-movet-brown&quot;
+      : &quot;bg-movet-dark-blue&quot;;
+
+  const announcementBannerTextColor =
+    announcementPreview?.color?.id === &quot;#DAAA00&quot;
+      ? &quot;text-movet-yellow&quot;
+      : announcementPreview?.color?.id === &quot;#2C3C72&quot;
+      ? &quot;text-movet-dark-blue&quot;
+      : announcementPreview?.color?.id === &quot;#E76159&quot;
+      ? &quot;text-movet-red&quot;
+      : announcementPreview?.color?.id === &quot;#232127&quot;
+      ? &quot;text-movet-black&quot;
+      : announcementPreview?.color?.id === &quot;#00A36C&quot;
+      ? &quot;text-movet-green&quot;
+      : announcementPreview?.color?.id === &quot;#A15643&quot;
+      ? &quot;text-movet-brown&quot;
+      : &quot;text-movet-dark-blue&quot;;
+
+  const announcementBannerIcon =
+    announcementPreview?.icon?.id === &quot;bullhorn&quot;
+      ? faBullhorn
+      : announcementPreview?.icon?.id === &quot;exclamation-circle&quot;
+      ? faExclamationCircle
+      : announcementPreview?.icon?.id === &quot;bell&quot;
+      ? faBell
+      : announcementPreview?.icon?.id === &quot;star&quot;
+      ? faStar
+      : announcementPreview?.icon?.id === &quot;info-circle&quot;
+      ? faInfoCircle
+      : faIcons;
+
+  useEffect(() =&gt; {
+    const unsubscribe = onAuthStateChanged(auth, (user) =&gt; {
+      if (user) {
+        const claimsString = (user as any)?.reloadUserInfo?.customAttributes;
+        if (claimsString) {
+          const claims = JSON.parse(claimsString);
+          if (claims?.isSuperAdmin || claims?.isAdmin) setIsAdmin(true);
+        }
+      }
+    });
+    return () =&gt; unsubscribe();
+  }, []);
+
+  const AlertBannerContent = () =&gt; (
+    &lt;&gt;
+      {announcementPreview?.link ? (
+        &lt;&gt;
+          &lt;div className=&quot;w-0 flex-1 flex items-center hover:cursor-pointer pt-4 pb-6&quot;&gt;
+            &lt;a
+              href={`https://movetcare.com${announcementPreview?.link}`}
+              target=&quot;_blank&quot;
+              rel=&quot;noreferrer&quot;
+            &gt;
+              &lt;span
+                className={`flex p-2 rounded-xl justify-center items-center bg-movet-white text-lg h-9 w-9 hover:bg-opacity-80 ease-in-out duration-500 ${announcementBannerTextColor}`}
+              &gt;
+                &lt;FontAwesomeIcon icon={announcementBannerIcon} size=&quot;sm&quot; /&gt;
+              &lt;/span&gt;
+            &lt;/a&gt;
+            &lt;div className=&quot;flex flex-col&quot;&gt;
+              &lt;a
+                href={`https://movetcare.com${announcementPreview?.link}`}
+                target=&quot;_blank&quot;
+                rel=&quot;noreferrer&quot;
+              &gt;
+                &lt;p className=&quot;ml-8 font-medium text-white my-0 italic text-base hover:text-opacity-80&quot;&gt;
+                  {announcementPreview?.title}
+                &lt;/p&gt;
+              &lt;/a&gt;
+              &lt;a
+                href={`https://movetcare.com${announcementPreview?.link}`}
+                target=&quot;_blank&quot;
+                rel=&quot;noreferrer&quot;
+              &gt;
+                &lt;p className=&quot;ml-8 font-medium text-white my-0 italic text-sm hover:text-opacity-80&quot;&gt;
+                  {announcementPreview?.message}
+                &lt;/p&gt;
+              &lt;/a&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div className=&quot;order-3 -mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto mb-4&quot;&gt;
+            &lt;a
+              href={`https://movetcare.com${announcementPreview?.link}`}
+              target=&quot;_blank&quot;
+              rel=&quot;noreferrer&quot;
+            &gt;
+              &lt;p
+                className={`w-full flex justify-center border border-transparent shadow-sm text-xs font-abside font-medium uppercase bg-movet-white group-hover:bg-opacity-80 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-blue py-2 px-6 rounded-full ease-in-out duration-500 cursor-pointer ${announcementBannerTextColor}`}
+              &gt;
+                Learn more
+                &lt;span
+                  className={`ml-2 h-3.5 w-3.5 ${announcementBannerTextColor}`}
+                &gt;
+                  &lt;FontAwesomeIcon icon={faArrowRight} /&gt;
+                &lt;/span&gt;
+              &lt;/p&gt;
+            &lt;/a&gt;
+          &lt;/div&gt;
+        &lt;/&gt;
+      ) : (
+        &lt;div
+          className=&quot;w-0 flex-1 flex items-center hover:cursor-pointer py-4&quot;
+          onClick={() =&gt; setShowAnnouncementPreview(false)}
+        &gt;
+          &lt;span
+            className={`flex p-2 rounded-xl justify-center items-center bg-movet-white text-lg h-9 w-9 hover:bg-opacity-80 ease-in-out duration-500 ${announcementBannerTextColor}`}
+          &gt;
+            &lt;FontAwesomeIcon icon={announcementBannerIcon} size=&quot;sm&quot; /&gt;
+          &lt;/span&gt;
+          &lt;div className=&quot;flex flex-col&quot;&gt;
+            &lt;p className=&quot;ml-8 font-medium text-white my-0 italic text-base hover:text-opacity-80&quot;&gt;
+              {announcementPreview?.title}
+            &lt;/p&gt;
+            &lt;p className=&quot;ml-8 font-medium text-white my-0 italic text-sm hover:text-opacity-80&quot;&gt;
+              {announcementPreview?.message}
+            &lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/&gt;
+  );
+
+  return (
+    &lt;&gt;
+      &lt;footer
+        className={`flex flex-row justify-between items-center py-3 bg-movet-black px-8${
+          announcementPreview &amp;&amp;
+          announcementPreview?.isActive &amp;&amp;
+          announcementPreview?.link &amp;&amp;
+          showAnnouncementPreview
+            ? announcementPreview?.message &amp;&amp; announcementPreview?.title
+              ? &quot; mb-32 sm:mb-0&quot;
+              : announcementPreview?.message || announcementPreview?.title
+              ? &quot; mb-28 sm:mb-0&quot;
+              : &quot;&quot;
+            : announcementPreview?.message &amp;&amp; announcementPreview?.title
+            ? &quot; mb-20 sm:mb-0&quot;
+            : announcementPreview?.message || announcementPreview?.title
+            ? &quot; mb-14 sm:mb-0&quot;
+            : &quot;&quot;
+        }`}
+      &gt;
+        &lt;p className=&quot;text-movet-white font-abside-smooth uppercase text-sm&quot;&gt;
+          © MoVET {new Date().getFullYear()}
+        &lt;/p&gt;
+        &lt;div className={&quot;flex flex-row items-center justify-center&quot;}&gt;
+          {isAdmin &amp;&amp; (
+            &lt;&gt;
+              &lt;Link href=&quot;/settings&quot;&gt;
+                &lt;div className=&quot;text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center&quot;&gt;
+                  &lt;FontAwesomeIcon icon={faCogs} size=&quot;lg&quot; /&gt;
+                &lt;/div&gt;
+              &lt;/Link&gt;
+              &lt;p className=&quot;text-movet-white text-xl mx-3&quot;&gt;|&lt;/p&gt;
+            &lt;/&gt;
+          )}
+          &lt;a
+            href=&quot;https://stats.uptimerobot.com/zyPLmUGZJJ/&quot;
+            target=&quot;_blank&quot;
+            rel=&quot;noreferrer&quot;
+          &gt;
+            &lt;div className=&quot;text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center&quot;&gt;
+              &lt;FontAwesomeIcon icon={faPlug} size=&quot;lg&quot; /&gt;
+            &lt;/div&gt;
+          &lt;/a&gt;
+          &lt;p className=&quot;text-movet-white text-xl mx-3&quot;&gt;|&lt;/p&gt;
+          &lt;Link href=&quot;/request-a-feature&quot;&gt;
+            &lt;div className=&quot;text-movet-white font-abside-smooth uppercase hover:text-movet-green hover:cursor-pointer italic flex w-full items-center justify-center&quot;&gt;
+              &lt;FontAwesomeIcon icon={faFaceSmile} size=&quot;lg&quot; /&gt;
+            &lt;/div&gt;
+          &lt;/Link&gt;
+          &lt;p className=&quot;text-movet-white text-xl mx-3&quot;&gt;|&lt;/p&gt;
+          &lt;Link href=&quot;/report-a-bug&quot;&gt;
+            &lt;div className=&quot;text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center&quot;&gt;
+              &lt;FontAwesomeIcon icon={faBug} size=&quot;lg&quot; /&gt;
+            &lt;/div&gt;
+          &lt;/Link&gt;
+          &lt;p className=&quot;text-movet-white text-xl mx-3&quot;&gt;|&lt;/p&gt;
+          &lt;Link href=&quot;/docs&quot;&gt;
+            &lt;div className=&quot;text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center&quot;&gt;
+              &lt;FontAwesomeIcon icon={faBookMedical} size=&quot;lg&quot; /&gt;
+            &lt;/div&gt;
+          &lt;/Link&gt;
+          &lt;p className=&quot;text-movet-white text-xl mx-3&quot;&gt;|&lt;/p&gt;
+          &lt;Link href=&quot;/signout&quot;&gt;
+            &lt;div className=&quot;text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center&quot;&gt;
+              &lt;FontAwesomeIcon icon={faArrowRightFromBracket} size=&quot;lg&quot; /&gt;
+            &lt;/div&gt;
+          &lt;/Link&gt;
+        &lt;/div&gt;
+      &lt;/footer&gt;
+      &lt;Transition
+        show={showAnnouncementPreview &amp;&amp; announcementPreview?.isActive}
+        enter=&quot;transition ease-in duration-500&quot;
+        leave=&quot;transition ease-out duration-64&quot;
+        leaveTo=&quot;opacity-10&quot;
+        enterFrom=&quot;opacity-0&quot;
+        enterTo=&quot;opacity-100&quot;
+        leaveFrom=&quot;opacity-100&quot;
+      &gt;
+        &lt;div className=&quot;sm:hidden fixed inset-x-0 bottom-0 z-50&quot;&gt;
+          &lt;div className={`px-4 ${announcementBannerBackgroundColor}`}&gt;
+            &lt;div className=&quot;max-w-7xl mx-auto&quot;&gt;
+              &lt;div className=&quot;flex items-center justify-right flex-wrap&quot;&gt;
+                &lt;AlertBannerContent /&gt;
+                &lt;div
+                  className=&quot;order-2 flex-shrink-0 sm:order-3 sm:ml-4 hover:cursor-pointer sm:pl-4&quot;
+                  onClick={() =&gt; setShowAnnouncementPreview(false)}
+                &gt;
+                  &lt;span className=&quot;p-2 rounded-xl text-lg text-movet-white justify-center items-center hover:text-opacity-50 ease-in-out duration-500&quot;&gt;
+                    &lt;FontAwesomeIcon icon={faTimes} /&gt;
+                  &lt;/span&gt;
+                  &lt;span className=&quot;sr-only&quot;&gt;Dismiss&lt;/span&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/Transition&gt;
+    &lt;/&gt;
+  );
+};
+
+export default Footer;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:26,&quot;character&quot;:4,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:27,&quot;character&quot;:4,&quot;text&quot;:&quot;showAnnouncementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:28,&quot;character&quot;:4,&quot;text&quot;:&quot;setShowAnnouncementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:33,&quot;character&quot;:4,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:33,&quot;character&quot;:25,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:33,&quot;character&quot;:32,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:35,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:35,&quot;character&quot;:29,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:35,&quot;character&quot;:36,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:37,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:37,&quot;character&quot;:29,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:37,&quot;character&quot;:36,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:39,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:39,&quot;character&quot;:29,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:39,&quot;character&quot;:36,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:41,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:41,&quot;character&quot;:29,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:41,&quot;character&quot;:36,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:43,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:43,&quot;character&quot;:29,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:43,&quot;character&quot;:36,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:48,&quot;character&quot;:4,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:48,&quot;character&quot;:25,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:48,&quot;character&quot;:32,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:50,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:50,&quot;character&quot;:29,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:50,&quot;character&quot;:36,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:52,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:52,&quot;character&quot;:29,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:52,&quot;character&quot;:36,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:54,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:54,&quot;character&quot;:29,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:54,&quot;character&quot;:36,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:56,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:56,&quot;character&quot;:29,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:56,&quot;character&quot;:36,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:58,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:58,&quot;character&quot;:29,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:58,&quot;character&quot;:36,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:63,&quot;character&quot;:4,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:63,&quot;character&quot;:25,&quot;text&quot;:&quot;icon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:63,&quot;character&quot;:31,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:29,&quot;text&quot;:&quot;icon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:35,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:29,&quot;text&quot;:&quot;icon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:35,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:29,&quot;text&quot;:&quot;icon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:35,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:71,&quot;character&quot;:8,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:71,&quot;character&quot;:29,&quot;text&quot;:&quot;icon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:71,&quot;character&quot;:35,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:78,&quot;character&quot;:14,&quot;text&quot;:&quot;claimsString&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:78,&quot;character&quot;:44,&quot;text&quot;:&quot;reloadUserInfo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:78,&quot;character&quot;:60,&quot;text&quot;:&quot;customAttributes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:79,&quot;character&quot;:12,&quot;text&quot;:&quot;claimsString&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:80,&quot;character&quot;:16,&quot;text&quot;:&quot;claims&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:81,&quot;character&quot;:14,&quot;text&quot;:&quot;claims&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:81,&quot;character&quot;:22,&quot;text&quot;:&quot;isSuperAdmin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:81,&quot;character&quot;:38,&quot;text&quot;:&quot;claims&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:81,&quot;character&quot;:46,&quot;text&quot;:&quot;isAdmin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:90,&quot;character&quot;:7,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:90,&quot;character&quot;:28,&quot;text&quot;:&quot;link&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:94,&quot;character&quot;:44,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:94,&quot;character&quot;:65,&quot;text&quot;:&quot;link&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:106,&quot;character&quot;:46,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:106,&quot;character&quot;:67,&quot;text&quot;:&quot;link&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:111,&quot;character&quot;:19,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:111,&quot;character&quot;:40,&quot;text&quot;:&quot;title&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:115,&quot;character&quot;:46,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:115,&quot;character&quot;:67,&quot;text&quot;:&quot;link&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:120,&quot;character&quot;:19,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:120,&quot;character&quot;:40,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:127,&quot;character&quot;:44,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:127,&quot;character&quot;:65,&quot;text&quot;:&quot;link&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:147,&quot;character&quot;:25,&quot;text&quot;:&quot;setShowAnnouncementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:156,&quot;character&quot;:15,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:156,&quot;character&quot;:36,&quot;text&quot;:&quot;title&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:159,&quot;character&quot;:15,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:159,&quot;character&quot;:36,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:171,&quot;character&quot;:10,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:172,&quot;character&quot;:10,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:172,&quot;character&quot;:31,&quot;text&quot;:&quot;isActive&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:173,&quot;character&quot;:10,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:173,&quot;character&quot;:31,&quot;text&quot;:&quot;link&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:174,&quot;character&quot;:10,&quot;text&quot;:&quot;showAnnouncementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:175,&quot;character&quot;:14,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:175,&quot;character&quot;:35,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:175,&quot;character&quot;:46,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:175,&quot;character&quot;:67,&quot;text&quot;:&quot;title&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:177,&quot;character&quot;:16,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:177,&quot;character&quot;:37,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:177,&quot;character&quot;:48,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:177,&quot;character&quot;:69,&quot;text&quot;:&quot;title&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:180,&quot;character&quot;:14,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:180,&quot;character&quot;:35,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:180,&quot;character&quot;:46,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:180,&quot;character&quot;:67,&quot;text&quot;:&quot;title&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:182,&quot;character&quot;:14,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:182,&quot;character&quot;:35,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:182,&quot;character&quot;:46,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:182,&quot;character&quot;:67,&quot;text&quot;:&quot;title&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:237,&quot;character&quot;:14,&quot;text&quot;:&quot;showAnnouncementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:237,&quot;character&quot;:41,&quot;text&quot;:&quot;announcementPreview&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:237,&quot;character&quot;:62,&quot;text&quot;:&quot;isActive&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Footer.tsx&quot;,&quot;line&quot;:252,&quot;character&quot;:33,&quot;text&quot;:&quot;setShowAnnouncementPreview&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

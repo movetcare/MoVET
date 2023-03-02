@@ -1,0 +1,119 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>updateStripeCustomer.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts</td><td class="">93.37%</td><td class="">75%</td><td class="">166</td><td class="">155</td><td class="">11</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { stripe, environment, throwError } from &quot;../../config/config&quot;;
+import { sendNotification } from &quot;../../notifications/sendNotification&quot;;
+const DEBUG = false; // environment.type === &quot;production&quot;;
+export const updateStripeCustomer = (proVetClientData: {
+  id_number: string | undefined | null;
+  archived: boolean;
+  email: string;
+  street_address: string | undefined;
+  street_address_2: string | undefined;
+  city: string | undefined;
+  state: string | undefined;
+  zip_code: string | undefined;
+  country_region: string | undefined;
+  critical_notes: string | undefined;
+  firstname: string | undefined;
+  lastname: string | undefined;
+  phone_numbers: Array&lt;{ number: string }&gt;;
+}) =&gt; {
+  if (
+    proVetClientData?.id_number !== undefined &amp;&amp;
+    proVetClientData?.id_number !== null &amp;&amp;
+    proVetClientData?.id_number !== &quot;&quot; &amp;&amp;
+    proVetClientData?.archived === false &amp;&amp;
+    environment?.type === &quot;production&quot;
+  ) {
+    if (DEBUG)
+      console.log(
+        &quot;updateStripeCustomerData =&gt; UPDATING EXISTING STRIPE CUSTOMER&quot;,
+        {
+          email: proVetClientData?.email,
+          address: {
+            line1: proVetClientData?.street_address,
+            line2: proVetClientData?.street_address_2,
+            city: proVetClientData?.city,
+            state: proVetClientData?.state,
+            postal_code: proVetClientData?.zip_code,
+            country: proVetClientData?.country_region,
+          },
+          description: proVetClientData?.critical_notes,
+          name:
+            proVetClientData?.firstname &amp;&amp; proVetClientData?.lastname
+              ? `${proVetClientData?.firstname} ${proVetClientData?.lastname}`
+              : proVetClientData?.firstname
+              ? proVetClientData?.firstname
+              : proVetClientData?.lastname
+              ? proVetClientData?.lastname
+              : null,
+          phone: proVetClientData?.phone_numbers[0]?.number || &quot;&quot;,
+        }
+      );
+    stripe.customers
+      .update(proVetClientData?.id_number, {
+        email: proVetClientData?.email,
+        address: {
+          line1: proVetClientData?.street_address,
+          line2: proVetClientData?.street_address_2,
+          city: proVetClientData?.city,
+          state: proVetClientData?.state,
+          postal_code: proVetClientData?.zip_code,
+          country: proVetClientData?.country_region,
+        },
+        description: proVetClientData?.critical_notes,
+        name:
+          proVetClientData?.firstname &amp;&amp; proVetClientData?.lastname
+            ? `${proVetClientData?.firstname} ${proVetClientData?.lastname}`
+            : proVetClientData?.firstname
+            ? proVetClientData?.firstname
+            : proVetClientData?.lastname
+            ? proVetClientData?.lastname
+            : &quot;&quot;,
+        phone: proVetClientData?.phone_numbers[0]?.number || &quot;&quot;,
+      })
+      .then(() =&gt;
+        sendNotification({
+          type: &quot;slack&quot;,
+          payload: {
+            message: `:money_mouth_face: Customer Information Updated in Stripe\n\nhttps://dashboard.stripe.com/customers/${proVetClientData?.id_number}\n\n`,
+          },
+        })
+      )
+      .catch((error: any) =&gt;
+        error?.message?.includes(&quot;No such customer: &#x27;cus_NHh7gfsz2LsVnp&#x27;&quot;)
+          ? console.log(error)
+          : throwError(error)
+      );
+  } else if (DEBUG) {
+    console.log(&quot;updateStripeCustomerData =&gt; SKIPPING STRIPE CUSTOMER UPDATE&quot;);
+    if (
+      proVetClientData?.id_number !== undefined ||
+      proVetClientData?.id_number !== null ||
+      proVetClientData?.id_number !== &quot;&quot;
+    )
+      console.log(
+        &quot;updateStripeCustomerData =&gt; SKIP REASON -  MISSING id_number in PROVET&quot;
+      );
+    if (environment?.type !== &quot;production&quot;)
+      console.log(
+        &quot;updateStripeCustomerData =&gt; SKIP REASON -  ENVIRONMENT IS NOT PRODUCTION!&quot;
+      );
+  }
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts&quot;,&quot;line&quot;:0,&quot;character&quot;:17,&quot;text&quot;:&quot;environment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts&quot;,&quot;line&quot;:23,&quot;character&quot;:4,&quot;text&quot;:&quot;environment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts&quot;,&quot;line&quot;:23,&quot;character&quot;:17,&quot;text&quot;:&quot;type&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts&quot;,&quot;line&quot;:80,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts&quot;,&quot;line&quot;:81,&quot;character&quot;:8,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts&quot;,&quot;line&quot;:81,&quot;character&quot;:15,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts&quot;,&quot;line&quot;:81,&quot;character&quot;:24,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts&quot;,&quot;line&quot;:82,&quot;character&quot;:24,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts&quot;,&quot;line&quot;:83,&quot;character&quot;:23,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts&quot;,&quot;line&quot;:95,&quot;character&quot;:8,&quot;text&quot;:&quot;environment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/stripe/updateStripeCustomer.ts&quot;,&quot;line&quot;:95,&quot;character&quot;:21,&quot;text&quot;:&quot;type&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

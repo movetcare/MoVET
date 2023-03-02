@@ -1,0 +1,77 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Logger.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/admin.movetcare.com/utils/Logger.ts</td><td class="">53.33%</td><td class="">75%</td><td class="">105</td><td class="">56</td><td class="">49</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">class Logger {
+  static collectors = [];
+  static serializer = Promise.resolve;
+
+  static setCollectors(collectors: any) {
+    this.collectors = collectors;
+  }
+
+  static async forwardToCollectors(log: any) {
+    this.collectors.forEach(collector =&gt; (collector as any).collect(log));
+  }
+
+  static log(log: any) {
+    Logger.forwardToCollectors(log);
+  }
+
+  static tracedFn(methodName: any, docsUrl: any, fn: any) {
+    return async (...args: any) =&gt; {
+      const method = methodName || fn.name;
+      const requestString = JSON.stringify(args);
+      const UUID = Math.floor(Math.random() * 10000000).toString();
+      const trace: any = {
+        id: UUID,
+        start_time_ms: new Date().valueOf(),
+        method: method,
+        docsUrl: docsUrl,
+        request: requestString,
+        response: null,
+        exception: null,
+      };
+
+      try {
+        const response = await fn.apply(this, args);
+        trace.response = JSON.stringify(response);
+        return response;
+      } catch (e: any) {
+        trace.exception = e.message;
+        throw e;
+      } finally {
+        Logger.log(trace);
+      }
+    };
+  }
+
+  static watchObject(obj: any, objName: any, methodsMetadata: any) {
+    const objPrototype = Object.getPrototypeOf(obj);
+    Object.getOwnPropertyNames(objPrototype)
+      .filter(property =&gt; methodsMetadata[property] !== undefined)
+      .forEach(instanceMethodName =&gt; {
+        obj[instanceMethodName] = Logger.tracedFn(
+          objName + &#x27;.&#x27; + instanceMethodName,
+          methodsMetadata[instanceMethodName].docsUrl,
+          objPrototype[instanceMethodName]
+        );
+      });
+  }
+}
+
+export default Logger;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:4,&quot;character&quot;:23,&quot;text&quot;:&quot;collectors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:8,&quot;character&quot;:35,&quot;text&quot;:&quot;log&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:28,&quot;text&quot;:&quot;collector&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:42,&quot;text&quot;:&quot;collector&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:60,&quot;text&quot;:&quot;collect&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:68,&quot;text&quot;:&quot;log&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:13,&quot;text&quot;:&quot;log&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:31,&quot;text&quot;:&quot;log&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:18,&quot;text&quot;:&quot;methodName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:35,&quot;text&quot;:&quot;docsUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:49,&quot;text&quot;:&quot;fn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:21,&quot;text&quot;:&quot;args&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:12,&quot;text&quot;:&quot;method&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:21,&quot;text&quot;:&quot;methodName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:35,&quot;text&quot;:&quot;fn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:38,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:19,&quot;character&quot;:43,&quot;text&quot;:&quot;args&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:12,&quot;text&quot;:&quot;trace&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:24,&quot;character&quot;:8,&quot;text&quot;:&quot;method&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:24,&quot;character&quot;:16,&quot;text&quot;:&quot;method&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:25,&quot;character&quot;:8,&quot;text&quot;:&quot;docsUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:25,&quot;character&quot;:17,&quot;text&quot;:&quot;docsUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:14,&quot;text&quot;:&quot;response&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:31,&quot;text&quot;:&quot;fn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:34,&quot;text&quot;:&quot;apply&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:46,&quot;text&quot;:&quot;args&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:8,&quot;text&quot;:&quot;trace&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:14,&quot;text&quot;:&quot;response&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:40,&quot;text&quot;:&quot;response&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:34,&quot;character&quot;:15,&quot;text&quot;:&quot;response&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:8,&quot;text&quot;:&quot;trace&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:14,&quot;text&quot;:&quot;exception&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:26,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:28,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:14,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:15,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:19,&quot;text&quot;:&quot;trace&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:21,&quot;text&quot;:&quot;obj&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:31,&quot;text&quot;:&quot;objName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:45,&quot;text&quot;:&quot;methodsMetadata&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:10,&quot;text&quot;:&quot;objPrototype&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:47,&quot;text&quot;:&quot;obj&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:31,&quot;text&quot;:&quot;objPrototype&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:26,&quot;text&quot;:&quot;methodsMetadata&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:8,&quot;text&quot;:&quot;obj&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:10,&quot;text&quot;:&quot;objName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:10,&quot;text&quot;:&quot;methodsMetadata&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:46,&quot;text&quot;:&quot;docsUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/utils/Logger.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:10,&quot;text&quot;:&quot;objPrototype&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

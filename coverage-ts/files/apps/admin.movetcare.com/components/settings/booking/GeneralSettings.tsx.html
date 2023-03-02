@@ -1,0 +1,355 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>GeneralSettings.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx</td><td class="">80.86%</td><td class="">75%</td><td class="">350</td><td class="">283</td><td class="">67</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Switch } from &quot;@headlessui/react&quot;;
+import {
+  faCalendarMinus,
+  faCalendarPlus,
+  faCheckCircle,
+  faCircleDot,
+  faCircleExclamation,
+  faPencil,
+  faRedo,
+} from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { classNames } from &quot;utils/classNames&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import Button from &quot;../../Button&quot;;
+import Error from &quot;../../Error&quot;;
+import { Loader } from &quot;ui&quot;;
+import {
+  query,
+  collection,
+  orderBy,
+  doc,
+  serverTimestamp,
+  setDoc,
+} from &quot;firebase/firestore&quot;;
+import { useCollection } from &quot;react-firebase-hooks/firestore&quot;;
+import { firestore, functions } from &quot;services/firebase&quot;;
+import toast from &quot;react-hot-toast&quot;;
+import { httpsCallable } from &quot;firebase/functions&quot;;
+
+const GeneralSettings = () =&gt; {
+  const [reasonGroups, loadingReasonGroups, errorReasonGroups] = useCollection(
+    query(collection(firestore, &quot;reason_groups&quot;), orderBy(&quot;isVisible&quot;, &quot;desc&quot;))
+  );
+  const [reasons, loadingReasons, errorReasons] = useCollection(
+    query(collection(firestore, &quot;reasons&quot;), orderBy(&quot;name&quot;, &quot;asc&quot;))
+  );
+  const toggleReasonVisibility = async ({
+    id,
+    name,
+    isVisible,
+    isGroup = false,
+  }: {
+    id: number;
+    name: string;
+    isVisible: boolean;
+    isGroup?: boolean;
+  }) =&gt; {
+    await setDoc(
+      doc(firestore, isGroup ? &quot;reason_groups&quot; : &quot;reasons&quot;, `${id}`),
+      {
+        isVisible: isVisible !== undefined ? !isVisible : false,
+        updatedOn: serverTimestamp(),
+      },
+      { merge: true }
+    )
+      .then(() =&gt;
+        toast(
+          `&quot;${name}&quot; ${isGroup ? &quot;services are&quot; : &quot;service is&quot;} now ${
+            isVisible ? &quot;DISABLED&quot; : &quot;ACTIVE&quot;
+          }`,
+          {
+            position: &quot;top-center&quot;,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faCheckCircle}
+                size=&quot;sm&quot;
+                className={`${
+                  isVisible ? &quot;text-movet-red&quot; : &quot;text-movet-green&quot;
+                }`}
+              /&gt;
+            ),
+          }
+        )
+      )
+      .catch((error: any) =&gt;
+        toast(`Service &quot;${name}&quot; Update FAILED: ${error?.message}`, {
+          duration: 5000,
+          position: &quot;bottom-center&quot;,
+          icon: (
+            &lt;FontAwesomeIcon
+              icon={faCircleExclamation}
+              size=&quot;sm&quot;
+              className=&quot;text-movet-red&quot;
+            /&gt;
+          ),
+        })
+      );
+  };
+
+  const resyncReasons = () =&gt; {
+    toast(`RE-SYNCING PROVET REASONS...`, {
+      position: &quot;top-center&quot;,
+      duration: 3000,
+      icon: (
+        &lt;FontAwesomeIcon
+          icon={faRedo}
+          size=&quot;lg&quot;
+          className=&quot;text-movet-yellow&quot;
+        /&gt;
+      ),
+    });
+    const deleteAccount = httpsCallable(functions, &quot;resyncReasons&quot;);
+    deleteAccount()
+      .then((result: any) =&gt; {
+        if (result.data) {
+          toast(`REASON RE-SYNC COMPLETE`, {
+            position: &quot;top-center&quot;,
+            duration: 5000,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faRedo}
+                size=&quot;lg&quot;
+                className=&quot;text-movet-green&quot;
+              /&gt;
+            ),
+          });
+        } else
+          toast(&quot;SOMETHING WENT WRONG!&quot;, {
+            position: &quot;top-center&quot;,
+            duration: 5000,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faCircleExclamation}
+                className=&quot;text-movet-red&quot;
+              /&gt;
+            ),
+          });
+      })
+      .catch((error: any) =&gt;
+        toast(error?.message, {
+          position: &quot;top-center&quot;,
+          duration: 5000,
+          icon: (
+            &lt;FontAwesomeIcon
+              icon={faCircleExclamation}
+              className=&quot;text-movet-red&quot;
+            /&gt;
+          ),
+        })
+      );
+  };
+  return (
+    &lt;form
+      className=&quot;divide-y divide-movet-gray lg:col-span-9&quot;
+      action=&quot;#&quot;
+      method=&quot;POST&quot;
+    &gt;
+      &lt;div className=&quot;divide-y divide-movet-gray&quot;&gt;
+        &lt;&gt;
+          {(loadingReasonGroups || loadingReasons) &amp;&amp; &lt;Loader /&gt;}
+          {errorReasonGroups ||
+            (errorReasons &amp;&amp; (
+              &lt;div className=&quot;my-4&quot;&gt;
+                &lt;Error error={errorReasonGroups || errorReasons} /&gt;
+              &lt;/div&gt;
+            ))}
+          {reasonGroups &amp;&amp; (
+            &lt;&gt;
+              &lt;div className=&quot;px-4 sm:px-6&quot;&gt;
+                &lt;div&gt;
+                  &lt;h2 className=&quot;text-2xl mb-2 leading-6 font-medium text-movet-black&quot;&gt;
+                    Service Options
+                  &lt;/h2&gt;
+                  &lt;p className=&quot;text-sm text-movet-black -mt-1&quot;&gt;
+                    Use the toggles below to control which ProVet Reason Groups
+                    and Reasons appear in the service options list when a client
+                    is booking an appointment.
+                  &lt;/p&gt;
+                &lt;/div&gt;
+                &lt;ul role=&quot;list&quot; className=&quot;mt-4 divide-y divide-movet-gray&quot;&gt;
+                  {reasonGroups &amp;&amp;
+                    reasonGroups.docs.length &gt; 0 &amp;&amp;
+                    reasonGroups.docs.map((group: any, index: number) =&gt; {
+                      console.log(group.data());
+                      return (
+                        &lt;&gt;
+                          &lt;Switch.Group
+                            key={index}
+                            as=&quot;li&quot;
+                            className=&quot;py-4 flex items-center justify-between&quot;
+                          &gt;
+                            &lt;div className=&quot;flex flex-col&quot;&gt;
+                              {group.data()?.name &amp;&amp; (
+                                &lt;Switch.Label
+                                  as=&quot;h3&quot;
+                                  className=&quot;text-sm font-medium text-movet-black&quot;
+                                  passive
+                                &gt;
+                                  &lt;FontAwesomeIcon
+                                    icon={
+                                      group.data()?.isVisible
+                                        ? faCalendarPlus
+                                        : faCalendarMinus
+                                    }
+                                    size=&quot;lg&quot;
+                                    className={`${
+                                      group.data()?.isVisible
+                                        ? &quot;text-movet-green&quot;
+                                        : &quot;text-movet-red&quot;
+                                    } mr-4`}
+                                  /&gt;
+                                  {group.data()?.name}
+                                &lt;/Switch.Label&gt;
+                              )}
+                            &lt;/div&gt;
+                            &lt;Switch
+                              checked={group.data()?.isVisible}
+                              onChange={async () =&gt;
+                                await toggleReasonVisibility({
+                                  ...group.data(),
+                                  isGroup: true,
+                                })
+                              }
+                              className={classNames(
+                                group.data()?.isVisible
+                                  ? &quot;bg-movet-green&quot;
+                                  : &quot;bg-movet-gray&quot;,
+                                &quot;ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray&quot;
+                              )}
+                            &gt;
+                              &lt;span
+                                aria-hidden=&quot;true&quot;
+                                className={classNames(
+                                  group.data()?.isVisible
+                                    ? &quot;translate-x-5&quot;
+                                    : &quot;translate-x-0&quot;,
+                                  &quot;inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200&quot;
+                                )}
+                              /&gt;
+                            &lt;/Switch&gt;
+                          &lt;/Switch.Group&gt;
+                          {reasons &amp;&amp;
+                            reasons.docs.length &gt; 0 &amp;&amp;
+                            reasons.docs.map((reason: any, index: number) =&gt; {
+                              console.log(reason.data());
+                              return group.data()?.id ===
+                                reason.data()?.group &amp;&amp;
+                                group.data()?.isVisible ? (
+                                &lt;Switch.Group
+                                  key={index}
+                                  as=&quot;li&quot;
+                                  className=&quot;py-2 flex items-center justify-between px-6 sm:px-8&quot;
+                                &gt;
+                                  &lt;div className=&quot;flex flex-col&quot;&gt;
+                                    {reason.data()?.name &amp;&amp; (
+                                      &lt;Switch.Label
+                                        as=&quot;h3&quot;
+                                        className=&quot;text-xs font-medium text-movet-black italic&quot;
+                                        passive
+                                      &gt;
+                                        &lt;FontAwesomeIcon
+                                          icon={faCircleDot}
+                                          size=&quot;2xs&quot;
+                                          className={`${
+                                            reason.data()?.isVisible
+                                              ? &quot;text-movet-green&quot;
+                                              : &quot;text-movet-red&quot;
+                                          } mr-4`}
+                                        /&gt;
+                                        {reason.data()?.name}
+                                      &lt;/Switch.Label&gt;
+                                    )}
+                                  &lt;/div&gt;
+                                  &lt;Switch
+                                    checked={reason.data()?.isVisible}
+                                    onChange={async () =&gt;
+                                      await toggleReasonVisibility(
+                                        reason.data()
+                                      )
+                                    }
+                                    className={classNames(
+                                      reason.data()?.isVisible
+                                        ? &quot;bg-movet-green&quot;
+                                        : &quot;bg-movet-gray&quot;,
+                                      &quot;ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray&quot;
+                                    )}
+                                  &gt;
+                                    &lt;span
+                                      aria-hidden=&quot;true&quot;
+                                      className={classNames(
+                                        reason.data()?.isVisible
+                                          ? &quot;translate-x-5&quot;
+                                          : &quot;translate-x-0&quot;,
+                                        &quot;inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200&quot;
+                                      )}
+                                    /&gt;
+                                  &lt;/Switch&gt;
+                                &lt;/Switch.Group&gt;
+                              ) : (
+                                &lt;&gt;&lt;/&gt;
+                              );
+                            })}
+                        &lt;/&gt;
+                      );
+                    })}
+                &lt;/ul&gt;
+              &lt;/div&gt;
+              &lt;div className=&quot;mt-4 py-4 px-4 flex justify-end sm:px-6&quot;&gt;
+                &lt;Button
+                  color=&quot;black&quot;
+                  onClick={() =&gt;
+                    window.open(
+                      &quot;https://us.provetcloud.com/4285/organization/administration/reasons/&quot;,
+                      &quot;_blank&quot;
+                    )
+                  }
+                &gt;
+                  &lt;span className=&quot;flex-shrink-0 cursor-pointer mr-2&quot;&gt;
+                    &lt;FontAwesomeIcon
+                      icon={faPencil}
+                      className=&quot;text-movet-white&quot;
+                    /&gt;
+                  &lt;/span&gt;
+                  Edit Reasons
+                &lt;/Button&gt;
+                &lt;Button
+                  className=&quot;ml-4&quot;
+                  color=&quot;red&quot;
+                  onClick={() =&gt; resyncReasons()}
+                &gt;
+                  &lt;span className=&quot;flex-shrink-0 cursor-pointer mr-2&quot;&gt;
+                    &lt;FontAwesomeIcon
+                      icon={faRedo}
+                      className=&quot;text-movet-white&quot;
+                    /&gt;
+                  &lt;/span&gt;
+                  Re-Sync Reasons
+                &lt;/Button&gt;
+              &lt;/div&gt;
+            &lt;/&gt;
+          )}
+        &lt;/&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default GeneralSettings;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:73,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:74,&quot;character&quot;:50,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:74,&quot;character&quot;:57,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:102,&quot;character&quot;:13,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:103,&quot;character&quot;:12,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:103,&quot;character&quot;:19,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:127,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:128,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:128,&quot;character&quot;:21,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:171,&quot;character&quot;:43,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:172,&quot;character&quot;:34,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:172,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:181,&quot;character&quot;:31,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:181,&quot;character&quot;:37,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:181,&quot;character&quot;:45,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:189,&quot;character&quot;:38,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:189,&quot;character&quot;:44,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:189,&quot;character&quot;:52,&quot;text&quot;:&quot;isVisible&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:195,&quot;character&quot;:38,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:195,&quot;character&quot;:44,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:195,&quot;character&quot;:52,&quot;text&quot;:&quot;isVisible&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:200,&quot;character&quot;:35,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:200,&quot;character&quot;:41,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:200,&quot;character&quot;:49,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:205,&quot;character&quot;:39,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:205,&quot;character&quot;:45,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:205,&quot;character&quot;:53,&quot;text&quot;:&quot;isVisible&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:208,&quot;character&quot;:37,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:208,&quot;character&quot;:43,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:213,&quot;character&quot;:32,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:213,&quot;character&quot;:38,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:213,&quot;character&quot;:46,&quot;text&quot;:&quot;isVisible&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:222,&quot;character&quot;:34,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:222,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:222,&quot;character&quot;:48,&quot;text&quot;:&quot;isVisible&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:232,&quot;character&quot;:46,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:233,&quot;character&quot;:42,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:233,&quot;character&quot;:49,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:234,&quot;character&quot;:37,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:234,&quot;character&quot;:43,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:234,&quot;character&quot;:51,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:235,&quot;character&quot;:32,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:235,&quot;character&quot;:39,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:235,&quot;character&quot;:47,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:236,&quot;character&quot;:32,&quot;text&quot;:&quot;group&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:236,&quot;character&quot;:38,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:236,&quot;character&quot;:46,&quot;text&quot;:&quot;isVisible&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:243,&quot;character&quot;:37,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:243,&quot;character&quot;:44,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:243,&quot;character&quot;:52,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:253,&quot;character&quot;:44,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:253,&quot;character&quot;:51,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:253,&quot;character&quot;:59,&quot;text&quot;:&quot;isVisible&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:258,&quot;character&quot;:41,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:258,&quot;character&quot;:48,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:258,&quot;character&quot;:56,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:263,&quot;character&quot;:45,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:263,&quot;character&quot;:52,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:263,&quot;character&quot;:60,&quot;text&quot;:&quot;isVisible&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:266,&quot;character&quot;:40,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:266,&quot;character&quot;:47,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:270,&quot;character&quot;:38,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:270,&quot;character&quot;:45,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:270,&quot;character&quot;:53,&quot;text&quot;:&quot;isVisible&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:279,&quot;character&quot;:40,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:279,&quot;character&quot;:47,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/GeneralSettings.tsx&quot;,&quot;line&quot;:279,&quot;character&quot;:55,&quot;text&quot;:&quot;isVisible&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

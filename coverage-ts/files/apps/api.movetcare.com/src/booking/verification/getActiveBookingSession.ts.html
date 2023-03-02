@@ -1,0 +1,94 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>getActiveBookingSession.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts</td><td class="">50.46%</td><td class="">75%</td><td class="">109</td><td class="">55</td><td class="">54</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {UserRecord} from &quot;firebase-admin/lib/auth/user-record&quot;;
+import { admin, throwError, DEBUG } from &quot;../../config/config&quot;;
+import type { Booking } from &quot;../../types/booking&quot;;
+import { startNewBooking } from &quot;../session/startNewBooking&quot;;
+import { enforceOnlyOneActiveAppointmentBooking } from &quot;./enforceOnlyOneActiveAppointmentBooking&quot;;
+
+export const getActiveBookingSession = async (
+  user: UserRecord,
+  device: string
+): Promise&lt;Booking | false&gt; =&gt;
+  await admin
+    .firestore()
+    .collection(&quot;bookings&quot;)
+    .where(&quot;client.uid&quot;, &quot;==&quot;, `${user?.uid}`)
+    .orderBy(&quot;createdAt&quot;, &quot;desc&quot;)
+    .get()
+    .then(
+      async (snapshot: any) =&gt;
+        await getActiveAppointmentBooking(user, snapshot, device)
+    )
+    .catch((error: any) =&gt; throwError(error));
+
+const getActiveAppointmentBooking = async (
+  user: UserRecord,
+  snapshot: any,
+  device: string
+) =&gt; {
+  const activeBookings: Array&lt;any&gt; = [];
+  snapshot.forEach((doc: any) =&gt; {
+    if (DEBUG)
+      console.log(&quot;getActiveAppointmentBooking =&gt; BOOKING FOUND: &quot;, doc.data());
+    if (doc.data()?.isActive) activeBookings.push(doc.id);
+  });
+  if (activeBookings.length &gt; 0) {
+    if (DEBUG)
+      console.log(
+        &quot;getActiveAppointmentBooking =&gt; activeBookings&quot;,
+        activeBookings
+      );
+    if (activeBookings) {
+      if (activeBookings.length &gt; 1)
+        enforceOnlyOneActiveAppointmentBooking(activeBookings);
+      const bookingDocument = await admin
+        .firestore()
+        .collection(&quot;bookings&quot;)
+        .doc(`${activeBookings[0]}`);
+      return {
+        ...(await admin
+          .firestore()
+          .collection(&quot;bookings&quot;)
+          .doc(`${activeBookings[0]}`)
+          .get()
+          .then(async (document: any) =&gt; {
+            if (document.exists) {
+              if (DEBUG)
+                console.log(
+                  &quot;getActiveAppointmentBooking =&gt; BOOKING DOCUMENT&quot;,
+                  document.data()
+                );
+              return { id: bookingDocument?.id, ...document.data() };
+            } else
+              return {
+                id: (await startNewBooking(user, device))?.id,
+              };
+          })
+          .catch((error: any) =&gt; throwError(error))),
+      };
+    } else
+      return {
+        id: (await startNewBooking(user, device))?.id,
+      };
+  } else
+    return {
+      id: (await startNewBooking(user, device))?.id,
+    };
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:1,&quot;character&quot;:9,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:8,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:5,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:5,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:5,&quot;text&quot;:&quot;where&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:5,&quot;text&quot;:&quot;orderBy&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:5,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:5,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:13,&quot;text&quot;:&quot;snapshot&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:48,&quot;text&quot;:&quot;snapshot&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:20,&quot;character&quot;:5,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:20,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:20,&quot;character&quot;:38,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:24,&quot;character&quot;:2,&quot;text&quot;:&quot;snapshot&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:2,&quot;text&quot;:&quot;snapshot&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:11,&quot;text&quot;:&quot;forEach&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:20,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:68,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:72,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:8,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:12,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:20,&quot;text&quot;:&quot;isActive&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:50,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:54,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:12,&quot;text&quot;:&quot;bookingDocument&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:36,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:9,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:9,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:9,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:18,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:11,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:11,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:11,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:11,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:11,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:23,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:16,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:25,&quot;text&quot;:&quot;exists&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:57,&quot;character&quot;:18,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:57,&quot;character&quot;:27,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:59,&quot;character&quot;:23,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:59,&quot;character&quot;:27,&quot;text&quot;:&quot;bookingDocument&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:59,&quot;character&quot;:44,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:59,&quot;character&quot;:51,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:59,&quot;character&quot;:60,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:16,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:59,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:11,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:18,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:44,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:8,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:51,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:73,&quot;character&quot;:6,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/verification/getActiveBookingSession.ts&quot;,&quot;line&quot;:73,&quot;character&quot;:49,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

@@ -1,0 +1,622 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>ClinicSettings.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx</td><td class="">82.90%</td><td class="">75%</td><td class="">655</td><td class="">543</td><td class="">112</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Listbox, Transition } from &#x27;@headlessui/react&#x27;;
+import {
+  faCheck,
+  faCheckCircle,
+  faCircleExclamation,
+  faList,
+} from &#x27;@fortawesome/free-solid-svg-icons&#x27;;
+import { classNames } from &#x27;utils/classNames&#x27;;
+import { FontAwesomeIcon } from &#x27;@fortawesome/react-fontawesome&#x27;;
+import Error from &#x27;../../Error&#x27;;
+import { Loader } from &quot;ui&quot;;
+import {
+  query,
+  collection,
+  orderBy,
+  doc,
+  serverTimestamp,
+  setDoc,
+  onSnapshot,
+} from &#x27;firebase/firestore&#x27;;
+import { useCollection } from &#x27;react-firebase-hooks/firestore&#x27;;
+import { firestore } from &#x27;services/firebase&#x27;;
+import toast from &#x27;react-hot-toast&#x27;;
+import { Fragment, useEffect, useState } from &#x27;react&#x27;;
+import { PatternFormat, NumericFormat } from &#x27;react-number-format&#x27;;
+
+const ClinicSettings = () =&gt; {
+  const [isLoading, setIsLoading] = useState&lt;boolean&gt;(true);
+  const [error, setError] = useState&lt;any&gt;(null);
+  const [selectedStandardVcprReason, setSelectedStandardVcprReason] =
+    useState&lt;string&gt;(&#x27;Select a Reason...&#x27;);
+  const [didTouchStandardVcprReason, setDidTouchStandardVcprReason] =
+    useState&lt;boolean&gt;(false);
+  const [selectedLunchTime, setSelectedLunchTime] = useState&lt;string | null&gt;(
+    null
+  );
+  const [didTouchLunchTime, setDidTouchLunchTime] = useState&lt;boolean&gt;(false);
+
+  const [selectedLunchDuration, setSelectedLunchDuration] = useState&lt;
+    string | null
+  &gt;(null);
+  const [didTouchLunchDuration, setDidTouchLunchDuration] =
+    useState&lt;boolean&gt;(false);
+  const [selectedOnePatientDuration, setSelectedOnePatientDuration] = useState&lt;
+    string | null
+  &gt;(null);
+  const [didTouchOnePatientDuration, setDidTouchOnePatientDuration] =
+    useState&lt;boolean&gt;(false);
+  const [selectedTwoPatientDuration, setSelectedTwoPatientDuration] = useState&lt;
+    string | null
+  &gt;(null);
+  const [didTouchTwoPatientDuration, setDidTouchTwoPatientDuration] =
+    useState&lt;boolean&gt;(false);
+  const [selectedThreePatientDuration, setSelectedThreePatientDuration] =
+    useState&lt;string | null&gt;(null);
+  const [didTouchThreePatientDuration, setDidTouchThreePatientDuration] =
+    useState&lt;boolean&gt;(false);
+  const [reasons, loadingReasons, errorReasons] = useCollection(
+    query(collection(firestore, &quot;reasons&quot;), orderBy(&quot;name&quot;, &quot;asc&quot;))
+  );
+  useEffect(() =&gt; {
+    if (reasons) {
+      const unsubscribe = onSnapshot(
+        doc(firestore, &quot;configuration&quot;, &quot;booking&quot;),
+        (doc: any) =&gt; {
+          reasons.docs.forEach((reason: any) =&gt; {
+            if (
+              reason.data()?.id === doc.data()?.clinicStandardVcprReason?.value
+            )
+              setSelectedStandardVcprReason(reason.data()?.name);
+            if (doc.data()?.clinicLunchTime)
+              setSelectedLunchTime(doc.data()?.clinicLunchTime);
+            if (doc.data()?.clinicLunchDuration)
+              setSelectedLunchDuration(doc.data()?.clinicLunchDuration);
+            if (doc.data()?.clinicOnePatientDuration)
+              setSelectedOnePatientDuration(
+                doc.data()?.clinicOnePatientDuration
+              );
+            if (doc.data()?.clinicTwoPatientDuration)
+              setSelectedTwoPatientDuration(
+                doc.data()?.clinicTwoPatientDuration
+              );
+            if (doc.data()?.clinicThreePatientDuration)
+              setSelectedThreePatientDuration(
+                doc.data()?.clinicThreePatientDuration
+              );
+          });
+          setIsLoading(false);
+        },
+        (error: any) =&gt; {
+          setError(error?.message || error);
+          setIsLoading(false);
+        }
+      );
+      return () =&gt; unsubscribe();
+    } else return;
+  }, [reasons]);
+  useEffect(() =&gt; {
+    if (
+      reasons &amp;&amp;
+      didTouchStandardVcprReason &amp;&amp;
+      selectedStandardVcprReason !== &quot;Select a Reason...&quot;
+    ) {
+      const updateClinicBookingConfiguration = async () =&gt; {
+        let reasonId: number | null = null;
+        reasons.docs.forEach((reason: any) =&gt;
+          reason.data()?.name === selectedStandardVcprReason
+            ? (reasonId = reason.data()?.id)
+            : null
+        );
+        await setDoc(
+          doc(firestore, &quot;configuration/booking&quot;),
+          {
+            clinicStandardVcprReason: reasonId,
+            updatedOn: serverTimestamp(),
+          },
+          { merge: true }
+        )
+          .then(() =&gt;
+            toast(
+              `Standard VCPR Reason for Clinic Updated to &quot;${selectedStandardVcprReason}&quot;`,
+              {
+                position: &quot;top-center&quot;,
+                icon: (
+                  &lt;FontAwesomeIcon
+                    icon={faCheckCircle}
+                    size=&quot;sm&quot;
+                    className=&quot;text-movet-green&quot;
+                  /&gt;
+                ),
+              }
+            )
+          )
+          .catch((error: any) =&gt;
+            toast(`Standard VCPR Reason Update FAILED: ${error?.message}`, {
+              duration: 5000,
+              position: &quot;bottom-center&quot;,
+              icon: (
+                &lt;FontAwesomeIcon
+                  icon={faCircleExclamation}
+                  size=&quot;sm&quot;
+                  className=&quot;text-movet-red&quot;
+                /&gt;
+              ),
+            })
+          );
+      };
+      updateClinicBookingConfiguration();
+    }
+  }, [selectedStandardVcprReason, reasons, didTouchStandardVcprReason]);
+
+  useEffect(() =&gt; {
+    if (
+      reasons &amp;&amp;
+      didTouchLunchTime &amp;&amp;
+      selectedLunchTime &amp;&amp;
+      selectedLunchTime !== &quot;&quot;
+    ) {
+      const updateClinicBookingConfiguration = async () =&gt; {
+        await setDoc(
+          doc(firestore, &quot;configuration/booking&quot;),
+          {
+            clinicLunchTime: selectedLunchTime,
+            updatedOn: serverTimestamp(),
+          },
+          { merge: true }
+        )
+          .then(() =&gt;
+            toast(`Clinic Lunch Time Updated to &quot;${selectedLunchTime}&quot;`, {
+              position: &quot;top-center&quot;,
+              icon: (
+                &lt;FontAwesomeIcon
+                  icon={faCheckCircle}
+                  size=&quot;sm&quot;
+                  className=&quot;text-movet-green&quot;
+                /&gt;
+              ),
+            })
+          )
+          .catch((error: any) =&gt;
+            toast(`Clinic Lunch Time Updated FAILED: ${error?.message}`, {
+              duration: 5000,
+              position: &quot;bottom-center&quot;,
+              icon: (
+                &lt;FontAwesomeIcon
+                  icon={faCircleExclamation}
+                  size=&quot;sm&quot;
+                  className=&quot;text-movet-red&quot;
+                /&gt;
+              ),
+            })
+          );
+      };
+      updateClinicBookingConfiguration();
+    }
+  }, [selectedLunchTime, reasons, didTouchLunchTime]);
+  useEffect(() =&gt; {
+    if (reasons &amp;&amp; didTouchLunchDuration &amp;&amp; selectedLunchDuration) {
+      const updateClinicBookingConfiguration = async () =&gt; {
+        await setDoc(
+          doc(firestore, &quot;configuration/booking&quot;),
+          {
+            clinicLunchDuration: selectedLunchDuration,
+            updatedOn: serverTimestamp(),
+          },
+          { merge: true }
+        )
+          .then(() =&gt;
+            toast(
+              `Clinic Lunch Duration Updated to &quot;${selectedLunchDuration}&quot;`,
+              {
+                position: &quot;top-center&quot;,
+                icon: (
+                  &lt;FontAwesomeIcon
+                    icon={faCheckCircle}
+                    size=&quot;sm&quot;
+                    className=&quot;text-movet-green&quot;
+                  /&gt;
+                ),
+              }
+            )
+          )
+          .catch((error: any) =&gt;
+            toast(`Clinic Lunch Duration Updated FAILED: ${error?.message}`, {
+              duration: 5000,
+              position: &quot;bottom-center&quot;,
+              icon: (
+                &lt;FontAwesomeIcon
+                  icon={faCircleExclamation}
+                  size=&quot;sm&quot;
+                  className=&quot;text-movet-red&quot;
+                /&gt;
+              ),
+            })
+          );
+      };
+      updateClinicBookingConfiguration();
+    }
+  }, [selectedLunchDuration, reasons, didTouchLunchDuration]);
+  useEffect(() =&gt; {
+    if (
+      reasons &amp;&amp;
+      ((didTouchOnePatientDuration &amp;&amp; selectedOnePatientDuration) ||
+        (didTouchTwoPatientDuration &amp;&amp; selectedTwoPatientDuration) ||
+        (didTouchThreePatientDuration &amp;&amp; selectedThreePatientDuration)) &amp;&amp;
+      selectedThreePatientDuration !== &quot;&quot; &amp;&amp;
+      selectedTwoPatientDuration !== &quot;&quot; &amp;&amp;
+      selectedOnePatientDuration !== &quot;&quot;
+    ) {
+      const updateClinicBookingConfiguration = async () =&gt; {
+        await setDoc(
+          doc(firestore, &quot;configuration/booking&quot;),
+          {
+            clinicOnePatientDuration: selectedOnePatientDuration,
+            clinicTwoPatientDuration: selectedTwoPatientDuration,
+            clinicThreePatientDuration: selectedThreePatientDuration,
+            updatedOn: serverTimestamp(),
+          },
+          { merge: true }
+        )
+          .then(() =&gt;
+            toast(&quot;Updated Multi-Patient Appointment Duration&quot;, {
+              position: &quot;top-center&quot;,
+              icon: (
+                &lt;FontAwesomeIcon
+                  icon={faCheckCircle}
+                  size=&quot;sm&quot;
+                  className=&quot;text-movet-green&quot;
+                /&gt;
+              ),
+            })
+          )
+          .catch((error: any) =&gt;
+            toast(
+              `Multi-Patient Appointment Duration Updated FAILED: ${error?.message}`,
+              {
+                duration: 5000,
+                position: &quot;bottom-center&quot;,
+                icon: (
+                  &lt;FontAwesomeIcon
+                    icon={faCircleExclamation}
+                    size=&quot;sm&quot;
+                    className=&quot;text-movet-red&quot;
+                  /&gt;
+                ),
+              }
+            )
+          );
+      };
+      updateClinicBookingConfiguration();
+    }
+  }, [
+    selectedOnePatientDuration,
+    selectedTwoPatientDuration,
+    selectedThreePatientDuration,
+    reasons,
+    didTouchOnePatientDuration,
+    didTouchTwoPatientDuration,
+    didTouchThreePatientDuration,
+  ]);
+  return (
+    &lt;form className=&quot;divide-y divide-movet-gray lg:col-span-9&quot;&gt;
+      &lt;div className=&quot;divide-y divide-movet-gray&quot;&gt;
+        &lt;&gt;
+          {loadingReasons || isLoading ? (
+            &lt;Loader /&gt;
+          ) : errorReasons || error ? (
+            &lt;div className=&quot;my-4&quot;&gt;
+              &lt;Error error={errorReasons || error} /&gt;
+            &lt;/div&gt;
+          ) : (
+            reasons &amp;&amp;
+            reasons.docs.length &gt; 0 &amp;&amp; (
+              &lt;div className=&quot;px-4 sm:px-6&quot;&gt;
+                &lt;div&gt;
+                  &lt;h2 className=&quot;text-2xl mb-2 leading-6 font-medium text-movet-black&quot;&gt;
+                    CLINIC OPTIONS
+                  &lt;/h2&gt;
+                  &lt;p className=&quot;text-sm text-movet-black -mt-1&quot;&gt;
+                    Use the options below to configure how clients can book
+                    appointments at the Clinic.
+                  &lt;/p&gt;
+                &lt;/div&gt;
+                &lt;ul
+                  role=&quot;list&quot;
+                  className=&quot;mt-4 mb-8 divide-y divide-movet-gray&quot;
+                &gt;
+                  &lt;li className=&quot;py-4 flex-col sm:flex-row items-center justify-center&quot;&gt;
+                    &lt;div className=&quot;flex flex-col mr-4&quot;&gt;
+                      &lt;h3&gt;Standard Lunch&lt;/h3&gt;
+                      &lt;p className=&quot;text-sm&quot;&gt;
+                        This controls availability of appointments during the
+                        standard lunch hour. All available appointment slots
+                        that overlap with this time and duration will be marked
+                        as unavailable in the scheduling.
+                      &lt;/p&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;flex justify-center items-center my-4&quot;&gt;
+                      &lt;div className=&quot;flex-col justify-center items-center mx-4&quot;&gt;
+                        &lt;p className=&quot;text-center my-2&quot;&gt;Start Time&lt;/p&gt;
+                        &lt;PatternFormat
+                          isAllowed={(values: any) =&gt; {
+                            const { value } = values;
+                            return value &lt; 2401;
+                          }}
+                          format={&quot;##:##&quot;}
+                          mask=&quot;_&quot;
+                          patternChar=&quot;#&quot;
+                          name={&quot;lunch-start-time&quot;}
+                          type=&quot;text&quot;
+                          valueIsNumericString
+                          value={selectedLunchTime}
+                          onBlur={() =&gt; setDidTouchLunchTime(true)}
+                          onValueChange={(target: any) =&gt;
+                            setSelectedLunchTime(target.value)
+                          }
+                          className={
+                            &quot;focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20&quot;
+                          }
+                        /&gt;
+                        &lt;p className=&quot;text-center mt-2 italic text-xs&quot;&gt;
+                          (24 Hour)
+                        &lt;/p&gt;
+                      &lt;/div&gt;
+                      &lt;div className=&quot;flex-col justify-center items-center mx-4&quot;&gt;
+                        &lt;p className=&quot;text-center my-2&quot;&gt;Duration&lt;/p&gt;
+                        &lt;NumericFormat
+                          isAllowed={(values: any) =&gt; {
+                            const { value } = values;
+                            return value &lt; 181;
+                          }}
+                          allowLeadingZeros={false}
+                          allowNegative={false}
+                          name={&quot;lunch-duration&quot;}
+                          type=&quot;text&quot;
+                          valueIsNumericString
+                          value={selectedLunchDuration}
+                          onBlur={() =&gt; setDidTouchLunchDuration(true)}
+                          onValueChange={(target: any) =&gt;
+                            setSelectedLunchDuration(target.value)
+                          }
+                          className={
+                            &quot;focus:ring-movet-brown focus:border-movet-brown py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-14&quot;
+                          }
+                        /&gt;
+                        &lt;p className=&quot;text-center mt-2 italic text-xs&quot;&gt;
+                          (Minutes)
+                        &lt;/p&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/li&gt;
+                  &lt;li className=&quot;py-4 flex-col sm:flex-row items-center justify-center&quot;&gt;
+                    &lt;div className=&quot;flex flex-col mr-4&quot;&gt;
+                      &lt;h3&gt;Multi-Patient Appointment Durations&lt;/h3&gt;
+                      &lt;p className=&quot;text-sm&quot;&gt;
+                        This controls the duration of appointments depending on
+                        the number of patients selected.
+                      &lt;/p&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;flex justify-center items-center my-4&quot;&gt;
+                      &lt;div className=&quot;flex-col justify-center items-center mx-4&quot;&gt;
+                        &lt;p className=&quot;text-center my-2&quot;&gt;1 Patient&lt;/p&gt;
+                        &lt;NumericFormat
+                          isAllowed={(values: any) =&gt; {
+                            const { value } = values;
+                            return value &lt; 181;
+                          }}
+                          allowLeadingZeros={false}
+                          allowNegative={false}
+                          name={&quot;one-patient-duration&quot;}
+                          type=&quot;text&quot;
+                          valueIsNumericString
+                          value={selectedOnePatientDuration}
+                          onBlur={() =&gt; setDidTouchOnePatientDuration(true)}
+                          onValueChange={(target: any) =&gt;
+                            setSelectedOnePatientDuration(target.value)
+                          }
+                          className={
+                            &quot;focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-14&quot;
+                          }
+                        /&gt;
+                        &lt;p className=&quot;text-center mt-2 italic text-xs&quot;&gt;
+                          Minutes
+                        &lt;/p&gt;
+                      &lt;/div&gt;
+                      &lt;div className=&quot;flex-col justify-center items-center mx-4&quot;&gt;
+                        &lt;p className=&quot;text-center my-2&quot;&gt;2 Patients&lt;/p&gt;
+                        &lt;NumericFormat
+                          isAllowed={(values: any) =&gt; {
+                            const { value } = values;
+                            return value &lt; 181;
+                          }}
+                          allowLeadingZeros={false}
+                          allowNegative={false}
+                          name={&quot;two-patient-duration&quot;}
+                          type=&quot;text&quot;
+                          valueIsNumericString
+                          value={selectedTwoPatientDuration}
+                          onBlur={() =&gt; setDidTouchTwoPatientDuration(true)}
+                          onValueChange={(target: any) =&gt;
+                            setSelectedTwoPatientDuration(target.value)
+                          }
+                          className={
+                            &quot;focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-14&quot;
+                          }
+                        /&gt;
+                        &lt;p className=&quot;text-center mt-2 italic text-xs&quot;&gt;
+                          Minutes
+                        &lt;/p&gt;
+                      &lt;/div&gt;
+                      &lt;div className=&quot;flex-col justify-center items-center mx-4&quot;&gt;
+                        &lt;p className=&quot;text-center my-2&quot;&gt;3 Patients&lt;/p&gt;
+                        &lt;NumericFormat
+                          isAllowed={(values: any) =&gt; {
+                            const { value } = values;
+                            return value &lt; 181;
+                          }}
+                          allowLeadingZeros={false}
+                          allowNegative={false}
+                          name={&quot;three-patient-duration&quot;}
+                          type=&quot;text&quot;
+                          valueIsNumericString
+                          value={selectedThreePatientDuration}
+                          onBlur={() =&gt; setDidTouchThreePatientDuration(true)}
+                          onValueChange={(target: any) =&gt;
+                            setSelectedThreePatientDuration(target.value)
+                          }
+                          className={
+                            &quot;focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-14&quot;
+                          }
+                        /&gt;
+                        &lt;p className=&quot;text-center mt-2 italic text-xs&quot;&gt;
+                          Minutes
+                        &lt;/p&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/li&gt;
+                  &lt;li className=&quot;py-4 flex-col sm:flex-row items-center justify-center&quot;&gt;
+                    &lt;div className=&quot;flex flex-col mr-4&quot;&gt;
+                      &lt;h3&gt;
+                        VCPR Reason - &lt;b&gt;Standard&lt;/b&gt;
+                      &lt;/h3&gt;
+                      &lt;p className=&quot;text-sm&quot;&gt;
+                        This is the reason assigned to appointments when a 1st
+                        time client (or existing client with a new pet) books an
+                        appointment and does not indicate their pet(s) have a
+                        minor illness.
+                      &lt;/p&gt;
+                    &lt;/div&gt;
+                    &lt;Listbox
+                      value={selectedStandardVcprReason}
+                      onChange={setSelectedStandardVcprReason}
+                    &gt;
+                      {({ open }) =&gt; (
+                        &lt;&gt;
+                          &lt;div
+                            className={
+                              &quot;relative bg-white w-full sm:w-2/3 mx-auto my-4&quot;
+                            }
+                          &gt;
+                            &lt;Listbox.Button
+                              className={
+                                &quot;border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm&quot;
+                              }
+                            &gt;
+                              {selectedStandardVcprReason &amp;&amp; (
+                                &lt;span
+                                  className={
+                                    &quot;text-movet-black block truncate font-abside-smooth text-base h-7 mt-1 ml-1&quot;
+                                  }
+                                &gt;
+                                  {selectedStandardVcprReason}
+                                &lt;/span&gt;
+                              )}
+                              &lt;span className=&quot;absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none&quot;&gt;
+                                {false &amp;&amp; (
+                                  &lt;FontAwesomeIcon
+                                    icon={faList}
+                                    className=&quot;h-4 w-4 mr-2&quot;
+                                    size=&quot;sm&quot;
+                                  /&gt;
+                                )}
+                              &lt;/span&gt;
+                            &lt;/Listbox.Button&gt;
+                            &lt;Transition
+                              show={open}
+                              as={Fragment}
+                              enter=&quot;transition duration-100 ease-out&quot;
+                              enterFrom=&quot;transform scale-95 opacity-0&quot;
+                              enterTo=&quot;transform scale-100 opacity-100&quot;
+                              leave=&quot;transition duration-75 ease-out&quot;
+                              leaveFrom=&quot;transform scale-100 opacity-100&quot;
+                              leaveTo=&quot;transform scale-95 opacity-0&quot;
+                            &gt;
+                              &lt;Listbox.Options className=&quot;absolute z-50 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-movet-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm&quot;&gt;
+                                {reasons &amp;&amp;
+                                  reasons.docs.length &gt; 0 &amp;&amp;
+                                  reasons.docs.map((item: any) =&gt; (
+                                    &lt;Listbox.Option
+                                      key={item.data()?.id}
+                                      onClick={() =&gt;
+                                        setDidTouchStandardVcprReason(true)
+                                      }
+                                      className={({ active }) =&gt;
+                                        classNames(
+                                          active
+                                            ? &quot;text-movet-white bg-movet-brown&quot;
+                                            : &quot;text-movet-black&quot;,
+                                          &quot;text-left cursor-default select-none relative py-2 pl-4 pr-4&quot;
+                                        )
+                                      }
+                                      value={item.data()?.name}
+                                    &gt;
+                                      {({ active, selected }) =&gt; (
+                                        &lt;&gt;
+                                          &lt;span
+                                            className={classNames(
+                                              selected
+                                                ? &quot;font-semibold&quot;
+                                                : &quot;font-normal&quot;,
+                                              &quot;block truncate ml-2&quot;
+                                            )}
+                                          &gt;
+                                            #{item.data()?.id}-{&quot; &quot;}
+                                            {item.data()?.name}
+                                          &lt;/span&gt;
+                                          {selected ? (
+                                            &lt;span
+                                              className={classNames(
+                                                active
+                                                  ? &quot;text-white&quot;
+                                                  : &quot;text-movet-black&quot;,
+                                                &quot;absolute inset-y-0 left-0 flex items-center pl-1.5&quot;
+                                              )}
+                                            &gt;
+                                              &lt;FontAwesomeIcon
+                                                icon={faCheck}
+                                                className=&quot;h-4 w-4&quot;
+                                                size=&quot;sm&quot;
+                                              /&gt;
+                                            &lt;/span&gt;
+                                          ) : null}
+                                        &lt;/&gt;
+                                      )}
+                                    &lt;/Listbox.Option&gt;
+                                  ))}
+                              &lt;/Listbox.Options&gt;
+                            &lt;/Transition&gt;
+                          &lt;/div&gt;
+                        &lt;/&gt;
+                      )}
+                    &lt;/Listbox&gt;
+                  &lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/div&gt;
+            )
+          )}
+        &lt;/&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default ClinicSettings;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:28,&quot;character&quot;:9,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:64,&quot;character&quot;:9,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:32,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:14,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:21,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:29,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:36,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:48,&quot;text&quot;:&quot;clinicStandardVcprReason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:74,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:44,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:51,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:59,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:16,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:20,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:28,&quot;text&quot;:&quot;clinicLunchTime&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:71,&quot;character&quot;:35,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:71,&quot;character&quot;:39,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:71,&quot;character&quot;:47,&quot;text&quot;:&quot;clinicLunchTime&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:72,&quot;character&quot;:16,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:72,&quot;character&quot;:20,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:72,&quot;character&quot;:28,&quot;text&quot;:&quot;clinicLunchDuration&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:73,&quot;character&quot;:39,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:73,&quot;character&quot;:43,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:73,&quot;character&quot;:51,&quot;text&quot;:&quot;clinicLunchDuration&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:74,&quot;character&quot;:16,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:74,&quot;character&quot;:20,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:74,&quot;character&quot;:28,&quot;text&quot;:&quot;clinicOnePatientDuration&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:76,&quot;character&quot;:16,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:76,&quot;character&quot;:20,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:76,&quot;character&quot;:28,&quot;text&quot;:&quot;clinicOnePatientDuration&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:78,&quot;character&quot;:16,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:78,&quot;character&quot;:20,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:78,&quot;character&quot;:28,&quot;text&quot;:&quot;clinicTwoPatientDuration&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:80,&quot;character&quot;:16,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:80,&quot;character&quot;:20,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:80,&quot;character&quot;:28,&quot;text&quot;:&quot;clinicTwoPatientDuration&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:82,&quot;character&quot;:16,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:82,&quot;character&quot;:20,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:82,&quot;character&quot;:28,&quot;text&quot;:&quot;clinicThreePatientDuration&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:84,&quot;character&quot;:16,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:84,&quot;character&quot;:20,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:84,&quot;character&quot;:28,&quot;text&quot;:&quot;clinicThreePatientDuration&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:89,&quot;character&quot;:9,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:90,&quot;character&quot;:19,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:90,&quot;character&quot;:26,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:90,&quot;character&quot;:37,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:105,&quot;character&quot;:30,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:106,&quot;character&quot;:10,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:106,&quot;character&quot;:17,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:106,&quot;character&quot;:25,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:107,&quot;character&quot;:26,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:107,&quot;character&quot;:33,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:107,&quot;character&quot;:41,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:133,&quot;character&quot;:18,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:134,&quot;character&quot;:57,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:134,&quot;character&quot;:64,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:179,&quot;character&quot;:18,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:180,&quot;character&quot;:55,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:180,&quot;character&quot;:62,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:222,&quot;character&quot;:18,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:223,&quot;character&quot;:59,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:223,&quot;character&quot;:66,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:272,&quot;character&quot;:18,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:274,&quot;character&quot;:68,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:274,&quot;character&quot;:75,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:308,&quot;character&quot;:21,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:308,&quot;character&quot;:44,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:341,&quot;character&quot;:38,&quot;text&quot;:&quot;values&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:342,&quot;character&quot;:36,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:343,&quot;character&quot;:35,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:353,&quot;character&quot;:42,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:354,&quot;character&quot;:49,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:354,&quot;character&quot;:56,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:367,&quot;character&quot;:38,&quot;text&quot;:&quot;values&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:368,&quot;character&quot;:36,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:369,&quot;character&quot;:35,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:378,&quot;character&quot;:42,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:379,&quot;character&quot;:53,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:379,&quot;character&quot;:60,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:403,&quot;character&quot;:38,&quot;text&quot;:&quot;values&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:404,&quot;character&quot;:36,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:405,&quot;character&quot;:35,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:414,&quot;character&quot;:42,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:415,&quot;character&quot;:58,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:415,&quot;character&quot;:65,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:428,&quot;character&quot;:38,&quot;text&quot;:&quot;values&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:429,&quot;character&quot;:36,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:430,&quot;character&quot;:35,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:439,&quot;character&quot;:42,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:440,&quot;character&quot;:58,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:440,&quot;character&quot;:65,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:453,&quot;character&quot;:38,&quot;text&quot;:&quot;values&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:454,&quot;character&quot;:36,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:455,&quot;character&quot;:35,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:464,&quot;character&quot;:42,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:465,&quot;character&quot;:60,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:465,&quot;character&quot;:67,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:537,&quot;character&quot;:52,&quot;text&quot;:&quot;item&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:539,&quot;character&quot;:43,&quot;text&quot;:&quot;item&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:539,&quot;character&quot;:48,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:539,&quot;character&quot;:56,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:551,&quot;character&quot;:38,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:551,&quot;character&quot;:45,&quot;text&quot;:&quot;item&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:551,&quot;character&quot;:50,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:551,&quot;character&quot;:58,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:563,&quot;character&quot;:46,&quot;text&quot;:&quot;item&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:563,&quot;character&quot;:51,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:563,&quot;character&quot;:59,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:564,&quot;character&quot;:45,&quot;text&quot;:&quot;item&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:564,&quot;character&quot;:50,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/settings/booking/ClinicSettings.tsx&quot;,&quot;line&quot;:564,&quot;character&quot;:58,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

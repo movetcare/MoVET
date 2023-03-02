@@ -1,0 +1,168 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>appointment-prep.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/movetcare.com/pages/appointment-prep.tsx</td><td class="">100.00%</td><td class="">75%</td><td class="">133</td><td class="">133</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { faArrowLeft, faCreditCard } from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import { useRouter } from &quot;next/router&quot;;
+import Image from &quot;next/image&quot;;
+import { Button } from &quot;ui&quot;;
+import Layout from &quot;components/Layout&quot;;
+import Head from &quot;next/head&quot;;
+
+const AppointmentPrep = () =&gt; {
+  const router = useRouter();
+  return (
+    &lt;Layout&gt;
+      &lt;Head&gt;
+        &lt;title&gt;How to Prepare for Your Appointment&lt;/title&gt;
+      &lt;/Head&gt;
+      &lt;section className=&quot;flex flex-col max-w-screen-lg bg-white rounded-xl p-4 sm:p-8 mx-4 sm:mx-auto my-8&quot;&gt;
+        &lt;div
+          className=&quot;flex flex-row justify-center items-center my-4 cursor-pointer&quot;
+          onClick={() =&gt; router.back()}
+        &gt;
+          &lt;FontAwesomeIcon icon={faArrowLeft} /&gt;
+          &lt;p className=&quot;ml-2&quot;&gt;Go Back&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;w-36 h-32 sm:w-28 sm:h-24 mx-auto mb-4&quot;&gt;
+          &lt;Image
+            src=&quot;/images/icons/clinic.svg&quot;
+            alt={&quot;appointment icon&quot;}
+            height={120}
+            width={120}
+          /&gt;
+        &lt;/div&gt;
+        &lt;h1&gt;MoVET Appointment Prep&lt;/h1&gt;
+        &lt;h2 className=&quot;mb-0&quot;&gt;Medical Records:&lt;/h2&gt;
+        &lt;p&gt;
+          If you have booked an appointment for a new pet, please email (or ask
+          your previous vet to email) their vaccine and medical records to{&quot; &quot;}
+          &lt;a
+            href=&quot;mailto://info@movetcare.com&quot;
+            target=&quot;_blank&quot;
+            rel=&quot;noreferrer&quot;
+          &gt;
+            info@movetcare.com
+          &lt;/a&gt;{&quot; &quot;}
+          &lt;b&gt;prior&lt;/b&gt; to your appointment.
+        &lt;/p&gt;
+        &lt;h2 className=&quot;mb-0&quot;&gt;Payment on File&lt;/h2&gt;
+        &lt;p&gt;
+          A valid form of payment on file is required before MoVET can perform
+          any services. Please be sure to add a payment method to your account{&quot; &quot;}
+          &lt;i&gt;before&lt;/i&gt; your appointment.
+        &lt;/p&gt;
+        &lt;a
+          href=&quot;https://app.movetcare.com/update-payment-method&quot;
+          target=&quot;_blank&quot;
+          rel=&quot;noreferrer&quot;
+        &gt;
+          &lt;Button
+            icon={faCreditCard}
+            text=&quot;Add a Form of Payment&quot;
+            color=&quot;red&quot;
+            className=&quot;my-4 mx-auto&quot;
+          /&gt;
+        &lt;/a&gt;
+        &lt;h2 className=&quot;mb-0&quot;&gt;Handling Tips for your Pets&lt;/h2&gt;
+        &lt;p&gt;
+          Pets can get nervous and anxious about visiting the veterinarian. We
+          want to prevent any nervous behaviors that can later create fearful or
+          even aggressive behaviors. Once this happens, veterinary visits can
+          become very unpleasant for both owner and pet that we often resign to
+          just not taking them to the vet&amp;apos;s office at all anymore.
+        &lt;/p&gt;
+        &lt;p&gt;
+          Please let us know in advance of any favorite treat, scratching spot,
+          or any behavioral issues you may have encountered with your pet
+          previously. Are they food motivated, territorial, or aggressive
+          towards humans or other pets? Anything that would make your pet more
+          comfortable with us for their visit would be great! We can offer
+          anti-anxiety medications ahead of appointments for some patients that
+          might need a little help relaxing around us.
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;i&gt;
+            Please{&quot; &quot;}
+            &lt;a
+              href=&quot;https://movetcare.com/contact&quot;
+              target=&quot;_blank&quot;
+              rel=&quot;noreferrer&quot;
+            &gt;
+              contact us
+            &lt;/a&gt;{&quot; &quot;}
+            &lt;b&gt;before your appointment&lt;/b&gt; should you feel your pet(s) needs
+            more options, such as anxiolytics and / or supplements to continue
+            to make your pet&amp;apos;s visit more comfortable. We thank you in
+            advance for keeping our staff safe!
+          &lt;/i&gt;
+        &lt;/p&gt;
+        &lt;h2 className=&quot;mb-0&quot;&gt;Virtual Consultations&lt;/h2&gt;
+        &lt;p&gt;
+          Please tap the &amp;quot;START CONSULTATION&amp;quot; button in our{&quot; &quot;}
+          &lt;a
+            href=&quot;https://movetcare.com/get-the-app&quot;
+            target=&quot;_blank&quot;
+            rel=&quot;noreferrer&quot;
+          &gt;
+            mobile app
+          &lt;/a&gt;{&quot; &quot;}
+          to start your Virtual Consultation session. Please email{&quot; &quot;}
+          &lt;a
+            href=&quot;mailto://info@movetcare.com?subject=Photos/videos for my appointment&quot;
+            target=&quot;_blank&quot;
+            rel=&quot;noreferrer&quot;
+          &gt;
+            info@movetcare.com
+          &lt;/a&gt;{&quot; &quot;}
+          if you have any pictures or videos that you would like to share with
+          us prior to our consultation. Make sure you are using a device with
+          good internet connection and access to camera/audio. Our telehealth
+          platform allows you to test your device prior to starting the
+          consultation. We highly suggest you run those diagnostic tests prior
+          to connecting with us.
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;b&gt;
+            The cost of this service is between $32.00 - $50 per consultation.
+          &lt;/b&gt;
+        &lt;/p&gt;
+        &lt;h3 className=&quot;text-center mt-8 text-lg&quot;&gt;
+          Please{&quot; &quot;}
+          &lt;a
+            href=&quot;https://movetcare.com/contact&quot;
+            target=&quot;_blank&quot;
+            rel=&quot;noreferrer&quot;
+          &gt;
+            email
+          &lt;/a&gt;{&quot; &quot;}
+          (or &lt;a href=&quot;tel://7205077387&quot;&gt;text us&lt;/a&gt;) if you have any questions!
+        &lt;/h3&gt;
+        &lt;div
+          className=&quot;flex flex-row justify-center items-center my-4 cursor-pointer&quot;
+          onClick={() =&gt; router.back()}
+        &gt;
+          &lt;FontAwesomeIcon icon={faArrowLeft} /&gt;
+          &lt;p className=&quot;ml-2&quot;&gt;Go Back&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/Layout&gt;
+  );
+};
+
+export default AppointmentPrep;
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

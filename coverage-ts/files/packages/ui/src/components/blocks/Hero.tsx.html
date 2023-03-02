@@ -1,0 +1,115 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Hero.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">packages/ui/src/components/blocks/Hero.tsx</td><td class="">94.17%</td><td class="">75%</td><td class="">103</td><td class="">97</td><td class="">6</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import Image from &quot;next/image&quot;;
+import { useRouter } from &quot;next/router&quot;;
+
+export const Hero = ({
+  title,
+  secondTitle,
+  description,
+  callToAction,
+  imageUrl,
+}: {
+  title: string;
+  secondTitle: string;
+  description: any;
+  callToAction: any;
+  imageUrl: string;
+}) =&gt; {
+  const router = useRouter();
+  return (
+    &lt;section className=&quot;relative w-full pb-24 sm:pb-0 z-10 -mt-12 md:mt-0&quot;&gt;
+      &lt;div className=&quot;flex justify-center items-center relative py-12 mb-12 sm:py-4 sm:mb-0 sm:max-w-screen-lg sm:mx-auto sm:px-8&quot;&gt;
+        &lt;div className=&quot;sm:w-1/2 flex justify-center&quot;&gt;
+          &lt;div className=&quot;w-80 relative z-10 sm:text-center my-0 sm:mt-10 md:my-0&quot;&gt;
+            {title &amp;&amp; (
+              &lt;h1 className=&quot;text-2xl sm:text-3xl whitespace-nowrap mb-1.5&quot;&gt;
+                {title}
+              &lt;/h1&gt;
+            )}
+            {secondTitle &amp;&amp; (
+              &lt;h1 className=&quot;text-4xl sm:text-6xl text-movet-red mb-4&quot;&gt;
+                {secondTitle}
+              &lt;/h1&gt;
+            )}
+            {description &amp;&amp; (
+              &lt;p className=&quot;text-base sm:text-lg font-bold font-abside leading-6 text-center&quot;&gt;
+                {description}
+              &lt;/p&gt;
+            )}
+            {router?.query?.mode !== &quot;app&quot; &amp;&amp; callToAction &amp;&amp; (
+              &lt;div className=&quot;flex flex-col justify-center items-center mt-4&quot;&gt;
+                {callToAction}
+              &lt;/div&gt;
+            )}
+          &lt;/div&gt;
+        &lt;/div&gt;
+        {imageUrl &amp;&amp; (
+          &lt;&gt;
+            &lt;div className=&quot;hidden md:flex w-1/2 h-full pr-0 sm:pl-8 md:pl-0 justify-center&quot;&gt;
+              &lt;div className=&quot;max-w-sm&quot;&gt;
+                &lt;Image
+                  src={imageUrl}
+                  alt=&quot;dog&quot;
+                  className=&quot;rounded-full&quot;
+                  width={340}
+                  height={340}
+                  priority
+                /&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;absolute right-0 bottom-0 w-[25%] sm:hidden&quot;&gt;
+              &lt;div className=&quot;absolute w-full h-[132%] -bottom-12&quot;&gt;
+                &lt;svg
+                  className=&quot;fill-current text-movet-tan w-[62%] h-[45%] absolute right-0 bottom-[84%]&quot;
+                  viewBox=&quot;1 0 52 52&quot;
+                &gt;
+                  &lt;path d=&quot;M 0,53 H 53 V 0 C 39,26 24,35 0,53 Z&quot; /&gt;
+                &lt;/svg&gt;
+                &lt;div className=&quot;backdrop-app w-full h-full bg-movet-tan&quot;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+              &lt;Image
+                src={imageUrl}
+                alt=&quot;dog&quot;
+                className=&quot;rounded-md invisible&quot;
+                width={340}
+                height={340}
+                priority
+              /&gt;
+            &lt;/div&gt;
+          &lt;/&gt;
+        )}
+      &lt;/div&gt;
+      {imageUrl &amp;&amp; (
+        &lt;div className=&quot;sm:hidden curve h-16 before:bg-movet-white before:translate-x-[-7%] before:translate-y-[30%] after:bg-movet-tan after:translate-x-[85%] after:translate-y-[70%]&quot;&gt;
+          &lt;div className=&quot;absolute w-full flex justify-center -bottom-28 z-10&quot;&gt;
+            &lt;Image
+              src={imageUrl}
+              alt=&quot;dog&quot;
+              className=&quot;rounded-full&quot;
+              width={260}
+              height={260}
+              priority
+            /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/section&gt;
+  );
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Hero.tsx&quot;,&quot;line&quot;:6,&quot;character&quot;:2,&quot;text&quot;:&quot;description&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Hero.tsx&quot;,&quot;line&quot;:7,&quot;character&quot;:2,&quot;text&quot;:&quot;callToAction&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Hero.tsx&quot;,&quot;line&quot;:12,&quot;character&quot;:2,&quot;text&quot;:&quot;description&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Hero.tsx&quot;,&quot;line&quot;:13,&quot;character&quot;:2,&quot;text&quot;:&quot;callToAction&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Hero.tsx&quot;,&quot;line&quot;:32,&quot;character&quot;:13,&quot;text&quot;:&quot;description&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Hero.tsx&quot;,&quot;line&quot;:37,&quot;character&quot;:46,&quot;text&quot;:&quot;callToAction&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

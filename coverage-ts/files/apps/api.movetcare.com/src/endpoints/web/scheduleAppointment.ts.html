@@ -1,0 +1,138 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>scheduleAppointment.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts</td><td class="">60.67%</td><td class="">75%</td><td class="">150</td><td class="">91</td><td class="">59</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { functions, defaultRuntimeOptions, DEBUG } from &quot;../../config/config&quot;;
+import { recaptchaIsVerified } from &quot;../../utils/recaptchaIsVerified&quot;;
+import { handleFailedBooking } from &quot;../../booking/session/handleFailedBooking&quot;;
+import type { BookingError, Booking } from &quot;../../types/booking&quot;;
+import { processContactInfo } from &quot;../../booking/session/processContactInfo&quot;;
+import { setupNewBookingSession } from &quot;../../booking/session/setupNewBookingSession&quot;;
+import { processAddAPet } from &quot;../../booking/session/processAddAPet&quot;;
+import { processPetSelection } from &quot;../../booking/session/processPetSelection&quot;;
+import { processIllPetSelection } from &quot;../../booking/session/processIllPetSelection&quot;;
+import { processIllnessDetails } from &quot;../../booking/session/processIllnessDetails&quot;;
+import { processLocation } from &quot;../../booking/session/processLocation&quot;;
+import { processDateTime } from &quot;../../booking/session/processDateTime&quot;;
+import { processReason } from &quot;../../booking/session/processReason&quot;;
+import { processStaff } from &quot;../../booking/session/processStaff&quot;;
+
+export const scheduleAppointment = functions
+  .runWith(defaultRuntimeOptions)
+  .https.onCall(async (data: any): Promise&lt;Booking | BookingError&gt; =&gt; {
+    if (DEBUG)
+      console.log(
+        &quot;scheduleAppointment =&gt; INCOMING REQUEST PAYLOAD scheduleAppointment =&gt; &quot;,
+        data
+      );
+    const {
+      token,
+      email,
+      contactInfo,
+      id,
+      addAPet,
+      petSelection,
+      establishCareExamRequired,
+      illPetSelection,
+      illnessDetails,
+      location,
+      reason,
+      selectedStaff,
+      requestedDateTime,
+    } = data || {};
+    if (token) {
+      if (await recaptchaIsVerified(token)) {
+        if (email) {
+          if (DEBUG)
+            console.log(
+              &quot;scheduleAppointment =&gt; setupNewBookingSession =&gt; &quot;,
+              data
+            );
+          return await setupNewBookingSession(data);
+        } else if (id) {
+          if (contactInfo) {
+            if (DEBUG)
+              console.log(
+                &quot;scheduleAppointment =&gt; processContactInfo =&gt; &quot;,
+                contactInfo
+              );
+            return await processContactInfo(id, contactInfo);
+          } else if (addAPet) {
+            if (DEBUG)
+              console.log(&quot;scheduleAppointment =&gt; processAddAPet =&gt; &quot;, addAPet);
+            return await processAddAPet(id, addAPet);
+          } else if (petSelection) {
+            if (DEBUG)
+              console.log(
+                &quot;scheduleAppointment =&gt; processPetSelection =&gt; &quot;,
+                petSelection
+              );
+            return await processPetSelection(
+              id,
+              Array.isArray(petSelection.pets)
+                ? petSelection.pets
+                : [petSelection.pets],
+              establishCareExamRequired
+            );
+          } else if (illPetSelection) {
+            if (DEBUG)
+              console.log(
+                &quot;scheduleAppointment =&gt; processIllPetSelection =&gt; &quot;,
+                illPetSelection
+              );
+            return await processIllPetSelection(
+              id,
+              Array.isArray(illPetSelection?.illPets)
+                ? illPetSelection?.illPets
+                : [illPetSelection?.illPets]
+            );
+          } else if (illnessDetails) {
+            if (DEBUG)
+              console.log(
+                &quot;scheduleAppointment =&gt; processIllnessDetails =&gt; &quot;,
+                illnessDetails
+              );
+            return await processIllnessDetails(id, illnessDetails);
+          } else if (location) {
+            if (DEBUG)
+              console.log(
+                &quot;scheduleAppointment =&gt; processLocation =&gt; &quot;,
+                location
+              );
+            return await processLocation(data);
+          } else if (reason) {
+            if (DEBUG)
+              console.log(&quot;scheduleAppointment =&gt; processReason =&gt; &quot;, reason);
+            return await processReason(id, reason);
+          } else if (selectedStaff) {
+            if (DEBUG)
+              console.log(&quot;scheduleAppointment =&gt; processStaff =&gt; &quot;, reason);
+            return await processStaff(id, selectedStaff);
+          } else if (requestedDateTime) {
+            if (DEBUG)
+              console.log(
+                &quot;scheduleAppointment =&gt; processDateTime =&gt; &quot;,
+                requestedDateTime
+              );
+            return await processDateTime(id, requestedDateTime);
+          } else
+            return await handleFailedBooking(data, &quot;FAILED TO HANDLE REQUEST&quot;);
+        }
+        return await handleFailedBooking(data, &quot;FAILED TO GET SESSION&quot;);
+      } else return await handleFailedBooking(data, &quot;FAILED TO PASS CAPTCHA&quot;);
+    } else return await handleFailedBooking(data, &quot;MISSING TOKEN&quot;);
+  });
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:0,&quot;character&quot;:9,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:13,&quot;text&quot;:&quot;scheduleAppointment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:35,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:3,&quot;text&quot;:&quot;runWith&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:3,&quot;text&quot;:&quot;https&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:9,&quot;text&quot;:&quot;onCall&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:23,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:24,&quot;character&quot;:6,&quot;text&quot;:&quot;token&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:25,&quot;character&quot;:6,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:6,&quot;text&quot;:&quot;contactInfo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:27,&quot;character&quot;:6,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:6,&quot;text&quot;:&quot;addAPet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:6,&quot;text&quot;:&quot;petSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:6,&quot;text&quot;:&quot;establishCareExamRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:6,&quot;text&quot;:&quot;illPetSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:6,&quot;text&quot;:&quot;illnessDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:6,&quot;text&quot;:&quot;location&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:34,&quot;character&quot;:6,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:6,&quot;text&quot;:&quot;selectedStaff&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:6,&quot;text&quot;:&quot;requestedDateTime&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:8,&quot;text&quot;:&quot;token&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:12,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:14,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:19,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:14,&quot;text&quot;:&quot;contactInfo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:16,&quot;text&quot;:&quot;contactInfo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:21,&quot;text&quot;:&quot;addAPet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:57,&quot;character&quot;:71,&quot;text&quot;:&quot;addAPet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:59,&quot;character&quot;:21,&quot;text&quot;:&quot;petSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:63,&quot;character&quot;:16,&quot;text&quot;:&quot;petSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:67,&quot;character&quot;:28,&quot;text&quot;:&quot;petSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:67,&quot;character&quot;:41,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:68,&quot;character&quot;:18,&quot;text&quot;:&quot;petSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:68,&quot;character&quot;:31,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:19,&quot;text&quot;:&quot;petSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:32,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:72,&quot;character&quot;:21,&quot;text&quot;:&quot;illPetSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:76,&quot;character&quot;:16,&quot;text&quot;:&quot;illPetSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:80,&quot;character&quot;:28,&quot;text&quot;:&quot;illPetSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:80,&quot;character&quot;:45,&quot;text&quot;:&quot;illPets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:81,&quot;character&quot;:18,&quot;text&quot;:&quot;illPetSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:81,&quot;character&quot;:35,&quot;text&quot;:&quot;illPets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:82,&quot;character&quot;:19,&quot;text&quot;:&quot;illPetSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:82,&quot;character&quot;:36,&quot;text&quot;:&quot;illPets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:21,&quot;text&quot;:&quot;illnessDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:16,&quot;text&quot;:&quot;illnessDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:21,&quot;text&quot;:&quot;location&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:95,&quot;character&quot;:16,&quot;text&quot;:&quot;location&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:98,&quot;character&quot;:21,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:70,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:102,&quot;character&quot;:21,&quot;text&quot;:&quot;selectedStaff&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:104,&quot;character&quot;:69,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:106,&quot;character&quot;:21,&quot;text&quot;:&quot;requestedDateTime&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:110,&quot;character&quot;:16,&quot;text&quot;:&quot;requestedDateTime&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:45,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:116,&quot;character&quot;:41,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:46,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/web/scheduleAppointment.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:44,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

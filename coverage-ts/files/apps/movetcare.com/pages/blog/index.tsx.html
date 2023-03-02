@@ -1,0 +1,356 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>index.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/movetcare.com/pages/blog/index.tsx</td><td class="">100.00%</td><td class="">75%</td><td class="">402</td><td class="">402</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import Layout from &quot;components/Layout&quot;;
+import Image from &quot;next/image&quot;;
+import Link from &quot;next/link&quot;;
+import { classNames } from &quot;utilities&quot;;
+import { BlogPost } from &quot;types&quot;;
+import Head from &quot;next/head&quot;;
+import { Fragment } from &quot;react&quot;;
+import { CallToAction } from &quot;ui&quot;;
+
+const posts = [
+  {
+    isFeatured: true,
+    title: &quot;K-9 Smiles Teeth Cleaning Clinic @ MoVET&quot;,
+    href: &quot;/blog/k9-smiles-clinic-for-cats-and-dogs&quot;,
+    category: {
+      name: &quot;Health &amp; Wellness&quot;,
+      href: &quot;#&quot;,
+      color: &quot;bg-movet-yellow&quot;,
+    },
+    description:
+      &quot;MoVET is partnering with K-9 Smiles to offer a safe and affordable teeth cleaning clinic for your dog or cat on April 15th from 9:30 AM to 3:30 PM! Their trained technicians clean your pet&#x27;s teeth under the supervision of one of MoVET&#x27;s licensed veterinarians. Click to learn more and schedule an appointment!&quot;,
+    date: &quot;Feb 27th, 2023&quot;,
+    datetime: &quot;2023-02-27&quot;,
+    imageUrl: &quot;/images/blog/k9-smiles-logo.png&quot;,
+    readingTime: &quot;1 min&quot;,
+    author: {
+      name: &quot;Dr A&quot;,
+      href: &quot;#&quot;,
+      imageUrl: &quot;/images/blog/dr-a.png&quot;,
+    },
+  },
+  {
+    isFeatured: false,
+    title: &quot;I Chews You!&quot;,
+    href: &quot;/blog/i-chews-you&quot;,
+    category: { name: &quot;Community&quot;, href: &quot;#&quot;, color: &quot;bg-movet-magenta&quot; },
+    description:
+      &quot;We all know Valentine&#x27;s Day as the holiday to celebrate our significant others, but what about the OTHER significant other? (You know, the furry one with a wagging tail and slobbery kisses). It&#x27;s not unusual these days for pet-owners to consider their fur-baby to be the great love of their life. These adorable  Valentine&#x27;s deserve to be celebrated this February just like anyone else would! Unlike your human partner, you pet would not appreciate the flowers and boxes of chocolates… so what can you do for your Furry Valentine? Here&#x27;s 5 ideas to make them feel extra loved this Valentine&#x27;s Day!&quot;,
+    date: &quot;Feb 9th, 2023&quot;,
+    datetime: &quot;2023-02-09&quot;,
+    imageUrl: &quot;/images/blog/i-chews-you.jpg&quot;,
+    readingTime: &quot;3 min&quot;,
+    author: {
+      name: &quot;Rachel Bloch&quot;,
+      href: &quot;#&quot;,
+      imageUrl: &quot;/icon-192x192.png&quot;,
+    },
+  },
+  {
+    isFeatured: false,
+    title: &quot;Spring Heartworm Clinic&quot;,
+    href: &quot;/blog/2023-spring-heartworm-clinic&quot;,
+    category: {
+      name: &quot;Health &amp; Wellness&quot;,
+      href: &quot;#&quot;,
+      color: &quot;bg-movet-yellow&quot;,
+    },
+    description:
+      &quot;Our 1st Annual Spring Heartworm Clinic is now open for bookings!&quot;,
+    date: &quot;Feb 8th, 2023&quot;,
+    datetime: &quot;2023-02-08&quot;,
+    imageUrl: &quot;/images/blog/heartworm-clinic.png&quot;,
+    readingTime: &quot;1 min&quot;,
+    author: {
+      name: &quot;Dr. A&quot;,
+      href: &quot;#&quot;,
+      imageUrl: &quot;/images/blog/dr-a.png&quot;,
+    },
+  },
+  {
+    isFeatured: false,
+    title: &quot;6 Reasons Why We&#x27;re Thankful For Our Pets This Thanksgiving Season&quot;,
+    href: &quot;/blog/six-reasons-we-are-thankful-for-our-pets&quot;,
+    category: { name: &quot;Community&quot;, href: &quot;#&quot;, color: &quot;bg-movet-magenta&quot; },
+    description:
+      &quot;They are our fur-babies, what&#x27;s not to love? Humans and their pets can develop such special bonds. It&#x27;s often something not understood until you are lucky enough to experience it yourself. As we approach the busy season of the holidays, don&#x27;t forget to take a few moments each day to show your pet some extra love!&quot;,
+    date: &quot;Nov 21st, 2022&quot;,
+    datetime: &quot;2022-11-21&quot;,
+    imageUrl: &quot;/images/blog/six-reasons.jpg&quot;,
+    readingTime: &quot;3 min&quot;,
+    author: {
+      name: &quot;Rachel Bloch&quot;,
+      href: &quot;#&quot;,
+      imageUrl: &quot;/icon-192x192.png&quot;,
+    },
+  },
+  {
+    isFeatured: false,
+    title: &quot;Black Friday Deal - Free Exam w/ Purchase&quot;,
+    href: &quot;/blog/black-friday-deal-2022&quot;,
+    category: { name: &quot;Deals&quot;, href: &quot;#&quot;, color: &quot;bg-movet-green&quot; },
+    description:
+      &quot;Spend $30 or more in the boutique on November 25th and get a FREE veterinary exam!&quot;,
+    date: &quot;Nov 17th, 2022&quot;,
+    datetime: &quot;2022-11-17&quot;,
+    imageUrl: &quot;/images/blog/crop-black-friday-deal-2022.png&quot;,
+    readingTime: &quot;1 min&quot;,
+    author: {
+      name: &quot;Dr. A&quot;,
+      href: &quot;#&quot;,
+      imageUrl: &quot;/images/blog/dr-a.png&quot;,
+    },
+  },
+  {
+    isFeatured: false,
+    title: &quot;Over Wintering – Heartworm Disease in Colorado&quot;,
+    href: &quot;/blog/winter-heartworm&quot;,
+    category: {
+      name: &quot;Health &amp; Wellness&quot;,
+      href: &quot;#&quot;,
+      color: &quot;bg-movet-yellow&quot;,
+    },
+    description:
+      &quot;Mosquitos are found in the Denver &amp; Front Range areas throughout the winter months and still have the potential to spread dangerous and deadly heartworm disease. It is important that your pet be protected.&quot;,
+    date: &quot;Nov 17th, 2022&quot;,
+    datetime: &quot;2022-11-17&quot;,
+    imageUrl: &quot;/images/blog/crop-winter-heartworm.png&quot;,
+    readingTime: &quot;2 min&quot;,
+    author: {
+      name: &quot;Dr. Barbra Caldwell&quot;,
+      href: &quot;#&quot;,
+      imageUrl: &quot;/images/blog/dr-barbara-caldwell.png&quot;,
+    },
+  },
+  {
+    isFeatured: false,
+    title: &quot;HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 30th @ 1pm&quot;,
+    href: &quot;/blog/howl-o-ween&quot;,
+    category: { name: &quot;Community&quot;, href: &quot;#&quot;, color: &quot;bg-movet-magenta&quot; },
+    description:
+      &quot;Come one come all! Join us, Oct 30th at 1pm in the Belleview Station Dog Park to show off your Halloween Best! We&#x27;ll have a fall themed photo booth to capture this once-a-year attire!&quot;,
+    date: &quot;Oct 20th, 2022&quot;,
+    datetime: &quot;2022-10-20&quot;,
+    imageUrl: &quot;/images/blog/howl-o-ween.png&quot;,
+    readingTime: &quot;3 min&quot;,
+    author: {
+      name: &quot;Dr. A&quot;,
+      href: &quot;#&quot;,
+      imageUrl: &quot;/images/blog/dr-a.png&quot;,
+    },
+  },
+  {
+    isFeatured: false,
+    title: &quot;Walk to find a cure at the Susan G. Komen “More Than Pink” Walk&quot;,
+    href: &quot;/blog/susan-g-komen-more-than-pink-walk&quot;,
+    category: { name: &quot;Community&quot;, href: &quot;#&quot;, color: &quot;bg-movet-magenta&quot; },
+    description:
+      &#x27;October is National Breast Cancer Awareness Month, and here at MoVET this cause is very close to our hearts. We would love if you’d consider joining us for the 2022 Colorado Komen &quot;More Than Pink&quot; Walk!&#x27;,
+    date: &quot;Oct 13th, 2022&quot;,
+    datetime: &quot;2022-10-13&quot;,
+    imageUrl: &quot;/images/blog/crop-cancer-awareness.png&quot;,
+    readingTime: &quot;3 min&quot;,
+    author: {
+      name: &quot;Rachel Bloch&quot;,
+      href: &quot;#&quot;,
+      imageUrl: &quot;/icon-192x192.png&quot;,
+    },
+  },
+];
+
+export default function Blog() {
+  return (
+    &lt;Layout&gt;
+      &lt;Head&gt;
+        &lt;title&gt;Blog&lt;/title&gt;
+      &lt;/Head&gt;
+      &lt;section className=&quot;px-4 md:px-0px-4 md:px-0 pb-16 sm:pb-20&quot;&gt;
+        &lt;div className=&quot;relative mx-auto max-w-7xl&quot;&gt;
+          &lt;div className=&quot;text-center&quot;&gt;
+            &lt;h2 className=&quot;text-4xl tracking-wide mt-8 text-center&quot;&gt;
+              From The Blog
+            &lt;/h2&gt;
+          &lt;/div&gt;
+          &lt;div className=&quot;mx-auto mt-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3&quot;&gt;
+            {posts.map((post: BlogPost, index: number) =&gt;
+              post.isFeatured ? (
+                &lt;div
+                  key={index}
+                  className=&quot;flex flex-col lg:flex-row overflow-hidden rounded-lg shadow-lg col-span-3&quot;
+                &gt;
+                  &lt;div className=&quot;flex-shrink-0 -mb-2&quot;&gt;
+                    &lt;Link href={post.href}&gt;
+                      &lt;Image
+                        className=&quot;hover:opacity-75 cursor-pointer&quot;
+                        src={post.imageUrl}
+                        alt=&quot;&quot;
+                        height={510}
+                        width={510}
+                      /&gt;
+                    &lt;/Link&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;flex flex-1 flex-col justify-between bg-white p-6&quot;&gt;
+                    &lt;div className=&quot;flex-1&quot;&gt;
+                      &lt;p className=&quot;text-sm font-medium&quot;&gt;
+                        {/*&lt;a href={post.href}&gt;*/}
+                        &lt;span
+                          className={classNames(
+                            post.category.color,
+                            &quot;inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white&quot;
+                          )}
+                        &gt;
+                          {post.category.name}
+                        &lt;/span&gt;
+                        {/*&lt;/a&gt;*/}
+                      &lt;/p&gt;
+                      &lt;Link
+                        href={post.href}
+                        className=&quot;mt-2 block hover:no-underline&quot;
+                      &gt;
+                        &lt;p className=&quot;text-xl font-semibold cursor-pointer text-movet-black hover:no-underline&quot;&gt;
+                          {post.title}
+                        &lt;/p&gt;
+                      &lt;/Link&gt;
+                      &lt;Link
+                        href={post.href}
+                        className=&quot;mt-2 block hover:no-underline&quot;
+                      &gt;
+                        &lt;p className=&quot;mt-3 text-base cursor-pointer text-movet-black hover:no-underline&quot;&gt;
+                          {post.description}
+                        &lt;/p&gt;
+                      &lt;/Link&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;mt-3 flex items-center&quot;&gt;
+                      {post.author.imageUrl &amp;&amp; (
+                        &lt;div className=&quot;flex-shrink-0 mt-3&quot;&gt;
+                          {/* &lt;a href={post.author.href}&gt; */}
+                          &lt;span className=&quot;sr-only&quot;&gt;{post.author.name}&lt;/span&gt;
+                          &lt;Image
+                            className=&quot;rounded-full&quot;
+                            height={40}
+                            width={40}
+                            src={post.author.imageUrl}
+                            alt=&quot;&quot;
+                          /&gt;
+                          {/* &lt;/a&gt; */}
+                        &lt;/div&gt;
+                      )}
+                      &lt;div className=&quot;ml-3&quot;&gt;
+                        &lt;p className=&quot;text-sm font-medium mb-0&quot;&gt;
+                          {/*&lt;a href={post.author.href} className=&quot;hover:underline&quot;&gt;*/}
+                          {post.author.name}
+                          {/* &lt;/a&gt;*/}
+                        &lt;/p&gt;
+                        &lt;div className=&quot;flex space-x-1 text-sm&quot;&gt;
+                          &lt;time dateTime={post.datetime}&gt;{post.date}&lt;/time&gt;
+                          &lt;span aria-hidden=&quot;true&quot;&gt;&amp;middot;&lt;/span&gt;
+                          &lt;span className=&quot;italic&quot;&gt;
+                            {post.readingTime} read
+                          &lt;/span&gt;
+                        &lt;/div&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              ) : (
+                &lt;div key={index}&gt;&lt;/div&gt;
+              )
+            )}
+          &lt;/div&gt;
+          &lt;div className=&quot;mx-auto sm:pb-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3&quot;&gt;
+            {posts.map((post, index) =&gt;
+              !post.isFeatured ? (
+                &lt;div
+                  key={post.title}
+                  className=&quot;flex flex-col overflow-hidden rounded-lg shadow-lg&quot;
+                &gt;
+                  &lt;div className=&quot;flex-shrink-0 -mb-2&quot;&gt;
+                    &lt;Link href={post.href}&gt;
+                      &lt;Image
+                        className=&quot;hover:opacity-75&quot;
+                        src={post.imageUrl}
+                        alt=&quot;&quot;
+                        height={340}
+                        width={520}
+                      /&gt;
+                    &lt;/Link&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;flex flex-1 flex-col justify-between bg-white p-6&quot;&gt;
+                    &lt;div className=&quot;flex-1&quot;&gt;
+                      &lt;p className=&quot;text-sm font-medium&quot;&gt;
+                        &lt;span
+                          className={classNames(
+                            post.category.color,
+                            &quot;inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white&quot;
+                          )}
+                        &gt;
+                          {post.category.name}
+                        &lt;/span&gt;
+                      &lt;/p&gt;
+                      &lt;Link
+                        href={post.href}
+                        className=&quot;mt-2 block text-movet-black hover:no-underline&quot;
+                      &gt;
+                        &lt;p className=&quot;text-xl font-semibold hover:no-underline&quot;&gt;
+                          {post.title}
+                        &lt;/p&gt;
+                        &lt;p className=&quot;mt-3 text-base hover:no-underline&quot;&gt;
+                          {post.description}
+                        &lt;/p&gt;
+                      &lt;/Link&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;mt-3 flex items-center&quot;&gt;
+                      &lt;div className=&quot;flex-shrink-0 mt-3&quot;&gt;
+                        &lt;span className=&quot;sr-only&quot;&gt;{post.author.name}&lt;/span&gt;
+                        &lt;Image
+                          className=&quot;rounded-full&quot;
+                          height={40}
+                          width={40}
+                          src={post.author.imageUrl}
+                          alt=&quot;&quot;
+                        /&gt;
+                      &lt;/div&gt;
+                      &lt;div className=&quot;ml-3&quot;&gt;
+                        &lt;p className=&quot;text-sm font-medium mb-0&quot;&gt;
+                          {post.author.name}
+                        &lt;/p&gt;
+                        &lt;div className=&quot;flex space-x-1 text-sm&quot;&gt;
+                          &lt;time dateTime={post.datetime}&gt;{post.date}&lt;/time&gt;
+                          &lt;span aria-hidden=&quot;true&quot;&gt;&amp;middot;&lt;/span&gt;
+                          &lt;span className=&quot;italic&quot;&gt;
+                            {post.readingTime} read
+                          &lt;/span&gt;
+                        &lt;/div&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              ) : (
+                &lt;Fragment key={index}&gt;&lt;/Fragment&gt;
+              )
+            )}
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+      &lt;CallToAction /&gt;
+    &lt;/Layout&gt;
+  );
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

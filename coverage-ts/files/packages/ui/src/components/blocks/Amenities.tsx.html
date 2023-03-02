@@ -1,0 +1,150 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Amenities.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">packages/ui/src/components/blocks/Amenities.tsx</td><td class="">91.36%</td><td class="">75%</td><td class="">162</td><td class="">148</td><td class="">14</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { IconName } from &quot;@fortawesome/fontawesome-svg-core&quot;;
+import Image from &quot;next/image&quot;;
+import { Carousel } from &quot;../elements/Carousel&quot;;
+const amenities: {
+  name: string;
+  description: string;
+  icon: IconName;
+  image: string;
+}[] = [
+  {
+    name: &quot;Pharmacy&quot;,
+    description:
+      &quot;Discuss and pick up your medication with an informed team member in our up-front, transparent veterinary pharmacy. Competitive pricing. Compounding available!&quot;,
+    icon: &quot;mortar-pestle&quot;,
+    image: &quot;/images/icons/pharmacy.svg&quot;,
+  },
+  {
+    name: &quot;Self-Serve Dog Wash&quot;,
+    description:
+      &quot;Our bathing station takes the hassle out of washing your dog. Find everything you need, including shampoo, brushes, and towels. First come, first serve, Leave the bath cleanup to us!&quot;,
+    icon: &quot;dog&quot;,
+    image: &quot;/images/icons/dog-wash.png&quot;,
+  },
+  {
+    name: &quot;Vet-Approved Boutique&quot;,
+    description:
+      &quot;Skip the big-box pet store and head to our local, woman-owned boutique. Bring your furry friend and browse our exclusively curated and sourced goods for a Mile High lifestyle. All tested by our Chief Merchandising Officer, Nessie.&quot;,
+    icon: &quot;store&quot;,
+    image: &quot;/images/icons/boutique.svg&quot;,
+  },
+];
+export const Amenities = () =&gt; (
+  &lt;section className=&quot;relative z-30 my-12 sm:px-8 sm:max-w-screen-lg sm:mx-auto&quot;&gt;
+    &lt;div className=&quot;-mt-2 sm:mb-16 flex flex-col mx-4&quot;&gt;
+      &lt;h2 className=&quot;text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-black&quot;&gt;
+        Additional Amenities
+      &lt;/h2&gt;
+      &lt;p className=&quot;text-lg w-full text-center&quot;&gt;
+        Available at our &lt;span className=&quot;font-extrabold&quot;&gt;NEW&lt;/span&gt; Belleview
+        Station location
+      &lt;/p&gt;
+      &lt;a
+        href=&quot;https://goo.gl/maps/bRjYuF66CtemGSyq8&quot;
+        target=&quot;_blank&quot;
+        className=&quot;text-center hover:underline text-movet-brown&quot;
+        rel=&quot;noreferrer&quot;
+      &gt;
+        4912 S Newport St, Denver CO 80237
+      &lt;/a&gt;
+      &lt;div className=&quot;flex flex-col sm:flex-row mx-auto justify-center mt-4 mb-12 sm:mb-16 max-w-screen-lg&quot;&gt;
+        {amenities.map((service) =&gt; (
+          &lt;div
+            className=&quot;w-full py-4 sm:py-0 sm:mx-8 text-center flex flex-col&quot;
+            key={service.name}
+          &gt;
+            &lt;div className=&quot;mx-auto hover:animate-bounce duration-500&quot;&gt;
+              &lt;Image
+                width={112}
+                height={112}
+                src={service.image}
+                alt={`${service.name} icon`}
+              /&gt;
+            &lt;/div&gt;
+            &lt;p className=&quot;text-center text-xl m-0 sm:mt-2 font-bold&quot;&gt;
+              {service.name}
+            &lt;/p&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div className=&quot;flex flex-col sm:flex-row mt-12 sm:-mt-12 -mb-4&quot;&gt;
+      &lt;div className=&quot;sm:w-7/12 flex flex-col items-center relative z-20 -mt-8&quot;&gt;
+        &lt;div className=&quot;w-full&quot;&gt;
+          &lt;div className=&quot;hidden sm:block&quot;&gt;
+            &lt;Carousel
+              name=&quot;services&quot;
+              infinite={false}
+              customClasses={{
+                slideContainer: &quot;w-3/4&quot;,
+              }}
+              slideLabels={amenities.map((serviceStyle) =&gt; serviceStyle.name)}
+            &gt;
+              {amenities.map((serviceStyle: any) =&gt; (
+                &lt;div key={serviceStyle.name}&gt;
+                  &lt;h3 className=&quot;text-2xl tracking-wide&quot;&gt;
+                    {serviceStyle?.name}
+                  &lt;/h3&gt;
+                  &lt;p className=&quot;text-lg my-3 tracking-tight&quot;&gt;
+                    {serviceStyle?.description}
+                  &lt;/p&gt;
+                &lt;/div&gt;
+              ))}
+            &lt;/Carousel&gt;
+          &lt;/div&gt;
+          &lt;div className=&quot;sm:hidden&quot;&gt;
+            &lt;Carousel
+              name=&quot;services&quot;
+              infinite={true}
+              autoScroll
+              interval={10000}
+              customClasses={{
+                slideContainer: &quot;w-80&quot;,
+              }}
+              slideLabels={amenities.map((serviceStyle) =&gt; serviceStyle.name)}
+            &gt;
+              {amenities.map((serviceStyle: any) =&gt; (
+                &lt;div key={serviceStyle.name}&gt;
+                  &lt;h3 className=&quot;text-2xl tracking-wide&quot;&gt;
+                    {serviceStyle?.name}
+                  &lt;/h3&gt;
+                  &lt;p className=&quot;text-base my-3 tracking-tight&quot;&gt;
+                    {serviceStyle?.description}
+                  &lt;/p&gt;
+                &lt;/div&gt;
+              ))}
+            &lt;/Carousel&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div className=&quot;w-full flex justify-center items-center&quot;&gt;
+        &lt;div className=&quot;max-w-xs h-fit w-full mt-4 sm:mt-0&quot;&gt;
+          &lt;video controls className=&quot;rounded-xl w-full&quot;&gt;
+            &lt;source
+              src=&quot;/videos/movet-clinic-virtual-tour.mov&quot;
+              type=&quot;video/mp4&quot;
+            /&gt;
+          &lt;/video&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+);
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:82,&quot;character&quot;:30,&quot;text&quot;:&quot;serviceStyle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:83,&quot;character&quot;:26,&quot;text&quot;:&quot;serviceStyle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:83,&quot;character&quot;:39,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:85,&quot;character&quot;:21,&quot;text&quot;:&quot;serviceStyle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:85,&quot;character&quot;:35,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:88,&quot;character&quot;:21,&quot;text&quot;:&quot;serviceStyle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:88,&quot;character&quot;:35,&quot;text&quot;:&quot;description&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:105,&quot;character&quot;:30,&quot;text&quot;:&quot;serviceStyle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:106,&quot;character&quot;:26,&quot;text&quot;:&quot;serviceStyle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:106,&quot;character&quot;:39,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:108,&quot;character&quot;:21,&quot;text&quot;:&quot;serviceStyle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:108,&quot;character&quot;:35,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:111,&quot;character&quot;:21,&quot;text&quot;:&quot;serviceStyle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/ui/src/components/blocks/Amenities.tsx&quot;,&quot;line&quot;:111,&quot;character&quot;:35,&quot;text&quot;:&quot;description&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

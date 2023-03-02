@@ -1,0 +1,316 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>createPaymentIntent.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts</td><td class="">37.25%</td><td class="">75%</td><td class="">306</td><td class="">114</td><td class="">192</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { getProVetIdFromUrl } from &quot;../../../utils/getProVetIdFromUrl&quot;;
+import {
+  throwError,
+  defaultRuntimeOptions,
+  functions,
+  stripe,
+  admin,
+  request,
+} from &quot;../../../config/config&quot;;
+import { requestIsAuthorized } from &quot;./requestIsAuthorized&quot;;
+import { getCustomerId } from &quot;../../../utils/getCustomerId&quot;;
+const DEBUG = false; // environment.type === &quot;production&quot;;
+export const createPaymentIntent = functions
+  .runWith(defaultRuntimeOptions)
+  .https.onCall(
+    async (
+      data: {
+        mode: &quot;counter&quot; | &quot;client&quot;;
+        invoice: string;
+        reader?: string;
+        email?: string;
+        paymentMethod?: string;
+      },
+      context: any
+    ): Promise&lt;any&gt; =&gt; {
+      if (DEBUG) {
+        console.log(&quot;createPaymentIntent context.app =&gt; &quot;, context.app);
+        console.log(&quot;createPaymentIntent context.auth =&gt; &quot;, context.auth);
+        console.log(&quot;createPaymentIntent DATA =&gt;&quot;, data);
+      }
+      if (await requestIsAuthorized(context)) {
+        const { mode, invoice, reader, paymentMethod } = data || {};
+        if (mode &amp;&amp; invoice) {
+          const invoiceDetails = await admin
+            .firestore()
+            .collection(
+              mode === &quot;counter&quot; ? &quot;counter_sales&quot; : &quot;client_invoices&quot;
+            )
+            .doc(`${invoice}`)
+            .get()
+            .then(async (document: any) =&gt; document.data())
+            .catch((error: any) =&gt; throwError(error));
+          if (DEBUG) console.log(&quot;invoiceDetails&quot;, invoiceDetails);
+          // const displayParams = new URLSearchParams();
+          // displayParams.append(&#x27;type&#x27;, &#x27;cart&#x27;);
+          // displayParams.append(
+          //   &#x27;cart[tax]&#x27;,
+          //   String(invoiceDetails?.total_vat * 100)
+          // );
+          // displayParams.append(
+          //   &#x27;cart[total]&#x27;,
+          //   String(Math.floor(invoiceDetails?.client_due_sum * 100))
+          // );
+          // displayParams.append(&#x27;cart[currency]&#x27;, &#x27;usd&#x27;);
+          // await admin
+          //   .firestore()
+          //   .collection(
+          //     mode === &#x27;counter&#x27; ? &#x27;counter_sales&#x27; : &#x27;client_invoices&#x27;
+          //   )
+          //   .doc(`${invoiceDetails?.id}`)
+          //   .collection(&#x27;items&#x27;)
+          //   .get()
+          //   .then((snapshot: any) =&gt; {
+          //     let shiftedIndex = 0;
+          //     snapshot.docs.forEach((item: any, index: number) =&gt; {
+          //       const {name, sum}: {name: string; sum: number} =
+          //         item.data() || {};
+          //       if (sum * 100 &gt;= 1) {
+          //         displayParams.append(
+          //           `cart[line_items][${index - shiftedIndex}][description]`,
+          //           name
+          //         );
+          //         displayParams.append(
+          //           `cart[line_items][${index - shiftedIndex}][amount]`,
+          //           String(Math.floor(sum * 100))
+          //         );
+          //         displayParams.append(
+          //           `cart[line_items][${index - shiftedIndex}][quantity]`,
+          //           &#x27;1&#x27;
+          //         );
+          //       } else {
+          //         shiftedIndex++;
+          //         if (DEBUG)
+          //           console.log(
+          //             `SKIPPING ITEM &quot;${item?.name}&quot; W/ AMOUNT = ${sum * 100}`
+          //           );
+          //       }
+          //     });
+          //   })
+          //    .catch((error: any) =&gt; throwError(error));
+          // if (reader)
+          // await request
+          //   .post(
+          //     `https://api.stripe.com/v1/terminal/readers/${reader}/set_reader_display`,
+          //     displayParams,
+          //     {
+          //       headers: {
+          //         &#x27;Content-Type&#x27;: &#x27;application/x-www-form-urlencoded&#x27;,
+          //         &#x27;Stripe-Version&#x27;:
+          //           functions.config()?.stripe?.api_version,
+          //         Authorization: `Bearer ${
+          //           functions.config()?.stripe?.secret_key
+          //         }`,
+          //       },
+          //     }
+          //   )
+          //   .then(async (response: any) =&gt; {
+          //     const {data} = response;
+          //     if (DEBUG)
+          //       console.log(
+          //         `RESPONSE: https://api.stripe.com/v1/terminal/readers/${reader}/set_reader_display =&gt;`,
+          //         data
+          //       );
+          //     await admin
+          //       .firestore()
+          //       .collection(&#x27;configuration&#x27;)
+          //       .doc(&#x27;pos&#x27;)
+          //       .collection(&#x27;terminals&#x27;)
+          //       .doc(`${reader}`)
+          //       .set(
+          //         {
+          //           display: data.action,
+          //           updatedOn: new Date(),
+          //         },
+          //         {merge: true}
+          //       )
+          //       .then(() =&gt; true)
+          //        .catch((error: any) =&gt; throwError(error));
+          //   })
+          //    .catch((error: any) =&gt; throwError(error));
+          const paymentIntentConfig: any = {
+            currency: &quot;usd&quot;,
+            metadata: { invoice },
+          };
+          if (DEBUG) {
+            console.log(
+              &quot;client_due_sum * 100: &quot;,
+              invoiceDetails?.client_due_sum * 100
+            );
+            console.log(
+              &quot;Math.floor(invoiceDetails?.client_due_sum * 100): &quot;,
+              Math.floor(invoiceDetails?.client_due_sum * 100)
+            );
+          }
+          paymentIntentConfig.amount = Math.floor(
+            invoiceDetails?.client_due_sum * 100
+          );
+          paymentIntentConfig.payment_method_types = [&quot;card_present&quot;];
+          paymentIntentConfig.capture_method = &quot;manual&quot;;
+          if (mode === &quot;client&quot; &amp;&amp; invoiceDetails?.client) {
+            if (paymentMethod) {
+              paymentIntentConfig.payment_method = paymentMethod;
+              paymentIntentConfig.capture_method = &quot;automatic&quot;;
+              paymentIntentConfig.payment_method_types = [&quot;card&quot;];
+              paymentIntentConfig.confirm = true;
+              paymentIntentConfig.off_session = true;
+              paymentIntentConfig.customer = await getCustomerId(
+                `${getProVetIdFromUrl(invoiceDetails?.client)}`
+              );
+            } else {
+              paymentIntentConfig.off_session = false;
+              paymentIntentConfig.setup_future_usage = &quot;off_session&quot;;
+            }
+          } else if (DEBUG)
+            console.log(`COUNTER SALE DETECTED -&gt; ${JSON.stringify(data)}`);
+          const paymentIntent: any = await stripe.paymentIntents.create(
+            paymentIntentConfig
+          );
+          if (DEBUG) console.log(&quot;paymentIntent&quot;, paymentIntent);
+          const params = new URLSearchParams();
+          params.append(&quot;payment_intent&quot;, paymentIntent?.id);
+          return reader
+            ? await request
+                .post(
+                  `https://api.stripe.com/v1/terminal/readers/${reader}/process_payment_intent`,
+                  params,
+                  {
+                    headers: {
+                      &quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;,
+                      &quot;Stripe-Version&quot;: functions.config()?.stripe?.api_version,
+                      Authorization: `Bearer ${
+                        functions.config()?.stripe?.secret_key
+                      }`,
+                    },
+                  }
+                )
+                .then(async (response: any) =&gt; {
+                  const { data } = response;
+                  if (DEBUG)
+                    console.log(
+                      `RESPONSE: https://api.stripe.com/v1/terminal/readers/${reader}/process_payment_intent =&gt;`,
+                      data
+                    );
+                  await admin
+                    .firestore()
+                    .collection(&quot;configuration&quot;)
+                    .doc(&quot;pos&quot;)
+                    .collection(&quot;terminals&quot;)
+                    .doc(`${data?.id}`)
+                    .set(
+                      {
+                        ...data,
+                        updatedOn: new Date(),
+                      },
+                      { merge: true }
+                    )
+                    .then(() =&gt; true)
+                    .catch((error: any) =&gt; throwError(error));
+                  await admin
+                    .firestore()
+                    .collection(
+                      mode === &quot;counter&quot; ? &quot;counter_sales&quot; : &quot;client_invoices&quot;
+                    )
+                    .doc(`${invoice}`)
+                    .set(
+                      {
+                        paymentIntent: paymentIntent?.id,
+                        paymentIntentObject: paymentIntent,
+                        paymentStatus: data?.action?.status || &quot;unknown&quot;,
+                        failureCode: data?.action?.failure_code,
+                        failureMessage: data?.action?.failure_message,
+                        updatedOn: new Date(),
+                      },
+                      { merge: true }
+                    )
+                    .then(async () =&gt;
+                      mode === &quot;client&quot;
+                        ? await admin
+                            .firestore()
+                            .collection(&quot;clients&quot;)
+                            .doc(
+                              `${getProVetIdFromUrl(invoiceDetails?.client)}`
+                            )
+                            .collection(&quot;invoices&quot;)
+                            .doc(`${invoiceDetails?.id}`)
+                            .set(
+                              {
+                                paymentIntent: paymentIntent?.id,
+                                paymentIntentObject: paymentIntent,
+                                paymentStatus:
+                                  paymentIntent.status || &quot;unknown&quot;,
+                                failureCode: data?.action?.failure_code,
+                                failureMessage: data?.action?.failure_message,
+                                updatedOn: new Date(),
+                              },
+                              { merge: true }
+                            )
+                            .catch((error: any) =&gt; throwError(error))
+                        : null
+                    )
+                    .catch((error: any) =&gt; throwError(error));
+                  return data?.action || null;
+                })
+                .catch((error: any) =&gt; throwError(error))
+            : await admin
+                .firestore()
+                .collection(
+                  mode === &quot;counter&quot; ? &quot;counter_sales&quot; : &quot;client_invoices&quot;
+                )
+                .doc(`${invoice}`)
+                .set(
+                  {
+                    paymentStatus: paymentIntent?.status || &quot;unknown&quot;,
+                    paymentIntent: paymentIntent?.id,
+                    paymentIntentObject: paymentIntent,
+                    updatedOn: new Date(),
+                  },
+                  { merge: true }
+                )
+                .then(async () =&gt;
+                  mode === &quot;client&quot;
+                    ? await admin
+                        .firestore()
+                        .collection(&quot;clients&quot;)
+                        .doc(`${getProVetIdFromUrl(invoiceDetails?.client)}`)
+                        .collection(&quot;invoices&quot;)
+                        .doc(`${invoiceDetails?.id}`)
+                        .set(
+                          {
+                            paymentIntent: paymentIntent?.id,
+                            paymentIntentObject: paymentIntent,
+                            updatedOn: new Date(),
+                          },
+                          { merge: true }
+                        )
+                        .then(() =&gt; true)
+                        .catch((error: any) =&gt; throwError(error))
+                    : null
+                )
+                .then(() =&gt; true)
+                .catch((error: any) =&gt; throwError(error));
+        } else
+          return throwError(
+            `UNABLE TO CREATE PAYMENT INTENT -&gt; ${JSON.stringify(data)}`
+          );
+      }
+    }
+  );
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:4,&quot;character&quot;:2,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:6,&quot;character&quot;:2,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:2,&quot;text&quot;:&quot;request&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:13,&quot;text&quot;:&quot;createPaymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:35,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:3,&quot;text&quot;:&quot;runWith&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:3,&quot;text&quot;:&quot;https&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:9,&quot;text&quot;:&quot;onCall&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:23,&quot;character&quot;:6,&quot;text&quot;:&quot;context&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:59,&quot;text&quot;:&quot;context&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:67,&quot;text&quot;:&quot;app&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:27,&quot;character&quot;:60,&quot;text&quot;:&quot;context&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:27,&quot;character&quot;:68,&quot;text&quot;:&quot;auth&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:36,&quot;text&quot;:&quot;context&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:16,&quot;text&quot;:&quot;invoiceDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:39,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:34,&quot;character&quot;:13,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:13,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:13,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:13,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:13,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:25,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:43,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:52,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:13,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:20,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:46,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:51,&quot;text&quot;:&quot;invoiceDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:130,&quot;character&quot;:16,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:14,&quot;text&quot;:&quot;invoiceDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:30,&quot;text&quot;:&quot;client_due_sum&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:141,&quot;character&quot;:25,&quot;text&quot;:&quot;invoiceDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:141,&quot;character&quot;:41,&quot;text&quot;:&quot;client_due_sum&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:144,&quot;character&quot;:10,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:144,&quot;character&quot;:30,&quot;text&quot;:&quot;amount&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:145,&quot;character&quot;:12,&quot;text&quot;:&quot;invoiceDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:145,&quot;character&quot;:28,&quot;text&quot;:&quot;client_due_sum&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:147,&quot;character&quot;:10,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:147,&quot;character&quot;:30,&quot;text&quot;:&quot;payment_method_types&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:10,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:30,&quot;text&quot;:&quot;capture_method&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:149,&quot;character&quot;:35,&quot;text&quot;:&quot;invoiceDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:149,&quot;character&quot;:51,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:151,&quot;character&quot;:14,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:151,&quot;character&quot;:34,&quot;text&quot;:&quot;payment_method&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:152,&quot;character&quot;:14,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:152,&quot;character&quot;:34,&quot;text&quot;:&quot;capture_method&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:14,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:34,&quot;text&quot;:&quot;payment_method_types&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:154,&quot;character&quot;:14,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:154,&quot;character&quot;:34,&quot;text&quot;:&quot;confirm&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:14,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:34,&quot;text&quot;:&quot;off_session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:14,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:34,&quot;text&quot;:&quot;customer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:157,&quot;character&quot;:38,&quot;text&quot;:&quot;invoiceDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:157,&quot;character&quot;:54,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:160,&quot;character&quot;:14,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:160,&quot;character&quot;:34,&quot;text&quot;:&quot;off_session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:14,&quot;text&quot;:&quot;paymentIntentConfig&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:34,&quot;text&quot;:&quot;setup_future_usage&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:165,&quot;character&quot;:16,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:168,&quot;character&quot;:50,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:170,&quot;character&quot;:42,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:170,&quot;character&quot;:57,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:172,&quot;character&quot;:20,&quot;text&quot;:&quot;request&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:173,&quot;character&quot;:17,&quot;text&quot;:&quot;post&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:179,&quot;character&quot;:40,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:179,&quot;character&quot;:50,&quot;text&quot;:&quot;config&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:179,&quot;character&quot;:60,&quot;text&quot;:&quot;stripe&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:179,&quot;character&quot;:68,&quot;text&quot;:&quot;api_version&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:24,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:34,&quot;text&quot;:&quot;config&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:44,&quot;text&quot;:&quot;stripe&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:52,&quot;text&quot;:&quot;secret_key&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:186,&quot;character&quot;:17,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:186,&quot;character&quot;:29,&quot;text&quot;:&quot;response&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:187,&quot;character&quot;:26,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:191,&quot;character&quot;:22,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:193,&quot;character&quot;:24,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:194,&quot;character&quot;:21,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:195,&quot;character&quot;:21,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:196,&quot;character&quot;:21,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:197,&quot;character&quot;:21,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:21,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:28,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:34,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:199,&quot;character&quot;:21,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:201,&quot;character&quot;:27,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:206,&quot;character&quot;:21,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:207,&quot;character&quot;:21,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:207,&quot;character&quot;:28,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:207,&quot;character&quot;:54,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:208,&quot;character&quot;:24,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:21,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:210,&quot;character&quot;:21,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:213,&quot;character&quot;:21,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:214,&quot;character&quot;:21,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:216,&quot;character&quot;:24,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:216,&quot;character&quot;:39,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:216,&quot;character&quot;:54,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:217,&quot;character&quot;:24,&quot;text&quot;:&quot;paymentIntentObject&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:217,&quot;character&quot;:45,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:218,&quot;character&quot;:24,&quot;text&quot;:&quot;paymentStatus&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:218,&quot;character&quot;:39,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:218,&quot;character&quot;:45,&quot;text&quot;:&quot;action&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:218,&quot;character&quot;:53,&quot;text&quot;:&quot;status&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:219,&quot;character&quot;:24,&quot;text&quot;:&quot;failureCode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:219,&quot;character&quot;:37,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:219,&quot;character&quot;:43,&quot;text&quot;:&quot;action&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:219,&quot;character&quot;:51,&quot;text&quot;:&quot;failure_code&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:220,&quot;character&quot;:24,&quot;text&quot;:&quot;failureMessage&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:220,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:220,&quot;character&quot;:46,&quot;text&quot;:&quot;action&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:220,&quot;character&quot;:54,&quot;text&quot;:&quot;failure_message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:225,&quot;character&quot;:21,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:227,&quot;character&quot;:32,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:228,&quot;character&quot;:29,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:229,&quot;character&quot;:29,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:230,&quot;character&quot;:29,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:231,&quot;character&quot;:52,&quot;text&quot;:&quot;invoiceDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:231,&quot;character&quot;:68,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:233,&quot;character&quot;:29,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:234,&quot;character&quot;:29,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:234,&quot;character&quot;:36,&quot;text&quot;:&quot;invoiceDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:234,&quot;character&quot;:52,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:235,&quot;character&quot;:29,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:237,&quot;character&quot;:32,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:237,&quot;character&quot;:47,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:237,&quot;character&quot;:62,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:238,&quot;character&quot;:32,&quot;text&quot;:&quot;paymentIntentObject&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:238,&quot;character&quot;:53,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:239,&quot;character&quot;:32,&quot;text&quot;:&quot;paymentStatus&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:240,&quot;character&quot;:34,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:240,&quot;character&quot;:48,&quot;text&quot;:&quot;status&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:241,&quot;character&quot;:32,&quot;text&quot;:&quot;failureCode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:241,&quot;character&quot;:45,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:241,&quot;character&quot;:51,&quot;text&quot;:&quot;action&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:241,&quot;character&quot;:59,&quot;text&quot;:&quot;failure_code&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:242,&quot;character&quot;:32,&quot;text&quot;:&quot;failureMessage&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:242,&quot;character&quot;:48,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:242,&quot;character&quot;:54,&quot;text&quot;:&quot;action&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:242,&quot;character&quot;:62,&quot;text&quot;:&quot;failure_message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:247,&quot;character&quot;:29,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:247,&quot;character&quot;:36,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:247,&quot;character&quot;:62,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:250,&quot;character&quot;:21,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:250,&quot;character&quot;:28,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:250,&quot;character&quot;:54,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:251,&quot;character&quot;:25,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:251,&quot;character&quot;:31,&quot;text&quot;:&quot;action&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:253,&quot;character&quot;:17,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:253,&quot;character&quot;:24,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:253,&quot;character&quot;:50,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:254,&quot;character&quot;:20,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:255,&quot;character&quot;:17,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:256,&quot;character&quot;:17,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:259,&quot;character&quot;:17,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:260,&quot;character&quot;:17,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:262,&quot;character&quot;:20,&quot;text&quot;:&quot;paymentStatus&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:262,&quot;character&quot;:35,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:262,&quot;character&quot;:50,&quot;text&quot;:&quot;status&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:263,&quot;character&quot;:20,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:263,&quot;character&quot;:35,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:263,&quot;character&quot;:50,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:264,&quot;character&quot;:20,&quot;text&quot;:&quot;paymentIntentObject&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:264,&quot;character&quot;:41,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:17,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:271,&quot;character&quot;:28,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:272,&quot;character&quot;:25,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:273,&quot;character&quot;:25,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:274,&quot;character&quot;:25,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:274,&quot;character&quot;:51,&quot;text&quot;:&quot;invoiceDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:274,&quot;character&quot;:67,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:25,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:25,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:32,&quot;text&quot;:&quot;invoiceDetails&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:48,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:25,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:279,&quot;character&quot;:28,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:279,&quot;character&quot;:43,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:279,&quot;character&quot;:58,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:280,&quot;character&quot;:28,&quot;text&quot;:&quot;paymentIntentObject&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:280,&quot;character&quot;:49,&quot;text&quot;:&quot;paymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:285,&quot;character&quot;:25,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:286,&quot;character&quot;:25,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:286,&quot;character&quot;:32,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:286,&quot;character&quot;:58,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:289,&quot;character&quot;:17,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:290,&quot;character&quot;:17,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:290,&quot;character&quot;:24,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/createPaymentIntent.ts&quot;,&quot;line&quot;:290,&quot;character&quot;:50,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

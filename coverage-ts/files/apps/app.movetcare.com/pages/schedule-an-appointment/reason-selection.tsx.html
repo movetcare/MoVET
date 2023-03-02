@@ -1,0 +1,199 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>reason-selection.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx</td><td class="">83.73%</td><td class="">75%</td><td class="">252</td><td class="">211</td><td class="">41</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { AppHeader } from &quot;components/AppHeader&quot;;
+import { useRouter } from &quot;next/router&quot;;
+import { Error } from &quot;components/Error&quot;;
+import { useEffect, useState } from &quot;react&quot;;
+import { Button, Loader } from &quot;ui&quot;;
+import { faArrowRight } from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { yupResolver } from &quot;@hookform/resolvers/yup&quot;;
+import { useGoogleReCaptcha } from &quot;react-google-recaptcha-v3&quot;;
+import { useForm } from &quot;react-hook-form&quot;;
+import { lazy, object, string } from &quot;yup&quot;;
+import { httpsCallable } from &quot;firebase/functions&quot;;
+import { functions } from &quot;services/firebase&quot;;
+import { BookingHeader } from &quot;components/BookingHeader&quot;;
+import { BookingFooter } from &quot;components/BookingFooter&quot;;
+import { SearchInput } from &quot;components/inputs/SearchInput&quot;;
+import getUrlQueryStringFromObject from &quot;utilities/src/getUrlQueryStringFromObject&quot;;
+
+export default function ReasonSelection() {
+  const router = useRouter();
+  const { mode } = router.query || {};
+  const isAppMode = mode === &quot;app&quot;;
+  const [isLoading, setIsLoading] = useState&lt;boolean&gt;(true);
+  const [error, setError] = useState&lt;any&gt;(null);
+  const [loadingMessage, setLoadingMessage] = useState&lt;string | null&gt;(null);
+  const [reasons, setReasons] = useState&lt;Array&lt;any&gt; | null&gt;(null);
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isDirty, isValid },
+  } = useForm({
+    mode: &quot;all&quot;,
+    resolver: yupResolver(
+      object().shape({
+        reason: lazy((value: any) =&gt;
+          typeof value === &quot;object&quot; &amp;&amp; !Array.isArray(value) &amp;&amp; value !== null
+            ? object().shape({
+                label: string().trim().min(1, &quot;A selection is required&quot;),
+                value: string().trim().min(1, &quot;A selection is required&quot;),
+              })
+            : string()
+                .matches(/.*\d/, &quot;A selection selection is required&quot;)
+                .required(&quot;A selection selection is required&quot;)
+        ),
+      })
+    ),
+    defaultValues: {
+      reason: &quot;&quot;,
+    },
+  });
+  useEffect(() =&gt; {
+    if (window.localStorage.getItem(&quot;bookingSession&quot;) === null)
+      router.push(&quot;/schedule-an-appointment&quot;);
+  }, [router]);
+  useEffect(() =&gt; {
+    const fetchReasons = async () =&gt; {
+      const { data: result }: any = await httpsCallable(
+        functions,
+        &quot;getReasons&quot;
+      )({
+        reasonGroup: JSON.parse(
+          window.localStorage.getItem(&quot;bookingSession&quot;) as string
+        )?.locationId,
+      });
+      if (result?.error !== true || result?.error === undefined) {
+        setReasons(result);
+        setIsLoading(false);
+      } else handleError(result);
+    };
+    if (window.localStorage.getItem(&quot;bookingSession&quot;)) fetchReasons();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleError = (error: any) =&gt; {
+    console.error(error);
+    setError(error);
+    reset();
+    setIsLoading(false);
+  };
+  const onSubmit = async (data: any) =&gt; {
+    setIsLoading(true);
+    setLoadingMessage(&quot;Saving Selection...&quot;);
+    if (executeRecaptcha) {
+      const token = await executeRecaptcha(&quot;booking&quot;);
+      if (token) {
+        try {
+          const session = JSON.parse(
+            window.localStorage.getItem(&quot;bookingSession&quot;) as string
+          );
+          const { data: result }: any = await httpsCallable(
+            functions,
+            &quot;scheduleAppointment&quot;
+          )({
+            ...data,
+            id: session?.id,
+            device: navigator.userAgent,
+            token,
+          });
+          if (result?.error !== true || result?.error === undefined) {
+            setLoadingMessage(&quot;Almost finished...&quot;);
+            if (result?.client?.uid &amp;&amp; result?.id) {
+              window.localStorage.setItem(
+                &quot;bookingSession&quot;,
+                JSON.stringify(result)
+              );
+              const queryString = getUrlQueryStringFromObject(router.query);
+              if (result.staff)
+                router.push(
+                  &quot;/schedule-an-appointment/staff-selection&quot; +
+                    (queryString ? queryString : &quot;&quot;)
+                );
+              else
+                router.push(
+                  &quot;/schedule-an-appointment/datetime-selection&quot; +
+                    (queryString ? queryString : &quot;&quot;)
+                );
+            } else handleError(result);
+          } else handleError(result);
+        } catch (error) {
+          handleError(error);
+        }
+      }
+    } else handleError({ message: &quot;FAILED CAPTCHA&quot; });
+  };
+  return (
+    &lt;section className=&quot;w-full flex-1&quot;&gt;
+      &lt;AppHeader /&gt;
+      &lt;div
+        className={`flex items-center justify-center bg-white rounded-xl max-w-xl mx-auto${
+          !isAppMode ? &quot; p-4 mb-4 sm:p-8&quot; : &quot;&quot;
+        }`}
+      &gt;
+        &lt;div className={isAppMode ? &quot;px-4 mb-8&quot; : &quot;&quot;}&gt;
+          &lt;section className=&quot;relative mx-auto&quot;&gt;
+            {isLoading ? (
+              &lt;Loader
+                message={loadingMessage || &quot;Loading, please wait...&quot;}
+                isAppMode={isAppMode}
+              /&gt;
+            ) : error ? (
+              &lt;Error error={error} isAppMode={isAppMode} /&gt;
+            ) : (
+              &lt;&gt;
+                &lt;BookingHeader
+                  isAppMode={isAppMode}
+                  title={&quot;Choose a Service&quot;}
+                  description={&quot;What kind of service are you needing?&quot;}
+                /&gt;
+                &lt;div className=&quot;mt-8 px-1&quot;&gt;
+                  &lt;form className=&quot;grid grid-cols-1 gap-y-8 text-left mt-8 z-50 relative mb-8 overflow-visible&quot;&gt;
+                    &lt;SearchInput
+                      label=&quot;Service&quot;
+                      options={reasons || []}
+                      control={control}
+                      errors={errors}
+                      name=&quot;reason&quot;
+                      placeholder=&quot;Select a Service Type&quot;
+                      required
+                    /&gt;
+                    &lt;Button
+                      disabled={!isDirty || !isValid}
+                      type=&quot;submit&quot;
+                      icon={faArrowRight}
+                      iconSize={&quot;sm&quot;}
+                      color=&quot;black&quot;
+                      text=&quot;Continue&quot;
+                      className={&quot;w-full mx-auto mt-12&quot;}
+                      onClick={handleSubmit(onSubmit)}
+                    /&gt;
+                  &lt;/form&gt;
+                &lt;/div&gt;
+                &lt;BookingFooter /&gt;
+              &lt;/&gt;
+            )}
+          &lt;/section&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:22,&quot;character&quot;:9,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:35,&quot;character&quot;:22,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:36,&quot;character&quot;:17,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:36,&quot;character&quot;:54,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:36,&quot;character&quot;:64,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:57,&quot;character&quot;:20,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:61,&quot;character&quot;:8,&quot;text&quot;:&quot;reasonGroup&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:63,&quot;character&quot;:11,&quot;text&quot;:&quot;locationId&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:10,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:18,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:36,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:44,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:68,&quot;character&quot;:25,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:74,&quot;character&quot;:23,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:75,&quot;character&quot;:18,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:76,&quot;character&quot;:13,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:80,&quot;character&quot;:26,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:87,&quot;character&quot;:16,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:90,&quot;character&quot;:24,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:95,&quot;character&quot;:12,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:95,&quot;character&quot;:16,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:95,&quot;character&quot;:25,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:99,&quot;character&quot;:14,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:99,&quot;character&quot;:22,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:99,&quot;character&quot;:40,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:99,&quot;character&quot;:48,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:101,&quot;character&quot;:16,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:101,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:101,&quot;character&quot;:32,&quot;text&quot;:&quot;uid&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:101,&quot;character&quot;:39,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:101,&quot;character&quot;:47,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:104,&quot;character&quot;:31,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:107,&quot;character&quot;:18,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:107,&quot;character&quot;:25,&quot;text&quot;:&quot;staff&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:117,&quot;character&quot;:31,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:118,&quot;character&quot;:29,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:120,&quot;character&quot;:22,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:119,&quot;character&quot;:17,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:140,&quot;character&quot;:16,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:141,&quot;character&quot;:21,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/reason-selection.tsx&quot;,&quot;line&quot;:141,&quot;character&quot;:28,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

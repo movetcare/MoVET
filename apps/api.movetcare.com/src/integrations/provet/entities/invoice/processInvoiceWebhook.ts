@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { admin, environment, throwError } from "../../../../config/config";
+import { admin, throwError } from "../../../../config/config";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { saveClient } from "../client/saveClient";
 import { fetchEntity } from "../fetchEntity";
-const DEBUG = environment.type === "production";
+const DEBUG = false; // environment.type === "production";
 export const processInvoiceWebhook = async (
   request: Request,
   response: Response

@@ -6,14 +6,14 @@ import {
   DEBUG,
 } from "../config/config";
 
-export const recaptchaIsVerified = async (token: string) =>
+export const recaptchaIsVerified = async (token: string): Promise<boolean> =>
   environment.type === "development"
     ? true
     : await request
         .post(
           `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecretKey}&response=${token}`
         )
-        .then(async (response: any) => {
+        .then(async (response: { data: { success: boolean } }) => {
           const { data } = response;
           if (DEBUG)
             console.log(

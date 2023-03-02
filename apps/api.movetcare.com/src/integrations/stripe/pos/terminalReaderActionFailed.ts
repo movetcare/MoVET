@@ -1,5 +1,5 @@
-import { admin, environment, stripe, throwError } from "../../../config/config";
-const DEBUG = environment.type === "production";
+import { admin, stripe, throwError } from "../../../config/config";
+const DEBUG = false; // environment.type === "production";
 export const terminalReaderActionFailed = (event: any): void => {
   if (DEBUG)
     console.log("terminalReaderActionFailed EVENT:", event?.data?.action);

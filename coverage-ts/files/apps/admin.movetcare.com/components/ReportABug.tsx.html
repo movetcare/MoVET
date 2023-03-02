@@ -1,0 +1,297 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>ReportABug.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/admin.movetcare.com/components/ReportABug.tsx</td><td class="">92.04%</td><td class="">75%</td><td class="">314</td><td class="">289</td><td class="">25</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  faCircleCheck,
+  faCircleExclamation,
+  faSmile,
+  faBug,
+  faEnvelope,
+} from &#x27;@fortawesome/free-solid-svg-icons&#x27;;
+import { FontAwesomeIcon } from &#x27;@fortawesome/react-fontawesome&#x27;;
+import { httpsCallable } from &#x27;firebase/functions&#x27;;
+import { useState } from &#x27;react&#x27;;
+import { useForm } from &#x27;react-hook-form&#x27;;
+import toast from &#x27;react-hot-toast&#x27;;
+import { functions, storage } from &#x27;services/firebase&#x27;;
+import Button from &#x27;./Button&#x27;;
+import SelectInput from &#x27;./inputs/SelectInput&#x27;;
+import { Loader } from &quot;ui&quot;;
+import { ref, getDownloadURL, uploadBytesResumable } from &#x27;firebase/storage&#x27;;
+
+const ReportABug = ({ type = &#x27;bug&#x27; }: { type?: &#x27;bug&#x27; | &#x27;feature&#x27; }) =&gt; {
+  const [isLoading, setIsLoading] = useState&lt;boolean&gt;(false);
+  const [selectedFiles, setSelectedFiles] = useState&lt;any&gt;();
+  const [isFilePicked, setIsFilePicked] = useState&lt;boolean&gt;(type === &#x27;feature&#x27;);
+  const {
+    control,
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { isValid, isSubmitting, isDirty, errors },
+  } = useForm({
+    mode: &#x27;onChange&#x27;,
+    defaultValues: {
+      name: &#x27;&#x27;,
+      description: &#x27;&#x27;,
+      url: &#x27;&#x27;,
+      application: { id: &#x27;admin&#x27;, name: &#x27;Admin App - admin.movetcare.com&#x27; },
+      priority: { id: &#x27;low&#x27;, name: &#x27;Low&#x27; },
+    },
+  });
+
+  const application = watch(&#x27;application&#x27;);
+
+  const changeHandler = (event: any) =&gt; {
+    setSelectedFiles(event.target.files);
+    setIsFilePicked(true);
+  };
+
+  const onSubmit = async ({
+    name,
+    description,
+    application,
+    url,
+    priority,
+  }: {
+    name: string;
+    description: string;
+    url: string;
+    application:
+      | { id: &#x27;web&#x27;; name: &#x27;Website - movetcare.com&#x27; }
+      | { id: &#x27;admin&#x27;; name: &#x27;Admin App - admin.movetcare.com&#x27; }
+      | { id: &#x27;mobile&#x27;; name: &#x27;Mobile iOS/Android App&#x27; };
+    priority:
+      | { id: &#x27;low&#x27;; name: &#x27;Low&#x27; }
+      | { id: &#x27;medium&#x27;; name: &#x27;Medium&#x27; }
+      | { id: &#x27;high&#x27;; name: &#x27;High&#x27; };
+  }) =&gt; {
+    setIsLoading(true);
+    const fileUrls: Array&lt;string&gt; = [];
+    await Promise.all(
+      [...selectedFiles].map(async (fileData: any, index: number) =&gt; {
+        const storageRef = ref(
+          storage,
+          `report_a_bug_internal/${fileData.name}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, fileData);
+        await uploadTask.on(
+          &#x27;state_changed&#x27;,
+          (snapshot: any) =&gt; {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            console.log(&#x27;File Upload %: &#x27;, progress);
+          },
+          (error: any) =&gt; {
+            toast(error?.message, {
+              icon: (
+                &lt;FontAwesomeIcon
+                  icon={faCircleExclamation}
+                  size=&quot;sm&quot;
+                  className=&quot;text-movet-red&quot;
+                /&gt;
+              ),
+            });
+          },
+          async () =&gt; {
+            await getDownloadURL(uploadTask.snapshot.ref).then(
+              async (downloadURL: string) =&gt; {
+                fileUrls.push(downloadURL);
+                if (index === selectedFiles.length - 1) {
+                  await httpsCallable(
+                    functions,
+                    &#x27;reportABugInternal&#x27;
+                  )({
+                    type,
+                    name,
+                    description,
+                    url,
+                    application: application.id,
+                    screenshot: fileUrls?.toString(),
+                    priority: priority.id,
+                  })
+                    .then(() =&gt; {
+                      toast(
+                        `Your ${
+                          type === &#x27;feature&#x27;
+                            ? &#x27;new feature request&#x27;
+                            : &#x27;bug report&#x27;
+                        } has been submitted!`,
+                        {
+                          icon: (
+                            &lt;FontAwesomeIcon
+                              icon={faCircleCheck}
+                              size=&quot;sm&quot;
+                              className=&quot;text-movet-green&quot;
+                            /&gt;
+                          ),
+                        }
+                      );
+                      reset();
+                    })
+                    .catch((error: any) =&gt;
+                      toast(error?.message, {
+                        icon: (
+                          &lt;FontAwesomeIcon
+                            icon={faCircleExclamation}
+                            size=&quot;sm&quot;
+                            className=&quot;text-movet-red&quot;
+                          /&gt;
+                        ),
+                      })
+                    )
+                    .finally(() =&gt; setIsLoading(false));
+                }
+              }
+            );
+          }
+        );
+      })
+    ).catch((error: any) =&gt;
+      toast(error?.message, {
+        icon: (
+          &lt;FontAwesomeIcon
+            icon={faCircleExclamation}
+            size=&quot;sm&quot;
+            className=&quot;text-movet-red&quot;
+          /&gt;
+        ),
+      })
+    );
+  };
+
+  return (
+    &lt;form
+      onSubmit={handleSubmit(onSubmit as any)}
+      className={`flex flex-col w-full mx-auto px-4 md:px-8 bg-white p-8 text-movet-black rounded-xl max-w-md justify-center items-center${
+        isLoading ? &#x27; overflow-hidden&#x27; : &#x27;&#x27;
+      }`}
+    &gt;
+      {isLoading ? (
+        &lt;Loader /&gt;
+      ) : (
+        &lt;&gt;
+          &lt;div className=&quot;flex flex-col w-full items-center pt-4 mb-4&quot;&gt;
+            &lt;label className=&quot;flex flex-row items-center w-full justify-center italic mt-2 mb-2 text-sm&quot;&gt;
+              &lt;FontAwesomeIcon
+                icon={type === &#x27;feature&#x27; ? faSmile : faBug}
+                size=&quot;2x&quot;
+                className={
+                  type === &#x27;feature&#x27; ? &#x27;text-movet-green&#x27; : &#x27;text-movet-red&#x27;
+                }
+              /&gt;
+              &lt;h1
+                className={`ml-3 italic${
+                  type === &#x27;feature&#x27; ? &#x27;text-movet-green&#x27; : &#x27; text-movet-red&#x27;
+                }`}
+              &gt;
+                {type === &#x27;feature&#x27; ? &#x27;New Feature Request&#x27; : &#x27;Report a Bug&#x27;}
+              &lt;/h1&gt;
+            &lt;/label&gt;
+          &lt;/div&gt;
+          &lt;label className=&quot;font-bold my-2 text-sm w-full&quot;&gt;
+            Name of {type === &#x27;feature&#x27; ? &#x27;Feature&#x27; : &#x27;Bug&#x27;}
+          &lt;/label&gt;
+          &lt;input
+            type=&quot;text&quot;
+            required
+            placeholder=&quot;Write Something...&quot;
+            className=&quot;font-abside-smooth border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm mb-2&quot;
+            {...register(&#x27;name&#x27;)}
+          /&gt;
+          &lt;label className=&quot;font-bold my-2 text-sm w-full&quot;&gt;Description&lt;/label&gt;
+          &lt;textarea
+            required
+            placeholder=&quot;Please provide as much detail as possible...&quot;
+            className=&quot;font-abside-smooth border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm mb-2&quot;
+            {...register(&#x27;description&#x27;)}
+          /&gt;
+          &lt;label className=&quot;font-bold mb-2 text-sm w-full mt-2&quot;&gt;
+            Screenshot(s) or Recording(s)
+          &lt;/label&gt;
+          &lt;span className=&quot;my-2 w-full&quot;&gt;
+            &lt;input
+              type=&quot;file&quot;
+              name=&quot;file&quot;
+              onChange={changeHandler}
+              required
+              multiple
+            /&gt;
+          &lt;/span&gt;
+          &lt;label className=&quot;font-bold mb-2 text-sm w-full mt-2&quot;&gt;
+            Application
+          &lt;/label&gt;
+          &lt;SelectInput
+            label=&quot;&quot;
+            name=&quot;application&quot;
+            required
+            values={[
+              { id: &#x27;web&#x27;, name: &#x27;Website - movetcare.com&#x27; },
+              { id: &#x27;admin&#x27;, name: &#x27;Admin App - admin.movetcare.com&#x27; },
+              { id: &#x27;mobile&#x27;, name: &#x27;Mobile iOS/Android App&#x27; },
+            ]}
+            errors={errors}
+            control={control}
+          /&gt;
+          {(application.id === &#x27;admin&#x27; || application.id === &#x27;web&#x27;) &amp;&amp; (
+            &lt;&gt;
+              &lt;label className=&quot;font-bold mb-2 mt-4 text-sm w-full&quot;&gt;
+                Related URL{&#x27; &#x27;}
+                &lt;span className=&quot;text-xs italic&quot;&gt;(if applicable)&lt;/span&gt;
+              &lt;/label&gt;
+              &lt;input
+                type=&quot;text&quot;
+                placeholder=&quot;ex: https://movetcare.com&quot;
+                className=&quot;font-abside-smooth border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm&quot;
+                {...register(&#x27;url&#x27;)}
+              /&gt;
+            &lt;/&gt;
+          )}
+          &lt;label className=&quot;font-bold mb-2 mt-4 text-sm w-full&quot;&gt;
+            Priority Level
+          &lt;/label&gt;
+          &lt;SelectInput
+            label=&quot;&quot;
+            name=&quot;priority&quot;
+            required
+            values={[
+              { id: &#x27;low&#x27;, name: &#x27;Low&#x27; },
+              { id: &#x27;medium&#x27;, name: &#x27;Medium&#x27; },
+              { id: &#x27;high&#x27;, name: &#x27;High&#x27; },
+            ]}
+            errors={errors}
+            control={control}
+          /&gt;
+          &lt;Button
+            type=&quot;submit&quot;
+            color=&quot;red&quot;
+            disabled={!isDirty || isSubmitting || !isValid || !isFilePicked}
+            className=&quot;mt-8&quot;
+          &gt;
+            &lt;FontAwesomeIcon icon={faEnvelope} size=&quot;lg&quot; /&gt;
+            &lt;span className=&quot;ml-2&quot;&gt;SUBMIT&lt;/span&gt;
+          &lt;/Button&gt;
+        &lt;/&gt;
+      )}
+    &lt;/form&gt;
+  );
+};
+
+export default ReportABug;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:20,&quot;character&quot;:9,&quot;text&quot;:&quot;selectedFiles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:42,&quot;character&quot;:25,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:43,&quot;character&quot;:21,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:43,&quot;character&quot;:27,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:43,&quot;character&quot;:34,&quot;text&quot;:&quot;files&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:10,&quot;text&quot;:&quot;selectedFiles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:36,&quot;text&quot;:&quot;fileData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:72,&quot;character&quot;:35,&quot;text&quot;:&quot;fileData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:72,&quot;character&quot;:44,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:77,&quot;character&quot;:11,&quot;text&quot;:&quot;snapshot&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:79,&quot;character&quot;:15,&quot;text&quot;:&quot;snapshot&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:79,&quot;character&quot;:24,&quot;text&quot;:&quot;bytesTransferred&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:79,&quot;character&quot;:43,&quot;text&quot;:&quot;snapshot&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:79,&quot;character&quot;:52,&quot;text&quot;:&quot;totalBytes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:83,&quot;character&quot;:11,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:84,&quot;character&quot;:18,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:84,&quot;character&quot;:25,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:98,&quot;character&quot;:30,&quot;text&quot;:&quot;selectedFiles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:98,&quot;character&quot;:44,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:130,&quot;character&quot;:28,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:131,&quot;character&quot;:28,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:131,&quot;character&quot;:35,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:148,&quot;character&quot;:13,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:149,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/ReportABug.tsx&quot;,&quot;line&quot;:149,&quot;character&quot;:19,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

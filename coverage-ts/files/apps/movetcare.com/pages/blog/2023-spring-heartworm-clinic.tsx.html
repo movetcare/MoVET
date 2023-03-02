@@ -1,0 +1,149 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>2023-spring-heartworm-clinic.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/movetcare.com/pages/blog/2023-spring-heartworm-clinic.tsx</td><td class="">100.00%</td><td class="">75%</td><td class="">125</td><td class="">125</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import Layout from &quot;components/Layout&quot;;
+import Head from &quot;next/head&quot;;
+import Image from &quot;next/image&quot;;
+import { Button, CallToAction } from &quot;ui&quot;;
+
+export default function IChooseYou() {
+  return (
+    &lt;Layout&gt;
+      &lt;Head&gt;
+        &lt;title&gt;2023 Spring Heartworm Clinic&lt;/title&gt;
+        &lt;meta
+          name=&quot;description&quot;
+          content=&quot;Our 1st Annual Spring Heartworm Clinic is now open for bookings!&quot;
+        /&gt;
+        &lt;meta property=&quot;og:type&quot; content=&quot;website&quot; /&gt;
+        &lt;meta
+          name=&quot;og:title&quot;
+          property=&quot;og:title&quot;
+          content=&quot;MoVET&#x27;s 1st Annual Spring Heartworm Clinic&quot;
+        /&gt;
+        &lt;meta
+          name=&quot;og:description&quot;
+          property=&quot;og:description&quot;
+          content=&quot;Our 1st Annual Spring Heartworm Clinic is now open for bookings!&quot;
+        /&gt;
+        &lt;meta property=&quot;og:site_name&quot; content=&quot;MoVET&quot; /&gt;
+        &lt;meta name=&quot;twitter:card&quot; content=&quot;summary&quot; /&gt;
+        &lt;meta
+          name=&quot;twitter:title&quot;
+          content=&quot;MoVET&#x27;s 1st Annual Spring Heartworm Clinic&quot;
+        /&gt;
+        &lt;meta
+          name=&quot;twitter:description&quot;
+          content=&quot;Our 1st Annual Spring Heartworm Clinic is now open for bookings!&quot;
+        /&gt;
+        &lt;meta name=&quot;twitter:site&quot; content=&quot;https://movetcare.com&quot; /&gt;
+        &lt;meta name=&quot;twitter:creator&quot; content=&quot;Dr. A&quot; /&gt;
+        &lt;link rel=&quot;icon&quot; type=&quot;image/png&quot; href=&quot;/static/images/favicon.ico&quot; /&gt;
+        &lt;link rel=&quot;apple-touch-icon&quot; href=&quot;/static/images/favicon.ico&quot; /&gt;
+        &lt;meta property=&quot;og:image&quot; content=&quot;/images/blog/heartworm-clinic.png&quot; /&gt;
+        &lt;meta
+          name=&quot;twitter:image&quot;
+          content=&quot;/images/blog/heartworm-clinic.png&quot;
+        /&gt;
+      &lt;/Head&gt;
+      &lt;section className=&quot;flex flex-col items-center justify-center sm:max-w-screen-lg mx-4 sm:mx-auto mt-8 mb-20 px-8 lg:px-20 bg-white rounded-xl p-4 sm:p-8&quot;&gt;
+        &lt;Image
+          className=&quot;rounded-xl cursor-pointer&quot;
+          src=&quot;/images/blog/heartworm-clinic-banner.png&quot;
+          alt=&quot;2023 Spring Heartworm Clinic&quot;
+          height={200}
+          width={800}
+          onClick={() =&gt;
+            window.open(
+              &quot;https://app.movetcare.com/schedule-an-appointment&quot;,
+              &quot;_blank&quot;
+            )
+          }
+        /&gt;
+        &lt;h2 className=&quot;text-3xl mt-8 mb-2 text-center&quot;&gt;
+          Spring Heartworm Clinic
+        &lt;/h2&gt;
+        &lt;p className=&quot;text-xl text-extrabold&quot;&gt;
+          Our 1st Annual Spring Heartworm Clinic is now open for bookings!
+        &lt;/p&gt;
+        &lt;p className=&quot;text-lg mt-2&quot;&gt;
+          Did you know{&quot; &quot;}
+          &lt;a
+            href=&quot;https://www.zoetispetcare.com/products/proheart&quot;
+            target=&quot;_blank&quot;
+            rel=&quot;noreferrer&quot;
+          &gt;
+            ProHeart12
+          &lt;/a&gt;{&quot; &quot;}
+          lasts for 12 months! No more monthly tablets.
+        &lt;/p&gt;
+        &lt;p className=&quot;italic text-lg mb-4&quot;&gt;
+          Receive &lt;span className=&quot;font-extrabold&quot;&gt;$10 off&lt;/span&gt; when you book
+          a Heartworm Test with a{&quot; &quot;}
+          &lt;a
+            href=&quot;https://www.zoetispetcare.com/products/proheart&quot;
+            target=&quot;_blank&quot;
+            rel=&quot;noreferrer&quot;
+          &gt;
+            ProHeart12
+          &lt;/a&gt;{&quot; &quot;}
+          injection between March 20th and June 21st.
+        &lt;/p&gt;
+        &lt;h2 className=&quot;text-lg mt-4&quot;&gt;
+          DON&amp;apos;T FALL BEHIND ON YOUR HEARTWORM PREVENTION
+        &lt;/h2&gt;
+        &lt;Button
+          text=&quot;Schedule an Appointment Today&quot;
+          color=&quot;red&quot;
+          className=&quot;mt-2 mb-4&quot;
+          onClick={() =&gt;
+            window.open(
+              &quot;https://app.movetcare.com/schedule-an-appointment&quot;,
+              &quot;_blank&quot;
+            )
+          }
+        /&gt;
+        &lt;p className=&quot;mt-4 mb-4 italic uppercase&quot;&gt;
+          Learn more about heartworm prevention
+        &lt;/p&gt;
+        &lt;div className=&quot;flex flex-row&quot;&gt;
+          &lt;Button
+            text=&quot;Heartworm In Colorado&quot;
+            color=&quot;black&quot;
+            className=&quot;mr-2&quot;
+            onClick={() =&gt;
+              window.open(
+                &quot;https://movetcare.com/blog/winter-heartworm/&quot;,
+                &quot;_blank&quot;
+              )
+            }
+          /&gt;
+          &lt;Button
+            text=&quot;American Heartworm Society&quot;
+            color=&quot;black&quot;
+            className=&quot;ml-2&quot;
+            onClick={() =&gt;
+              window.open(&quot;https://www.heartwormsociety.org/&quot;, &quot;_blank&quot;)
+            }
+          /&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+      &lt;CallToAction /&gt;
+    &lt;/Layout&gt;
+  );
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

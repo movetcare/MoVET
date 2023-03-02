@@ -1,0 +1,263 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>saveAppointment.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts</td><td class="">56.12%</td><td class="">75%</td><td class="">392</td><td class="">220</td><td class="">172</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { sendAppointmentConfirmationEmail } from &quot;../../../../notifications/templates/sendAppointmentConfirmationEmail&quot;;
+import { fetchEntity } from &quot;./../fetchEntity&quot;;
+import { admin, throwError, environment } from &quot;../../../../config/config&quot;;
+import { getProVetIdFromUrl } from &quot;../../../../utils/getProVetIdFromUrl&quot;;
+import { deleteAppointmentNotifications } from &quot;./notifications/deleteAppointmentNotifications&quot;;
+import { generateNewAppointmentNotifications } from &quot;./notifications/generateNewAppointmentNotifications&quot;;
+import type { Appointment } from &quot;../../../../types/appointment&quot;;
+// import {getAuthUserById} from &#x27;../../../../utils/auth/getAuthUserById&#x27;;
+// import {getDateStringFromDate} from &#x27;../../../../utils/getDateStringFromDate&#x27;;
+const DEBUG = false; // environment.type === &quot;production&quot;;
+export const saveAppointment = async (
+  proVetAppointmentData: Appointment,
+  movetAppointmentData?: any
+): Promise&lt;boolean&gt; =&gt; {
+  const data: any = {};
+
+  if (proVetAppointmentData) {
+    // data.record = proVetAppointmentData;
+    if (
+      proVetAppointmentData?.active === 1 ||
+      proVetAppointmentData?.active === 0
+    )
+      data.active = proVetAppointmentData?.active;
+    if (proVetAppointmentData?.request_hash)
+      data.requestHash = proVetAppointmentData?.request_hash;
+    if (proVetAppointmentData?.instructions)
+      data.instructions = proVetAppointmentData?.instructions;
+    if (proVetAppointmentData?.user)
+      data.user = getProVetIdFromUrl(proVetAppointmentData?.user);
+    if (proVetAppointmentData?.reason)
+      data.reason = proVetAppointmentData?.reason;
+    if (proVetAppointmentData?.notes) data.notes = proVetAppointmentData?.notes;
+    if (proVetAppointmentData?.start)
+      data.start = new Date(proVetAppointmentData?.start);
+    if (proVetAppointmentData?.end)
+      data.end = new Date(proVetAppointmentData?.end);
+    if (proVetAppointmentData?.client)
+      data.client = getProVetIdFromUrl(proVetAppointmentData?.client);
+    if (proVetAppointmentData?.type) data.type = proVetAppointmentData?.type;
+    if (proVetAppointmentData?.telemedicine_room)
+      data.telehealthRoom = proVetAppointmentData?.telemedicine_room;
+    if (proVetAppointmentData?.telemedicine_url)
+      data.telemedicineUrl = proVetAppointmentData?.telemedicine_url;
+    if (proVetAppointmentData?.telemedicine_url_master)
+      data.telemedicineUrl = proVetAppointmentData?.telemedicine_url_master;
+    if (movetAppointmentData?.locationType)
+      data.locationType = movetAppointmentData?.locationType;
+    if (movetAppointmentData?.address)
+      data.address = movetAppointmentData?.address;
+    if (movetAppointmentData?.location)
+      data.location = movetAppointmentData?.location;
+    if (movetAppointmentData?.patients)
+      data.patients = movetAppointmentData?.patients;
+    else if (proVetAppointmentData?.patients) {
+      const proVetPatientData: any = await Promise.all(
+        proVetAppointmentData?.patients.map(async (patientUrl: string) =&gt; {
+          const id = getProVetIdFromUrl(patientUrl);
+          const patientData = await fetchEntity(&quot;patient&quot;, id);
+          const { name, species, gender } = patientData;
+          let complaintsJson = null;
+          let minorIllness = null;
+
+          if (typeof proVetAppointmentData?.complaint === &quot;string&quot;) {
+            if (DEBUG)
+              console.log(
+                &quot;parse =&gt; &quot;,
+                JSON.parse(JSON.stringify(proVetAppointmentData?.complaint))
+              );
+
+            complaintsJson = JSON.parse(
+              JSON.stringify(proVetAppointmentData?.complaint)
+            );
+            if (complaintsJson) {
+              if (DEBUG) {
+                console.log(&quot;complaintsJson =&gt;&quot;, complaintsJson);
+                console.log(&quot;complaintsJson.length&quot;, complaintsJson.length);
+              }
+              try {
+                complaintsJson.map((patient: any) =&gt; {
+                  if (DEBUG) {
+                    console.log(&quot;patient&quot;, patient);
+                    console.log(
+                      &quot;id === parseInt(patient.id)&quot;,
+                      id === parseInt(patient.id)
+                    );
+                  }
+                  if (id === parseInt(patient.id)) {
+                    minorIllness = patient.minorIllness;
+                  }
+                });
+              } catch {
+                if (DEBUG) console.log(&quot;Failed Parse&quot;);
+                minorIllness = proVetAppointmentData?.complaint;
+              }
+            } else minorIllness = proVetAppointmentData?.complaint;
+          }
+
+          return {
+            id,
+            name,
+            species,
+            gender,
+            minorIllness,
+          };
+        })
+      ).catch((error: any) =&gt; throwError(error));
+      data.patients = proVetPatientData;
+    }
+  }
+
+  if (proVetAppointmentData?.id) {
+    const appointmentDocument = await admin
+      .firestore()
+      .collection(&quot;appointments&quot;)
+      .doc(`${proVetAppointmentData.id}`);
+
+    const appointmentIsToday =
+      data.start.getMonth() === new Date().getMonth() &amp;&amp;
+      data.start.getDay() === new Date().getDay();
+
+    if (DEBUG) console.log(&quot;appointmentIsToday&quot;, appointmentIsToday);
+
+    if (data?.active === 0)
+      deleteAppointmentNotifications(proVetAppointmentData?.id);
+    else if (data.client &amp;&amp; !appointmentIsToday) {
+      deleteAppointmentNotifications(proVetAppointmentData?.id);
+      generateNewAppointmentNotifications({
+        ...data,
+        send24HourReminder: true,
+        id: proVetAppointmentData?.id,
+      });
+      generateNewAppointmentNotifications({
+        ...data,
+        send30MinReminder: true,
+        id: proVetAppointmentData?.id,
+      });
+    } else if (data.client &amp;&amp; appointmentIsToday) {
+      deleteAppointmentNotifications(proVetAppointmentData?.id);
+      generateNewAppointmentNotifications({
+        ...data,
+        send30MinReminder: true,
+        id: proVetAppointmentData?.id,
+      });
+    } else if (DEBUG)
+      console.log(
+        &quot;SKIPPING APPOINTMENT NOTIFICATION GENERATION - APPOINTMENT DOES NOT HAVE A CLIENT!&quot;
+      );
+
+    return await appointmentDocument
+      .get()
+      .then(async (document: any) =&gt; {
+        if (document.exists) {
+          if (DEBUG)
+            console.log(
+              `Existing Appointment Found: #${proVetAppointmentData.id}`
+            );
+          return await appointmentDocument
+            .update({
+              ...data,
+              updatedOn: new Date(),
+            })
+            .then(async () =&gt; {
+              if (DEBUG)
+                console.log(
+                  `Successfully Synchronized PROVET Cloud Data w/ Firestore for Appointment #${proVetAppointmentData.id}`
+                );
+              if (movetAppointmentData)
+                sendAppointmentConfirmationEmail(
+                  `${data?.client}`,
+                  `${proVetAppointmentData.id}`
+                );
+              return true;
+            })
+            .catch((error: any) =&gt; throwError(error));
+        } else {
+          if (DEBUG)
+            console.log(
+              `Unable to find Appointment #${proVetAppointmentData.id} in Firestore`
+            );
+          return await admin
+            .firestore()
+            .collection(&quot;appointments&quot;)
+            .doc(`${proVetAppointmentData.id}`)
+            .set({
+              ...data,
+              createdOn: new Date(),
+            })
+            .then(async () =&gt; {
+              if (DEBUG) {
+                console.log(
+                  `Successfully Generated Firestore Document for Appointment #${proVetAppointmentData.id}`
+                );
+                console.log(
+                  // eslint-disable-next-line quotes
+                  &#x27;Setting &quot;onboardingComplete&quot; to &quot;true&quot; for Client #&#x27;,
+                  String(data?.client)
+                );
+              }
+              admin
+                .auth()
+                .setCustomUserClaims(String(data?.client), {
+                  onboardingComplete: true,
+                })
+                .catch((error: any) =&gt; {
+                  if (error.code === &quot;auth/user-not-found&quot;) {
+                    if (data?.client &amp;&amp; environment.type === &quot;production&quot;)
+                      admin
+                        .firestore()
+                        .collection(&quot;tasks_queue&quot;)
+                        .doc(`create_new_client_${data?.client}`)
+                        .set(
+                          {
+                            options: {
+                              clientId: data?.client,
+                            },
+                            worker: &quot;create_new_client&quot;,
+                            status: &quot;scheduled&quot;,
+                            performAt: new Date(),
+                            createdOn: new Date(),
+                          },
+                          { merge: true }
+                        )
+                        .then(
+                          async () =&gt;
+                            DEBUG &amp;&amp;
+                            console.log(
+                              &quot;CREATE NEW CLIENT TASK ADDED TO QUEUE =&gt; &quot;,
+                              `create_new_client_${data?.client}`
+                            )
+                        )
+                        .catch((error: any) =&gt; throwError(error));
+                  } else throwError(error);
+                });
+              sendAppointmentConfirmationEmail(
+                `${data?.client}`,
+                `${proVetAppointmentData.id}`
+              );
+              return true;
+            })
+            .catch((error: any) =&gt; throwError(error));
+        }
+      })
+      .catch((error: any) =&gt; throwError(error));
+  } else return false;
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:2,&quot;character&quot;:9,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:2,&quot;character&quot;:28,&quot;text&quot;:&quot;environment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:2,&quot;text&quot;:&quot;movetAppointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:22,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:22,&quot;character&quot;:11,&quot;text&quot;:&quot;active&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:24,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:24,&quot;character&quot;:11,&quot;text&quot;:&quot;requestHash&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:11,&quot;text&quot;:&quot;instructions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:11,&quot;text&quot;:&quot;user&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:11,&quot;text&quot;:&quot;reason&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:38,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:43,&quot;text&quot;:&quot;notes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:11,&quot;text&quot;:&quot;start&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:11,&quot;text&quot;:&quot;end&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:11,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:37,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:42,&quot;text&quot;:&quot;type&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:11,&quot;text&quot;:&quot;telehealthRoom&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:11,&quot;text&quot;:&quot;telemedicineUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:11,&quot;text&quot;:&quot;telemedicineUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:8,&quot;text&quot;:&quot;movetAppointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:30,&quot;text&quot;:&quot;locationType&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:11,&quot;text&quot;:&quot;locationType&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:26,&quot;text&quot;:&quot;movetAppointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:48,&quot;text&quot;:&quot;locationType&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:8,&quot;text&quot;:&quot;movetAppointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:30,&quot;text&quot;:&quot;address&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:11,&quot;text&quot;:&quot;address&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:21,&quot;text&quot;:&quot;movetAppointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:43,&quot;text&quot;:&quot;address&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:8,&quot;text&quot;:&quot;movetAppointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:30,&quot;text&quot;:&quot;location&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:11,&quot;text&quot;:&quot;location&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:22,&quot;text&quot;:&quot;movetAppointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:44,&quot;text&quot;:&quot;location&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:8,&quot;text&quot;:&quot;movetAppointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:30,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:11,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:22,&quot;text&quot;:&quot;movetAppointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:44,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:12,&quot;text&quot;:&quot;proVetPatientData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:57,&quot;character&quot;:16,&quot;text&quot;:&quot;patientData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:58,&quot;character&quot;:18,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:58,&quot;character&quot;:24,&quot;text&quot;:&quot;species&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:58,&quot;character&quot;:33,&quot;text&quot;:&quot;gender&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:59,&quot;character&quot;:14,&quot;text&quot;:&quot;complaintsJson&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:60,&quot;character&quot;:14,&quot;text&quot;:&quot;minorIllness&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:44,&quot;text&quot;:&quot;complaint&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:12,&quot;text&quot;:&quot;complaintsJson&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:72,&quot;character&quot;:16,&quot;text&quot;:&quot;complaintsJson&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:74,&quot;character&quot;:49,&quot;text&quot;:&quot;complaintsJson&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:53,&quot;text&quot;:&quot;complaintsJson&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:68,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:78,&quot;character&quot;:16,&quot;text&quot;:&quot;complaintsJson&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:78,&quot;character&quot;:31,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:78,&quot;character&quot;:36,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:80,&quot;character&quot;:43,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:83,&quot;character&quot;:38,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:83,&quot;character&quot;:46,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:86,&quot;character&quot;:38,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:86,&quot;character&quot;:46,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:20,&quot;text&quot;:&quot;minorIllness&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:35,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:43,&quot;text&quot;:&quot;minorIllness&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:92,&quot;character&quot;:16,&quot;text&quot;:&quot;minorIllness&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:94,&quot;character&quot;:19,&quot;text&quot;:&quot;minorIllness&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:99,&quot;character&quot;:12,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:12,&quot;text&quot;:&quot;species&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:101,&quot;character&quot;:12,&quot;text&quot;:&quot;gender&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:102,&quot;character&quot;:12,&quot;text&quot;:&quot;minorIllness&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:105,&quot;character&quot;:15,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:105,&quot;character&quot;:41,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:106,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:106,&quot;character&quot;:11,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:106,&quot;character&quot;:22,&quot;text&quot;:&quot;proVetPatientData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:111,&quot;character&quot;:10,&quot;text&quot;:&quot;appointmentDocument&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:111,&quot;character&quot;:38,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:112,&quot;character&quot;:7,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:113,&quot;character&quot;:7,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:7,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:11,&quot;text&quot;:&quot;start&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:17,&quot;text&quot;:&quot;getMonth&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:6,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:11,&quot;text&quot;:&quot;start&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:17,&quot;text&quot;:&quot;getDay&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:14,&quot;text&quot;:&quot;active&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:13,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:18,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:11,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:132,&quot;character&quot;:11,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:15,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:20,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:139,&quot;character&quot;:11,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:17,&quot;text&quot;:&quot;appointmentDocument&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:149,&quot;character&quot;:7,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:150,&quot;character&quot;:7,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:150,&quot;character&quot;:19,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:151,&quot;character&quot;:12,&quot;text&quot;:&quot;document&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:151,&quot;character&quot;:21,&quot;text&quot;:&quot;exists&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:23,&quot;text&quot;:&quot;appointmentDocument&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:157,&quot;character&quot;:13,&quot;text&quot;:&quot;update&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:158,&quot;character&quot;:17,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:13,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:166,&quot;character&quot;:18,&quot;text&quot;:&quot;movetAppointmentData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:168,&quot;character&quot;:21,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:168,&quot;character&quot;:27,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:173,&quot;character&quot;:13,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:173,&quot;character&quot;:20,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:173,&quot;character&quot;:46,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:179,&quot;character&quot;:23,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:180,&quot;character&quot;:13,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:13,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:182,&quot;character&quot;:13,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:183,&quot;character&quot;:13,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:184,&quot;character&quot;:17,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:187,&quot;character&quot;:13,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:195,&quot;character&quot;:25,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:195,&quot;character&quot;:31,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:14,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:199,&quot;character&quot;:17,&quot;text&quot;:&quot;auth&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:200,&quot;character&quot;:17,&quot;text&quot;:&quot;setCustomUserClaims&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:200,&quot;character&quot;:44,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:200,&quot;character&quot;:50,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:203,&quot;character&quot;:17,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:203,&quot;character&quot;:24,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:204,&quot;character&quot;:22,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:204,&quot;character&quot;:28,&quot;text&quot;:&quot;code&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:205,&quot;character&quot;:24,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:205,&quot;character&quot;:30,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:205,&quot;character&quot;:40,&quot;text&quot;:&quot;environment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:205,&quot;character&quot;:52,&quot;text&quot;:&quot;type&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:206,&quot;character&quot;:22,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:207,&quot;character&quot;:25,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:208,&quot;character&quot;:25,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:25,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:50,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:56,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:210,&quot;character&quot;:25,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:213,&quot;character&quot;:30,&quot;text&quot;:&quot;clientId&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:213,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:213,&quot;character&quot;:46,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:222,&quot;character&quot;:25,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:227,&quot;character&quot;:51,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:227,&quot;character&quot;:57,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:230,&quot;character&quot;:25,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:230,&quot;character&quot;:32,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:230,&quot;character&quot;:58,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:231,&quot;character&quot;:36,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:234,&quot;character&quot;:19,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:234,&quot;character&quot;:25,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:239,&quot;character&quot;:13,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:239,&quot;character&quot;:20,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:239,&quot;character&quot;:46,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:242,&quot;character&quot;:7,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:242,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/appointment/saveAppointment.ts&quot;,&quot;line&quot;:242,&quot;character&quot;:40,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

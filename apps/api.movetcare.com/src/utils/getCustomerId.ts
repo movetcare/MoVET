@@ -37,7 +37,16 @@ const createNewCustomer = async (
   document: any
 ): Promise<string> => {
   const { firstName, lastName, email, phone, street, state, city, zipCode } =
-    document.data() || {};
+    document.data() as {
+      firstName: string;
+      lastName: string;
+      email: string;
+      phone: string;
+      street: string;
+      state: string;
+      city: string;
+      zipCode: string;
+    };
   const { data: matchingCustomers } = await stripe.customers.list({
     email,
   });

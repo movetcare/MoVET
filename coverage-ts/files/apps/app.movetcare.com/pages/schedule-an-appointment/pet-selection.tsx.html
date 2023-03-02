@@ -1,0 +1,395 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>pet-selection.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx</td><td class="">76.37%</td><td class="">75%</td><td class="">457</td><td class="">349</td><td class="">108</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { AppHeader } from &quot;components/AppHeader&quot;;
+import { useRouter } from &quot;next/router&quot;;
+import { Error } from &quot;components/Error&quot;;
+import { useEffect, useRef, useState } from &quot;react&quot;;
+import { Button, ErrorMessage, Loader, Modal } from &quot;ui&quot;;
+import {
+  faArrowRight,
+  faInfoCircle,
+  faPlusCircle,
+  faStethoscope,
+} from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { yupResolver } from &quot;@hookform/resolvers/yup&quot;;
+import { useGoogleReCaptcha } from &quot;react-google-recaptcha-v3&quot;;
+import { useForm } from &quot;react-hook-form&quot;;
+import { array, object, string, lazy } from &quot;yup&quot;;
+import { httpsCallable } from &quot;firebase/functions&quot;;
+import { functions } from &quot;services/firebase&quot;;
+import { BookingHeader } from &quot;components/BookingHeader&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import { capitalizeFirstLetter } from &quot;utilities&quot;;
+import getUrlQueryStringFromObject from &quot;utilities/src/getUrlQueryStringFromObject&quot;;
+
+export default function PetSelection() {
+  const router = useRouter();
+  const { mode, housecallRequest } = router.query || {};
+  const isAppMode = mode === &quot;app&quot;;
+  const isHousecallRequest = Boolean(Number(housecallRequest));
+  const cancelButtonRef = useRef(null);
+  const [isLoading, setIsLoading] = useState&lt;boolean&gt;(true);
+  const [error, setError] = useState&lt;any&gt;(null);
+  const [pets, setPets] = useState&lt;any&gt;(null);
+  const [loadingMessage, setLoadingMessage] = useState&lt;string | null&gt;(null);
+  const [vcprRequiredError, setVcprRequiredError] = useState&lt;boolean&gt;(false);
+  const [showVcprDescription, setShowVcprDescription] =
+    useState&lt;boolean&gt;(false);
+  const [establishCareExamRequired, setEstablishCareExamRequired] =
+    useState&lt;boolean&gt;(false);
+  const [showExplainer, setShowExplainer] = useState&lt;boolean&gt;(false);
+  const [session, setSession] = useState&lt;any&gt;();
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    formState: { isDirty, isValid, errors },
+  } = useForm({
+    mode: &quot;all&quot;,
+    resolver: yupResolver(
+      object().shape({
+        pets: lazy((val) =&gt;
+          Array.isArray(val)
+            ? array()
+                .min(1, &quot;A pet selection is required&quot;)
+                .max(3, &quot;Only 3 pets are allowed per appointment&quot;)
+                .of(string())
+                .required(&quot;A pet selection is required&quot;)
+            : string()
+                .matches(/.*\d/, &quot;A pet selection is required&quot;)
+                .required(&quot;A pet selection is required&quot;)
+        ),
+      })
+    ),
+    defaultValues: {
+      pets: null,
+    },
+  });
+  const selectedPets: Array&lt;string&gt; | string | null = watch(&quot;pets&quot;) as any;
+  useEffect(() =&gt; {
+    if (pets?.length === 1)
+      setValue(&quot;pets&quot;, pets[0].id as any, {
+        shouldTouch: true,
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+  }, [pets, setValue]);
+  useEffect(() =&gt; {
+    if (pets !== null &amp;&amp; pets?.length &gt; 0) {
+      let vcprPetMatchCount = 0;
+      let vcprPetCount = 0;
+      pets.forEach((pet: any) =&gt; {
+        if (pet.vcprRequired) vcprPetCount++;
+        if (selectedPets !== null) {
+          if (Array.isArray(selectedPets))
+            selectedPets.map((selectedPet: any) =&gt; {
+              if (selectedPet === pet.id &amp;&amp; pet.vcprRequired)
+                vcprPetMatchCount++;
+            });
+        } else if (selectedPets === pet.id &amp;&amp; pet.vcprRequired)
+          vcprPetMatchCount++;
+      });
+      if (
+        selectedPets !== null &amp;&amp;
+        vcprPetMatchCount &gt; 0 &amp;&amp;
+        vcprPetMatchCount !== selectedPets.length
+      )
+        setVcprRequiredError(true);
+      else setVcprRequiredError(false);
+      if (
+        (Array.isArray(selectedPets) &amp;&amp;
+          selectedPets !== null &amp;&amp;
+          vcprPetMatchCount &gt; 0 &amp;&amp;
+          vcprPetMatchCount === selectedPets.length) ||
+        (selectedPets === pets[0].id &amp;&amp; pets[0].vcprRequired)
+      )
+        setEstablishCareExamRequired(true);
+      else setEstablishCareExamRequired(false);
+      if (vcprPetCount &gt; 0) setShowVcprDescription(true);
+    }
+  }, [selectedPets, pets]);
+
+  useEffect(() =&gt; {
+    if (window.localStorage.getItem(&quot;bookingSession&quot;) !== null &amp;&amp; router) {
+      setSession(
+        JSON.parse(window.localStorage.getItem(&quot;bookingSession&quot;) as string)
+      );
+      if (isHousecallRequest) {
+        const pets: any = [];
+        JSON.parse(
+          window.localStorage.getItem(&quot;bookingSession&quot;) as string
+        )?.patients.forEach((patient: any) =&gt; {
+          if (patient.vcprRequired) pets.push(patient);
+        });
+        setPets(pets);
+      } else
+        setPets(
+          JSON.parse(window.localStorage.getItem(&quot;bookingSession&quot;) as string)
+            ?.patients
+        );
+      setIsLoading(false);
+    } else router.push(&quot;/schedule-an-appointment&quot;);
+  }, [router, isHousecallRequest]);
+  const handleError = (error: any) =&gt; {
+    console.error(error);
+    setError(error);
+    reset();
+    setIsLoading(false);
+  };
+  const onSubmit = async (data: any) =&gt; {
+    setIsLoading(true);
+    setLoadingMessage(&quot;Saving Your Selection...&quot;);
+    if (executeRecaptcha) {
+      const token = await executeRecaptcha(&quot;booking&quot;);
+      if (token) {
+        try {
+          const { data: result }: any = await httpsCallable(
+            functions,
+            &quot;scheduleAppointment&quot;
+          )({
+            petSelection: {
+              ...data,
+            },
+            establishCareExamRequired,
+            id: session?.id,
+            device: navigator.userAgent,
+            token,
+          });
+          if (result?.error !== true || result?.error === undefined) {
+            setLoadingMessage(&quot;Almost finished...&quot;);
+            if (result?.client?.uid &amp;&amp; result?.id) {
+              window.localStorage.setItem(
+                &quot;bookingSession&quot;,
+                JSON.stringify(result)
+              );
+              const queryString = getUrlQueryStringFromObject(router.query);
+              if (result?.selectedPatients?.length &gt; 0)
+                if (result?.establishCareExamRequired)
+                  router.push(
+                    &quot;/schedule-an-appointment/wellness-check&quot; +
+                      (queryString ? queryString : &quot;&quot;)
+                  );
+                else
+                  router.push(
+                    &quot;/schedule-an-appointment/location-selection&quot; +
+                      (queryString ? queryString : &quot;&quot;)
+                  );
+            } else handleError(result);
+          } else handleError(result);
+        } catch (error) {
+          handleError(error);
+        }
+      }
+    } else handleError({ message: &quot;FAILED CAPTCHA&quot; });
+  };
+  return (
+    &lt;section className=&quot;w-full flex-1&quot;&gt;
+      &lt;AppHeader /&gt;
+      &lt;div
+        className={`flex items-center justify-center bg-white rounded-xl max-w-xl mx-auto${
+          !isAppMode ? &quot; p-4 mb-4 sm:p-8&quot; : &quot;&quot;
+        }`}
+      &gt;
+        &lt;div className={isAppMode ? &quot;px-4 mb-8&quot; : &quot;&quot;}&gt;
+          &lt;section className=&quot;relative mx-auto&quot;&gt;
+            {isLoading ? (
+              &lt;Loader
+                message={loadingMessage || &quot;Loading, please wait...&quot;}
+                isAppMode={isAppMode}
+              /&gt;
+            ) : error ? (
+              &lt;Error error={error} isAppMode={isAppMode} /&gt;
+            ) : (
+              &lt;&gt;
+                &lt;BookingHeader
+                  isAppMode={isAppMode}
+                  title={`Select ${pets.length &gt; 1 ? &quot;Your Pets&quot; : &quot;a Pet&quot;}`}
+                  description={`Which ${
+                    pets.length &gt; 1 ? &quot;pets&quot; : &quot;pet&quot;
+                  } would you like to book an
+              appointment for?`}
+                /&gt;
+                &lt;legend className=&quot;mt-8 text-2xl font-medium mb-2 w-full text-center&quot;&gt;
+                  Your
+                  {pets.length &gt; 1 ? &quot; Pets&quot; : &quot; Pet&quot;}
+                &lt;/legend&gt;
+                {pets
+                  .sort(
+                    (item: any, nextItem: any) =&gt;
+                      nextItem.vcprRequired - item.vcprRequired
+                  )
+                  .map((pet: any, index: number) =&gt; (
+                    &lt;div
+                      key={index}
+                      className={
+                        index === pets.length - 1
+                          ? &quot;w-full&quot;
+                          : &quot;w-full border-b border-movet-gray divide-y divide-movet-gray&quot;
+                      }
+                    &gt;
+                      &lt;label
+                        htmlFor={`${pet.name}`}
+                        className=&quot;text-lg select-none font-source-sans-pro flex flex-row items-center py-2 w-full&quot;
+                      &gt;
+                        {/* {petPhotos &amp;&amp;
+                      petPhotos.map(
+                        ({ patient, url }: { url: string; patient: number }) =&gt;
+                          `${patient}` === pet.id ? (
+                            &lt;Image
+                              src={`${url}`}
+                              height={20}
+                              width={20}
+                              alt={`${pet.names} Photo`}
+                              className=&quot;mr-2 h-8 w-8 text-movet-brown flex-none&quot;
+                            /&gt;
+                          ) : (
+                            &lt;FontAwesomeIcon
+                              icon={pet.species.includes(&quot;Dog&quot;) ? faDog : faCat}
+                              size={&quot;lg&quot;}
+                              className=&quot;mr-2 h-8 w-8 text-movet-brown flex-none&quot;
+                            /&gt;
+                          )
+                      )} */}
+                        {/* &lt;FontAwesomeIcon
+                          icon={pet.species.includes(&quot;Dog&quot;) ? faDog : faCat}
+                          size={&quot;lg&quot;}
+                          className=&quot;mr-2 h-8 w-8 text-movet-brown flex-none&quot;
+                        /&gt; */}
+                        &lt;p&gt;
+                          {pet.species.includes(&quot;Dog&quot;) ? &quot;🐶&quot; : &quot;🐱&quot;}{&quot; &quot;}
+                          {capitalizeFirstLetter(pet.name)}
+                        &lt;/p&gt;
+                        {pet.vcprRequired ? (
+                          &lt;span className=&quot;text-xs italic text-movet-red ml-2 text-right grow font-extrabold&quot;&gt;
+                            * Requires Establish Care Exam
+                          &lt;/span&gt;
+                        ) : (
+                          &lt;span className=&quot;text-xs italic text-movet-red ml-2 text-center grow&quot;&gt;
+                            {&quot;&quot;}
+                          &lt;/span&gt;
+                        )}
+                        &lt;div className=&quot;ml-3 flex items-center h-5 flex-none&quot;&gt;
+                          &lt;input
+                            id={`${pet.name}`}
+                            {...register(&quot;pets&quot;)}
+                            value={`${pet.id}`}
+                            type=&quot;checkbox&quot;
+                            className=&quot;focus:ring-movet-brown h-6 w-6 text-movet-brown border-movet-gray rounded-full ease-in-out duration-500&quot;
+                          /&gt;
+                        &lt;/div&gt;
+                      &lt;/label&gt;
+                    &lt;/div&gt;
+                  ))}
+                &lt;ErrorMessage
+                  errorMessage={
+                    vcprRequiredError
+                      ? &quot;Only pets that require an Establish Care Exam may be selected&quot;
+                      : (errors?.pets?.message as string)
+                  }
+                /&gt;
+                {showVcprDescription &amp;&amp; (
+                  &lt;&gt;
+                    &lt;span
+                      className=&quot;text-center text-gray mt-8 flex justify-center items-center text-xs cursor-pointer italic hover:text-movet-brown ease-in-out duration-500&quot;
+                      onClick={() =&gt; setShowExplainer(!showExplainer)}
+                    &gt;
+                      &lt;FontAwesomeIcon
+                        icon={faInfoCircle}
+                        size=&quot;lg&quot;
+                        className=&quot;mr-2 text-movet-brown -mt-1&quot;
+                      /&gt;
+                      What are Establish Care Exams?
+                    &lt;/span&gt;
+                  &lt;/&gt;
+                )}
+                &lt;Modal
+                  showModal={showExplainer}
+                  setShowModal={setShowExplainer}
+                  cancelButtonRef={cancelButtonRef}
+                  isLoading={isLoading}
+                  error={error ? &lt;Error message={error} /&gt; : undefined}
+                  content={
+                    &lt;&gt;
+                      &lt;p&gt;
+                        Establish Care Exams are used to start a
+                        Veterinarian-Client-Patient Relationship
+                        (&amp;quot;VCPR&amp;quot;).
+                      &lt;/p&gt;
+                      &lt;p&gt;
+                        A VCPR is established only when your veterinarian
+                        examines your pet in person, and is maintained by
+                        regular veterinary visits as needed to monitor your
+                        pet&amp;apos;s health.
+                      &lt;/p&gt;
+                      &lt;p&gt;
+                        If a VCPR is established but your veterinarian does not
+                        regularly see your pet afterward, the VCPR is no longer
+                        valid and it would be illegal (and unethical) for your
+                        veterinarian to dispense or prescribe medications or
+                        recommend treatment without recently examining your pet.
+                      &lt;/p&gt;
+                      &lt;p&gt;
+                        A valid VCPR cannot be established online, via email, or
+                        over the phone. However, once a VCPR is established, it
+                        may be able to be maintained between medically necessary
+                        examinations via telephone or other types of
+                        consultations; but it&amp;apos;s up to your
+                        veterinarian&amp;apos; discretion to determine if this is
+                        appropriate and in the best interests of your pets&amp;apos;
+                        health.
+                      &lt;/p&gt;
+                    &lt;/&gt;
+                  }
+                  title=&quot;What are Establish Care Exams?&quot;
+                  icon={faStethoscope}
+                /&gt;
+                &lt;div className=&quot;flex flex-col sm:flex-row mt-12 mb-6&quot;&gt;
+                  &lt;Button
+                    icon={faPlusCircle}
+                    iconSize={&quot;sm&quot;}
+                    color=&quot;black&quot;
+                    text=&quot;Add a Pet&quot;
+                    className={&quot;w-full sm:w-1/2 mr-0 sm:mr-4&quot;}
+                    onClick={() =&gt; {
+                      setIsLoading(true);
+                      router.push(&quot;/schedule-an-appointment/add-a-pet&quot;);
+                    }}
+                  /&gt;
+                  &lt;Button
+                    type=&quot;submit&quot;
+                    icon={faArrowRight}
+                    iconSize={&quot;sm&quot;}
+                    disabled={!isDirty || !isValid || vcprRequiredError}
+                    color=&quot;red&quot;
+                    text=&quot;Continue&quot;
+                    className={&quot;w-full sm:w-1/2 ml-0 sm:ml-4 mt-4 sm:mt-0&quot;}
+                    onClick={handleSubmit(onSubmit)}
+                  /&gt;
+                &lt;/div&gt;
+              &lt;/&gt;
+            )}
+          &lt;/section&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:29,&quot;character&quot;:9,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:30,&quot;character&quot;:9,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:38,&quot;character&quot;:9,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:51,&quot;character&quot;:20,&quot;text&quot;:&quot;val&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:52,&quot;character&quot;:24,&quot;text&quot;:&quot;val&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:8,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:14,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:71,&quot;character&quot;:23,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:71,&quot;character&quot;:31,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:78,&quot;character&quot;:8,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:78,&quot;character&quot;:25,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:78,&quot;character&quot;:31,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:81,&quot;character&quot;:6,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:81,&quot;character&quot;:11,&quot;text&quot;:&quot;forEach&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:81,&quot;character&quot;:20,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:82,&quot;character&quot;:12,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:82,&quot;character&quot;:16,&quot;text&quot;:&quot;vcprRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:85,&quot;character&quot;:30,&quot;text&quot;:&quot;selectedPet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:86,&quot;character&quot;:18,&quot;text&quot;:&quot;selectedPet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:86,&quot;character&quot;:34,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:86,&quot;character&quot;:38,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:86,&quot;character&quot;:44,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:86,&quot;character&quot;:48,&quot;text&quot;:&quot;vcprRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:89,&quot;character&quot;:36,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:89,&quot;character&quot;:40,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:89,&quot;character&quot;:46,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:89,&quot;character&quot;:50,&quot;text&quot;:&quot;vcprRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:104,&quot;character&quot;:26,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:104,&quot;character&quot;:34,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:104,&quot;character&quot;:40,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:104,&quot;character&quot;:48,&quot;text&quot;:&quot;vcprRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:118,&quot;character&quot;:14,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:121,&quot;character&quot;:11,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:121,&quot;character&quot;:20,&quot;text&quot;:&quot;forEach&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:121,&quot;character&quot;:29,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:122,&quot;character&quot;:14,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:122,&quot;character&quot;:22,&quot;text&quot;:&quot;vcprRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:122,&quot;character&quot;:36,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:122,&quot;character&quot;:41,&quot;text&quot;:&quot;push&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:122,&quot;character&quot;:46,&quot;text&quot;:&quot;patient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:124,&quot;character&quot;:16,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:128,&quot;character&quot;:14,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:133,&quot;character&quot;:23,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:134,&quot;character&quot;:18,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:135,&quot;character&quot;:13,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:139,&quot;character&quot;:26,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:146,&quot;character&quot;:24,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:150,&quot;character&quot;:12,&quot;text&quot;:&quot;petSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:151,&quot;character&quot;:17,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:154,&quot;character&quot;:12,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:154,&quot;character&quot;:16,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:154,&quot;character&quot;:25,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:158,&quot;character&quot;:14,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:158,&quot;character&quot;:22,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:158,&quot;character&quot;:40,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:158,&quot;character&quot;:48,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:160,&quot;character&quot;:16,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:160,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:160,&quot;character&quot;:32,&quot;text&quot;:&quot;uid&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:160,&quot;character&quot;:39,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:160,&quot;character&quot;:47,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:163,&quot;character&quot;:31,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:166,&quot;character&quot;:18,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:166,&quot;character&quot;:26,&quot;text&quot;:&quot;selectedPatients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:166,&quot;character&quot;:44,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:167,&quot;character&quot;:20,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:167,&quot;character&quot;:28,&quot;text&quot;:&quot;establishCareExamRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:177,&quot;character&quot;:31,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:178,&quot;character&quot;:29,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:180,&quot;character&quot;:22,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:179,&quot;character&quot;:17,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:200,&quot;character&quot;:16,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:201,&quot;character&quot;:21,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:201,&quot;character&quot;:28,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:206,&quot;character&quot;:35,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:206,&quot;character&quot;:40,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:208,&quot;character&quot;:20,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:208,&quot;character&quot;:25,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:214,&quot;character&quot;:19,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:214,&quot;character&quot;:24,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:216,&quot;character&quot;:17,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:217,&quot;character&quot;:19,&quot;text&quot;:&quot;sort&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:218,&quot;character&quot;:21,&quot;text&quot;:&quot;item&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:218,&quot;character&quot;:32,&quot;text&quot;:&quot;nextItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:219,&quot;character&quot;:22,&quot;text&quot;:&quot;nextItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:219,&quot;character&quot;:31,&quot;text&quot;:&quot;vcprRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:219,&quot;character&quot;:46,&quot;text&quot;:&quot;item&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:219,&quot;character&quot;:51,&quot;text&quot;:&quot;vcprRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:221,&quot;character&quot;:19,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:221,&quot;character&quot;:24,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:225,&quot;character&quot;:34,&quot;text&quot;:&quot;pets&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:225,&quot;character&quot;:39,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:231,&quot;character&quot;:36,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:231,&quot;character&quot;:40,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:259,&quot;character&quot;:27,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:259,&quot;character&quot;:31,&quot;text&quot;:&quot;species&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:259,&quot;character&quot;:39,&quot;text&quot;:&quot;includes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:260,&quot;character&quot;:49,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:260,&quot;character&quot;:53,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:262,&quot;character&quot;:25,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:262,&quot;character&quot;:29,&quot;text&quot;:&quot;vcprRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:273,&quot;character&quot;:35,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:273,&quot;character&quot;:39,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:275,&quot;character&quot;:38,&quot;text&quot;:&quot;pet&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:275,&quot;character&quot;:42,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:310,&quot;character&quot;:25,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:310,&quot;character&quot;:40,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/pages/schedule-an-appointment/pet-selection.tsx&quot;,&quot;line&quot;:310,&quot;character&quot;:49,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

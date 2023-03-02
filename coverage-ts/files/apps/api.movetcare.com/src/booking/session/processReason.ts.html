@@ -1,0 +1,160 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>processReason.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/booking/session/processReason.ts</td><td class="">46.81%</td><td class="">75%</td><td class="">188</td><td class="">88</td><td class="">100</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { admin, throwError, DEBUG } from &quot;../../config/config&quot;;
+import { sendNotification } from &quot;../../notifications/sendNotification&quot;;
+import type { Booking } from &quot;../../types/booking&quot;;
+import { handleFailedBooking } from &quot;./handleFailedBooking&quot;;
+
+export const processReason = async (
+  id: Booking[&quot;id&quot;],
+  reason: Booking[&quot;reason&quot;]
+) =&gt; {
+  if (reason) {
+    if (DEBUG) console.log(&quot;reason&quot;, reason);
+    const proficientStaff = await admin
+      .firestore()
+      .collection(&quot;reasons&quot;)
+      .doc(`${reason.value}`)
+      .get()
+      .then((doc: any) =&gt; {
+        if (DEBUG) console.log(&quot;processReason =&gt; proficientStaff&quot;, doc.data());
+        return doc.data()?.proficientStaff || false;
+      })
+      .catch(async (error: any) =&gt; {
+        throwError(error);
+        return await handleFailedBooking(error, &quot;GET REASONS FAILED&quot;);
+      });
+    if (proficientStaff) {
+      const staff = await Promise.all(
+        proficientStaff.map(
+          async (staffId: number) =&gt;
+            await admin
+              .firestore()
+              .collection(&quot;users&quot;)
+              .doc(`${staffId}`)
+              .get()
+              .then((doc: any) =&gt; {
+                return {
+                  isActive: doc.data()?.isActive,
+                  firstName: doc.data().firstName,
+                  lastName: doc.data().lastName,
+                  id: `${doc.data().id}`,
+                  isStaff: doc.data().isStaff,
+                  picture: doc.data().picture,
+                  qualifications: doc.data().qualifications,
+                  areasOfExpertise: doc.data().areasOfExpertise,
+                  title: doc.data().title,
+                };
+              })
+              .catch(async (error: any) =&gt; {
+                throwError(error);
+                return await handleFailedBooking(error, &quot;GET STAFF FAILED&quot;);
+              })
+        )
+      );
+      if (DEBUG) console.log(&quot;staff&quot;, staff);
+      if (staff)
+        await admin
+          .firestore()
+          .collection(&quot;bookings&quot;)
+          .doc(id)
+          .set(
+            Array.isArray(staff) &amp;&amp; staff.length &gt; 0
+              ? {
+                  step: &quot;staff-selection&quot;,
+                  staff,
+                  reason,
+                  updatedOn: new Date(),
+                }
+              : {
+                  step: &quot;datetime-selection&quot;,
+                  reason,
+                  updatedOn: new Date(),
+                },
+            { merge: true }
+          )
+          .then(() =&gt;
+            sendNotification({
+              type: &quot;slack&quot;,
+              payload: {
+                message: [
+                  {
+                    type: &quot;section&quot;,
+                    text: {
+                      text: &quot;:book: _Appointment Booking_ *UPDATE*&quot;,
+                      type: &quot;mrkdwn&quot;,
+                    },
+                    fields: [
+                      {
+                        type: &quot;mrkdwn&quot;,
+                        text: &quot;*Session ID*&quot;,
+                      },
+                      {
+                        type: &quot;plain_text&quot;,
+                        text: id,
+                      },
+                      {
+                        type: &quot;mrkdwn&quot;,
+                        text: &quot;*Step*&quot;,
+                      },
+                      {
+                        type: &quot;plain_text&quot;,
+                        text: &quot;Choose Reason&quot;,
+                      },
+                      {
+                        type: &quot;mrkdwn&quot;,
+                        text: &quot;*Selected Reason*&quot;,
+                      },
+                      {
+                        type: &quot;plain_text&quot;,
+                        text: reason?.label,
+                      },
+                    ],
+                  },
+                ],
+              },
+            })
+          )
+          .catch(async (error: any) =&gt; {
+            throwError(error);
+            return await handleFailedBooking(error, &quot;UPDATE BOOKING FAILED&quot;);
+          });
+      const session = await admin
+        .firestore()
+        .collection(&quot;bookings&quot;)
+        .doc(id)
+        .get()
+        .then((doc: any) =&gt; doc.data())
+        .catch(async (error: any) =&gt; {
+          throwError(error);
+          return await handleFailedBooking(error, &quot;GET BOOKING DATA FAILED&quot;);
+        });
+      return {
+        ...session,
+        id,
+        client: {
+          uid: session?.client?.uid,
+          requiresInfo: session?.client?.requiresInfo,
+        },
+      };
+    } else
+      return await handleFailedBooking({ id, reason }, &quot;FAILED TO GET STAFF&quot;);
+  } else
+    return await handleFailedBooking({ id, reason }, &quot;FAILED TO GET REASON&quot;);
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:0,&quot;character&quot;:9,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:10,&quot;text&quot;:&quot;proficientStaff&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:34,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:7,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:7,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:14,&quot;character&quot;:7,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:7,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:7,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:13,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:67,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:71,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:15,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:19,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:27,&quot;text&quot;:&quot;proficientStaff&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:20,&quot;character&quot;:7,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:20,&quot;character&quot;:20,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:19,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:22,&quot;character&quot;:41,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:24,&quot;character&quot;:8,&quot;text&quot;:&quot;proficientStaff&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:8,&quot;text&quot;:&quot;proficientStaff&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:24,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:18,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:15,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:15,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:15,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:15,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:15,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:21,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:18,&quot;text&quot;:&quot;isActive&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:28,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:32,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:40,&quot;text&quot;:&quot;isActive&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:18,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:29,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:33,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:40,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:18,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:28,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:32,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:39,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:25,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:29,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:36,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:18,&quot;text&quot;:&quot;isStaff&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:27,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:31,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:38,&quot;text&quot;:&quot;isStaff&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:18,&quot;text&quot;:&quot;picture&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:27,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:31,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:38,&quot;text&quot;:&quot;picture&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:18,&quot;text&quot;:&quot;qualifications&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:34,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:38,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:45,&quot;text&quot;:&quot;qualifications&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:18,&quot;text&quot;:&quot;areasOfExpertise&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:36,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:40,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:47,&quot;text&quot;:&quot;areasOfExpertise&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:18,&quot;text&quot;:&quot;title&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:25,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:29,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:36,&quot;text&quot;:&quot;title&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:15,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:28,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:27,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:49,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:14,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:11,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:11,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:57,&quot;character&quot;:11,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:58,&quot;character&quot;:11,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:73,&quot;character&quot;:11,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:115,&quot;character&quot;:11,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:115,&quot;character&quot;:24,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:116,&quot;character&quot;:23,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:45,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:12,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:28,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:120,&quot;character&quot;:9,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:9,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:9,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:123,&quot;character&quot;:9,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:9,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:15,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:28,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:32,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:125,&quot;character&quot;:9,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:125,&quot;character&quot;:22,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:21,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:43,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:130,&quot;character&quot;:11,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:10,&quot;text&quot;:&quot;uid&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:15,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:24,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:32,&quot;text&quot;:&quot;uid&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:10,&quot;text&quot;:&quot;requiresInfo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:24,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:33,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processReason.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:41,&quot;text&quot;:&quot;requiresInfo&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

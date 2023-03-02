@@ -1,11 +1,11 @@
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { sendNotification } from "../notifications/sendNotification";
-import { admin, environment, functions, throwError } from "../config/config";
+import { admin, functions, throwError } from "../config/config";
 import { CONTACT_STATUS } from "../constant";
 import type { ContactForm } from "../types/forms";
 import { getAuthUserByEmail } from "../utils/auth/getAuthUserByEmail";
 import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
-const DEBUG = environment.type === "production";
+const DEBUG = false; // environment.type === "production";
 export const handleContactSubmission = functions.firestore
   .document("contact/{id}")
   .onCreate(async (snapshot: any, context: any) => {

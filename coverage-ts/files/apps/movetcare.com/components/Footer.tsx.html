@@ -1,0 +1,222 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Footer.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/movetcare.com/components/Footer.tsx</td><td class="">100.00%</td><td class="">75%</td><td class="">213</td><td class="">213</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import Link from &quot;next/link&quot;;
+import Image from &quot;next/image&quot;;
+import { BookAnAppointmentForm } from &quot;ui&quot;;
+
+export const Footer = () =&gt; {
+  return (
+    &lt;footer className=&quot;flex-col w-full&quot;&gt;
+      &lt;div className=&quot;hidden sm:flex flex-row bg-movet-white&quot;&gt;
+        &lt;div
+          className=&quot;relative bottom-0 w-1/2 font-abside cursor-pointer&quot;
+          onClick={() =&gt;
+            window.open(
+              &quot;https://www.instagram.com/nessie_themovetpup/&quot;,
+              &quot;_blank&quot;
+            )
+          }
+        &gt;
+          &lt;div className=&quot;absolute w-full bottom-0 h-fit &quot;&gt;
+            &lt;div className=&quot;flex items-center relative z-10 min-h-[10.25rem]&quot;&gt;
+              &lt;div className=&quot;w-1/2 text-right px-4 py-6 text-movet-white hover:opacity-80 ease-in-out duration-500&quot;&gt;
+                &lt;div className=&quot;mb-4&quot;&gt;
+                  Don&amp;apos;t miss out on free givaways!
+                &lt;/div&gt;
+                &lt;div className=&quot;leading-5 mb-4&quot;&gt;
+                  FOLLOW NESSIE &lt;br /&gt;
+                  ON INSTAGRAM
+                &lt;/div&gt;
+                &lt;span className=&quot;ease-in-out duration-500 hover:underline&quot;&gt;
+                  @nessie_themovetpup
+                &lt;/span&gt;
+              &lt;/div&gt;
+              &lt;div className=&quot;w-64 grid grid-cols-3 gap-1 pb-2 mx-auto&quot;&gt;
+                &lt;Image
+                  height={256}
+                  width={256}
+                  className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                  src=&quot;/images/pets/nessie-1.png&quot;
+                  alt=&quot;nessie&quot;
+                /&gt;
+                &lt;Image
+                  height={256}
+                  width={256}
+                  className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                  src=&quot;/images/pets/nessie-2.png&quot;
+                  alt=&quot;nessie&quot;
+                /&gt;
+                &lt;Image
+                  height={256}
+                  width={256}
+                  className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                  src=&quot;/images/pets/nessie-3.png&quot;
+                  alt=&quot;nessie&quot;
+                /&gt;
+                &lt;Image
+                  height={256}
+                  width={256}
+                  className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                  src=&quot;/images/pets/nessie-4.png&quot;
+                  alt=&quot;nessie&quot;
+                /&gt;
+                &lt;Image
+                  height={256}
+                  width={256}
+                  className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                  src=&quot;/images/pets/nessie-5.png&quot;
+                  alt=&quot;nessie&quot;
+                /&gt;
+                &lt;Image
+                  height={256}
+                  width={256}
+                  className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                  src=&quot;/images/pets/nessie-6.png&quot;
+                  alt=&quot;nessie&quot;
+                /&gt;
+              &lt;/div&gt;
+              &lt;div className=&quot;absolute bottom-0 h-[120%] w-[115%] -z-10&quot;&gt;
+                &lt;svg
+                  xmlns=&quot;http://www.w3.org/2000/svg&quot;
+                  viewBox=&quot;0 0 157 50&quot;
+                  preserveAspectRatio=&quot;none&quot;
+                  className=&quot;w-full h-full fill-movet-brown&quot;
+                &gt;
+                  &lt;path d=&quot;M0 8c38.5-8.2 104-8 126.2-6 19 0 25.6 20 31 48.3L0 50.41z&quot; /&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;w-5/12 ml-auto flex justify-evenly py-4&quot;&gt;
+          &lt;div className=&quot;flex flex-col justify-center items-center mb-2&quot;&gt;
+            &lt;p className=&quot;font-abside text-2xl text-movet-white sm:text-movet-black mb-2&quot;&gt;
+              Join MoVET Today
+            &lt;/p&gt;
+            &lt;BookAnAppointmentForm /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div className=&quot;flex flex-col justify-center items-center sm:hidden bg-movet-brown px-8&quot;&gt;
+        &lt;div className=&quot;flex flex-col justify-center items-center my-8&quot;&gt;
+          &lt;p className=&quot;font-abside text-2xl text-movet-white sm:text-movet-black mb-2&quot;&gt;
+            Join MoVET Today
+          &lt;/p&gt;
+          &lt;BookAnAppointmentForm /&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;font-abside cursor-pointer&quot;&gt;
+          &lt;div
+            onClick={() =&gt;
+              window.open(
+                &quot;https://www.instagram.com/nessie_themovetpup/&quot;,
+                &quot;_blank&quot;
+              )
+            }
+          &gt;
+            &lt;div className=&quot;text-center px-4 pb-6 text-movet-dark-brown&quot;&gt;
+              &lt;div className=&quot;mb-4 text-xl text-movet-white&quot;&gt;
+                Don&amp;apos;t miss out on free givaways!
+              &lt;/div&gt;
+              &lt;div className=&quot;leading-5 mb-4 text-movet-white&quot;&gt;
+                FOLLOW NESSIE &lt;br /&gt;
+                ON INSTAGRAM
+              &lt;/div&gt;
+              &lt;span className=&quot;ease-in-out duration-500 hover:underline text-movet-white&quot;&gt;
+                @nessie_themovetpup
+              &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;w-full grid grid-cols-3 gap-1 mx-auto mb-8&quot;&gt;
+              &lt;Image
+                height={82}
+                width={82}
+                className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                src=&quot;/images/pets/nessie-1.png&quot;
+                alt=&quot;nessie&quot;
+              /&gt;
+              &lt;Image
+                height={82}
+                width={82}
+                className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                src=&quot;/images/pets/nessie-2.png&quot;
+                alt=&quot;nessie&quot;
+              /&gt;
+              &lt;Image
+                height={82}
+                width={82}
+                className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                src=&quot;/images/pets/nessie-3.png&quot;
+                alt=&quot;nessie&quot;
+              /&gt;
+              &lt;Image
+                height={82}
+                width={82}
+                className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                src=&quot;/images/pets/nessie-4.png&quot;
+                alt=&quot;nessie&quot;
+              /&gt;
+              &lt;Image
+                height={82}
+                width={82}
+                className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                src=&quot;/images/pets/nessie-5.png&quot;
+                alt=&quot;nessie&quot;
+              /&gt;
+              &lt;Image
+                height={82}
+                width={82}
+                className=&quot;hover:opacity-70 ease-in-out duration-500&quot;
+                src=&quot;/images/pets/nessie-6.png&quot;
+                alt=&quot;nessie&quot;
+              /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div
+        className={`flex justify-center items-center py-1 bg-movet-black text-white text-xs text-center tracking-widest`}
+      &gt;
+        &lt;p className=&quot; mx-1&quot;&gt;© MoVET {new Date().getFullYear()}&lt;/p&gt;
+        &lt;p className=&quot;mx-1&quot;&gt;|&lt;/p&gt;
+        &lt;Link href=&quot;/privacy-policy&quot; prefetch={false}&gt;
+          &lt;p className=&quot;ease-in-out duration-500 hover:underline cursor-pointer mx-1&quot;&gt;
+            Privacy Policy
+          &lt;/p&gt;
+        &lt;/Link&gt;
+        &lt;p className=&quot;mx-1&quot;&gt;|&lt;/p&gt;
+        &lt;Link href=&quot;/terms-and-conditions&quot; prefetch={false}&gt;
+          &lt;p className=&quot;ease-in-out duration-500 hover:underline cursor-pointer mx-1&quot;&gt;
+            Terms of Service
+          &lt;/p&gt;
+        &lt;/Link&gt;
+        &lt;p className=&quot;mx-1&quot;&gt;|&lt;/p&gt;
+        &lt;Link href=&quot;/appointment-prep&quot; prefetch={false}&gt;
+          &lt;p className=&quot;ease-in-out duration-500 hover:underline cursor-pointer mx-1&quot;&gt;
+            FAQs
+          &lt;/p&gt;
+        &lt;/Link&gt;
+        &lt;p className=&quot;mx-1&quot;&gt;|&lt;/p&gt;
+        &lt;Link href=&quot;/emergency&quot; prefetch={false}&gt;
+          &lt;p className=&quot;ease-in-out duration-500 hover:underline cursor-pointer mx-1&quot;&gt;
+            Emergency Care
+          &lt;/p&gt;
+        &lt;/Link&gt;
+      &lt;/div&gt;
+    &lt;/footer&gt;
+  );
+};
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

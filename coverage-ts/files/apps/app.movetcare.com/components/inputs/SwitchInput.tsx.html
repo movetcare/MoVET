@@ -1,0 +1,102 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>SwitchInput.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/app.movetcare.com/components/inputs/SwitchInput.tsx</td><td class="">84.78%</td><td class="">75%</td><td class="">92</td><td class="">78</td><td class="">14</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Switch } from &quot;@headlessui/react&quot;;
+import { Controller } from &quot;react-hook-form&quot;;
+import { classNames } from &quot;utilities&quot;;
+import ErrorMessage from &quot;./ErrorMessage&quot;;
+
+const SwitchInput = ({
+  label,
+  title,
+  control,
+  errors,
+  name,
+  centered = false,
+  autoFocus = false,
+  disabled = false,
+  defaultValue = null,
+  required = false,
+}: {
+  label: any;
+  title?: string;
+  control: any;
+  errors: any;
+  name: string;
+  defaultValue?: string | null;
+  disabled?: boolean;
+  autoFocus?: boolean;
+  required?: boolean;
+  centered?: boolean;
+}) =&gt; {
+  return (
+    &lt;&gt;
+      &lt;div
+        className={`flex items-center justify-center ${
+          centered ? &quot;flex-col&quot; : &quot;flex-row&quot;
+        }`}
+      &gt;
+        {title &amp;&amp; (
+          &lt;label
+            htmlFor={name || &quot;form-input-element&quot;}
+            className=&quot;block text-sm font-medium text-movet-black font-abside mb-4&quot;
+          &gt;
+            {title} {required &amp;&amp; &lt;span className=&quot;text-movet-red&quot;&gt;*&lt;/span&gt;}
+          &lt;/label&gt;
+        )}
+        &lt;div className=&quot;flex flex-row items-center text-center&quot;&gt;
+          &lt;Controller
+            name={name}
+            defaultValue={defaultValue}
+            control={control}
+            render={({ field: { onChange, onBlur, value } }: any) =&gt; (
+              &lt;Switch
+                name={name}
+                autoFocus={autoFocus}
+                disabled={disabled}
+                onBlur={onBlur}
+                checked={value}
+                onChange={onChange}
+                className={classNames(
+                  value ? &quot;bg-movet-brown&quot; : &quot;bg-movet-black&quot;,
+                  disabled
+                    ? &quot;bg-opacity-50&quot;
+                    : &quot;focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-brown&quot;,
+                  &quot;relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 switch-input&quot;
+                )}
+              &gt;
+                &lt;span className=&quot;sr-only&quot;&gt;{label}&lt;/span&gt;
+                &lt;span
+                  aria-hidden=&quot;true&quot;
+                  className={classNames(
+                    value ? &quot;translate-x-5&quot; : &quot;translate-x-0&quot;,
+                    &quot;inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200&quot;
+                  )}
+                /&gt;
+              &lt;/Switch&gt;
+            )}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;ml-3&quot;&gt;{label}&lt;/div&gt;
+        &lt;ErrorMessage errorMessage={errors[name]?.message} /&gt;
+      &lt;/div&gt;
+    &lt;/&gt;
+  );
+};
+
+export default SwitchInput;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:6,&quot;character&quot;:2,&quot;text&quot;:&quot;label&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:8,&quot;character&quot;:2,&quot;text&quot;:&quot;control&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:9,&quot;character&quot;:2,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:17,&quot;character&quot;:2,&quot;text&quot;:&quot;label&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:19,&quot;character&quot;:2,&quot;text&quot;:&quot;control&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:20,&quot;character&quot;:2,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:41,&quot;character&quot;:12,&quot;text&quot;:&quot;label&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:48,&quot;character&quot;:32,&quot;text&quot;:&quot;onChange&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:48,&quot;character&quot;:42,&quot;text&quot;:&quot;onBlur&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:48,&quot;character&quot;:50,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:57,&quot;character&quot;:18,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:68,&quot;character&quot;:20,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:77,&quot;character&quot;:36,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SwitchInput.tsx&quot;,&quot;line&quot;:77,&quot;character&quot;:50,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

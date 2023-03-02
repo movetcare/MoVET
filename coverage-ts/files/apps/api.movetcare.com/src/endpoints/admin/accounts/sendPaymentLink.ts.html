@@ -1,0 +1,74 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>sendPaymentLink.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts</td><td class="">75.00%</td><td class="">75%</td><td class="">60</td><td class="">45</td><td class="">15</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { getClientFirstNameFromDisplayName } from &quot;./../../../utils/getClientFirstNameFromDisplayName&quot;;
+import { defaultRuntimeOptions, functions } from &quot;../../../config/config&quot;;
+import { sendNotification } from &quot;../../../notifications/sendNotification&quot;;
+import type { EmailConfiguration } from &quot;../../../types/email&quot;;
+import { getAuthUserById } from &quot;../../../utils/auth/getAuthUserById&quot;;
+import { requestIsAuthorized } from &quot;../pos/requestIsAuthorized&quot;;
+const DEBUG = false; // environment.type === &quot;production&quot;;
+export const sendPaymentLink = functions
+  .runWith(defaultRuntimeOptions)
+  .https.onCall(
+    async (
+      { id, mode }: { id: string; mode: &quot;SMS&quot; | &quot;EMAIL&quot; },
+      context: any
+    ): Promise&lt;any | false&gt; =&gt; {
+      if (DEBUG) console.log(&quot;sendPaymentLink DATA =&gt;&quot;, id);
+      if (await requestIsAuthorized(context)) {
+        const { email, displayName } = await getAuthUserById(id, [
+          &quot;email&quot;,
+          &quot;displayName&quot;,
+        ]);
+        if (mode === &quot;EMAIL&quot;) {
+          const emailConfigAdmin: EmailConfiguration = {
+            to: email,
+            subject: &quot;Here is your MoVET Account Update Payment Link&quot;,
+            message: `&lt;p&gt;Hi ${
+              displayName
+                ? getClientFirstNameFromDisplayName(displayName)
+                : &quot;there&quot;
+            }!&lt;/p&gt;&lt;p&gt;Here is the link you can use to updated your payment method on file with MoVET&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://movetcare.com/payment?email=${email}&quot;&gt;https://movetcare.com/payment?email=${email}&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;Please reply to this email, &lt;a href=&quot;tel://7205077387&quot;&gt;text us&lt;/a&gt; us, or &quot;Ask a Question&quot; via our &lt;a href=&quot;https://movetcare.com/get-the-app&quot;&gt;mobile app&lt;/a&gt; if you have any questions or need assistance!&lt;/p&gt;&lt;p&gt;Thanks!&lt;/p&gt;&lt;p&gt;- The MoVET Team&lt;/p&gt;`,
+          };
+          sendNotification({
+            type: &quot;email&quot;,
+            payload: {
+              ...emailConfigAdmin,
+              client: id,
+            },
+          });
+          return true;
+        } else if (mode === &quot;SMS&quot;) {
+          sendNotification({
+            type: &quot;sms&quot;,
+            payload: {
+              client: id,
+              message: `Hi ${
+                displayName
+                  ? getClientFirstNameFromDisplayName(displayName)
+                  : &quot;there&quot;
+              }!\n\nHere is the link you can use to updated your payment method on file with MoVET\n\nhttps://movetcare.com/payment?email=${email}\n\nPlease text us (@ 720-507-7387), email us (@ info@movetcare.com), or &quot;Ask a Question&quot; via our mobile app if you have any questions or need assistance!\n\nThanks!\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`,
+              subject: &quot;Here is your MoVET Account Update Payment Link (SMS)&quot;,
+            },
+          });
+          return true;
+        }
+      } else return false;
+    }
+  );
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:1,&quot;character&quot;:32,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:13,&quot;text&quot;:&quot;sendPaymentLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:31,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:8,&quot;character&quot;:3,&quot;text&quot;:&quot;runWith&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:3,&quot;text&quot;:&quot;https&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:9,&quot;text&quot;:&quot;onCall&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:6,&quot;text&quot;:&quot;context&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:36,&quot;text&quot;:&quot;context&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:16,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:23,&quot;text&quot;:&quot;displayName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:25,&quot;character&quot;:14,&quot;text&quot;:&quot;displayName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:160,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:206,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:16,&quot;text&quot;:&quot;displayName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/accounts/sendPaymentLink.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:140,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

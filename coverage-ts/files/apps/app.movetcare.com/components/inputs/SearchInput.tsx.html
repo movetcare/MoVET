@@ -1,0 +1,137 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>SearchInput.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/app.movetcare.com/components/inputs/SearchInput.tsx</td><td class="">77.44%</td><td class="">75%</td><td class="">133</td><td class="">103</td><td class="">30</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Controller } from &quot;react-hook-form&quot;;
+import Select from &quot;react-select&quot;;
+import ErrorMessage from &quot;./ErrorMessage&quot;;
+
+export const SearchInput = ({
+  control,
+  errors,
+  name,
+  label,
+  options,
+  required = false,
+  defaultValue = undefined,
+  placeholder = &quot;Select an Option...&quot;,
+}: {
+  control: any;
+  errors: any;
+  name: string;
+  defaultValue?: any;
+  required?: boolean;
+  label?: string;
+  placeholder?: string;
+  options: Array&lt;{
+    value: string;
+    label: string;
+  }&gt;;
+}) =&gt; {
+  return (
+    &lt;div className=&quot;flex-col flex-1 bg-transparent&quot;&gt;
+      &lt;Controller
+        name={name}
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) =&gt; (
+          &lt;&gt;
+            {label &amp;&amp; (
+              &lt;label
+                htmlFor={name || &quot;form-input-element&quot;}
+                className=&quot;block text-sm font-medium text-movet-black font-abside mb-2&quot;
+              &gt;
+                {label} {required &amp;&amp; &lt;span className=&quot;text-movet-red&quot;&gt;*&lt;/span&gt;}
+              &lt;/label&gt;
+            )}
+            &lt;Select
+              defaultValue={defaultValue}
+              placeholder={placeholder}
+              options={options}
+              onChange={onChange}
+              value={value}
+              onBlur={onBlur}
+              styles={{
+                input: (base: any) =&gt; ({
+                  ...base,
+                  fontFamily: &quot;Abside Smooth&quot;,
+                  borderWidth: 0,
+                  borderColor: &quot;transparent&quot;,
+                  boxShadow: &quot;none&quot;,
+                  &quot;input:focus&quot;: {
+                    boxShadow: &quot;none&quot;,
+                    borderWidth: 0,
+                    borderColor: &quot;transparent&quot;,
+                  },
+                  &quot;input:hover&quot;: {
+                    boxShadow: &quot;none&quot;,
+                    borderWidth: 0,
+                    borderColor: &quot;transparent&quot;,
+                  },
+                }),
+                control: (base: any) =&gt; ({
+                  ...base,
+                  boxShadow: &quot;none&quot;,
+                  borderWidth: 0,
+                  borderColor: &quot;transparent&quot;,
+                  fontFamily: &quot;Abside Smooth&quot;,
+                }),
+                option: (base: any, state: any) =&gt; ({
+                  ...base,
+                  boxShadow: &quot;none&quot;,
+                  fontWeight: state.isSelected ? &quot;bold&quot; : &quot;normal&quot;,
+                  fontFamily: &quot;Abside Smooth&quot;,
+                  color: state.isSelected ? &quot;#f6f2f0&quot; : &quot;#232127&quot;,
+                  backgroundColor: state.isSelected ? &quot;#6c382b&quot; : &quot;transparent&quot;,
+                }),
+                singleValue: (base, state) =&gt; ({
+                  ...base,
+                  borderWidth: 0,
+                  borderColor: &quot;transparent&quot;,
+                  fontFamily: &quot;Abside Smooth&quot;,
+                  color: state.data.color,
+                }),
+                indicatorSeparator: (base: any) =&gt; ({
+                  ...base,
+                  backgroundColor: &quot;#232127&quot;,
+                }),
+                dropdownIndicator: (base: any) =&gt; ({
+                  ...base,
+                  color: &quot;#232127&quot;,
+                  &quot;:hover&quot;: {
+                    color: &quot;#232127&quot;,
+                  },
+                }),
+              }}
+              theme={(theme: any) =&gt; ({
+                ...theme,
+                borderRadius: 0,
+                colors: {
+                  ...theme.colors,
+                  danger: &quot;#E76159&quot;,
+                  primary50: &quot;#A15643&quot;,
+                  primary: &quot;#232127&quot;,
+                },
+              })}
+              className=&quot;search-input border-movet-black relative border w-full bg-white rounded-xl py-2 text-left cursor-pointer sm:text-sm&quot;
+            /&gt;
+          &lt;/&gt;
+        )}
+      /&gt;
+      &lt;ErrorMessage errorMessage={errors[name]?.message} /&gt;
+    &lt;/div&gt;
+  );
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:5,&quot;character&quot;:2,&quot;text&quot;:&quot;control&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:6,&quot;character&quot;:2,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:11,&quot;character&quot;:2,&quot;text&quot;:&quot;defaultValue&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:14,&quot;character&quot;:2,&quot;text&quot;:&quot;control&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:15,&quot;character&quot;:2,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:17,&quot;character&quot;:2,&quot;text&quot;:&quot;defaultValue&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:31,&quot;character&quot;:46,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:42,&quot;character&quot;:14,&quot;text&quot;:&quot;defaultValue&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:42,&quot;character&quot;:28,&quot;text&quot;:&quot;defaultValue&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:46,&quot;character&quot;:14,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:46,&quot;character&quot;:21,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:49,&quot;character&quot;:24,&quot;text&quot;:&quot;base&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:66,&quot;character&quot;:26,&quot;text&quot;:&quot;base&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:73,&quot;character&quot;:25,&quot;text&quot;:&quot;base&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:73,&quot;character&quot;:36,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:76,&quot;character&quot;:30,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:76,&quot;character&quot;:36,&quot;text&quot;:&quot;isSelected&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:78,&quot;character&quot;:25,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:78,&quot;character&quot;:31,&quot;text&quot;:&quot;isSelected&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:79,&quot;character&quot;:35,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:79,&quot;character&quot;:41,&quot;text&quot;:&quot;isSelected&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:86,&quot;character&quot;:31,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:86,&quot;character&quot;:36,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:88,&quot;character&quot;:37,&quot;text&quot;:&quot;base&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:92,&quot;character&quot;:36,&quot;text&quot;:&quot;base&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:100,&quot;character&quot;:22,&quot;text&quot;:&quot;theme&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:104,&quot;character&quot;:21,&quot;text&quot;:&quot;theme&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:104,&quot;character&quot;:27,&quot;text&quot;:&quot;colors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:115,&quot;character&quot;:34,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/SearchInput.tsx&quot;,&quot;line&quot;:115,&quot;character&quot;:48,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

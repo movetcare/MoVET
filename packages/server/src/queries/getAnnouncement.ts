@@ -2,13 +2,21 @@ import { firestore } from "../firebase";
 const DEBUG = false;
 export const getAnnouncement = async () => {
   try {
-    const announcement = await firestore
+    const announcement: any = await firestore
       .collection("alerts")
       .doc("banner")
       .get()
       .then((doc) => doc.data());
     const { color, message, title, link, isActive, isActiveMobile, icon } =
-      announcement || {};
+      announcement as {
+        color: string;
+        message: string;
+        title: string;
+        link: string;
+        isActive: boolean;
+        isActiveMobile: boolean;
+        icon: string;
+      };
     if (DEBUG)
       console.log("(SSG) FIRESTORE QUERY -> getAnnouncement() =>", {
         color,

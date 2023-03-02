@@ -1,0 +1,143 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>createProVetPatient.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts</td><td class="">77.19%</td><td class="">75%</td><td class="">171</td><td class="">132</td><td class="">39</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { savePatient } from &quot;./savePatient&quot;;
+import { request, throwError, proVetApiUrl } from &quot;../../../../config/config&quot;;
+import { toIsoString } from &quot;../../../../utils/toIsoString&quot;;
+import { capitalizeFirstLetter } from &quot;../../../../utils/capitalizeFirstLetter&quot;;
+import { updateCustomField } from &quot;./updateCustomField&quot;;
+const DEBUG = false; // environment.type === &quot;production&quot;;
+export const createProVetPatient = async (data: {
+  client: string;
+  name: string;
+  breed: string;
+  species: string;
+  gender: string;
+  birthday: string;
+  weight?: string;
+  notes?: string;
+  spayedOrNeutered?: boolean;
+  vcprRequired?: boolean;
+}): Promise&lt;any&gt; =&gt; {
+  const {
+    client,
+    name,
+    species,
+    gender,
+    breed,
+    birthday,
+    weight,
+    notes,
+    spayedOrNeutered,
+    vcprRequired,
+  } = data;
+  if (DEBUG) console.log(&quot;createProVetPatient -&gt; &quot;, data);
+  if (
+    !(typeof client === &quot;string&quot;) ||
+    client.length === 0 ||
+    !(typeof name === &quot;string&quot;) ||
+    name.length === 0 ||
+    !(typeof species === &quot;string&quot;) ||
+    species.length === 0 ||
+    // !(typeof breed === &#x27;string&#x27;) ||
+    // breed.length === 0 ||
+    !(typeof birthday === &quot;string&quot;) ||
+    birthday.length === 0 ||
+    // !(typeof weight === &#x27;string&#x27;) ||
+    // weight.length === 0 ||
+    !(typeof gender === &quot;string&quot;) ||
+    gender.length === 0
+  )
+    return throwError({ message: &quot;INVALID_PAYLOAD&quot; });
+
+  if (DEBUG)
+    console.log(&quot;REQUEST PAYLOAD =&gt;&quot;, {
+      client: `${proVetApiUrl}/client/${client}/`,
+      name,
+      species: `${species === &quot;Dog&quot; ? &quot;1445&quot; : &quot;1443&quot;}001`,
+      gender:
+        gender === &quot;Male&quot;
+          ? spayedOrNeutered
+            ? 3
+            : 1
+          : spayedOrNeutered
+          ? 4
+          : 2,
+      breed:
+        breed === null || breed === &quot;null&quot;
+          ? `${species === &quot;Dog&quot; ? &quot;6714&quot; : &quot;6713&quot;}001`
+          : `${breed}001`,
+      date_of_birth: birthday,
+      archived: 0,
+      critical_notes: notes || &quot;&quot;,
+    });
+
+  const proVetPatientData = await request
+    .post(&quot;/patient/&quot;, {
+      client: `${proVetApiUrl}/client/${client}/`, // Required by PROVET API
+      name: capitalizeFirstLetter(name), // Required by PROVET API
+      species: `${species === &quot;Dog&quot; || species === &quot;dog&quot; ? &quot;1445&quot; : &quot;1443&quot;}001`, // Required by PROVET API - Species ID in Cloud. Needs to have a ending number of 001 for own species list or 002 for Venom species list.
+      gender:
+        gender === &quot;Male&quot;
+          ? spayedOrNeutered
+            ? 3
+            : 1
+          : spayedOrNeutered
+          ? 4
+          : 2, // Required by PROVET API
+      breed: `${breed}001`, // Breed ID in Cloud. Needs to have a ending number of 001 for own breed list or 002 for Venom breed list. Has to be a valid value in Cloud. If no valid data available, drop this from array before sending
+      date_of_birth: birthday,
+      archived: 0,
+      critical_notes: notes || &quot;&quot;,
+    })
+    .then(async (response: any) =&gt; {
+      updateCustomField(`${response.data.id}`, 2, &quot;True&quot;);
+      return await updatePatientWeight(response.data, weight as string);
+    })
+    .catch((error: any) =&gt; throwError(error));
+  return await savePatient(proVetPatientData, vcprRequired);
+};
+
+const updatePatientWeight = async (data: any, weight: string) =&gt; {
+  let updatedWeightHistory = null;
+  if (DEBUG) console.log(&quot;API Response: POST /patient/ =&gt; &quot;, data);
+  if (DEBUG)
+    console.log(&quot;PAYLOAD: &quot;, {
+      timestamp: toIsoString(new Date()), // Required by PROVET API
+      weight: parseFloat(weight as string).toFixed(1), // Required by PROVET API
+    });
+  if (weight &amp;&amp; data?.id) {
+    updatedWeightHistory = await request
+      .post(`/patient/${data?.id}/weight/`, {
+        timestamp: toIsoString(new Date()), // Required by PROVET API
+        weight: parseFloat(weight).toFixed(1), // Required by PROVET API
+      })
+      .then(async (response: any) =&gt; {
+        const { data } = response;
+        if (DEBUG)
+          console.log(
+            `API Response: POST /patient/${data?.id}/weight/ =&gt; `,
+            data
+          );
+        return data;
+      })
+      .catch((error: any) =&gt; throwError(error));
+  } else if (DEBUG)
+    console.log(&quot;SKIPPING WEIGHT UPDATE - NO VALUE PROVIDED&quot;, data);
+  return { ...data, weight: updatedWeightHistory };
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:1,&quot;character&quot;:9,&quot;text&quot;:&quot;request&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:8,&quot;text&quot;:&quot;proVetPatientData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:34,&quot;text&quot;:&quot;request&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:72,&quot;character&quot;:5,&quot;text&quot;:&quot;post&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:89,&quot;character&quot;:5,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:89,&quot;character&quot;:17,&quot;text&quot;:&quot;response&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:27,&quot;text&quot;:&quot;response&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:36,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:41,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:39,&quot;text&quot;:&quot;response&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:48,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:93,&quot;character&quot;:5,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:93,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:93,&quot;character&quot;:38,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:94,&quot;character&quot;:27,&quot;text&quot;:&quot;proVetPatientData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:97,&quot;character&quot;:35,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:98,&quot;character&quot;:6,&quot;text&quot;:&quot;updatedWeightHistory&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:99,&quot;character&quot;:61,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:105,&quot;character&quot;:16,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:105,&quot;character&quot;:22,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:106,&quot;character&quot;:4,&quot;text&quot;:&quot;updatedWeightHistory&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:106,&quot;character&quot;:33,&quot;text&quot;:&quot;request&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:107,&quot;character&quot;:7,&quot;text&quot;:&quot;post&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:107,&quot;character&quot;:24,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:107,&quot;character&quot;:30,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:111,&quot;character&quot;:7,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:111,&quot;character&quot;:19,&quot;text&quot;:&quot;response&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:112,&quot;character&quot;:16,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:115,&quot;character&quot;:43,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:115,&quot;character&quot;:49,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:116,&quot;character&quot;:12,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:15,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:120,&quot;character&quot;:7,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:120,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:120,&quot;character&quot;:40,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:62,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:123,&quot;character&quot;:14,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:123,&quot;character&quot;:20,&quot;text&quot;:&quot;weight&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/integrations/provet/entities/patient/createProVetPatient.ts&quot;,&quot;line&quot;:123,&quot;character&quot;:28,&quot;text&quot;:&quot;updatedWeightHistory&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

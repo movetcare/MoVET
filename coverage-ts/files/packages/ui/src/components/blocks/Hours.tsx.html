@@ -1,0 +1,547 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Hours.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">packages/ui/src/components/blocks/Hours.tsx</td><td class="">100.00%</td><td class="">75%</td><td class="">707</td><td class="">707</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { faParking } from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import type { WinterMode as WinterModeType } from &quot;types&quot;;
+import Image from &quot;next/image&quot;;
+
+export const Hours = ({
+  winterMode,
+  embed = false,
+}: {
+  winterMode: WinterModeType;
+  embed?: boolean;
+}) =&gt;
+  embed ? (
+    &lt;&gt;
+      &lt;section className=&quot;hidden sm:block sm:relative w-full bg-movet-brown text-white pb-6&quot;&gt;
+        &lt;div className=&quot;h-20 -top-20 sm:h-28 sm:-top-28 overflow-hidden absolute w-full&quot;&gt;
+          &lt;svg
+            viewBox=&quot;0 0 500 150&quot;
+            preserveAspectRatio=&quot;none&quot;
+            className=&quot;w-full h-full flip mirror&quot;
+          &gt;
+            &lt;path
+              d=&quot;M0,52 C130,119 385,-105 501.41,83 L500.00,0.00 L0.00,0.00 Z&quot;
+              className=&quot;fill-movet-brown&quot;
+            &gt;&lt;/path&gt;
+          &lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;relative z-20 pt-12 px-8 max-w-screen-lg mx-auto mb-20 lg:mb-12&quot;&gt;
+          &lt;h2 className=&quot;text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white -mt-4 mb-12&quot;&gt;
+            Hours of Operation
+          &lt;/h2&gt;
+          {/* &lt;h3 className=&quot;font-abside text-center mb-8 -mt-4 italic text-sm w-full sm:w-2/3 mx-auto&quot;&gt;
+          * Our clinic will be closed from December 23rd - January 3rd. Our
+          Boutique will stay open December 27 - 29.
+        &lt;/h3&gt; */}
+          &lt;div className=&quot;grid sm:grid-cols-2 gap-y-12 gap-x-8 mb-12&quot;&gt;
+            &lt;div className=&quot;w-full max-w-lg&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center font-bold pt-2&quot;&gt;
+                MoVET @ Belleview Station
+              &lt;/h3&gt;
+              &lt;div className=&quot;flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap&quot;&gt;
+                &lt;div className=&quot;w-full&quot;&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span className=&quot;whitespace-nowrap&quot;&gt;MON - FRI&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span className=&quot;whitespace-nowrap&quot;&gt;SAT &amp; SUN&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div className=&quot;w-max whitespace-nowrap&quot;&gt;
+                  &lt;div&gt;9 AM TO 5 PM&lt;/div&gt;
+                  &lt;div&gt;CLOSED&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;sm:row-span-3 sm:px-6&quot;&gt;
+              &lt;iframe
+                title=&quot;Google Map of MoVET @ Belleview Station&quot;
+                loading=&quot;lazy&quot;
+                allowFullScreen
+                referrerPolicy=&quot;no-referrer-when-downgrade&quot;
+                src=&quot;https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&amp;key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0&quot;
+                className=&quot;w-full h-96 rounded-xl&quot;
+              /&gt;
+              &lt;p className=&quot;w-full text-center text-sm italic mt-6 md:mt-4&quot;&gt;
+                * Parking may be a bit challenging due to construction going on
+                in this area. Please leave ample time before your appointment.
+                You are welcome to pull up to the clinic, drop your pet with us
+                and go find parking.
+              &lt;/p&gt;
+              &lt;a
+                href=&quot;https://movetcare.com/parking.png&quot;
+                target=&quot;_blank&quot;
+                className=&quot;flex flex-row items-center justify-center w-full text-center text-sm text-movet-white mt-8 md:mt-4 font-extrabold hover:text-movet-black&quot;
+                rel=&quot;noreferrer&quot;
+              &gt;
+                &lt;span className=&quot;w-6 h-6 mr-2&quot;&gt;
+                  &lt;FontAwesomeIcon icon={faParking} /&gt;
+                &lt;/span&gt;
+                &lt;span className=&quot;-mt-1&quot;&gt;View Parking Map&lt;/span&gt;
+              &lt;/a&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;w-full max-w-lg  whitespace-nowrap&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center font-bold&quot;&gt;
+                Clinic Walk-In Hours
+              &lt;/h3&gt;
+              &lt;div className=&quot;flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap&quot;&gt;
+                &lt;div className=&quot;w-full&quot;&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span&gt;TUESDAY&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span&gt;THURSDAY&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div className=&quot;w-max&quot;&gt;
+                  &lt;div&gt;9AM - NOON &amp; 2 - 4PM&lt;/div&gt;
+                  &lt;div&gt;9AM - NOON &amp; 2 - 4PM&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;w-full max-w-lg items-center&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center&quot;&gt;Housecalls&lt;/h3&gt;
+              {winterMode &amp;&amp;
+              winterMode?.isActive &amp;&amp;
+              winterMode?.isActiveOnWebsite ? (
+                &lt;p className=&quot;text-lg text-center italic mb-2&quot;&gt;
+                  * {winterMode?.message}
+                &lt;/p&gt;
+              ) : (
+                &lt;div className=&quot;flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap&quot;&gt;
+                  &lt;div className=&quot;w-full&quot;&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;MONDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;WEDNESDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;FRIDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;w-max&quot;&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;MORNINGS&lt;/div&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;AFTERNOONS&lt;/div&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;MORNINGS&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              )}
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;curve h-24 before:ellipse-1 before:w-[70%] before:bg-movet-brown before:h-40 before:translate-x-[64%] before:translate-y-[-31%] before:rounded-[100%_100%_100%_100%_/_100%_100%_100%_76%] after:ellipse-1 after:w-[84%] after:bg-movet-black after:translate-x-[-20%] after:translate-y-[54%] after:rounded-tr-[125%] after:h-32 &quot;&gt;
+          &lt;div className=&quot;absolute -mt-6 w-full flex justify-center top-[3.825rem] gap-x-2 md:hidden z-10&quot;&gt;
+            &lt;Image
+              src=&quot;/images/pets/client-w-dog.jpg&quot;
+              alt=&quot;dog&quot;
+              className=&quot;rounded-full&quot;
+              width={100}
+              height={100}
+            /&gt;
+            &lt;Image
+              src=&quot;/images/pets/holding-dog-home.png&quot;
+              alt=&quot;dog&quot;
+              className=&quot;rounded-full&quot;
+              width={100}
+              height={100}
+            /&gt;
+            &lt;Image
+              src=&quot;/images/pets/puppy-2.jpg&quot;
+              alt=&quot;dog&quot;
+              className=&quot;rounded-full&quot;
+              width={100}
+              height={100}
+            /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+      &lt;section className=&quot;relative sm:hidden w-full bg-movet-brown text-white py-4 -mt-8&quot;&gt;
+        &lt;div className=&quot;z-20 py-12 px-8 max-w-screen-lg mx-auto&quot;&gt;
+          &lt;h2 className=&quot;text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white -mt-4 mb-12&quot;&gt;
+            Hours of Operation
+          &lt;/h2&gt;
+          {/* &lt;h3 className=&quot;font-abside text-center mb-4 -mt-4 italic text-sm &quot;&gt;
+          * Our clinic will be closed from December 23rd - January 3rd. Our
+          Boutique will stay open December 27 - 29.
+        &lt;/h3&gt; */}
+          &lt;div className=&quot;flex flex-col justify-center items-center mb-12&quot;&gt;
+            &lt;div className=&quot;w-full max-w-lg&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center font-bold pt-2&quot;&gt;
+                MoVET @ Belleview Station
+              &lt;/h3&gt;
+              &lt;div className=&quot;flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap&quot;&gt;
+                &lt;div className=&quot;w-full&quot;&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span className=&quot;whitespace-nowrap&quot;&gt;MON - FRI&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span className=&quot;whitespace-nowrap&quot;&gt;SAT &amp; SUN&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div className=&quot;w-max whitespace-nowrap&quot;&gt;
+                  &lt;div&gt;9 AM TO 5 PM&lt;/div&gt;
+                  &lt;div&gt;CLOSED&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;sm:px-6 mt-8&quot;&gt;
+              &lt;iframe
+                title=&quot;Google Map of MoVET @ Belleview Station&quot;
+                loading=&quot;lazy&quot;
+                allowFullScreen
+                referrerPolicy=&quot;no-referrer-when-downgrade&quot;
+                src=&quot;https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&amp;key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0&quot;
+                className=&quot;w-full h-96 rounded-xl&quot;
+              /&gt;
+              &lt;p className=&quot;w-full text-center text-sm italic mt-6 md:mt-4&quot;&gt;
+                * Parking may be a bit challenging due to construction going on
+                in this area. Please leave ample time before your appointment.
+                You are welcome to pull up to the clinic, drop your pet with us
+                and go find parking.
+              &lt;/p&gt;
+              &lt;a
+                href=&quot;https://movetcare.com/parking.png&quot;
+                target=&quot;_blank&quot;
+                className=&quot;flex flex-row items-center justify-center w-full text-center text-sm text-movet-white mt-8 md:mt-4 font-extrabold hover:text-movet-black&quot;
+                rel=&quot;noreferrer&quot;
+              &gt;
+                &lt;span className=&quot;w-6 h-6 mr-2&quot;&gt;
+                  &lt;FontAwesomeIcon icon={faParking} /&gt;
+                &lt;/span&gt;
+                &lt;span&gt;View Parking Map&lt;/span&gt;
+              &lt;/a&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;w-full max-w-lg  whitespace-nowrap mt-8&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center font-bold&quot;&gt;
+                Clinic Walk-In Hours
+              &lt;/h3&gt;
+              &lt;div className=&quot;flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap&quot;&gt;
+                &lt;div className=&quot;w-full text-sm sm:text-base&quot;&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span&gt;TUESDAY&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span&gt;THURSDAY&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div className=&quot;w-full text-sm sm:text-base&quot;&gt;
+                  &lt;div&gt;9AM - NOON &amp; 2 - 4 PM&lt;/div&gt;
+                  &lt;div&gt;9AM - NOON &amp; 2 - 4 PM&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;w-full max-w-lg items-center mt-8 mb-12&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center&quot;&gt;Housecalls&lt;/h3&gt;
+              {winterMode &amp;&amp;
+              winterMode?.isActive &amp;&amp;
+              winterMode?.isActiveOnWebsite ? (
+                &lt;p className=&quot;text-center italic&quot;&gt;* {winterMode?.message}&lt;/p&gt;
+              ) : (
+                &lt;div className=&quot;flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap&quot;&gt;
+                  &lt;div className=&quot;w-full&quot;&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;MONDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;WEDNESDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;FRIDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;w-max&quot;&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;MORNINGS&lt;/div&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;AFTERNOONS&lt;/div&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;MORNINGS&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              )}
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;curve h-24 before:ellipse-1 before:w-[70%] before:bg-movet-brown before:h-40 before:translate-x-[64%] before:translate-y-[-31%] before:rounded-[100%_100%_100%_100%_/_100%_100%_100%_76%] after:ellipse-1 after:w-[84%] after:bg-movet-black after:translate-x-[-20%] after:translate-y-[54%] after:rounded-tr-[125%] after:h-32 &quot;&gt;
+          &lt;div className=&quot;absolute -mt-6 w-full flex justify-center top-[3.825rem] gap-x-2 md:hidden z-10&quot;&gt;
+            &lt;Image
+              src=&quot;/images/pets/client-w-dog.jpg&quot;
+              alt=&quot;dog&quot;
+              className=&quot;rounded-full&quot;
+              width={100}
+              height={100}
+            /&gt;
+            &lt;Image
+              src=&quot;/images/pets/holding-dog-home.png&quot;
+              alt=&quot;dog&quot;
+              className=&quot;rounded-full&quot;
+              width={100}
+              height={100}
+            /&gt;
+            &lt;Image
+              src=&quot;/images/pets/puppy-2.jpg&quot;
+              alt=&quot;dog&quot;
+              className=&quot;rounded-full&quot;
+              width={100}
+              height={100}
+            /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/&gt;
+  ) : (
+    &lt;&gt;
+      &lt;section className=&quot;hidden md:block sm:relative w-full pb-6&quot;&gt;
+        &lt;div className=&quot;relative z-20 px-8 mt-8 max-w-screen-lg mx-auto&quot;&gt;
+          &lt;h2 className=&quot;text-4xl text-center my-8&quot;&gt;Hours of Operation&lt;/h2&gt;
+          {/* &lt;h3 className=&quot;font-abside text-center mb-8 -mt-4 italic text-sm w-full sm:w-2/3 mx-auto&quot;&gt;
+          * Our clinic will be closed from December 23rd - January 3rd. Our
+          Boutique will stay open December 27 - 29.
+        &lt;/h3&gt; */}
+          &lt;div className=&quot;grid sm:grid-cols-2 gap-y-12 gap-x-8 mb-8 p-8 rounded-xl bg-white&quot;&gt;
+            &lt;div className=&quot;w-full max-w-lg&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center font-bold pt-2&quot;&gt;
+                MoVET @ Belleview Station
+              &lt;/h3&gt;
+              &lt;div className=&quot;flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap&quot;&gt;
+                &lt;div className=&quot;w-full&quot;&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span className=&quot;whitespace-nowrap&quot;&gt;MON - FRI&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span className=&quot;whitespace-nowrap&quot;&gt;SAT &amp; SUN&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div className=&quot;w-max whitespace-nowrap&quot;&gt;
+                  &lt;div&gt;9 AM TO 5 PM&lt;/div&gt;
+                  &lt;div&gt;CLOSED&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            {/* &lt;div className=&quot;sm:row-span-3 sm:px-6&quot;&gt;
+              &lt;iframe
+                title=&quot;Google Map of MoVET @ Belleview Station&quot;
+                loading=&quot;lazy&quot;
+                allowFullScreen
+                referrerPolicy=&quot;no-referrer-when-downgrade&quot;
+                src=&quot;https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&amp;key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0&quot;
+                className=&quot;w-full h-80 rounded-xl&quot;
+              /&gt;
+              &lt;p className=&quot;w-full text-center text-sm italic mt-6 md:mt-4&quot;&gt;
+                * Parking may be a bit challenging due to construction going on
+                in this area. Please leave ample time before your appointment.
+                You are welcome to pull up to the clinic, drop your pet with us
+                and go find parking.
+              &lt;/p&gt;
+              &lt;a
+                href=&quot;https://movetcare.com/parking.png&quot;
+                target=&quot;_blank&quot;
+                className=&quot;flex flex-row items-center justify-center w-full text-center text-sm text-movet-black mt-8 md:mt-4 font-extrabold hover:text-movet-red duration-300 ease-in-out&quot;
+                rel=&quot;noreferrer&quot;
+              &gt;
+                &lt;span className=&quot;w-6 h-6 mr-2&quot;&gt;
+                  &lt;FontAwesomeIcon icon={faParking} /&gt;
+                &lt;/span&gt;
+                &lt;span className=&quot;-mt-1&quot;&gt;View Parking Map&lt;/span&gt;
+              &lt;/a&gt;
+            &lt;/div&gt; */}
+            &lt;div className=&quot;w-full max-w-lg  whitespace-nowrap&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center font-bold&quot;&gt;
+                Clinic Walk-In Hours
+              &lt;/h3&gt;
+              &lt;div className=&quot;flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap&quot;&gt;
+                &lt;div className=&quot;w-full&quot;&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span&gt;TUESDAY&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span&gt;THURSDAY&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div className=&quot;w-max&quot;&gt;
+                  &lt;div&gt;9AM - NOON &amp; 2 - 4PM&lt;/div&gt;
+                  &lt;div&gt;9AM - NOON &amp; 2 - 4PM&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;w-full max-w-md items-center col-span-2 mx-auto&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center&quot;&gt;Housecalls&lt;/h3&gt;
+              {winterMode &amp;&amp;
+              winterMode?.isActive &amp;&amp;
+              winterMode?.isActiveOnWebsite ? (
+                &lt;p className=&quot;text-lg text-center italic mb-2&quot;&gt;
+                  * {winterMode?.message}
+                &lt;/p&gt;
+              ) : (
+                &lt;div className=&quot;flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap&quot;&gt;
+                  &lt;div className=&quot;w-full&quot;&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;MONDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;WEDNESDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;FRIDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;w-max&quot;&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;MORNINGS&lt;/div&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;AFTERNOONS&lt;/div&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;MORNINGS&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              )}
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+      &lt;section className=&quot;relative md:hidden w-full py-4 mb-8&quot;&gt;
+        &lt;div className=&quot;z-20 px-4 max-w-screen-lg mx-auto&quot;&gt;
+          &lt;h2 className=&quot;text-4xl text-center mb-8&quot;&gt;Hours of Operation&lt;/h2&gt;
+          {/* &lt;h3 className=&quot;font-abside text-center mb-4 -mt-4 italic text-sm &quot;&gt;
+          * Our clinic will be closed from December 23rd - January 3rd. Our
+          Boutique will stay open December 27 - 29.
+        &lt;/h3&gt; */}
+          &lt;div className=&quot;flex flex-col justify-center items-center rounded-xl bg-white p-8&quot;&gt;
+            {/* &lt;div className=&quot;sm:px-6&quot;&gt;
+              &lt;iframe
+                title=&quot;Google Map of MoVET @ Belleview Station&quot;
+                loading=&quot;lazy&quot;
+                allowFullScreen
+                referrerPolicy=&quot;no-referrer-when-downgrade&quot;
+                src=&quot;https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&amp;key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0&quot;
+                className=&quot;w-full h-80 rounded-xl&quot;
+              /&gt;
+              &lt;p className=&quot;w-full text-center text-sm italic mt-6 md:mt-4&quot;&gt;
+                * Parking may be a bit challenging due to construction going on
+                in this area. Please leave ample time before your appointment.
+                You are welcome to pull up to the clinic, drop your pet with us
+                and go find parking.
+              &lt;/p&gt;
+              &lt;a
+                href=&quot;https://movetcare.com/parking.png&quot;
+                target=&quot;_blank&quot;
+                className=&quot;flex flex-row items-center justify-center w-full text-center text-sm text-movet-black mt-8 md:mt-4 font-extrabold hover:text-movet-red duration-300 ease-in-out&quot;
+                rel=&quot;noreferrer&quot;
+              &gt;
+                &lt;span className=&quot;w-6 h-6 mr-2&quot;&gt;
+                  &lt;FontAwesomeIcon icon={faParking} /&gt;
+                &lt;/span&gt;
+                &lt;span&gt;View Parking Map&lt;/span&gt;
+              &lt;/a&gt;
+            &lt;/div&gt; */}
+            &lt;div className=&quot;mt-8 w-full max-w-lg whitespace-nowrap&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center font-bold pt-2&quot;&gt;
+                MoVET @ Belleview Station
+              &lt;/h3&gt;
+              &lt;div className=&quot;flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap&quot;&gt;
+                &lt;div className=&quot;w-full&quot;&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span className=&quot;whitespace-nowrap&quot;&gt;MON - FRI&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span className=&quot;whitespace-nowrap&quot;&gt;SAT &amp; SUN&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div className=&quot;w-max whitespace-nowrap&quot;&gt;
+                  &lt;div&gt;9 AM TO 5 PM&lt;/div&gt;
+                  &lt;div&gt;CLOSED&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;w-full max-w-lg whitespace-nowrap mt-8&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center font-bold&quot;&gt;
+                Clinic Walk-In Hours
+              &lt;/h3&gt;
+              &lt;div className=&quot;flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap&quot;&gt;
+                &lt;div className=&quot;w-full text-sm sm:text-base&quot;&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span&gt;TUESDAY&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;flex w-full&quot;&gt;
+                    &lt;span&gt;THURSDAY&lt;/span&gt;
+                    &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div className=&quot;w-full text-sm sm:text-base&quot;&gt;
+                  &lt;div&gt;9AM - NOON &amp; 2 - 4 PM&lt;/div&gt;
+                  &lt;div&gt;9AM - NOON &amp; 2 - 4 PM&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;w-full max-w-lg items-center my-8&quot;&gt;
+              &lt;h3 className=&quot;text-xl text-center&quot;&gt;Housecalls&lt;/h3&gt;
+              {winterMode &amp;&amp;
+              winterMode?.isActive &amp;&amp;
+              winterMode?.isActiveOnWebsite ? (
+                &lt;p className=&quot;text-center italic&quot;&gt;* {winterMode?.message}&lt;/p&gt;
+              ) : (
+                &lt;div className=&quot;flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap&quot;&gt;
+                  &lt;div className=&quot;w-full&quot;&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;MONDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;WEDNESDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div className=&quot;flex w-full&quot;&gt;
+                      &lt;span className=&quot;whitespace-nowrap&quot;&gt;FRIDAY&lt;/span&gt;
+                      &lt;div className=&quot;w-full border-b mb-2 mx-4&quot;&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;div className=&quot;w-max&quot;&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;MORNINGS&lt;/div&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;AFTERNOONS&lt;/div&gt;
+                    &lt;div className=&quot;whitespace-nowrap&quot;&gt;MORNINGS&lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              )}
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/&gt;
+  );
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

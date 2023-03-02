@@ -1,0 +1,134 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>processIllnessDetails.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts</td><td class="">68.97%</td><td class="">75%</td><td class="">145</td><td class="">100</td><td class="">45</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { admin, throwError, DEBUG } from &quot;../../config/config&quot;;
+import { sendNotification } from &quot;../../notifications/sendNotification&quot;;
+import type { BookingError, Booking } from &quot;../../types/booking&quot;;
+import { handleFailedBooking } from &quot;./handleFailedBooking&quot;;
+
+export const processIllnessDetails = async (
+  id: string,
+  illnessDetails: {
+    symptoms: Array&lt;any&gt;;
+    id: string;
+    notes: string;
+  }
+): Promise&lt;Booking | BookingError&gt; =&gt; {
+  const data = { id, illnessDetails };
+  if (DEBUG) console.log(&quot;ILL PETS DATA&quot;, data);
+  if (illnessDetails?.id) {
+    const bookingRef = admin.firestore().collection(&quot;bookings&quot;).doc(id);
+    const session = await bookingRef
+      .get()
+      .then((doc: any) =&gt; doc.data())
+      .catch(async (error: any) =&gt; {
+        throwError(error);
+        return await handleFailedBooking(error, &quot;GET BOOKING DATA FAILED&quot;);
+      });
+    const newPatientsData: any = [];
+    let nextPatient: null | string = null;
+    session.patients.forEach(
+      (patient: {
+        gender: string;
+        id: string;
+        name: string;
+        species: string;
+        vcprRequired: boolean;
+      }) =&gt; {
+        if (patient?.id === illnessDetails?.id)
+          newPatientsData.push({
+            ...patient,
+            illnessDetails: {
+              symptoms: illnessDetails?.symptoms,
+              notes: illnessDetails?.notes,
+            },
+          });
+        else newPatientsData.push(patient);
+      }
+    );
+    session.illPatientSelection.forEach((patientId: string, index: number) =&gt; {
+      if (patientId === illnessDetails?.id)
+        nextPatient = session.illPatientSelection[index + 1];
+    });
+    if (DEBUG) {
+      console.log(&quot;newPatientsData&quot;, newPatientsData);
+      console.log(&quot;nextPatient&quot;, nextPatient);
+    }
+    await bookingRef
+      .set(
+        {
+          patients: newPatientsData,
+          nextPatient,
+          step: &quot;illness-selection&quot; as Booking[&quot;step&quot;],
+          updatedOn: new Date(),
+        },
+        { merge: true }
+      )
+      .catch(async (error: any) =&gt; {
+        throwError(error);
+        return await handleFailedBooking(
+          error,
+          &quot;UPDATE ILLNESS DETAILS FAILED&quot;
+        );
+      });
+
+    sendNotification({
+      type: &quot;slack&quot;,
+      payload: {
+        message: [
+          {
+            type: &quot;section&quot;,
+            text: {
+              text: `:book: _Appointment Booking_ *UPDATED* (${id})`,
+              type: &quot;mrkdwn&quot;,
+            },
+            fields: [
+              {
+                type: &quot;mrkdwn&quot;,
+                text: &quot;*STEP*&quot;,
+              },
+              {
+                type: &quot;plain_text&quot;,
+                text: &quot;ILLNESS SELECTION&quot;,
+              },
+              {
+                type: &quot;mrkdwn&quot;,
+                text: &quot;*ILLNESS DETAILS*&quot;,
+              },
+              {
+                type: &quot;plain_text&quot;,
+                text: JSON.stringify(illnessDetails),
+              },
+            ],
+          },
+        ],
+      },
+    });
+    return {
+      ...session,
+      patients: newPatientsData,
+      nextPatient,
+      id,
+      client: {
+        uid: session?.client?.uid,
+        requiresInfo: session?.client?.requiresInfo,
+      },
+    };
+  } else
+    return await handleFailedBooking(data, &quot;FAILED TO HANDLE ILLNESS DETAILS&quot;);
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:0,&quot;character&quot;:9,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:10,&quot;text&quot;:&quot;bookingRef&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:23,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:29,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:41,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:64,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:10,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:26,&quot;text&quot;:&quot;bookingRef&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:7,&quot;text&quot;:&quot;get&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:19,&quot;character&quot;:7,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:19,&quot;character&quot;:13,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:19,&quot;character&quot;:26,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:19,&quot;character&quot;:30,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:20,&quot;character&quot;:7,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:20,&quot;character&quot;:20,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:19,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:22,&quot;character&quot;:41,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:24,&quot;character&quot;:10,&quot;text&quot;:&quot;newPatientsData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:4,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:12,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:21,&quot;text&quot;:&quot;forEach&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:10,&quot;text&quot;:&quot;newPatientsData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:26,&quot;text&quot;:&quot;push&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:13,&quot;text&quot;:&quot;newPatientsData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:29,&quot;text&quot;:&quot;push&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:4,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:12,&quot;text&quot;:&quot;illPatientSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:32,&quot;text&quot;:&quot;forEach&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:22,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:30,&quot;text&quot;:&quot;illPatientSelection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:37,&quot;text&quot;:&quot;newPatientsData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:10,&quot;text&quot;:&quot;bookingRef&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:7,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:10,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:20,&quot;text&quot;:&quot;newPatientsData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:63,&quot;character&quot;:7,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:63,&quot;character&quot;:20,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:64,&quot;character&quot;:19,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:66,&quot;character&quot;:10,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:109,&quot;character&quot;:13,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:109,&quot;character&quot;:22,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:109,&quot;character&quot;:30,&quot;text&quot;:&quot;uid&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:110,&quot;character&quot;:22,&quot;text&quot;:&quot;session&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:110,&quot;character&quot;:31,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/booking/session/processIllnessDetails.ts&quot;,&quot;line&quot;:110,&quot;character&quot;:39,&quot;text&quot;:&quot;requiresInfo&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

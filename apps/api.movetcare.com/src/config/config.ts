@@ -10,8 +10,8 @@ import { WebClient, LogLevel } from "@slack/web-api";
 let stagingInstance: any = null;
 let productionInstance: any = null;
 export const environment: any = func.config()?.environment;
-export const DEBUG =
-  environment.type !== "production" && environment.type !== "development";
+export const DEBUG = false;
+//environment.type !== "production" && environment.type !== "development";
 
 if (environment.type !== "development") {
   console.log = func.logger.log;

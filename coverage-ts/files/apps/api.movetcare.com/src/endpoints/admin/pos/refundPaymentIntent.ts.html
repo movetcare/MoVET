@@ -1,0 +1,85 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>refundPaymentIntent.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts</td><td class="">54.76%</td><td class="">75%</td><td class="">84</td><td class="">46</td><td class="">38</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  throwError,
+  defaultRuntimeOptions,
+  functions,
+  stripe,
+  admin,
+} from &quot;../../../config/config&quot;;
+import { requestIsAuthorized } from &quot;./requestIsAuthorized&quot;;
+const DEBUG = false; // environment.type === &quot;production&quot;;
+export const refundPaymentIntent = functions
+  .runWith(defaultRuntimeOptions)
+  .https.onCall(
+    async (
+      data: {
+        paymentIntent: string;
+        invoice: string;
+        mode: &quot;client&quot; | &quot;counter&quot;;
+      },
+      context: any
+    ): Promise&lt;any&gt; =&gt; {
+      if (DEBUG) console.log(&quot;refundPaymentIntent DATA =&gt;&quot;, data);
+      const isAuthorized = await requestIsAuthorized(context);
+      if (isAuthorized) {
+        const refund: any = await stripe.refunds
+          .create({
+            payment_intent: data?.paymentIntent,
+          })
+          .catch((error: any) =&gt; throwError(error));
+        if (DEBUG) console.log(&quot;refund&quot;, refund);
+        if (refund) {
+          await admin
+            .firestore()
+            .collection(
+              data?.mode === &quot;client&quot; ? &quot;client_invoices&quot; : &quot;counter_sales&quot;
+            )
+            .doc(`${data?.invoice}`)
+            .collection(&quot;refunds&quot;)
+            .doc(refund?.id)
+            .set(
+              {
+                ...refund,
+                updatedOn: new Date(),
+              },
+              { merge: true }
+            )
+            .catch((error: any) =&gt; throwError(error));
+          if (refund?.status === &quot;succeeded&quot;)
+            return await admin
+              .firestore()
+              .collection(
+                data?.mode === &quot;client&quot; ? &quot;client_invoices&quot; : &quot;counter_sales&quot;
+              )
+              .doc(`${data?.invoice}`)
+              .set(
+                {
+                  paymentStatus: &quot;partially-refunded&quot;,
+                  updatedOn: new Date(),
+                },
+                { merge: true }
+              )
+              .then(async () =&gt; true)
+              .catch((error: any) =&gt; throwError(error));
+          else return false;
+        }
+      } else return false;
+    }
+  );
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:3,&quot;character&quot;:2,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:5,&quot;character&quot;:2,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:13,&quot;text&quot;:&quot;refundPaymentIntent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:35,&quot;text&quot;:&quot;functions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:3,&quot;text&quot;:&quot;runWith&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:3,&quot;text&quot;:&quot;https&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:9,&quot;text&quot;:&quot;onCall&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:6,&quot;text&quot;:&quot;context&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:21,&quot;character&quot;:53,&quot;text&quot;:&quot;context&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:23,&quot;character&quot;:14,&quot;text&quot;:&quot;refund&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:27,&quot;character&quot;:18,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:27,&quot;character&quot;:44,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:41,&quot;text&quot;:&quot;refund&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:12,&quot;text&quot;:&quot;refund&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:16,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:13,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:13,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:13,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:13,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:13,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:17,&quot;text&quot;:&quot;refund&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:25,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:13,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:19,&quot;text&quot;:&quot;refund&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:13,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:20,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:46,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:14,&quot;text&quot;:&quot;refund&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:22,&quot;text&quot;:&quot;status&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:25,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:15,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:15,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:15,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:15,&quot;text&quot;:&quot;set&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:60,&quot;character&quot;:15,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:61,&quot;character&quot;:15,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:61,&quot;character&quot;:22,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/endpoints/admin/pos/refundPaymentIntent.ts&quot;,&quot;line&quot;:61,&quot;character&quot;:48,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

@@ -1,0 +1,209 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>FileUploadInput.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/app.movetcare.com/components/inputs/FileUploadInput.tsx</td><td class="">94.81%</td><td class="">75%</td><td class="">212</td><td class="">201</td><td class="">11</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import Image from &quot;next/image&quot;;
+import { useRef, useState } from &quot;react&quot;;
+import { ref, getDownloadURL, uploadBytesResumable } from &quot;firebase/storage&quot;;
+import { storage } from &quot;services/firebase&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import {
+  faCheckCircle,
+  faCloudArrowUp,
+  faExclamationTriangle,
+} from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { Loader } from &quot;ui&quot;;
+import toast from &quot;react-hot-toast&quot;;
+import { Transition } from &quot;@headlessui/react&quot;;
+import kebabCase from &quot;lodash.kebabcase&quot;;
+
+export const FileUploadInput = ({
+  label = &quot;&quot;,
+  isAppMode = false,
+  fileName,
+  uploadPath,
+  fileTypes = &quot;PDF, PNG or JPG&quot;,
+  setValue,
+  successMessage = &quot;File Uploaded!&quot;,
+  previewImage = false,
+}: {
+  label: string;
+  isAppMode: boolean;
+  fileName: string;
+  uploadPath: string;
+  fileTypes?: string;
+  setValue: any;
+  successMessage: string;
+  previewImage?: boolean;
+}) =&gt; {
+  const [progress, setProgress] = useState&lt;number | null&gt;(0);
+  const [isLoading, setIsLoading] = useState&lt;boolean&gt;(false);
+  const [photoUrl, setPhotoUrl] = useState&lt;string | null&gt;(null);
+  const [sourceFileName, setSourceFileName] = useState&lt;string | null&gt;(null);
+  const inputFileRef = useRef();
+  const onFileChangeCapture = (e: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; {
+    e.preventDefault();
+    setIsLoading(true);
+    uploadFiles((e.target.files as any)[0]);
+  };
+  const onBtnClick = () =&gt; (inputFileRef.current as any).click();
+  const uploadFiles = (file: any) =&gt; {
+    if (!file) return;
+    setSourceFileName(file?.name);
+    const uploadTask = uploadBytesResumable(
+      ref(storage, `/${uploadPath}/${kebabCase(fileName)}`),
+      file,
+      {
+        contentType: file?.type,
+      }
+    );
+    uploadTask.on(
+      &quot;state_changed&quot;,
+      (snapshot) =&gt; {
+        const prog = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setProgress(prog);
+      },
+      (error) =&gt; {
+        setValue(error?.message);
+        toast(&quot;Whoops! Something went wrong, please try again...&quot;, {
+          duration: 4000,
+          icon: (
+            &lt;FontAwesomeIcon
+              icon={faExclamationTriangle}
+              size=&quot;sm&quot;
+              className=&quot;text-movet-red&quot;
+            /&gt;
+          ),
+        });
+        setIsLoading(false);
+      },
+      () =&gt;
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL: string) =&gt; {
+          setValue({
+            url: downloadURL,
+            name: `${kebabCase(fileName)}`,
+          });
+          setPhotoUrl(downloadURL);
+          toast(successMessage, {
+            duration: 4000,
+            icon: (
+              &lt;FontAwesomeIcon
+                icon={faCheckCircle}
+                size=&quot;sm&quot;
+                className=&quot;text-movet-green&quot;
+              /&gt;
+            ),
+          });
+          setIsLoading(false);
+        })
+    );
+  };
+
+  return (
+    &lt;div className=&quot;mt-8 w-full flex flex-col justify-center mx-auto&quot;&gt;
+      {label !== &quot;&quot; &amp;&amp; (
+        &lt;label className=&quot;block text-sm font-medium text-movet-black font-abside mb-2&quot;&gt;
+          {label} {progress === 100 ? `- ${sourceFileName}` : &quot;&quot;}
+        &lt;/label&gt;
+      )}
+      &lt;div
+        onClick={onBtnClick}
+        className=&quot;flex flex-col justify-center items-center w-full group hover:bg-movet-gray hover:bg-opacity-10 ease-in-out duration-500 h-38 bg-white rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600&quot;
+      &gt;
+        &lt;div
+          className={`flex flex-col justify-center items-center w-full py-6 px-4 text-center${
+            photoUrl ? &quot; bg-movet-gray bg-opacity-10&quot; : &quot;&quot;
+          }`}
+        &gt;
+          {isLoading ? (
+            &lt;&gt;
+              &lt;Loader message={`Upload ${progress}% Complete`} /&gt;
+            &lt;/&gt;
+          ) : (
+            &lt;&gt;
+              &lt;Transition
+                show={previewImage &amp;&amp; photoUrl !== null}
+                enter=&quot;transition ease-in duration-500&quot;
+                leave=&quot;transition ease-out duration-300&quot;
+                leaveTo=&quot;opacity-10&quot;
+                enterFrom=&quot;opacity-0&quot;
+                enterTo=&quot;opacity-100&quot;
+                leaveFrom=&quot;opacity-100&quot;
+              &gt;
+                {photoUrl &amp;&amp; (
+                  &lt;Image
+                    src={photoUrl}
+                    alt=&quot;Photo Preview&quot;
+                    height={50}
+                    width={50}
+                    className=&quot;rounded-xl h-100 w-100 mx-auto my-4&quot;
+                  /&gt;
+                )}
+              &lt;/Transition&gt;
+              {sourceFileName &amp;&amp; &lt;p&gt;Using: &amp;quot;{sourceFileName}&amp;quot;&lt;/p&gt;}
+              {isAppMode ? (
+                &lt;&gt;
+                  {!sourceFileName &amp;&amp; (
+                    &lt;FontAwesomeIcon
+                      icon={faCloudArrowUp}
+                      size=&quot;2x&quot;
+                      className=&quot;text-movet-black group-hover:text-movet-brown ease-in-out duration-500&quot;
+                    /&gt;
+                  )}
+                  &lt;p className=&quot;text-sm text-movet-black dark:text-movet-black&quot;&gt;
+                    Tap to {sourceFileName ? &quot;Replace&quot; : &quot;Upload&quot;}
+                  &lt;/p&gt;
+                  {fileTypes &amp;&amp; (
+                    &lt;p className=&quot;text-xs text-movet-black dark:text-movet-black -mt-2 italic&quot;&gt;
+                      {fileTypes}
+                    &lt;/p&gt;
+                  )}
+                &lt;/&gt;
+              ) : (
+                &lt;&gt;
+                  {!sourceFileName &amp;&amp; (
+                    &lt;FontAwesomeIcon
+                      icon={faCloudArrowUp}
+                      size=&quot;2x&quot;
+                      className=&quot;text-movet-black group-hover:text-movet-brown ease-in-out duration-500&quot;
+                    /&gt;
+                  )}
+                  &lt;p className=&quot;text-sm text-movet-black dark:text-movet-black&quot;&gt;
+                    Click to {sourceFileName ? &quot;Replace&quot; : &quot;Upload&quot;}
+                  &lt;/p&gt;
+                  {fileTypes &amp;&amp; (
+                    &lt;p className=&quot;text-xs text-movet-black dark:text-movet-black -mt-2 italic&quot;&gt;
+                      {fileTypes}
+                    &lt;/p&gt;
+                  )}
+                &lt;/&gt;
+              )}
+            &lt;/&gt;
+          )}
+        &lt;/div&gt;
+        &lt;input
+          type=&quot;file&quot;
+          ref={inputFileRef as any}
+          onChangeCapture={onFileChangeCapture}
+          className=&quot;hidden&quot;
+        /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/FileUploadInput.tsx&quot;,&quot;line&quot;:21,&quot;character&quot;:2,&quot;text&quot;:&quot;setValue&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/FileUploadInput.tsx&quot;,&quot;line&quot;:30,&quot;character&quot;:2,&quot;text&quot;:&quot;setValue&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/FileUploadInput.tsx&quot;,&quot;line&quot;:44,&quot;character&quot;:57,&quot;text&quot;:&quot;click&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/FileUploadInput.tsx&quot;,&quot;line&quot;:45,&quot;character&quot;:23,&quot;text&quot;:&quot;file&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/FileUploadInput.tsx&quot;,&quot;line&quot;:46,&quot;character&quot;:9,&quot;text&quot;:&quot;file&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/FileUploadInput.tsx&quot;,&quot;line&quot;:47,&quot;character&quot;:22,&quot;text&quot;:&quot;file&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/FileUploadInput.tsx&quot;,&quot;line&quot;:47,&quot;character&quot;:28,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/FileUploadInput.tsx&quot;,&quot;line&quot;:52,&quot;character&quot;:21,&quot;text&quot;:&quot;file&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/FileUploadInput.tsx&quot;,&quot;line&quot;:52,&quot;character&quot;:27,&quot;text&quot;:&quot;type&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/FileUploadInput.tsx&quot;,&quot;line&quot;:64,&quot;character&quot;:8,&quot;text&quot;:&quot;setValue&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/components/inputs/FileUploadInput.tsx&quot;,&quot;line&quot;:79,&quot;character&quot;:10,&quot;text&quot;:&quot;setValue&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

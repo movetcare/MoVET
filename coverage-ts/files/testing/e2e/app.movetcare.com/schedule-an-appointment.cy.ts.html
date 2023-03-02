@@ -1,0 +1,620 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>schedule-an-appointment.cy.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts</td><td class="">92.34%</td><td class="">75%</td><td class="">1344</td><td class="">1241</td><td class="">103</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">const pathTimeout = Cypress.env().defaultPathnameTimeOut;
+const onlyTestOnePatient = Cypress.env().onlyTestOnePatient;
+const skipWellnessCheck = Cypress.env().skipWellnessCheck;
+const isDevelopmentEnvironment = Cypress.env().environment === &quot;development&quot;;
+describe(
+  &quot;standard-schedule-an-appointment-flow&quot;,
+  { defaultCommandTimeout: pathTimeout },
+  () =&gt; {
+    it(&quot;Can schedule an appointment as a new client - VCPR REQUIRED&quot;, () =&gt; {
+      runThroughAppointmentRequestWorkflows({
+        email: `dev+test_client_${Math.floor(
+          Math.random() * 99999999999
+        )}@movetcare.com`,
+        firstName: &quot;Test&quot;,
+        lastName: &quot;Client (Can be Deleted)&quot;,
+        petName: Cypress.env().existingPatientWithVcprName,
+        id: null,
+        paymentRequired: false,
+      });
+    });
+
+   if (isDevelopmentEnvironment)
+     it(&quot;Can schedule an appointment as a new client - PAYMENT REQUIRED&quot;, () =&gt; {
+       runThroughAppointmentRequestWorkflows({
+         email: `dev+test_client_${Math.floor(
+           Math.random() * 99999999999
+         )}@movetcare.com`,
+         firstName: &quot;Test&quot;,
+         lastName: &quot;Client (Can be Deleted)&quot;,
+         petName: Cypress.env().existingPatientWithVcprName,
+         id: null,
+         paymentRequired: true,
+       });
+     });
+
+    if (!onlyTestOnePatient)
+      it(&quot;Can schedule an appointment as existing client - VCPR REQUIRED&quot;, () =&gt; {
+        cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: Cypress.env().existingClientNoPaymentId,
+        });
+        runThroughAppointmentRequestWorkflows({
+          email: Cypress.env().existingClientNoPaymentEmail,
+          firstName: &quot;Test&quot;,
+          lastName: &quot;Client (Can be Deleted)&quot;,
+          petName: Cypress.env().existingPatientWithVcprName,
+          id: Cypress.env().existingClientNoPaymentId,
+          paymentRequired: false,
+        });
+      });
+
+    it(&quot;Can schedule an appointment as an existing client - VCPR NOT REQUIRED&quot;, () =&gt; {
+      cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+        apiKey: Cypress.env().endpointApiKey,
+        id: Cypress.env().existingClientWithPaymentId,
+      });
+      cy.visit(
+        Cypress.env().appUrl +
+          `/?email=${Cypress.env().existingClientWithPaymentEmail}`
+      );
+      cy.get(&quot;h2&quot;).as(&quot;heading&quot;).contains(&quot;Schedule an Appointment&quot;);
+      cy.get(&quot;@heading&quot;).contains(&quot;Processing, please wait...&quot;);
+      cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+        &quot;eq&quot;,
+        &quot;/schedule-an-appointment/pet-selection/&quot;
+      );
+      cy.get(&quot;label&quot;).contains(&quot;NO VCPR TEST DOG&quot;).click();
+      cy.get(&quot;label&quot;).contains(&quot;VCPR REQUIRED TEST CAT&quot;).click();
+      cy.get(&quot;p&quot;)
+        .as(&quot;text&quot;)
+        .contains(
+          &quot;Only pets that require an Establish Care Exam may be selected&quot;
+        );
+      cy.get(&quot;label&quot;).contains(&quot;VCPR REQUIRED TEST CAT&quot;).click();
+      cy.get(&quot;label&quot;).as(&quot;label&quot;).contains(&quot;NO VCPR TEST CAT&quot;).click();
+      Cypress.on(&quot;fail&quot;, () =&gt; false);
+      cy.get(&quot;button[type=&#x27;submit&#x27;]&quot;).click();
+      cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+        &quot;eq&quot;,
+        &quot;/schedule-an-appointment/location-selection/&quot;
+      );
+      cy.get(&quot;@heading&quot;).contains(&quot;Choose a Location&quot;);
+      Cypress.on(&quot;fail&quot;, () =&gt; true);
+      cy.get(&quot;#restart&quot;).contains(&quot;Restart&quot;).click();
+      cy.get(&quot;@heading&quot;).contains(&quot;Restart Appointment Booking?&quot;);
+      cy.get(&quot;button&quot;).contains(&quot;CANCEL&quot;).click();
+      cy.get(&quot;@heading&quot;).contains(&quot;MoVET @ Belleview Station&quot;);
+      cy.get(&quot;a&quot;)
+        .contains(&quot;4912 S Newport St, Denver CO 80237&quot;)
+        .wait(1500, { log: false });
+      cy.get(&quot;button[type=&#x27;submit&#x27;]&quot;).as(&quot;submitButton&quot;).should(&quot;be.enabled&quot;);
+      cy.get(&quot;#Virtually&quot;).contains(&quot;Virtually&quot;).click();
+      cy.get(&quot;@heading&quot;).contains(
+        &quot;What can I expect in a Virtual Consultation?&quot;
+      );
+      cy.get(&quot;@text&quot;).contains(&quot;What is VCPR?&quot;).click();
+      cy.get(&quot;button&quot;).contains(&quot;CLOSE&quot;).click();
+      cy.get(&quot;button&quot;).should(&quot;be.enabled&quot;);
+      cy.get(&quot;#Home&quot;).contains(&quot;Home&quot;).click();
+      cy.get(&quot;@submitButton&quot;).should(&quot;be.disabled&quot;);
+      cy.get(&quot;.places-search&quot;)
+        .type(&quot;702 Westgate Ave&quot;)
+        .wait(1500, { log: false });
+      cy.get(&quot;#react-select-3-option-0&quot;).click();
+      cy.get(&quot;p.text-movet-red&quot;).contains(
+        &quot;MoVET does not currently service this area. Please enter a new address that is in (or near) the Denver Metro area.&quot;
+      );
+      cy.get(&quot;@submitButton&quot;).as(&quot;submit&quot;).should(&quot;be.disabled&quot;);
+      cy.get(&quot;.places-search&quot;)
+        .type(&quot;4912 S Newport Street Denver&quot;)
+        .wait(1500, { log: false });
+      cy.get(&quot;#react-select-3-option-0&quot;).click();
+      cy.get(&quot;#info&quot;).type(&quot;Apartment 2A (This is a test address)&quot;);
+      cy.get(&quot;@submitButton&quot;).should(&quot;be.enabled&quot;).click();
+      cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+        &quot;eq&quot;,
+        &quot;/schedule-an-appointment/reason-selection/&quot;
+      );
+      cy.get(&quot;@heading&quot;).contains(&quot;Choose a Service&quot;);
+      cy.get(&quot;#restart&quot;).contains(&quot;Restart&quot;).click();
+      cy.get(&quot;@heading&quot;).contains(&quot;Restart Appointment Booking?&quot;);
+      cy.get(&quot;button&quot;).contains(&quot;CANCEL&quot;).click();
+      cy.get(&quot;@submitButton&quot;).should(&quot;be.disabled&quot;);
+      cy.get(&quot;.search-input&quot;).click();
+      cy.wait(1000);
+      cy.get(&quot;#react-select-3-option-1&quot;).click();
+      cy.get(&quot;@submitButton&quot;).click();
+      cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+        &quot;eq&quot;,
+        &quot;/schedule-an-appointment/staff-selection/&quot;
+      );
+      cy.get(&quot;@heading&quot;).contains(&quot;Choose an Expert&quot;);
+      cy.get(&quot;#restart&quot;).contains(&quot;Restart&quot;).click();
+      cy.get(&quot;@heading&quot;).contains(&quot;Restart Appointment Booking?&quot;);
+      cy.get(&quot;button&quot;).contains(&quot;CANCEL&quot;).click();
+      cy.get(&quot;@submitButton&quot;).should(&quot;be.enabled&quot;);
+      cy.get(&quot;@submitButton&quot;).contains(&quot;Request&quot;).click();
+      cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+        &quot;eq&quot;,
+        &quot;/schedule-an-appointment/datetime-selection/&quot;
+      );
+      cy.get(&quot;@heading&quot;).contains(&quot;Request a Time&quot;);
+      cy.get(&quot;#restart&quot;).contains(&quot;Restart&quot;).click();
+      cy.get(&quot;@heading&quot;).contains(&quot;Restart Appointment Booking?&quot;);
+      cy.get(&quot;button&quot;).contains(&quot;CANCEL&quot;).click();
+      cy.get(&quot;@submitButton&quot;).should(&quot;be.disabled&quot;);
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      cy.get(&quot;button abbr&quot;).contains(String(tomorrow.getDate())).click();
+      cy.get(&quot;.time-input&quot;).type(&quot;1430&quot;);
+      cy.get(&quot;@submitButton&quot;).should(&quot;be.enabled&quot;).click();
+      cy.location(&quot;pathname&quot;, {
+        timeout: pathTimeout + 3000,
+      }).should(&quot;eq&quot;, &quot;/schedule-an-appointment/success/&quot;);
+      cy.get(&quot;@heading&quot;).contains(&quot;Appointment Request Successful&quot;);
+    });
+  }
+);
+if (isDevelopmentEnvironment)
+  describe(
+    &quot;winter-mode-schedule-an-appointment-flow&quot;,
+    { defaultCommandTimeout: pathTimeout },
+    () =&gt; {
+      it(&quot;Can NOT request a housecall with VCPR required patient&quot;, () =&gt; {
+        cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: &quot;winter-mode-off&quot;,
+        });
+        cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: &quot;winter-mode-on&quot;,
+        });
+        cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: Cypress.env().existingClientWithPaymentId,
+        });
+        cy.visit(
+          Cypress.env().appUrl +
+            `/?email=${Cypress.env().existingClientWithPaymentEmail}`
+        );
+        cy.get(&quot;h2&quot;).as(&quot;heading&quot;).contains(&quot;Schedule an Appointment&quot;);
+        cy.get(&quot;@heading&quot;).contains(&quot;Processing, please wait...&quot;);
+        cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+          &quot;eq&quot;,
+          &quot;/schedule-an-appointment/pet-selection/&quot;
+        );
+        cy.get(&quot;label&quot;).as(&quot;label&quot;).contains(&quot;NO VCPR TEST DOG&quot;).click();
+        cy.get(&quot;@label&quot;).contains(&quot;VCPR REQUIRED TEST CAT&quot;).click();
+        cy.get(&quot;p&quot;)
+          .as(&quot;text&quot;)
+          .contains(
+            &quot;Only pets that require an Establish Care Exam may be selected&quot;
+          );
+        cy.get(&quot;@label&quot;).contains(&quot;NO VCPR TEST DOG&quot;).click();
+        cy.get(&quot;button[type=&#x27;submit&#x27;]&quot;).click();
+        cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+          &quot;eq&quot;,
+          &quot;/schedule-an-appointment/wellness-check/&quot;
+        );
+        cy.get(&quot;#restart&quot;).contains(&quot;Restart&quot;).click();
+        cy.get(&quot;@heading&quot;).contains(&quot;Restart Appointment Booking?&quot;);
+        cy.get(&quot;button&quot;).contains(&quot;CANCEL&quot;).click();
+        cy.get(&quot;@heading&quot;).contains(&quot;Pet Wellness Check&quot;);
+        cy.get(&quot;span&quot;).contains(&quot;What are symptoms of minor illness?&quot;).click();
+        cy.get(&quot;@heading&quot;).contains(&quot;Minor Illness Symptoms&quot;);
+        cy.get(&quot;button&quot;).contains(&quot;CLOSE&quot;).click();
+
+        cy.get(&quot;button&quot;).contains(&quot;Skip&quot;).click();
+        Cypress.on(&quot;fail&quot;, () =&gt; false);
+        cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+          &quot;eq&quot;,
+          &quot;/schedule-an-appointment/location-selection/&quot;
+        );
+        Cypress.on(&quot;fail&quot;, () =&gt; true);
+        cy.get(&quot;@heading&quot;).contains(&quot;Choose a Location&quot;);
+        cy.get(&quot;#restart&quot;).contains(&quot;Restart&quot;).click();
+        cy.get(&quot;@heading&quot;).contains(&quot;Restart Appointment Booking?&quot;);
+        cy.get(&quot;button&quot;).contains(&quot;CANCEL&quot;).click();
+        cy.get(&quot;#Virtually&quot;).click();
+        cy.get(&quot;@heading&quot;).contains(
+          &quot;What can I expect in a Virtual Consultation?&quot;
+        );
+        cy.get(&quot;@text&quot;).contains(&quot;What is VCPR?&quot;).click();
+        cy.get(&quot;button&quot;).contains(&quot;CLOSE&quot;).click();
+        cy.get(&quot;button&quot;).should(&quot;be.enabled&quot;);
+        cy.get(&quot;#Clinic&quot;).click();
+        cy.get(&quot;@heading&quot;).contains(&quot;MoVET @ Belleview Station&quot;);
+        cy.get(&quot;a&quot;)
+          .contains(&quot;4912 S Newport St, Denver CO 80237&quot;)
+          .wait(1500, { log: false });
+        cy.get(&quot;button[type=&#x27;submit&#x27;]&quot;).as(&quot;submitButton&quot;).should(&quot;be.enabled&quot;);
+        cy.get(&quot;#Home&quot;).should(&quot;not.exist&quot;);
+        cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: &quot;winter-mode-off&quot;,
+        });
+      });
+
+      it(&quot;(MOBILE WEBVIEW) Can request a housecall with VCPR required patient&quot;, () =&gt; {
+        cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: &quot;winter-mode-off&quot;,
+        });
+        cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: &quot;winter-mode-on&quot;,
+        });
+        cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: Cypress.env().existingClientWithPaymentId,
+        });
+        cy.visit(
+          Cypress.env().appUrl +
+            `/?email=${
+              Cypress.env().existingClientWithPaymentEmail
+            }&amp;mode=app&amp;housecallRequest=1`
+        );
+        cy.get(&quot;legend&quot;).contains(&quot;Your Pet&quot;);
+        cy.get(&quot;label&quot;).contains(&quot;VCPR REQUIRED TEST CAT&quot;);
+        cy.get(&quot;button[type=&#x27;submit&#x27;]&quot;).as(&quot;submit&quot;).click();
+        cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+          &quot;eq&quot;,
+          &quot;/schedule-an-appointment/wellness-check/&quot;
+        );
+        cy.get(&quot;button&quot;).contains(&quot;Skip&quot;).click();
+        Cypress.on(&quot;fail&quot;, () =&gt; false);
+        cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+          &quot;eq&quot;,
+          &quot;/schedule-an-appointment/location-selection/&quot;
+        );
+        Cypress.on(&quot;fail&quot;, () =&gt; true);
+        cy.get(&quot;#Virtually&quot;).should(&quot;not.exist&quot;);
+        cy.get(&quot;#Home&quot;).should(&quot;not.exist&quot;);
+        cy.get(&quot;.places-search&quot;)
+          .type(&quot;4912 S Newport Street Denver&quot;)
+          .wait(1500, { log: false });
+        cy.get(&quot;#react-select-3-option-0&quot;).click();
+        cy.get(&quot;#info&quot;).type(&quot;Apartment 2A (This is a test address)&quot;);
+        cy.get(&quot;@submit&quot;).click();
+        cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+          &quot;eq&quot;,
+          &quot;/schedule-an-appointment/datetime-selection/&quot;
+        );
+        cy.get(&quot;@submit&quot;).should(&quot;be.disabled&quot;);
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        cy.get(&quot;button abbr&quot;).contains(String(tomorrow.getDate())).click();
+        cy.get(&quot;.time-input&quot;).type(&quot;1430&quot;);
+        cy.get(&quot;@submit&quot;).should(&quot;be.enabled&quot;).click();
+        cy.location(&quot;pathname&quot;, {
+          timeout: pathTimeout + 3000,
+        }).should(&quot;eq&quot;, &quot;/schedule-an-appointment/success/&quot;);
+        cy.get(&quot;h2&quot;).contains(&quot;Housecall Request Successful&quot;);
+        cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+          apiKey: Cypress.env().endpointApiKey,
+          id: &quot;winter-mode-off&quot;,
+        });
+      });
+    }
+  );
+
+const runThroughAppointmentRequestWorkflows = ({
+  email,
+  id,
+  firstName,
+  lastName,
+  petName,
+  paymentRequired,
+}) =&gt; {
+  if (paymentRequired &amp;&amp; isDevelopmentEnvironment) {
+    cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+      apiKey: Cypress.env().endpointApiKey,
+      id: &quot;require_payment_method_to_request_an_appointment_off&quot;,
+    });
+    cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+      apiKey: Cypress.env().endpointApiKey,
+      id: &quot;require_payment_method_to_request_an_appointment_on&quot;,
+    });
+  }
+  if (isDevelopmentEnvironment)
+    cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+      apiKey: Cypress.env().endpointApiKey,
+      id: &quot;winter-mode-off&quot;,
+    });
+  cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+    apiKey: Cypress.env().endpointApiKey,
+    id,
+  });
+  cy.visit(Cypress.env().appUrl + &quot;/schedule-an-appointment&quot;);
+  cy.get(&quot;input[name=&#x27;email&#x27;]&quot;).type(email);
+  cy.get(&quot;h2&quot;).as(&quot;heading&quot;).contains(&quot;Schedule an Appointment&quot;);
+  cy.get(&quot;button[type=&#x27;submit&#x27;]&quot;).as(&quot;submitButton&quot;).click();
+  cy.get(&quot;@heading&quot;).contains(&quot;Processing, please wait...&quot;);
+  cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+    &quot;eq&quot;,
+    &quot;/schedule-an-appointment/contact-info/&quot;
+  );
+  cy.get(&quot;@heading&quot;).contains(&quot;Contact Information&quot;);
+  cy.get(&quot;input[name=&#x27;phone-number&#x27;]&quot;).type(&quot;123&quot;);
+  cy.get(&quot;@submitButton&quot;).click();
+  cy.get(&quot;p.text-movet-red&quot;)
+    .as(&quot;errorMessage&quot;)
+    .contains(&quot;A first name is required&quot;);
+  cy.get(&quot;@errorMessage&quot;).contains(&quot;A last name is required&quot;);
+  cy.get(&quot;@errorMessage&quot;).contains(&quot;Phone number must be 10 digits&quot;);
+  cy.get(&quot;input[name=&#x27;firstName&#x27;]&quot;).type(firstName);
+  cy.get(&quot;input[name=&#x27;lastName&#x27;]&quot;).type(lastName);
+  cy.get(&quot;input[name=&#x27;phone-number&#x27;]&quot;).type(
+    Math.floor(100000000 + Math.random() * 900000000).toString()
+  );
+  cy.get(&quot;@submitButton&quot;).click();
+  cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+    &quot;eq&quot;,
+    &quot;/schedule-an-appointment/add-a-pet/&quot;
+  );
+  cy.get(&quot;@heading&quot;).contains(&quot;Add a Pet&quot;);
+  cy.get(&quot;@submitButton&quot;).click();
+  cy.get(&quot;@errorMessage&quot;).contains(&quot;A type is required&quot;);
+  cy.get(&quot;@errorMessage&quot;).contains(&quot;A gender is required&quot;);
+  cy.get(&quot;@errorMessage&quot;).contains(&quot;Name must contain at least 2 characters&quot;);
+  cy.get(&quot;@errorMessage&quot;).contains(&quot;Weight must be between 1 and 300 pounds&quot;);
+  cy.get(&quot;@errorMessage&quot;).contains(&quot;A selection is required&quot;);
+  cy.get(&quot;@errorMessage&quot;).contains(
+    &quot;Please fix the errors highlighted above...&quot;
+  );
+  cy.get(&quot;#dog&quot;).click();
+  cy.get(&quot;#male&quot;).click();
+  cy.get(&quot;input[name=&#x27;name&#x27;]&quot;).type(petName);
+  cy.get(&quot;.search-input&quot;).type(&quot;Mix{enter}&quot;);
+  cy.get(&quot;input[name=&#x27;weight-number&#x27;]&quot;).type(&quot;10&quot;);
+  cy.get(&quot;input[name=&#x27;birthday&#x27;]&quot;).type(&quot;10102020&quot;);
+  cy.get(&quot;.places-search&quot;).type(&quot;Kingsburry{enter}&quot;).click();
+  cy.get(&quot;p&quot;)
+    .as(&quot;text&quot;)
+    .contains(&quot;this pet has no history of aggression&quot;)
+    .click();
+  cy.get(&quot;textarea#notes&quot;)
+    .as(&quot;notes&quot;)
+    .type(&quot;This is a test pet that is auto generated via Cypress...&quot;);
+  cy.get(&quot;@submitButton&quot;).click();
+  cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+    &quot;eq&quot;,
+    &quot;/schedule-an-appointment/pet-selection/&quot;
+  );
+  cy.get(&quot;@heading&quot;).contains(&quot;Select a Pet&quot;);
+  cy.get(&quot;span&quot;).contains(&quot;What are Establish Care Exams?&quot;).click();
+  cy.get(&quot;button&quot;).contains(&quot;CLOSE&quot;).click();
+  cy.get(&quot;label&quot;).contains(&quot;* Requires Establish Care Exam&quot;);
+  cy.get(&quot;label&quot;).contains(petName).click();
+  cy.get(&quot;@text&quot;).contains(&quot;A pet selection is required&quot;);
+  if (!onlyTestOnePatient) {
+    cy.get(&quot;button&quot;).contains(&quot;Add a Pet&quot;).as(&quot;addAPetButton&quot;).click();
+    cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+      &quot;eq&quot;,
+      &quot;/schedule-an-appointment/add-a-pet/&quot;
+    );
+    cy.get(&quot;@heading&quot;).contains(&quot;Add a Pet&quot;);
+    cy.get(&quot;#cat&quot;).click();
+    cy.get(&quot;#female&quot;).click();
+    cy.get(&quot;button.switch-input&quot;).click();
+    cy.get(&quot;input[name=&#x27;name&#x27;]&quot;).type(&quot;TEST CAT 1&quot;);
+    cy.get(&quot;.search-input&quot;).type(&quot;Bombay{enter}&quot;);
+    cy.get(&quot;input[name=&#x27;weight-number&#x27;]&quot;).type(&quot;10&quot;);
+    cy.get(&quot;input[name=&#x27;birthday&#x27;]&quot;).type(&quot;10102020&quot;);
+    cy.get(&quot;.places-search&quot;).type(&quot;Kingsburry{enter}&quot;).click();
+    cy.get(&quot;@text&quot;)
+      .contains(
+        &quot;This pet DOES have had a history of aggression or aggressive tendencies.&quot;
+      )
+      .click();
+    cy.get(&quot;@notes&quot;).type(
+      &quot;This is a test pet that is auto generated via Cypress...&quot;
+    );
+    cy.get(&quot;@submitButton&quot;).click();
+    cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+      &quot;eq&quot;,
+      &quot;/schedule-an-appointment/pet-selection/&quot;
+    );
+    cy.get(&quot;@addAPetButton&quot;).click();
+    cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+      &quot;eq&quot;,
+      &quot;/schedule-an-appointment/add-a-pet/&quot;
+    );
+    cy.get(&quot;@heading&quot;).contains(&quot;Add a Pet&quot;);
+    cy.get(&quot;#cat&quot;).click();
+    cy.get(&quot;#female&quot;).click();
+    cy.get(&quot;button.switch-input&quot;).click();
+    cy.get(&quot;input[name=&#x27;name&#x27;]&quot;).type(&quot;TEST CAT 2&quot;);
+    cy.get(&quot;.search-input&quot;).type(&quot;Bombay{enter}&quot;);
+    cy.get(&quot;input[name=&#x27;weight-number&#x27;]&quot;).type(&quot;10&quot;);
+    cy.get(&quot;input[name=&#x27;birthday&#x27;]&quot;).type(&quot;10102020&quot;);
+    cy.get(&quot;.places-search&quot;).type(&quot;Kingsburry{enter}&quot;).click();
+    cy.get(&quot;@text&quot;)
+      .contains(
+        &quot;This pet DOES have had a history of aggression or aggressive tendencies.&quot;
+      )
+      .click();
+    cy.get(&quot;@notes&quot;).type(
+      &quot;This is a test pet that is auto generated via Cypress...&quot;
+    );
+    cy.get(&quot;@submitButton&quot;).click();
+    cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+      &quot;eq&quot;,
+      &quot;/schedule-an-appointment/pet-selection/&quot;
+    );
+    cy.get(&quot;@addAPetButton&quot;).click();
+    cy.get(&quot;@heading&quot;).contains(&quot;Add a Pet&quot;);
+    cy.get(&quot;#dog&quot;).click();
+    cy.get(&quot;#female&quot;).click();
+    cy.get(&quot;button.switch-input&quot;).click();
+    cy.get(&quot;input[name=&#x27;name&#x27;]&quot;).type(&quot;TEST DOG 2&quot;);
+    cy.get(&quot;.search-input&quot;).type(&quot;Lab{enter}&quot;);
+    cy.get(&quot;input[name=&#x27;weight-number&#x27;]&quot;).type(&quot;10&quot;);
+    cy.get(&quot;input[name=&#x27;birthday&#x27;]&quot;).type(&quot;10102020&quot;);
+    cy.get(&quot;.places-search&quot;).type(&quot;Kingsburry{enter}&quot;).click();
+    cy.get(&quot;@text&quot;)
+      .contains(
+        &quot;This pet DOES have had a history of aggression or aggressive tendencies.&quot;
+      )
+      .click();
+    cy.get(&quot;@notes&quot;).type(
+      &quot;This is a test pet that is auto generated via Cypress...&quot;
+    );
+    cy.get(&quot;@submitButton&quot;).click();
+  }
+  cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+    &quot;eq&quot;,
+    &quot;/schedule-an-appointment/pet-selection/&quot;
+  );
+  cy.get(&quot;label&quot;).as(&quot;label&quot;).contains(&quot;TEST DOG&quot;).click();
+  if (!onlyTestOnePatient) {
+    cy.get(&quot;@label&quot;).contains(&quot;TEST DOG 2&quot;).click();
+    cy.get(&quot;@label&quot;).contains(&quot;TEST CAT&quot;).click();
+    cy.get(&quot;@label&quot;).contains(&quot;TEST CAT 2&quot;).click();
+    cy.get(&quot;@text&quot;).contains(&quot;Only 3 pets are allowed per appointment&quot;);
+    cy.get(&quot;@label&quot;).contains(&quot;TEST CAT 2&quot;).click();
+  }
+  cy.get(&quot;@submitButton&quot;).click();
+  cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+    &quot;eq&quot;,
+    &quot;/schedule-an-appointment/wellness-check/&quot;
+  );
+  cy.get(&quot;#restart&quot;).contains(&quot;Restart&quot;).click();
+  cy.get(&quot;@heading&quot;).contains(&quot;Restart Appointment Booking?&quot;);
+  cy.get(&quot;button&quot;).contains(&quot;CANCEL&quot;).click();
+  cy.get(&quot;@heading&quot;).contains(&quot;Pet Wellness Check&quot;);
+  cy.get(&quot;span&quot;).contains(&quot;What are symptoms of minor illness?&quot;).click();
+  cy.get(&quot;@heading&quot;).contains(&quot;Minor Illness Symptoms&quot;);
+  cy.get(&quot;button&quot;).contains(&quot;CLOSE&quot;).click();
+  if (skipWellnessCheck) cy.get(&quot;button&quot;).contains(&quot;Skip&quot;).click();
+  if (!skipWellnessCheck) cy.get(&quot;label&quot;).contains(&quot;TEST DOG&quot;).click();
+  if (!onlyTestOnePatient &amp;&amp; !skipWellnessCheck)
+    cy.get(&quot;label&quot;).contains(&quot;TEST CAT 1&quot;).click();
+  if (!onlyTestOnePatient &amp;&amp; !skipWellnessCheck)
+    cy.get(&quot;button&quot;).contains(&quot;My Pets DO NOT need emergency care&quot;).click();
+  else if (!skipWellnessCheck)
+    cy.get(&quot;button&quot;).contains(&quot;My Pet DOES NOT need emergency care&quot;).click();
+  if (!skipWellnessCheck) {
+    cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+      &quot;eq&quot;,
+      &quot;/schedule-an-appointment/illness-selection/&quot;
+    );
+    cy.get(&quot;@heading&quot;).contains(&quot;Minor Illness&quot;);
+    cy.get(&quot;legend&quot;).contains(&quot;Symptoms&quot;);
+    cy.get(&quot;#restart&quot;).contains(&quot;Restart&quot;).click();
+    cy.get(&quot;@heading&quot;).contains(&quot;Restart Appointment Booking?&quot;);
+    cy.get(&quot;button&quot;).contains(&quot;CANCEL&quot;).click();
+    cy.get(&quot;@text&quot;).contains(
+      &quot;We&#x27;re sorry to hear TEST DOG is not feeling well&quot;
+    );
+    cy.get(&quot;@label&quot;).contains(&quot;Coughing&quot;).click();
+    cy.get(&quot;@label&quot;).contains(&quot;Coughing&quot;).click();
+    cy.get(&quot;@errorMessage&quot;).contains(&quot;A symptom selection is required&quot;);
+    cy.get(&quot;@label&quot;).contains(&quot;Coughing&quot;).click();
+    cy.get(&quot;@label&quot;).contains(&quot;Other&quot;).click();
+    cy.get(&quot;@submitButton&quot;).click();
+    cy.get(&quot;@errorMessage&quot;).contains(&quot;Please tell us more...&quot;);
+    cy.get(&quot;textarea[name=&#x27;details&#x27;]&quot;).type(&quot;Test symptom notes...&quot;);
+    cy.get(&quot;@submitButton&quot;).click();
+  }
+  if (!onlyTestOnePatient &amp;&amp; !skipWellnessCheck) {
+    cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+      &quot;eq&quot;,
+      &quot;/schedule-an-appointment/illness-selection/&quot;
+    );
+    cy.get(&quot;@heading&quot;).contains(&quot;Minor Illness&quot;);
+    cy.get(&quot;legend&quot;).contains(&quot;Symptoms&quot;);
+    cy.get(&quot;@text&quot;).contains(
+      &quot;We&#x27;re sorry to hear TEST CAT 1 is not feeling well&quot;
+    );
+    cy.get(&quot;@label&quot;).contains(&quot;Other&quot;).click();
+    cy.get(&quot;textarea[name=&#x27;details&#x27;]&quot;).type(&quot;Test symptom notes...&quot;);
+    cy.get(&quot;button&quot;).contains(&quot;Continue&quot;).click();
+  }
+  cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+    &quot;eq&quot;,
+    &quot;/schedule-an-appointment/location-selection/&quot;
+  );
+  cy.get(&quot;@heading&quot;).contains(&quot;Choose a Location&quot;);
+  cy.get(&quot;#restart&quot;).contains(&quot;Restart&quot;).click();
+  cy.get(&quot;@heading&quot;).contains(&quot;Restart Appointment Booking?&quot;);
+  cy.get(&quot;button&quot;).contains(&quot;CANCEL&quot;).click();
+  cy.get(&quot;@heading&quot;).contains(&quot;MoVET @ Belleview Station&quot;);
+  cy.get(&quot;a&quot;)
+    .contains(&quot;4912 S Newport St, Denver CO 80237&quot;)
+    .wait(1500, { log: false });
+  cy.get(&quot;@submitButton&quot;).should(&quot;be.enabled&quot;);
+  cy.get(&quot;#Virtually&quot;).contains(&quot;Virtually&quot;).click();
+  cy.get(&quot;@heading&quot;).contains(&quot;What can I expect in a Virtual Consultation?&quot;);
+  cy.get(&quot;@text&quot;).contains(&quot;What is VCPR?&quot;).click();
+  cy.get(&quot;button&quot;).contains(&quot;CLOSE&quot;).click();
+  cy.get(&quot;button&quot;).should(&quot;be.enabled&quot;);
+  if (isDevelopmentEnvironment) {
+    cy.get(&quot;#Home&quot;).contains(&quot;Home&quot;).click();
+    cy.get(&quot;@submitButton&quot;).should(&quot;be.disabled&quot;);
+    cy.get(&quot;.places-search&quot;)
+      .type(&quot;702 Westgate Ave&quot;)
+      .wait(1500, { log: false });
+    cy.get(&quot;.places-search&quot;).type(&quot;{enter}&quot;);
+    cy.get(&quot;@submitButton&quot;).should(&quot;be.disabled&quot;);
+    cy.get(&quot;.places-search&quot;)
+      .type(&quot;4912 S Newport Street Denver&quot;)
+      .wait(1500, { log: false });
+    cy.get(&quot;@submitButton&quot;).should(&quot;be.disabled&quot;);
+    cy.get(&quot;#info&quot;).type(&quot;Apartment 2A (This is a test address)&quot;);
+  }
+  cy.get(&quot;#Clinic&quot;).contains(&quot;Clinic&quot;).click();
+  cy.get(&quot;@submitButton&quot;).should(&quot;be.enabled&quot;).click();
+    cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+      &quot;eq&quot;,
+      &quot;/schedule-an-appointment/datetime-selection/&quot;
+    );
+  cy.get(&quot;@heading&quot;).contains(&quot;Request a Time&quot;);
+  cy.get(&quot;#restart&quot;).contains(&quot;Restart&quot;).click();
+  cy.get(&quot;@heading&quot;).contains(&quot;Restart Appointment Booking?&quot;);
+  cy.get(&quot;button&quot;).contains(&quot;CANCEL&quot;).click();
+  cy.get(&quot;@submitButton&quot;).should(&quot;be.disabled&quot;);
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  cy.get(&quot;button abbr&quot;).contains(String(tomorrow.getDate())).click();
+  cy.get(&quot;.time-input&quot;).type(&quot;1430&quot;);
+  cy.get(&quot;@submitButton&quot;).should(&quot;be.enabled&quot;).click();
+  if (isDevelopmentEnvironment &amp;&amp; paymentRequired) {
+    cy.location(&quot;pathname&quot;, { timeout: pathTimeout }).should(
+      &quot;eq&quot;,
+      &quot;/schedule-an-appointment/payment-confirmation/&quot;
+    );
+    cy.get(&quot;@heading&quot;).contains(&quot;of Payment Required&quot;);
+    cy.get(&quot;@text&quot;).contains(
+      &quot;* You will not be charged until your appointment is completed.&quot;
+    );
+    cy.get(&quot;@submitButton&quot;).should(&quot;be.enabled&quot;).click();
+    cy.wait(100);
+    cy.visit(Cypress.env().appUrl + &quot;/schedule-an-appointment/success&quot;);
+  }
+  cy.get(&quot;@heading&quot;).contains(&quot;Appointment Request Successful&quot;);
+  if (isDevelopmentEnvironment &amp;&amp; paymentRequired)
+    cy.request(&quot;POST&quot;, Cypress.env().testApiUrl, {
+      apiKey: Cypress.env().endpointApiKey,
+      id: &quot;require_payment_method_to_request_an_appointment_off&quot;,
+    });
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:0,&quot;character&quot;:6,&quot;text&quot;:&quot;pathTimeout&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:0,&quot;character&quot;:34,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:1,&quot;character&quot;:6,&quot;text&quot;:&quot;onlyTestOnePatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:1,&quot;character&quot;:41,&quot;text&quot;:&quot;onlyTestOnePatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:2,&quot;character&quot;:6,&quot;text&quot;:&quot;skipWellnessCheck&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:2,&quot;character&quot;:40,&quot;text&quot;:&quot;skipWellnessCheck&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:3,&quot;character&quot;:47,&quot;text&quot;:&quot;environment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:8,&quot;text&quot;:&quot;petName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:31,&quot;text&quot;:&quot;existingPatientWithVcprName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:9,&quot;text&quot;:&quot;petName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:32,&quot;text&quot;:&quot;existingPatientWithVcprName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:9,&quot;text&quot;:&quot;onlyTestOnePatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:41,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:10,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:38,&quot;character&quot;:32,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:10,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:28,&quot;text&quot;:&quot;existingClientNoPaymentId&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:10,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:31,&quot;text&quot;:&quot;existingClientNoPaymentEmail&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:10,&quot;text&quot;:&quot;petName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:33,&quot;text&quot;:&quot;existingPatientWithVcprName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:10,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:28,&quot;text&quot;:&quot;existingClientNoPaymentId&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:39,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:8,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:30,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:8,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:26,&quot;text&quot;:&quot;existingClientWithPaymentId&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:57,&quot;character&quot;:22,&quot;text&quot;:&quot;appUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:58,&quot;character&quot;:35,&quot;text&quot;:&quot;existingClientWithPaymentEmail&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:152,&quot;character&quot;:17,&quot;text&quot;:&quot;pathTimeout&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:164,&quot;character&quot;:41,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:165,&quot;character&quot;:10,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:165,&quot;character&quot;:32,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:168,&quot;character&quot;:41,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:169,&quot;character&quot;:10,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:169,&quot;character&quot;:32,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:172,&quot;character&quot;:41,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:173,&quot;character&quot;:10,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:173,&quot;character&quot;:32,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:174,&quot;character&quot;:10,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:174,&quot;character&quot;:28,&quot;text&quot;:&quot;existingClientWithPaymentId&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:177,&quot;character&quot;:24,&quot;text&quot;:&quot;appUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:178,&quot;character&quot;:37,&quot;text&quot;:&quot;existingClientWithPaymentEmail&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:232,&quot;character&quot;:41,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:233,&quot;character&quot;:10,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:233,&quot;character&quot;:32,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:239,&quot;character&quot;:41,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:240,&quot;character&quot;:10,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:240,&quot;character&quot;:32,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:243,&quot;character&quot;:41,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:244,&quot;character&quot;:10,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:244,&quot;character&quot;:32,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:247,&quot;character&quot;:41,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:248,&quot;character&quot;:10,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:248,&quot;character&quot;:32,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:249,&quot;character&quot;:10,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:249,&quot;character&quot;:28,&quot;text&quot;:&quot;existingClientWithPaymentId&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:252,&quot;character&quot;:24,&quot;text&quot;:&quot;appUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:254,&quot;character&quot;:28,&quot;text&quot;:&quot;existingClientWithPaymentEmail&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:290,&quot;character&quot;:19,&quot;text&quot;:&quot;pathTimeout&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:293,&quot;character&quot;:41,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:294,&quot;character&quot;:10,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:294,&quot;character&quot;:32,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:302,&quot;character&quot;:2,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:303,&quot;character&quot;:2,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:304,&quot;character&quot;:2,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:305,&quot;character&quot;:2,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:306,&quot;character&quot;:2,&quot;text&quot;:&quot;petName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:307,&quot;character&quot;:2,&quot;text&quot;:&quot;paymentRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:309,&quot;character&quot;:6,&quot;text&quot;:&quot;paymentRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:310,&quot;character&quot;:37,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:311,&quot;character&quot;:6,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:311,&quot;character&quot;:28,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:314,&quot;character&quot;:37,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:315,&quot;character&quot;:6,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:315,&quot;character&quot;:28,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:320,&quot;character&quot;:37,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:321,&quot;character&quot;:6,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:321,&quot;character&quot;:28,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:324,&quot;character&quot;:35,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:325,&quot;character&quot;:4,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:325,&quot;character&quot;:26,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:326,&quot;character&quot;:4,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:328,&quot;character&quot;:25,&quot;text&quot;:&quot;appUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:390,&quot;character&quot;:7,&quot;text&quot;:&quot;onlyTestOnePatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:470,&quot;character&quot;:7,&quot;text&quot;:&quot;onlyTestOnePatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:489,&quot;character&quot;:6,&quot;text&quot;:&quot;skipWellnessCheck&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:490,&quot;character&quot;:7,&quot;text&quot;:&quot;skipWellnessCheck&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:491,&quot;character&quot;:7,&quot;text&quot;:&quot;onlyTestOnePatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:491,&quot;character&quot;:30,&quot;text&quot;:&quot;skipWellnessCheck&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:493,&quot;character&quot;:7,&quot;text&quot;:&quot;onlyTestOnePatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:493,&quot;character&quot;:30,&quot;text&quot;:&quot;skipWellnessCheck&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:495,&quot;character&quot;:12,&quot;text&quot;:&quot;skipWellnessCheck&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:497,&quot;character&quot;:7,&quot;text&quot;:&quot;skipWellnessCheck&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:520,&quot;character&quot;:7,&quot;text&quot;:&quot;onlyTestOnePatient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:520,&quot;character&quot;:30,&quot;text&quot;:&quot;skipWellnessCheck&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:582,&quot;character&quot;:34,&quot;text&quot;:&quot;paymentRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:593,&quot;character&quot;:27,&quot;text&quot;:&quot;appUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:596,&quot;character&quot;:34,&quot;text&quot;:&quot;paymentRequired&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:597,&quot;character&quot;:37,&quot;text&quot;:&quot;testApiUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:598,&quot;character&quot;:6,&quot;text&quot;:&quot;apiKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/app.movetcare.com/schedule-an-appointment.cy.ts&quot;,&quot;line&quot;:598,&quot;character&quot;:28,&quot;text&quot;:&quot;endpointApiKey&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

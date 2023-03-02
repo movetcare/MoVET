@@ -1,0 +1,74 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Breadcrumbs.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/admin.movetcare.com/components/Breadcrumbs.tsx</td><td class="">81.94%</td><td class="">75%</td><td class="">72</td><td class="">59</td><td class="">13</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { faChevronRight, faHome } from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import Link from &quot;next/link&quot;;
+
+export default function Breadcrumbs({
+  pages,
+}: {
+  pages: Array&lt;{
+    name: string;
+    href: string;
+    current: boolean;
+  }&gt;;
+}) {
+  return (
+    &lt;nav className=&quot;flex&quot; aria-label=&quot;Breadcrumb&quot;&gt;
+      &lt;ol role=&quot;list&quot; className=&quot;flex items-center space-x-4&quot;&gt;
+        &lt;li&gt;
+          &lt;Link href={pages[0].href}&gt;
+            &lt;div className=&quot;text-gray-400 hover:text-movet-red&quot;&gt;
+              &lt;FontAwesomeIcon
+                icon={faHome}
+                className=&quot;flex-shrink-0 h-5 w-5&quot;
+                aria-hidden=&quot;true&quot;
+              /&gt;
+              &lt;span className=&quot;sr-only&quot;&gt;Home&lt;/span&gt;
+            &lt;/div&gt;
+          &lt;/Link&gt;
+        &lt;/li&gt;
+        {pages.map((page: any) =&gt; (
+          &lt;li key={page.name}&gt;
+            &lt;Link href={page.href}&gt;
+              &lt;div className=&quot;flex items-center&quot;&gt;
+                &lt;FontAwesomeIcon
+                  icon={faChevronRight}
+                  className=&quot;flex-shrink-0 h-5 w-5 text-gray-400&quot;
+                  aria-hidden=&quot;true&quot;
+                /&gt;
+                &lt;a
+                  href={page.href}
+                  className={
+                    page.current
+                      ? &quot;ml-4 text-sm text-movet-black cursor-default font-bold italic&quot;
+                      : &quot;ml-4 text-sm font-medium text-movet-black hover:text-movet-red&quot;
+                  }
+                  aria-current={page.current ? &quot;page&quot; : undefined}
+                &gt;
+                  {page.name}
+                &lt;/a&gt;
+              &lt;/div&gt;
+            &lt;/Link&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ol&gt;
+    &lt;/nav&gt;
+  );
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:28,&quot;character&quot;:20,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:29,&quot;character&quot;:19,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:29,&quot;character&quot;:24,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:30,&quot;character&quot;:24,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:30,&quot;character&quot;:29,&quot;text&quot;:&quot;href&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:38,&quot;character&quot;:24,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:38,&quot;character&quot;:29,&quot;text&quot;:&quot;href&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:40,&quot;character&quot;:20,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:40,&quot;character&quot;:25,&quot;text&quot;:&quot;current&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:44,&quot;character&quot;:32,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:44,&quot;character&quot;:37,&quot;text&quot;:&quot;current&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:46,&quot;character&quot;:19,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/Breadcrumbs.tsx&quot;,&quot;line&quot;:46,&quot;character&quot;:24,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

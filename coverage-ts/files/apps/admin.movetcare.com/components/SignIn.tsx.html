@@ -1,0 +1,278 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>SignIn.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/admin.movetcare.com/components/SignIn.tsx</td><td class="">87.78%</td><td class="">75%</td><td class="">311</td><td class="">273</td><td class="">38</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { auth } from &quot;services/firebase&quot;;
+import { useEffect, useState } from &quot;react&quot;;
+import { useRouter } from &quot;next/router&quot;;
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+} from &quot;firebase/auth&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import {
+  faCircleExclamation,
+  faEnvelopeSquare,
+  faPaw,
+  faPhone,
+} from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { Loader } from &quot;ui&quot;;
+import PhoneInput from &quot;./inputs/PhoneInput&quot;;
+import { useForm } from &quot;react-hook-form&quot;;
+import Button from &quot;./Button&quot;;
+import Link from &quot;next/link&quot;;
+import toast from &quot;react-hot-toast&quot;;
+import { SignInModal } from &quot;./modals/SignInModal&quot;;
+import { formatPhoneNumber } from &quot;utils/formatPhoneNumber&quot;;
+import Image from &quot;next/image&quot;;
+
+const provider = new GoogleAuthProvider();
+
+export const SignIn = () =&gt; {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState&lt;boolean&gt;(false);
+  const [disabledNotice, setDisabledNotice] = useState&lt;boolean&gt;(false);
+  const [showPhoneAuthFlow, setShowPhoneAuthFlow] = useState&lt;boolean&gt;(false);
+  const [signInError, setSignInError] = useState&lt;string | null&gt;(null);
+  const [appVerifier, setAppVerifier] = useState&lt;any&gt;();
+  const [signInTokenSent, setSignInTokenSent] = useState&lt;any&gt;(null);
+  const [signInToken, setSignInToken] = useState&lt;string | null&gt;(null);
+  const [showTokenModal, setShowTokenModal] = useState&lt;boolean&gt;(false);
+  const [phone, setPhone] = useState&lt;string | null&gt;(null);
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty, errors },
+  } = useForm({
+    mode: &quot;onSubmit&quot;,
+    defaultValues: {
+      phone: &quot;&quot;,
+    },
+  });
+
+  useEffect(() =&gt; {
+    setAppVerifier((window as any).recaptchaVerifier);
+    (window as any).recaptchaVerifier = new RecaptchaVerifier(
+      &quot;sign-in-button&quot;,
+      {
+        size: &quot;invisible&quot;,
+      },
+      auth
+    );
+  }, []);
+
+  useEffect(() =&gt; {
+    if (signInTokenSent &amp;&amp; signInToken)
+      (window as any).confirmationResult
+        .confirm(signInToken)
+        .then((result: any) =&gt; {
+          const user = result.user;
+          console.log(user);
+        })
+        .catch((error: any) =&gt; {
+          console.error(error);
+          setSignInError(error.message);
+        })
+        .finally(() =&gt; setIsLoading(false));
+  }, [signInTokenSent, signInToken]);
+
+  useEffect(() =&gt; {
+    if (signInError) {
+      toast(signInError + &quot; Reloading Page...&quot;, {
+        position: &quot;top-center&quot;,
+        duration: 3500,
+        icon: (
+          &lt;FontAwesomeIcon
+            icon={faCircleExclamation}
+            size=&quot;sm&quot;
+            className=&quot;text-movet-red&quot;
+          /&gt;
+        ),
+      });
+      setTimeout(() =&gt; router.reload(), 3000);
+    }
+  }, [signInError, router]);
+
+  useEffect(() =&gt; {
+    if (signInToken)
+      (window as any).confirmationResult
+        .confirm(signInToken)
+        .then((result: any) =&gt; {
+          const user = result.user;
+          console.log(&quot;USER&quot;, user);
+        })
+        .catch(
+          (error: any) =&gt;
+            handleError(error) &amp;&amp; setTimeout(() =&gt; router.reload(), 3000)
+        );
+  }, [signInToken, router]);
+
+  const onPhoneSubmit = (data: { phone: string }) =&gt; {
+    setIsLoading(true);
+    setPhone(data?.phone);
+    signInWithPhoneNumber(auth, `+1${data?.phone}`, appVerifier)
+      .then((confirmationResult: any) =&gt; {
+        (window as any).confirmationResult = confirmationResult;
+        setSignInTokenSent(confirmationResult);
+        setShowTokenModal(true);
+      })
+      .catch(
+        (error: any) =&gt;
+          handleError(error) &amp;&amp; setTimeout(() =&gt; router.reload(), 3000)
+      )
+      .finally(() =&gt; setIsLoading(false));
+  };
+
+  const handleError = (error: { message: string }) =&gt; {
+    console.error(error);
+    setSignInError(error?.message);
+    setShowPhoneAuthFlow(false);
+    setShowTokenModal(false);
+    setSignInToken(null);
+    setIsLoading(false);
+    return false;
+  };
+
+  return isLoading ? (
+    &lt;main
+      className={
+        &quot;h-screen flex flex-grow items-center justify-center p-8 md:px-12 lg:px-24 bg-movet-white&quot;
+      }
+    &gt;
+      &lt;div className=&quot;bg-white rounded-lg&quot;&gt;
+        &lt;Loader /&gt;
+      &lt;/div&gt;
+    &lt;/main&gt;
+  ) : (
+    &lt;main
+      className={
+        &quot;h-screen flex flex-grow items-center justify-center p-8 bg-movet-white&quot;
+      }
+    &gt;
+      &lt;div className=&quot;flex flex-col items-center justify-center w-full flex-1 text-center&quot;&gt;
+        &lt;div className=&quot;min-h-full flex items-center justify-center py-12 px-4&quot;&gt;
+          &lt;div className=&quot;max-w-md w-full space-y-4 bg-white p-12 rounded-xl&quot;&gt;
+            {!disabledNotice ? (
+              &lt;&gt;
+                &lt;Link href=&quot;/&quot;&gt;
+                  &lt;Image
+                    className=&quot;mx-auto h-12 w-auto&quot;
+                    src=&quot;/images/logo/logo.png&quot;
+                    alt=&quot;MoVET&quot;
+                    priority
+                    height={40}
+                    width={175}
+                  /&gt;
+                &lt;/Link&gt;
+                {!showPhoneAuthFlow ? (
+                  &lt;&gt;
+                    &lt;button
+                      type=&quot;button&quot;
+                      onClick={() =&gt; {
+                        setIsLoading(true);
+                        signInWithPopup(auth, provider).catch((error: any) =&gt; {
+                          if (error.code === &quot;auth/user-disabled&quot;) {
+                            setSignInError(
+                              &quot;Please contact support for assistance!&quot;
+                            );
+                            console.error(error);
+                            setShowPhoneAuthFlow(false);
+                            setShowTokenModal(false);
+                            setSignInToken(null);
+                            setDisabledNotice(true);
+                            setIsLoading(false);
+                          } else {
+                            handleError(error) &amp;&amp;
+                              setTimeout(() =&gt; router.reload(), 3000);
+                          }
+                        });
+                      }}
+                      className=&quot;flex flex-row bg-movet-red group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red&quot;
+                    &gt;
+                      EMAIL
+                      &lt;span className=&quot;ml-2&quot;&gt;
+                        &lt;FontAwesomeIcon icon={faEnvelopeSquare} size=&quot;lg&quot; /&gt;
+                      &lt;/span&gt;
+                    &lt;/button&gt;
+                    &lt;button
+                      type=&quot;button&quot;
+                      id=&quot;sign-in-button&quot;
+                      // onClick={() =&gt; setShowPhoneAuthFlow(true)}
+                      className=&quot;flex-row bg-movet-black group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-red focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red hidden&quot;
+                    &gt;
+                      PHONE
+                      &lt;span className=&quot;ml-2&quot;&gt;
+                        &lt;FontAwesomeIcon icon={faPhone} /&gt;
+                      &lt;/span&gt;
+                    &lt;/button&gt;
+                  &lt;/&gt;
+                ) : showTokenModal ? (
+                  &lt;SignInModal
+                    icon={faPhone}
+                    title=&quot;Sign In Code&quot;
+                    text={`Please enter 6 digit code we just texted to ${formatPhoneNumber(
+                      phone as string
+                    )}`}
+                    yesButtonText=&quot;SIGN IN&quot;
+                    cancelButtonText=&quot;Cancel&quot;
+                    modalIsOpen={showTokenModal}
+                    setModalIsOpen={setShowTokenModal}
+                    iconColor=&quot;green&quot;
+                    yesButtonColor=&quot;green&quot;
+                    setToken={setSignInToken}
+                  /&gt;
+                ) : (
+                  &lt;form className=&quot;w-full&quot;&gt;
+                    &lt;PhoneInput
+                      disabled={isLoading}
+                      label=&quot;Phone Number&quot;
+                      name=&quot;phone&quot;
+                      control={control}
+                      errors={errors}
+                      required={false}
+                    /&gt;
+                    &lt;Button
+                      type=&quot;submit&quot;
+                      icon={faPaw}
+                      iconSize={&quot;sm&quot;}
+                      loading={isLoading}
+                      disabled={!isDirty || isLoading}
+                      color=&quot;black&quot;
+                      text=&quot;Submit&quot;
+                      className={&quot;w-full mt-6&quot;}
+                      onClick={handleSubmit(onPhoneSubmit as any)}
+                    /&gt;
+                  &lt;/form&gt;
+                )}
+              &lt;/&gt;
+            ) : (
+              &lt;Image
+                className=&quot;mx-auto h-50 w-auto&quot;
+                src=&quot;/animations/ahahah.gif&quot;
+                alt=&quot;MoVET&quot;
+                height={100}
+                width={100}
+              /&gt;
+            )}
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/main&gt;
+  );
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:34,&quot;character&quot;:9,&quot;text&quot;:&quot;appVerifier&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:35,&quot;character&quot;:9,&quot;text&quot;:&quot;signInTokenSent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:51,&quot;character&quot;:35,&quot;text&quot;:&quot;recaptchaVerifier&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:52,&quot;character&quot;:20,&quot;text&quot;:&quot;recaptchaVerifier&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:62,&quot;character&quot;:8,&quot;text&quot;:&quot;signInTokenSent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:63,&quot;character&quot;:22,&quot;text&quot;:&quot;confirmationResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:64,&quot;character&quot;:9,&quot;text&quot;:&quot;confirm&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:9,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:65,&quot;character&quot;:15,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:66,&quot;character&quot;:16,&quot;text&quot;:&quot;user&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:66,&quot;character&quot;:23,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:66,&quot;character&quot;:30,&quot;text&quot;:&quot;user&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:22,&quot;text&quot;:&quot;user&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:9,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:69,&quot;character&quot;:16,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:24,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:71,&quot;character&quot;:25,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:71,&quot;character&quot;:31,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:73,&quot;character&quot;:9,&quot;text&quot;:&quot;finally&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:95,&quot;character&quot;:22,&quot;text&quot;:&quot;confirmationResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:96,&quot;character&quot;:9,&quot;text&quot;:&quot;confirm&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:97,&quot;character&quot;:9,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:97,&quot;character&quot;:15,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:98,&quot;character&quot;:16,&quot;text&quot;:&quot;user&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:98,&quot;character&quot;:23,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:98,&quot;character&quot;:30,&quot;text&quot;:&quot;user&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:99,&quot;character&quot;:30,&quot;text&quot;:&quot;user&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:101,&quot;character&quot;:9,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:102,&quot;character&quot;:11,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:111,&quot;character&quot;:13,&quot;text&quot;:&quot;confirmationResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:112,&quot;character&quot;:24,&quot;text&quot;:&quot;confirmationResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:112,&quot;character&quot;:45,&quot;text&quot;:&quot;confirmationResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:113,&quot;character&quot;:27,&quot;text&quot;:&quot;confirmationResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:117,&quot;character&quot;:9,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:170,&quot;character&quot;:63,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:171,&quot;character&quot;:30,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:171,&quot;character&quot;:36,&quot;text&quot;:&quot;code&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/SignIn.tsx&quot;,&quot;line&quot;:175,&quot;character&quot;:42,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

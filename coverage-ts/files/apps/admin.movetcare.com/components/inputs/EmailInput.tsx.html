@@ -1,0 +1,111 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>EmailInput.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/admin.movetcare.com/components/inputs/EmailInput.tsx</td><td class="">90.32%</td><td class="">75%</td><td class="">93</td><td class="">84</td><td class="">9</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Controller } from &#x27;react-hook-form&#x27;;
+import { classNames } from &#x27;utils/classNames&#x27;;
+import ErrorMessage from &#x27;./ErrorMessage&#x27;;
+
+const EmailInput = ({
+  label,
+  control,
+  errors,
+  name,
+  placeholder,
+  autoFocus = false,
+  required = false,
+  disabled = false,
+  readOnly = false,
+  autoComplete = &#x27;email&#x27;,
+}: {
+  label?: string;
+  control: any;
+  errors: any;
+  name: string;
+  placeholder: string;
+  autoFocus?: boolean;
+  required?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  autoComplete?: &#x27;on&#x27; | &#x27;off&#x27; | &#x27;email&#x27;;
+}) =&gt; {
+  return (
+    &lt;&gt;
+      {label &amp;&amp; (
+        &lt;label
+          htmlFor={name}
+          className=&quot;block text-sm font-medium text-movet-black font-abside mb-2&quot;
+        &gt;
+          {label} {required &amp;&amp; &lt;span className=&quot;text-movet-red&quot;&gt;*&lt;/span&gt;}
+        &lt;/label&gt;
+      )}
+      &lt;div className=&quot;mt-1&quot;&gt;
+        &lt;Controller
+          name={name}
+          control={control}
+          rules={
+            required
+              ? {
+                  required: &#x27;Field is required&#x27;,
+                  pattern: {
+                    value:
+                      /* eslint-disable */
+                      /^(([^&lt;&gt;()\[\]\\.,;:\s@&quot;]+(\.[^&lt;&gt;()\[\]\\.,;:\s@&quot;]+)*)|(&quot;.+&quot;))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                    message: &#x27;Email is not formatted correctly&#x27;,
+                  },
+                }
+              : {
+                  pattern: {
+                    value:
+                      /* eslint-disable */
+                      /^(([^&lt;&gt;()\[\]\\.,;:\s@&quot;]+(\.[^&lt;&gt;()\[\]\\.,;:\s@&quot;]+)*)|(&quot;.+&quot;))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                    message: &#x27;Email is not formatted correctly&#x27;,
+                  },
+                }
+          }
+          render={({ field: { onChange, onBlur, value } }) =&gt; (
+            &lt;input
+              placeholder={placeholder || &#x27;&#x27;}
+              disabled={disabled}
+              readOnly={readOnly}
+              autoFocus={autoFocus}
+              required={required}
+              id={name}
+              name={name}
+              type=&quot;email&quot;
+              autoComplete={autoComplete}
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              className={classNames(
+                disabled
+                  ? &#x27;border-movet-gray text-movet-gray&#x27;
+                  : &#x27;focus:ring-movet-brown focus:border-movet-brown&#x27;,
+                &#x27;py-3 px-4 block w-full rounded-lg font-abside-smooth&#x27;
+              )}
+            /&gt;
+          )}
+        /&gt;
+        {errors[name]?.message &amp;&amp; (
+          &lt;ErrorMessage errorMessage={errors[name].message} /&gt;
+        )}
+      &lt;/div&gt;
+    &lt;/&gt;
+  );
+};
+
+export default EmailInput;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/EmailInput.tsx&quot;,&quot;line&quot;:6,&quot;character&quot;:2,&quot;text&quot;:&quot;control&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/EmailInput.tsx&quot;,&quot;line&quot;:7,&quot;character&quot;:2,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/EmailInput.tsx&quot;,&quot;line&quot;:17,&quot;character&quot;:2,&quot;text&quot;:&quot;control&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/EmailInput.tsx&quot;,&quot;line&quot;:18,&quot;character&quot;:2,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/EmailInput.tsx&quot;,&quot;line&quot;:61,&quot;character&quot;:48,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/EmailInput.tsx&quot;,&quot;line&quot;:84,&quot;character&quot;:9,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/EmailInput.tsx&quot;,&quot;line&quot;:84,&quot;character&quot;:23,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/EmailInput.tsx&quot;,&quot;line&quot;:85,&quot;character&quot;:38,&quot;text&quot;:&quot;errors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/inputs/EmailInput.tsx&quot;,&quot;line&quot;:85,&quot;character&quot;:51,&quot;text&quot;:&quot;message&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

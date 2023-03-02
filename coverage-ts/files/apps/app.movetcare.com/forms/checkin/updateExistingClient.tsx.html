@@ -1,0 +1,285 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>updateExistingClient.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx</td><td class="">85.48%</td><td class="">75%</td><td class="">303</td><td class="">259</td><td class="">44</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  faCheckCircle,
+  faCircleExclamation,
+  faCreditCard,
+  faPaw,
+  faRedo,
+  faUserEdit,
+} from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import { Button } from &quot;ui&quot;;
+import PhoneInput from &quot;components/inputs/PhoneInput&quot;;
+import TextInput from &quot;components/inputs/TextInput&quot;;
+import { Loader, AppLinks } from &quot;ui&quot;;
+import { httpsCallable } from &quot;firebase/functions&quot;;
+import { useRouter } from &quot;next/router&quot;;
+import { useEffect, useState } from &quot;react&quot;;
+import { useGoogleReCaptcha } from &quot;react-google-recaptcha-v3&quot;;
+import { useForm } from &quot;react-hook-form&quot;;
+import { functions } from &quot;services/firebase&quot;;
+import { formatPhoneNumber } from &quot;utilities&quot;;
+import { object, string } from &quot;yup&quot;;
+import { yupResolver } from &quot;@hookform/resolvers/yup&quot;;
+
+const UpdateExistingClient = () =&gt; {
+  const router = useRouter();
+  const { mode } = router.query;
+  const [isLoading, setIsLoading] = useState&lt;boolean&gt;(false);
+  const [error, setError] = useState&lt;any&gt;(null);
+  const [client, setClient] = useState&lt;any&gt;(null);
+  const [signUpSuccess, setSignUpSuccess] = useState&lt;boolean | null&gt;(null);
+  const [email, setEmail] = useState&lt;string | null&gt;(null);
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    trigger,
+    formState: { errors },
+  } = useForm({
+    mode: &quot;onSubmit&quot;,
+    resolver: yupResolver(
+      object().shape({
+        firstName: string().required(&quot;A first name is required&quot;),
+        lastName: string().required(&quot;A last name is required&quot;),
+        phone: string()
+          .min(10, &quot;Phone number must be 10 digits&quot;)
+          .required(&quot;A phone number is required&quot;),
+      })
+    ),
+    defaultValues: {
+      firstName: &quot;&quot;,
+      lastName: &quot;&quot;,
+      phone: &quot;&quot;,
+    },
+  });
+  useEffect(() =&gt; {
+    if (typeof window !== &quot;undefined&quot; &amp;&amp; sessionStorage) {
+      const fetchClientData = async () =&gt; {
+        setIsLoading(true);
+        try {
+          const { data: result }: any = await httpsCallable(
+            functions,
+            &quot;checkIn&quot;
+          )({ id: sessionStorage.getItem(&quot;id&quot;), token: true });
+          if (result?.email) setEmail(result?.email?.replaceAll(&quot;+&quot;, &quot;%2B&quot;));
+          reset({
+            firstName: result?.firstName || &quot;&quot;,
+            lastName: result?.lastName || &quot;&quot;,
+            phone: result?.phone || &quot;&quot;,
+          });
+          if (result?.firstName || result?.lastName || result?.phone) trigger();
+        } catch (error: any) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchClientData();
+    }
+  }, [reset, trigger, email]);
+
+  const onSubmit = async (data: any) =&gt; {
+    setIsLoading(true);
+    if (executeRecaptcha) {
+      const token = await executeRecaptcha(&quot;checkInInfo&quot;);
+      if (token) {
+        try {
+          const { data: result }: any = await httpsCallable(
+            functions,
+            &quot;checkIn&quot;
+          )({
+            ...data,
+            id:
+              (typeof window !== &quot;undefined&quot; &amp;&amp; sessionStorage.getItem(&quot;id&quot;)) ||
+              null,
+            token,
+          });
+          if (result) {
+            if (
+              typeof window !== &quot;undefined&quot; &amp;&amp;
+              sessionStorage.getItem(&quot;session&quot;)
+            )
+              router.push(
+                (typeof window !== &quot;undefined&quot; &amp;&amp;
+                  sessionStorage.getItem(&quot;session&quot;)) ||
+                  &quot;/appointment-check-in/&quot;
+              );
+            else {
+              setSignUpSuccess(true);
+              setClient(result?.client);
+            }
+          } else setSignUpSuccess(false);
+        } catch (error) {
+          console.error(error);
+          setError(error);
+          reset();
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }
+  };
+  return (
+    &lt;section className=&quot;relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8&quot;&gt;
+      {isLoading ? (
+        &lt;Loader /&gt;
+      ) : error ? (
+        &lt;div className=&quot;text-center&quot;&gt;
+          &lt;h2 className=&quot;text-2xl font-extrabold tracking-tight text-movet-black sm:text-4xl font-parkinson mb-4&quot;&gt;
+            Whoops!
+          &lt;/h2&gt;
+          &lt;FontAwesomeIcon
+            icon={faCircleExclamation}
+            size=&quot;3x&quot;
+            color=&quot;#E76159&quot;
+          /&gt;
+          &lt;p className={&quot;mt-4 text-lg leading-6 text-movet-black&quot;}&gt;
+            We&amp;apos;re sorry, but something went wrong. Please try again or ask
+            the front desk for assistance.
+          &lt;/p&gt;
+          &lt;p&gt;{JSON.stringify(error)}&lt;/p&gt;
+        &lt;/div&gt;
+      ) : (
+        &lt;&gt;
+          {signUpSuccess &amp;&amp; client ? (
+            &lt;div className=&quot;text-center&quot;&gt;
+              &lt;FontAwesomeIcon icon={faCheckCircle} size=&quot;4x&quot; color=&quot;#00A36C&quot; /&gt;
+              &lt;h3 className=&quot;text-2xl tracking-tight text-movet-black font-parkinson mt-6&quot;&gt;
+                We&amp;apos;ve got you checked in
+                {client?.firstName
+                  ? ` ${
+                      client?.firstName.charAt(0).toUpperCase() +
+                      client?.firstName.slice(1)
+                    }`
+                  : &quot;&quot;}
+                .
+              &lt;/h3&gt;
+              &lt;p
+                className={
+                  &quot;text-lg leading-6 text-movet-black font-source-sans-pro mt-4&quot;
+                }
+              &gt;
+                We&amp;apos;ll send you a text @{&quot; &quot;}
+                &lt;span className=&quot;italic&quot;&gt;
+                  {formatPhoneNumber(client?.phone)}
+                &lt;/span&gt;{&quot; &quot;}
+                as soon as we are ready to begin your appointment.
+              &lt;/p&gt;
+              &lt;p
+                className={
+                  &quot;mt-4 leading-6 text-movet-black font-source-sans-pro italic&quot;
+                }
+              &gt;
+                Feel free to browse our shop and checkout our new mobile app
+                which you can use to book future clinic, at home, and telehealth
+                appointments!
+              &lt;/p&gt;
+              &lt;div className=&quot;flex flex-col justify-center items-center mt-6&quot;&gt;
+                &lt;div className=&quot;flex justify-center&quot;&gt;
+                  &lt;AppLinks /&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          ) : (
+            &lt;div className=&quot;text-center&quot;&gt;
+              &lt;p
+                className={
+                  &quot;leading-6 text-movet-black font-source-sans-pro text-lg&quot;
+                }
+              &gt;
+                {signUpSuccess === null
+                  ? &quot;&quot;
+                  : &quot;Whoops! Something went wrong. Please try again later or ask the front desk for assistance if you continue having trouble.&quot;}
+              &lt;/p&gt;
+              {signUpSuccess !== null &amp;&amp; (
+                &lt;div className=&quot;flex flex-col justify-center items-center&quot;&gt;
+                  &lt;Button
+                    color=&quot;red&quot;
+                    icon={faRedo}
+                    iconSize={&quot;lg&quot;}
+                    text=&quot;Try Again&quot;
+                    className={&quot;w-full md:w-1/3 mt-4&quot;}
+                    onClick={() =&gt; router.reload()}
+                  /&gt;
+                &lt;/div&gt;
+              )}
+            &lt;/div&gt;
+          )}
+          {signUpSuccess === null &amp;&amp; (
+            &lt;div&gt;
+              &lt;h1 className=&quot;text-xl text-center mb-2 normal-case&quot;&gt;
+                Contact Information
+              &lt;/h1&gt;
+              &lt;p className=&quot;italic text-center text-movet-black mb-6&quot;&gt;
+                Let us know how to reach you when it comes time for your
+                appointment.
+              &lt;/p&gt;
+              &lt;form className=&quot;grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4&quot;&gt;
+                &lt;TextInput
+                  required
+                  autoFocus={!(mode !== &quot;app&quot;)}
+                  label=&quot;First Name&quot;
+                  name=&quot;firstName&quot;
+                  control={control}
+                  errors={errors}
+                  placeholder=&quot;First Name&quot;
+                  autoComplete=&quot;given-name&quot;
+                /&gt;
+                &lt;TextInput
+                  required
+                  label=&quot;Last Name&quot;
+                  name=&quot;lastName&quot;
+                  control={control}
+                  errors={errors}
+                  placeholder=&quot;Last Name&quot;
+                  autoComplete=&quot;family-name&quot;
+                /&gt;
+                &lt;div className=&quot;sm:col-span-2 my-2&quot;&gt;
+                  &lt;PhoneInput
+                    required
+                    label=&quot;Phone Number&quot;
+                    name=&quot;phone&quot;
+                    control={control}
+                    errors={errors}
+                  /&gt;
+                &lt;/div&gt;
+                &lt;div className=&quot;flex justify-center items-center sm:col-span-2 my-4&quot;&gt;
+                  &lt;Button
+                    type=&quot;submit&quot;
+                    icon={faPaw}
+                    iconSize={&quot;lg&quot;}
+                    text=&quot;Submit&quot;
+                    className={&quot;w-full md:w-1/3&quot;}
+                    color=&quot;black&quot;
+                    onClick={handleSubmit(onSubmit)}
+                  /&gt;
+                &lt;/div&gt;
+              &lt;/form&gt;
+            &lt;/div&gt;
+          )}
+        &lt;/&gt;
+      )}
+    &lt;/section&gt;
+  );
+};
+
+export default UpdateExistingClient;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:27,&quot;character&quot;:9,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:28,&quot;character&quot;:9,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:60,&quot;character&quot;:24,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:64,&quot;character&quot;:14,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:64,&quot;character&quot;:22,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:64,&quot;character&quot;:38,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:64,&quot;character&quot;:46,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:64,&quot;character&quot;:53,&quot;text&quot;:&quot;replaceAll&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:66,&quot;character&quot;:23,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:66,&quot;character&quot;:31,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:22,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:67,&quot;character&quot;:30,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:68,&quot;character&quot;:19,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:68,&quot;character&quot;:27,&quot;text&quot;:&quot;phone&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:14,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:22,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:35,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:43,&quot;text&quot;:&quot;lastName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:55,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:70,&quot;character&quot;:63,&quot;text&quot;:&quot;phone&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:72,&quot;character&quot;:24,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:71,&quot;character&quot;:17,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:81,&quot;character&quot;:26,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:87,&quot;character&quot;:24,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:97,&quot;character&quot;:14,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:109,&quot;character&quot;:24,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:109,&quot;character&quot;:32,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:113,&quot;character&quot;:24,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:114,&quot;character&quot;:19,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:112,&quot;character&quot;:17,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:126,&quot;character&quot;:10,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:140,&quot;character&quot;:29,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:144,&quot;character&quot;:28,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:149,&quot;character&quot;:17,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:149,&quot;character&quot;:25,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:151,&quot;character&quot;:22,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:151,&quot;character&quot;:30,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:151,&quot;character&quot;:40,&quot;text&quot;:&quot;charAt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:151,&quot;character&quot;:50,&quot;text&quot;:&quot;toUpperCase&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:152,&quot;character&quot;:22,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:152,&quot;character&quot;:30,&quot;text&quot;:&quot;firstName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:152,&quot;character&quot;:40,&quot;text&quot;:&quot;slice&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:164,&quot;character&quot;:37,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/app.movetcare.com/forms/checkin/updateExistingClient.tsx&quot;,&quot;line&quot;:164,&quot;character&quot;:45,&quot;text&quot;:&quot;phone&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

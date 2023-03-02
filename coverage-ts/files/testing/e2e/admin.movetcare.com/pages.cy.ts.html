@@ -1,0 +1,193 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>pages.cy.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">testing/e2e/admin.movetcare.com/pages.cy.ts</td><td class="">91.57%</td><td class="">75%</td><td class="">522</td><td class="">478</td><td class="">44</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">if (Cypress.env().environment === &quot;development&quot;)
+  describe(&quot;admin-app-pages&quot;, () =&gt; {
+    it(&quot;display app login button&quot;, () =&gt; {
+      cy.visit(Cypress.env().adminUrl);
+      cy.get(&quot;main button&quot;).contains(&quot;EMAIL&quot;).should(&quot;be.enabled&quot;);
+    });
+    it(&quot;all admin pages load&quot;, () =&gt; {
+      cy.visit(Cypress.env().emulatorUrl + &quot;/auth&quot;);
+      cy.get(&quot;button&quot;).contains(&quot;more_vert&quot;).click().wait(1, { log: false });
+      cy.get(&quot;.mdc-list-item&quot;)
+        .contains(&quot;Edit user&quot;)
+        .click()
+        .wait(1000, { log: false });
+      cy.get(&quot;input[name=&#x27;password&#x27;]&quot;)
+        .as(&quot;password&quot;)
+        .clear()
+        .wait(10, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;t&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;e&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;s&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;t&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;i&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;n&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;g&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;1&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;2&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;3&quot;).wait(1, { log: false });
+      cy.get(&quot;button[type=&#x27;submit&#x27;]&quot;).click().wait(1000, { log: false });
+      (cy as any).login(&quot;0&quot;);
+      cy.get(&quot;.mobile-nav-toggle&quot;).click();
+      cy.get(&quot;#mobile-billing&quot;).click();
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/billing/&quot;);
+      cy.get(&quot;#mobile-telehealth&quot;).click();
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/telehealth/chat/&quot;);
+      cy.get(&quot;#mobile-dashboard&quot;).click();
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/dashboard/&quot;);
+      cy.get(&quot;a[href=&#x27;/settings/&#x27;]&quot;).click();
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/&quot;);
+      cy.get(&quot;a[href=&#x27;/settings/users/&#x27;]&quot;).click();
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/&quot;);
+      cy.get(&quot;a[href=&#x27;/settings/booking/&#x27;]&quot;).click();
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/&quot;);
+      cy.get(&quot;a[href=&#x27;/settings/announcement-banner/&#x27;]&quot;).click();
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/&quot;);
+      cy.get(&quot;a[href=&#x27;/settings/winter-mode/&#x27;]&quot;).click();
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/&quot;);
+      cy.get(&quot;a[href=&#x27;/settings/tools/&#x27;]&quot;).click();
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/&quot;);
+      cy.get(&quot;a[href=&#x27;/settings/testing/&#x27;]&quot;).click();
+      cy.get(&quot;a[href=&#x27;/request-a-feature/&#x27;]&quot;).click();
+      cy.get(&quot;a[href=&#x27;/report-a-bug/&#x27;]&quot;).click();
+      cy.get(&quot;a[href=&#x27;/docs/&#x27;]&quot;).click();
+      cy.visit(Cypress.env().adminUrl + &quot;/404/&quot;, {
+        failOnStatusCode: false,
+      });
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/dashboard/&quot;);
+      cy.get(&quot;a[href=&#x27;/signout/&#x27;]&quot;).click();
+      cy.get(&quot;main button&quot;).contains(&quot;EMAIL&quot;).should(&quot;be.enabled&quot;);
+    });
+    it(&quot;no admin pages load for staff&quot;, () =&gt; {
+      cy.visit(Cypress.env().emulatorUrl + &quot;/auth&quot;);
+      cy.get(&quot;button&quot;).eq(5).click().wait(1, { log: false });
+      cy.get(&quot;div.mdc-menu-surface--open&quot;)
+        .find(&quot;.mdc-list-item&quot;)
+        .contains(&quot;Edit user&quot;)
+        .click()
+        .wait(1000, { log: false });
+      cy.get(&quot;input[name=&#x27;password&#x27;]&quot;)
+        .as(&quot;password&quot;)
+        .clear()
+        .wait(10, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;t&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;e&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;s&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;t&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;i&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;n&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;g&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;1&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;2&quot;).wait(1, { log: false });
+      cy.get(&quot;@password&quot;).type(&quot;3&quot;).wait(1, { log: false });
+      cy.get(&quot;button[type=&#x27;submit&#x27;]&quot;).click().wait(1000, { log: false });
+      (cy as any).login(&quot;2&quot;);
+      cy.get(&quot;.mobile-nav-toggle&quot;).click();
+      cy.get(&quot;#mobile-billing&quot;).click();
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/billing/&quot;);
+      cy.get(&quot;#mobile-telehealth&quot;).click();
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/telehealth/chat/&quot;);
+      cy.get(&quot;#mobile-dashboard&quot;).click();
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/dashboard/&quot;);
+      cy.get(&quot;a[href=&#x27;/request-a-feature/&#x27;]&quot;).click();
+      cy.get(&quot;a[href=&#x27;/report-a-bug/&#x27;]&quot;).click();
+      cy.get(&quot;a[href=&#x27;/docs/&#x27;]&quot;).click();
+      cy.visit(Cypress.env().adminUrl + &quot;/404/&quot;, {
+        failOnStatusCode: false,
+      });
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/dashboard/&quot;);
+      cy.get(&quot;a[href=&#x27;/settings/&#x27;]&quot;).should(&quot;not.exist&quot;);
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/&quot;);
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/&quot;);
+      cy.get(&quot;p&quot;).contains(&quot;You do not have permission to view this page&quot;);
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/booking&quot;);
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/booking/&quot;);
+      cy.get(&quot;p&quot;).contains(&quot;You do not have permission to view this page&quot;);
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/booking/clinic&quot;);
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/booking/clinic/&quot;);
+      cy.get(&quot;p&quot;).contains(&quot;You do not have permission to view this page&quot;);
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/booking/housecall&quot;);
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/booking/housecall/&quot;);
+      cy.get(&quot;p&quot;).contains(&quot;You do not have permission to view this page&quot;);
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/booking/telehealth&quot;);
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/booking/telehealth/&quot;);
+      cy.get(&quot;p&quot;).contains(&quot;You do not have permission to view this page&quot;);
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/announcement-banner&quot;);
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/announcement-banner/&quot;);
+      cy.get(&quot;p&quot;).contains(&quot;You do not have permission to view this page&quot;);
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/request-an-appointment&quot;);
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/request-an-appointment/&quot;);
+      cy.get(&quot;p&quot;).contains(&quot;You do not have permission to view this page&quot;);
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/testing&quot;);
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/testing/&quot;);
+      cy.get(&quot;p&quot;).contains(&quot;You do not have permission to view this page&quot;);
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/tools&quot;);
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/tools/&quot;);
+      cy.get(&quot;p&quot;).contains(&quot;You do not have permission to view this page&quot;);
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/users&quot;);
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/users/&quot;);
+      cy.get(&quot;p&quot;).contains(&quot;You do not have permission to view this page&quot;);
+      cy.visit(Cypress.env().adminUrl + &quot;/settings/winter-mode&quot;);
+      cy.location(&quot;pathname&quot;, {
+        timeout: Cypress.env().defaultPathnameTimeOut,
+      }).should(&quot;eq&quot;, &quot;/settings/winter-mode/&quot;);
+      cy.get(&quot;p&quot;).contains(&quot;You do not have permission to view this page&quot;);
+      cy.get(&quot;a[href=&#x27;/signout/&#x27;]&quot;).click();
+      cy.get(&quot;main button&quot;).contains(&quot;EMAIL&quot;).should(&quot;be.enabled&quot;);
+    });
+  });
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:0,&quot;character&quot;:18,&quot;text&quot;:&quot;environment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:3,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:29,&quot;text&quot;:&quot;emulatorUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:18,&quot;text&quot;:&quot;login&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:36,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:53,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:60,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:64,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:70,&quot;character&quot;:29,&quot;text&quot;:&quot;emulatorUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:92,&quot;character&quot;:18,&quot;text&quot;:&quot;login&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:96,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:104,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:109,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:113,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:116,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:123,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:128,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:138,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:141,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:146,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:151,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:158,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:163,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:166,&quot;character&quot;:29,&quot;text&quot;:&quot;adminUrl&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;testing/e2e/admin.movetcare.com/pages.cy.ts&quot;,&quot;line&quot;:168,&quot;character&quot;:31,&quot;text&quot;:&quot;defaultPathnameTimeOut&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

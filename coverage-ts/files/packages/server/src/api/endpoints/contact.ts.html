@@ -1,0 +1,78 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>contact.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">packages/server/src/api/endpoints/contact.ts</td><td class="">89.16%</td><td class="">75%</td><td class="">83</td><td class="">74</td><td class="">9</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { contactSchema } from &quot;schemas&quot;;
+import type { NextApiRequest, NextApiResponse } from &quot;next&quot;;
+import { setContact } from &quot;../../queries/setContact&quot;;
+import { sendResponse } from &quot;../sendResponse&quot;;
+import { ContactFormSources } from &quot;types&quot;;
+const DEBUG = false;
+
+const logSource = &quot;(API) /contact -&gt; processContactRequest()&quot;;
+const allowedMethods = [&quot;POST&quot;];
+export const processContactRequest = (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  source: ContactFormSources
+) =&gt; {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (!allowedMethods.includes(req.method!) || req.method == &quot;OPTIONS&quot;)
+      return sendResponse({
+        status: 405,
+        error: logSource,
+        res,
+      });
+    const request =
+      typeof req.body === &quot;object&quot; ? req.body : JSON.parse(req.body);
+    return contactSchema
+      .validate(request)
+      .then(async (value) =&gt; {
+        if (DEBUG) console.log(logSource, value);
+        const didSucceed = await setContact({ ...request, source });
+        if (didSucceed)
+          return sendResponse({
+            status: 200,
+            res,
+          });
+        else {
+          console.error(logSource, &quot;setContact() FAILED&quot;);
+          return sendResponse({
+            status: 500,
+            error: logSource,
+            res,
+          });
+        }
+      })
+      .catch((error) =&gt; {
+        console.error(logSource, error);
+        return sendResponse({
+          status: 400,
+          error: logSource,
+          res,
+        });
+      });
+  } catch (error) {
+    console.error(logSource, error);
+    return sendResponse({
+      status: 500,
+      error: logSource,
+      res,
+    });
+  }
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;packages/server/src/api/endpoints/contact.ts&quot;,&quot;line&quot;:22,&quot;character&quot;:10,&quot;text&quot;:&quot;request&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/server/src/api/endpoints/contact.ts&quot;,&quot;line&quot;:23,&quot;character&quot;:17,&quot;text&quot;:&quot;body&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/server/src/api/endpoints/contact.ts&quot;,&quot;line&quot;:23,&quot;character&quot;:41,&quot;text&quot;:&quot;body&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/server/src/api/endpoints/contact.ts&quot;,&quot;line&quot;:23,&quot;character&quot;:63,&quot;text&quot;:&quot;body&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/server/src/api/endpoints/contact.ts&quot;,&quot;line&quot;:25,&quot;character&quot;:16,&quot;text&quot;:&quot;request&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/server/src/api/endpoints/contact.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/server/src/api/endpoints/contact.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:33,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/server/src/api/endpoints/contact.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:29,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;packages/server/src/api/endpoints/contact.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:11,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:58 GMT</p>
+    </body>
+  </html>
+  

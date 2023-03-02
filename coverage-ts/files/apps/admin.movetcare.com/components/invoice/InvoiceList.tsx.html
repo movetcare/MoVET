@@ -1,0 +1,149 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>InvoiceList.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/admin.movetcare.com/components/invoice/InvoiceList.tsx</td><td class="">85.07%</td><td class="">75%</td><td class="">134</td><td class="">114</td><td class="">20</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Loader } from &quot;ui&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import Error from &quot;components/Error&quot;;
+import InvoiceItem from &quot;./InvoiceItem&quot;;
+import environment from &quot;utils/environment&quot;;
+import { useState } from &quot;react&quot;;
+import {
+  faCaretDown,
+  faCaretUp,
+  faFileInvoice,
+} from &quot;@fortawesome/free-solid-svg-icons&quot;;
+
+const InvoiceList = ({
+  title,
+  icon,
+  invoices,
+  loading,
+  error,
+  containerStyle,
+  collapse = false,
+}: {
+  title: string;
+  icon: any;
+  invoices: any;
+  loading: boolean;
+  error: any;
+  containerStyle?: string;
+  collapse?: boolean;
+}) =&gt; {
+  const [hideList, setHideList] = useState(collapse);
+  return (
+    &lt;div
+      className={`bg-white shadow overflow-hidden rounded-lg${
+        containerStyle ? ` ${containerStyle}` : &quot;&quot;
+      }${
+        collapse
+          ? &quot;rounded-t-none divide-y divide-movet-gray border-t border-movet-gray&quot;
+          : &quot;&quot;
+      }`}
+    &gt;
+      &lt;div className=&quot;flex-1 flex items-center&quot;&gt;
+        &lt;div
+          className={`w-full flex flex-row items-center justify-center -mb-4${
+            collapse
+              ? &quot; cursor-pointer hover:bg-movet-black hover:text-movet-white&quot;
+              : &quot;&quot;
+          }${!hideList &amp;&amp; collapse ? &quot; bg-movet-green bg-opacity-85&quot; : &quot;&quot;}`}
+          onClick={() =&gt; (collapse ? setHideList(!hideList) : null)}
+        &gt;
+          &lt;FontAwesomeIcon
+            icon={icon}
+            color={collapse ? &quot;#FFF&quot; : &quot;#E76159&quot;}
+            size={collapse ? &quot;sm&quot; : &quot;lg&quot;}
+          /&gt;
+
+          {collapse ? (
+            &lt;h2
+              className={`ml-2 text-sm my-3 font-bold${
+                !hideList ? &quot; text-movet-white&quot; : &quot;&quot;
+              }`}
+            &gt;
+              {loading ? &quot;Loading Invoices&quot; : title}
+            &lt;/h2&gt;
+          ) : (
+            &lt;h1 className=&quot;ml-2 text-lg my-6&quot;&gt;
+              {loading ? &quot;Loading Invoices&quot; : title}
+            &lt;/h1&gt;
+          )}
+          {collapse &amp;&amp; (
+            &lt;div className=&quot;ml-2&quot;&gt;
+              {!hideList ? (
+                &lt;FontAwesomeIcon
+                  icon={faCaretDown}
+                  size=&quot;xs&quot;
+                  color={
+                    collapse ? (!hideList ? &quot;#FFF&quot; : &quot;#00A36C&quot;) : &quot;#E76159&quot;
+                  }
+                /&gt;
+              ) : (
+                &lt;FontAwesomeIcon
+                  icon={faCaretUp}
+                  size=&quot;xs&quot;
+                  color={collapse ? &quot;#FFF&quot; : &quot;#E76159&quot;}
+                /&gt;
+              )}
+            &lt;/div&gt;
+          )}
+        &lt;/div&gt;
+      &lt;/div&gt;
+      {loading ? (
+        &lt;div className=&quot;mb-6&quot;&gt;
+          &lt;Loader height={200} width={200} /&gt;
+        &lt;/div&gt;
+      ) : error ? (
+        &lt;div className=&quot;px-8 pb-8&quot;&gt;
+          &lt;Error error={error} /&gt;
+        &lt;/div&gt;
+      ) : (
+        &lt;ul
+          role=&quot;list&quot;
+          className=&quot;divide-y divide-movet-gray border-t border-movet-gray mt-4&quot;
+        &gt;
+          {invoices &amp;&amp; invoices.docs.length &lt; 1 &amp;&amp; (
+            &lt;a
+              href={
+                environment === &quot;production&quot;
+                  ? &quot;https://us.provetcloud.com/4285/billing/invoice/&quot;
+                  : &quot;https://us.provetcloud.com/4285/billing/invoice/&quot;
+              }
+              target=&quot;_blank&quot;
+              className=&quot;flex flex-row bg-movet-black justify-center items-center p-4 italic uppercase font-medium text-sm text-white hover:bg-movet-red focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red&quot;
+              rel=&quot;noreferrer&quot;
+            &gt;
+              &lt;span className=&quot;mr-2&quot;&gt;
+                &lt;FontAwesomeIcon icon={faFileInvoice} size=&quot;lg&quot; /&gt;
+              &lt;/span&gt;
+              Create an Invoice
+            &lt;/a&gt;
+          )}
+          {!hideList &amp;&amp;
+            invoices &amp;&amp;
+            invoices.docs.map((invoice: any, index: number) =&gt; (
+              &lt;InvoiceItem key={index} invoice={invoice?.data()} /&gt;
+            ))}
+        &lt;/ul&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+
+export default InvoiceList;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:14,&quot;character&quot;:2,&quot;text&quot;:&quot;icon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:15,&quot;character&quot;:2,&quot;text&quot;:&quot;invoices&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:17,&quot;character&quot;:2,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:22,&quot;character&quot;:2,&quot;text&quot;:&quot;icon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:23,&quot;character&quot;:2,&quot;text&quot;:&quot;invoices&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:25,&quot;character&quot;:2,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:93,&quot;character&quot;:10,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:95,&quot;character&quot;:17,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:95,&quot;character&quot;:24,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:102,&quot;character&quot;:11,&quot;text&quot;:&quot;invoices&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:102,&quot;character&quot;:23,&quot;text&quot;:&quot;invoices&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:102,&quot;character&quot;:32,&quot;text&quot;:&quot;docs&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:102,&quot;character&quot;:37,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:120,&quot;character&quot;:12,&quot;text&quot;:&quot;invoices&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:121,&quot;character&quot;:12,&quot;text&quot;:&quot;invoices&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:121,&quot;character&quot;:21,&quot;text&quot;:&quot;docs&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:121,&quot;character&quot;:26,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:121,&quot;character&quot;:31,&quot;text&quot;:&quot;invoice&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:122,&quot;character&quot;:48,&quot;text&quot;:&quot;invoice&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/admin.movetcare.com/components/invoice/InvoiceList.tsx&quot;,&quot;line&quot;:122,&quot;character&quot;:57,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

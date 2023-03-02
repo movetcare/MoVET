@@ -1,0 +1,297 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>deleteAllAccountData.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">apps/api.movetcare.com/src/utils/deleteAllAccountData.ts</td><td class="">73.81%</td><td class="">75%</td><td class="">378</td><td class="">279</td><td class="">99</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { getAuthUserById } from &quot;./auth/getAuthUserById&quot;;
+import { admin, stripe } from &quot;../config/config&quot;;
+import { updateProVetAppointment } from &quot;../integrations/provet/entities/appointment/updateProVetAppointment&quot;;
+import { updateProVetClient } from &quot;../integrations/provet/entities/client/updateProVetClient&quot;;
+import { fetchEntity } from &quot;../integrations/provet/entities/fetchEntity&quot;;
+import { updateProVetPatient } from &quot;../integrations/provet/entities/patient/updateProVetPatient&quot;;
+import { sendNotification } from &quot;../notifications/sendNotification&quot;;
+import { getCustomerId } from &quot;./getCustomerId&quot;;
+import { getProVetIdFromUrl } from &quot;./getProVetIdFromUrl&quot;;
+import { deleteCollection } from &quot;./deleteCollection&quot;;
+const DEBUG = false; // environment.type === &quot;production&quot;;
+export const deleteAllAccountData = async (
+  uid: string,
+  deleteAuthAccount = true
+): Promise&lt;boolean&gt; =&gt; {
+  const { email } = await getAuthUserById(uid, [&quot;email&quot;, &quot;displayName&quot;]);
+  if (DEBUG) console.log(&quot;deleteMoVETAccount =&gt;&quot;, email);
+  let clientIds, patientIds, appointmentIds;
+  if (email) {
+    const matchingProVetClients = await fetchEntity(
+      &quot;client&quot;,
+      null,
+      encodeURI(`?email__is=${email}&amp;archived__is=0`)
+    );
+    if (DEBUG)
+      console.log(
+        &quot;deleteMoVETAccount =&gt; QUERY STRING =&gt;`)&quot;,
+        encodeURI(`?email__is=${email}&amp;archived__is=0`)
+      );
+
+    const proVetClientIds = matchingProVetClients.map(
+      (client: any) =&gt; client?.id
+    );
+    clientIds = proVetClientIds;
+    if (DEBUG) {
+      console.log(
+        &quot;deleteMoVETAccount =&gt; matchingProVetClients&quot;,
+        matchingProVetClients
+      );
+      console.log(&quot;deleteMoVETAccount =&gt; proVetClientIds&quot;, proVetClientIds);
+    }
+    if (proVetClientIds) {
+      const proVetPatientIds: Array&lt;number&gt; = [];
+      matchingProVetClients.map(
+        (client: any) =&gt;
+          client?.patients.length &amp;&amp;
+          client?.patients.map((patient: string) =&gt;
+            proVetPatientIds.push(getProVetIdFromUrl(patient) as number)
+          )
+      );
+      patientIds = proVetPatientIds;
+      if (DEBUG)
+        console.log(&quot;deleteMoVETAccount =&gt; proVetPatientIds&quot;, proVetPatientIds);
+
+      let proVetAppointmentIds: Array&lt;number&gt; = [];
+
+      await Promise.all(
+        proVetClientIds.map(async (id: number) =&gt; {
+          if (DEBUG)
+            console.log(
+              &quot;QUERY STRING =&gt;&quot;,
+              `?client__eq=${id}&amp;active=1
+          &amp;start__gte=${new Date().toISOString().split(&quot;T&quot;)[0]}%2000:00%2B00:00`
+            );
+          const appointments = await fetchEntity(
+            &quot;appointment&quot;,
+            null,
+            `?client__eq=${id}&amp;active=1&amp;start__gte=${
+              new Date().toISOString().split(&quot;T&quot;)[0]
+            }%2000:00%2B00:00`
+          );
+          if (appointments.length)
+            proVetAppointmentIds = appointments.map(
+              (appointment: any) =&gt; appointment?.id
+            );
+        })
+      );
+      appointmentIds = proVetAppointmentIds;
+      if (proVetAppointmentIds.length) {
+        if (DEBUG)
+          console.log(
+            &quot;deleteMoVETAccount =&gt; ARCHIVING APPOINTMENTS: &quot;,
+            proVetAppointmentIds
+          );
+        await Promise.all(
+          proVetAppointmentIds.map(
+            async (id: number) =&gt;
+              await updateProVetAppointment({ id, active: 0 })
+          )
+        );
+      } else if (DEBUG)
+        console.log(
+          &quot;deleteMoVETAccount =&gt; NO FUTURE APPOINTMENTS FOUND&quot;,
+          proVetAppointmentIds
+        );
+
+      if (proVetPatientIds.length) {
+        if (DEBUG)
+          console.log(
+            &quot;deleteMoVETAccount =&gt; ARCHIVING PATIENTS: &quot;,
+            proVetPatientIds
+          );
+        await Promise.all(
+          proVetPatientIds.map(
+            async (id: number) =&gt;
+              await updateProVetPatient({ id: `${id}`, archived: true })
+          )
+        );
+      } else if (DEBUG)
+        console.log(
+          &quot;deleteMoVETAccount =&gt; NO PATIENTS FOUND&quot;,
+          proVetPatientIds
+        );
+
+      if (proVetClientIds.length) {
+        if (DEBUG)
+          console.log(
+            &quot;deleteMoVETAccount =&gt; ARCHIVING CLIENTS: &quot;,
+            proVetClientIds
+          );
+        await Promise.all(
+          proVetClientIds.map(
+            async (id: number) =&gt;
+              await updateProVetClient({ id: id, archived: true })
+          )
+        );
+      } else if (DEBUG)
+        console.log(&quot;deleteMoVETAccount =&gt; NO CLIENTS FOUND&quot;, proVetPatientIds);
+    }
+  } else {
+    const proVetClient = await fetchEntity(&quot;client&quot;, Number(uid));
+    clientIds = proVetClient;
+    if (DEBUG) console.log(&quot;deleteMoVETAccount =&gt; proVetClient&quot;, proVetClient);
+    if (proVetClient) {
+      const proVetPatientIds: Array&lt;number&gt; = [];
+      if (proVetClient?.patients?.length &gt; 0)
+        proVetClient?.patients.map((patient: string) =&gt;
+          proVetPatientIds.push(getProVetIdFromUrl(patient) as number)
+        );
+
+      patientIds = proVetPatientIds;
+      if (DEBUG)
+        console.log(&quot;deleteMoVETAccount =&gt; proVetPatientIds&quot;, proVetPatientIds);
+
+      let proVetAppointmentIds: Array&lt;number&gt; = [];
+
+      if (DEBUG)
+        console.log(
+          &quot;QUERY STRING =&gt;&quot;,
+          `?client__eq=${uid}&amp;active=1
+          &amp;start__gte=${new Date().toISOString().split(&quot;T&quot;)[0]}%2000:00%2B00:00`
+        );
+      const appointments = await fetchEntity(
+        &quot;appointment&quot;,
+        null,
+        `?client__eq=${uid}&amp;active=1&amp;start__gte=${
+          new Date().toISOString().split(&quot;T&quot;)[0]
+        }%2000:00%2B00:00`
+      );
+      if (appointments.length &gt; 0)
+        proVetAppointmentIds = appointments.map(
+          (appointment: any) =&gt; appointment?.id
+        );
+
+      appointmentIds = proVetAppointmentIds;
+      if (proVetAppointmentIds.length) {
+        if (DEBUG)
+          console.log(
+            &quot;deleteMoVETAccount =&gt; ARCHIVING APPOINTMENTS: &quot;,
+            proVetAppointmentIds
+          );
+        await Promise.all(
+          proVetAppointmentIds.map(
+            async (id: number) =&gt;
+              await updateProVetAppointment({ id, active: 0 })
+          )
+        );
+      } else if (DEBUG)
+        console.log(
+          &quot;deleteMoVETAccount =&gt; NO FUTURE APPOINTMENTS FOUND&quot;,
+          proVetAppointmentIds
+        );
+
+      if (proVetPatientIds.length &gt; 0) {
+        if (DEBUG)
+          console.log(
+            &quot;deleteMoVETAccount =&gt; ARCHIVING PATIENTS: &quot;,
+            proVetPatientIds
+          );
+        await Promise.all(
+          proVetPatientIds.map(
+            async (id: number) =&gt;
+              await updateProVetPatient({ id: `${id}`, archived: true })
+          )
+        );
+      } else if (DEBUG)
+        console.log(
+          &quot;deleteMoVETAccount =&gt; NO PATIENTS FOUND&quot;,
+          proVetPatientIds
+        );
+
+      // await updateProVetClient({ id: uid, archived: true }).catch(
+      //   (error: any) =&gt; DEBUG &amp;&amp; console.log(error)
+      // );
+    }
+  }
+  const customerId = await getCustomerId(uid, true);
+
+  if (DEBUG) console.log(&quot;deleteMoVETAccount =&gt; customerId&quot;, customerId);
+
+  if (customerId)
+    stripe.customers
+      .del(customerId)
+      .then(
+        (result) =&gt;
+          DEBUG &amp;&amp;
+          console.log(&quot;deleteMoVETAccount =&gt; STRIPE CUSTOMER DELETED: &quot;, result)
+      )
+      .catch((error: any) =&gt; DEBUG &amp;&amp; console.log(error));
+
+  deleteCollection(`clients/${uid}/notifications`)
+    .then(() =&gt; DEBUG &amp;&amp; console.log(`DELETED clients/${uid}/notifications`))
+    .catch((error: any) =&gt; console.log(error));
+
+  deleteCollection(`clients/${uid}/chat`)
+    .then(() =&gt; DEBUG &amp;&amp; console.log(`DELETED clients/${uid}/chat`))
+    .catch((error: any) =&gt; console.log(error));
+
+  deleteCollection(`clients/${uid}/payment_methods`)
+    .then(() =&gt; DEBUG &amp;&amp; console.log(`DELETED clients/${uid}/payment_methods`))
+    .catch((error: any) =&gt; console.log(error));
+
+  deleteCollection(`clients/${uid}/logs`)
+    .then(() =&gt; DEBUG &amp;&amp; console.log(`DELETED clients/${uid}/logs`))
+    .catch((error: any) =&gt; console.log(error));
+
+  deleteCollection(`clients/${uid}/invoices`)
+    .then(() =&gt; DEBUG &amp;&amp; console.log(`DELETED clients/${uid}/invoices`))
+    .catch((error: any) =&gt; console.log(error));
+
+  admin
+    .firestore()
+    .collection(&quot;clients&quot;)
+    .doc(uid)
+    .delete()
+    .then(
+      () =&gt;
+        DEBUG &amp;&amp;
+        console.log(
+          &quot;deleteMoVETAccount =&gt; FIRESTORE CLIENT RECORD DELETED: &quot;,
+          uid
+        )
+    )
+    .catch((error: any) =&gt; DEBUG &amp;&amp; console.log(error));
+
+  if (deleteAuthAccount)
+    admin
+      .auth()
+      .deleteUser(uid)
+      .then(() =&gt; {
+        console.log(&quot;deleteMoVETAccount =&gt; Successfully deleted user&quot;);
+      })
+      .catch((error: any) =&gt; DEBUG &amp;&amp; console.log(error));
+
+  sendNotification({
+    type: &quot;slack&quot;,
+    payload: {
+      message: `:red_circle: ALL MoVET Account &amp; Data has been DELETED for Client #${uid} =&gt;\n\`\`\`${JSON.stringify(
+        {
+          clientIds,
+          patientIds,
+          appointmentIds,
+          customerId,
+        }
+      )}\`\`\``,
+    },
+  });
+  return true;
+};
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:1,&quot;character&quot;:9,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:10,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:50,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:6,&quot;text&quot;:&quot;clientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:17,&quot;text&quot;:&quot;patientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:29,&quot;text&quot;:&quot;appointmentIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:6,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:19,&quot;character&quot;:10,&quot;text&quot;:&quot;matchingProVetClients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:22,&quot;character&quot;:30,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:27,&quot;character&quot;:32,&quot;text&quot;:&quot;email&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:10,&quot;text&quot;:&quot;proVetClientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:28,&quot;text&quot;:&quot;matchingProVetClients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:50,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:7,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:23,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:31,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:4,&quot;text&quot;:&quot;clientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:16,&quot;text&quot;:&quot;proVetClientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:8,&quot;text&quot;:&quot;matchingProVetClients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:59,&quot;text&quot;:&quot;proVetClientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:8,&quot;text&quot;:&quot;proVetClientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:6,&quot;text&quot;:&quot;matchingProVetClients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:28,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:9,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:10,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:18,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:27,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:10,&quot;text&quot;:&quot;client&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:18,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:27,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:6,&quot;text&quot;:&quot;patientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:57,&quot;character&quot;:8,&quot;text&quot;:&quot;proVetClientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:57,&quot;character&quot;:24,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:64,&quot;character&quot;:16,&quot;text&quot;:&quot;appointments&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:14,&quot;text&quot;:&quot;appointments&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:27,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:72,&quot;character&quot;:35,&quot;text&quot;:&quot;appointments&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:72,&quot;character&quot;:48,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:73,&quot;character&quot;:15,&quot;text&quot;:&quot;appointment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:73,&quot;character&quot;:36,&quot;text&quot;:&quot;appointment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:73,&quot;character&quot;:49,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:77,&quot;character&quot;:6,&quot;text&quot;:&quot;appointmentIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:10,&quot;text&quot;:&quot;proVetClientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:26,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:12,&quot;text&quot;:&quot;proVetClientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:10,&quot;text&quot;:&quot;proVetClientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:26,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:130,&quot;character&quot;:10,&quot;text&quot;:&quot;proVetClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:4,&quot;text&quot;:&quot;clientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:16,&quot;text&quot;:&quot;proVetClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:132,&quot;character&quot;:65,&quot;text&quot;:&quot;proVetClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:8,&quot;text&quot;:&quot;proVetClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:135,&quot;character&quot;:10,&quot;text&quot;:&quot;proVetClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:135,&quot;character&quot;:24,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:135,&quot;character&quot;:34,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:8,&quot;text&quot;:&quot;proVetClient&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:22,&quot;text&quot;:&quot;patients&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:31,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:140,&quot;character&quot;:6,&quot;text&quot;:&quot;patientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:152,&quot;character&quot;:12,&quot;text&quot;:&quot;appointments&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:159,&quot;character&quot;:10,&quot;text&quot;:&quot;appointments&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:159,&quot;character&quot;:23,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:160,&quot;character&quot;:31,&quot;text&quot;:&quot;appointments&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:160,&quot;character&quot;:44,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:11,&quot;text&quot;:&quot;appointment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:32,&quot;text&quot;:&quot;appointment&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:45,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:164,&quot;character&quot;:6,&quot;text&quot;:&quot;appointmentIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:218,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:218,&quot;character&quot;:50,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:222,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:222,&quot;character&quot;:39,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:226,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:226,&quot;character&quot;:39,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:230,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:230,&quot;character&quot;:39,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:234,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:234,&quot;character&quot;:39,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:238,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:238,&quot;character&quot;:39,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:240,&quot;character&quot;:2,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:241,&quot;character&quot;:5,&quot;text&quot;:&quot;firestore&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:242,&quot;character&quot;:5,&quot;text&quot;:&quot;collection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:243,&quot;character&quot;:5,&quot;text&quot;:&quot;doc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:244,&quot;character&quot;:5,&quot;text&quot;:&quot;delete&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:245,&quot;character&quot;:5,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:253,&quot;character&quot;:5,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:253,&quot;character&quot;:12,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:253,&quot;character&quot;:48,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:256,&quot;character&quot;:4,&quot;text&quot;:&quot;admin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:257,&quot;character&quot;:7,&quot;text&quot;:&quot;auth&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:258,&quot;character&quot;:7,&quot;text&quot;:&quot;deleteUser&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:259,&quot;character&quot;:7,&quot;text&quot;:&quot;then&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:262,&quot;character&quot;:7,&quot;text&quot;:&quot;catch&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:262,&quot;character&quot;:14,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:262,&quot;character&quot;:50,&quot;text&quot;:&quot;error&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:10,&quot;text&quot;:&quot;clientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:270,&quot;character&quot;:10,&quot;text&quot;:&quot;patientIds&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/api.movetcare.com/src/utils/deleteAllAccountData.ts&quot;,&quot;line&quot;:271,&quot;character&quot;:10,&quot;text&quot;:&quot;appointmentIds&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

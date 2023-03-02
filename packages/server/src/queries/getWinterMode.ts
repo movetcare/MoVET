@@ -14,13 +14,19 @@ export const getWinterMode = async () => {
       isActiveOnWebApp,
       isActiveOnWebsite,
       message,
-    } = winterMode || {};
+    } = winterMode as {
+      enableForNewPatientsOnly: boolean;
+      endDate: any;
+      startDate: any;
+      isActiveOnWebApp: boolean;
+      isActiveOnWebsite: boolean;
+      message: string;
+    };
     if (DEBUG)
       console.log("(SSG) FIRESTORE QUERY -> getWinterMode() =>", {
         enableForNewPatientsOnly,
         startDate: startDate.toDate(),
         endDate: endDate.toDate(),
-
         isActiveOnWebApp,
         isActiveOnWebsite,
         message,

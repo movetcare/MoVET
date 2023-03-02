@@ -6,11 +6,10 @@ import {
   stripe,
   admin,
   request,
-  environment,
 } from "../../../config/config";
 import { requestIsAuthorized } from "./requestIsAuthorized";
 import { getCustomerId } from "../../../utils/getCustomerId";
-const DEBUG = environment.type === "production";
+const DEBUG = false; // environment.type === "production";
 export const createPaymentIntent = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

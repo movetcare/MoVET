@@ -1,0 +1,58 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Layout.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">apps/movetcare.com/components/Layout.tsx</td><td class="">76.00%</td><td class="">75%</td><td class="">50</td><td class="">38</td><td class="">12</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">/* eslint-disable @typescript-eslint/no-explicit-any */
+import dynamic from &quot;next/dynamic&quot;;
+import { Header } from &quot;components/Header&quot;;
+import { Footer } from &quot;components/Footer&quot;;
+import { useRouter } from &quot;next/router&quot;;
+
+let Announcement: any = null;
+const Layout = ({ children, announcement }: any) =&gt; {
+  if (announcement?.isActive) {
+    Announcement = dynamic(() =&gt; import(&quot;ui&quot;).then((mod) =&gt; mod.Announcement));
+  }
+  const router = useRouter();
+  const { mode } = router.query || {};
+  const isAppMode = mode === &quot;app&quot;;
+  return (
+    &lt;div
+      className={`flex flex-col items-center justify-center ${
+        router.asPath === &quot;/&quot; ? &quot;bg-movet-white&quot; : &quot;bg-white&quot;
+      } min-h-screen`}
+    &gt;
+      {!isAppMode &amp;&amp; Announcement &amp;&amp; (
+        &lt;Announcement announcement={announcement} layout=&quot;top&quot; /&gt;
+      )}
+      {!isAppMode &amp;&amp; &lt;Header /&gt;}
+      &lt;main
+        className={`w-full flex-1 overflow-x-hidden${
+          isAppMode ? &quot; bg-white&quot; : &quot; bg-movet-white&quot;
+        }`}
+      &gt;
+        {children}
+      &lt;/main&gt;
+      {!isAppMode &amp;&amp; &lt;Footer /&gt;}
+      {!isAppMode &amp;&amp; Announcement &amp;&amp; (
+        &lt;Announcement announcement={announcement} layout=&quot;bottom&quot; /&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+
+export default Layout;
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:6,&quot;character&quot;:4,&quot;text&quot;:&quot;Announcement&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:7,&quot;character&quot;:18,&quot;text&quot;:&quot;children&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:7,&quot;character&quot;:28,&quot;text&quot;:&quot;announcement&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:8,&quot;character&quot;:6,&quot;text&quot;:&quot;announcement&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:8,&quot;character&quot;:20,&quot;text&quot;:&quot;isActive&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:9,&quot;character&quot;:4,&quot;text&quot;:&quot;Announcement&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:20,&quot;character&quot;:21,&quot;text&quot;:&quot;Announcement&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:21,&quot;character&quot;:22,&quot;text&quot;:&quot;announcement&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:21,&quot;character&quot;:36,&quot;text&quot;:&quot;announcement&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:32,&quot;character&quot;:21,&quot;text&quot;:&quot;Announcement&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:33,&quot;character&quot;:22,&quot;text&quot;:&quot;announcement&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;apps/movetcare.com/components/Layout.tsx&quot;,&quot;line&quot;:33,&quot;character&quot;:36,&quot;text&quot;:&quot;announcement&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

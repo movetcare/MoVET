@@ -1,0 +1,148 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>EmergencyWarning.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">packages/ui/src/components/elements/EmergencyWarning.tsx</td><td class="">100.00%</td><td class="">75%</td><td class="">106</td><td class="">106</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { faTruckMedical } from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+
+export const EmergencyWarning = () =&gt; (
+  &lt;&gt;
+    &lt;div className=&quot;mt-8 mb-8 text-center text-movet-red mx-auto&quot;&gt;
+      &lt;FontAwesomeIcon icon={faTruckMedical} size=&quot;3x&quot; /&gt;
+    &lt;/div&gt;
+    &lt;h2 className=&quot;text-xl mt-0 text-center mb-6&quot;&gt;Emergency Care Notice&lt;/h2&gt;
+    &lt;p className=&quot;text-left&quot;&gt;
+      MoVET serves the Greater Denver area and offers primary, non-urgent
+      services. We don&amp;apos;t see new patients for sick appointments (basic
+      wound care, chronic maintenance issues, and minor illness, such as
+      vomiting, head shaking, itching, etc) unless you&amp;apos;ve previously
+      established care with MoVET during a wellness visit (annual wellness
+      checkup examinations, quality of life assessments, new pet exams to
+      establish care, puppy &amp; kitten exams, and vaccine appointments).
+    &lt;/p&gt;
+    &lt;p className=&quot;text-left&quot;&gt;
+      We do not perform end-of-life veterinary care, nor do we perform
+      anesthetic procedures, such as surgery or dentals, but will partner with
+      you to make the best recommendation for you that fits your needs with a
+      local practice or specialist in town who can help.
+    &lt;/p&gt;
+    &lt;p className=&quot;font-extrabold my-4 text-lg&quot;&gt;
+      If you think this is an animal emergency, please contact a 24/7 ER clinic
+      or urgent care center:
+    &lt;/p&gt;
+    &lt;ul className=&quot;my-8&quot;&gt;
+      &lt;li className=&quot;font-bold text-lg&quot;&gt;EAST DENVER&lt;/li&gt;
+      &lt;li&gt;
+        &lt;a
+          href=&quot;https://www.vrcc.com/&quot;
+          target=&quot;_blank&quot;
+          rel=&quot;noreferrer&quot;
+          className=&quot;text-movet-brown hover:underline&quot;
+        &gt;
+          VRCC Veterinary Specialty &amp; Emergency Hospital
+        &lt;/a&gt;
+      &lt;/li&gt;
+      {/* &lt;li&gt;3550 S Jason St, Englewood, CO 80110&lt;/li&gt;
+                &lt;li&gt;(303) 874-7387&lt;/li&gt;
+                &lt;li&gt;https://www.vrcc.com/&lt;/li&gt; */}
+    &lt;/ul&gt;
+    &lt;ul className=&quot;my-8&quot;&gt;
+      &lt;li className=&quot;font-bold text-lg&quot;&gt;NW DENVER&lt;/li&gt;
+      &lt;li&gt;
+        &lt;a
+          href=&quot;https://evolutionvet.com/&quot;
+          target=&quot;_blank&quot;
+          rel=&quot;noreferrer&quot;
+          className=&quot;text-movet-brown hover:underline&quot;
+        &gt;
+          Evolution Veterinary Specialists
+        &lt;/a&gt;
+      &lt;/li&gt;
+      {/* &lt;li&gt;34 Van Gordon St Suite 160, Lakewood, CO 80228&lt;/li&gt;
+                &lt;li&gt;(720) 510-7707&lt;/li&gt;
+                &lt;li&gt;https://evolutionvet.com/&lt;/li&gt; */}
+    &lt;/ul&gt;
+    &lt;ul className=&quot;my-8&quot;&gt;
+      &lt;li className=&quot;font-bold text-lg&quot;&gt;SE DENVER&lt;/li&gt;
+      &lt;li&gt;
+        &lt;a
+          href=&quot;https://aescparker.com/&quot;
+          target=&quot;_blank&quot;
+          rel=&quot;noreferrer&quot;
+          className=&quot;text-movet-brown hover:underline&quot;
+        &gt;
+          Animal Emergency &amp; Specialty Center (AESC)
+        &lt;/a&gt;
+      &lt;/li&gt;
+      {/* &lt;li&gt;17701 Cottonwood Dr, Parker, CO 80134&lt;/li&gt;
+                &lt;li&gt;(720) 842-5050&lt;/li&gt;
+                &lt;li&gt;https://aescparker.com/&lt;/li&gt; */}
+    &lt;/ul&gt;
+    &lt;ul className=&quot;my-8&quot;&gt;
+      &lt;li className=&quot;font-bold text-lg&quot;&gt;NE DENVER&lt;/li&gt;
+      &lt;li&gt;
+        &lt;a
+          href=&quot;https://veterinaryemergencygroup.com/locations/denver-co/&quot;
+          target=&quot;_blank&quot;
+          rel=&quot;noreferrer&quot;
+          className=&quot;text-movet-brown hover:underline&quot;
+        &gt;
+          Veterinary Emergency Group (VEG)
+        &lt;/a&gt;
+      &lt;/li&gt;
+      {/* &lt;li&gt;3845 E Colfax Ave, Denver, CO 80206&lt;/li&gt;
+                &lt;li&gt;(720) 574-9834&lt;/li&gt;
+                &lt;li&gt;
+                  https://veterinaryemergencygroup.com/locations/denver-co/
+                &lt;/li&gt; */}
+    &lt;/ul&gt;
+    &lt;ul className=&quot;my-8&quot;&gt;
+      &lt;li className=&quot;font-bold text-lg&quot;&gt;WEST DENVER&lt;/li&gt;
+      &lt;li&gt;
+        &lt;a
+          href=&quot;https://vcahospitals.com/deer-creek-littleton&quot;
+          target=&quot;_blank&quot;
+          rel=&quot;noreferrer&quot;
+          className=&quot;text-movet-brown hover:underline&quot;
+        &gt;
+          VCA Deer Creek Animal Hospital
+        &lt;/a&gt;
+      &lt;/li&gt;
+      {/* &lt;li&gt;10148 W Chatfield Ave, Littleton, CO 80127&lt;/li&gt;
+                &lt;li&gt;(303) 973-4200&lt;/li&gt;
+                &lt;li&gt;
+                  https://vcahospitals.com/deer-creek-littleton?utm_source=maps&amp;utm_medium=organic&amp;utm_campaign=VCA_Deer_Creek_Animal_Hospital
+                &lt;/li&gt; */}
+    &lt;/ul&gt;
+    &lt;ul className=&quot;my-8&quot;&gt;
+      &lt;li className=&quot;font-bold text-lg&quot;&gt;SOUTH DENVER &lt;/li&gt;
+      &lt;li&gt;
+        &lt;a
+          href=&quot;https://www.cvsg.com/&quot;
+          target=&quot;_blank&quot;
+          rel=&quot;noreferrer&quot;
+          className=&quot;text-movet-brown hover:underline&quot;
+        &gt;
+          Colorado Veterinary Specialty Group (CVSG)
+        &lt;/a&gt;
+      &lt;/li&gt;
+      {/* &lt;li&gt; 401 E County Line Rd, Littleton, CO 80122&lt;/li&gt;
+                &lt;li&gt;(303) 794-1188&lt;/li&gt;
+                &lt;li&gt; https://www.cvsg.com/&lt;/li&gt; */}
+    &lt;/ul&gt;
+  &lt;/&gt;
+);
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

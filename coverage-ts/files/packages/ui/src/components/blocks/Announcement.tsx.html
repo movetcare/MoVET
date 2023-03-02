@@ -1,0 +1,353 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Announcement.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">packages/ui/src/components/blocks/Announcement.tsx</td><td class="">100.00%</td><td class="">75%</td><td class="">369</td><td class="">369</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { useEffect, useState } from &quot;react&quot;;
+import { useRouter } from &quot;next/router&quot;;
+import { Transition } from &quot;@headlessui/react&quot;;
+import {
+  faArrowRight,
+  faBell,
+  faBullhorn,
+  faExclamationCircle,
+  faIcons,
+  faInfoCircle,
+  faStar,
+  faTimes,
+} from &quot;@fortawesome/free-solid-svg-icons&quot;;
+import { FontAwesomeIcon } from &quot;@fortawesome/react-fontawesome&quot;;
+import type { Announcement as AnnouncementType } from &quot;types&quot;;
+
+export const Announcement = ({
+  announcement,
+  layout,
+}: {
+  announcement: AnnouncementType;
+  layout: &quot;top&quot; | &quot;bottom&quot;;
+}) =&gt; {
+  const router = useRouter();
+  const { displayAnnouncement } = router.query;
+  const [showBanner, setShowBanner] = useState&lt;boolean&gt;(true);
+  const [fadeIn, setShowFadeIn] = useState&lt;boolean&gt;(false);
+
+  const announcementBannerBackgroundColor =
+    announcement?.color === &quot;#DAAA00&quot;
+      ? &quot;bg-movet-yellow&quot;
+      : announcement?.color === &quot;#2C3C72&quot;
+      ? &quot;bg-movet-dark-blue&quot;
+      : announcement?.color === &quot;#E76159&quot;
+      ? &quot;bg-movet-red&quot;
+      : announcement?.color === &quot;#232127&quot;
+      ? &quot;bg-movet-black&quot;
+      : announcement?.color === &quot;#00A36C&quot;
+      ? &quot;bg-movet-green&quot;
+      : announcement?.color === &quot;#A15643&quot;
+      ? &quot;bg-movet-brown&quot;
+      : &quot;bg-movet-dark-blue&quot;;
+
+  const announcementBannerTextColor =
+    announcement?.color === &quot;#DAAA00&quot;
+      ? &quot;text-movet-yellow&quot;
+      : announcement?.color === &quot;#2C3C72&quot;
+      ? &quot;text-movet-dark-blue&quot;
+      : announcement?.color === &quot;#E76159&quot;
+      ? &quot;text-movet-red&quot;
+      : announcement?.color === &quot;#232127&quot;
+      ? &quot;text-movet-black&quot;
+      : announcement?.color === &quot;#00A36C&quot;
+      ? &quot;text-movet-green&quot;
+      : announcement?.color === &quot;#A15643&quot;
+      ? &quot;text-movet-brown&quot;
+      : &quot;text-movet-dark-blue&quot;;
+
+  const announcementBannerIcon =
+    announcement?.icon === &quot;bullhorn&quot;
+      ? faBullhorn
+      : announcement?.icon === &quot;exclamation-circle&quot;
+      ? faExclamationCircle
+      : announcement?.icon === &quot;bell&quot;
+      ? faBell
+      : announcement?.icon === &quot;star&quot;
+      ? faStar
+      : announcement?.icon === &quot;info-circle&quot;
+      ? faInfoCircle
+      : faIcons;
+
+  useEffect(() =&gt; {
+    if (displayAnnouncement === &quot;false&quot;) {
+      setShowBanner(false);
+    }
+    setTimeout(() =&gt; {
+      setShowFadeIn(true);
+    }, 1500);
+  }, [displayAnnouncement, router]);
+
+  return (
+    &lt;&gt;
+      {layout === &quot;top&quot; ? (
+        &lt;Transition
+          show={
+            showBanner &amp;&amp;
+            fadeIn &amp;&amp;
+            announcement !== null &amp;&amp;
+            announcement !== undefined &amp;&amp;
+            announcement?.isActive
+          }
+          enter=&quot;transition ease-in duration-500&quot;
+          leave=&quot;transition ease-out duration-300&quot;
+          leaveTo=&quot;opacity-10&quot;
+          enterFrom=&quot;opacity-0&quot;
+          enterTo=&quot;opacity-100&quot;
+          leaveFrom=&quot;opacity-100&quot;
+          className=&quot;w-full&quot;
+        &gt;
+          &lt;div className=&quot;hidden sm:block relative inset-x-0 top-0 z-50&quot;&gt;
+            &lt;div className={`py-4 px-4 ${announcementBannerBackgroundColor}`}&gt;
+              &lt;div className=&quot;max-w-7xl mx-auto px-3&quot;&gt;
+                &lt;div className=&quot;flex items-center justify-between flex-wrap&quot;&gt;
+                  &lt;div
+                    className={`w-0 flex-1 flex items-center${
+                      announcement?.link ? &quot; hover:cursor-pointer&quot; : &quot;&quot;
+                    }`}
+                  &gt;
+                    {announcement?.link ? (
+                      &lt;span
+                        className={`flex p-2 rounded-xl bg-movet-white text-lg h-9 w-9 hover:bg-opacity-80 ${announcementBannerTextColor}`}
+                      &gt;
+                        &lt;a
+                          href={`https://movetcare.com${announcement?.link}`}
+                          target=&quot;_blank&quot;
+                          rel=&quot;noreferrer&quot;
+                          aria-label=&quot;Announcement Link&quot;
+                          className=&quot;flex items-center justify-center ml-0.5&quot;
+                        &gt;
+                          &lt;FontAwesomeIcon
+                            icon={announcementBannerIcon}
+                            size=&quot;sm&quot;
+                          /&gt;
+                        &lt;/a&gt;
+                      &lt;/span&gt;
+                    ) : (
+                      &lt;span
+                        className={`flex justify-center items-center p-2 rounded-xl bg-movet-white text-lg h-9 w-9 ${announcementBannerTextColor}`}
+                      &gt;
+                        &lt;FontAwesomeIcon
+                          icon={announcementBannerIcon}
+                          size=&quot;sm&quot;
+                        /&gt;
+                      &lt;/span&gt;
+                    )}
+                    &lt;div className=&quot;flex flex-col&quot;&gt;
+                      {announcement?.link ? (
+                        &lt;a
+                          href={`https://movetcare.com${announcement?.link}`}
+                          target=&quot;_blank&quot;
+                          rel=&quot;noreferrer&quot;
+                          aria-label=&quot;Announcement Link&quot;
+                        &gt;
+                          &lt;&gt;
+                            &lt;p className=&quot;ml-8 font-medium text-movet-white my-0 italic text-lg hover:text-opacity-80&quot;&gt;
+                              {announcement?.title}
+                            &lt;/p&gt;
+                            &lt;p className=&quot;ml-8 font-medium text-movet-white my-0 italic text-sm hover:text-opacity-80&quot;&gt;
+                              {announcement?.message}
+                            &lt;/p&gt;
+                          &lt;/&gt;
+                        &lt;/a&gt;
+                      ) : (
+                        &lt;&gt;
+                          &lt;p className=&quot;ml-8 font-medium text-movet-white my-0 italic text-lg&quot;&gt;
+                            {announcement?.title}
+                          &lt;/p&gt;
+                          &lt;p className=&quot;ml-8 font-medium text-movet-white my-0 italic text-sm&quot;&gt;
+                            {announcement?.message}
+                          &lt;/p&gt;
+                        &lt;/&gt;
+                      )}
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                  {announcement?.link &amp;&amp; (
+                    &lt;div className=&quot;order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto&quot;&gt;
+                      &lt;a
+                        href={`https://movetcare.com${announcement?.link}`}
+                        target=&quot;_blank&quot;
+                        rel=&quot;noreferrer&quot;
+                        aria-label=&quot;Announcement Link&quot;
+                      &gt;
+                        &lt;p
+                          className={`w-full flex justify-center border border-transparent shadow-sm text-sm font-abside font-medium uppercase bg-movet-white group-hover:bg-opacity-80 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red py-2 px-6 rounded-full ease-in-out duration-500 cursor-pointer ${announcementBannerTextColor}`}
+                        &gt;
+                          Read More
+                          &lt;span
+                            className={`ml-2 h-3.5 w-3.5 mt-0 ${announcementBannerTextColor}`}
+                          &gt;
+                            &lt;FontAwesomeIcon icon={faArrowRight} /&gt;
+                          &lt;/span&gt;
+                        &lt;/p&gt;
+                      &lt;/a&gt;
+                    &lt;/div&gt;
+                  )}
+                  &lt;div
+                    className=&quot;order-2 flex-shrink-0 sm:order-3 sm:ml-4 hover:cursor-pointer sm:pl-4&quot;
+                    onClick={() =&gt;
+                      router.replace(
+                        router.pathname + &quot;?displayAnnouncement=false&quot;,
+                        undefined,
+                        { scroll: false, shallow: true }
+                      )
+                    }
+                  &gt;
+                    &lt;span className=&quot;p-2 rounded-xl text-lg text-movet-white justify-center items-center hover:text-opacity-80&quot;&gt;
+                      &lt;FontAwesomeIcon icon={faTimes} /&gt;
+                    &lt;/span&gt;
+                    &lt;span className=&quot;sr-only&quot;&gt;Dismiss&lt;/span&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/Transition&gt;
+      ) : (
+        &lt;Transition
+          show={
+            showBanner &amp;&amp;
+            fadeIn &amp;&amp;
+            announcement !== null &amp;&amp;
+            announcement !== undefined &amp;&amp;
+            announcement?.isActive
+          }
+          enter=&quot;transition ease-in duration-500&quot;
+          leave=&quot;transition ease-out duration-64&quot;
+          leaveTo=&quot;opacity-10&quot;
+          enterFrom=&quot;opacity-0&quot;
+          enterTo=&quot;opacity-100&quot;
+          leaveFrom=&quot;opacity-100&quot;
+        &gt;
+          &lt;div className=&quot;sm:hidden fixed inset-x-0 bottom-0 z-50&quot;&gt;
+            &lt;div className={`px-4 ${announcementBannerBackgroundColor}`}&gt;
+              &lt;div className=&quot;max-w-7xl mx-auto&quot;&gt;
+                &lt;div className=&quot;flex items-center justify-right flex-wrap&quot;&gt;
+                  &lt;&gt;
+                    {announcement?.link ? (
+                      &lt;&gt;
+                        &lt;div className=&quot;w-0 flex-1 flex items-center hover:cursor-pointer pt-4 pb-6&quot;&gt;
+                          &lt;a
+                            href={`https://movetcare.com${announcement?.link}`}
+                            target=&quot;_blank&quot;
+                            rel=&quot;noreferrer&quot;
+                            aria-label=&quot;Announcement Link&quot;
+                          &gt;
+                            &lt;span
+                              className={`flex p-2 rounded-xl justify-center items-center bg-movet-white text-lg h-9 w-9 hover:bg-opacity-80 ease-in-out duration-500 ${announcementBannerTextColor}`}
+                            &gt;
+                              &lt;FontAwesomeIcon
+                                icon={announcementBannerIcon}
+                                size=&quot;sm&quot;
+                              /&gt;
+                            &lt;/span&gt;
+                          &lt;/a&gt;
+                          &lt;div className=&quot;flex flex-col&quot;&gt;
+                            &lt;a
+                              href={`https://movetcare.com${announcement?.link}`}
+                              target=&quot;_blank&quot;
+                              rel=&quot;noreferrer&quot;
+                              aria-label=&quot;Announcement Link&quot;
+                            &gt;
+                              &lt;p className=&quot;ml-8 font-medium text-movet-white my-0 italic text-base hover:text-opacity-80&quot;&gt;
+                                {announcement?.title}
+                              &lt;/p&gt;
+                            &lt;/a&gt;
+                            &lt;a
+                              href={`https://movetcare.com${announcement?.link}`}
+                              target=&quot;_blank&quot;
+                              rel=&quot;noreferrer&quot;
+                              aria-label=&quot;Announcement Link&quot;
+                            &gt;
+                              &lt;p className=&quot;ml-8 font-medium text-movet-white my-0 italic text-sm hover:text-opacity-80&quot;&gt;
+                                {announcement?.message}
+                              &lt;/p&gt;
+                            &lt;/a&gt;
+                          &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div className=&quot;order-3 -mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto mb-4&quot;&gt;
+                          &lt;a
+                            href={`https://movetcare.com${announcement?.link}`}
+                            target=&quot;_blank&quot;
+                            rel=&quot;noreferrer&quot;
+                            aria-label=&quot;Announcement Link&quot;
+                          &gt;
+                            &lt;p
+                              className={`w-full flex justify-center border border-transparent shadow-sm text-xs font-abside font-medium uppercase bg-movet-white group-hover:bg-opacity-80 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-blue py-2 px-6 rounded-full ease-in-out duration-500 cursor-pointer ${announcementBannerTextColor}`}
+                            &gt;
+                              Read More
+                              &lt;span
+                                className={`ml-2 h-3.5 w-3.5 ${announcementBannerTextColor}`}
+                              &gt;
+                                &lt;FontAwesomeIcon icon={faArrowRight} /&gt;
+                              &lt;/span&gt;
+                            &lt;/p&gt;
+                          &lt;/a&gt;
+                        &lt;/div&gt;
+                      &lt;/&gt;
+                    ) : (
+                      &lt;div
+                        className=&quot;w-0 flex-1 flex items-center hover:cursor-pointer py-4&quot;
+                        onClick={() =&gt; setShowBanner(false)}
+                      &gt;
+                        &lt;span
+                          className={`flex p-2 rounded-xl justify-center items-center bg-movet-white text-lg h-9 w-9 hover:bg-opacity-80 ease-in-out duration-500 ${announcementBannerTextColor}`}
+                        &gt;
+                          &lt;FontAwesomeIcon
+                            icon={announcementBannerIcon}
+                            size=&quot;sm&quot;
+                          /&gt;
+                        &lt;/span&gt;
+                        &lt;div className=&quot;flex flex-col&quot;&gt;
+                          &lt;p className=&quot;ml-8 font-medium text-movet-white my-0 italic text-base hover:text-opacity-80&quot;&gt;
+                            {announcement?.title}
+                          &lt;/p&gt;
+                          &lt;p className=&quot;ml-8 font-medium text-movet-white my-0 italic text-sm hover:text-opacity-80&quot;&gt;
+                            {announcement?.message}
+                          &lt;/p&gt;
+                        &lt;/div&gt;
+                      &lt;/div&gt;
+                    )}
+                  &lt;/&gt;
+                  &lt;div
+                    className=&quot;order-2 flex-shrink-0 sm:order-3 sm:ml-4 hover:cursor-pointer sm:pl-4&quot;
+                    onClick={() =&gt;
+                      router.replace(
+                        router.pathname + &quot;?displayAnnouncement=false&quot;,
+                        undefined,
+                        { scroll: false, shallow: true }
+                      )
+                    }
+                  &gt;
+                    &lt;span className=&quot;p-2 rounded-xl text-lg text-movet-white justify-center items-center hover:text-opacity-50 ease-in-out duration-500&quot;&gt;
+                      &lt;FontAwesomeIcon icon={faTimes} /&gt;
+                    &lt;/span&gt;
+                    &lt;span className=&quot;sr-only&quot;&gt;Dismiss&lt;/span&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/Transition&gt;
+      )}
+    &lt;/&gt;
+  );
+};
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 02 Mar 2023 15:37:59 GMT</p>
+    </body>
+  </html>
+  

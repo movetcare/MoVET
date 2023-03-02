@@ -1,12 +1,14 @@
-import {getProVetIdFromUrl} from "./../getProVetIdFromUrl";
-import {admin, throwError, DEBUG} from "../../config/config";
-import {fetchEntity} from "../../integrations/provet/entities/fetchEntity";
-import {savePatient} from "../../integrations/provet/entities/patient/savePatient";
-import {timestampString} from "../timestampString";
-import {saveClient} from "../../integrations/provet/entities/client/saveClient";
+import { getProVetIdFromUrl } from "./../getProVetIdFromUrl";
+import { admin, throwError, DEBUG } from "../../config/config";
+import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
+import { savePatient } from "../../integrations/provet/entities/patient/savePatient";
+import { timestampString } from "../timestampString";
+import { saveClient } from "../../integrations/provet/entities/client/saveClient";
 import type { EventLogPayload } from "../../types/event";
 
-export const logAuthEvent = async (payload: EventLogPayload) => {
+export const logAuthEvent = async (
+  payload: EventLogPayload
+): Promise<boolean> => {
   if (payload?.data?.email) {
     const uid = await admin
       .auth()
@@ -20,16 +22,16 @@ export const logAuthEvent = async (payload: EventLogPayload) => {
           payload?.data?.email.toLowerCase()
         );
       const proVetClientData = await fetchEntity("client", parseInt(uid));
-       saveClient(uid, proVetClientData);
-       if (proVetClientData?.patients) {
-         proVetClientData?.patients.map(async (patient: any) => {
-           const proVetPatientData = await fetchEntity(
-             "patient",
-             getProVetIdFromUrl(patient)
-           );
-           savePatient(proVetPatientData);
-         });
-       }
+      saveClient(uid, proVetClientData);
+      if (proVetClientData?.patients) {
+        proVetClientData?.patients.map(async (patient: any) => {
+          const proVetPatientData = await fetchEntity(
+            "patient",
+            getProVetIdFromUrl(patient)
+          );
+          savePatient(proVetPatientData);
+        });
+      }
 
       return await admin
         .firestore()
