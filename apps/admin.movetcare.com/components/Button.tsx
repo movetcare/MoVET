@@ -102,8 +102,8 @@ const Button = ({
       className={classNames(
         padding(),
         "flex justify-center items-center h-12 border border-transparent shadow-sm font-source-sans-pro tracking-widest text-movet-white text-xs font-semibold uppercase group-hover:bg-movet-black hover:bg-movet-black ease-in-out duration-300",
-        color === "black" && "bg-movet-black hover:bg-movet-red",
-        color === "red" && "bg-movet-red hover:bg-movet-black",
+        color === "black" && ("bg-movet-black hover:bg-movet-red" as any),
+        color === "red" && ("bg-movet-red hover:bg-movet-black" as any),
         disabled
           ? "group-hover:bg-movet-gray group-hover:bg-opacity-50 hover:bg-opacity-50 hover:bg-movet-black bg-movet-black bg-opacity-50"
           : "",

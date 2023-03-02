@@ -3,7 +3,7 @@ import { admin } from "../config/config";
 export const deleteCollection = async (
   collectionPath: string,
   batchSize = 10
-): Prmise<void> => {
+): Promise<void> => {
   const collectionRef = admin.firestore().collection(collectionPath);
   const query = collectionRef.limit(batchSize);
   return new Promise((resolve, reject) =>

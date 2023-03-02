@@ -52,7 +52,7 @@ export const processStaff = async (id: string, selectedStaff: Staff | string) =>
                 {
                   type: "plain_text",
                   text: `${
-                    isObject(selectedStaff) &&
+                    isObject(selectedStaff as object) &&
                     typeof selectedStaff !== "string" &&
                     selectedStaff?.firstName
                       ? `${

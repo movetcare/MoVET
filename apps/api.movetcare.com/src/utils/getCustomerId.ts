@@ -104,7 +104,7 @@ const createNewCustomer = async (
         metadata: {
           clientId: id,
         },
-      })
+      } as any)
       .catch((error: any) => throwError(error) as any);
   } else {
     let matchedCustomer = null;

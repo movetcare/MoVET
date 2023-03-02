@@ -135,7 +135,7 @@ export const resetTestData: Promise<Response> = functions
         //   );
         // } else if (DEBUG) console.log("NO PATIENTS FOUND", proVetPatientIds);
 
-        const paymentMethods = await stripe.paymentMethods
+        const paymentMethods: any = await stripe.paymentMethods
           .list({
             customer: "cus_NHh7gfsz2LsVnp",
             type: "card",
@@ -144,7 +144,7 @@ export const resetTestData: Promise<Response> = functions
         if (DEBUG) console.log("paymentMethods", paymentMethods);
         if (paymentMethods) {
           const paymentMethodIds = paymentMethods?.data?.map(
-            (paymentMethod) => paymentMethod?.id
+            (paymentMethod: { id: string }) => paymentMethod?.id
           );
           if (DEBUG) console.log("paymentMethodIds", paymentMethodIds);
           Promise.all(

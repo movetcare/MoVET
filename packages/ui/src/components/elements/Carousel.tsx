@@ -176,7 +176,7 @@ export const Carousel = ({
   );
   if (children.length > 1) {
     return (
-      <div className={classNames(parent, "flex relative")}>
+      <div className={classNames(parent as string, "flex relative")}>
         {slideImages && (
           <div className="relative w-5/12 flex justify-center items-end">
             {slideImages.map((image, i) => {
@@ -234,8 +234,8 @@ export const Carousel = ({
               <button
                 aria-label="Advance Carousel Button"
                 className={classNames(
-                  leftButton,
-                  !infinite &&
+                  leftButton as string,
+                  (!infinite as any) &&
                     (startIndex === 0 || desiredStartIndex === 0) &&
                     (startIndex === desiredStartIndex ||
                       desiredStartIndex < startIndex) &&
@@ -256,7 +256,12 @@ export const Carousel = ({
                 </div>
               </button>
             </div>
-            <div className={classNames(slideContainer, "overflow-x-hidden")}>
+            <div
+              className={classNames(
+                slideContainer as string,
+                "overflow-x-hidden"
+              )}
+            >
               <div
                 style={{
                   ...sliderStyle,
@@ -267,7 +272,7 @@ export const Carousel = ({
                 }}
                 className={classNames(
                   (startIndex !== desiredStartIndex || offset === 0) &&
-                    "transition-transform",
+                    ("transition-transform" as any),
                   "inline-flex relative"
                 )}
                 {...handlers}
@@ -291,13 +296,13 @@ export const Carousel = ({
               <button
                 aria-label="Advance Carousel Button"
                 className={classNames(
-                  rightButton,
+                  rightButton as string,
                   !infinite &&
                     (startIndex === children.length - 1 ||
                       desiredStartIndex === children.length - 1) &&
                     (startIndex === desiredStartIndex ||
                       desiredStartIndex > startIndex) &&
-                    "invisible cursor-default",
+                    ("invisible cursor-default" as any),
                   "px-2"
                 )}
                 data-cy={`carousel-${name}-next-button`}

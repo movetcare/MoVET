@@ -123,7 +123,11 @@ export const Services = ({
     const sizeVal = size === "sm" ? 0.5 : size === "md" ? 1 : 2;
     return (
       <div
-        className={classNames(className, getColorClassName(color), "relative")}
+        className={classNames(
+          className as string,
+          getColorClassName(color),
+          "relative"
+        )}
       >
         <div
           className="padded-background-border w-full"
@@ -346,7 +350,9 @@ export const Services = ({
               {nonServices.map((nonService: any) => (
                 <div key={nonService.name}>
                   <div className="font-bold text-lg">{nonService.name}</div>
-                  <p className={classNames(!nonService.note && "mb-4")}>
+                  <p
+                    className={classNames((!nonService.note as any) && "mb-4")}
+                  >
                     {nonService.description}
                   </p>
                   {nonService.note && (
