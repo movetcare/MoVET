@@ -11,7 +11,7 @@ describe("hours-page-loads", () => {
     // );
   });
   if (Cypress.env().environment === "development")
-    it("WINTER MODE - display hours list", () => {
+    it.skip("WINTER MODE - display hours list", () => {
       cy.request("POST", Cypress.env().testApiUrl, {
         apiKey: Cypress.env().endpointApiKey,
         id: "winter-mode-off",

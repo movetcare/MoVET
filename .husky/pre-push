@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-if git-branch-is -q -v main; then pnpm run test; fi
+if git-branch-is -q -v development; then pnpm run test; fi
