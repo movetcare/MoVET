@@ -26,7 +26,7 @@ export const handleK9SmilesRequest = functions.firestore
       status: string;
     };
     if (status === "started") {
-      const authUser: UserRecord | null = await getAuthUserByEmail(email);
+      let authUser: UserRecord | null = await getAuthUserByEmail(email);
       let didUpdateClientInfo = false;
       if (DEBUG) console.log("authUser", authUser);
       if (authUser === null) {
