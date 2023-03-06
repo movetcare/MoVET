@@ -25,7 +25,7 @@
     "react-datepicker": "^4.10.0",
     "react-dom": "18.2.0",
     "react-firebase-hooks": "^5.1.1",
-    "react-hook-form": "^7.43.3",
+    "react-hook-form": "^7.43.4",
     "react-hot-toast": "^2.4.0",
     "react-json-formatter": "^0.3.2",
     "react-number-format": "^5.1.3",
