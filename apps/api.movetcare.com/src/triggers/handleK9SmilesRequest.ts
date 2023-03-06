@@ -9,7 +9,7 @@ import { updateProVetClient } from "../integrations/provet/entities/client/updat
 const DEBUG = true;
 export const handleK9SmilesRequest = functions.firestore
   .document("k9_smiles/{id}")
-  .onWrite(async (change: any, context: any) => {
+  .onCreate(async (change: any, context: any) => {
     const { id } = context.params || {};
     const data = change.after.data();
     if (DEBUG)

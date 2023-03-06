@@ -88,6 +88,11 @@ const Client = () => {
         id: query?.id,
       })
         .then((result: any) => {
+          console.log("verifyAccount => result.data", result.data);
+          console.log(
+            "result.data?.alerts?.errors",
+            result.data?.alerts?.errors
+          );
           if (
             (result.data?.alerts?.errors &&
               result.data?.alerts?.errors.length > 0) ||
