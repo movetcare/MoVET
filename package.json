@@ -49,6 +49,7 @@
     "@types/node": "^18.14.4",
     "concurrently": "^7.6.0",
     "cypress": "^12.7.0",
+    "cypress-fail-fast": "^7.0.0",
     "eslint-config-custom": "workspace:0.0.0",
     "git-branch-is": "^4.0.0",
     "husky": "^8.0.3",

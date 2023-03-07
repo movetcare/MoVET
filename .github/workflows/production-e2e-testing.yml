@@ -107,6 +107,7 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          CYPRESS_FAIL_FAST_PLUGIN: false
       - name: Print Cypress Cloud URL
         run: |
           echo Cypress finished with: ${{ steps.cypress.outcome }}

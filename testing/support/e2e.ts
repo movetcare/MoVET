@@ -13,4 +13,5 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+import "cypress-fail-fast";
 require("./commands");
