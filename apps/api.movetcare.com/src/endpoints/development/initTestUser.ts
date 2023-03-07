@@ -28,7 +28,7 @@ export const initTestUser: Promise<Response> = functions
         )) &&
         (await importTestUser(
           "dev+test_vcpr_not_required@movetcare.com",
-          5768,
+          6008,
           "cus_NHhCBn8D5rsQS2",
           "pm_1MX7ozDVQU5TYLF1gwB52QNF"
         )) &&

@@ -11,16 +11,16 @@ import {
 // import { updateProVetPatient } from "../../integrations/provet/entities/patient/updateProVetPatient";
 import { sendNotification } from "../../notifications/sendNotification";
 // import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
-const DEBUG = false; 
+const DEBUG = false;
 export const resetTestData: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {
     if (request.body?.apiKey === mobileClientApiKey) {
-      if (request.body?.id === 5768) {
+      if (request.body?.id === 6008) {
         await admin
           .firestore()
           .collection("bookings")
-          .where("client.uid", "==", "5768")
+          .where("client.uid", "==", "6008")
           .get()
           .then((querySnapshot: any) =>
             querySnapshot.forEach((doc: any) => {
@@ -173,7 +173,7 @@ export const resetTestData: Promise<Response> = functions
         await admin
           .firestore()
           .collection("bookings")
-          .where("client.uid", "==", "5768")
+          .where("client.uid", "==", "6008")
           .get()
           .then((querySnapshot: any) =>
             querySnapshot.forEach((doc: any) => {

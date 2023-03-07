@@ -21,7 +21,7 @@ module.exports = defineConfig({
     existingClientNoPaymentLastName: "DO NOT DELETE",
     existingClientNoPaymentId: 5769,
     existingClientWithPaymentEmail: "dev+test_vcpr_not_required@movetcare.com",
-    existingClientWithPaymentId: 5768,
+    existingClientWithPaymentId: 6008,
     existingClientWithPaymentFirstName: "(Has Payment) Fake Client - ",
     existingClientWithPaymentLastName: "DO NOT DELETE",
     existingPatientWithNoVcprName: "NO VCPR TEST DOG",
@@ -44,10 +44,10 @@ module.exports = defineConfig({
   screenshotsFolder: "testing/results/screenshots",
   videosFolder: "testing/results/videos",
   e2e: {
-    setupNodeEvents(on, config) {
-      require("cypress-fail-fast/plugin")(on, config);
-      return config;
-    },
+    // setupNodeEvents(on, config) {
+    //   require("cypress-fail-fast/plugin")(on, config);
+    //   return config;
+    // },
     specPattern: "testing/e2e/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "testing/support/e2e.{js,jsx,ts,tsx}",
   },

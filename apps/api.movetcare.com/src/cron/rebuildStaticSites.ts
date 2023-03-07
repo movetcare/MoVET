@@ -63,13 +63,14 @@ export const rebuildStaticSites: Promise<void> = functions
               },
               {
                 type: "plain_text",
-                text: didTriggerVercelBuildWebhookForMarketingWebsite
-                  ? "Website: :white_check_mark:"
-                  : "Website: :red_circle:" +
-                    " |  " +
-                    didTriggerVercelBuildWebhookForWebApp
-                  ? "Web App: :white_check_mark:"
-                  : "Web App: :red_circle:",
+                text:
+                  (didTriggerVercelBuildWebhookForMarketingWebsite
+                    ? "Website: :white_check_mark:"
+                    : "Website: :red_circle:") +
+                  " |  " +
+                  (didTriggerVercelBuildWebhookForWebApp
+                    ? "Web App: :white_check_mark:"
+                    : "Web App: :red_circle:"),
               },
             ],
           },
