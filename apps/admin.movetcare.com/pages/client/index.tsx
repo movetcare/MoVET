@@ -99,7 +99,7 @@ const Client = () => {
             result.data === false
           ) {
             setErrors(result.data?.alerts?.errors || ["Client Not Found..."]);
-          }
+          } else setErrors(null);
           setClient({
             ...result.data,
             createdOn: clientData.data()?.createdOn,
