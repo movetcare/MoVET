@@ -15,7 +15,7 @@
     "dev": "pnpm run config:env && pnpm run emulate",
     "dev:test": "pnpm run config:env && pnpm run emulate",
     "watch": "tsc --watch --preserveWatchOutput",
-    "emulate": "FUNCTIONS_EMULATOR_TIMEOUT_SECONDS=120 firebase emulators:start --inspect-functions --only auth,functions,firestore,pubsub,storage",
+    "emulate": "firebase emulators:start --only auth,functions,firestore,pubsub,storage",
     "start": "pnpm run dev",
     "init:config:dev": "pnpm config:all && pnpm init:test_user && pnpm config:users && pnpm config:terminals && pnpm config:reasons && pnpm config:reason_groups && pnpm config:cancellation_reasons && pnpm config:breeds && pnpm config:shifts && pnpm config:invoices && pnpm config:appointments && pnpm config:items",
     "init:test_user": "curl -i -v POST http://localhost:5001/movet-care-staging/us-central1/initTestUser",

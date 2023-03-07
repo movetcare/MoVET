@@ -455,7 +455,7 @@ const Client = () => {
                     </div>
                   </div>
                 </div>
-                {isMounted && <Tooltip id="resetPassword" />}
+                <Tooltip id="resetPassword" />
                 <div className="flex flex-row items-center justify-center space-x-2 mt-2">
                   {client?.email !== undefined &&
                     !client?.email?.toLowerCase().includes("missing") && (
@@ -486,7 +486,7 @@ const Client = () => {
                         )}
                       </div>
                     )}
-                  {isMounted && <Tooltip id="viewInProvet" />}
+                  <Tooltip id="viewInProvet" />
                   <a
                     data-tooltip-id="viewInProvet"
                     data-tooltip-content="View Client in Provet"
@@ -504,7 +504,7 @@ const Client = () => {
                   </a>
                   {client && client?.customer?.length > 0 && (
                     <>
-                      {isMounted && <Tooltip id="viewInStripe" />}
+                      <Tooltip id="viewInStripe" />
                       <a
                         data-tooltip-id="viewInStripe"
                         data-tooltip-content="View Customer in Stripe"
@@ -526,7 +526,7 @@ const Client = () => {
                     client?.phoneNumber &&
                     !client?.phoneNumber?.toLowerCase().includes("missing") && (
                       <>
-                        {isMounted && <Tooltip id="callPhone" />}
+                        <Tooltip id="callPhone" />
                         <a
                           data-tooltip-content="Call Client"
                           title="Call Client"
@@ -544,7 +544,7 @@ const Client = () => {
                     client?.email &&
                     !client?.email?.toLowerCase()?.includes("missing") && (
                       <>
-                        {isMounted && <Tooltip id="sendEmail" />}
+                        <Tooltip id="sendEmail" />
                         <a
                           data-tooltip-id="sendEmail"
                           data-tooltip-content="Email Client"
@@ -562,7 +562,7 @@ const Client = () => {
                     client?.email &&
                     !client?.email?.toLowerCase()?.includes("missing") && (
                       <>
-                        {isMounted && <Tooltip id="chatWithClient" />}
+                        <Tooltip id="chatWithClient" />
                         <div
                           data-tooltip-id="chatWithClient"
                           data-tooltip-content="Chat w/ Client"
@@ -580,7 +580,7 @@ const Client = () => {
                     !client?.street?.toLowerCase()?.includes("missing") &&
                     client?.street !== undefined && (
                       <>
-                        {isMounted && <Tooltip id="viewOnMap" />}
+                        <Tooltip id="viewOnMap" />
                         <a
                           data-tooltip-id="viewOnMap"
                           data-tooltip-content="View on Map"
@@ -594,7 +594,7 @@ const Client = () => {
                         </a>
                       </>
                     )}
-                  {isMounted && <Tooltip id="viewInFirestore" />}
+                  <Tooltip id="viewInFirestore" />
                   <a
                     data-tooltip-id="viewInFirestore"
                     data-tooltip-content="View Database Record"
@@ -611,7 +611,7 @@ const Client = () => {
                   >
                     <FontAwesomeIcon icon={faFire} size="lg" />
                   </a>
-                  {isMounted && <Tooltip id="deleteClient" />}
+                  <Tooltip id="deleteClient" />
                   {client?.email !== "dev+test@movetcare.com" &&
                     client?.email !==
                       "dev+test_vcpr_not_required@movetcare.com" && (
@@ -632,7 +632,7 @@ const Client = () => {
                         <FontAwesomeIcon icon={faTrash} size="lg" />
                       </div>
                     )}
-                  {isMounted && <Tooltip id="reloadData" />}
+                  <Tooltip id="reloadData" />
                   <div
                     data-tooltip-id="reloadData"
                     data-tooltip-content="Reload Client Data"
@@ -804,7 +804,7 @@ const Client = () => {
                       </span>
                     ) : client?.email ? (
                       <span>
-                        {isMounted && <Tooltip id="verifyAccountIndicator" />}
+                        <Tooltip id="verifyAccountIndicator" />
                         <p className="group italic flex flex-row ml-2 items-center">
                           <a
                             href={`mailto://${client?.email}`}
@@ -1047,16 +1047,24 @@ const Client = () => {
                       />
                     ) : (
                       <>
+                        <Tooltip id="sendPaymentLinkSms" />
                         {client?.sendSms && (
                           <div
+                            data-tooltip-id="sendPaymentLinkSms"
+                            data-tooltip-content="Send Client an SMS with a Link to Setup a Payment Method"
+                            title="Send Client an SMS with a Link to Setup a Payment Method"
                             onClick={() => sendPaymentLink("SMS")}
                             className="ml-4 cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                           >
                             <FontAwesomeIcon icon={faSms} size="lg" />
                           </div>
                         )}
+                        <Tooltip id="sendPaymentLinkEmail" />
                         {client?.sendEmail && (
                           <div
+                            data-tooltip-id="sendPaymentLinkEmail"
+                            data-tooltip-content="Email Client a Link to Setup a Payment Method"
+                            title="Email Client a Link to Setup a Payment Method"
                             onClick={() => sendPaymentLink("EMAIL")}
                             className="ml-1 cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                           >
