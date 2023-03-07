@@ -44,10 +44,10 @@ module.exports = defineConfig({
   screenshotsFolder: "testing/results/screenshots",
   videosFolder: "testing/results/videos",
   e2e: {
-    // setupNodeEvents(on, config) {
-    //   require("cypress-fail-fast/plugin")(on, config);
-    //   return config;
-    // },
+    setupNodeEvents(on, config) {
+      require("cypress-fail-fast/plugin")(on, config);
+      return config;
+    },
     specPattern: "testing/e2e/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "testing/support/e2e.{js,jsx,ts,tsx}",
   },

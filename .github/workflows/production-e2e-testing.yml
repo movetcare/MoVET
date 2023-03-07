@@ -61,9 +61,6 @@ jobs:
       - name: Deploy to Firebase
         id: deploy-cloud-functions
         run: firebase use movet-care --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}" && firebase deploy --only functions --non-interactive -f --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}"
-      - name: Resync ProVet Configurations
-        id: reset-provet-configs
-        run: npm run init:config:prod
       - uses: act10ns/slack@master
         with:
           status: ${{ job.status }}
@@ -108,10 +105,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
           CYPRESS_FAIL_FAST_PLUGIN: false
-      - name: Print Cypress Cloud URL
-        run: |
-          echo Cypress finished with: ${{ steps.cypress.outcome }}
-          echo See results at ${{ steps.cypress.outputs.dashboardUrl }}
       - uses: act10ns/slack@master
         with:
           status: ${{ job.status }}
