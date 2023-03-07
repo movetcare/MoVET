@@ -13,13 +13,6 @@ jobs:
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
     steps:
-      - uses: act10ns/slack@master
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          config: .github/config/slack.yml
-          channel: "#production-logs"
-        if: always()
       - uses: actions/checkout@master
       - id: "auth"
         uses: "google-github-actions/auth@v0"
@@ -42,13 +35,6 @@ jobs:
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
     steps:
-      - uses: act10ns/slack@master
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          config: .github/config/slack.yml
-          channel: "#production-logs"
-        if: always()
       - name: Checkout Repo
         id: repo-checkout
         uses: actions/checkout@master
@@ -74,9 +60,6 @@ jobs:
       - name: Deploy to Firebase
         id: deploy-cloud-functions
         run: firebase use movet-care --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}" && firebase deploy --only functions --non-interactive -f --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}"
-      - name: Resync ProVet Configurations
-        id: reset-provet-configs
-        run: npm run init:config:prod
       - uses: act10ns/slack@master
         with:
           status: ${{ job.status }}
@@ -96,13 +79,6 @@ jobs:
       matrix:
         containers: [1, 2, 3, 4, 5]
     steps:
-      - uses: act10ns/slack@master
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          config: .github/config/slack.yml
-          channel: "#production-logs"
-        if: always()
       - name: Checkout
         uses: actions/checkout@master
       - uses: pnpm/action-setup@master
@@ -127,10 +103,6 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      - name: Print Cypress Cloud URL
-        run: |
-          echo Cypress finished with: ${{ steps.cypress.outcome }}
-          echo See results at ${{ steps.cypress.outputs.dashboardUrl }}
       - uses: act10ns/slack@master
         with:
           status: ${{ job.status }}
