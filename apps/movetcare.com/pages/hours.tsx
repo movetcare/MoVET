@@ -17,7 +17,6 @@ export default function HoursPage({
 }: {
   winterMode: WinterModeType;
 }) {
-  console.log("<HoursPage/> => winterMode", winterMode);
   return (
     <Layout>
       <Head>

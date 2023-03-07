@@ -6,7 +6,7 @@ import { createProVetNote } from "../integrations/provet/entities/note/createPro
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { createProVetClient } from "../integrations/provet/entities/client/createProVetClient";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
-const DEBUG = true;
+const DEBUG = false;
 export const handleK9SmilesRequest = functions.firestore
   .document("k9_smiles/{id}")
   .onCreate(async (change: any, context: any) => {

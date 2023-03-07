@@ -1,7 +1,7 @@
 import { formatDateToMMDDYY } from "./../utils/formatDateToMMDDYYY";
 import { sendNotification } from "../notifications/sendNotification";
 import { environment, functions, request } from "../config/config";
-const DEBUG = true;
+const DEBUG = false;
 export const handleWinterModeUpdate = functions.firestore
   .document("configuration/bookings")
   .onUpdate(async (change: any, context: any) => {

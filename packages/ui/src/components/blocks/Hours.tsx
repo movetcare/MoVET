@@ -10,7 +10,6 @@ export const Hours = ({
   winterMode: WinterModeType;
   embed?: boolean;
 }) => {
-  console.log("<Hours/> => winterMode", winterMode);
   return embed ? (
     <>
       <section className="hidden sm:block sm:relative w-full bg-movet-brown text-white pb-6">
