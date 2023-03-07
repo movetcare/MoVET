@@ -47,7 +47,7 @@
     "kill-port": "^2.0.1",
     "lodash.isequal": "^4.5.0",
     "ngrok": "^4.3.3",
-    "public-ip": "4.0.4",
+    "public-ip": "6.0.1",
     "watch": "^1.0.2"
   },
   "devDependencies": {
