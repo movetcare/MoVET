@@ -40,7 +40,7 @@ import environment from "utils/environment";
 import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { GOTO_PHONE_URL } from "constants/urls";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
