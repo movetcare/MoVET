@@ -88,6 +88,7 @@ const Client = () => {
         id: query?.id,
       })
         .then((result: any) => {
+          console.log("result", result);
           if (
             (result.data?.alerts?.errors &&
               result.data?.alerts?.errors.length > 0) ||
