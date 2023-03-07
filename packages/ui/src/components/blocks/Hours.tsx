@@ -9,8 +9,9 @@ export const Hours = ({
 }: {
   winterMode: WinterModeType;
   embed?: boolean;
-}) =>
-  embed ? (
+}) => {
+  console.log("<Hours/> => winterMode", winterMode);
+  return embed ? (
     <>
       <section className="hidden sm:block sm:relative w-full bg-movet-brown text-white pb-6">
         <div className="h-20 -top-20 sm:h-28 sm:-top-28 overflow-hidden absolute w-full">
@@ -527,3 +528,4 @@ export const Hours = ({
       </section>
     </>
   );
+};

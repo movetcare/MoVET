@@ -36,6 +36,7 @@ export default function Home({
   announcement: AnnouncementType;
   winterMode: WinterModeType;
 }) {
+  console.log("<Home/> => winterMode", winterMode);
   return (
     <Layout announcement={announcement}>
       <div className="flex flex-col items-center justify-center min-py-2 bg-movet-white">

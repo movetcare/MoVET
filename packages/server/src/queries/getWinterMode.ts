@@ -1,5 +1,5 @@
 import { firestore } from "../firebase";
-const DEBUG = false;
+const DEBUG = true;
 export const getWinterMode = async () => {
   try {
     const winterMode = await firestore

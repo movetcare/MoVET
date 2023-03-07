@@ -54,6 +54,7 @@ export default function LocationSelection({
 }: {
   winterMode: WinterModeType;
 }) {
+  console.log("<LocationSelection/> => winterMode", winterMode);
   const router = useRouter();
   const { isLoaded, loadError } = useGoogleMaps();
   const { mode, housecallRequest } = router.query || {};
