@@ -47,7 +47,6 @@ const Client = () => {
   const { query } = router;
   const [errors, setErrors] = useState<Array<string> | null>(null);
   const [client, setClient] = useState<any>(null);
-  const [isMounted, setIsMounted] = useState(false);
   const cancelButtonRef = useRef(null);
   const [showDeleteClientModal, setShowDeleteClientModal] =
     useState<boolean>(false);
@@ -62,10 +61,6 @@ const Client = () => {
   const [clientData, isLoadingClient, errorClient] = useDocument(
     doc(firestore, `clients/${query?.id}`)
   );
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useEffect(() => {
     if (query.id) {

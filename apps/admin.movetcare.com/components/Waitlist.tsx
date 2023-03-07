@@ -47,7 +47,6 @@ import "react-tooltip/dist/react-tooltip.css";
 
 export const Waitlist = () => {
   const [showArchive, setShowArchive] = useState<boolean>(false);
-  const [isMounted, setIsMounted] = useState(false);
   const [clients, loading, error] = useCollection(
     query(collection(firestore, "waitlist"), where("isActive", "==", true)),
     {
@@ -66,10 +65,6 @@ export const Waitlist = () => {
         snapshotListenOptions: { includeMetadataChanges: true },
       }
     );
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   return (
     <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
@@ -134,7 +129,7 @@ export const Waitlist = () => {
                     </div>
                     <div className="min-w-0 flex flex-row justify-center md:justify-between w-full">
                       <div className="flex flex-row items-center">
-                        {isMounted && <Tooltip id="viewProVet" />}
+                        <Tooltip id="viewProVet" />
                         <a
                           data-tooltip-id="viewProVet"
                           data-tooltip-content="View in ProVet"
@@ -162,7 +157,7 @@ export const Waitlist = () => {
                       <div className="hidden md:flex justify-end">
                         {client?.data()?.customerId && (
                           <>
-                            {isMounted && <Tooltip id="ViewInStripe" />}
+                            <Tooltip id="ViewInStripe" />
                             <a
                               data-tooltip-id="ViewInStripe"
                               data-tooltip-content="View Customer in Stripe"
@@ -270,7 +265,7 @@ export const Waitlist = () => {
                         </div>
                       </div>
                     </div>
-                    {isMounted && <Tooltip id="remove" />}
+                    <Tooltip id="remove" />
                     <button
                       data-tooltip-id="remove"
                       data-tooltip-content="Remove from Waitlist"
@@ -322,7 +317,7 @@ export const Waitlist = () => {
                   </div>
                   {client?.data()?.customerId && (
                     <>
-                      {isMounted && <Tooltip id="viewStripe" />}
+                      <Tooltip id="viewStripe" />
                       <a
                         data-tooltip-id="viewStripe"
                         data-tooltip-content="View Customer in Stripe"
@@ -357,7 +352,7 @@ export const Waitlist = () => {
                   <div className="flex justify-center items-center mt-3 w-full">
                     {client?.data()?.id && (
                       <>
-                        {isMounted && <Tooltip id="viewProvet" />}
+                        <Tooltip id="viewProvet" />
                         <a
                           data-tooltip-id="viewProvet"
                           data-tooltip-content="View in ProVet"
@@ -381,7 +376,7 @@ export const Waitlist = () => {
                     )}
                     {client?.data()?.email && (
                       <>
-                        {isMounted && <Tooltip id="sendEmail" />}
+                        <Tooltip id="sendEmail" />
                         <a
                           data-tooltip-id="sendEmail"
                           data-tooltip-content="Email Client"
@@ -397,7 +392,7 @@ export const Waitlist = () => {
                     )}
                     {client?.data()?.phone && (
                       <>
-                        {isMounted && <Tooltip id="callClient" />}
+                        <Tooltip id="callClient" />
                         <a
                           data-tooltip-id="callClient"
                           data-tooltip-content="Call Client"
@@ -414,7 +409,7 @@ export const Waitlist = () => {
                     {client?.data()?.phone &&
                       client?.data()?.status === "complete" && (
                         <>
-                          {isMounted && <Tooltip id="textClient" />}
+                          <Tooltip id="textClient" />
                           <button
                             data-tooltip-id="textClient"
                             data-tooltip-content="Send  `Ready for Appointment` to Client"
