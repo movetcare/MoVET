@@ -105,9 +105,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
           CYPRESS_FAIL_FAST_PLUGIN: false
-      - name: Wipe Test Data from Database
-        id: wipe-test-data
-        run: pnpm run wipe:test:prod
       - uses: act10ns/slack@master
         with:
           status: ${{ job.status }}
@@ -115,3 +112,20 @@ jobs:
           config: .github/config/slack.yml
           channel: "#production-logs"
         if: always()
+  wipe_test_data:
+      name: Wipe Test Data
+      needs: cypress_run
+      runs-on: ubuntu-latest
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
+      steps:
+        - name: Wipe Test Data from Database
+          id: wipe-test-data
+          run: npm run wipe:test:prod
+        - uses: act10ns/slack@master
+          with:
+            status: ${{ job.status }}
+            steps: ${{ toJson(steps) }}
+            config: .github/config/slack.yml
+            channel: "#production-logs"
+          if: always()
