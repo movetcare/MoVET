@@ -33,6 +33,7 @@
     "init:config:stage": "curl -i -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST https://us-central1-movet-care-staging.cloudfunctions.net/incomingWebhook/app/config/",
     "init:config:prod": "curl -i -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/app/config/",
     "init:config:local:prod": "curl -i -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"type\":\"all\"}' POST http://localhost:5001/movet-care/us-central1/incomingWebhook/app/config/",
+    "wipe:test:prod": "curl -i -v -H 'Content-Type: application/json' -d '{\"apiKey\":\"L9At3HGmvRDuyi7TTX\",\"id\":\"wipe_test_data\"}' POST https://us-central1-movet-care.cloudfunctions.net/resetTestData/",
     "logs": "firebase functions:log"
   },
   "dependencies": {

@@ -41,6 +41,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
           CYPRESS_FAIL_FAST_PLUGIN: false
+      - name: Wipe Test Data from Database
+        id: wipe-test-data
+        run: pnpm run wipe:test:prod
       - uses: act10ns/slack@master
         with:
           status: ${{ job.status }}

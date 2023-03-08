@@ -5,17 +5,17 @@ import {
   faCog,
   faHeadset,
   faRedo,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, query } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import toast from 'react-hot-toast';
-import { auth, firestore, functions } from 'services/firebase';
-import Error from 'components/Error';
-import environment from 'utils/environment';
-import { httpsCallable } from 'firebase/functions';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { useCollection } from "react-firebase-hooks/firestore";
+import toast from "react-hot-toast";
+import { auth, firestore, functions } from "services/firebase";
+import Error from "components/Error";
+import environment from "utils/environment";
+import { httpsCallable } from "firebase/functions";
 
 const Terminal = () => {
   const [showReaderDetails, setShowReaderDetails] = useState<boolean>(false);
@@ -23,14 +23,14 @@ const Terminal = () => {
   const [reader, setReader] = useState<any>();
   const [readerError, setReaderError] = useState<any>();
   const [terminals, loadingTerminals, errorTerminals]: any = useCollection(
-    query(collection(firestore, 'configuration/pos/terminals')),
+    query(collection(firestore, "configuration/pos/terminals")),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
     }
   );
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const claimsString = (user as any)?.reloadUserInfo?.customAttributes;
         if (claimsString) {
@@ -43,18 +43,18 @@ const Terminal = () => {
   }, []);
 
   useEffect(() => {
-    if (reader && reader?.status !== 'online') {
+    if (reader && reader?.status !== "online") {
       toast(
         `Card Reader Status: ${
           reader?.status.charAt(0).toUpperCase() + reader?.status.slice(1)
         }`,
         {
           icon: <FontAwesomeIcon icon={faCashRegister} size="2x" />,
-          position: 'top-center',
+          position: "top-center",
           duration: 5000,
         }
       );
-      if (reader?.status === 'online') setShowReaderDetails(false);
+      if (reader?.status === "online") setShowReaderDetails(false);
     }
   }, [reader]);
 
@@ -82,7 +82,7 @@ const Terminal = () => {
         }`,
         {
           icon: <FontAwesomeIcon icon={faCashRegister} size="2x" />,
-          position: 'top-center',
+          position: "top-center",
           duration: 10000,
         }
       );
@@ -95,7 +95,7 @@ const Terminal = () => {
         onClick={() => {
           if (isAdmin) setShowReaderDetails(!showReaderDetails);
         }}
-        className={`bg-opacity-50 shadow overflow-hidden flex flex-col justify-between items-center px-6 hover:cursor-pointer rounded-full${
+        className={`shadow overflow-hidden flex flex-col justify-between items-center px-6 hover:cursor-pointer rounded-full${
           reader?.status === "online"
             ? " bg-movet-green bg-opacity-100 text-movet-white"
             : reader?.status === "offline" ||

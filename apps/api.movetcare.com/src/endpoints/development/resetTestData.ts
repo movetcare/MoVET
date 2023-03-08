@@ -11,7 +11,7 @@ import {
 // import { updateProVetPatient } from "../../integrations/provet/entities/patient/updateProVetPatient";
 import { sendNotification } from "../../notifications/sendNotification";
 // import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
-const DEBUG = false;
+const DEBUG = true;
 export const resetTestData: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {
@@ -238,6 +238,56 @@ export const resetTestData: Promise<Response> = functions
             { merge: true }
           )
           .catch((error: any) => DEBUG && console.error(error));
+      else if (request.body?.id === "wipe_test_data") {
+        await admin
+          .firestore()
+          .collection("bookings")
+          .where("client.firstName", "==", "CYPRESS")
+          .get()
+          .then((querySnapshot: any) =>
+            querySnapshot.forEach((doc: any) => {
+              doc.ref.delete();
+              DEBUG &&
+                console.log(
+                  "Successfully Deleted Test Booking Document",
+                  doc.id
+                );
+            })
+          )
+          .catch((error: any) => DEBUG && console.error(error));
+        await admin
+          .firestore()
+          .collection("k9_smiles")
+          .where("firstName", "==", "CYPRESS")
+          .get()
+          .then((querySnapshot: any) =>
+            querySnapshot.forEach((doc: any) => {
+              doc.ref.delete();
+              DEBUG &&
+                console.log(
+                  "Successfully Deleted Test Booking Document",
+                  doc.id
+                );
+            })
+          )
+          .catch((error: any) => DEBUG && console.error(error));
+        await admin
+          .firestore()
+          .collection("contact")
+          .where("firstName", "==", "CYPRESS")
+          .get()
+          .then((querySnapshot: any) =>
+            querySnapshot.forEach((doc: any) => {
+              doc.ref.delete();
+              DEBUG &&
+                console.log(
+                  "Successfully Deleted Test Booking Document",
+                  doc.id
+                );
+            })
+          )
+          .catch((error: any) => DEBUG && console.error(error));
+      }
     }
     return response.status(200).send();
   });
