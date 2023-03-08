@@ -2,6 +2,7 @@ const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
   projectId: "isemvz",
+  video: process.env.CYPRESS_ENVIRONMENT === "production" ? true : false,
   env: {
     environment: process.env.CYPRESS_ENVIRONMENT || "development",
     adminUrl: process.env.CYPRESS_ADMIN_URL || "http://localhost:3002",
@@ -43,6 +44,7 @@ module.exports = defineConfig({
   downloadsFolder: "testing/results/downloads",
   screenshotsFolder: "testing/results/screenshots",
   videosFolder: "testing/results/videos",
+  videoUploadOnPasses: false,
   e2e: {
     setupNodeEvents(on, config) {
       require("cypress-fail-fast/plugin")(on, config);
