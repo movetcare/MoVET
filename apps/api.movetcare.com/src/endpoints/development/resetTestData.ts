@@ -249,7 +249,7 @@ export const resetTestData: Promise<Response> = functions
               doc.ref.delete();
               DEBUG &&
                 console.log(
-                  "Successfully Deleted Test Booking Document",
+                  "Successfully Deleted Test `bookings` Document",
                   doc.id
                 );
             })
@@ -265,7 +265,7 @@ export const resetTestData: Promise<Response> = functions
               doc.ref.delete();
               DEBUG &&
                 console.log(
-                  "Successfully Deleted Test Booking Document",
+                  "Successfully Deleted Test `k9_smiles` Document",
                   doc.id
                 );
             })
@@ -281,7 +281,7 @@ export const resetTestData: Promise<Response> = functions
               doc.ref.delete();
               DEBUG &&
                 console.log(
-                  "Successfully Deleted Test Booking Document",
+                  "Successfully Deleted Test `contact` Document",
                   doc.id
                 );
             })

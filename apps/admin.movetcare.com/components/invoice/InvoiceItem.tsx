@@ -864,7 +864,7 @@ const InvoiceDetails = ({
                                   icon={faEnvelopeSquare}
                                   size={"2x"}
                                 />
-                                <h3 className="ml-2 font-medium text-center text-sm">
+                                <h3 className="ml-2 mt-2 font-medium text-center text-sm">
                                   {client?.email
                                     ? "EMAIL INVOICE"
                                     : "MISSING EMAIL"}

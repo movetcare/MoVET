@@ -119,6 +119,8 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
       steps:
+        - name: Checkout
+          uses: actions/checkout@master
         - name: Wipe Test Data from Database
           id: wipe-test-data
           run: npm run wipe:test:prod
