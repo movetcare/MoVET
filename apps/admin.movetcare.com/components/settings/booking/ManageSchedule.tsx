@@ -15,7 +15,7 @@ import {
   faHouseMedical,
   faTrash,
   faTimes,
-  faWrench,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { Switch, Transition } from "@headlessui/react";
@@ -203,11 +203,19 @@ const ManageSchedule = () => {
             <div className="divide-y divide-movet-gray">
               <div className="px-4 sm:px-6">
                 <h2 className="text-2xl mb-2 leading-6 font-medium text-movet-black">
-                  Schedule
+                  CLOSURES
                 </h2>
                 <p className="text-sm text-movet-black -mt-1">
-                  Use the options below to manage the appointment booking
-                  schedules.
+                  Use this setting to disable certain days of the week on the
+                  appointment availability schedules and show them on the{" "}
+                  <a
+                    href="https://movetcare.com/hours"
+                    target="_blank"
+                    className="text-movet-red hover:underline"
+                  >
+                    website hours page
+                  </a>
+                  .
                 </p>
               </div>
               <ul className="mt-4 mb-8 divide-y divide-movet-gray px-8">
@@ -216,12 +224,6 @@ const ManageSchedule = () => {
                     <Loader message="Loading Closures" />
                   ) : (
                     <div className="flex flex-col mr-4">
-                      <h3>CLOSURES</h3>
-                      <p className="text-sm">
-                        Use this setting to disable certain days of the week on
-                        the appointment availability calendars.
-                      </p>
-                      <Divider />
                       {(closures === null || closures?.length < 0) &&
                         !showAddClosureForm && (
                           <h1 className="text-lg my-4 italic">
@@ -618,8 +620,9 @@ const ManageSchedule = () => {
                                           )}
                                         />
                                       </div>
-                                      <button
+                                      <Button
                                         type="submit"
+                                        color="black"
                                         disabled={
                                           !isDirty ||
                                           isSubmitting ||
@@ -632,13 +635,9 @@ const ManageSchedule = () => {
                                             : "w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4",
                                           "mt-6"
                                         )}
-                                      >
-                                        <FontAwesomeIcon
-                                          icon={faWrench}
-                                          size="lg"
-                                        />
-                                        <span className="ml-2">Save</span>
-                                      </button>
+                                        icon={faPlus}
+                                        text="Add Closure"
+                                      />
                                     </form>
                                   </div>
                                 </div>
@@ -650,9 +649,9 @@ const ManageSchedule = () => {
                       {showAddClosureForm ? (
                         <Button
                           onClick={() => setShowAddClosureForm(false)}
-                          text="Cancel"
+                          text="Close"
                           icon={faTimes}
-                          color="black"
+                          color="red"
                           className="mt-4"
                         />
                       ) : (

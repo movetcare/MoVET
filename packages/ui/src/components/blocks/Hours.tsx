@@ -1,4 +1,10 @@
-import { faParking, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPersonWalking,
+  faParking,
+  faArrowRight,
+  faHospital,
+  faHouseMedical,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { WinterMode as WinterModeType } from "types";
 import Image from "next/image";
@@ -133,8 +139,7 @@ export const Hours = ({
               )}
               <Link href="/hours" className="text-movet-white">
                 <h3 className="font-abside text-center text-sm w-full sm:w-2/3 mx-auto mt-4">
-                  View All Seasonal Closures{" "}
-                  <FontAwesomeIcon icon={faArrowRight} />
+                  View Seasonal Closures <FontAwesomeIcon icon={faArrowRight} />
                 </h3>
               </Link>
             </div>
@@ -276,8 +281,7 @@ export const Hours = ({
               )}
               <Link href="/hours" className="text-movet-white">
                 <h3 className="font-abside text-center text-sm w-full sm:w-2/3 mx-auto mt-4 -mb-4">
-                  View All Seasonal Closures{" "}
-                  <FontAwesomeIcon icon={faArrowRight} />
+                  View Seasonal Closures <FontAwesomeIcon icon={faArrowRight} />
                 </h3>
               </Link>
             </div>
@@ -321,6 +325,11 @@ export const Hours = ({
         </h3> */}
           <div className="grid sm:grid-cols-2 gap-y-12 gap-x-8 mb-8 p-8 rounded-xl bg-white">
             <div className="w-full max-w-lg">
+              <FontAwesomeIcon
+                icon={faHospital}
+                size="3x"
+                className="w-full mb-4 text-movet-red"
+              />
               <h3 className="text-xl text-center font-bold pt-2">
                 MoVET @ Belleview Station
               </h3>
@@ -369,6 +378,11 @@ export const Hours = ({
               </a>
             </div> */}
             <div className="w-full max-w-lg  whitespace-nowrap">
+              <FontAwesomeIcon
+                icon={faPersonWalking}
+                size="3x"
+                className="w-full mb-4 text-movet-red"
+              />
               <h3 className="text-xl text-center font-bold">
                 Clinic Walk-In Hours
               </h3>
@@ -390,6 +404,11 @@ export const Hours = ({
               </div>
             </div>
             <div className="w-full max-w-md items-center col-span-2 mx-auto">
+              <FontAwesomeIcon
+                icon={faHouseMedical}
+                size="3x"
+                className="w-full mb-4 text-movet-red"
+              />
               <h3 className="text-xl text-center">Housecalls</h3>
               {winterMode &&
               winterMode?.isActive &&
@@ -460,6 +479,11 @@ export const Hours = ({
               </a>
             </div> */}
             <div className="mt-8 w-full max-w-lg whitespace-nowrap">
+              <FontAwesomeIcon
+                icon={faHospital}
+                size="3x"
+                className="w-full mb-4 text-movet-red"
+              />
               <h3 className="text-xl text-center font-bold pt-2">
                 MoVET @ Belleview Station
               </h3>
@@ -481,6 +505,11 @@ export const Hours = ({
               </div>
             </div>
             <div className="w-full max-w-lg whitespace-nowrap mt-8">
+              <FontAwesomeIcon
+                icon={faPersonWalking}
+                size="3x"
+                className="w-full mb-4 text-movet-red"
+              />
               <h3 className="text-xl text-center font-bold">
                 Clinic Walk-In Hours
               </h3>
@@ -502,6 +531,11 @@ export const Hours = ({
               </div>
             </div>
             <div className="w-full max-w-lg items-center my-8">
+              <FontAwesomeIcon
+                icon={faHouseMedical}
+                size="3x"
+                className="w-full mb-4 text-movet-red"
+              />
               <h3 className="text-xl text-center">Housecalls</h3>
               {winterMode &&
               winterMode?.isActive &&
