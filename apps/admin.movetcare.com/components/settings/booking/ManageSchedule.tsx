@@ -147,8 +147,6 @@ const ManageSchedule = () => {
         })
       )
       .finally(() => setShowAddClosureForm(false));
-
-  const Divider = () => <hr className="my-4 border-movet-brown/50" />;
   return (
     <section className="flex flex-row items-center justify-center bg-white rounded-lg">
       <div className="bg-white rounded-lg w-full">

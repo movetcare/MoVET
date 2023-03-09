@@ -1,21 +1,29 @@
 import { sendNotification } from "../notifications/sendNotification";
 import { environment, functions, request, DEBUG } from "../config/config";
 
-export const handleAnnouncementBannerUpdate = functions.firestore
-  .document("alerts/{id}")
+export const handleClosureUpdate = functions.firestore
+  .document("configuration/{id}")
   .onWrite(async (change: any, context: any) => {
     const { id } = context.params || {};
     const data = change.after.data();
     if (DEBUG)
-      console.log("handleAnnouncementBannerUpdate => DATA", {
+      console.log("handleClosureUpdate => DATA", {
         id,
         data,
       });
-    if (id === "banner" && data !== undefined) {
-      const { isActive, isActiveMobile, link, message, title } = data || {};
+    if (id === "closures" && data !== undefined) {
+      const {
+        name,
+        isActiveForClinic,
+        isActiveForHousecalls,
+        isActiveForTelehealth,
+        startDate,
+        endDate,
+        showOnWebsite,
+      } = data || {};
       // https://vercel.com/docs/concepts/git/deploy-hooks
       const didTriggerVercelBuildWebhook =
-        isActive && environment.type === "production"
+        showOnWebsite && environment.type === "production"
           ? await request
               .post(
                 "https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false"
@@ -39,33 +47,45 @@ export const handleAnnouncementBannerUpdate = functions.firestore
             {
               type: "section",
               text: {
-                text: ":loudspeaker: _Announcement Banner Updated!_",
+                text: ":door: _Hours Closures Updated!_",
                 type: "mrkdwn",
               },
               fields: [
                 {
                   type: "mrkdwn",
-                  text: "*TITLE:*",
+                  text: "*Name:*",
                 },
                 {
                   type: "plain_text",
-                  text: title,
+                  text: name,
                 },
                 {
                   type: "mrkdwn",
-                  text: "*MESSAGE:*",
+                  text: "*START DATE:*",
                 },
                 {
                   type: "plain_text",
-                  text: message,
+                  text:
+                    startDate?.toDate()?.toLocaleDateString("en-us", {
+                      weekday: "short",
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                    }) +
+                    endDate?.toDate()?.toLocaleDateString("en-us", {
+                      weekday: "short",
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                    }),
                 },
                 {
                   type: "mrkdwn",
-                  text: "*LINK*",
+                  text: "*SHOW ON WEBSITE*",
                 },
                 {
                   type: "plain_text",
-                  text: `https://movetcare.com${link}`,
+                  text: showOnWebsite ? ":white_check_mark: " : ":red_circle:",
                 },
                 {
                   type: "mrkdwn",
@@ -74,13 +94,16 @@ export const handleAnnouncementBannerUpdate = functions.firestore
                 {
                   type: "plain_text",
                   text:
-                    (isActive
-                      ? "WEB: :white_check_mark: "
-                      : "WEB: :red_circle: ") +
+                    (isActiveForClinic
+                      ? "CLINIC: :white_check_mark: "
+                      : "CLINIC: :red_circle: ") +
                     " | " +
-                    (isActiveMobile
-                      ? "MOBILE: :white_check_mark: "
-                      : "MOBILE: :red_circle: "),
+                    (isActiveForHousecalls
+                      ? "HOUSECALLS: :white_check_mark: "
+                      : "HOUSECALLS: :red_circle: ") +
+                    (isActiveForTelehealth
+                      ? "TELEHEALTH: :white_check_mark: "
+                      : "TELEHEALTH: :red_circle: "),
                 },
                 {
                   type: "mrkdwn",

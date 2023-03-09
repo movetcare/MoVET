@@ -40,11 +40,14 @@ export default function HoursPage({
           <div className="relative z-20 px-4 sm:px-8 max-w-screen-lg mx-auto">
             <div className="mb-8 p-8 rounded-xl bg-white">
               <div className="w-full max-w-lg mx-auto">
-                <h3 className="text-xl text-center font-bold pt-2">
+                <h3 className="text-xl text-center font-bold">
                   Seasonal Closures
                 </h3>
-                {closures.map((closure: ClosuresType) => (
-                  <div className="flex flex-col sm:flex-row py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
+                {closures.map((closure: ClosuresType, index: number) => (
+                  <div
+                    className="flex flex-col sm:flex-row py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap"
+                    key={index}
+                  >
                     <div className="w-full">
                       <div className="flex w-full">
                         {/* <span className="mx-2">

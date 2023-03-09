@@ -15,6 +15,7 @@ import { configureUsers } from "./configureUsers";
 import { configureItems } from "../integrations/provet/entities/item/configureItems";
 import { configureBooking } from "../booking/configureBooking";
 import { sendNotification } from "../notifications/sendNotification";
+import { configureSchedule } from "./configureSchedule";
 
 export const initProVetConfig = async (
   { body: { apiKey, type } }: Request<{ body: any }>,
@@ -44,6 +45,7 @@ export const initProVetConfig = async (
       case "all":
         if (environment.type !== "production")
           return (
+            (await configureSchedule()) &&
             (await configureBooking()) &&
             (await configureAppointmentEstimates()) &&
             (await configureAppointmentOptionDetails()) &&
