@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
-    container: cypress/browsers:chrome69
+    container: cypress/browsers:node12.18.3-chrome87-ff82
     strategy:
       fail-fast: false
       matrix:
