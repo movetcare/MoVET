@@ -1,7 +1,8 @@
-import { faParking } from "@fortawesome/free-solid-svg-icons";
+import { faParking, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { WinterMode as WinterModeType } from "types";
 import Image from "next/image";
+import Link from "next/link";
 
 export const Hours = ({
   winterMode,
@@ -29,10 +30,6 @@ export const Hours = ({
           <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white -mt-4 mb-12">
             Hours of Operation
           </h2>
-          {/* <h3 className="font-abside text-center mb-8 -mt-4 italic text-sm w-full sm:w-2/3 mx-auto">
-          * Our clinic will be closed from December 23rd - January 3rd. Our
-          Boutique will stay open December 27 - 29.
-        </h3> */}
           <div className="grid sm:grid-cols-2 gap-y-12 gap-x-8 mb-12">
             <div className="w-full max-w-lg">
               <h3 className="text-xl text-center font-bold pt-2">
@@ -73,7 +70,7 @@ export const Hours = ({
               <a
                 href="https://movetcare.com/parking.png"
                 target="_blank"
-                className="flex flex-row items-center justify-center w-full text-center text-sm text-movet-white mt-8 md:mt-4 font-extrabold hover:text-movet-black"
+                className="flex flex-row items-center justify-center w-full text-center text-sm text-movet-white mt-8 md:mt-4 font-extrabold"
                 rel="noreferrer"
               >
                 <span className="w-6 h-6 mr-2">
@@ -134,6 +131,12 @@ export const Hours = ({
                   </div>
                 </div>
               )}
+              <Link href="/hours" className="text-movet-white">
+                <h3 className="font-abside text-center text-sm w-full sm:w-2/3 mx-auto mt-4">
+                  View All Seasonal Closures{" "}
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </h3>
+              </Link>
             </div>
           </div>
         </div>
@@ -271,6 +274,12 @@ export const Hours = ({
                   </div>
                 </div>
               )}
+              <Link href="/hours" className="text-movet-white">
+                <h3 className="font-abside text-center text-sm w-full sm:w-2/3 mx-auto mt-4 -mb-4">
+                  View All Seasonal Closures{" "}
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </h3>
+              </Link>
             </div>
           </div>
         </div>

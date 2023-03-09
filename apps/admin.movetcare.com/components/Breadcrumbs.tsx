@@ -12,7 +12,7 @@ export default function Breadcrumbs({
   }>;
 }) {
   return (
-    <nav className="flex" aria-label="Breadcrumb">
+    <nav className="flex overflow-hidden" aria-label="Breadcrumb">
       <ol role="list" className="flex items-center space-x-4">
         <li>
           <Link href={pages[0].href}>

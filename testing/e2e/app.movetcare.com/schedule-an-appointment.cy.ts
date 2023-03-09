@@ -244,7 +244,7 @@ if (isDevelopmentEnvironment)
         });
       });
 
-      it.only("(MOBILE WEBVIEW) Can request a housecall with VCPR required patient", () => {
+      it("(MOBILE WEBVIEW) Can request a housecall with VCPR required patient", () => {
         cy.request("POST", Cypress.env().testApiUrl, {
           apiKey: Cypress.env().endpointApiKey,
           id: "winter-mode-off",

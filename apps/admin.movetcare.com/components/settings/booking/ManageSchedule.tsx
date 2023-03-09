@@ -6,8 +6,15 @@ import { Button, Loader } from "ui";
 import {
   faBan,
   faCalendarPlus,
+  faCheck,
   faCircleCheck,
   faCircleExclamation,
+  faGlobe,
+  faHeadset,
+  faHospital,
+  faHouseMedical,
+  faTrash,
+  faTimes,
   faWrench,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
@@ -20,6 +27,8 @@ import toast from "react-hot-toast";
 import Error from "components/Error";
 import { firestore } from "services/firebase";
 import { TextInput } from "ui/src/components/forms/inputs";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 const PAGE_NAME = subNavigation[1].name;
 interface Closure {
   name: string;
@@ -58,11 +67,49 @@ const ManageSchedule = () => {
   const isActiveForHousecalls = watch("isActiveForHousecalls");
   const isActiveForTelehealth = watch("isActiveForTelehealth");
   const showOnWebsite = watch("showOnWebsite");
+  const startDate = watch("startDate");
+  const endDate = watch("endDate");
 
   useEffect(() => {
     if (closuresData && closuresData.data())
       setClosures(closuresData.data()?.closureDates);
   }, [closuresData]);
+
+  const deleteClosureFromFirestore = async (index: number) =>
+    await setDoc(
+      doc(firestore, "configuration/closures"),
+      {
+        closureDates: closures?.filter((_, i) => i !== index),
+        updatedOn: serverTimestamp(),
+      },
+      { merge: true }
+    )
+      .then(() =>
+        toast(`Your closure deletion will appear in 5 minutes (or less).`, {
+          duration: 5000,
+          position: "bottom-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleCheck}
+              size="sm"
+              className="text-movet-green"
+            />
+          ),
+        })
+      )
+      .catch((error: any) =>
+        toast(`Closure Deletion FAILED: ${error?.message}`, {
+          duration: 5000,
+          position: "bottom-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              size="sm"
+              className="text-movet-red"
+            />
+          ),
+        })
+      );
 
   const onSubmit = async (data: any) =>
     await setDoc(
@@ -98,11 +145,13 @@ const ManageSchedule = () => {
             />
           ),
         })
-      );
+      )
+      .finally(() => setShowAddClosureForm(false));
+
   const Divider = () => <hr className="my-4 border-movet-brown/50" />;
   return (
-    <section className="flex flex-row items-center justify-center bg-white rounded-lg overflow-hidden">
-      <div className="bg-white rounded-lg overflow-hidden w-full">
+    <section className="flex flex-row items-center justify-center bg-white rounded-lg">
+      <div className="bg-white rounded-lg w-full">
         <div className="px-8 my-4 w-full border-b pb-4 border-movet-gray">
           <Breadcrumbs
             pages={[
@@ -150,11 +199,7 @@ const ManageSchedule = () => {
               ))}
             </nav>
           </aside>
-          <form
-            className="divide-y divide-movet-gray lg:col-span-9"
-            action="#"
-            method="POST"
-          >
+          <section className="divide-y divide-movet-gray lg:col-span-9">
             <div className="divide-y divide-movet-gray">
               <div className="px-4 sm:px-6">
                 <h2 className="text-2xl mb-2 leading-6 font-medium text-movet-black">
@@ -178,43 +223,54 @@ const ManageSchedule = () => {
                       </p>
                       <Divider />
                       {(closures === null || closures?.length < 0) &&
-                      !showAddClosureForm ? (
-                        <h1 className="text-lg my-4 italic">
-                          No Closures Found...
-                        </h1>
-                      ) : (
+                        !showAddClosureForm && (
+                          <h1 className="text-lg my-4 italic">
+                            No Closures Found...
+                          </h1>
+                        )}
+                      {closures && closures?.length > 0 && (
                         <table className="min-w-full divide-y divide-gray-300">
                           <thead>
                             <tr>
                               <th
                                 scope="col"
-                                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
-                              >
-                                Date
-                              </th>
-                              <th
-                                scope="col"
-                                className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
+                                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-movet-black sm:pl-0"
                               >
                                 Name
                               </th>
                               <th
                                 scope="col"
-                                className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell"
+                                className="py-3.5 px-3 text-left text-sm font-semibold text-movet-black"
                               >
+                                Date
+                              </th>
+                              <th
+                                scope="col"
+                                className="py-3.5 px-3 text-left text-sm font-semibold text-movet-black"
+                                data-tooltip-id="schedules"
+                                data-tooltip-content="Impacted Schedule(s)"
+                                title="Impacted Schedule(s)"
+                              >
+                                <Tooltip id="schedules" />
                                 Schedules
                               </th>
                               <th
                                 scope="col"
-                                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                className="py-3.5 px-3 text-left text-sm font-semibold text-movet-black"
                               >
-                                Display on Website
+                                <Tooltip id="showOnWebsite" />
+                                <FontAwesomeIcon
+                                  data-tooltip-id="showOnWebsite"
+                                  data-tooltip-content="Display Closure on movetcare.com"
+                                  title="Display Closure on movetcare.com"
+                                  icon={faGlobe}
+                                />
                               </th>
                               <th
                                 scope="col"
                                 className="relative py-3.5 pl-3 pr-4 sm:pr-0"
                               >
-                                <span className="sr-only">Edit</span>
+                                <span className="sr-only">Delete</span>
                               </th>
                             </tr>
                           </thead>
@@ -222,48 +278,115 @@ const ManageSchedule = () => {
                             {closures &&
                               closures.map(
                                 (closure: Closure, index: number) => (
-                                  <tr key={index}>
-                                    <td className="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0">
+                                  <tr
+                                    key={index}
+                                    onClick={async () =>
+                                      await deleteClosureFromFirestore(index)
+                                    }
+                                  >
+                                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-movet-black sm:pl-0">
                                       {closure.name}
-                                      <dl className="font-normal lg:hidden">
-                                        <dt className="sr-only">Date</dt>
-                                        <dd className="mt-1 truncate text-gray-700">
+                                    </td>
+                                    <td className="whitespace-nowrap py-4 px-3 text-sm">
+                                      {closure?.startDate
+                                        ?.toDate()
+                                        ?.toLocaleDateString("en-us", {
+                                          weekday: "short",
+                                          year: "numeric",
+                                          month: "numeric",
+                                          day: "numeric",
+                                        }) !==
+                                      closure?.endDate
+                                        ?.toDate()
+                                        ?.toLocaleDateString("en-us", {
+                                          weekday: "short",
+                                          year: "numeric",
+                                          month: "numeric",
+                                          day: "numeric",
+                                        }) ? (
+                                        <p>
                                           {closure?.startDate
                                             ?.toDate()
-                                            ?.toString()}{" "}
+                                            ?.toLocaleDateString("en-us", {
+                                              weekday: "short",
+                                              year: "numeric",
+                                              month: "numeric",
+                                              day: "numeric",
+                                            })}{" "}
                                           -{" "}
                                           {closure?.endDate
                                             ?.toDate()
-                                            ?.toString()}
-                                        </dd>
-                                        <dt className="sr-only sm:hidden">
-                                          Name
-                                        </dt>
-                                        <dd className="mt-1 truncate text-gray-500 sm:hidden">
-                                          {closure.name}
-                                        </dd>
-                                      </dl>
+                                            ?.toLocaleDateString("en-us", {
+                                              weekday: "short",
+                                              year: "numeric",
+                                              month: "numeric",
+                                              day: "numeric",
+                                            })}
+                                        </p>
+                                      ) : (
+                                        <p>
+                                          {closure?.startDate
+                                            ?.toDate()
+                                            ?.toLocaleDateString("en-us", {
+                                              weekday: "short",
+                                              year: "numeric",
+                                              month: "numeric",
+                                              day: "numeric",
+                                            })}
+                                        </p>
+                                      )}
                                     </td>
-                                    <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
-                                      {closure?.startDate?.toDate()?.toString()}{" "}
-                                      - {closure?.endDate?.toDate()?.toString()}
+                                    <td className="whitespace-nowrap py-4 px-3 text-sm">
+                                      <Tooltip id="telehealthClosed" />
+                                      <Tooltip id="housecallsClosed" />
+                                      <Tooltip id="clinicClosed" />
+                                      {closure?.isActiveForClinic && (
+                                        <FontAwesomeIcon
+                                          data-tooltip-id="clinicClosed"
+                                          data-tooltip-content="Clinic Closed"
+                                          title="Clinic Closed"
+                                          size="lg"
+                                          icon={faHospital}
+                                          className="mr-2"
+                                        />
+                                      )}
+                                      {closure?.isActiveForHousecalls && (
+                                        <FontAwesomeIcon
+                                          data-tooltip-id="housecallsClosed"
+                                          data-tooltip-content="Housecalls Closed"
+                                          title="Housecalls Closed"
+                                          size="lg"
+                                          icon={faHouseMedical}
+                                        />
+                                      )}
+                                      {closure?.isActiveForTelehealth && (
+                                        <FontAwesomeIcon
+                                          data-tooltip-id="telehealthClosed"
+                                          data-tooltip-content="Telehealth Closed"
+                                          title="Telehealth Closed"
+                                          size="lg"
+                                          icon={faHeadset}
+                                          className="ml-2"
+                                        />
+                                      )}
                                     </td>
-                                    <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
-                                      {closure.name}
+                                    <td className="whitespace-nowrap py-4 px-3 text-sm">
+                                      {closure?.showOnWebsite ? (
+                                        <FontAwesomeIcon
+                                          size="lg"
+                                          icon={faCheck}
+                                          className="text-movet-green"
+                                        />
+                                      ) : (
+                                        <FontAwesomeIcon
+                                          size="lg"
+                                          icon={faBan}
+                                          className="text-movet-red"
+                                        />
+                                      )}
                                     </td>
-                                    <td className="px-3 py-4 text-sm text-gray-500">
-                                      Schedule
-                                    </td>
-                                    <td className="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                      <a
-                                        href="#"
-                                        className="text-indigo-600 hover:text-indigo-900"
-                                      >
-                                        Edit
-                                        <span className="sr-only">
-                                          , {closure.name}
-                                        </span>
-                                      </a>
+                                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                      <FontAwesomeIcon icon={faTrash} />
                                     </td>
                                   </tr>
                                 )
@@ -497,7 +620,12 @@ const ManageSchedule = () => {
                                       </div>
                                       <button
                                         type="submit"
-                                        disabled={!isDirty || isSubmitting}
+                                        disabled={
+                                          !isDirty ||
+                                          isSubmitting ||
+                                          startDate === null ||
+                                          endDate === null
+                                        }
                                         className={classNames(
                                           !isDirty || isSubmitting
                                             ? "w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4"
@@ -523,8 +651,8 @@ const ManageSchedule = () => {
                         <Button
                           onClick={() => setShowAddClosureForm(false)}
                           text="Cancel"
-                          icon={faBan}
-                          color="red"
+                          icon={faTimes}
+                          color="black"
                           className="mt-4"
                         />
                       ) : (
@@ -541,7 +669,7 @@ const ManageSchedule = () => {
                 </li>
               </ul>
             </div>
-          </form>
+          </section>
         </div>
       </div>
     </section>

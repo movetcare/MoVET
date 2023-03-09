@@ -9,9 +9,9 @@ import { updateProVetClient } from "../integrations/provet/entities/client/updat
 const DEBUG = false;
 export const handleK9SmilesRequest = functions.firestore
   .document("k9_smiles/{id}")
-  .onCreate(async (change: any, context: any) => {
+  .onCreate(async (snapshot: any, context: any) => {
     const { id } = context.params || {};
-    const data = change.after.data();
+    const data = snapshot.data();
     if (DEBUG)
       console.log("handleK9SmilesRequest => DATA", {
         id,
@@ -25,7 +25,7 @@ export const handleK9SmilesRequest = functions.firestore
       source: string;
       status: string;
     };
-    if (status === "started") {
+    if (status === "started" && email) {
       let authUser: UserRecord | null = await getAuthUserByEmail(email);
       let didUpdateClientInfo = false;
       if (DEBUG) console.log("authUser", authUser);

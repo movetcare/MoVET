@@ -244,14 +244,19 @@ export const resetTestData: Promise<Response> = functions
           .collection("bookings")
           .where("client.firstName", "==", "CYPRESS")
           .get()
-          .then((querySnapshot: any) =>
-            querySnapshot.forEach((doc: any) => {
-              doc.ref.delete();
-              DEBUG &&
-                console.log(
-                  "Successfully Deleted Test `bookings` Document",
-                  doc.id
-                );
+          .then(async (querySnapshot: any) =>
+            querySnapshot.forEach(async (doc: any) => {
+              await doc.ref
+                .delete()
+                .then(
+                  () =>
+                    DEBUG &&
+                    console.log(
+                      "Successfully Deleted Test `bookings` Document",
+                      doc.id
+                    )
+                )
+                .catch((error: any) => DEBUG && console.error(error));
             })
           )
           .catch((error: any) => DEBUG && console.error(error));
@@ -260,14 +265,19 @@ export const resetTestData: Promise<Response> = functions
           .collection("k9_smiles")
           .where("firstName", "==", "CYPRESS")
           .get()
-          .then((querySnapshot: any) =>
-            querySnapshot.forEach((doc: any) => {
-              doc.ref.delete();
-              DEBUG &&
-                console.log(
-                  "Successfully Deleted Test `k9_smiles` Document",
-                  doc.id
-                );
+          .then(async (querySnapshot: any) =>
+            querySnapshot.forEach(async (doc: any) => {
+              await doc.ref
+                .delete()
+                .then(
+                  () =>
+                    DEBUG &&
+                    console.log(
+                      "Successfully Deleted Test `k9_smiles` Document",
+                      doc.id
+                    )
+                )
+                .catch((error: any) => DEBUG && console.error(error));
             })
           )
           .catch((error: any) => DEBUG && console.error(error));
@@ -276,14 +286,19 @@ export const resetTestData: Promise<Response> = functions
           .collection("contact")
           .where("firstName", "==", "CYPRESS")
           .get()
-          .then((querySnapshot: any) =>
-            querySnapshot.forEach((doc: any) => {
-              doc.ref.delete();
-              DEBUG &&
-                console.log(
-                  "Successfully Deleted Test `contact` Document",
-                  doc.id
-                );
+          .then(async (querySnapshot: any) =>
+            querySnapshot.forEach(async (doc: any) => {
+              await doc.ref
+                .delete()
+                .then(
+                  () =>
+                    DEBUG &&
+                    console.log(
+                      "Successfully Deleted Test `contact` Document",
+                      doc.id
+                    )
+                )
+                .catch((error: any) => DEBUG && console.error(error));
             })
           )
           .catch((error: any) => DEBUG && console.error(error));
