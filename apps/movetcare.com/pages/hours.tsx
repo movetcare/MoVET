@@ -6,12 +6,12 @@ import type {
   Closures as ClosuresType,
 } from "types";
 import { getWinterMode, getClosures } from "server";
-import {
-  faHospital,
-  faHouseMedical,
-  faHeadset,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import {
+//   faHospital,
+//   faHouseMedical,
+//   faHeadset,
+// } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export async function getStaticProps() {
   return {
