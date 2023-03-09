@@ -26,7 +26,10 @@ export const resetTestData: Promise<Response> = functions
             querySnapshot.forEach((doc: any) => {
               doc.ref.delete();
               DEBUG &&
-                console.log("Successfully Deleted Booking Document", doc.id);
+                console.log(
+                  "Successfully Deleted Booking Document for Client 6008",
+                  doc.id
+                );
             })
           )
           .catch((error: any) => DEBUG && console.error(error));
@@ -53,7 +56,10 @@ export const resetTestData: Promise<Response> = functions
             querySnapshot.forEach((doc: any) => {
               doc.ref.delete();
               DEBUG &&
-                console.log("Successfully Deleted Booking Document", doc.id);
+                console.log(
+                  "Successfully Deleted Booking Document Client 5769",
+                  doc.id
+                );
             })
           )
           .catch((error: any) => DEBUG && console.error(error));
@@ -179,7 +185,10 @@ export const resetTestData: Promise<Response> = functions
             querySnapshot.forEach((doc: any) => {
               doc.ref.delete();
               DEBUG &&
-                console.log("Successfully Deleted Booking Document", doc.id);
+                console.log(
+                  "Successfully Deleted Booking Document for Client 6008",
+                  doc.id
+                );
             })
           )
           .catch((error: any) => DEBUG && console.error(error));
@@ -239,6 +248,48 @@ export const resetTestData: Promise<Response> = functions
           )
           .catch((error: any) => DEBUG && console.error(error));
       else if (request.body?.id === "wipe_test_data") {
+        await admin
+          .firestore()
+          .collection("bookings")
+          .where("client.firstName", "==", "TEST")
+          .get()
+          .then(async (querySnapshot: any) =>
+            querySnapshot.forEach(async (doc: any) => {
+              await doc.ref
+                .delete()
+                .then(
+                  () =>
+                    DEBUG &&
+                    console.log(
+                      "Successfully Deleted Test `bookings` Document",
+                      doc.id
+                    )
+                )
+                .catch((error: any) => DEBUG && console.error(error));
+            })
+          )
+          .catch((error: any) => DEBUG && console.error(error));
+        await admin
+          .firestore()
+          .collection("bookings")
+          .where("client.firstName", "==", "test")
+          .get()
+          .then(async (querySnapshot: any) =>
+            querySnapshot.forEach(async (doc: any) => {
+              await doc.ref
+                .delete()
+                .then(
+                  () =>
+                    DEBUG &&
+                    console.log(
+                      "Successfully Deleted Test `bookings` Document",
+                      doc.id
+                    )
+                )
+                .catch((error: any) => DEBUG && console.error(error));
+            })
+          )
+          .catch((error: any) => DEBUG && console.error(error));
         await admin
           .firestore()
           .collection("bookings")

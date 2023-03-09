@@ -159,7 +159,7 @@ export const processDateTime = async (
                   text: checkoutSession
                     ? "ACTIVE"
                     : `SKIPPED - Customer has ${
-                        (validFormOfPayment as Array<any>)?.length
+                        (validFormOfPayment as Array<any>)?.length || "0"
                       } Valid Payment Sources`,
                 },
               ],

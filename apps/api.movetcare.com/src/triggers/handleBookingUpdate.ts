@@ -4,15 +4,15 @@ import { functions } from "./../config/config";
 import { archiveBooking } from "../booking/session/archiveBooking";
 import type { Booking } from "../types/booking";
 import { updateBookingCancellation } from "../booking/abandonment/updateBookingCancellation";
-const DEBUG = false; 
+const DEBUG = false;
 export const handleBookingUpdate = functions.firestore
   .document("bookings/{id}")
   .onWrite(async (change: any, context: any) => {
     const { id } = context.params || {};
     const data: Booking = change.after.data();
-    const { step, isActive, cancelReason } = data || {};
     if (DEBUG) console.log("handleBookingUpdate => DATA", { id, data });
     if (data !== undefined) {
+      const { step, isActive, cancelReason } = data || {};
       if (cancelReason) updateBookingCancellation(id, data);
       if (isActive) {
         if (
