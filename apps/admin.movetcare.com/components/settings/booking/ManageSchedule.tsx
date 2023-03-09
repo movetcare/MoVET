@@ -278,12 +278,7 @@ const ManageSchedule = () => {
                             {closures &&
                               closures.map(
                                 (closure: Closure, index: number) => (
-                                  <tr
-                                    key={index}
-                                    onClick={async () =>
-                                      await deleteClosureFromFirestore(index)
-                                    }
-                                  >
+                                  <tr key={index}>
                                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-movet-black sm:pl-0">
                                       {closure.name}
                                     </td>
@@ -385,7 +380,12 @@ const ManageSchedule = () => {
                                         />
                                       )}
                                     </td>
-                                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                    <td
+                                      className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0"
+                                      onClick={async () =>
+                                        await deleteClosureFromFirestore(index)
+                                      }
+                                    >
                                       <FontAwesomeIcon icon={faTrash} />
                                     </td>
                                   </tr>
