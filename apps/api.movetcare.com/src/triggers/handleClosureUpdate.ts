@@ -6,12 +6,12 @@ export const handleClosureUpdate = functions.firestore
   .onWrite(async (change: any, context: any) => {
     const { id } = context.params || {};
     const data = change.after.data();
-    if (DEBUG)
-      console.log("handleClosureUpdate => DATA", {
-        id,
-        data,
-      });
     if (id === "closures" && data !== undefined) {
+      if (DEBUG)
+        console.log("handleClosureUpdate => DATA", {
+          id,
+          data,
+        });
       const {
         name,
         isActiveForClinic,
@@ -66,18 +66,19 @@ export const handleClosureUpdate = functions.firestore
                 {
                   type: "plain_text",
                   text:
-                    startDate?.toDate()?.toLocaleDateString("en-us", {
+                    `${startDate?.toDate()?.toLocaleDateString("en-us", {
                       weekday: "short",
                       year: "numeric",
                       month: "numeric",
                       day: "numeric",
-                    }) +
-                    endDate?.toDate()?.toLocaleDateString("en-us", {
+                    })}` +
+                    " - " +
+                    `${endDate?.toDate()?.toLocaleDateString("en-us", {
                       weekday: "short",
                       year: "numeric",
                       month: "numeric",
                       day: "numeric",
-                    }),
+                    })}`,
                 },
                 {
                   type: "mrkdwn",
