@@ -46,9 +46,9 @@ export const throwError = (error: any): false => {
 
 export const defaultRuntimeOptions = {
   timeoutSeconds: 300,
-  memory: "1GB",
+  memory: "512MB",
   //minInstances: environment.type === "production" ? 1 : 0,
-  maxInstances: 100,
+  //maxInstances: 100,
 };
 
 productionInstance = firebase.initializeApp();
