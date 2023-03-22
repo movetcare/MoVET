@@ -6,3 +6,4 @@ export * from "./src/booking";
 export * from "./src/google-maps";
 export * from "./src/winter-mode";
 export * from "./src/closures";
+export * from "./src/hours";

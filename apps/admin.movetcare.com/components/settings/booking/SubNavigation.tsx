@@ -13,8 +13,8 @@ export const subNavigation = [
     icon: faCalendarCheck,
   },
   {
-    name: "Closures",
-    href: "/settings/booking/manage-schedule",
+    name: "Manage Hours",
+    href: "/settings/booking/manage-hours",
     icon: faCalendarDay,
   },
   {

@@ -35,17 +35,15 @@ export default function Breadcrumbs({
                   className="flex-shrink-0 h-5 w-5 text-gray-400"
                   aria-hidden="true"
                 />
-                <a
-                  href={page.href}
+                <span
                   className={
                     page.current
                       ? "ml-4 text-sm text-movet-black cursor-default font-bold italic"
                       : "ml-4 text-sm font-medium text-movet-black hover:text-movet-red"
                   }
-                  aria-current={page.current ? "page" : undefined}
                 >
                   {page.name}
-                </a>
+                </span>
               </div>
             </Link>
           </li>

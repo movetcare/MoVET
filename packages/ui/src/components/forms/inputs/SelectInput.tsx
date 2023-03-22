@@ -31,7 +31,7 @@ export const SelectInput = ({
         render={({ field: { onChange, onBlur, value } }) => (
           <Listbox disabled={disabled} value={value} onChange={onChange}>
             {({ open }) => (
-              <div>
+              <div className="w-full z-50">
                 {label && (
                   <Listbox.Label
                     htmlFor={label}

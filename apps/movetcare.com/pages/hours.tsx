@@ -4,20 +4,16 @@ import Layout from "components/Layout";
 import type {
   WinterMode as WinterModeType,
   Closures as ClosuresType,
+  Hours as HoursType,
 } from "types";
-import { getWinterMode, getClosures } from "server";
-// import {
-//   faHospital,
-//   faHouseMedical,
-//   faHeadset,
-// } from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getWinterMode, getClosures, getHours } from "server";
 
 export async function getStaticProps() {
   return {
     props: {
       winterMode: (await getWinterMode()) || null,
       closures: (await getClosures()) || null,
+      hours: (await getHours()) || null,
     } as any,
   };
 }
@@ -25,16 +21,18 @@ export async function getStaticProps() {
 export default function HoursPage({
   winterMode,
   closures,
+  hours,
 }: {
   winterMode: WinterModeType;
   closures: Array<ClosuresType>;
+  hours: Array<HoursType>;
 }) {
   return (
     <Layout>
       <Head>
         <title>Hours of Operation</title>
       </Head>
-      <Hours winterMode={winterMode} />
+      <Hours winterMode={winterMode} hours={hours} />
       {closures && (closures as any)?.length > 0 && (
         <section className="w-full pb-6 -mt-4">
           <div className="relative z-20 px-4 sm:px-8 max-w-screen-lg mx-auto">
