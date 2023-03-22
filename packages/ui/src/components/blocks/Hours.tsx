@@ -102,23 +102,27 @@ export const Hours = ({
               </h3>
               <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                 <div className="w-full">
-                  {clinicHours?.map((hours: { days: string }) => {
-                    return (
-                      <div key={hours.days} className="flex w-full">
-                        <span>{hours.days}</span>
-                        <div className="w-full border-b mb-2 mx-4"></div>
-                      </div>
-                    );
-                  })}
+                  {clinicHours?.map(
+                    (hours: { days: string }, index: number) => {
+                      return (
+                        <div key={hours.days + index} className="flex w-full">
+                          <span>{hours.days}</span>
+                          <div className="w-full border-b mb-2 mx-4"></div>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
                 <div className="w-max">
-                  {clinicHours?.map((hours: { times: string }) => {
-                    return (
-                      <div key={hours.times} className="flex w-full">
-                        <span>{hours.times}</span>
-                      </div>
-                    );
-                  })}
+                  {clinicHours?.map(
+                    (hours: { times: string }, index: number) => {
+                      return (
+                        <div key={hours.times + index} className="flex w-full">
+                          <span>{hours.times}</span>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
               </div>
             </div>
@@ -133,23 +137,27 @@ export const Hours = ({
               </h3>
               <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                 <div className="w-full">
-                  {clinicWalkInHours?.map((hours: { days: string }) => {
-                    return (
-                      <div key={hours.days} className="flex w-full">
-                        <span>{hours.days}</span>
-                        <div className="w-full border-b mb-2 mx-4"></div>
-                      </div>
-                    );
-                  })}
+                  {clinicWalkInHours?.map(
+                    (hours: { days: string }, index: number) => {
+                      return (
+                        <div key={hours.days + index} className="flex w-full">
+                          <span>{hours.days}</span>
+                          <div className="w-full border-b mb-2 mx-4"></div>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
                 <div className="w-max">
-                  {clinicWalkInHours?.map((hours: { times: string }) => {
-                    return (
-                      <div key={hours.times} className="flex w-full">
-                        <span>{hours.times}</span>
-                      </div>
-                    );
-                  })}
+                  {clinicWalkInHours?.map(
+                    (hours: { times: string }, index: number) => {
+                      return (
+                        <div key={hours.times + index} className="flex w-full">
+                          <span>{hours.times}</span>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
               </div>
             </div>
@@ -164,23 +172,27 @@ export const Hours = ({
               </h3>
               <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
                 <div className="w-full">
-                  {boutiqueHours?.map((hours: { days: string }) => {
-                    return (
-                      <div key={hours.days} className="flex w-full">
-                        <span>{hours.days}</span>
-                        <div className="w-full border-b mb-2 mx-4"></div>
-                      </div>
-                    );
-                  })}
+                  {boutiqueHours?.map(
+                    (hours: { days: string }, index: number) => {
+                      return (
+                        <div key={hours.days + index} className="flex w-full">
+                          <span>{hours.days}</span>
+                          <div className="w-full border-b mb-2 mx-4"></div>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
                 <div className="w-max">
-                  {boutiqueHours?.map((hours: { times: string }) => {
-                    return (
-                      <div key={hours.times} className="flex w-full">
-                        <span>{hours.times}</span>
-                      </div>
-                    );
-                  })}
+                  {boutiqueHours?.map(
+                    (hours: { times: string }, index: number) => {
+                      return (
+                        <div key={hours.times + index} className="flex w-full">
+                          <span>{hours.times}</span>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
               </div>
             </div>
@@ -200,23 +212,30 @@ export const Hours = ({
               ) : (
                 <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
                   <div className="w-full">
-                    {housecallHours?.map((hours: { days: string }) => {
-                      return (
-                        <div key={hours.days} className="flex w-full">
-                          <span>{hours.days}</span>
-                          <div className="w-full border-b mb-2 mx-4"></div>
-                        </div>
-                      );
-                    })}
+                    {housecallHours?.map(
+                      (hours: { days: string }, index: number) => {
+                        return (
+                          <div key={hours.days + index} className="flex w-full">
+                            <span>{hours.days}</span>
+                            <div className="w-full border-b mb-2 mx-4"></div>
+                          </div>
+                        );
+                      }
+                    )}
                   </div>
                   <div className="w-max">
-                    {housecallHours?.map((hours: { times: string }) => {
-                      return (
-                        <div key={hours.times} className="flex w-full">
-                          <span>{hours.times}</span>
-                        </div>
-                      );
-                    })}
+                    {housecallHours?.map(
+                      (hours: { times: string }, index: number) => {
+                        return (
+                          <div
+                            key={hours.times + index}
+                            className="flex w-full"
+                          >
+                            <span>{hours.times}</span>
+                          </div>
+                        );
+                      }
+                    )}
                   </div>
                 </div>
               )}
@@ -266,17 +285,24 @@ export const Hours = ({
               </h3>
               <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
                 <div className="w-full">
-                  {clinicHours?.map((hours: { days: string }) => (
-                    <div className="flex w-full uppercase" key={hours.days}>
-                      <span className="whitespace-nowrap">{hours.days}</span>
-                      <div className="w-full border-b mb-2 mx-4"></div>
-                    </div>
-                  ))}
+                  {clinicHours?.map(
+                    (hours: { days: string }, index: number) => (
+                      <div
+                        className="flex w-full uppercase"
+                        key={hours.days + index}
+                      >
+                        <span className="whitespace-nowrap">{hours.days}</span>
+                        <div className="w-full border-b mb-2 mx-4"></div>
+                      </div>
+                    )
+                  )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase">
-                  {clinicHours?.map((hours: { times: string }) => (
-                    <div>{hours.times}</div>
-                  ))}
+                  {clinicHours?.map(
+                    (hours: { times: string }, index: number) => (
+                      <div key={hours.times + index}>{hours.times}</div>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -284,19 +310,26 @@ export const Hours = ({
               <h3 className="text-xl text-center font-bold">
                 Walk-Ins @ Belleview Station
               </h3>
-              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
+              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap uppercase">
                 <div className="w-full">
-                  {clinicWalkInHours?.map((hours: { days: string }) => (
-                    <div className="flex w-full uppercase" key={hours.days}>
-                      <span className="whitespace-nowrap">{hours.days}</span>
-                      <div className="w-full border-b mb-2 mx-4"></div>
-                    </div>
-                  ))}
+                  {clinicWalkInHours?.map(
+                    (hours: { days: string }, index: number) => (
+                      <div
+                        className="flex w-full uppercase"
+                        key={hours.days + index}
+                      >
+                        <span className="whitespace-nowrap">{hours.days}</span>
+                        <div className="w-full border-b mb-2 mx-4"></div>
+                      </div>
+                    )
+                  )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase">
-                  {clinicWalkInHours?.map((hours: { times: string }) => (
-                    <div>{hours.times}</div>
-                  ))}
+                  {clinicWalkInHours?.map(
+                    (hours: { times: string }, index: number) => (
+                      <div key={hours.times + index}>{hours.times}</div>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -333,17 +366,24 @@ export const Hours = ({
               </h3>
               <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
                 <div className="w-full">
-                  {boutiqueHours?.map((hours: { days: string }) => (
-                    <div className="flex w-full uppercase" key={hours.days}>
-                      <span className="whitespace-nowrap">{hours.days}</span>
-                      <div className="w-full border-b mb-2 mx-4"></div>
-                    </div>
-                  ))}
+                  {boutiqueHours?.map(
+                    (hours: { days: string }, index: number) => (
+                      <div
+                        className="flex w-full uppercase"
+                        key={hours.days + index}
+                      >
+                        <span className="whitespace-nowrap">{hours.days}</span>
+                        <div className="w-full border-b mb-2 mx-4"></div>
+                      </div>
+                    )
+                  )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase">
-                  {boutiqueHours?.map((hours: { times: string }) => (
-                    <div>{hours.times}</div>
-                  ))}
+                  {boutiqueHours?.map(
+                    (hours: { times: string }, index: number) => (
+                      <div key={hours.times + index}>{hours.times}</div>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -356,17 +396,26 @@ export const Hours = ({
               ) : (
                 <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
                   <div className="w-full">
-                    {housecallHours?.map((hours: { days: string }) => (
-                      <div className="flex w-full uppercase" key={hours.days}>
-                        <span className="whitespace-nowrap">{hours.days}</span>
-                        <div className="w-full border-b mb-2 mx-4"></div>
-                      </div>
-                    ))}
+                    {housecallHours?.map(
+                      (hours: { days: string }, index: number) => (
+                        <div
+                          className="flex w-full uppercase"
+                          key={hours.days + index}
+                        >
+                          <span className="whitespace-nowrap">
+                            {hours.days}
+                          </span>
+                          <div className="w-full border-b mb-2 mx-4"></div>
+                        </div>
+                      )
+                    )}
                   </div>
                   <div className="w-max whitespace-nowrap uppercase">
-                    {housecallHours?.map((hours: { times: string }) => (
-                      <div>{hours.times}</div>
-                    ))}
+                    {housecallHours?.map(
+                      (hours: { times: string }, index: number) => (
+                        <div key={hours.times + index}>{hours.times}</div>
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -450,23 +499,30 @@ export const Hours = ({
                 </h3>
                 <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                   <div className="w-full">
-                    {clinicHours?.map((hours: { days: string }) => {
-                      return (
-                        <div key={hours.days} className="flex w-full">
-                          <span>{hours.days}</span>
-                          <div className="w-full border-b mb-2 mx-4"></div>
-                        </div>
-                      );
-                    })}
+                    {clinicHours?.map(
+                      (hours: { days: string }, index: number) => {
+                        return (
+                          <div key={hours.days + index} className="flex w-full">
+                            <span>{hours.days}</span>
+                            <div className="w-full border-b mb-2 mx-4"></div>
+                          </div>
+                        );
+                      }
+                    )}
                   </div>
                   <div className="w-max">
-                    {clinicHours?.map((hours: { times: string }) => {
-                      return (
-                        <div key={hours.times} className="flex w-full">
-                          <span>{hours.times}</span>
-                        </div>
-                      );
-                    })}
+                    {clinicHours?.map(
+                      (hours: { times: string }, index: number) => {
+                        return (
+                          <div
+                            key={hours.times + index}
+                            className="flex w-full"
+                          >
+                            <span>{hours.times}</span>
+                          </div>
+                        );
+                      }
+                    )}
                   </div>
                 </div>
               </div>
@@ -479,25 +535,32 @@ export const Hours = ({
                 <h3 className="text-xl text-center font-bold">
                   Walk-Ins @ Belleview Station
                 </h3>
-                <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
+                <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                   <div className="w-full">
-                    {clinicWalkInHours?.map((hours: { days: string }) => {
-                      return (
-                        <div key={hours.days} className="flex w-full">
-                          <span>{hours.days}</span>
-                          <div className="w-full border-b mb-2 mx-4"></div>
-                        </div>
-                      );
-                    })}
+                    {clinicWalkInHours?.map(
+                      (hours: { days: string }, index: number) => {
+                        return (
+                          <div key={hours.days + index} className="flex w-full">
+                            <span>{hours.days}</span>
+                            <div className="w-full border-b mb-2 mx-4"></div>
+                          </div>
+                        );
+                      }
+                    )}
                   </div>
                   <div className="w-max">
-                    {clinicWalkInHours?.map((hours: { times: string }) => {
-                      return (
-                        <div key={hours.times} className="flex w-full">
-                          <span>{hours.times}</span>
-                        </div>
-                      );
-                    })}
+                    {clinicWalkInHours?.map(
+                      (hours: { times: string }, index: number) => {
+                        return (
+                          <div
+                            key={hours.times + index}
+                            className="flex w-full"
+                          >
+                            <span>{hours.times}</span>
+                          </div>
+                        );
+                      }
+                    )}
                   </div>
                 </div>
               </div>
@@ -512,23 +575,30 @@ export const Hours = ({
                 </h3>
                 <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                   <div className="w-full">
-                    {boutiqueHours?.map((hours: { days: string }) => {
-                      return (
-                        <div key={hours.days} className="flex w-full">
-                          <span>{hours.days}</span>
-                          <div className="w-full border-b mb-2 mx-4"></div>
-                        </div>
-                      );
-                    })}
+                    {boutiqueHours?.map(
+                      (hours: { days: string }, index: number) => {
+                        return (
+                          <div key={hours.days + index} className="flex w-full">
+                            <span>{hours.days}</span>
+                            <div className="w-full border-b mb-2 mx-4"></div>
+                          </div>
+                        );
+                      }
+                    )}
                   </div>
                   <div className="w-max">
-                    {boutiqueHours?.map((hours: { times: string }) => {
-                      return (
-                        <div key={hours.times} className="flex w-full">
-                          <span>{hours.times}</span>
-                        </div>
-                      );
-                    })}
+                    {boutiqueHours?.map(
+                      (hours: { times: string }, index: number) => {
+                        return (
+                          <div
+                            key={hours.times + index}
+                            className="flex w-full"
+                          >
+                            <span>{hours.times}</span>
+                          </div>
+                        );
+                      }
+                    )}
                   </div>
                 </div>
               </div>
@@ -548,23 +618,33 @@ export const Hours = ({
                 ) : (
                   <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                     <div className="w-full">
-                      {housecallHours?.map((hours: { days: string }) => {
-                        return (
-                          <div key={hours.days} className="flex w-full">
-                            <span>{hours.days}</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                        );
-                      })}
+                      {housecallHours?.map(
+                        (hours: { days: string }, index: number) => {
+                          return (
+                            <div
+                              key={hours.days + index}
+                              className="flex w-full"
+                            >
+                              <span>{hours.days}</span>
+                              <div className="w-full border-b mb-2 mx-4"></div>
+                            </div>
+                          );
+                        }
+                      )}
                     </div>
                     <div className="w-max">
-                      {housecallHours?.map((hours: { times: string }) => {
-                        return (
-                          <div key={hours.times} className="flex w-full">
-                            <span>{hours.times}</span>
-                          </div>
-                        );
-                      })}
+                      {housecallHours?.map(
+                        (hours: { times: string }, index: number) => {
+                          return (
+                            <div
+                              key={hours.times + index}
+                              className="flex w-full"
+                            >
+                              <span>{hours.times}</span>
+                            </div>
+                          );
+                        }
+                      )}
                     </div>
                   </div>
                 )}
@@ -615,17 +695,24 @@ export const Hours = ({
               </h3>
               <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
                 <div className="w-full">
-                  {clinicHours?.map((hours: { days: string }) => (
-                    <div className="flex w-full uppercase" key={hours.days}>
-                      <span className="whitespace-nowrap">{hours.days}</span>
-                      <div className="w-full border-b mb-2 mx-4"></div>
-                    </div>
-                  ))}
+                  {clinicHours?.map(
+                    (hours: { days: string }, index: number) => (
+                      <div
+                        className="flex w-full uppercase"
+                        key={hours.days + index}
+                      >
+                        <span className="whitespace-nowrap">{hours.days}</span>
+                        <div className="w-full border-b mb-2 mx-4"></div>
+                      </div>
+                    )
+                  )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase">
-                  {clinicHours?.map((hours: { times: string }) => (
-                    <div>{hours.times}</div>
-                  ))}
+                  {clinicHours?.map(
+                    (hours: { times: string }, index: number) => (
+                      <div key={hours.times + index}>{hours.times}</div>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -638,19 +725,26 @@ export const Hours = ({
               <h3 className="text-xl text-center font-bold">
                 Walk-Ins @ Belleview Station
               </h3>
-              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
+              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap uppercase">
                 <div className="w-full">
-                  {clinicWalkInHours?.map((hours: { days: string }) => (
-                    <div className="flex w-full uppercase" key={hours.days}>
-                      <span className="whitespace-nowrap">{hours.days}</span>
-                      <div className="w-full border-b mb-2 mx-4"></div>
-                    </div>
-                  ))}
+                  {clinicWalkInHours?.map(
+                    (hours: { days: string }, index: number) => (
+                      <div
+                        className="flex w-full uppercase"
+                        key={hours.days + index}
+                      >
+                        <span className="whitespace-nowrap">{hours.days}</span>
+                        <div className="w-full border-b mb-2 mx-4"></div>
+                      </div>
+                    )
+                  )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase">
-                  {clinicWalkInHours?.map((hours: { times: string }) => (
-                    <div>{hours.times}</div>
-                  ))}
+                  {clinicWalkInHours?.map(
+                    (hours: { times: string }, index: number) => (
+                      <div key={hours.times + index}>{hours.times}</div>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -665,17 +759,24 @@ export const Hours = ({
               </h3>
               <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
                 <div className="w-full">
-                  {boutiqueHours?.map((hours: { days: string }) => (
-                    <div className="flex w-full uppercase" key={hours.days}>
-                      <span className="whitespace-nowrap">{hours.days}</span>
-                      <div className="w-full border-b mb-2 mx-4"></div>
-                    </div>
-                  ))}
+                  {boutiqueHours?.map(
+                    (hours: { days: string }, index: number) => (
+                      <div
+                        className="flex w-full uppercase"
+                        key={hours.days + index}
+                      >
+                        <span className="whitespace-nowrap">{hours.days}</span>
+                        <div className="w-full border-b mb-2 mx-4"></div>
+                      </div>
+                    )
+                  )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase">
-                  {boutiqueHours?.map((hours: { times: string }) => (
-                    <div>{hours.times}</div>
-                  ))}
+                  {boutiqueHours?.map(
+                    (hours: { times: string }, index: number) => (
+                      <div key={hours.times + index}>{hours.times}</div>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -693,17 +794,26 @@ export const Hours = ({
               ) : (
                 <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
                   <div className="w-full">
-                    {housecallHours?.map((hours: { days: string }) => (
-                      <div className="flex w-full uppercase" key={hours.days}>
-                        <span className="whitespace-nowrap">{hours.days}</span>
-                        <div className="w-full border-b mb-2 mx-4"></div>
-                      </div>
-                    ))}
+                    {housecallHours?.map(
+                      (hours: { days: string }, index: number) => (
+                        <div
+                          className="flex w-full uppercase"
+                          key={hours.days + index}
+                        >
+                          <span className="whitespace-nowrap">
+                            {hours.days}
+                          </span>
+                          <div className="w-full border-b mb-2 mx-4"></div>
+                        </div>
+                      )
+                    )}
                   </div>
                   <div className="w-max whitespace-nowrap uppercase">
-                    {housecallHours?.map((hours: { times: string }) => (
-                      <div>{hours.times}</div>
-                    ))}
+                    {housecallHours?.map(
+                      (hours: { times: string }, index: number) => (
+                        <div key={hours.times + index}>{hours.times}</div>
+                      )
+                    )}
                   </div>
                 </div>
               )}
