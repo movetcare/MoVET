@@ -180,29 +180,29 @@ importers:
 
   apps/app.movetcare.com:
     specifiers:
-      '@babel/core': ^7.21.0
+      '@babel/core': ^7.21.3
       '@fortawesome/fontawesome-svg-core': ^6.3.0
       '@fortawesome/free-brands-svg-icons': ^6.3.0
       '@fortawesome/free-solid-svg-icons': ^6.3.0
       '@fortawesome/react-fontawesome': ^0.2.0
-      '@headlessui/react': ^1.7.12
-      '@hookform/resolvers': ^2.9.11
+      '@headlessui/react': ^1.7.13
+      '@hookform/resolvers': ^3.0.0
       '@react-google-maps/api': ^2.18.1
       '@tailwindcss/forms': ^0.5.3
       '@types/lodash.kebabcase': ^4.1.7
-      '@types/node': ^18.14.4
+      '@types/node': ^18.15.5
       '@types/react': 18.0.28
       '@types/react-calendar': ^3.9.0
       '@types/react-time-picker': ^4.0.3
-      autoprefixer: ^10.4.13
+      autoprefixer: ^10.4.14
       constant: workspace:*
       csstype: ^3.1.1
-      eslint: 8.35.0
+      eslint: 8.36.0
       eslint-config-custom: workspace:*
-      firebase: ^9.17.1
+      firebase: ^9.18.0
       lodash.kebabcase: ^4.1.1
       lottie-web: ^5.10.2
-      next: ^13.2.3
+      next: ^13.2.4
       next-transpile-modules: 10.0.0
       postcss: ^8.4.21
       qrcode.react: ^3.1.0
@@ -213,10 +213,10 @@ importers:
       react-firebase-hooks: ^5.1.1
       react-google-places-autocomplete: ^3.4.0
       react-google-recaptcha-v3: ^1.10.1
-      react-hook-form: ^7.43.3
+      react-hook-form: ^7.43.7
       react-hot-toast: ^2.4.0
-      react-number-format: ^5.1.3
-      react-select: ^5.7.0
+      react-number-format: ^5.1.4
+      react-select: ^5.7.2
       react-swipeable: ^7.0.0
       react-time-picker: ^5.2.0
       schemas: workspace:*
@@ -224,7 +224,7 @@ importers:
       tailwindcss: ^3.2.7
       tsconfig: workspace:*
       types: workspace:*
-      typescript: ^4.9.5
+      typescript: ^5.0.2
       ui: workspace:*
       utilities: workspace:*
       yup: ^1.0.2
@@ -234,7 +234,7 @@ importers:
       '@fortawesome/free-solid-svg-icons': 6.3.0
       '@fortawesome/react-fontawesome': 0.2.0_d5rbrisxfyemehbvmdbryvgjte
       '@headlessui/react': 1.7.13_biqbaboplfbrettd7655fr4n2y
-      '@hookform/resolvers': 2.9.11_react-hook-form@7.43.7
+      '@hookform/resolvers': 3.0.0_react-hook-form@7.43.7
       firebase: 9.18.0
       lodash.kebabcase: 4.1.1
       lottie-web: 5.10.2
@@ -266,7 +266,7 @@ importers:
       autoprefixer: 10.4.14_postcss@8.4.21
       constant: link:../../packages/constant
       csstype: 3.1.1
-      eslint: 8.35.0
+      eslint: 8.36.0
       eslint-config-custom: link:../../packages/eslint-config-custom
       next-transpile-modules: 10.0.0
       postcss: 8.4.21
@@ -275,7 +275,7 @@ importers:
       tailwindcss: 3.2.7_postcss@8.4.21
       tsconfig: link:../../packages/tsconfig
       types: link:../../packages/types
-      typescript: 4.9.5
+      typescript: 5.0.2
       ui: link:../../packages/ui
       utilities: link:../../packages/utilities
 
@@ -1483,6 +1483,15 @@ packages:
       react-hook-form: ^7.0.0
     dependencies:
       react-hook-form: 7.43.7_react@18.2.0
+    dev: true
+
+  /@hookform/resolvers/3.0.0_react-hook-form@7.43.7:
+    resolution: {integrity: sha512-SQPefakODpyq25b/phHXDKCdRrEfPcCXV7B4nAa139wE1DxufYbbNAjeo0T04ZXBokRxZ+wD8iA1kkVMa3QwjQ==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.43.7_react@18.2.0
+    dev: false
 
   /@humanwhocodes/config-array/0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==}
