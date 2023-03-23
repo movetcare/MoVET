@@ -46,24 +46,24 @@
     "express": "^4.18.2",
     "firebase-admin": "^11.5.0",
     "firebase-functions": "^4.2.1",
-    "stripe": "^11.12.0",
+    "stripe": "^11.15.0",
     "trello-node-api": "^0.0.9",
-    "twilio": "^4.8.0",
+    "twilio": "^4.9.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
-    "@types/node": "^18.14.4",
+    "@types/node": "^18.15.5",
     "@types/safe-compare": "^1.1.0",
     "@types/uuid": "^9.0.1",
-    "@typescript-eslint/eslint-plugin": "^5.54.0",
-    "@typescript-eslint/parser": "^5.54.0",
-    "eslint": "^8.35.0",
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "eslint": "^8.36.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.4",
-    "typescript": "^4.9.5"
+    "prettier": "^2.8.6",
+    "typescript": "^5.0.2"
   }
 }

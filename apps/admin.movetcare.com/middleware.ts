@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-const DEBUG = true;
+const DEBUG = false;
 export function middleware(request: NextRequest) {
   if (
     request.nextUrl.hostname === "localhost" &&
