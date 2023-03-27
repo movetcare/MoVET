@@ -4,32 +4,31 @@ import * as Crypto from "crypto";
 import { AuthorizationCode } from "simple-oauth2";
 import { sendNotification } from "../../notifications/sendNotification";
 const DEBUG = true;
-const oauthClient = new AuthorizationCode({
-  client: {
-    id: functions.config()?.goto.client_id,
-    secret: functions.config()?.goto.client_secret,
-  },
-  auth: {
-    tokenHost: "https://authentication.logmeininc.com",
-  },
-} as any);
-const redirectUrl =
-  environment.type === "production"
-    ? "https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/goto/login/"
-    : "http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/goto/login/";
-const expectedStateForAuthorizationCode =
-  Crypto.randomBytes(15).toString("hex");
-const authorizationUrl = oauthClient.authorizeURL({
-  redirect_uri: redirectUrl,
-  scope: "messaging.v1.send",
-  state: expectedStateForAuthorizationCode,
-});
-console.log("Open in browser to send a SMS: ", authorizationUrl);
 
 export const processGoToWebhook = async (
   request: Request,
   response: Response
 ): Promise<any> => {
+  const oauthClient = new AuthorizationCode({
+    client: {
+      id: functions.config()?.goto.client_id,
+      secret: functions.config()?.goto.client_secret,
+    },
+    auth: {
+      tokenHost: "https://authentication.logmeininc.com",
+    },
+  } as any);
+  const redirectUrl =
+    environment.type === "production"
+      ? "https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/goto/login/"
+      : "http://localhost:5001/movet-care-staging/us-central1/incomingWebhook/goto/login/";
+  const expectedStateForAuthorizationCode =
+    Crypto.randomBytes(15).toString("hex");
+  const authorizationUrl = oauthClient.authorizeURL({
+    redirect_uri: redirectUrl,
+    scope: "messaging.v1.send",
+    state: expectedStateForAuthorizationCode,
+  });
   if (DEBUG) console.log("processGoToWebhook req =>", request?.body);
   if (request.query.state != expectedStateForAuthorizationCode) {
     if (DEBUG)
