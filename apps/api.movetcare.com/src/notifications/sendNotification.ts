@@ -1,12 +1,11 @@
 /* eslint-disable no-case-declarations */
-/* eslint-disable no-case-declarations */
 import {
   admin,
   emailClient,
   environment,
-  smsClient,
   throwError,
   DEBUG,
+  request,
 } from "../config/config";
 import { findSlackChannel } from "../utils/logging/findSlackChannel";
 import { sendSlackMessage } from "../utils/logging/sendSlackMessage";
@@ -15,6 +14,7 @@ import {
   getClientNotificationSettings,
   UserNotificationSettings,
 } from "../utils/getClientNotificationSettings";
+import { fetchNewGoToAccessToken } from "../integrations/goto/fetchNewGoToAccessToken";
 
 export const sendNotification = async ({
   type,
@@ -204,74 +204,142 @@ export const sendNotification = async ({
             phone &&
             environment?.type === "production"
           ) {
-            smsClient.messages
-              .create({
-                body: payload?.message,
-                from: "+17206775047",
-                to: phone,
+            const { accessToken, refreshToken } = await admin
+              .firestore()
+              .collection("configuration")
+              .doc("goto")
+              .get()
+              .then((doc: any) => {
+                return {
+                  accessToken: doc.data()?.access_token,
+                  refreshToken: doc.data()?.refresh_token,
+                };
               })
-              .then(async () => {
-                if (DEBUG)
-                  console.log("SMS SENT!", {
+              .catch((error: any) => throwError(error));
+            if (DEBUG) console.log("GOTO ACCESS TOKEN: ", accessToken);
+            if (accessToken) {
+              request
+                .request({
+                  method: "POST",
+                  url: "https://api.jive.com/messaging/v1/messages",
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "content-type": "application/json",
+                  },
+                  data: {
+                    ownerPhoneNumber: "+17205077387",
+                    contactPhoneNumbers: [phone],
                     body: payload?.message,
-                    from: "+17206775047",
-                    to: phone,
+                  },
+                })
+                .then((response: any) => {
+                  if (DEBUG)
+                    console.log(
+                      "processGoToWebhook => GOTO SMS RESPONSE",
+                      response.data
+                    );
+                  sendSlackMessageToChannel(
+                    `:speech_balloon: System SMS Sent:\n\nTO: ${phone}\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}`
+                  );
+                  createProVetNote({
+                    type: 0,
+                    subject: payload?.subject,
+                    message: payload?.message,
+                    client: payload?.client,
+                    patients: payload?.patients || [],
                   });
-                sendSlackMessageToChannel(
-                  `:speech_balloon: System SMS Sent:\n\nTO: ${phone}\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}`
-                );
-                createProVetNote({
-                  type: 0,
-                  subject: payload?.subject,
-                  message: payload?.message,
-                  client: payload?.client,
-                  patients: payload?.patients || [],
+                  admin
+                    .firestore()
+                    .collection("clients")
+                    .doc(`${payload?.client}`)
+                    .collection("notifications")
+                    .add({
+                      type: "sms",
+                      body: payload?.message,
+                      from: "+17206775047",
+                      to: phone,
+                      createdOn: new Date(),
+                    })
+                    .catch((error: any) => throwError(error));
+                })
+                .catch(async (error: any) => {
+                  const handleError = (error: any) => {
+                    sendSlackMessageToChannel(
+                      `:speech_balloon: System SMS FAILED:\n\nTO: ${phone}\n\nCLIENT: ${
+                        payload?.client
+                      }\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${
+                        payload?.message
+                      }\n\nREASON: ${error?.message || JSON.stringify(error)}`
+                    );
+                    createProVetNote({
+                      type: 0,
+                      subject: "FAILED TO SEND: " + payload?.subject,
+                      message:
+                        "ERROR MESSAGE: " +
+                        JSON.stringify(error) +
+                        "\n\nMESSAGE CONTENTS:\n" +
+                        payload?.message,
+                      client: payload?.client,
+                      patients: payload?.patients || [],
+                    });
+                    throwError(error);
+                  };
+                  if (error.message.includes("401")) {
+                    const newAccessToken = await fetchNewGoToAccessToken(
+                      refreshToken
+                    );
+                    if (DEBUG) console.log("newAccessToken", newAccessToken);
+                    if (newAccessToken)
+                      request
+                        .request({
+                          method: "POST",
+                          url: "https://api.jive.com/messaging/v1/messages",
+                          headers: {
+                            Authorization: `Bearer ${newAccessToken}`,
+                            "content-type": "application/json",
+                          },
+                          data: {
+                            ownerPhoneNumber: "+17205077387",
+                            contactPhoneNumbers: [phone],
+                            body: payload?.message,
+                          },
+                        })
+                        .then((response: any) => {
+                          if (DEBUG)
+                            console.log(
+                              "processGoToWebhook => GOTO SMS RESPONSE",
+                              response.data
+                            );
+                          sendSlackMessageToChannel(
+                            `:speech_balloon: System SMS Sent:\n\nTO: ${phone}\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}`
+                          );
+                          createProVetNote({
+                            type: 0,
+                            subject: payload?.subject,
+                            message: payload?.message,
+                            client: payload?.client,
+                            patients: payload?.patients || [],
+                          });
+                          admin
+                            .firestore()
+                            .collection("clients")
+                            .doc(`${payload?.client}`)
+                            .collection("notifications")
+                            .add({
+                              type: "sms",
+                              body: payload?.message,
+                              from: "+17206775047",
+                              to: phone,
+                              createdOn: new Date(),
+                            })
+                            .catch((error: any) => handleError(error));
+                        })
+                        .catch((error: any) => handleError(error));
+                  } else {
+                    handleError(error);
+                  }
                 });
-                admin
-                  .firestore()
-                  .collection("clients")
-                  .doc(`${payload?.client}`)
-                  .collection("notifications")
-                  .add({
-                    type: "sms",
-                    body: payload?.message,
-                    from: "+17206775047",
-                    to: phone,
-                    createdOn: new Date(),
-                  })
-                  .catch((error: any) => throwError(error));
-              })
-              .catch((error: any) => {
-                if (DEBUG)
-                  console.log("SMS FAILED TO SEND!", {
-                    body: payload?.message,
-                    from: "+17206775047",
-                    to: phone,
-                  });
-                sendSlackMessageToChannel(
-                  `:speech_balloon: System SMS FAILED:\n\nTO: ${phone}\n\nCLIENT: ${
-                    payload?.client
-                  }\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${
-                    payload?.message
-                  }\n\nREASON: ${error?.message || JSON.stringify(error)}`
-                );
-                createProVetNote({
-                  type: 0,
-                  subject: "FAILED TO SEND: " + payload?.subject,
-                  message:
-                    "ERROR MESSAGE: " +
-                    JSON.stringify(error) +
-                    "\n\nMESSAGE CONTENTS:\n" +
-                    payload?.message,
-                  client: payload?.client,
-                  patients: payload?.patients || [],
-                });
-                if (
-                  error?.message.includes("is not a valid phone number") ===
-                  false
-                )
-                  throwError(error);
-              });
+            }
           } else {
             if (DEBUG)
               console.log("DID NOT SEND SMS", {

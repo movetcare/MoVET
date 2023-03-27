@@ -12,6 +12,7 @@ import { processProVetWebhook } from "../../integrations/provet/processWebhook";
 import { initProVetConfig } from "../../config/initConfig";
 import { processExpoWebhook } from "../../integrations/expo/processWebhook";
 import { processStripeWebhook } from "../../integrations/stripe/processWebhook";
+import { processGoToWebhook } from "../../integrations/goto/processGoToWebhook";
 
 const decodeJWT = async (
   req: Request,
@@ -59,6 +60,7 @@ app.post("/app/config/", runAsync(initProVetConfig));
 app.post("/provet/webhook/", runAsync(processProVetWebhook));
 app.post("/expo/webhook/", runAsync(processExpoWebhook));
 app.post("/stripe/webhook/", runAsync(processStripeWebhook));
+app.get("/goto/login/", runAsync(processGoToWebhook));
 
 export const incomingWebhook: Promise<Response> = functions
   .runWith({

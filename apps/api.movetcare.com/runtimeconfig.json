@@ -40,6 +40,10 @@
     "account_sid": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/TWILIO_ACCOUNT_SID",
     "auth_token": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/TWILIO_AUTH_TOKEN"
   },
+  "goto": {
+    "client_id": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/GOTO_O_AUTH_CLIENT_ID",
+    "client_secret": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/GOTO_O_AUTH_CLIENT_SECRET"
+  },
   "recaptcha": {
     "secret_key": "op://svrwe2eif7phi7hi6faq6iqc3a/w6xcu4snkdderpriuuueban3hy/oj3o3pfh2nzbltwoalxnkwsinq/RECAPTCHA_SECRET_KEY"
   },

@@ -754,10 +754,34 @@ const Client = () => {
                         {client?.customer ? (
                           Array.isArray(client?.customer) &&
                           client?.customer.length > 1 ? (
-                            JSON.stringify(client?.customer)
+                            <a
+                              href={
+                                environment === "production"
+                                  ? `https://dashboard.stripe.com/customers/${client?.customer}/`
+                                  : `https://dashboard.stripe.com/test/customers/${client?.customer}/`
+                              }
+                              target="_blank"
+                              rel="noreferrer"
+                              className="hover:text-movet-red hover:underline ease-in-out duration-300"
+                              title="View Customer In Stripe"
+                            >
+                              {JSON.stringify(client?.customer)}
+                            </a>
                           ) : Array.isArray(client?.customer) &&
                             client?.customer.length === 1 ? (
-                            client?.customer[0]
+                            <a
+                              href={
+                                environment === "production"
+                                  ? `https://dashboard.stripe.com/customers/${client?.customer[0]}/`
+                                  : `https://dashboard.stripe.com/test/customers/${client?.customer[0]}/`
+                              }
+                              target="_blank"
+                              rel="noreferrer"
+                              className="hover:text-movet-red hover:underline ease-in-out duration-300"
+                              title="View Customer In Stripe"
+                            >
+                              {client?.customer[0]}
+                            </a>
                           ) : Array.isArray(client?.customer) &&
                             client?.customer.length === 0 ? (
                             <span className="inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">

@@ -12,7 +12,7 @@ import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
 import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
 import { requestIsAuthorized } from "../../admin/pos/requestIsAuthorized";
-const DEBUG = false; 
+const DEBUG = false;
 interface AccountData {
   email: string;
   displayName: string;
@@ -518,7 +518,7 @@ const getPhoneNumberErrors = ({
       );
     if (provetPhone !== authPhone)
       errors.push(
-        `MoVET Phone Number (${provetPhone}) does NOT match Auth Phone Number (${authPhone})`
+        `ProVet Phone Number (${provetPhone}) does NOT match Auth Phone Number (${authPhone})`
       );
   }
   if (DEBUG) console.log("getPhoneNumberErrors", errors);

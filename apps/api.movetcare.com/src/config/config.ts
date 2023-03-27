@@ -112,11 +112,11 @@ email.setApiKey(func.config()?.sendgrid.api_key);
 client.setApiKey(func.config()?.sendgrid.api_key);
 export const emailClient = email;
 export const sendGridAPI = client;
-const sms = require("twilio")(
-  func.config()?.twilio.account_sid,
-  func.config()?.twilio.auth_token
-);
-export const smsClient = sms;
+// const sms = require("twilio")(
+//   func.config()?.twilio.account_sid,
+//   func.config()?.twilio.auth_token
+// );
+// export const smsClient = sms;
 export const slackBotToken = func.config()?.slack.o_auth_bot_token;
 export const slackClient = new WebClient(slackBotToken, {
   logLevel: DEBUG ? LogLevel.DEBUG : undefined,
