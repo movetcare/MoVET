@@ -16,7 +16,8 @@ export { handleContactSubmission } from "./triggers/handleContactSubmission";
 export { handleAnnouncementBannerUpdate } from "./triggers/handleAnnouncementBannerUpdate";
 export { handleWinterModeUpdate } from "./triggers/handleWinterModeUpdate";
 export { handleK9SmilesRequest } from "./triggers/handleK9SmilesRequest";
-export { handleConfigurationUpdate } from "./triggers/handleConfigurationUpdate";
+export { handleOpeningConfigurationUpdate } from "./triggers/handleOpeningConfigurationUpdate";
+export { handleClosuresConfigurationUpdates } from "./triggers/handleClosuresConfigurationUpdates";
 
 // export { sendgridWebhook } from "./endpoints/webhooks/sendgridWebhook";
 export { incomingWebhook } from "./endpoints/webhooks/incomingWebhook";

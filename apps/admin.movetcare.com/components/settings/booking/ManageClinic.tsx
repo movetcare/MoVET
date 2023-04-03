@@ -2,7 +2,7 @@ import { classNames } from "utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breadcrumbs from "components/Breadcrumbs";
 import { subNavigation } from "./SubNavigation";
-import ClinicSettings from "./ClinicSettings";
+import ClinicSettings from "./clinic/ClinicSettings";
 const PAGE_NAME = subNavigation[2].name;
 const ManageClinic = () => {
   return (

@@ -10,7 +10,7 @@ import { deleteCollection } from "../utils/deleteCollection";
 
 export const refreshBreeds: Promise<void> = functions
   .runWith(defaultRuntimeOptions)
-  .pubsub.schedule("every 24 hours")
+  .pubsub.schedule("every 48 hours")
   .onRun(async () => {
     if (environment?.type === "production") {
       await deleteCollection("breeds").then(
