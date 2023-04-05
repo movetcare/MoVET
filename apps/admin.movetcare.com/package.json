@@ -29,7 +29,7 @@
     "react-hot-toast": "^2.4.0",
     "react-json-formatter": "^0.3.2",
     "react-number-format": "^5.1.4",
-    "react-tooltip": "^5.10.4",
+    "react-tooltip": "^5.10.5",
     "remark": "^14.0.2",
     "remark-html": "^15.0.2",
     "uuid": "^9.0.0"
@@ -37,7 +37,7 @@
   "devDependencies": {
     "@types/lodash.kebabcase": "^4.1.7",
     "@types/node": "^18.15.11",
-    "@types/react": "18.0.32",
+    "@types/react": "18.0.33",
     "@types/react-datepicker": "^4.10.0",
     "@types/uuid": "^9.0.1",
     "autoprefixer": "^10.4.14",
