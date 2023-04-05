@@ -165,7 +165,9 @@ export const Closures = () => {
         <Loader message="Loading Closures" />
       ) : (
         <div className="flex flex-col mr-4">
-          {(closures === null || closures?.length < 0) &&
+          {(closures === undefined ||
+            closures === null ||
+            closures?.length < 0) &&
             !showAddClosureForm && (
               <h1 className="text-lg my-4 italic">No Closures Found...</h1>
             )}

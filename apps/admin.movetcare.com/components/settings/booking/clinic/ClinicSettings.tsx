@@ -3,6 +3,7 @@ import VcprReasonClinicSettings from "./VcprReasonClinicSettings";
 import StandardHoursClinicSettings from "./StandardHoursClinicSettings";
 import StandardLunchClinicSettings from "./StandardLunchClinicSettings";
 import StandardDaysClinicSettings from "./StandardDaysClinicSettings";
+import { ClosuresClinicSettings } from "./ClosuresClinicSettings";
 
 const ClinicSettings = () => {
   return (
@@ -19,6 +20,7 @@ const ClinicSettings = () => {
             </p>
           </div>
           <ul role="list" className="mt-4 mb-8 divide-y divide-movet-gray">
+            <ClosuresClinicSettings />
             <StandardDaysClinicSettings />
             <StandardHoursClinicSettings />
             <StandardLunchClinicSettings />

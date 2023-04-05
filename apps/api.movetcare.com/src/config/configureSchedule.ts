@@ -56,6 +56,26 @@ export const configureSchedule = async (): Promise<boolean> => {
         name: "Test Hidden Holiday",
       },
     ];
+    const closureDatesClinic = [
+      {
+        name: "Test Closure for Development - 1",
+        startTime: 930,
+        endTime: 1200,
+        date: new Date(),
+      },
+      {
+        name: "Test Closure for Development - 2",
+        startTime: 1300,
+        endTime: 1500,
+        date: new Date(today.setDate(today.getDate() + 1)),
+      },
+      {
+        name: "Test Closure for Development - 3",
+        startTime: 1000,
+        endTime: 1500,
+        date: new Date(today.setDate(today.getDate() + 1)),
+      },
+    ];
     await admin
       .firestore()
       .collection("configuration")
@@ -63,13 +83,18 @@ export const configureSchedule = async (): Promise<boolean> => {
       .set(
         {
           closureDates,
+          closureDatesClinic,
           updatedOn: new Date(),
         },
         { merge: true }
       )
       .then(
         async () =>
-          DEBUG && console.log("Closures Configured => ", closureDates)
+          DEBUG &&
+          console.log("Closures Configured => ", {
+            closureDates,
+            closureDatesClinic,
+          })
       )
       .catch((error: any) => throwError(error));
   }

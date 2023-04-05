@@ -11,6 +11,7 @@ const DateInput = ({
   name,
   required = false,
   disabled = false,
+  className = null,
 }: {
   label?: string;
   control: any;
@@ -18,9 +19,10 @@ const DateInput = ({
   name: string;
   required?: boolean;
   disabled?: boolean;
+  className?: string | null;
 }) => {
   return (
-    <>
+    <div className={className ? className : ""}>
       {label && (
         <label
           htmlFor={name}
@@ -53,7 +55,7 @@ const DateInput = ({
           <ErrorMessage errorMessage={errors[name].message} />
         )}
       </div>
-    </>
+    </div>
   );
 };
 
