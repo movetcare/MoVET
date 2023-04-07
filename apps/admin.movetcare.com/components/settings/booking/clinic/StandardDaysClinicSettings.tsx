@@ -56,7 +56,7 @@ const StandardDaysClinicSettings = () => {
     return () => unsubscribe();
   }, []);
 
-  const saveChanges = async () => {
+  const saveChanges = async () =>
     await setDoc(
       doc(firestore, "configuration/bookings"),
       {
@@ -95,9 +95,16 @@ const StandardDaysClinicSettings = () => {
             />
           ),
         })
-      );
-    setDidTouchIsOpenMonday(false);
-  };
+      )
+      .finally(() => {
+        setDidTouchIsOpenMonday(false);
+        setDidTouchIsOpenTuesday(false);
+        setDidTouchIsOpenWednesday(false);
+        setDidTouchIsOpenThursday(false);
+        setDidTouchIsOpenFriday(false);
+        setDidTouchIsOpenSaturday(false);
+        setDidTouchIsOpenSunday(false);
+      });
 
   return error ? (
     <Error error={error} />

@@ -6,6 +6,7 @@ import {
   throwError,
   stripe,
   DEBUG,
+  stripeApiVersion,
 } from "../../../config/config";
 import { saveClient } from "../../../integrations/provet/entities/client/saveClient";
 import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
@@ -27,7 +28,7 @@ export const createCustomer = functions
 
         const ephemeralKey = await stripe.ephemeralKeys.create(
           { customer },
-          { apiVersion: "2022-11-15" }
+          { apiVersion: stripeApiVersion }
         );
 
         if (DEBUG) console.log("Ephemeral Key Generated:", ephemeralKey);

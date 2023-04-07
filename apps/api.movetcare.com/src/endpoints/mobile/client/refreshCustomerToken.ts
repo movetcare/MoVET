@@ -6,6 +6,7 @@ import {
   admin,
   stripe,
   mobileClientApiKey,
+  stripeApiVersion,
 } from "../../../config/config";
 
 export const refreshCustomerToken = functions
@@ -40,7 +41,7 @@ export const refreshCustomerToken = functions
         if (customerId) {
           const ephemeralKey = await stripe.ephemeralKeys.create(
             { customer: customerId },
-            { apiVersion: "2022-11-15" }
+            { apiVersion: stripeApiVersion }
           );
 
           if (DEBUG) console.log("Ephemeral Key Generated:", ephemeralKey);

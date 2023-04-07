@@ -37,6 +37,7 @@ export { updateOnboardingStatus } from "./endpoints/mobile/client/updateOnboardi
 export { refreshCustomerToken } from "./endpoints/mobile/client/refreshCustomerToken";
 export { getBookingToken } from "./endpoints/mobile/booking/getBookingToken";
 export { getWinterMode } from "./endpoints/mobile/appointment/getWinterMode";
+export { getAppointmentAvailability } from "./endpoints/web/getAppointmentAvailability";
 
 export { reportABug } from "./endpoints/web/reportABug";
 export { updatePaymentMethod } from "./endpoints/web/updatePaymentMethod";

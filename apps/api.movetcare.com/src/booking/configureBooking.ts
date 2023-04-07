@@ -1,4 +1,5 @@
-import { admin, throwError, environment, DEBUG } from "../config/config";
+import { admin, throwError, environment } from "../config/config";
+const DEBUG = true;
 export const configureBooking = async (): Promise<boolean> => {
   const alreadyHasConfiguration = await admin
     .firestore()
@@ -49,6 +50,7 @@ export const configureBooking = async (): Promise<boolean> => {
             value: 106,
             label: "Establish Care Exam",
           },
+          clinicSameDayAppointmentVcprRequired: true,
           housecallOpenMonday: false,
           housecallOpenTuesday: true,
           housecallOpenWednesday: false,

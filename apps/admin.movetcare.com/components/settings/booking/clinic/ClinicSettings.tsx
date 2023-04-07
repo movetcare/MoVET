@@ -4,6 +4,8 @@ import StandardHoursClinicSettings from "./StandardHoursClinicSettings";
 import StandardLunchClinicSettings from "./StandardLunchClinicSettings";
 import StandardDaysClinicSettings from "./StandardDaysClinicSettings";
 import { ClosuresClinicSettings } from "./ClosuresClinicSettings";
+import { SchedulePreview } from "../SchedulePreview";
+import { SameDayAppointmentClinicSettings } from "./SameDayAppointmentClinicSettings";
 
 const ClinicSettings = () => {
   return (
@@ -19,12 +21,14 @@ const ClinicSettings = () => {
               appointments at the Clinic.
             </p>
           </div>
+          <SchedulePreview schedule="clinic" />
           <ul role="list" className="mt-4 mb-8 divide-y divide-movet-gray">
             <ClosuresClinicSettings />
             <StandardDaysClinicSettings />
             <StandardHoursClinicSettings />
             <StandardLunchClinicSettings />
             <MultiPatientClinicSettings />
+            <SameDayAppointmentClinicSettings />
             <VcprReasonClinicSettings />
           </ul>
         </div>
