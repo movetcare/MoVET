@@ -38,7 +38,6 @@ export const initProVetConfig = async (
       "breeds",
       "shifts",
       "invoices",
-      "appointments",
       "items",
     ];
     switch (type) {
@@ -50,6 +49,7 @@ export const initProVetConfig = async (
             (await configureAppointmentEstimates()) &&
             (await configureAppointmentOptionDetails()) &&
             (await configureTelehealthStatus()) &&
+            (await configureAppointments()) &&
             (await admin
               .firestore()
               .collection("tasks_queue")
