@@ -6,7 +6,7 @@ describe("k9-smiles-page", () => {
     );
   });
   it("can view all k9 smile form ui", () => {
-    cy.get("h2").contains("SCHEDULE A TEETH CLEANING FOR YOUR PET TODAY!");
+    cy.get("h3").contains("SCHEDULE A TEETH CLEANING FOR YOUR PET TODAY!");
     cy.get("p").contains("DENTAL EXAM + IN-DEPTH TEETH CLEANING - $290");
     cy.get("label").as("l").contains("First Name");
     cy.get("@l").contains("Last Name");
@@ -71,6 +71,6 @@ describe("k9-smiles-page", () => {
     cy.location("pathname", {
       timeout: Cypress.env().defaultPathnameTimeOut,
     }).should("eq", "/blog/k9-smiles-clinic-for-cats-and-dogs/");
-    cy.get("h2").contains("SCHEDULE A TEETH CLEANING FOR YOUR PET TODAY!");
+    cy.get("h3").contains("SCHEDULE A TEETH CLEANING FOR YOUR PET TODAY!");
   });
 });

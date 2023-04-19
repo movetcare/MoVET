@@ -5,7 +5,7 @@ describe("reviews-page-loads", () => {
   });
   it("display reviews list", () => {
     cy.get("h2").contains("Our Happy Clients");
-    cy.get('*[class^="sm:grid"]').find(".group").should("have.length", 18);
+    cy.get('*[class^="sm:grid"]').find(".group").should("have.length", 20);
   });
   it("display leave us a review cta", () => {
     cy.get("h5").contains("Leave Us a Review!");
