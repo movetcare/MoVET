@@ -11,18 +11,15 @@ import {
 import { Tooltip } from "react-tooltip";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 import { Loader } from "ui";
-import { firestore } from "services/firebase";
+import { firestore, functions } from "services/firebase";
 import {
-  faPaw,
   faCircleExclamation,
   faCircleXmark,
-  faCreditCard,
   faDoorClosed,
-  faEnvelope,
   faPaperPlane,
-  faPhone,
   faUserCircle,
   faIdBadge,
+  faSms,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import environment from "utils/environment";
@@ -32,9 +29,9 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { timeSince } from "utils/timeSince";
 import TelehealthChatSummary from "components/TelehealthChatSummary";
-import { GOTO_PHONE_URL } from "constants/urls";
 import Image from "next/image";
 import "react-tooltip/dist/react-tooltip.css";
+import { httpsCallable } from "firebase/functions";
 interface ChatMessage {
   _id: string;
   createdAt: any;
@@ -52,28 +49,17 @@ const ChatSession = () => {
   const { query } = router;
   const messagesEndRef: any = useRef(null);
   const [didEndChat, setDidEndChat] = useState<boolean>(false);
-  const queryOptions = {
-    snapshotListenOptions: { includeMetadataChanges: true },
-  };
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, loadingMessages, errorMessages] = useCollection(
     firestoreQuery(
       collection(firestore, `telehealth_chat/${query?.id}/log`),
       orderBy("createdAt", "asc")
-    ),
-    queryOptions
+    )
   );
   const [session, loadingSession, errorSession] = useDocument(
-    doc(firestore, `telehealth_chat/${query?.id}`),
-    queryOptions
+    doc(firestore, `telehealth_chat/${query?.id}`)
   );
 
-  const [paymentMethods] = useCollection(
-    collection(firestore, `clients/${query?.id}/payment_methods`),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
-  );
   const {
     register,
     handleSubmit,
@@ -178,6 +164,62 @@ const ChatSession = () => {
         })
       );
 
+  const sendSmsToClient = async () => {
+    toast(
+      `Sending SMS to Client...\n\n"You have received a new message from MoVET!\n\n"${
+        messages &&
+        messages.docs.length &&
+        messages.docs[messages.docs.length - 1]?.data()?.text
+      }"\n\nPlease do not reply to this message. Use the MoVET app if you have any follow ups or questions.\n\nhttps://movetcare.com/get-the-app"`,
+      {
+        duration: 3500,
+        position: "top-center",
+        icon: (
+          <FontAwesomeIcon
+            icon={faSms}
+            size="lg"
+            className="text-movet-yellow"
+          />
+        ),
+      }
+    );
+    await httpsCallable(
+      functions,
+      "sendChatMessageAsSms"
+    )({
+      email: session?.data()?.client?.email,
+      message: `"You have received a new message from MoVET!\n\n"${
+        messages &&
+        messages.docs.length &&
+        messages.docs[messages.docs.length - 1]?.data()?.text
+      }"\n\nPlease do not reply to this message. Use the MoVET app if you have any follow ups or questions.\n\nhttps://movetcare.com/get-the-app"`,
+    })
+      .then(() =>
+        toast(`SMS to client was sent!`, {
+          position: "top-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faSms}
+              size="lg"
+              className="text-movet-green"
+            />
+          ),
+        })
+      )
+      .catch((error: any) =>
+        toast(error?.message, {
+          position: "top-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              size="sm"
+              className="text-movet-red"
+            />
+          ),
+        })
+      );
+  };
+
   return (
     <div className="flex flex-col md:flex-row">
       {router.query.mode !== "embed" && (
@@ -269,11 +311,21 @@ const ChatSession = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
+                <Tooltip id="sendSmsToClient" />
+                <div
+                  data-tooltip-id="sendSmsToClient"
+                  data-tooltip-content="Send last chat message as SMS to Client"
+                  title="Send last message as SMS to Client"
+                  className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                  onClick={() => sendSmsToClient()}
+                >
+                  <FontAwesomeIcon icon={faSms} size="lg" />
+                </div>
                 <Tooltip id="clientVerification" />
                 <a
                   data-tooltip-id="clientVerification"
-                  data-tooltip-content="Verify Client Account"
-                  title="Verify Client Account"
+                  data-tooltip-content="View Client Account"
+                  title="View Client Account"
                   href={
                     environment === "production"
                       ? `https://admin.movetcare.com/client/?id=${query?.id}`
@@ -285,86 +337,6 @@ const ChatSession = () => {
                 >
                   <FontAwesomeIcon icon={faIdBadge} size="lg" />
                 </a>
-                {router.query.mode !== "embed" && (
-                  <>
-                    <Tooltip id="viewProVet" />
-                    <a
-                      data-tooltip-id="viewProVet"
-                      data-tooltip-content="View in ProVet"
-                      title="View in ProVet"
-                      href={
-                        environment === "production"
-                          ? `https://us.provetcloud.com/4285/client/${query?.id}/`
-                          : `https://us.provetcloud.com/4285/client/${query?.id}/`
-                      }
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faPaw} size="lg" />
-                    </a>
-                  </>
-                )}
-                {paymentMethods &&
-                  paymentMethods.docs.map(
-                    (paymentMethod: any, index: number) =>
-                      paymentMethod.data()?.active &&
-                      index === 0 && (
-                        <>
-                          <Tooltip id="viewCustomer" />
-                          <a
-                            data-tooltip-id="viewCustomer"
-                            data-tooltip-content="View in Customer in Stripe"
-                            title="View in Customer in Stripe"
-                            key={index}
-                            href={
-                              environment === "production"
-                                ? `https://dashboard.stripe.com/customers/${session?.id}/`
-                                : `https://dashboard.stripe.com/test/customers/${session?.id}/`
-                            }
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                          >
-                            <FontAwesomeIcon icon={faCreditCard} size="lg" />
-                          </a>
-                        </>
-                      )
-                  )}
-                {session?.data()?.client?.phone && (
-                  <>
-                    <Tooltip id="callClient" />
-                    <a
-                      data-tooltip-id="callClient"
-                      data-tooltip-content="Call Client"
-                      title="Call Client"
-                      href={`${GOTO_PHONE_URL}/${
-                        session?.data()?.client?.phone
-                      }`}
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faPhone} size="lg" />
-                    </a>
-                  </>
-                )}
-                {session?.data()?.client?.email && (
-                  <>
-                    <Tooltip id="emailClient" />
-                    <a
-                      data-tooltip-id="emailClient"
-                      data-tooltip-content="Email Client"
-                      title="Email Client"
-                      href={`mailto:${session?.data()?.client?.email}`}
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon icon={faEnvelope} size="lg" />
-                    </a>
-                  </>
-                )}
                 {router.query.mode !== "embed" && (
                   <>
                     <Tooltip id="endChat" />
