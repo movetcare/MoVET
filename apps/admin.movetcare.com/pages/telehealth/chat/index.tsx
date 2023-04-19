@@ -188,11 +188,11 @@ const ChatSession = () => {
       "sendChatMessageAsSms"
     )({
       email: session?.data()?.client?.email,
-      message: `"You have received a new message from MoVET!\n\n"${
+      message: `You have received a new message from MoVET!\n\n"${
         messages &&
         messages.docs.length &&
         messages.docs[messages.docs.length - 1]?.data()?.text
-      }"\n\nPlease do not reply to this message. Use the MoVET app if you have any follow ups or questions.\n\nhttps://movetcare.com/get-the-app"`,
+      }"\n\nPlease do not reply to this message. Use the MoVET app if you have any follow ups or questions.\n\nhttps://movetcare.com/get-the-app`,
     })
       .then(() =>
         toast(`SMS to client was sent!`, {
