@@ -335,6 +335,77 @@ export const ClientReviews = ({
           </div>
           <div
             className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
+            onClick={() => window.open("https://g.co/kgs/Y9GK4X", "_blank")}
+          >
+            <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+            </div>
+            <p className="text-xl text-center mb-4 group-hover:opacity-75">
+              Absolutely the best veterinarians!
+            </p>
+            <i className="group-hover:opacity-75">
+              &quot;Absolutely the best veterinarians! They were so kind with my
+              elderly dog at the end of his life. Having them come to the house
+              was a life saver...literally! They spend so much time with each
+              pet. I&apos;m moving out of state soon and wish I could take MoVET
+              with me!&quot;
+            </i>
+            <p className="text-center mt-4 group-hover:opacity-75">
+              <a
+                href="https://g.co/kgs/Y9GK4X"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-row justify-center items-center italic text-center text-movet-black"
+              >
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  className="mr-2 text-movet-blue"
+                />{" "}
+                Google Review
+              </a>
+            </p>
+          </div>
+          <div
+            className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
+            onClick={() => window.open("https://g.co/kgs/h33bMP", "_blank")}
+          >
+            <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+            </div>
+            <p className="text-xl text-center mb-4 group-hover:opacity-75">
+              In home visits are a huge plus
+            </p>
+            <i className="group-hover:opacity-75">
+              &quot;Dr Caldwell and the team are amazing, she has been taking
+              great care of my fuzzy friends for years, keeping them healthy and
+              happy. In home visits are a huge plus especially for older
+              animals.&quot;
+            </i>
+            <p className="text-center mt-4 group-hover:opacity-75">
+              <a
+                href="https://g.co/kgs/h33bMP"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-row justify-center items-center italic text-center text-movet-black"
+              >
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  className="mr-2 text-movet-blue"
+                />{" "}
+                Google Review
+              </a>
+            </p>
+          </div>
+          <div
+            className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
             onClick={() =>
               window.open("https://goo.gl/maps/2ce5B2QsrG4ohspc6", "_blank")
             }

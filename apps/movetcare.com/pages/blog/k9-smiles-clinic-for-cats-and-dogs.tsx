@@ -11,7 +11,7 @@ export default function K9Smiles() {
         <meta
           name="description"
           content="MoVET is partnering with K-9 Smiles to offer a safe and affordable teeth cleaning clinic for your dog or
-          cat on April 15th from 9:30 AM to 3:30 PM"
+          cat!"
         />
         <meta property="og:type" content="website" />
         <meta
@@ -23,7 +23,7 @@ export default function K9Smiles() {
           name="og:description"
           property="og:description"
           content="MoVET is partnering with K-9 Smiles to offer a safe and affordable teeth cleaning clinic for your dog or
-          cat on April 15th from 9:30 AM to 3:30 PM"
+          cat!"
         />
         <meta property="og:site_name" content="MoVET" />
         <meta name="twitter:card" content="summary" />
@@ -34,7 +34,7 @@ export default function K9Smiles() {
         <meta
           name="twitter:description"
           content="MoVET is partnering with K-9 Smiles to offer a safe and affordable teeth cleaning clinic for your dog or
-          cat on April 15th from 9:30 AM to 3:30 PM"
+          cat!"
         />
         <meta name="twitter:site" content="https://movetcare.com" />
         <meta name="twitter:creator" content="Dr. A" />
@@ -52,28 +52,37 @@ export default function K9Smiles() {
       <section className="flex flex-col items-center justify-center sm:max-w-screen-lg mx-4 sm:mx-auto mt-8 mb-20 px-8 lg:px-20 bg-white rounded-xl p-4 sm:p-8">
         <Image
           className="rounded-xl cursor-pointer"
-          src="/images/blog/k9-smiles-clinic.jpg"
+          src="/images/blog/k9-smiles-logo.png"
           alt="k9 Smiles Teeth Cleaning Clinic @ MoVET"
-          height={800}
-          width={800}
+          height={500}
+          width={500}
         />
-        <p className="text-xl mt-8 text-center max-w-screen-md font-extrabold">
+        <h2 className="text-2xl mt-8 text-center max-w-screen-md font-extrabold">
           MoVET is partnering with{" "}
           <a href="https://www.k-9smiles.com/" target="_blank" rel="noreferrer">
             K-9 Smiles
           </a>{" "}
           to offer a safe and affordable teeth cleaning clinic for your dog or
-          cat on April 15th from 9:30 AM to 3:30 PM!
-        </p>
-        <p className="mt-4 text-center max-w-screen-md text-lg">
+          cat!
+        </h2>
+        <p className="mt-4 text-center max-w-screen-md">
           K-9 Smiles provides in-depth teeth cleaning for both cats and dogs.
           Their services include an oral exam, no anesthesia, plaque & tarter
           removal, scaling & polishing with their well trained technicians under
           the supervision of one of MoVET&apos;s licensed veterinarians.
         </p>
-        <h2 className="text-xl text-center mt-8">
+        <h3 className="text-xl text-center mt-4 font-abside">
+          Upcoming Clinics:
+        </h3>
+        <ul className="text-center mt-2">
+          <li>Saturday - June 24th</li>
+          <li>Saturday - August 26th</li>
+          <li>Saturday - October 28th</li>
+          <li>Saturday - December 9th</li>
+        </ul>
+        <h3 className="text-xl text-center mt-12 font-abside">
           SCHEDULE A TEETH CLEANING FOR YOUR PET TODAY!
-        </h2>
+        </h3>
         <p className="mt-0 text-center text-xl font-bold">
           DENTAL EXAM + IN-DEPTH TEETH CLEANING - $290
         </p>

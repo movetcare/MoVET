@@ -18,9 +18,9 @@ const posts = [
       color: "bg-movet-yellow",
     },
     description:
-      "MoVET is partnering with K-9 Smiles to offer a safe and affordable teeth cleaning clinic for your dog or cat on April 15th from 9:30 AM to 3:30 PM! Their trained technicians clean your pet's teeth under the supervision of one of MoVET's licensed veterinarians. Click to learn more and schedule an appointment!",
-    date: "Feb 27th, 2023",
-    datetime: "2023-02-27",
+      "MoVET is partnering with K-9 Smiles to offer a safe and affordable teeth cleaning clinic for your dog or cat! Their trained technicians clean your pet's teeth under the supervision of one of MoVET's licensed veterinarians. Click to learn more and schedule an appointment!",
+    date: "April 19th, 2023",
+    datetime: "2023-03-19",
     imageUrl: "/images/blog/k9-smiles-logo.png",
     readingTime: "1 min",
     author: {

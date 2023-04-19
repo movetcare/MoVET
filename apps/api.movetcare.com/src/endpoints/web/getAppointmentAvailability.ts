@@ -1,9 +1,7 @@
 // Reasons exclude list - ignore "Drive Time" and other internal reasons
 // Number of rooms available (or max appointments per day?)
-// Filter down schedules by user id
+// Filter down schedules by ward
 // TODOs:
-// Integrate contacts with GoTo w/ ProVet (case Number : 18348944)
-// Auto-froward chat message from admin app to goto via sms
 // Integrate closures with provet appointments
 // Migrate appointments veterinary filed (Clinic, housecall, virtual) to wards
 
