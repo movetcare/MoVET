@@ -51,6 +51,7 @@ export const configureBooking = async (): Promise<boolean> => {
             label: "Establish Care Exam",
           },
           clinicSameDayAppointmentVcprRequired: true,
+          clientSameDayAppointmentLeadTime: 90,
           housecallOpenMonday: false,
           housecallOpenTuesday: true,
           housecallOpenWednesday: false,

@@ -52,7 +52,7 @@ describe(
         runThroughAppointmentRequestWorkflows({
           email: Cypress.env().existingClientNoPaymentEmail,
           firstName: "Test",
-          lastName: "Client (Can be Deleted)",
+          lastName: "Client (DO NOT DELETE!)",
           petName: Cypress.env().existingPatientWithVcprName,
           paymentRequired: false,
         });

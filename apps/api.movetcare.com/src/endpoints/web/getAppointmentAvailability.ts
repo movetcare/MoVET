@@ -1,5 +1,6 @@
 // Reasons exclude list - ignore "Drive Time" and other internal reasons
-// Number of rooms available (or max appointments per day?)
+// Number of rooms available in clinic
+//
 // Filter down schedules by ward
 // TODOs:
 // Integrate closures with provet appointments
@@ -11,6 +12,9 @@ import {
   functions,
   throwError,
 } from "../../config/config";
+import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
+import { addMinutes } from "date-fns/fp";
+
 const DEBUG = true;
 export const getAppointmentAvailability = functions
   .runWith(defaultRuntimeOptions)
@@ -41,6 +45,59 @@ export const getAppointmentAvailability = functions
           date
         );
         if (isOpenOnDate && closedReason === null) {
+          const configuration = await getConfiguration();
+          let standardOpenTime: any,
+            standardCloseTime: any,
+            standardLunchTime: any,
+            standardLunchDuration: any,
+            appointmentDuration: any = null;
+          switch (schedule) {
+            case "clinic":
+              standardOpenTime = configuration?.clinicStartTime;
+              standardCloseTime = configuration?.clinicEndTime;
+              standardLunchTime = configuration?.clinicLunchTime;
+              standardLunchDuration = configuration?.clinicLunchDuration;
+              appointmentDuration =
+                patients?.length >= 3
+                  ? configuration?.clinicThreePatientDuration
+                  : patients?.length === 2
+                  ? configuration?.clinicTwoPatientDuration
+                  : configuration?.clinicOnePatientDuration;
+              break;
+            case "housecall":
+              standardOpenTime = configuration?.housecallStartTime;
+              standardCloseTime = configuration?.housecallEndTime;
+              standardLunchTime = configuration?.housecallLunchTime;
+              standardLunchDuration = configuration?.housecallLunchDuration;
+              appointmentDuration =
+                patients?.length >= 3
+                  ? configuration?.housecallThreePatientDuration
+                  : patients?.length === 2
+                  ? configuration?.housecallTwoPatientDuration
+                  : configuration?.housecallOnePatientDuration;
+              break;
+            case "virtual":
+              standardOpenTime = configuration?.startStartTime;
+              standardCloseTime = configuration?.startEndTime;
+              standardLunchTime = configuration?.startLunchTime;
+              standardLunchDuration = configuration?.startLunchDuration;
+              appointmentDuration =
+                patients?.length >= 3
+                  ? configuration?.virtualThreePatientDuration
+                  : patients?.length === 2
+                  ? configuration?.virtualTwoPatientDuration
+                  : configuration?.virtualOnePatientDuration;
+              break;
+            default:
+              break;
+          }
+          if (DEBUG) {
+            console.log("standardOpenTime", standardOpenTime);
+            console.log("standardCloseTime", standardCloseTime);
+            console.log("standardLunchTime", standardLunchTime);
+            console.log("standardLunchDuration", standardLunchDuration);
+            console.log("appointmentDuration", appointmentDuration);
+          }
           existingAppointments = await admin
             .firestore()
             .collection("appointments")
@@ -48,24 +105,213 @@ export const getAppointmentAvailability = functions
             .where("start", ">=", new Date(date))
             .orderBy("start", "asc")
             .get()
-            .then((querySnapshot: any) => {
-              const appointments: Array<{ start: any; end: any }> = [];
-              if (DEBUG)
+            .then(async (querySnapshot: any) => {
+              const appointments: Array<{
+                start: any;
+                end: any;
+                name: string | null | number;
+              }> = [];
+              const scheduleClosures = await admin
+                .firestore()
+                .collection("configuration")
+                .doc("closures")
+                .get()
+                .then((doc: any) => {
+                  if (DEBUG)
+                    console.log(
+                      "configuration/closures => doc.data()",
+                      doc.data()
+                    );
+                  return schedule === "clinic"
+                    ? doc.data()?.closureDatesClinic
+                    : schedule === "housecall"
+                    ? doc.data()?.closureDatesHousecall
+                    : doc.data()?.closureDatesVirtual;
+                })
+                .catch((error: any) => throwError(error));
+              if (DEBUG) {
                 console.log(
                   "querySnapshot?.docs?.length",
                   querySnapshot?.docs?.length
                 );
-              if (querySnapshot?.docs?.length > 0)
+                console.log("scheduleClosures", scheduleClosures);
+              }
+              if (querySnapshot?.docs?.length > 0) {
+                const reasons = await admin
+                  .firestore()
+                  .collection("reasons")
+                  .where("isVisible", "==", true)
+                  .get()
+                  .then((querySnapshot: any) => {
+                    if (DEBUG)
+                      console.log(
+                        "querySnapshot?.docs?.length",
+                        querySnapshot?.docs?.length
+                      );
+                    const reasons: Array<string> = [];
+                    if (querySnapshot?.docs?.length > 0)
+                      querySnapshot.forEach(async (doc: any) => {
+                        reasons.push(doc.data()?.id);
+                      });
+                    return reasons;
+                  })
+                  .catch((error: any) => throwError(error));
                 querySnapshot.forEach(async (doc: any) => {
                   if (
                     doc.data()?.start?.toDate().getDate() === calendarDay &&
-                    doc.data()?.start?.toDate().getMonth() === monthNumber
+                    doc.data()?.start?.toDate().getMonth() === monthNumber &&
+                    reasons.includes(getProVetIdFromUrl(doc.data()?.reason))
                   )
                     appointments.push({
-                      start: doc.data()?.start?.toDate()?.toString(),
-                      end: doc.data()?.end?.toDate()?.toString(),
+                      name: getProVetIdFromUrl(doc.data()?.reason),
+                      start: doc
+                        .data()
+                        ?.start?.toDate()
+                        ?.toLocaleString("en-US", {
+                          timeZone: "America/Denver",
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: false,
+                        }),
+                      end: doc.data()?.end?.toDate()?.toLocaleString("en-US", {
+                        timeZone: "America/Denver",
+                        hour: "numeric",
+                        minute: "numeric",
+                        hour12: false,
+                      }),
                     });
                 });
+              }
+              const lunchStart =
+                standardLunchTime?.toString()?.length === 3
+                  ? new Date(
+                      "February 04, 2022 " +
+                        [
+                          `0${standardLunchTime}`.slice(0, 2),
+                          ":",
+                          `0${standardLunchTime}`.slice(2),
+                        ].join("") +
+                        ":00"
+                    ).toLocaleString("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: false,
+                    })
+                  : new Date(
+                      "February 04, 2022 " +
+                        [
+                          `${standardLunchTime}`.slice(0, 2),
+                          ":",
+                          `${standardLunchTime}`.slice(2),
+                        ].join("") +
+                        ":00"
+                    ).toLocaleString("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: false,
+                    });
+              const lunchEnd = addMinutes(
+                standardLunchDuration,
+                standardLunchTime?.toString().length === 3
+                  ? new Date(
+                      "February 04, 2022 " +
+                        [
+                          `0${standardLunchTime}`.slice(0, 2),
+                          ":",
+                          `0${standardLunchTime}`.slice(2),
+                        ].join("") +
+                        ":00"
+                    )
+                  : (new Date(
+                      "February 04, 2022 " +
+                        [
+                          `${standardLunchTime}`.slice(0, 2),
+                          ":",
+                          `${standardLunchTime}`.slice(2),
+                        ].join("") +
+                        ":00"
+                    ) as any)
+              ).toLocaleString("en-US", {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: false,
+              });
+              if (DEBUG) {
+                console.log("lunchStart", lunchStart);
+                console.log("lunchEnd", lunchEnd);
+              }
+              appointments.push({
+                name: "Lunch",
+                start: lunchStart,
+                end: lunchEnd,
+              });
+              scheduleClosures.map((closure: any) => {
+                if (
+                  closure?.date?.toDate().getDate() === calendarDay &&
+                  closure?.date?.toDate().getMonth() === monthNumber
+                ) {
+                  if (DEBUG) console.log("Schedule Closure Found =>", closure);
+                  appointments.push({
+                    name: closure?.name,
+                    start:
+                      closure?.startTime.toString().length === 3
+                        ? new Date(
+                            "February 04, 2022 " +
+                              [
+                                `0${closure?.startTime}`.slice(0, 2),
+                                ":",
+                                `0${closure?.startTime}`.slice(2),
+                              ].join("") +
+                              ":00"
+                          ).toLocaleString("en-US", {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: false,
+                          })
+                        : new Date(
+                            "February 04, 2022 " +
+                              [
+                                `${closure?.startTime}`.slice(0, 2),
+                                ":",
+                                `${closure?.startTime}`.slice(2),
+                              ].join("") +
+                              ":00"
+                          ).toLocaleString("en-US", {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: false,
+                          }),
+                    end:
+                      closure?.endTime.toString().length === 3
+                        ? new Date(
+                            "February 04, 2022 " +
+                              [
+                                `0${closure?.endTime}`.slice(0, 2),
+                                ":",
+                                `0${closure?.endTime}`.slice(2),
+                              ].join("") +
+                              ":00"
+                          ).toLocaleString("en-US", {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: false,
+                          })
+                        : new Date(
+                            "February 04, 2022 " +
+                              [
+                                `${closure?.endTime}`.slice(0, 2),
+                                ":",
+                                `${closure?.endTime}`.slice(2),
+                              ].join("") +
+                              ":00"
+                          ).toLocaleString("en-US", {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: false,
+                          }),
+                  });
+                }
+              });
               if (DEBUG) console.log("appointments", appointments);
               return appointments;
             })
@@ -77,17 +323,8 @@ export const getAppointmentAvailability = functions
     }
   );
 
-const verifyScheduleIsOpen = async (
-  schedule: string,
-  patients: Array<string>,
-  date: number
-): Promise<{ isOpenOnDate: boolean; closedReason: string | null }> => {
-  let isOpenOnDate = false;
-  let vcprRequired = false;
-  const calendarDay = new Date(date).getDate();
-  const monthNumber = new Date(date).getMonth();
-  const weekdayNumber = new Date(date).getDay();
-  const configuration = await admin
+const getConfiguration = async () =>
+  await admin
     .firestore()
     .collection("configuration")
     .doc("bookings")
@@ -98,7 +335,18 @@ const verifyScheduleIsOpen = async (
       return doc.data();
     })
     .catch((error: any) => throwError(error));
-  const { globalClosures, scheduleClosures } = await admin
+const verifyScheduleIsOpen = async (
+  schedule: string,
+  patients: Array<string>,
+  date: number
+): Promise<{ isOpenOnDate: boolean; closedReason: string | null }> => {
+  let isOpenOnDate = false;
+  let vcprRequired = false;
+  const calendarDay = new Date(date).getDate();
+  const monthNumber = new Date(date).getMonth();
+  const weekdayNumber = new Date(date).getDay();
+  const configuration = await getConfiguration();
+  const globalClosures = await admin
     .firestore()
     .collection("configuration")
     .doc("closures")
@@ -106,21 +354,10 @@ const verifyScheduleIsOpen = async (
     .then((doc: any) => {
       if (DEBUG)
         console.log("configuration/closures => doc.data()", doc.data());
-      return {
-        globalClosures: doc.data()?.closureDates,
-        scheduleClosures:
-          schedule === "clinic"
-            ? doc.data()?.closureDatesClinic
-            : schedule === "housecall"
-            ? doc.data()?.closureDatesHousecall
-            : doc.data()?.closureDatesVirtual,
-      };
+      return doc.data()?.closureDates;
     })
     .catch((error: any) => throwError(error));
-  if (DEBUG) {
-    console.log("globalClosures", globalClosures);
-    console.log("scheduleClosures", scheduleClosures);
-  }
+  if (DEBUG) console.log("globalClosures", globalClosures);
   if (globalClosures && globalClosures.length > 0) {
     let isGlobalClosure = false;
     let closureData = null;

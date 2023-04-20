@@ -10,6 +10,7 @@ export const formatDateObjectPlusTimeStringIntoString = (
   })} @ ${new Date("February 04, 2022 " + timeString + ":00").toLocaleString(
     "en-US",
     {
+      timeZone: "America/Denver",
       hour: "numeric",
       minute: "numeric",
       hour12: true,

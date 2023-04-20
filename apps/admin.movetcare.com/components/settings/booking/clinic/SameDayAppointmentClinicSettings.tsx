@@ -12,9 +12,12 @@ import { firestore } from "services/firebase";
 import { Button } from "ui";
 import { classNames } from "utilities";
 import Error from "../../../Error";
+import { NumericFormat } from "react-number-format";
 
 export const SameDayAppointmentClinicSettings = () => {
   const [vcprRequired, setVcprRequired] = useState<boolean>(false);
+  const [selectedLeadTime, setSelectedLeadTime] = useState<string | null>(null);
+  const [didTouchLeadTime, setDidTouchOneLeadTime] = useState<boolean>(false);
   const [didTouchVcprRequired, setDidTouchVcprRequired] =
     useState<boolean>(false);
   const [error, setError] = useState<any>(null);
@@ -23,6 +26,7 @@ export const SameDayAppointmentClinicSettings = () => {
       doc(firestore, "configuration", "bookings"),
       (doc: any) => {
         setVcprRequired(doc.data()?.clinicSameDayAppointmentVcprRequired);
+        setSelectedLeadTime(doc.data()?.clientSameDayAppointmentLeadTime);
       },
       (error: any) => {
         setError(error?.message || error);
@@ -36,12 +40,13 @@ export const SameDayAppointmentClinicSettings = () => {
       doc(firestore, "configuration/bookings"),
       {
         clinicSameDayAppointmentVcprRequired: vcprRequired,
+        clientSameDayAppointmentLeadTime: Number(selectedLeadTime),
         updatedOn: serverTimestamp(),
       },
       { merge: true }
     )
       .then(() =>
-        toast(`VCPR Same Day Appointments Updated!`, {
+        toast(`Same Day Appointment Settings Updated!`, {
           position: "top-center",
           icon: (
             <FontAwesomeIcon
@@ -53,29 +58,35 @@ export const SameDayAppointmentClinicSettings = () => {
         })
       )
       .catch((error: any) =>
-        toast(`VCPR Same Day Appointments Update FAILED: ${error?.message}`, {
-          duration: 5000,
-          position: "bottom-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCircleExclamation}
-              size="sm"
-              className="text-movet-red"
-            />
-          ),
-        })
+        toast(
+          `Same Day Appointment Settings Update FAILED: ${error?.message}`,
+          {
+            duration: 5000,
+            position: "bottom-center",
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                size="sm"
+                className="text-movet-red"
+              />
+            ),
+          }
+        )
       )
       .finally(() => {
         setDidTouchVcprRequired(false);
+        setDidTouchOneLeadTime(false);
       });
   return error ? (
     <Error error={error} />
   ) : (
     <li className="py-4 flex-col sm:flex-row items-center justify-center">
       <div className="flex flex-col mr-4">
-        <h3>VCPR - Same Day Appointments</h3>
+        <h3>Same Day Appointments</h3>
         <p className="text-sm">
-          This controls whether new patients can book same day appointments.
+          This controls whether new/existing patients can book same day
+          appointments and how many minutes past now (AKA &quot;Lead Time&quot;)
+          is required.
         </p>
       </div>
       <div className="flex flex-col md:flex-row items-center justify-center">
@@ -102,10 +113,31 @@ export const SameDayAppointmentClinicSettings = () => {
               />
             </Switch>
           </div>
+          <div className="flex-col justify-center items-center mx-4">
+            <p className="text-center my-2">Lead Time</p>
+            <NumericFormat
+              isAllowed={(values: any) => {
+                const { value } = values;
+                return value < 181;
+              }}
+              allowLeadingZeros={false}
+              allowNegative={false}
+              name={"one-patient-duration"}
+              type="text"
+              valueIsNumericString
+              value={selectedLeadTime}
+              onBlur={() => setDidTouchOneLeadTime(true)}
+              onValueChange={(target: any) => setSelectedLeadTime(target.value)}
+              className={
+                "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-14 mx-auto"
+              }
+            />
+            <p className="text-center mt-2 italic text-xs">Minutes</p>
+          </div>
         </div>
       </div>
       <Transition
-        show={didTouchVcprRequired}
+        show={didTouchVcprRequired || didTouchLeadTime}
         enter="transition ease-in duration-500"
         leave="transition ease-out duration-64"
         leaveTo="opacity-10"
