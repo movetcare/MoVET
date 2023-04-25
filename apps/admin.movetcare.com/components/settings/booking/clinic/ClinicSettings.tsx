@@ -6,6 +6,7 @@ import StandardDaysClinicSettings from "./StandardDaysClinicSettings";
 import { ClosuresClinicSettings } from "./ClosuresClinicSettings";
 import { SchedulePreview } from "../SchedulePreview";
 import { SameDayAppointmentClinicSettings } from "./SameDayAppointmentClinicSettings";
+import StandardBufferClinicSettings from "./StandardBufferClinicSettings";
 
 const ClinicSettings = () => {
   return (
@@ -26,6 +27,7 @@ const ClinicSettings = () => {
             <ClosuresClinicSettings />
             <StandardDaysClinicSettings />
             <StandardHoursClinicSettings />
+            <StandardBufferClinicSettings />
             <StandardLunchClinicSettings />
             <MultiPatientClinicSettings />
             <SameDayAppointmentClinicSettings />

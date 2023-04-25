@@ -19,7 +19,9 @@ export const SchedulePreview = ({
   const [closedReason, setClosedReason] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<null | { message: string }>(null);
-  const [patientType, setPatientType] = useState<"new" | "returning">("new");
+  const [patientType, setPatientType] = useState<
+    "new" | "returning-one" | "returning-two"
+  >("new");
   useEffect(() => {
     const fetchAppointmentAvailability = async () => {
       const { data: result }: any = await httpsCallable(
@@ -28,7 +30,12 @@ export const SchedulePreview = ({
       )({
         date: selectedDate,
         schedule,
-        patients: patientType === "returning" ? ["6667", "6669"] : ["6668"],
+        patients:
+          patientType === "returning-two"
+            ? ["6667", "6669"]
+            : patientType === "returning-one"
+            ? ["6667"]
+            : ["6668"],
       });
       console.log("result", result);
       if (Array.isArray(result)) {
@@ -79,16 +86,22 @@ export const SchedulePreview = ({
         )}
         <div className="flex flex-row mx-auto mb-4 mt-8">
           <Button
-            text="New Patient"
+            text="New Patient - 1 Pet"
             onClick={() => setPatientType("new")}
             color={patientType === "new" ? "red" : "black"}
             className="mr-2"
           />
           <Button
-            text="Existing Patient"
-            color={patientType === "returning" ? "red" : "black"}
+            text="Existing Patient - 1 Pet"
+            color={patientType === "returning-one" ? "red" : "black"}
             className="ml-2"
-            onClick={() => setPatientType("returning")}
+            onClick={() => setPatientType("returning-one")}
+          />
+          <Button
+            text="Existing Patient - 2 Pets"
+            color={patientType === "returning-two" ? "red" : "black"}
+            className="ml-2"
+            onClick={() => setPatientType("returning-two")}
           />
         </div>
       </section>

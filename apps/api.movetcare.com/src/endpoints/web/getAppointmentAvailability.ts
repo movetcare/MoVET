@@ -1,8 +1,13 @@
-// Reasons exclude list - ignore "Drive Time" and other internal reasons
-// Number of rooms available in clinic
-//
-// Filter down schedules by ward
+import {
+  addMinutes,
+  areIntervalsOverlapping,
+  differenceInMinutes,
+  isAfter,
+  isEqual,
+} from "date-fns/fp";
 // TODOs:
+// Number of rooms available in clinic
+// Filter down schedules by ward
 // Integrate closures with provet appointments
 // Migrate appointments veterinary filed (Clinic, housecall, virtual) to wards
 
@@ -12,8 +17,10 @@ import {
   functions,
   throwError,
 } from "../../config/config";
+import { formatTimeHoursToDate } from "../../utils/formatTimeHoursToDate";
+import { formatTimeHoursToString } from "../../utils/formatTimeHoursToString";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
-import { addMinutes } from "date-fns/fp";
+import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
 
 const DEBUG = true;
 export const getAppointmentAvailability = functions
@@ -50,6 +57,8 @@ export const getAppointmentAvailability = functions
             standardCloseTime: any,
             standardLunchTime: any,
             standardLunchDuration: any,
+            appointmentBuffer: any,
+            sameDayAppointmentLeadTime: any,
             appointmentDuration: any = null;
           switch (schedule) {
             case "clinic":
@@ -57,6 +66,9 @@ export const getAppointmentAvailability = functions
               standardCloseTime = configuration?.clinicEndTime;
               standardLunchTime = configuration?.clinicLunchTime;
               standardLunchDuration = configuration?.clinicLunchDuration;
+              sameDayAppointmentLeadTime =
+                configuration?.clinicSameDayAppointmentLeadTime;
+              appointmentBuffer = configuration?.clinicAppointmentBufferTime;
               appointmentDuration =
                 patients?.length >= 3
                   ? configuration?.clinicThreePatientDuration
@@ -69,6 +81,9 @@ export const getAppointmentAvailability = functions
               standardCloseTime = configuration?.housecallEndTime;
               standardLunchTime = configuration?.housecallLunchTime;
               standardLunchDuration = configuration?.housecallLunchDuration;
+              appointmentBuffer = configuration?.housecallAppointmentBufferTime;
+              sameDayAppointmentLeadTime =
+                configuration?.housecallSameDayAppointmentLeadTime;
               appointmentDuration =
                 patients?.length >= 3
                   ? configuration?.housecallThreePatientDuration
@@ -81,6 +96,9 @@ export const getAppointmentAvailability = functions
               standardCloseTime = configuration?.startEndTime;
               standardLunchTime = configuration?.startLunchTime;
               standardLunchDuration = configuration?.startLunchDuration;
+              sameDayAppointmentLeadTime =
+                configuration?.virtualSameDayAppointmentLeadTime;
+              appointmentBuffer = configuration?.virtualAppointmentBufferTime;
               appointmentDuration =
                 patients?.length >= 3
                   ? configuration?.virtualThreePatientDuration
@@ -97,6 +115,7 @@ export const getAppointmentAvailability = functions
             console.log("standardLunchTime", standardLunchTime);
             console.log("standardLunchDuration", standardLunchDuration);
             console.log("appointmentDuration", appointmentDuration);
+            console.log("appointmentBuffer", appointmentBuffer);
           }
           existingAppointments = await admin
             .firestore()
@@ -316,7 +335,133 @@ export const getAppointmentAvailability = functions
               return appointments;
             })
             .catch((error: any) => throwError(error));
-          return existingAppointments;
+          const numberOfAppointments = Math.floor(
+            differenceInMinutes(
+              formatTimeHoursToDate(standardOpenTime),
+              formatTimeHoursToDate(standardCloseTime)
+            ) / appointmentDuration
+          );
+          if (DEBUG) {
+            console.log("numberOfAppointments", numberOfAppointments);
+            console.log("existingAppointments", existingAppointments);
+          }
+          let availableAppointmentSlots = [];
+          let nextAppointmentStartTime = standardOpenTime;
+          for (let i = 0; i < numberOfAppointments; i++) {
+            if (DEBUG)
+              console.log(
+                "nextAppointmentStartTime",
+                formatTimeHoursToDate(nextAppointmentStartTime)
+              );
+            if (
+              !isAfter(
+                formatTimeHoursToDate(standardCloseTime),
+                formatTimeHoursToDate(nextAppointmentStartTime)
+              ) &&
+              !isEqual(
+                formatTimeHoursToDate(standardCloseTime),
+                formatTimeHoursToDate(nextAppointmentStartTime)
+              )
+            )
+              availableAppointmentSlots.push({
+                name: i,
+                start: formatTimeHoursToString(nextAppointmentStartTime),
+                end: getTimeHoursFromDate(
+                  addMinutes(
+                    appointmentDuration,
+                    formatTimeHoursToDate(nextAppointmentStartTime)
+                  )
+                ),
+              });
+            nextAppointmentStartTime = getTimeHoursFromDate(
+              addMinutes(
+                appointmentBuffer,
+                addMinutes(
+                  appointmentDuration,
+                  formatTimeHoursToDate(nextAppointmentStartTime)
+                )
+              )
+            );
+            if (nextAppointmentStartTime.length === 4)
+              nextAppointmentStartTime = `0${nextAppointmentStartTime}`;
+          }
+          if (
+            new Date()?.getDate() === calendarDay &&
+            new Date()?.getMonth() === monthNumber
+          ) {
+            if (DEBUG) {
+              console.log("REMOVING PAST APPOINTMENTS!");
+              console.log(
+                "sameDayAppointmentLeadTime",
+                sameDayAppointmentLeadTime
+              );
+            }
+            const pastAppointments: any = [];
+            const bufferTime = Number(
+              addMinutes(sameDayAppointmentLeadTime, new Date())
+                .toLocaleTimeString("en-US", {
+                  timeZone: "America/Denver",
+                  hour12: false,
+                  hour: "numeric",
+                  minute: "numeric",
+                })
+                .replaceAll(":", "")
+            );
+            if (DEBUG) {
+              console.log("90 MIN FROM NOW", bufferTime);
+            }
+            availableAppointmentSlots.map((availableAppointmentSlot: any) => {
+              if (
+                Number(availableAppointmentSlot.start.replaceAll(":", "")) <
+                bufferTime
+              )
+                pastAppointments.push(availableAppointmentSlot);
+            });
+            if (DEBUG) console.log("pastAppointments", pastAppointments);
+            availableAppointmentSlots = availableAppointmentSlots.filter(
+              (appointmentSlot: any) =>
+                !pastAppointments.includes(appointmentSlot)
+            );
+          }
+          const appointmentSlotsToRemove: any = [];
+          availableAppointmentSlots.map((availableAppointmentSlot: any) => {
+            existingAppointments.map((existingAppointment: any) => {
+              if (
+                areIntervalsOverlapping(
+                  {
+                    start: formatTimeHoursToDate(existingAppointment.start),
+                    end: formatTimeHoursToDate(existingAppointment.end),
+                  },
+                  {
+                    start: formatTimeHoursToDate(
+                      availableAppointmentSlot.start
+                    ),
+                    end: formatTimeHoursToDate(availableAppointmentSlot.end),
+                  }
+                ) &&
+                !appointmentSlotsToRemove.includes(availableAppointmentSlot)
+              ) {
+                if (DEBUG)
+                  console.log("INTERVAL NOT OVERLAPPING", {
+                    availableAppointmentSlot,
+                    existingAppointment,
+                  });
+                appointmentSlotsToRemove.push(availableAppointmentSlot);
+              } else if (DEBUG)
+                console.log("INTERVALS ARE OVERLAPPING", {
+                  availableAppointmentSlot,
+                  existingAppointment,
+                });
+            });
+          });
+          if (DEBUG) {
+            console.log("availableAppointmentSlots", availableAppointmentSlots);
+            console.log("appointmentSlotsToRemove", appointmentSlotsToRemove);
+          }
+          return availableAppointmentSlots.filter(
+            (appointmentSlot: any) =>
+              !appointmentSlotsToRemove.includes(appointmentSlot)
+          );
         } else return closedReason || "Something Went Wrong...";
       }
       return "Patient(s) Required - Please try again...";

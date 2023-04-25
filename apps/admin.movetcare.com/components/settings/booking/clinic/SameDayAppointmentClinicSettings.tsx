@@ -26,7 +26,7 @@ export const SameDayAppointmentClinicSettings = () => {
       doc(firestore, "configuration", "bookings"),
       (doc: any) => {
         setVcprRequired(doc.data()?.clinicSameDayAppointmentVcprRequired);
-        setSelectedLeadTime(doc.data()?.clientSameDayAppointmentLeadTime);
+        setSelectedLeadTime(doc.data()?.clinicSameDayAppointmentLeadTime);
       },
       (error: any) => {
         setError(error?.message || error);
@@ -40,7 +40,7 @@ export const SameDayAppointmentClinicSettings = () => {
       doc(firestore, "configuration/bookings"),
       {
         clinicSameDayAppointmentVcprRequired: vcprRequired,
-        clientSameDayAppointmentLeadTime: Number(selectedLeadTime),
+        clinicSameDayAppointmentLeadTime: Number(selectedLeadTime),
         updatedOn: serverTimestamp(),
       },
       { merge: true }
