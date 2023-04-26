@@ -23,6 +23,15 @@ import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
 
 const DEBUG = true;
+
+let standardOpenTime: any,
+  standardCloseTime: any,
+  standardLunchTime: any,
+  standardLunchDuration: any,
+  appointmentBuffer: any,
+  sameDayAppointmentLeadTime: any,
+  appointmentDuration: any = null;
+
 export const getAppointmentAvailability = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
@@ -35,16 +44,12 @@ export const getAppointmentAvailability = functions
       schedule: "clinic" | "housecall" | "virtual";
       patients: Array<string>;
     }): Promise<any> => {
-      const calendarDay = new Date(date).getDate();
-      const monthNumber = new Date(date).getMonth();
-      let existingAppointments: Array<{ start: any; end: any }> = [];
       if (DEBUG) {
         console.log("date", date);
         console.log("patients", patients);
         console.log("schedule", schedule);
-        console.log("calendarDay", calendarDay);
-        console.log("monthNumber", monthNumber);
       }
+      let existingAppointments: Array<{ start: any; end: any }> = [];
       if (patients && patients.length > 0) {
         const { isOpenOnDate, closedReason } = await verifyScheduleIsOpen(
           schedule,
@@ -52,422 +57,20 @@ export const getAppointmentAvailability = functions
           date
         );
         if (isOpenOnDate && closedReason === null) {
-          const configuration = await getConfiguration();
-          let standardOpenTime: any,
-            standardCloseTime: any,
-            standardLunchTime: any,
-            standardLunchDuration: any,
-            appointmentBuffer: any,
-            sameDayAppointmentLeadTime: any,
-            appointmentDuration: any = null;
-          switch (schedule) {
-            case "clinic":
-              standardOpenTime = configuration?.clinicStartTime;
-              standardCloseTime = configuration?.clinicEndTime;
-              standardLunchTime = configuration?.clinicLunchTime;
-              standardLunchDuration = configuration?.clinicLunchDuration;
-              sameDayAppointmentLeadTime =
-                configuration?.clinicSameDayAppointmentLeadTime;
-              appointmentBuffer = configuration?.clinicAppointmentBufferTime;
-              appointmentDuration =
-                patients?.length >= 3
-                  ? configuration?.clinicThreePatientDuration
-                  : patients?.length === 2
-                  ? configuration?.clinicTwoPatientDuration
-                  : configuration?.clinicOnePatientDuration;
-              break;
-            case "housecall":
-              standardOpenTime = configuration?.housecallStartTime;
-              standardCloseTime = configuration?.housecallEndTime;
-              standardLunchTime = configuration?.housecallLunchTime;
-              standardLunchDuration = configuration?.housecallLunchDuration;
-              appointmentBuffer = configuration?.housecallAppointmentBufferTime;
-              sameDayAppointmentLeadTime =
-                configuration?.housecallSameDayAppointmentLeadTime;
-              appointmentDuration =
-                patients?.length >= 3
-                  ? configuration?.housecallThreePatientDuration
-                  : patients?.length === 2
-                  ? configuration?.housecallTwoPatientDuration
-                  : configuration?.housecallOnePatientDuration;
-              break;
-            case "virtual":
-              standardOpenTime = configuration?.startStartTime;
-              standardCloseTime = configuration?.startEndTime;
-              standardLunchTime = configuration?.startLunchTime;
-              standardLunchDuration = configuration?.startLunchDuration;
-              sameDayAppointmentLeadTime =
-                configuration?.virtualSameDayAppointmentLeadTime;
-              appointmentBuffer = configuration?.virtualAppointmentBufferTime;
-              appointmentDuration =
-                patients?.length >= 3
-                  ? configuration?.virtualThreePatientDuration
-                  : patients?.length === 2
-                  ? configuration?.virtualTwoPatientDuration
-                  : configuration?.virtualOnePatientDuration;
-              break;
-            default:
-              break;
-          }
-          if (DEBUG) {
-            console.log("standardOpenTime", standardOpenTime);
-            console.log("standardCloseTime", standardCloseTime);
-            console.log("standardLunchTime", standardLunchTime);
-            console.log("standardLunchDuration", standardLunchDuration);
-            console.log("appointmentDuration", appointmentDuration);
-            console.log("appointmentBuffer", appointmentBuffer);
-          }
-          existingAppointments = await admin
-            .firestore()
-            .collection("appointments")
-            .where("active", "==", 1)
-            .where("start", ">=", new Date(date))
-            .orderBy("start", "asc")
-            .get()
-            .then(async (querySnapshot: any) => {
-              const appointments: Array<{
-                start: any;
-                end: any;
-                name: string | null | number;
-              }> = [];
-              const scheduleClosures = await admin
-                .firestore()
-                .collection("configuration")
-                .doc("closures")
-                .get()
-                .then((doc: any) => {
-                  if (DEBUG)
-                    console.log(
-                      "configuration/closures => doc.data()",
-                      doc.data()
-                    );
-                  return schedule === "clinic"
-                    ? doc.data()?.closureDatesClinic
-                    : schedule === "housecall"
-                    ? doc.data()?.closureDatesHousecall
-                    : doc.data()?.closureDatesVirtual;
-                })
-                .catch((error: any) => throwError(error));
-              if (DEBUG) {
-                console.log(
-                  "querySnapshot?.docs?.length",
-                  querySnapshot?.docs?.length
-                );
-                console.log("scheduleClosures", scheduleClosures);
-              }
-              if (querySnapshot?.docs?.length > 0) {
-                const reasons = await admin
-                  .firestore()
-                  .collection("reasons")
-                  .where("isVisible", "==", true)
-                  .get()
-                  .then((querySnapshot: any) => {
-                    if (DEBUG)
-                      console.log(
-                        "querySnapshot?.docs?.length",
-                        querySnapshot?.docs?.length
-                      );
-                    const reasons: Array<string> = [];
-                    if (querySnapshot?.docs?.length > 0)
-                      querySnapshot.forEach(async (doc: any) => {
-                        reasons.push(doc.data()?.id);
-                      });
-                    return reasons;
-                  })
-                  .catch((error: any) => throwError(error));
-                querySnapshot.forEach(async (doc: any) => {
-                  if (
-                    doc.data()?.start?.toDate().getDate() === calendarDay &&
-                    doc.data()?.start?.toDate().getMonth() === monthNumber &&
-                    reasons.includes(getProVetIdFromUrl(doc.data()?.reason))
-                  )
-                    appointments.push({
-                      name: getProVetIdFromUrl(doc.data()?.reason),
-                      start: doc
-                        .data()
-                        ?.start?.toDate()
-                        ?.toLocaleString("en-US", {
-                          timeZone: "America/Denver",
-                          hour: "numeric",
-                          minute: "numeric",
-                          hour12: false,
-                        }),
-                      end: doc.data()?.end?.toDate()?.toLocaleString("en-US", {
-                        timeZone: "America/Denver",
-                        hour: "numeric",
-                        minute: "numeric",
-                        hour12: false,
-                      }),
-                    });
-                });
-              }
-              const lunchStart =
-                standardLunchTime?.toString()?.length === 3
-                  ? new Date(
-                      "February 04, 2022 " +
-                        [
-                          `0${standardLunchTime}`.slice(0, 2),
-                          ":",
-                          `0${standardLunchTime}`.slice(2),
-                        ].join("") +
-                        ":00"
-                    ).toLocaleString("en-US", {
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: false,
-                    })
-                  : new Date(
-                      "February 04, 2022 " +
-                        [
-                          `${standardLunchTime}`.slice(0, 2),
-                          ":",
-                          `${standardLunchTime}`.slice(2),
-                        ].join("") +
-                        ":00"
-                    ).toLocaleString("en-US", {
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: false,
-                    });
-              const lunchEnd = addMinutes(
-                standardLunchDuration,
-                standardLunchTime?.toString().length === 3
-                  ? new Date(
-                      "February 04, 2022 " +
-                        [
-                          `0${standardLunchTime}`.slice(0, 2),
-                          ":",
-                          `0${standardLunchTime}`.slice(2),
-                        ].join("") +
-                        ":00"
-                    )
-                  : (new Date(
-                      "February 04, 2022 " +
-                        [
-                          `${standardLunchTime}`.slice(0, 2),
-                          ":",
-                          `${standardLunchTime}`.slice(2),
-                        ].join("") +
-                        ":00"
-                    ) as any)
-              ).toLocaleString("en-US", {
-                hour: "numeric",
-                minute: "numeric",
-                hour12: false,
-              });
-              if (DEBUG) {
-                console.log("lunchStart", lunchStart);
-                console.log("lunchEnd", lunchEnd);
-              }
-              appointments.push({
-                name: "Lunch",
-                start: lunchStart,
-                end: lunchEnd,
-              });
-              scheduleClosures.map((closure: any) => {
-                if (
-                  closure?.date?.toDate().getDate() === calendarDay &&
-                  closure?.date?.toDate().getMonth() === monthNumber
-                ) {
-                  if (DEBUG) console.log("Schedule Closure Found =>", closure);
-                  appointments.push({
-                    name: closure?.name,
-                    start:
-                      closure?.startTime.toString().length === 3
-                        ? new Date(
-                            "February 04, 2022 " +
-                              [
-                                `0${closure?.startTime}`.slice(0, 2),
-                                ":",
-                                `0${closure?.startTime}`.slice(2),
-                              ].join("") +
-                              ":00"
-                          ).toLocaleString("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: false,
-                          })
-                        : new Date(
-                            "February 04, 2022 " +
-                              [
-                                `${closure?.startTime}`.slice(0, 2),
-                                ":",
-                                `${closure?.startTime}`.slice(2),
-                              ].join("") +
-                              ":00"
-                          ).toLocaleString("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: false,
-                          }),
-                    end:
-                      closure?.endTime.toString().length === 3
-                        ? new Date(
-                            "February 04, 2022 " +
-                              [
-                                `0${closure?.endTime}`.slice(0, 2),
-                                ":",
-                                `0${closure?.endTime}`.slice(2),
-                              ].join("") +
-                              ":00"
-                          ).toLocaleString("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: false,
-                          })
-                        : new Date(
-                            "February 04, 2022 " +
-                              [
-                                `${closure?.endTime}`.slice(0, 2),
-                                ":",
-                                `${closure?.endTime}`.slice(2),
-                              ].join("") +
-                              ":00"
-                          ).toLocaleString("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: false,
-                          }),
-                  });
-                }
-              });
-              if (DEBUG) console.log("appointments", appointments);
-              return appointments;
-            })
-            .catch((error: any) => throwError(error));
-          const numberOfAppointments = Math.floor(
-            differenceInMinutes(
-              formatTimeHoursToDate(standardOpenTime),
-              formatTimeHoursToDate(standardCloseTime)
-            ) / appointmentDuration
-          );
-          if (DEBUG) {
-            console.log("numberOfAppointments", numberOfAppointments);
-            console.log("existingAppointments", existingAppointments);
-          }
-          let availableAppointmentSlots = [];
-          let nextAppointmentStartTime = standardOpenTime;
-          for (let i = 0; i < numberOfAppointments; i++) {
-            if (DEBUG)
-              console.log(
-                "nextAppointmentStartTime",
-                formatTimeHoursToDate(nextAppointmentStartTime)
-              );
-            if (
-              !isAfter(
-                formatTimeHoursToDate(standardCloseTime),
-                formatTimeHoursToDate(nextAppointmentStartTime)
-              ) &&
-              !isEqual(
-                formatTimeHoursToDate(standardCloseTime),
-                formatTimeHoursToDate(nextAppointmentStartTime)
-              )
-            )
-              availableAppointmentSlots.push({
-                name: i,
-                start: formatTimeHoursToString(nextAppointmentStartTime),
-                end: getTimeHoursFromDate(
-                  addMinutes(
-                    appointmentDuration,
-                    formatTimeHoursToDate(nextAppointmentStartTime)
-                  )
-                ),
-              });
-            nextAppointmentStartTime = getTimeHoursFromDate(
-              addMinutes(
-                appointmentBuffer,
-                addMinutes(
-                  appointmentDuration,
-                  formatTimeHoursToDate(nextAppointmentStartTime)
-                )
-              )
-            );
-            if (nextAppointmentStartTime.length === 4)
-              nextAppointmentStartTime = `0${nextAppointmentStartTime}`;
-          }
-          if (
-            new Date()?.getDate() === calendarDay &&
-            new Date()?.getMonth() === monthNumber
-          ) {
-            if (DEBUG) {
-              console.log("REMOVING PAST APPOINTMENTS!");
-              console.log(
-                "sameDayAppointmentLeadTime",
-                sameDayAppointmentLeadTime
-              );
-            }
-            const pastAppointments: any = [];
-            const bufferTime = Number(
-              addMinutes(sameDayAppointmentLeadTime, new Date())
-                .toLocaleTimeString("en-US", {
-                  timeZone: "America/Denver",
-                  hour12: false,
-                  hour: "numeric",
-                  minute: "numeric",
-                })
-                .replaceAll(":", "")
-            );
-            if (DEBUG) {
-              console.log("90 MIN FROM NOW", bufferTime);
-            }
-            availableAppointmentSlots.map((availableAppointmentSlot: any) => {
-              if (
-                Number(availableAppointmentSlot.start.replaceAll(":", "")) <
-                bufferTime
-              )
-                pastAppointments.push(availableAppointmentSlot);
-            });
-            if (DEBUG) console.log("pastAppointments", pastAppointments);
-            availableAppointmentSlots = availableAppointmentSlots.filter(
-              (appointmentSlot: any) =>
-                !pastAppointments.includes(appointmentSlot)
-            );
-          }
-          const appointmentSlotsToRemove: any = [];
-          availableAppointmentSlots.map((availableAppointmentSlot: any) => {
-            existingAppointments.map((existingAppointment: any) => {
-              if (
-                areIntervalsOverlapping(
-                  {
-                    start: formatTimeHoursToDate(existingAppointment.start),
-                    end: formatTimeHoursToDate(existingAppointment.end),
-                  },
-                  {
-                    start: formatTimeHoursToDate(
-                      availableAppointmentSlot.start
-                    ),
-                    end: formatTimeHoursToDate(availableAppointmentSlot.end),
-                  }
-                ) &&
-                !appointmentSlotsToRemove.includes(availableAppointmentSlot)
-              ) {
-                if (DEBUG)
-                  console.log("INTERVAL NOT OVERLAPPING", {
-                    availableAppointmentSlot,
-                    existingAppointment,
-                  });
-                appointmentSlotsToRemove.push(availableAppointmentSlot);
-              } else if (DEBUG)
-                console.log("INTERVALS ARE OVERLAPPING", {
-                  availableAppointmentSlot,
-                  existingAppointment,
-                });
-            });
+          await assignConfiguration({ schedule, patients });
+          existingAppointments = await getExistingAppointments({
+            date,
+            schedule,
           });
-          if (DEBUG) {
-            console.log("availableAppointmentSlots", availableAppointmentSlots);
-            console.log("appointmentSlotsToRemove", appointmentSlotsToRemove);
-          }
-          return availableAppointmentSlots.filter(
-            (appointmentSlot: any) =>
-              !appointmentSlotsToRemove.includes(appointmentSlot)
-          );
+          return await calculateAvailableAppointments({
+            existingAppointments,
+            date,
+          });
         } else return closedReason || "Something Went Wrong...";
       }
       return "Patient(s) Required - Please try again...";
     }
   );
-
 const getConfiguration = async () =>
   await admin
     .firestore()
@@ -480,6 +83,72 @@ const getConfiguration = async () =>
       return doc.data();
     })
     .catch((error: any) => throwError(error));
+const assignConfiguration = async ({
+  schedule,
+  patients,
+}: {
+  schedule: "clinic" | "housecall" | "virtual";
+  patients: Array<string>;
+}) => {
+  const configuration = await getConfiguration();
+  switch (schedule) {
+    case "clinic":
+      standardOpenTime = configuration?.clinicStartTime;
+      standardCloseTime = configuration?.clinicEndTime;
+      standardLunchTime = configuration?.clinicLunchTime;
+      standardLunchDuration = configuration?.clinicLunchDuration;
+      sameDayAppointmentLeadTime =
+        configuration?.clinicSameDayAppointmentLeadTime;
+      appointmentBuffer = configuration?.clinicAppointmentBufferTime;
+      appointmentDuration =
+        patients?.length >= 3
+          ? configuration?.clinicThreePatientDuration
+          : patients?.length === 2
+          ? configuration?.clinicTwoPatientDuration
+          : configuration?.clinicOnePatientDuration;
+      break;
+    case "housecall":
+      standardOpenTime = configuration?.housecallStartTime;
+      standardCloseTime = configuration?.housecallEndTime;
+      standardLunchTime = configuration?.housecallLunchTime;
+      standardLunchDuration = configuration?.housecallLunchDuration;
+      appointmentBuffer = configuration?.housecallAppointmentBufferTime;
+      sameDayAppointmentLeadTime =
+        configuration?.housecallSameDayAppointmentLeadTime;
+      appointmentDuration =
+        patients?.length >= 3
+          ? configuration?.housecallThreePatientDuration
+          : patients?.length === 2
+          ? configuration?.housecallTwoPatientDuration
+          : configuration?.housecallOnePatientDuration;
+      break;
+    case "virtual":
+      standardOpenTime = configuration?.startStartTime;
+      standardCloseTime = configuration?.startEndTime;
+      standardLunchTime = configuration?.startLunchTime;
+      standardLunchDuration = configuration?.startLunchDuration;
+      sameDayAppointmentLeadTime =
+        configuration?.virtualSameDayAppointmentLeadTime;
+      appointmentBuffer = configuration?.virtualAppointmentBufferTime;
+      appointmentDuration =
+        patients?.length >= 3
+          ? configuration?.virtualThreePatientDuration
+          : patients?.length === 2
+          ? configuration?.virtualTwoPatientDuration
+          : configuration?.virtualOnePatientDuration;
+      break;
+    default:
+      break;
+  }
+  if (DEBUG) {
+    console.log("standardOpenTime", standardOpenTime);
+    console.log("standardCloseTime", standardCloseTime);
+    console.log("standardLunchTime", standardLunchTime);
+    console.log("standardLunchDuration", standardLunchDuration);
+    console.log("appointmentDuration", appointmentDuration);
+    console.log("appointmentBuffer", appointmentBuffer);
+  }
+};
 const verifyScheduleIsOpen = async (
   schedule: string,
   patients: Array<string>,
@@ -672,3 +341,242 @@ const verifyScheduleIsOpen = async (
   }
   return { isOpenOnDate: true, closedReason: null };
 };
+const getExistingAppointments = async ({ date, schedule }: any) =>
+  await admin
+    .firestore()
+    .collection("appointments")
+    .where("active", "==", 1)
+    .where("start", ">=", new Date(date))
+    .orderBy("start", "asc")
+    .get()
+    .then(async (querySnapshot: any) => {
+      const calendarDay = new Date(date).getDate();
+      const monthNumber = new Date(date).getMonth();
+      const appointments: Array<{
+        start: any;
+        end: any;
+        name: string | null | number;
+      }> = [];
+      const scheduleClosures = await getScheduledClosures(schedule);
+      if (DEBUG) {
+        console.log("querySnapshot?.docs?.length", querySnapshot?.docs?.length);
+        console.log("scheduleClosures", scheduleClosures);
+      }
+      if (querySnapshot?.docs?.length > 0) {
+        const reasons = await getReasons();
+        querySnapshot.forEach(async (doc: any) => {
+          if (
+            doc.data()?.start?.toDate().getDate() === calendarDay &&
+            doc.data()?.start?.toDate().getMonth() === monthNumber &&
+            reasons.includes(getProVetIdFromUrl(doc.data()?.reason))
+          )
+            appointments.push({
+              name: getProVetIdFromUrl(doc.data()?.reason),
+              start: doc.data()?.start?.toDate()?.toLocaleString("en-US", {
+                timeZone: "America/Denver",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: false,
+              }),
+              end: doc.data()?.end?.toDate()?.toLocaleString("en-US", {
+                timeZone: "America/Denver",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: false,
+              }),
+            });
+        });
+      }
+      appointments.push({
+        name: "Lunch",
+        start: formatTimeHoursToString(standardLunchTime),
+        end: addMinutes(
+          standardLunchDuration,
+          formatTimeHoursToDate(standardLunchTime)
+        ).toLocaleString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: false,
+        }),
+      });
+      scheduleClosures.map((closure: any) => {
+        if (
+          closure?.date?.toDate().getDate() === calendarDay &&
+          closure?.date?.toDate().getMonth() === monthNumber
+        ) {
+          if (DEBUG) console.log("Schedule Closure Found =>", closure);
+          appointments.push({
+            name: closure?.name,
+            start: formatTimeHoursToString(closure?.startTime),
+            end: formatTimeHoursToString(closure?.endTime),
+          });
+        }
+      });
+      if (DEBUG) console.log("appointments", appointments);
+      return appointments;
+    })
+    .catch((error: any) => throwError(error));
+const getReasons = async () =>
+  await admin
+    .firestore()
+    .collection("reasons")
+    .where("isVisible", "==", true)
+    .get()
+    .then((querySnapshot: any) => {
+      if (DEBUG)
+        console.log(
+          "getReasons querySnapshot?.docs?.length",
+          querySnapshot?.docs?.length
+        );
+      const reasons: Array<string> = [];
+      if (querySnapshot?.docs?.length > 0)
+        querySnapshot.forEach(async (doc: any) => {
+          reasons.push(doc.data()?.id);
+        });
+      return reasons;
+    })
+    .catch((error: any) => throwError(error));
+const calculateAvailableAppointments = async ({
+  existingAppointments,
+  date,
+}: any) => {
+  const calendarDay = new Date(date).getDate();
+  const monthNumber = new Date(date).getMonth();
+  const appointmentSlotsToRemove: any = [];
+  let availableAppointmentSlots = [];
+  const numberOfAppointments = Math.floor(
+    differenceInMinutes(
+      formatTimeHoursToDate(standardOpenTime),
+      formatTimeHoursToDate(standardCloseTime)
+    ) / appointmentDuration
+  );
+  if (DEBUG) {
+    console.log("numberOfAppointments", numberOfAppointments);
+    console.log("existingAppointments", existingAppointments);
+  }
+  let nextAppointmentStartTime = standardOpenTime;
+  for (let i = 0; i < numberOfAppointments; i++) {
+    if (DEBUG)
+      console.log(
+        "nextAppointmentStartTime",
+        formatTimeHoursToDate(nextAppointmentStartTime)
+      );
+    if (
+      !isAfter(
+        formatTimeHoursToDate(standardCloseTime),
+        formatTimeHoursToDate(nextAppointmentStartTime)
+      ) &&
+      !isEqual(
+        formatTimeHoursToDate(standardCloseTime),
+        formatTimeHoursToDate(nextAppointmentStartTime)
+      )
+    )
+      availableAppointmentSlots.push({
+        name: i,
+        start: formatTimeHoursToString(nextAppointmentStartTime),
+        end: getTimeHoursFromDate(
+          addMinutes(
+            appointmentDuration,
+            formatTimeHoursToDate(nextAppointmentStartTime)
+          )
+        ),
+      });
+    nextAppointmentStartTime = getTimeHoursFromDate(
+      addMinutes(
+        appointmentBuffer,
+        addMinutes(
+          appointmentDuration,
+          formatTimeHoursToDate(nextAppointmentStartTime)
+        )
+      )
+    );
+    if (nextAppointmentStartTime.length === 4)
+      nextAppointmentStartTime = `0${nextAppointmentStartTime}`;
+  }
+  if (
+    new Date()?.getDate() === calendarDay &&
+    new Date()?.getMonth() === monthNumber
+  ) {
+    if (DEBUG) {
+      console.log("REMOVING PAST APPOINTMENTS!");
+      console.log("sameDayAppointmentLeadTime", sameDayAppointmentLeadTime);
+    }
+    const pastAppointments: any = [];
+    const bufferTime = Number(
+      addMinutes(sameDayAppointmentLeadTime, new Date())
+        .toLocaleTimeString("en-US", {
+          timeZone: "America/Denver",
+          hour12: false,
+          hour: "numeric",
+          minute: "numeric",
+        })
+        .replaceAll(":", "")
+    );
+    if (DEBUG) {
+      console.log("90 MIN FROM NOW", bufferTime);
+    }
+    availableAppointmentSlots.map((availableAppointmentSlot: any) => {
+      if (
+        Number(availableAppointmentSlot.start.replaceAll(":", "")) < bufferTime
+      )
+        pastAppointments.push(availableAppointmentSlot);
+    });
+    if (DEBUG) console.log("pastAppointments", pastAppointments);
+    availableAppointmentSlots = availableAppointmentSlots.filter(
+      (appointmentSlot: any) => !pastAppointments.includes(appointmentSlot)
+    );
+  }
+
+  availableAppointmentSlots.map((availableAppointmentSlot: any) => {
+    existingAppointments.map((existingAppointment: any) => {
+      if (
+        areIntervalsOverlapping(
+          {
+            start: formatTimeHoursToDate(existingAppointment.start),
+            end: formatTimeHoursToDate(existingAppointment.end),
+          },
+          {
+            start: formatTimeHoursToDate(availableAppointmentSlot.start),
+            end: formatTimeHoursToDate(availableAppointmentSlot.end),
+          }
+        ) &&
+        !appointmentSlotsToRemove.includes(availableAppointmentSlot)
+      ) {
+        if (DEBUG)
+          console.log("INTERVAL NOT OVERLAPPING", {
+            availableAppointmentSlot,
+            existingAppointment,
+          });
+        appointmentSlotsToRemove.push(availableAppointmentSlot);
+      } else if (DEBUG)
+        console.log("INTERVALS ARE OVERLAPPING", {
+          availableAppointmentSlot,
+          existingAppointment,
+        });
+    });
+  });
+  if (DEBUG) {
+    console.log("availableAppointmentSlots", availableAppointmentSlots);
+    console.log("appointmentSlotsToRemove", appointmentSlotsToRemove);
+  }
+  return availableAppointmentSlots.filter(
+    (appointmentSlot: any) =>
+      !appointmentSlotsToRemove.includes(appointmentSlot)
+  );
+};
+const getScheduledClosures = async (schedule: string) =>
+  await admin
+    .firestore()
+    .collection("configuration")
+    .doc("closures")
+    .get()
+    .then((doc: any) => {
+      if (DEBUG)
+        console.log("configuration/closures => doc.data()", doc.data());
+      return schedule === "clinic"
+        ? doc.data()?.closureDatesClinic
+        : schedule === "housecall"
+        ? doc.data()?.closureDatesHousecall
+        : doc.data()?.closureDatesVirtual;
+    })
+    .catch((error: any) => throwError(error));
