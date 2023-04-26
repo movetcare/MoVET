@@ -420,7 +420,6 @@ const getReasons = async () =>
   await admin
     .firestore()
     .collection("reasons")
-    .where("isVisible", "==", true)
     .get()
     .then((querySnapshot: any) => {
       if (DEBUG)
@@ -431,7 +430,12 @@ const getReasons = async () =>
       const reasons: Array<string> = [];
       if (querySnapshot?.docs?.length > 0)
         querySnapshot.forEach(async (doc: any) => {
-          reasons.push(doc.data()?.id);
+          if (
+            doc.data().isVisible ||
+            doc.data().id === 106 ||
+            doc.data().id === 105
+          )
+            reasons.push(doc.data()?.id);
         });
       return reasons;
     })
