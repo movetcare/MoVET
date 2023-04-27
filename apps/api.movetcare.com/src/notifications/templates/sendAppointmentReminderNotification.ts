@@ -468,7 +468,7 @@ const send30MinAppointmentNotification = async (
         : ""
     }${
       user === 7
-        ? `Location: MoVET Clinic @ Belleview Station (912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9)\n`
+        ? `Location: MoVET Clinic @ Belleview Station (4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9)\n`
         : ""
     }${
       instructions
