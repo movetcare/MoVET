@@ -227,6 +227,46 @@ export const ClientReviews = ({
           </div>
           <div
             className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
+            onClick={() => window.open("https://g.co/kgs/7L7g1V", "_blank")}
+          >
+            <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+            </div>
+            <p className="text-xl text-center mb-4 group-hover:opacity-75">
+              The vet was a dog whisperer!
+            </p>
+            <i className="group-hover:opacity-75">
+              &quot;I highly recommend MoVET @ Belleview Station. Yesterday
+              afternoon, I took my border collie / catahoula (Ellie Mae) there
+              for an annual appointment and to have bloodwork done. The staff
+              was very kind, patient, and knowledgeable, and the vet was a dog
+              whisperer! She knew my baby&apos;s personality before I even had
+              to explain and was super attentive to our questions and needs.
+              Plus, the dog boutique is just adorable. Ellie Mae and I
+              definitely look forward to our next visit. If you&apos;re in the
+              area, check them out! &quot;
+            </i>
+            <p className="text-center mt-4 group-hover:opacity-75">
+              <a
+                href="https://g.co/kgs/7L7g1V"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-row justify-center items-center italic text-center text-movet-black"
+              >
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  className="mr-2 text-movet-blue"
+                />{" "}
+                Google Review
+              </a>
+            </p>
+          </div>
+          <div
+            className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
             onClick={() =>
               window.open(
                 "https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556",
@@ -392,6 +432,39 @@ export const ClientReviews = ({
             <p className="text-center mt-4 group-hover:opacity-75">
               <a
                 href="https://g.co/kgs/h33bMP"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-row justify-center items-center italic text-center text-movet-black"
+              >
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  className="mr-2 text-movet-blue"
+                />{" "}
+                Google Review
+              </a>
+            </p>
+          </div>
+          <div
+            className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
+            onClick={() => window.open("https://g.co/kgs/yKS8C4", "_blank")}
+          >
+            <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+            </div>
+            <p className="text-xl text-center mb-4 group-hover:opacity-75">
+              My pup loves the staff
+            </p>
+            <i className="group-hover:opacity-75">
+              &quot;Great experience here. My pup loves the staff. Very
+              knowledgeable and kind people.&quot;
+            </i>
+            <p className="text-center mt-4 group-hover:opacity-75">
+              <a
+                href="https://g.co/kgs/yKS8C4"
                 target="_blank"
                 rel="noreferrer"
                 className="flex flex-row justify-center items-center italic text-center text-movet-black"
