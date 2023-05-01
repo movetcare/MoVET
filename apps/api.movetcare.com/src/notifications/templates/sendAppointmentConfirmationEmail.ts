@@ -1,12 +1,12 @@
 import { sendNotification } from "./../sendNotification";
 import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
-import { admin, throwError } from "../../config/config";
+import { admin, throwError, DEBUG } from "../../config/config";
 import { getAuthUserById } from "../../utils/auth/getAuthUserById";
 import { getDateStringFromDate } from "../../utils/getDateStringFromDate";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { EmailConfiguration } from "../../types/email.d";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
-const DEBUG = false;
+
 export const sendAppointmentConfirmationEmail = async (
   clientId: string,
   appointmentId: string

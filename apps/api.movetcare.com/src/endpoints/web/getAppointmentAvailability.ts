@@ -57,7 +57,7 @@ export const getAppointmentAvailability = functions
           date
         );
         if (isOpenOnDate && closedReason === null) {
-          await assignConfiguration({ schedule, patients });
+          await assignConfiguration({ schedule, patients, date });
           existingAppointments = await getExistingAppointments({
             date,
             schedule,
@@ -86,15 +86,15 @@ const getConfiguration = async () =>
 const assignConfiguration = async ({
   schedule,
   patients,
+  date,
 }: {
   schedule: "clinic" | "housecall" | "virtual";
   patients: Array<string>;
+  date: any;
 }) => {
   const configuration = await getConfiguration();
   switch (schedule) {
     case "clinic":
-      standardOpenTime = configuration?.clinicStartTime;
-      standardCloseTime = configuration?.clinicEndTime;
       standardLunchTime = configuration?.clinicLunchTime;
       standardLunchDuration = configuration?.clinicLunchDuration;
       sameDayAppointmentLeadTime =
@@ -108,8 +108,6 @@ const assignConfiguration = async ({
           : configuration?.clinicOnePatientDuration;
       break;
     case "housecall":
-      standardOpenTime = configuration?.housecallStartTime;
-      standardCloseTime = configuration?.housecallEndTime;
       standardLunchTime = configuration?.housecallLunchTime;
       standardLunchDuration = configuration?.housecallLunchDuration;
       appointmentBuffer = configuration?.housecallAppointmentBufferTime;
@@ -123,8 +121,6 @@ const assignConfiguration = async ({
           : configuration?.housecallOnePatientDuration;
       break;
     case "virtual":
-      standardOpenTime = configuration?.startStartTime;
-      standardCloseTime = configuration?.startEndTime;
       standardLunchTime = configuration?.startLunchTime;
       standardLunchDuration = configuration?.startLunchDuration;
       sameDayAppointmentLeadTime =
@@ -251,21 +247,38 @@ const verifyScheduleIsOpen = async (
     );
     if (isGlobalClosure && closureData) return closureData;
   }
+
   switch (schedule) {
     case "clinic":
-      if (weekdayNumber === 0) isOpenOnDate = configuration?.clinicOpenSunday;
-      else if (weekdayNumber === 1)
+      if (weekdayNumber === 0) {
+        isOpenOnDate = configuration?.clinicOpenSunday;
+        standardOpenTime = configuration?.clinicOpenSundayTime;
+        standardCloseTime = configuration?.clinicClosedSundayTime;
+      } else if (weekdayNumber === 1) {
         isOpenOnDate = configuration?.clinicOpenMonday;
-      else if (weekdayNumber === 2)
+        standardOpenTime = configuration?.clinicOpenMondayTime;
+        standardCloseTime = configuration?.clinicClosedMondayTime;
+      } else if (weekdayNumber === 2) {
         isOpenOnDate = configuration?.clinicOpenTuesday;
-      else if (weekdayNumber === 3)
+        standardOpenTime = configuration?.clinicOpenTuesdayTime;
+        standardCloseTime = configuration?.clinicClosedTuesdayTime;
+      } else if (weekdayNumber === 3) {
         isOpenOnDate = configuration?.clinicOpenWednesday;
-      else if (weekdayNumber === 4)
+        standardOpenTime = configuration?.clinicOpenWednesdayTime;
+        standardCloseTime = configuration?.clinicClosedWednesdayTime;
+      } else if (weekdayNumber === 4) {
         isOpenOnDate = configuration?.clinicOpenThursday;
-      else if (weekdayNumber === 5)
+        standardOpenTime = configuration?.clinicOpenThursdayTime;
+        standardCloseTime = configuration?.clinicClosedThursdayTime;
+      } else if (weekdayNumber === 5) {
         isOpenOnDate = configuration?.clinicOpenFriday;
-      else if (weekdayNumber === 6)
+        standardOpenTime = configuration?.clinicOpenFridayTime;
+        standardCloseTime = configuration?.clinicClosedFridayTime;
+      } else if (weekdayNumber === 6) {
         isOpenOnDate = configuration?.clinicOpenSaturday;
+        standardOpenTime = configuration?.clinicOpenSaturdayTime;
+        standardCloseTime = configuration?.clinicClosedSaturdayTime;
+      }
       break;
     case "housecall":
       if (weekdayNumber === 0)
@@ -363,7 +376,7 @@ const getExistingAppointments = async ({ date, schedule }: any) =>
         console.log("scheduleClosures", scheduleClosures);
       }
       if (querySnapshot?.docs?.length > 0) {
-        const reasons = await getReasons();
+        const reasons = await getReasons(schedule);
         querySnapshot.forEach(async (doc: any) => {
           if (
             doc.data()?.start?.toDate().getDate() === calendarDay &&
@@ -416,27 +429,41 @@ const getExistingAppointments = async ({ date, schedule }: any) =>
       return appointments;
     })
     .catch((error: any) => throwError(error));
-const getReasons = async () =>
+const getReasons = async (schedule: "clinic" | "housecall" | "virtual") =>
   await admin
     .firestore()
     .collection("reasons")
     .get()
     .then((querySnapshot: any) => {
-      if (DEBUG)
+      let reasonGroup: any = null;
+      if (schedule === "clinic") reasonGroup = 36;
+      else if (schedule === "housecall") reasonGroup = 35;
+      else if (schedule === "virtual") reasonGroup = 37;
+      if (DEBUG) {
+        console.log("reasonGroup", reasonGroup);
         console.log(
           "getReasons querySnapshot?.docs?.length",
           querySnapshot?.docs?.length
         );
+      }
       const reasons: Array<string> = [];
       if (querySnapshot?.docs?.length > 0)
         querySnapshot.forEach(async (doc: any) => {
           if (
-            doc.data().isVisible ||
-            doc.data().id === 106 ||
-            doc.data().id === 105
+            doc.data().isVisible &&
+            !doc.data().archived &&
+            reasonGroup === doc.data().group
+          )
+            reasons.push(doc.data()?.id);
+          else if (doc.data().id === 106 && schedule === "clinic")
+            reasons.push(doc.data()?.id);
+          else if (
+            (doc.data().id === 105 || doc.data().id === 111) &&
+            schedule === "housecall"
           )
             reasons.push(doc.data()?.id);
         });
+      if (DEBUG) console.log("reasons", reasons);
       return reasons;
     })
     .catch((error: any) => throwError(error));

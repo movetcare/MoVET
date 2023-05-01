@@ -1,6 +1,6 @@
-import { functions } from "../../../config/config";
+import { functions, DEBUG } from "../../../config/config";
 import { sendNotification } from "../../../notifications/sendNotification";
-const DEBUG = false; 
+
 export const requestIsAuthorized = async (context: any): Promise<boolean> => {
   if (DEBUG) {
     console.log("REQUEST context.app => ", context.app);

@@ -1,8 +1,7 @@
 import MultiPatientClinicSettings from "./MultiPatientClinicSettings";
 import VcprReasonClinicSettings from "./VcprReasonClinicSettings";
-import StandardHoursClinicSettings from "./StandardHoursClinicSettings";
 import StandardLunchClinicSettings from "./StandardLunchClinicSettings";
-import StandardDaysClinicSettings from "./StandardDaysClinicSettings";
+import StandardOperatingHoursClinicSettings from "./StandardOperatingHoursClinicSettings";
 import { ClosuresClinicSettings } from "./ClosuresClinicSettings";
 import { SchedulePreview } from "../SchedulePreview";
 import { SameDayAppointmentClinicSettings } from "./SameDayAppointmentClinicSettings";
@@ -25,8 +24,7 @@ const ClinicSettings = () => {
           <SchedulePreview schedule="clinic" />
           <ul role="list" className="mt-4 mb-8 divide-y divide-movet-gray">
             <ClosuresClinicSettings />
-            <StandardDaysClinicSettings />
-            <StandardHoursClinicSettings />
+            <StandardOperatingHoursClinicSettings />
             <StandardBufferClinicSettings />
             <StandardLunchClinicSettings />
             <MultiPatientClinicSettings />

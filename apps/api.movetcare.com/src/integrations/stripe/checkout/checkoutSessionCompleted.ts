@@ -1,5 +1,5 @@
-import { admin, stripe, throwError } from "../../../config/config";
-const DEBUG = false; 
+import { admin, stripe, throwError, DEBUG } from "../../../config/config";
+
 export const checkoutSessionCompleted = (event: any) =>
   admin
     .firestore()

@@ -1,9 +1,14 @@
-import { environment, throwError, functions, admin } from "../../config/config";
+import {
+  environment,
+  throwError,
+  functions,
+  admin,
+  DEBUG,
+} from "../../config/config";
 import { Request, Response } from "express";
 import * as Crypto from "crypto";
 import { AuthorizationCode } from "simple-oauth2";
 import { sendNotification } from "../../notifications/sendNotification";
-const DEBUG = true;
 
 export const processGoToWebhook = async (
   request: Request,

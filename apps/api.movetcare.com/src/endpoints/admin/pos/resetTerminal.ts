@@ -2,10 +2,11 @@ import {
   defaultRuntimeOptions,
   functions,
   throwError,
+  DEBUG,
 } from "../../../config/config";
 import { configureTerminals } from "../../../config/configureTerminals";
 import { requestIsAuthorized } from "./requestIsAuthorized";
-const DEBUG = false; 
+
 export const resetTerminal = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

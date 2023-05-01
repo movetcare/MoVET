@@ -1,5 +1,11 @@
-import { admin, functions, request, throwError } from "../../config/config";
-const DEBUG = true;
+import {
+  admin,
+  functions,
+  request,
+  throwError,
+  DEBUG,
+} from "../../config/config";
+
 export const fetchNewGoToAccessToken = async (
   refreshToken: string
 ): Promise<string | false> => {

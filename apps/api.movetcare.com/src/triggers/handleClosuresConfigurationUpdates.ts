@@ -1,6 +1,6 @@
 import { sendNotification } from "../notifications/sendNotification";
-import { environment, functions, request } from "../config/config";
-const DEBUG = true;
+import { environment, functions, request, DEBUG } from "../config/config";
+
 export const handleClosuresConfigurationUpdates = functions.firestore
   .document("configuration/closures")
   .onWrite(async (change: any) => {

@@ -1,5 +1,4 @@
 import { DEBUG } from "../config/config";
-// const DEBUG = true;
 export const formatTimeHoursToDate = (time: string): Date => {
   const hours =
     time.toString().length === 3

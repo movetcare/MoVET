@@ -5,6 +5,7 @@ import {
   functions,
   stripe,
   throwError,
+  DEBUG,
 } from "../../../config/config";
 import { fetchEntity } from "../../../integrations/provet/entities/fetchEntity";
 import { sendNotification } from "../../../notifications/sendNotification";
@@ -12,7 +13,7 @@ import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
 import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
 import { requestIsAuthorized } from "../../admin/pos/requestIsAuthorized";
-const DEBUG = false;
+
 interface AccountData {
   email: string;
   displayName: string;

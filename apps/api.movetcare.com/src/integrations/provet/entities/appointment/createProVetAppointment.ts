@@ -1,8 +1,13 @@
-import { request, throwError, proVetApiUrl } from "../../../../config/config";
+import {
+  request,
+  throwError,
+  proVetApiUrl,
+  DEBUG,
+} from "../../../../config/config";
 import type { Appointment } from "../../../../types/appointment";
 import { createVirtualAppointment } from "./createVirtualAppointment";
 import { saveAppointment } from "./saveAppointment";
-const DEBUG = false; 
+
 export const createProVetAppointment = async (
   proVetData: Appointment,
   movetData: any

@@ -110,11 +110,15 @@ export const SchedulePreview = ({
           <Loader />
         ) : error ? (
           <Error error={error} />
-        ) : closedReason ? (
-          <p className="text-center italic font-bold">{closedReason}</p>
         ) : (
           <div className="w-full mx-auto">
-            <h4 className="italic text-center -mt-2">Available Appointments</h4>
+            <h4 className="italic text-center -mt-2">
+              {closedReason
+                ? closedReason
+                : appointmentAvailability && appointmentAvailability.length > 0
+                ? "Available Appointments"
+                : "No Appointments Available"}
+            </h4>
             <ul>
               {appointmentAvailability?.map(
                 (appointmentSlot: { start: string; end: string }) => (

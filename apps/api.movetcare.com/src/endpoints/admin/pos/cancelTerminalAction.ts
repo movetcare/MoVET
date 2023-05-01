@@ -5,9 +5,10 @@ import {
   functions,
   request,
   throwError,
+  DEBUG,
 } from "../../../config/config";
 import { requestIsAuthorized } from "./requestIsAuthorized";
-const DEBUG = false; 
+
 export const cancelTerminalAction = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
