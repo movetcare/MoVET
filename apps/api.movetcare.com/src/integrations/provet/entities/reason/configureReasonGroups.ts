@@ -1,14 +1,14 @@
-import {admin, DEBUG, throwError} from "../../../../config/config";
+import { admin, DEBUG, throwError } from "../../../../config/config";
 import type { ReasonGroup } from "../../../../types/reason";
-import {deleteCollection} from "../../../../utils/deleteCollection";
-import {getProVetIdFromUrl} from "../../../../utils/getProVetIdFromUrl";
-import {fetchEntity} from "../fetchEntity";
+import { deleteCollection } from "../../../../utils/deleteCollection";
+import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
+import { fetchEntity } from "../fetchEntity";
 
 const visibleReasonGroupsInApp = [35, 36, 37];
 
 export const configureReasonGroups = async (): Promise<boolean> => {
   console.log("STARTING REASONS CONFIGURATION");
-  await deleteCollection("reason_group").then(
+  await deleteCollection("reason_groups").then(
     () => DEBUG && console.log("DELETED ALL REASONS!")
   );
   const reasonGroups: Array<ReasonGroup> = await fetchEntity("reason_group");

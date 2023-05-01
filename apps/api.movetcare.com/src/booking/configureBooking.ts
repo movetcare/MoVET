@@ -32,6 +32,7 @@ export const configureBooking = async (): Promise<boolean> => {
       .doc("bookings")
       .set(
         {
+          clinicActiveResources: [14, 15, 16],
           clinicOpenMonday: true,
           clinicOpenMondayTime: 930,
           clinicClosedMondayTime: 1700,
@@ -39,7 +40,7 @@ export const configureBooking = async (): Promise<boolean> => {
           clinicOpenTuesdayTime: 930,
           clinicClosedTuesdayTime: 1700,
           clinicOpenWednesday: true,
-          clinicOpenWednesdayTime: 930,
+          clinicOpenWednesdayTime: 1300,
           clinicClosedWednesdayTime: 1700,
           clinicOpenThursday: true,
           clinicOpenThursdayTime: 930,
@@ -47,7 +48,7 @@ export const configureBooking = async (): Promise<boolean> => {
           clinicOpenFriday: true,
           clinicOpenFridayTime: 930,
           clinicClosedFridayTime: 1700,
-          clinicOpenSaturday: false,
+          clinicOpenSaturday: true,
           clinicOpenSaturdayTime: 1300,
           clinicClosedSaturdayTime: 1700,
           clinicOpenSunday: false,

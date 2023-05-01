@@ -21,7 +21,8 @@ export const fetchEntity = async (
     | "cancellationreason"
     | "email"
     | "userdetails"
-    | "user",
+    | "user"
+    | "resource",
   entityId: number | null = null,
   filter: string | null = null
 ): Promise<any> => {

@@ -20,7 +20,6 @@ export const saveAppointment = async (
   const data: any = {};
 
   if (proVetAppointmentData) {
-    // data.record = proVetAppointmentData;
     if (
       proVetAppointmentData?.active === 1 ||
       proVetAppointmentData?.active === 0
@@ -54,6 +53,12 @@ export const saveAppointment = async (
       data.address = movetAppointmentData?.address;
     if (movetAppointmentData?.location)
       data.location = movetAppointmentData?.location;
+    if (proVetAppointmentData?.resources)
+      data.resources = proVetAppointmentData?.resources.map((resource) =>
+        getProVetIdFromUrl(resource)
+      );
+    if (proVetAppointmentData?.ward)
+      data.ward = getProVetIdFromUrl(proVetAppointmentData?.ward);
     if (movetAppointmentData?.patients)
       data.patients = movetAppointmentData?.patients;
     else if (proVetAppointmentData?.patients) {

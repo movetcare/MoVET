@@ -170,7 +170,6 @@ const GeneralSettings = () => {
                   {reasonGroups &&
                     reasonGroups.docs.length > 0 &&
                     reasonGroups.docs.map((group: any, index: number) => {
-                      console.log(group.data());
                       return (
                         <>
                           <Switch.Group
@@ -231,7 +230,6 @@ const GeneralSettings = () => {
                           {reasons &&
                             reasons.docs.length > 0 &&
                             reasons.docs.map((reason: any, index: number) => {
-                              console.log(reason.data());
                               return group.data()?.id ===
                                 reason.data()?.group &&
                                 group.data()?.isVisible ? (

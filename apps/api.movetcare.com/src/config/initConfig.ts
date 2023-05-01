@@ -16,6 +16,7 @@ import { configureItems } from "../integrations/provet/entities/item/configureIt
 import { configureBooking } from "../booking/configureBooking";
 import { sendNotification } from "../notifications/sendNotification";
 import { configureSchedule } from "./configureSchedule";
+import { configureResources } from "../integrations/provet/entities/resource/configureResources";
 
 export const initProVetConfig = async (
   { body: { apiKey, type } }: Request<{ body: any }>,
@@ -50,6 +51,7 @@ export const initProVetConfig = async (
             (await configureAppointmentOptionDetails()) &&
             (await configureTelehealthStatus()) &&
             (await configureAppointments()) &&
+            (await configureResources()) &&
             (await admin
               .firestore()
               .collection("tasks_queue")
@@ -86,7 +88,6 @@ export const initProVetConfig = async (
           console.log(
             "PRODUCTION ENVIRONMENT DETECTED - SKIPPING APP CONFIGURATION AUTOMATION"
           );
-
           return response.status(200).send();
         }
       case "telehealth":
@@ -103,6 +104,10 @@ export const initProVetConfig = async (
           : response.status(500).send();
       case "reasons":
         return (await configureReasons())
+          ? response.status(200).send()
+          : response.status(500).send();
+      case "resources":
+        return (await configureResources())
           ? response.status(200).send()
           : response.status(500).send();
       case "booking":

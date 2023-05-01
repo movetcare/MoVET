@@ -5,11 +5,6 @@ import {
   isAfter,
   isEqual,
 } from "date-fns/fp";
-// TODOs:
-// Number of rooms available in clinic
-// Filter down schedules by ward
-// Integrate closures with provet appointments
-// Migrate appointments veterinary filed (Clinic, housecall, virtual) to wards
 
 import {
   admin,
@@ -247,7 +242,6 @@ const verifyScheduleIsOpen = async (
     );
     if (isGlobalClosure && closureData) return closureData;
   }
-
   switch (schedule) {
     case "clinic":
       if (weekdayNumber === 0) {
