@@ -9,14 +9,15 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { firestore } from "services/firebase";
 import Error from "../../../Error";
-import { Switch } from "@headlessui/react";
+import { Switch, Transition } from "@headlessui/react";
 import { classNames } from "utilities";
+import { Button } from "ui";
 
 export const ResourcesClinicSettings = () => {
   const [resources, setResources] = useState<any>(null);
   const [activeResources, setActiveResources] = useState<any>(null);
   const [error, setError] = useState<any>(null);
-
+  const [showToggles, setShowToggles] = useState<boolean>(false);
   useEffect(() => {
     const unsubscribe = onSnapshot(
       doc(firestore, "configuration", "bookings"),
@@ -104,56 +105,80 @@ export const ResourcesClinicSettings = () => {
         <p className="mt-6 mb-3 text-center italic text-sm">
           Active Resource Schedules
         </p>
+        <ul className="text-center mb-6 text-sm">
+          {resources &&
+            resources.map((resource: any) =>
+              activeResources.map((activeResource: number) => {
+                if (activeResource === resource.id)
+                  return <li className="my-1">{resource.name}</li>;
+              })
+            )}
+        </ul>
+        <Button
+          text="Edit Resource Schedules"
+          color="black"
+          onClick={() => setShowToggles(!showToggles)}
+        />
       </div>
-      {resources &&
-        resources.map((resource: any, index: number) => {
-          let isActive = false;
-          activeResources.map((activeResource: number) => {
-            if (activeResource === resource.id) isActive = true;
-          });
-          return (
-            <Switch.Group
-              key={index}
-              as="div"
-              className="py-2 flex items-center justify-between px-6 sm:px-8"
-            >
-              <div className="flex flex-col">
-                {resource?.name && (
-                  <Switch.Label
-                    as="h3"
-                    className="text-xs font-medium text-movet-black italic"
-                    passive
-                  >
-                    <FontAwesomeIcon
-                      icon={faCircleDot}
-                      size="2xs"
-                      className={`${
-                        isActive ? "text-movet-green" : "text-movet-red"
-                      } mr-4`}
-                    />
-                    {resource?.name}
-                  </Switch.Label>
-                )}
-              </div>
-              <Switch
-                checked={isActive}
-                onChange={async () => saveChanges(resource.id)}
-                className={classNames(
-                  isActive ? "bg-movet-green" : "bg-movet-gray",
-                  "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray"
-                )}
+      <Transition
+        show={showToggles}
+        enter="transition ease-in duration-500"
+        leave="transition ease-out duration-64"
+        leaveTo="opacity-10"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leaveFrom="opacity-100"
+      >
+        {resources &&
+          resources.map((resource: any, index: number) => {
+            let isActive = false;
+            activeResources.map((activeResource: number) => {
+              if (activeResource === resource.id) isActive = true;
+            });
+            return (
+              <Switch.Group
+                key={index}
+                as="div"
+                className="py-2 flex items-center justify-between px-6 sm:px-8"
               >
-                <span
-                  aria-hidden="true"
-                  className={classNames(
-                    isActive ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                <div className="flex flex-col">
+                  {resource?.name && (
+                    <Switch.Label
+                      as="h3"
+                      className="text-xs font-medium text-movet-black italic"
+                      passive
+                    >
+                      <FontAwesomeIcon
+                        icon={faCircleDot}
+                        size="2xs"
+                        className={`${
+                          isActive ? "text-movet-green" : "text-movet-red"
+                        } mr-4`}
+                      />
+                      {resource?.name}
+                    </Switch.Label>
                   )}
-                />
-              </Switch>
-            </Switch.Group>
-          );
-        })}
+                </div>
+                <Switch
+                  checked={isActive}
+                  onChange={async () => saveChanges(resource.id)}
+                  className={classNames(
+                    isActive ? "bg-movet-green" : "bg-movet-gray",
+                    "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray"
+                  )}
+                >
+                  <span
+                    aria-hidden="true"
+                    className={classNames(
+                      isActive ? "translate-x-5" : "translate-x-0",
+                      "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                    )}
+                  />
+                </Switch>
+              </Switch.Group>
+            );
+          })}
+      </Transition>
     </li>
   );
 };

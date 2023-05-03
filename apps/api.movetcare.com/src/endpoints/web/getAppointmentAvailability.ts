@@ -19,12 +19,23 @@ import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
 
 const DEBUG = true;
 
+interface Appointment {
+  start: any;
+  end: any;
+  id: null | number;
+  resources: null | Array<number>;
+  ward: null | number;
+  reason: null | number;
+}
+type AppointmentScheduleTypes = "clinic" | "housecall" | "virtual";
+
 let standardOpenTime: any,
   standardCloseTime: any,
   standardLunchTime: any,
   standardLunchDuration: any,
   appointmentBuffer: any,
   sameDayAppointmentLeadTime: any,
+  resources: any,
   appointmentDuration: any = null;
 
 export const getAppointmentAvailability = functions
@@ -36,7 +47,7 @@ export const getAppointmentAvailability = functions
       patients,
     }: {
       date: any;
-      schedule: "clinic" | "housecall" | "virtual";
+      schedule: AppointmentScheduleTypes;
       patients: Array<string>;
     }): Promise<any> => {
       if (DEBUG) {
@@ -44,7 +55,7 @@ export const getAppointmentAvailability = functions
         console.log("patients", patients);
         console.log("schedule", schedule);
       }
-      let existingAppointments: Array<{ start: any; end: any }> = [];
+
       if (patients && patients.length > 0) {
         const { isOpenOnDate, closedReason } = await verifyScheduleIsOpen(
           schedule,
@@ -53,13 +64,56 @@ export const getAppointmentAvailability = functions
         );
         if (isOpenOnDate && closedReason === null) {
           await assignConfiguration({ schedule, patients, date });
-          existingAppointments = await getExistingAppointments({
-            date,
-            schedule,
-          });
-          return await calculateAvailableAppointments({
-            existingAppointments,
-            date,
+          const allAvailableAppointmentTimes: any = [];
+          await Promise.all(
+            resources.map(async (resource: number) => {
+              let existingAppointmentsForResource: Array<{
+                start: any;
+                end: any;
+              }> = [];
+              existingAppointmentsForResource = await getExistingAppointments({
+                date,
+                schedule,
+                resource,
+              });
+              allAvailableAppointmentTimes.push(
+                await calculateAvailableAppointments({
+                  existingAppointmentsForResource,
+                  date,
+                })
+              );
+            })
+          );
+          if (DEBUG)
+            console.log(
+              "allAvailableAppointmentTimes",
+              allAvailableAppointmentTimes
+            );
+          const consolidatedAvailableAppointmentTimes: any = [];
+          allAvailableAppointmentTimes.forEach((timeSlots: any) =>
+            timeSlots.forEach((timeSlot: any) =>
+              consolidatedAvailableAppointmentTimes.push(timeSlot)
+            )
+          );
+          if (DEBUG)
+            console.log(
+              "consolidatedAvailableAppointmentTimes",
+              consolidatedAvailableAppointmentTimes
+            );
+          const uniqueIds: any = [];
+          const uniqueAppointmentTimes =
+            consolidatedAvailableAppointmentTimes.filter((element: any) => {
+              const isDuplicate = uniqueIds.includes(element.name);
+              if (!isDuplicate) {
+                uniqueIds.push(element.name);
+                return true;
+              }
+              return false;
+            });
+          return uniqueAppointmentTimes.sort((a: any, b: any) => {
+            if (a.name > b.name) return 1;
+            if (b.name > a.name) return -1;
+            return 0;
           });
         } else return closedReason || "Something Went Wrong...";
       }
@@ -81,9 +135,8 @@ const getConfiguration = async () =>
 const assignConfiguration = async ({
   schedule,
   patients,
-  date,
 }: {
-  schedule: "clinic" | "housecall" | "virtual";
+  schedule: AppointmentScheduleTypes;
   patients: Array<string>;
   date: any;
 }) => {
@@ -95,6 +148,7 @@ const assignConfiguration = async ({
       sameDayAppointmentLeadTime =
         configuration?.clinicSameDayAppointmentLeadTime;
       appointmentBuffer = configuration?.clinicAppointmentBufferTime;
+      resources = configuration?.clinicActiveResources;
       appointmentDuration =
         patients?.length >= 3
           ? configuration?.clinicThreePatientDuration
@@ -108,6 +162,7 @@ const assignConfiguration = async ({
       appointmentBuffer = configuration?.housecallAppointmentBufferTime;
       sameDayAppointmentLeadTime =
         configuration?.housecallSameDayAppointmentLeadTime;
+      resources = configuration?.housecallActiveResources;
       appointmentDuration =
         patients?.length >= 3
           ? configuration?.housecallThreePatientDuration
@@ -121,6 +176,7 @@ const assignConfiguration = async ({
       sameDayAppointmentLeadTime =
         configuration?.virtualSameDayAppointmentLeadTime;
       appointmentBuffer = configuration?.virtualAppointmentBufferTime;
+      resources = configuration?.virtualActiveResources;
       appointmentDuration =
         patients?.length >= 3
           ? configuration?.virtualThreePatientDuration
@@ -348,7 +404,15 @@ const verifyScheduleIsOpen = async (
   }
   return { isOpenOnDate: true, closedReason: null };
 };
-const getExistingAppointments = async ({ date, schedule }: any) =>
+const getExistingAppointments = async ({
+  date,
+  schedule,
+  resource,
+}: {
+  date: string;
+  schedule: AppointmentScheduleTypes;
+  resource: number;
+}) =>
   await admin
     .firestore()
     .collection("appointments")
@@ -359,11 +423,7 @@ const getExistingAppointments = async ({ date, schedule }: any) =>
     .then(async (querySnapshot: any) => {
       const calendarDay = new Date(date).getDate();
       const monthNumber = new Date(date).getMonth();
-      const appointments: Array<{
-        start: any;
-        end: any;
-        name: string | null | number;
-      }> = [];
+      const existingAppointments: Array<Appointment> = [];
       const scheduleClosures = await getScheduledClosures(schedule);
       if (DEBUG) {
         console.log("querySnapshot?.docs?.length", querySnapshot?.docs?.length);
@@ -372,13 +432,26 @@ const getExistingAppointments = async ({ date, schedule }: any) =>
       if (querySnapshot?.docs?.length > 0) {
         const reasons = await getReasons(schedule);
         querySnapshot.forEach(async (doc: any) => {
+          if (DEBUG) {
+            console.log("appointment id", doc.id);
+            console.log("resource", resource);
+            console.log("doc.data()?.resources", doc.data()?.resources);
+            console.log(
+              "doc.data()?.resources.includes(resource)",
+              doc.data()?.resources.includes(resource)
+            );
+          }
           if (
             doc.data()?.start?.toDate().getDate() === calendarDay &&
             doc.data()?.start?.toDate().getMonth() === monthNumber &&
+            doc.data()?.resources.includes(resource) &&
             reasons.includes(getProVetIdFromUrl(doc.data()?.reason))
           )
-            appointments.push({
-              name: getProVetIdFromUrl(doc.data()?.reason),
+            existingAppointments.push({
+              id: Number(doc.id),
+              reason: getProVetIdFromUrl(doc.data()?.reason),
+              ward: doc.data()?.ward,
+              resources: doc.data()?.resources,
               start: doc.data()?.start?.toDate()?.toLocaleString("en-US", {
                 timeZone: "America/Denver",
                 hour: "numeric",
@@ -394,8 +467,11 @@ const getExistingAppointments = async ({ date, schedule }: any) =>
             });
         });
       }
-      appointments.push({
-        name: "Lunch",
+      existingAppointments.push({
+        id: null,
+        reason: null,
+        ward: null,
+        resources: [resource],
         start: formatTimeHoursToString(standardLunchTime),
         end: addMinutes(
           standardLunchDuration,
@@ -412,18 +488,21 @@ const getExistingAppointments = async ({ date, schedule }: any) =>
           closure?.date?.toDate().getMonth() === monthNumber
         ) {
           if (DEBUG) console.log("Schedule Closure Found =>", closure);
-          appointments.push({
-            name: closure?.name,
+          existingAppointments.push({
+            id: null,
+            reason: closure?.name,
+            ward: null,
+            resources: [resource],
             start: formatTimeHoursToString(closure?.startTime),
             end: formatTimeHoursToString(closure?.endTime),
           });
         }
       });
-      if (DEBUG) console.log("appointments", appointments);
-      return appointments;
+      if (DEBUG) console.log("existingAppointments", existingAppointments);
+      return existingAppointments;
     })
     .catch((error: any) => throwError(error));
-const getReasons = async (schedule: "clinic" | "housecall" | "virtual") =>
+const getReasons = async (schedule: AppointmentScheduleTypes) =>
   await admin
     .firestore()
     .collection("reasons")
@@ -462,7 +541,7 @@ const getReasons = async (schedule: "clinic" | "housecall" | "virtual") =>
     })
     .catch((error: any) => throwError(error));
 const calculateAvailableAppointments = async ({
-  existingAppointments,
+  existingAppointmentsForResource,
   date,
 }: any) => {
   const calendarDay = new Date(date).getDate();
@@ -477,7 +556,10 @@ const calculateAvailableAppointments = async ({
   );
   if (DEBUG) {
     console.log("numberOfAppointments", numberOfAppointments);
-    console.log("existingAppointments", existingAppointments);
+    console.log(
+      "existingAppointmentsForResource",
+      existingAppointmentsForResource
+    );
   }
   let nextAppointmentStartTime = standardOpenTime;
   for (let i = 0; i < numberOfAppointments; i++) {
@@ -551,9 +633,8 @@ const calculateAvailableAppointments = async ({
       (appointmentSlot: any) => !pastAppointments.includes(appointmentSlot)
     );
   }
-
   availableAppointmentSlots.map((availableAppointmentSlot: any) => {
-    existingAppointments.map((existingAppointment: any) => {
+    existingAppointmentsForResource.map((existingAppointment: any) => {
       if (
         areIntervalsOverlapping(
           {

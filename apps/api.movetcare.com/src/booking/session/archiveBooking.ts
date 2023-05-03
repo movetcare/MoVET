@@ -5,7 +5,9 @@ import { sendBookingRequestClientNotification } from "../../notifications/templa
 export const archiveBooking = async (id: string) => {
   if (DEBUG) console.log("archiveBooking", id);
   const bookingRef = admin.firestore().collection("bookings").doc(id);
-  await bookingRef
+  sendBookingRequestAdminNotification({ id, bookingRef });
+  sendBookingRequestClientNotification({ id, bookingRef });
+  bookingRef
     .set(
       {
         step: "needs-scheduling",
@@ -15,6 +17,4 @@ export const archiveBooking = async (id: string) => {
       { merge: true }
     )
     .catch((error: any) => throwError(error));
-  sendBookingRequestAdminNotification({ id, bookingRef });
-  sendBookingRequestClientNotification({ id, bookingRef });
 };
