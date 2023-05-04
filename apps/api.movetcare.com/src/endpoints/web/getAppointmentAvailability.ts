@@ -438,12 +438,13 @@ const getExistingAppointments = async ({
             console.log("doc.data()?.resources", doc.data()?.resources);
             console.log(
               "doc.data()?.resources.includes(resource)",
-              doc.data()?.resources.includes(resource)
+              doc.data()?.resources && doc.data()?.resources.includes(resource)
             );
           }
           if (
             doc.data()?.start?.toDate().getDate() === calendarDay &&
             doc.data()?.start?.toDate().getMonth() === monthNumber &&
+            doc.data()?.resources &&
             doc.data()?.resources.includes(resource) &&
             reasons.includes(getProVetIdFromUrl(doc.data()?.reason))
           )
