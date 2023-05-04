@@ -13,6 +13,7 @@ import { Switch, Transition } from "@headlessui/react";
 import Error from "../../../Error";
 import { classNames } from "utilities";
 import { PatternFormat } from "react-number-format";
+import Link from "next/link";
 
 const StandardOperatingHoursClinicSettings = () => {
   const [isOpenMonday, setIsOpenMonday] = useState<boolean>(false);
@@ -286,7 +287,17 @@ const StandardOperatingHoursClinicSettings = () => {
         <h3>Standard Operating Days</h3>
         <p className="text-sm">
           This controls availability of appointments during each day of the
-          week.
+          week.{" "}
+          <span className="italic font-extrabold">
+            Don&apos;t forget to update the{" "}
+            <Link
+              href="/settings/booking/manage-hours/"
+              className="text-movet-red hover:underline"
+            >
+              hours listing on the website
+            </Link>{" "}
+            whenever you make changes below!
+          </span>
         </p>
       </div>
       <div className="flex flex-col items-center justify-center">

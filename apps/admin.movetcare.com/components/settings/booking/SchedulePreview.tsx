@@ -153,7 +153,6 @@ export const SchedulePreview = ({
                 <h4 className="mt-4 text-center">Selected Date:</h4>
                 <p className="text-center italic">
                   {selectedDate.toLocaleString("en-US", {
-                    timeZone: "America/Denver",
                     month: "short",
                     day: "numeric",
                     year: "2-digit",
