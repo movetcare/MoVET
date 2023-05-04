@@ -23,8 +23,7 @@ interface Appointment {
   start: any;
   end: any;
   id: null | number;
-  resources: null | Array<number>;
-  ward: null | number;
+  resources: null | Array<ActiveResource>;
   reason: null | number;
 }
 type AppointmentScheduleTypes = "clinic" | "housecall" | "virtual";
@@ -38,6 +37,10 @@ let standardOpenTime: any,
   resources: any,
   appointmentDuration: any = null;
 
+interface ActiveResource {
+  id: number;
+  staggerTime: number;
+}
 export const getAppointmentAvailability = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
@@ -66,7 +69,7 @@ export const getAppointmentAvailability = functions
           await assignConfiguration({ schedule, patients, date });
           const allAvailableAppointmentTimes: any = [];
           await Promise.all(
-            resources.map(async (resource: number) => {
+            resources.map(async (resource: ActiveResource) => {
               let existingAppointmentsForResource: Array<{
                 start: any;
                 end: any;
@@ -411,7 +414,7 @@ const getExistingAppointments = async ({
 }: {
   date: string;
   schedule: AppointmentScheduleTypes;
-  resource: number;
+  resource: ActiveResource;
 }) =>
   await admin
     .firestore()
@@ -431,27 +434,46 @@ const getExistingAppointments = async ({
       }
       if (querySnapshot?.docs?.length > 0) {
         const reasons = await getReasons(schedule);
+        // if (resource.staggerTime !== 0) {
+        //   if (DEBUG) {
+        //     console.log("CUSTOM STAGGER TIME DETECTED", resource.staggerTime);
+        //     console.log("standardOpenTime PRE", standardOpenTime);
+        //   }
+        //   standardOpenTime = addMinutes(
+        //     resource.staggerTime,
+        //     formatTimeHoursToDate(standardOpenTime)
+        //   )
+        //     .toLocaleString("en-US", {
+        //       hour: "numeric",
+        //       minute: "numeric",
+        //       hour12: false,
+        //     })
+        //     .replaceAll(":", "");
+        //   if (DEBUG) {
+        //     console.log("standardOpenTime POST", standardOpenTime);
+        //   }
+        // }
         querySnapshot.forEach(async (doc: any) => {
           if (DEBUG) {
             console.log("appointment id", doc.id);
             console.log("resource", resource);
             console.log("doc.data()?.resources", doc.data()?.resources);
             console.log(
-              "doc.data()?.resources.includes(resource)",
-              doc.data()?.resources && doc.data()?.resources.includes(resource)
+              "doc.data()?.resources.includes(resource.id)",
+              doc.data()?.resources &&
+                doc.data()?.resources.includes(resource.id)
             );
           }
           if (
             doc.data()?.start?.toDate().getDate() === calendarDay &&
             doc.data()?.start?.toDate().getMonth() === monthNumber &&
             doc.data()?.resources &&
-            doc.data()?.resources.includes(resource) &&
+            doc.data()?.resources.includes(resource.id) &&
             reasons.includes(getProVetIdFromUrl(doc.data()?.reason))
           )
             existingAppointments.push({
               id: Number(doc.id),
               reason: getProVetIdFromUrl(doc.data()?.reason),
-              ward: doc.data()?.ward,
               resources: doc.data()?.resources,
               start: doc.data()?.start?.toDate()?.toLocaleString("en-US", {
                 timeZone: "America/Denver",
@@ -471,7 +493,6 @@ const getExistingAppointments = async ({
       existingAppointments.push({
         id: null,
         reason: null,
-        ward: null,
         resources: [resource],
         start: formatTimeHoursToString(standardLunchTime),
         end: addMinutes(
@@ -492,7 +513,6 @@ const getExistingAppointments = async ({
           existingAppointments.push({
             id: null,
             reason: closure?.name,
-            ward: null,
             resources: [resource],
             start: formatTimeHoursToString(closure?.startTime),
             end: formatTimeHoursToString(closure?.endTime),
@@ -556,6 +576,8 @@ const calculateAvailableAppointments = async ({
     ) / appointmentDuration
   );
   if (DEBUG) {
+    console.log("standardOpenTime", standardOpenTime);
+    console.log("standardCloseTime", standardCloseTime);
     console.log("numberOfAppointments", numberOfAppointments);
     console.log(
       "existingAppointmentsForResource",
@@ -566,7 +588,7 @@ const calculateAvailableAppointments = async ({
   for (let i = 0; i < numberOfAppointments; i++) {
     if (DEBUG)
       console.log(
-        "nextAppointmentStartTime",
+        "nextAppointmentStartTime PRE",
         formatTimeHoursToDate(nextAppointmentStartTime)
       );
     if (
@@ -600,7 +622,13 @@ const calculateAvailableAppointments = async ({
     );
     if (nextAppointmentStartTime.length === 4)
       nextAppointmentStartTime = `0${nextAppointmentStartTime}`;
+    if (DEBUG)
+      console.log(
+        "nextAppointmentStartTime POST",
+        formatTimeHoursToDate(nextAppointmentStartTime)
+      );
   }
+
   if (
     new Date()?.getDate() === calendarDay &&
     new Date()?.getMonth() === monthNumber
@@ -621,7 +649,7 @@ const calculateAvailableAppointments = async ({
         .replaceAll(":", "")
     );
     if (DEBUG) {
-      console.log("90 MIN FROM NOW", bufferTime);
+      console.log("BUFFER TIME FROM NOW", bufferTime);
     }
     availableAppointmentSlots.map((availableAppointmentSlot: any) => {
       if (

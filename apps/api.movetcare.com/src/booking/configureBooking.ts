@@ -32,7 +32,11 @@ export const configureBooking = async (): Promise<boolean> => {
       .doc("bookings")
       .set(
         {
-          clinicActiveResources: [14, 15, 16],
+          clinicActiveResources: [
+            { id: 14, staggerTime: 0 },
+            { id: 15, staggerTime: 15 },
+            { id: 16, staggerTime: 30 },
+          ],
           clinicOpenMonday: true,
           clinicOpenMondayTime: 930,
           clinicClosedMondayTime: 1700,
@@ -40,8 +44,8 @@ export const configureBooking = async (): Promise<boolean> => {
           clinicOpenTuesdayTime: 930,
           clinicClosedTuesdayTime: 1700,
           clinicOpenWednesday: true,
-          clinicOpenWednesdayTime: 1300,
-          clinicClosedWednesdayTime: 1700,
+          clinicOpenWednesdayTime: 1330,
+          clinicClosedWednesdayTime: 1630,
           clinicOpenThursday: true,
           clinicOpenThursdayTime: 930,
           clinicClosedThursdayTime: 1700,
@@ -54,12 +58,12 @@ export const configureBooking = async (): Promise<boolean> => {
           clinicOpenSunday: false,
           clinicOpenSundayTime: 1300,
           clinicClosedSundayTime: 1700,
-          clinicLunchDuration: 30,
+          clinicLunchDuration: 60,
           clinicLunchTime: 1200,
           clinicOnePatientDuration: 45,
           clinicTwoPatientDuration: 60,
           clinicThreePatientDuration: 90,
-          clinicAppointmentBufferTime: 15,
+          clinicAppointmentBufferTime: 0,
           clinicStandardVcprReason: {
             value: 106,
             label: "Establish Care Exam",

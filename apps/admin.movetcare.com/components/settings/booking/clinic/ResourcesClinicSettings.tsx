@@ -1,7 +1,9 @@
 import {
+  faCheck,
   faCheckCircle,
   faCircleDot,
   faCircleExclamation,
+  faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { onSnapshot, doc, setDoc, serverTimestamp } from "firebase/firestore";
@@ -12,16 +14,24 @@ import Error from "../../../Error";
 import { Switch, Transition } from "@headlessui/react";
 import { classNames } from "utilities";
 import { Button } from "ui";
+import { NumericFormat } from "react-number-format";
 
 export const ResourcesClinicSettings = () => {
   const [resources, setResources] = useState<any>(null);
   const [activeResources, setActiveResources] = useState<any>(null);
+  const [activeResourcesStaggerTimes, setActiveResourcesStaggerTimes] =
+    useState<any>(null);
   const [error, setError] = useState<any>(null);
   const [showToggles, setShowToggles] = useState<boolean>(false);
+  const [didTouchStaggerTime, setDidTouchStaggerTime] =
+    useState<boolean>(false);
   useEffect(() => {
     const unsubscribe = onSnapshot(
       doc(firestore, "configuration", "bookings"),
-      (doc: any) => setActiveResources(doc.data()?.clinicActiveResources),
+      (doc: any) => {
+        setActiveResources(doc.data()?.clinicActiveResources);
+        setActiveResourcesStaggerTimes(doc.data()?.clinicActiveResources);
+      },
       (error: any) => {
         setError(error?.message || error);
       }
@@ -46,12 +56,53 @@ export const ResourcesClinicSettings = () => {
     return () => unsubscribe();
   }, []);
 
-  const saveChanges = async (id: number) => {
+  const saveStaggerChanges = async () =>
+    await setDoc(
+      doc(firestore, "configuration/bookings"),
+      {
+        clinicActiveResources: activeResourcesStaggerTimes,
+        updatedOn: serverTimestamp(),
+      },
+      { merge: true }
+    )
+      .then(() =>
+        toast("Updated Clinic Resources", {
+          position: "top-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              size="sm"
+              className="text-movet-green"
+            />
+          ),
+        })
+      )
+      .catch((error: any) =>
+        toast(`Clinic Resources Update FAILED: ${error?.message}`, {
+          duration: 5000,
+          position: "bottom-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              size="sm"
+              className="text-movet-red"
+            />
+          ),
+        })
+      )
+      .finally(() => setDidTouchStaggerTime(false));
+  const updateActiveResources = async (id: number) => {
     const resources = activeResources;
-    const removeIndex = resources.indexOf(id);
-    if (removeIndex > -1) resources.splice(removeIndex, 1);
-    else resources.push(id);
-    console.log("RESOURCES", resources);
+    let removeIndex = null;
+    resources.map(
+      (resource: { id: number; staggerTime: number }, index: number) => {
+        if (resource.id === id) removeIndex = index;
+      }
+    );
+    if (removeIndex !== null && removeIndex > -1)
+      resources.splice(removeIndex, 1);
+    else resources.push({ id, staggerTime: 0 });
+
     await setDoc(
       doc(firestore, "configuration/bookings"),
       {
@@ -102,22 +153,80 @@ export const ResourcesClinicSettings = () => {
           same time. The number of resources selected is the number of
           concurrent appointments that can be booked.
         </p>
-        <p className="mt-6 mb-3 text-center italic text-sm">
+        <p className="mt-6 mb-3 text-center italic">
           Active Resource Schedules
         </p>
-        <ul className="text-center mb-6 text-sm">
+        <ul className="text-center mb-6 text-sm flex flex-row justify-center w-full mx-auto">
           {resources &&
+            activeResources &&
+            activeResourcesStaggerTimes &&
             resources.map((resource: any) =>
-              activeResources.map((activeResource: number) => {
-                if (activeResource === resource.id)
-                  return <li className="my-1">{resource.name}</li>;
-              })
+              activeResources.map(
+                (
+                  activeResource: { id: number; staggerTime: number },
+                  index: number
+                ) => {
+                  if (activeResource?.id === resource.id)
+                    return (
+                      <li className="my-4 text-xs px-4" key={index}>
+                        <p className="text-sm">{resource.name}</p>
+                        <p className="text-center my-2">Stagger Time</p>
+                        <NumericFormat
+                          isAllowed={(values: any) => {
+                            const { value } = values;
+                            return value < 120;
+                          }}
+                          allowLeadingZeros={false}
+                          allowNegative={false}
+                          name={`stagger-time-${index}`}
+                          type="text"
+                          valueIsNumericString
+                          value={activeResourcesStaggerTimes[index].staggerTime}
+                          onBlur={() => setDidTouchStaggerTime(true)}
+                          onValueChange={(target: any) => {
+                            const newStaggerTimes = activeResourcesStaggerTimes;
+                            newStaggerTimes[index] = {
+                              staggerTime: Number(target.value),
+                              id: resource.id,
+                            };
+                            setActiveResourcesStaggerTimes(newStaggerTimes);
+                          }}
+                          className={
+                            "focus:ring-movet-brown focus:border-movet-brown py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-14 mx-auto"
+                          }
+                        />
+                        <p className="text-center mt-2 italic text-xs">
+                          (Minutes)
+                        </p>
+                      </li>
+                    );
+                }
+              )
             )}
         </ul>
+        <Transition
+          show={didTouchStaggerTime}
+          enter="transition ease-in duration-500"
+          leave="transition ease-out duration-64"
+          leaveTo="opacity-10"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leaveFrom="opacity-100"
+        >
+          <Button
+            text="SAVE"
+            color="red"
+            icon={faCheck}
+            onClick={() => saveStaggerChanges()}
+            className="mb-8"
+          />
+        </Transition>
         <Button
-          text="Edit Resource Schedules"
+          text="Edit Active Resources"
           color="black"
           onClick={() => setShowToggles(!showToggles)}
+          icon={faEdit}
+          className="mb-4"
         />
       </div>
       <Transition
@@ -129,55 +238,63 @@ export const ResourcesClinicSettings = () => {
         enterTo="opacity-100"
         leaveFrom="opacity-100"
       >
-        {resources &&
-          resources.map((resource: any, index: number) => {
-            let isActive = false;
-            activeResources.map((activeResource: number) => {
-              if (activeResource === resource.id) isActive = true;
-            });
-            return (
-              <Switch.Group
-                key={index}
-                as="div"
-                className="py-2 flex items-center justify-between px-6 sm:px-8"
-              >
-                <div className="flex flex-col">
-                  {resource?.name && (
-                    <Switch.Label
-                      as="h3"
-                      className="text-xs font-medium text-movet-black italic"
-                      passive
-                    >
-                      <FontAwesomeIcon
-                        icon={faCircleDot}
-                        size="2xs"
-                        className={`${
-                          isActive ? "text-movet-green" : "text-movet-red"
-                        } mr-4`}
-                      />
-                      {resource?.name}
-                    </Switch.Label>
-                  )}
-                </div>
-                <Switch
-                  checked={isActive}
-                  onChange={async () => saveChanges(resource.id)}
-                  className={classNames(
-                    isActive ? "bg-movet-green" : "bg-movet-gray",
-                    "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray"
-                  )}
+        <>
+          <hr className="my-8" />
+          <p className="text-center text-lg font-extrabold">
+            Schedule Resources
+          </p>
+          {resources &&
+            resources.map((resource: any, index: number) => {
+              let isActive = false;
+              activeResources.map(
+                (activeResource: { id: number; staggerTime: number }) => {
+                  if (activeResource?.id === resource.id) isActive = true;
+                }
+              );
+              return (
+                <Switch.Group
+                  key={index}
+                  as="div"
+                  className="py-2 flex items-center justify-between px-6 sm:px-8"
                 >
-                  <span
-                    aria-hidden="true"
-                    className={classNames(
-                      isActive ? "translate-x-5" : "translate-x-0",
-                      "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                  <div className="flex flex-col">
+                    {resource?.name && (
+                      <Switch.Label
+                        as="h3"
+                        className="text-xs font-medium text-movet-black italic"
+                        passive
+                      >
+                        <FontAwesomeIcon
+                          icon={faCircleDot}
+                          size="2xs"
+                          className={`${
+                            isActive ? "text-movet-green" : "text-movet-red"
+                          } mr-4`}
+                        />
+                        {resource?.name}
+                      </Switch.Label>
                     )}
-                  />
-                </Switch>
-              </Switch.Group>
-            );
-          })}
+                  </div>
+                  <Switch
+                    checked={isActive}
+                    onChange={async () => updateActiveResources(resource.id)}
+                    className={classNames(
+                      isActive ? "bg-movet-green" : "bg-movet-gray",
+                      "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray"
+                    )}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={classNames(
+                        isActive ? "translate-x-5" : "translate-x-0",
+                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                      )}
+                    />
+                  </Switch>
+                </Switch.Group>
+              );
+            })}
+        </>
       </Transition>
     </li>
   );

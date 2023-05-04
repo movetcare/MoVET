@@ -121,8 +121,12 @@ export const SchedulePreview = ({
             </h4>
             <ul>
               {appointmentAvailability?.map(
-                (appointmentSlot: { start: string; end: string }) => (
+                (
+                  appointmentSlot: { start: string; end: string },
+                  index: number
+                ) => (
                   <li
+                    key={index}
                     className={`flex flex-row items-center justify-center py-4 px-2 my-4 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
                       selectedTime ===
                       `${formatTime(appointmentSlot.start)} - ${formatTime(

@@ -49,11 +49,11 @@ const ClinicSettings = () => {
           <ul role="list" className="mt-4 mb-8 divide-y divide-movet-gray">
             <ClosuresClinicSettings />
             <StandardOperatingHoursClinicSettings />
+            <ResourcesClinicSettings />
             <StandardBufferClinicSettings />
             <StandardLunchClinicSettings />
             <MultiPatientClinicSettings />
             <SameDayAppointmentClinicSettings />
-            <ResourcesClinicSettings />
             <VcprReasonClinicSettings />
           </ul>
         </div>
