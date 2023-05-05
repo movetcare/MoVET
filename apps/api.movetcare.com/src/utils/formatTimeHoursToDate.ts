@@ -1,6 +1,6 @@
 import { DEBUG } from "../config/config";
 //const DEBUG = true;
-export const formatTimeHoursToDate = (time: string): Date => {
+export const formatTimeHoursToDate = (time: number): Date => {
   const hours =
     time.toString().length === 3
       ? `0${time}`.slice(0, 2)

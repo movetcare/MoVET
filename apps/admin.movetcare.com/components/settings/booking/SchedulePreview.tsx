@@ -119,38 +119,111 @@ export const SchedulePreview = ({
                 ? "Available Appointments"
                 : "No Appointments Available"}
             </h4>
-            <ul>
-              {appointmentAvailability?.map(
-                (
-                  appointmentSlot: { start: string; end: string },
-                  index: number
-                ) => (
-                  <li
-                    key={index}
-                    className={`flex flex-row items-center justify-center py-4 px-2 my-4 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
-                      selectedTime ===
-                      `${formatTime(appointmentSlot.start)} - ${formatTime(
-                        appointmentSlot.end
-                      )}`
-                        ? " bg-movet-red text-white border-movet-white"
-                        : " bg-movet-gray/20"
-                    }`}
-                    onClick={() =>
-                      setSelectedTime(
-                        `${formatTime(appointmentSlot.start)} - ${formatTime(
-                          appointmentSlot.end
-                        )}`
-                      )
-                    }
-                  >
-                    <p>
-                      {formatTime(appointmentSlot.start)} -{" "}
-                      {formatTime(appointmentSlot.end)}
-                    </p>
-                  </li>
-                )
+            <div className="flex flex-row w-full mx-auto">
+              {appointmentAvailability && appointmentAvailability.length < 6 ? (
+                <ul className="w-full">
+                  {appointmentAvailability?.map(
+                    (
+                      appointmentSlot: { start: string; end: string },
+                      index: number
+                    ) => (
+                      <li
+                        key={index}
+                        className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
+                          selectedTime ===
+                          `${formatTime(appointmentSlot.start)} - ${formatTime(
+                            appointmentSlot.end
+                          )}`
+                            ? " bg-movet-red text-white border-movet-white"
+                            : " bg-movet-gray/20"
+                        }`}
+                        onClick={() =>
+                          setSelectedTime(
+                            `${formatTime(
+                              appointmentSlot.start
+                            )} - ${formatTime(appointmentSlot.end)}`
+                          )
+                        }
+                      >
+                        <p>
+                          {formatTime(appointmentSlot.start)} -{" "}
+                          {formatTime(appointmentSlot.end)}
+                        </p>
+                      </li>
+                    )
+                  )}
+                </ul>
+              ) : (
+                <>
+                  <ul className="w-1/2">
+                    {appointmentAvailability?.map(
+                      (
+                        appointmentSlot: { start: string; end: string },
+                        index: number
+                      ) =>
+                        index <= appointmentAvailability.length / 2 ? (
+                          <li
+                            key={index}
+                            className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
+                              selectedTime ===
+                              `${formatTime(
+                                appointmentSlot.start
+                              )} - ${formatTime(appointmentSlot.end)}`
+                                ? " bg-movet-red text-white border-movet-white"
+                                : " bg-movet-gray/20"
+                            }`}
+                            onClick={() =>
+                              setSelectedTime(
+                                `${formatTime(
+                                  appointmentSlot.start
+                                )} - ${formatTime(appointmentSlot.end)}`
+                              )
+                            }
+                          >
+                            <p>
+                              {formatTime(appointmentSlot.start)} -{" "}
+                              {formatTime(appointmentSlot.end)}
+                            </p>
+                          </li>
+                        ) : null
+                    )}
+                  </ul>
+                  <ul className="w-1/2">
+                    {appointmentAvailability?.map(
+                      (
+                        appointmentSlot: { start: string; end: string },
+                        index: number
+                      ) =>
+                        index >= appointmentAvailability.length / 2 ? (
+                          <li
+                            key={index}
+                            className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
+                              selectedTime ===
+                              `${formatTime(
+                                appointmentSlot.start
+                              )} - ${formatTime(appointmentSlot.end)}`
+                                ? " bg-movet-red text-white border-movet-white"
+                                : " bg-movet-gray/20"
+                            }`}
+                            onClick={() =>
+                              setSelectedTime(
+                                `${formatTime(
+                                  appointmentSlot.start
+                                )} - ${formatTime(appointmentSlot.end)}`
+                              )
+                            }
+                          >
+                            <p>
+                              {formatTime(appointmentSlot.start)} -{" "}
+                              {formatTime(appointmentSlot.end)}
+                            </p>
+                          </li>
+                        ) : null
+                    )}
+                  </ul>
+                </>
               )}
-            </ul>
+            </div>
             {selectedTime && (
               <div className="mt-8">
                 <hr />
