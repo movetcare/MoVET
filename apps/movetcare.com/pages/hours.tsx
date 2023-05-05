@@ -5,8 +5,9 @@ import type {
   WinterMode as WinterModeType,
   Closures as ClosuresType,
   Hours as HoursType,
+  HoursStatus as HoursStatusType,
 } from "types";
-import { getWinterMode, getClosures, getHours } from "server";
+import { getWinterMode, getClosures, getHours, getHoursStatus } from "server";
 
 export async function getStaticProps() {
   return {
@@ -14,6 +15,7 @@ export async function getStaticProps() {
       winterMode: (await getWinterMode()) || null,
       closures: (await getClosures()) || null,
       hours: (await getHours()) || null,
+      hoursStatus: (await getHoursStatus()) || null,
     } as any,
   };
 }
@@ -22,17 +24,19 @@ export default function HoursPage({
   winterMode,
   closures,
   hours,
+  hoursStatus,
 }: {
   winterMode: WinterModeType;
   closures: Array<ClosuresType>;
   hours: Array<HoursType>;
+  hoursStatus: HoursStatusType;
 }) {
   return (
     <Layout>
       <Head>
         <title>Hours of Operation</title>
       </Head>
-      <Hours winterMode={winterMode} hours={hours} />
+      <Hours winterMode={winterMode} hours={hours} hoursStatus={hoursStatus} />
       {closures && (closures as any)?.length > 0 && (
         <section className="w-full pb-6 -mt-4">
           <div className="relative z-20 px-4 sm:px-8 max-w-screen-lg mx-auto">

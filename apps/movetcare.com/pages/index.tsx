@@ -1,5 +1,10 @@
 import Layout from "components/Layout";
-import { getAnnouncement, getHours, getWinterMode } from "server";
+import {
+  getAnnouncement,
+  getHours,
+  getWinterMode,
+  getHoursStatus,
+} from "server";
 // import { useRouter } from "next/router";
 // import { useEffect, useState } from "react";
 import {
@@ -19,6 +24,7 @@ import type {
   Announcement as AnnouncementType,
   WinterMode as WinterModeType,
   Hours as HoursType,
+  HoursStatus as HoursStatusType,
 } from "types";
 
 export async function getStaticProps() {
@@ -27,6 +33,7 @@ export async function getStaticProps() {
       announcement: (await getAnnouncement()) || null,
       winterMode: (await getWinterMode()) || null,
       hours: (await getHours()) || null,
+      hoursStatus: (await getHoursStatus()) || null,
     } as any,
   };
 }
@@ -35,10 +42,12 @@ export default function Home({
   announcement,
   winterMode,
   hours,
+  hoursStatus,
 }: {
   announcement: AnnouncementType;
   winterMode: WinterModeType;
   hours: Array<HoursType>;
+  hoursStatus: HoursStatusType;
 }) {
   return (
     <Layout announcement={announcement}>
@@ -71,7 +80,12 @@ export default function Home({
         <ServiceTypes />
         <Amenities />
         <Services />
-        <Hours winterMode={winterMode} embed hours={hours} />
+        <Hours
+          winterMode={winterMode}
+          embed
+          hours={hours}
+          hoursStatus={hoursStatus}
+        />
         <Reviews />
         <Contact />
         <CallToAction />

@@ -99,9 +99,9 @@ export const HoursStatus = () => {
   };
   return (
     <div className="py-4 flex-col sm:flex-row items-center justify-center">
-      <h3>HOURS STATUS</h3>
+      <h3>HOURS STATUS OVERRIDES</h3>
       <p className="text-sm">
-        Use this setting to change the OPEN/CLOSE status on the{" "}
+        Use this setting to override the automated OPEN/CLOSE status on the{" "}
         <a
           href="https://movetcare.com/hours"
           target="_blank"

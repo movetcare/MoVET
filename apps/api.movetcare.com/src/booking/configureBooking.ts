@@ -32,6 +32,10 @@ export const configureBooking = async (): Promise<boolean> => {
       .doc("bookings")
       .set(
         {
+          boutiqueStatus: true,
+          clinicStatus: true,
+          housecallStatus: true,
+          walkinsStatus: false,
           clinicActiveResources: [
             { id: 14, staggerTime: 0 },
             { id: 15, staggerTime: 15 },
