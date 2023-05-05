@@ -1,32 +1,32 @@
-import {admin, DEBUG, throwError} from "../../../../../config/config";
+import { DEBUG, throwError } from "../../../../../config/config";
 import type { Appointment } from "../../../../../types/appointment";
 import { fetchEntity } from "../../fetchEntity";
 import { saveAppointment } from "../saveAppointment";
 
 export const configureAppointments = async (): Promise<boolean> => {
-  const alreadyHasConfiguration = await admin
-    .firestore()
-    .collection("appointments")
-    .limit(1)
-    .get()
-    .then((documents: any) => documents.size);
+  // const alreadyHasConfiguration = await admin
+  //   .firestore()
+  //   .collection("appointments")
+  //   .limit(1)
+  //   .get()
+  //   .then((documents: any) => documents.size);
 
-  if (alreadyHasConfiguration === 1) {
-    console.log(
-      "appointments/ COLLECTION DETECTED - SKIPPING APPOINTMENTS CONFIGURATION..."
-    );
-    console.log(
-      "DELETE THE configuration/ COLLECTION AND RESTART TO REFRESH THE APPOINTMENTS CONFIGURATION"
-    );
-    return true;
-  } else {
-    console.log("STARTING APPOINTMENTS CONFIGURATION");
-    const appointments: Array<Appointment> = await fetchEntity("appointment");
-    if (appointments) {
-      const didSaveAppointments: boolean = await saveAppointments(appointments);
-      return didSaveAppointments;
-    } else return throwError("Failed to Process Appointments");
-  }
+  // if (alreadyHasConfiguration === 1) {
+  //   console.log(
+  //     "appointments/ COLLECTION DETECTED - SKIPPING APPOINTMENTS CONFIGURATION..."
+  //   );
+  //   console.log(
+  //     "DELETE THE configuration/ COLLECTION AND RESTART TO REFRESH THE APPOINTMENTS CONFIGURATION"
+  //   );
+  //   return true;
+  // } else {
+  console.log("STARTING APPOINTMENTS CONFIGURATION");
+  const appointments: Array<Appointment> = await fetchEntity("appointment");
+  if (appointments) {
+    const didSaveAppointments: boolean = await saveAppointments(appointments);
+    return didSaveAppointments;
+  } else return throwError("Failed to Process Appointments");
+  //  }
 };
 
 const saveAppointments = async (

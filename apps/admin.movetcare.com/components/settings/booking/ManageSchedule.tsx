@@ -5,6 +5,7 @@ import { subNavigation } from "./SubNavigation";
 import "react-tooltip/dist/react-tooltip.css";
 import { Closures } from "./Closures";
 import { Openings } from "./Openings";
+import { HoursStatus } from "./HoursStatus";
 const PAGE_NAME = subNavigation[1].name;
 
 const ManageSchedule = () => {
@@ -70,6 +71,9 @@ const ManageSchedule = () => {
                 </p>
               </div>
               <ul className="mt-4 mb-8 divide-y divide-movet-gray px-8">
+                <li className="py-4 flex-col sm:flex-row items-center justify-center">
+                  <HoursStatus />
+                </li>
                 <li className="py-4 flex-col sm:flex-row items-center justify-center">
                   <Openings />
                 </li>

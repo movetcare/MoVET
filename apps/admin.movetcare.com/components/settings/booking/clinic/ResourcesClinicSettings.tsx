@@ -4,17 +4,20 @@ import {
   faCircleDot,
   faCircleExclamation,
   faEdit,
+  faRedo,
+  faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { onSnapshot, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { firestore } from "services/firebase";
+import { firestore, functions } from "services/firebase";
 import Error from "../../../Error";
 import { Switch, Transition } from "@headlessui/react";
 import { classNames } from "utilities";
 import { Button } from "ui";
 import { NumericFormat } from "react-number-format";
+import { httpsCallable } from "firebase/functions";
 
 export const ResourcesClinicSettings = () => {
   const [resources, setResources] = useState<any>(null);
@@ -55,6 +58,43 @@ export const ResourcesClinicSettings = () => {
     );
     return () => unsubscribe();
   }, []);
+
+  const refreshResources = async () => {
+    toast("Re-Syncing All ProVet Resources...", {
+      duration: 1500,
+      icon: (
+        <FontAwesomeIcon
+          icon={faSpinner}
+          size="sm"
+          className="text-movet-gray"
+          spin
+        />
+      ),
+    });
+    await httpsCallable(functions, "resyncProVetResources")()
+      .then(() =>
+        toast("Finished Re-Syncing All ProVet Resources", {
+          icon: (
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              size="sm"
+              className="text-movet-green"
+            />
+          ),
+        })
+      )
+      .catch((error: any) =>
+        toast(error?.message, {
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              size="sm"
+              className="text-movet-red"
+            />
+          ),
+        })
+      );
+  };
 
   const saveStaggerChanges = async () =>
     await setDoc(
@@ -241,7 +281,12 @@ export const ResourcesClinicSettings = () => {
         <>
           <hr className="my-8" />
           <p className="text-center text-lg font-extrabold">
-            Schedule Resources
+            Schedule Resources{" "}
+            <FontAwesomeIcon
+              icon={faRedo}
+              className="text-sm ml-2"
+              onClick={() => refreshResources()}
+            />
           </p>
           {resources &&
             resources.map((resource: any, index: number) => {
