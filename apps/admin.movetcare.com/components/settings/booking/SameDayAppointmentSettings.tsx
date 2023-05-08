@@ -11,10 +11,14 @@ import toast from "react-hot-toast";
 import { firestore } from "services/firebase";
 import { Button } from "ui";
 import { classNames } from "utilities";
-import Error from "../../../Error";
+import Error from "../../Error";
 import { NumericFormat } from "react-number-format";
 
-export const SameDayAppointmentClinicSettings = () => {
+export const SameDayAppointmentSettings = ({
+  schedule,
+}: {
+  schedule: "clinic" | "housecall" | "virtual";
+}) => {
   const [vcprRequired, setVcprRequired] = useState<boolean>(false);
   const [selectedLeadTime, setSelectedLeadTime] = useState<string | null>(null);
   const [didTouchLeadTime, setDidTouchOneLeadTime] = useState<boolean>(false);
@@ -25,8 +29,20 @@ export const SameDayAppointmentClinicSettings = () => {
     const unsubscribe = onSnapshot(
       doc(firestore, "configuration", "bookings"),
       (doc: any) => {
-        setVcprRequired(doc.data()?.clinicSameDayAppointmentVcprRequired);
-        setSelectedLeadTime(doc.data()?.clinicSameDayAppointmentLeadTime);
+        setVcprRequired(
+          schedule === "clinic"
+            ? doc.data()?.clinicSameDayAppointmentVcprRequired
+            : schedule === "housecall"
+            ? doc.data()?.housecallSameDayAppointmentVcprRequired
+            : doc.data()?.virtualSameDayAppointmentVcprRequired
+        );
+        setSelectedLeadTime(
+          schedule === "clinic"
+            ? doc.data()?.clinicSameDayAppointmentLeadTime
+            : schedule === "housecall"
+            ? doc.data()?.housecallSameDayAppointmentLeadTime
+            : doc.data()?.virtualSameDayAppointmentLeadTime
+        );
       },
       (error: any) => {
         setError(error?.message || error);
@@ -38,28 +54,45 @@ export const SameDayAppointmentClinicSettings = () => {
   const saveChanges = async () =>
     await setDoc(
       doc(firestore, "configuration/bookings"),
-      {
-        clinicSameDayAppointmentVcprRequired: vcprRequired,
-        clinicSameDayAppointmentLeadTime: Number(selectedLeadTime),
-        updatedOn: serverTimestamp(),
-      },
+      schedule === "clinic"
+        ? {
+            clinicSameDayAppointmentVcprRequired: vcprRequired,
+            clinicSameDayAppointmentLeadTime: Number(selectedLeadTime),
+            updatedOn: serverTimestamp(),
+          }
+        : schedule === "housecall"
+        ? {
+            housecallSameDayAppointmentVcprRequired: vcprRequired,
+            housecallSameDayAppointmentLeadTime: Number(selectedLeadTime),
+            updatedOn: serverTimestamp(),
+          }
+        : {
+            virtualSameDayAppointmentVcprRequired: vcprRequired,
+            virtualSameDayAppointmentLeadTime: Number(selectedLeadTime),
+            updatedOn: serverTimestamp(),
+          },
       { merge: true }
     )
       .then(() =>
-        toast(`Same Day Appointment Settings Updated!`, {
-          position: "top-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCheckCircle}
-              size="sm"
-              className="text-movet-green"
-            />
-          ),
-        })
+        toast(
+          `${schedule.toUpperCase()} Same Day Appointment Settings Updated!`,
+          {
+            position: "top-center",
+            icon: (
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                size="sm"
+                className="text-movet-green"
+              />
+            ),
+          }
+        )
       )
       .catch((error: any) =>
         toast(
-          `Same Day Appointment Settings Update FAILED: ${error?.message}`,
+          `${schedule.toUpperCase()} Same Day Appointment Settings Update FAILED: ${
+            error?.message
+          }`,
           {
             duration: 5000,
             position: "bottom-center",

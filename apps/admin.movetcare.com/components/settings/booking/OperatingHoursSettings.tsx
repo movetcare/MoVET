@@ -10,12 +10,16 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { Button } from "ui";
 import { Switch, Transition } from "@headlessui/react";
-import Error from "../../../Error";
+import Error from "../../Error";
 import { classNames } from "utilities";
 import { PatternFormat } from "react-number-format";
 import Link from "next/link";
 
-const StandardOperatingHoursClinicSettings = () => {
+const OperatingHoursSettings = ({
+  schedule,
+}: {
+  schedule: "clinic" | "housecall" | "virtual";
+}) => {
   const [isOpenMonday, setIsOpenMonday] = useState<boolean>(false);
   const [didTouchIsOpenMonday, setDidTouchIsOpenMonday] =
     useState<boolean>(false);
@@ -113,82 +117,182 @@ const StandardOperatingHoursClinicSettings = () => {
     const unsubscribe = onSnapshot(
       doc(firestore, "configuration", "bookings"),
       (doc: any) => {
-        setIsOpenMonday(doc.data()?.clinicOpenMonday);
-        setIsOpenTuesday(doc.data()?.clinicOpenTuesday);
-        setIsOpenWednesday(doc.data()?.clinicOpenWednesday);
-        setIsOpenThursday(doc.data()?.clinicOpenThursday);
-        setIsOpenFriday(doc.data()?.clinicOpenFriday);
-        setIsOpenSaturday(doc.data()?.clinicOpenSaturday);
-        setIsOpenSunday(doc.data()?.clinicOpenSunday);
+        const formatTime = (time: string) =>
+          time?.toString()?.length === 3 ? `0${time}` : `${time}`;
+        setIsOpenMonday(
+          schedule === "clinic"
+            ? doc.data()?.clinicOpenMonday
+            : schedule === "housecall"
+            ? doc.data()?.housecallOpenMonday
+            : doc.data()?.virtualOpenMonday
+        );
+        setIsOpenTuesday(
+          schedule === "clinic"
+            ? doc.data()?.clinicOpenTuesday
+            : schedule === "housecall"
+            ? doc.data()?.housecallOpenTuesday
+            : doc.data()?.virtualOpenTuesday
+        );
+        setIsOpenWednesday(
+          schedule === "clinic"
+            ? doc.data()?.clinicOpenWednesday
+            : schedule === "housecall"
+            ? doc.data()?.housecallOpenWednesday
+            : doc.data()?.virtualOpenWednesday
+        );
+        setIsOpenThursday(
+          schedule === "clinic"
+            ? doc.data()?.clinicOpenThursday
+            : schedule === "housecall"
+            ? doc.data()?.housecallOpenThursday
+            : doc.data()?.virtualOpenThursday
+        );
+        setIsOpenFriday(
+          schedule === "clinic"
+            ? doc.data()?.clinicOpenFriday
+            : schedule === "housecall"
+            ? doc.data()?.housecallOpenFriday
+            : doc.data()?.virtualOpenFriday
+        );
+        setIsOpenSaturday(
+          schedule === "clinic"
+            ? doc.data()?.clinicOpenSaturday
+            : schedule === "housecall"
+            ? doc.data()?.housecallOpenSaturday
+            : doc.data()?.virtualOpenSaturday
+        );
+        setIsOpenSunday(
+          schedule === "clinic"
+            ? doc.data()?.clinicOpenSunday
+            : schedule === "housecall"
+            ? doc.data()?.housecallOpenSunday
+            : doc.data()?.virtualOpenSunday
+        );
         setSelectedStartTimeSunday(
-          doc.data()?.clinicOpenSundayTime.toString().length === 3
-            ? `0${doc.data()?.clinicOpenSundayTime}`
-            : `${doc.data()?.clinicOpenSundayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicOpenSundayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallOpenSundayTime
+              : doc.data()?.virtualOpenSundayTime
+          )
         );
         setSelectedEndTimeSunday(
-          doc.data()?.clinicClosedSundayTime.toString().length === 3
-            ? `0${doc.data()?.clinicClosedSundayTime}`
-            : `${doc.data()?.clinicClosedSundayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicClosedSundayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallClosedSundayTime
+              : doc.data()?.virtualClosedSundayTime
+          )
         );
         setSelectedStartTimeMonday(
-          doc.data()?.clinicOpenMondayTime.toString().length === 3
-            ? `0${doc.data()?.clinicOpenMondayTime}`
-            : `${doc.data()?.clinicOpenMondayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicOpenMondayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallOpenMondayTime
+              : doc.data()?.virtualOpenMondayTime
+          )
         );
         setSelectedEndTimeMonday(
-          doc.data()?.clinicClosedMondayTime.toString().length === 3
-            ? `0${doc.data()?.clinicClosedMondayTime}`
-            : `${doc.data()?.clinicClosedMondayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicClosedMondayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallClosedMondayTime
+              : doc.data()?.virtualClosedMondayTime
+          )
         );
         setSelectedStartTimeTuesday(
-          doc.data()?.clinicOpenTuesdayTime.toString().length === 3
-            ? `0${doc.data()?.clinicOpenTuesdayTime}`
-            : `${doc.data()?.clinicOpenTuesdayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicOpenTuesdayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallOpenTuesdayTime
+              : doc.data()?.virtualOpenTuesdayTime
+          )
         );
         setSelectedEndTimeTuesday(
-          doc.data()?.clinicClosedTuesdayTime.toString().length === 3
-            ? `0${doc.data()?.clinicClosedTuesdayTime}`
-            : `${doc.data()?.clinicClosedTuesdayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicClosedTuesdayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallClosedTuesdayTime
+              : doc.data()?.virtualClosedTuesdayTime
+          )
         );
         setSelectedStartTimeWednesday(
-          doc.data()?.clinicOpenWednesdayTime.toString().length === 3
-            ? `0${doc.data()?.clinicOpenWednesdayTime}`
-            : `${doc.data()?.clinicOpenWednesdayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicOpenWednesdayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallOpenWednesdayTime
+              : doc.data()?.virtualOpenWednesdayTime
+          )
         );
         setSelectedEndTimeWednesday(
-          doc.data()?.clinicClosedWednesdayTime.toString().length === 3
-            ? `0${doc.data()?.clinicClosedWednesdayTime}`
-            : `${doc.data()?.clinicClosedWednesdayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicClosedWednesdayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallClosedWednesdayTime
+              : doc.data()?.virtualClosedWednesdayTime
+          )
         );
         setSelectedStartTimeThursday(
-          doc.data()?.clinicOpenThursdayTime.toString().length === 3
-            ? `0${doc.data()?.clinicOpenThursdayTime}`
-            : `${doc.data()?.clinicOpenThursdayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicOpenThursdayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallOpenThursdayTime
+              : doc.data()?.virtualOpenThursdayTime
+          )
         );
         setSelectedEndTimeThursday(
-          doc.data()?.clinicClosedThursdayTime.toString().length === 3
-            ? `0${doc.data()?.clinicClosedThursdayTime}`
-            : `${doc.data()?.clinicClosedThursdayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicClosedThursdayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallClosedThursdayTime
+              : doc.data()?.virtualClosedThursdayTime
+          )
         );
         setSelectedStartTimeFriday(
-          doc.data()?.clinicOpenFridayTime.toString().length === 3
-            ? `0${doc.data()?.clinicOpenFridayTime}`
-            : `${doc.data()?.clinicOpenFridayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicOpenFridayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallOpenFridayTime
+              : doc.data()?.virtualOpenFridayTime
+          )
         );
         setSelectedEndTimeFriday(
-          doc.data()?.clinicClosedFridayTime.toString().length === 3
-            ? `0${doc.data()?.clinicClosedFridayTime}`
-            : `${doc.data()?.clinicClosedFridayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicClosedFridayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallClosedFridayTime
+              : doc.data()?.virtualClosedFridayTime
+          )
         );
         setSelectedStartTimeSaturday(
-          doc.data()?.clinicOpenSaturdayTime.toString().length === 3
-            ? `0${doc.data()?.clinicOpenSaturdayTime}`
-            : `${doc.data()?.clinicOpenSaturdayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicOpenSaturdayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallOpenSaturdayTime
+              : doc.data()?.virtualOpenSaturdayTime
+          )
         );
         setSelectedEndTimeSaturday(
-          doc.data()?.clinicClosedSaturdayTime.toString().length === 3
-            ? `0${doc.data()?.clinicClosedSaturdayTime}`
-            : `${doc.data()?.clinicClosedSaturdayTime}`
+          formatTime(
+            schedule === "clinic"
+              ? doc.data()?.clinicClosedSaturdayTime
+              : schedule === "housecall"
+              ? doc.data()?.housecallClosedSaturdayTime
+              : doc.data()?.virtualClosedSaturdayTime
+          )
         );
       },
       (error: any) => {
@@ -228,7 +332,7 @@ const StandardOperatingHoursClinicSettings = () => {
       { merge: true }
     )
       .then(() =>
-        toast(`Clinic Days & Hours of Operation Updated!`, {
+        toast(`${schedule?.toUpperCase()} Days & Hours of Operation Updated!`, {
           position: "top-center",
           icon: (
             <FontAwesomeIcon
@@ -241,7 +345,9 @@ const StandardOperatingHoursClinicSettings = () => {
       )
       .catch((error: any) =>
         toast(
-          `Clinic Days & Hours of Operation Updated FAILED: ${error?.message}`,
+          `${schedule?.toUpperCase()} Days & Hours of Operation Updated FAILED: ${
+            error?.message
+          }`,
           {
             duration: 5000,
             position: "bottom-center",
@@ -863,4 +969,4 @@ const StandardOperatingHoursClinicSettings = () => {
   );
 };
 
-export default StandardOperatingHoursClinicSettings;
+export default OperatingHoursSettings;

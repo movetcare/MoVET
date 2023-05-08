@@ -19,18 +19,21 @@ import toast from "react-hot-toast";
 import { Fragment, useEffect, useState } from "react";
 import { Button, Loader } from "ui";
 import { Listbox, Transition } from "@headlessui/react";
-import Error from "../../../Error";
+import Error from "../../Error";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { classNames } from "utilities";
 
-const VcprReasonClinicSettings = () => {
+const VcprReasonSettings = ({
+  schedule,
+}: {
+  schedule: "clinic" | "housecall" | "virtual";
+}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
   const [selectedStandardVcprReason, setSelectedStandardVcprReason] =
     useState<string>("Select a Reason...");
   const [didTouchStandardVcprReason, setDidTouchStandardVcprReason] =
     useState<boolean>(false);
-
   const [reasons, loadingReasons, errorReasons] = useCollection(
     query(collection(firestore, "reasons"), orderBy("name", "asc"))
   );
@@ -41,7 +44,15 @@ const VcprReasonClinicSettings = () => {
         (doc: any) => {
           reasons.docs.forEach((reason: any) => {
             if (
-              reason.data()?.id === doc.data()?.clinicStandardVcprReason?.value
+              (schedule === "clinic" &&
+                reason.data()?.id ===
+                  doc.data()?.clinicStandardVcprReason?.value) ||
+              (schedule === "housecall" &&
+                reason.data()?.id ===
+                  doc.data()?.housecallStandardVcprReason?.value) ||
+              (schedule === "virtual" &&
+                reason.data()?.id ===
+                  doc.data()?.virtualStandardVcprReason?.value)
             )
               setSelectedStandardVcprReason(reason.data()?.name);
           });
@@ -66,18 +77,34 @@ const VcprReasonClinicSettings = () => {
       );
     await setDoc(
       doc(firestore, "configuration/bookings"),
-      {
-        clinicStandardVcprReason: {
-          label: selectedStandardVcprReason,
-          value: reasonId,
-        },
-        updatedOn: serverTimestamp(),
-      },
+      schedule === "clinic"
+        ? {
+            clinicStandardVcprReason: {
+              label: selectedStandardVcprReason,
+              value: reasonId,
+            },
+            updatedOn: serverTimestamp(),
+          }
+        : schedule === "housecall"
+        ? {
+            housecallStandardVcprReason: {
+              label: selectedStandardVcprReason,
+              value: reasonId,
+            },
+            updatedOn: serverTimestamp(),
+          }
+        : {
+            virtualStandardVcprReason: {
+              label: selectedStandardVcprReason,
+              value: reasonId,
+            },
+            updatedOn: serverTimestamp(),
+          },
       { merge: true }
     )
       .then(() =>
         toast(
-          `Standard VCPR Reason for Clinic Updated to "${selectedStandardVcprReason}"`,
+          `Default ${schedule?.toUpperCase()} VCPR Reason Updated to "${selectedStandardVcprReason}"`,
           {
             position: "top-center",
             icon: (
@@ -91,17 +118,22 @@ const VcprReasonClinicSettings = () => {
         )
       )
       .catch((error: any) =>
-        toast(`Standard VCPR Reason Update FAILED: ${error?.message}`, {
-          duration: 5000,
-          position: "bottom-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCircleExclamation}
-              size="sm"
-              className="text-movet-red"
-            />
-          ),
-        })
+        toast(
+          `Default ${schedule?.toUpperCase()} VCPR Reason Update FAILED: ${
+            error?.message
+          }`,
+          {
+            duration: 5000,
+            position: "bottom-center",
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                size="sm"
+                className="text-movet-red"
+              />
+            ),
+          }
+        )
       )
       .finally(() => {
         setDidTouchStandardVcprReason(false);
@@ -121,7 +153,7 @@ const VcprReasonClinicSettings = () => {
           <li className="py-4 flex-col sm:flex-row items-center justify-center">
             <div className="flex flex-col mr-4">
               <h3>
-                VCPR Reason - <b>Standard</b>
+                VCPR Reason - <b>Default</b>
               </h3>
               <p className="text-sm">
                 This is the reason assigned to appointments when a 1st time
@@ -253,4 +285,4 @@ const VcprReasonClinicSettings = () => {
   );
 };
 
-export default VcprReasonClinicSettings;
+export default VcprReasonSettings;

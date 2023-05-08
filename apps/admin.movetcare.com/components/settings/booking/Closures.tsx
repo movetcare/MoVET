@@ -83,7 +83,7 @@ export const Closures = () => {
       { merge: true }
     )
       .then(() =>
-        toast(`Your closure deletion will appear in 5 minutes (or less).`, {
+        toast(`Your closure deletion will appear in ~5 minutes.`, {
           duration: 5000,
           position: "bottom-center",
           icon: (
@@ -119,7 +119,7 @@ export const Closures = () => {
       { merge: true }
     )
       .then(() =>
-        toast(`Your closure update will appear in 5 minutes (or less).`, {
+        toast(`Your closure update will appear in ~5 minutes.`, {
           duration: 5000,
           position: "bottom-center",
           icon: (

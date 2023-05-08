@@ -11,9 +11,13 @@ import { useEffect, useState } from "react";
 import { PatternFormat, NumericFormat } from "react-number-format";
 import { Button } from "ui";
 import { Transition } from "@headlessui/react";
-import Error from "../../../Error";
+import Error from "../../Error";
 
-const StandardLunchClinicSettings = () => {
+const LunchSettings = ({
+  schedule,
+}: {
+  schedule: "clinic" | "housecall" | "virtual";
+}) => {
   const [selectedLunchTime, setSelectedLunchTime] = useState<string | null>(
     null
   );
@@ -29,14 +33,26 @@ const StandardLunchClinicSettings = () => {
     const unsubscribe = onSnapshot(
       doc(firestore, "configuration", "bookings"),
       (doc: any) => {
-        if (doc.data()?.clinicLunchTime)
-          setSelectedLunchTime(
-            doc.data()?.clinicLunchTime.toString().length === 3
+        setSelectedLunchTime(
+          schedule === "clinic"
+            ? doc.data()?.clinicLunchTime.toString().length === 3
               ? `0${doc.data()?.clinicLunchTime}`
               : `${doc.data()?.clinicLunchTime}`
-          );
-        if (doc.data()?.clinicLunchDuration)
-          setSelectedLunchDuration(doc.data()?.clinicLunchDuration);
+            : schedule === "housecall"
+            ? doc.data()?.housecallLunchTime.toString().length === 3
+              ? `0${doc.data()?.housecallLunchTime}`
+              : `${doc.data()?.housecallLunchTime}`
+            : doc.data()?.virtualLunchTime.toString().length === 3
+            ? `0${doc.data()?.virtualLunchTime}`
+            : `${doc.data()?.virtualLunchTime}`
+        );
+        setSelectedLunchDuration(
+          schedule === "clinic"
+            ? doc.data()?.clinicLunchDuration
+            : schedule === "housecall"
+            ? doc.data()?.housecallLunchDuration
+            : doc.data()?.virtualLunchDuration
+        );
       },
       (error: any) => {
         setError(error?.message || error);
@@ -49,70 +65,106 @@ const StandardLunchClinicSettings = () => {
     if (didTouchLunchDuration && selectedLunchDuration)
       await setDoc(
         doc(firestore, "configuration/bookings"),
-        {
-          clinicLunchDuration: Number(selectedLunchDuration),
-          updatedOn: serverTimestamp(),
-        },
+        schedule === "clinic"
+          ? {
+              clinicLunchDuration: Number(selectedLunchDuration),
+              updatedOn: serverTimestamp(),
+            }
+          : schedule === "housecall"
+          ? {
+              housecallLunchDuration: Number(selectedLunchDuration),
+              updatedOn: serverTimestamp(),
+            }
+          : {
+              virtualLunchDuration: Number(selectedLunchDuration),
+              updatedOn: serverTimestamp(),
+            },
         { merge: true }
       )
         .then(() =>
-          toast(`Clinic Lunch Duration Updated to "${selectedLunchDuration}"`, {
-            position: "top-center",
-            icon: (
-              <FontAwesomeIcon
-                icon={faCheckCircle}
-                size="sm"
-                className="text-movet-green"
-              />
-            ),
-          })
+          toast(
+            `${schedule?.toUpperCase()} Lunch Duration Updated to "${selectedLunchDuration}"`,
+            {
+              position: "top-center",
+              icon: (
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  size="sm"
+                  className="text-movet-green"
+                />
+              ),
+            }
+          )
         )
         .catch((error: any) =>
-          toast(`Clinic Lunch Duration Updated FAILED: ${error?.message}`, {
-            duration: 5000,
-            position: "bottom-center",
-            icon: (
-              <FontAwesomeIcon
-                icon={faCircleExclamation}
-                size="sm"
-                className="text-movet-red"
-              />
-            ),
-          })
+          toast(
+            `${schedule?.toUpperCase()} Lunch Duration Updated FAILED: ${
+              error?.message
+            }`,
+            {
+              duration: 5000,
+              position: "bottom-center",
+              icon: (
+                <FontAwesomeIcon
+                  icon={faCircleExclamation}
+                  size="sm"
+                  className="text-movet-red"
+                />
+              ),
+            }
+          )
         );
     if (didTouchLunchTime && selectedLunchTime && selectedLunchTime !== "")
       await setDoc(
         doc(firestore, "configuration/bookings"),
-        {
-          clinicLunchTime: Number(selectedLunchTime),
-          updatedOn: serverTimestamp(),
-        },
+        schedule === "clinic"
+          ? {
+              clinicLunchTime: Number(selectedLunchTime),
+              updatedOn: serverTimestamp(),
+            }
+          : schedule === "housecall"
+          ? {
+              housecallLunchTime: Number(selectedLunchTime),
+              updatedOn: serverTimestamp(),
+            }
+          : {
+              virtualLunchTime: Number(selectedLunchTime),
+              updatedOn: serverTimestamp(),
+            },
         { merge: true }
       )
         .then(() =>
-          toast(`Clinic Lunch Time Updated to "${selectedLunchTime}"`, {
-            position: "top-center",
-            icon: (
-              <FontAwesomeIcon
-                icon={faCheckCircle}
-                size="sm"
-                className="text-movet-green"
-              />
-            ),
-          })
+          toast(
+            `${schedule?.toUpperCase()} Lunch Time Updated to "${selectedLunchTime}"`,
+            {
+              position: "top-center",
+              icon: (
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  size="sm"
+                  className="text-movet-green"
+                />
+              ),
+            }
+          )
         )
         .catch((error: any) =>
-          toast(`Clinic Lunch Time Updated FAILED: ${error?.message}`, {
-            duration: 5000,
-            position: "bottom-center",
-            icon: (
-              <FontAwesomeIcon
-                icon={faCircleExclamation}
-                size="sm"
-                className="text-movet-red"
-              />
-            ),
-          })
+          toast(
+            `${schedule?.toUpperCase()} Lunch Time Updated FAILED: ${
+              error?.message
+            }`,
+            {
+              duration: 5000,
+              position: "bottom-center",
+              icon: (
+                <FontAwesomeIcon
+                  icon={faCircleExclamation}
+                  size="sm"
+                  className="text-movet-red"
+                />
+              ),
+            }
+          )
         );
     setDidTouchLunchDuration(false);
     setDidTouchLunchTime(false);
@@ -201,4 +253,4 @@ const StandardLunchClinicSettings = () => {
   );
 };
 
-export default StandardLunchClinicSettings;
+export default LunchSettings;

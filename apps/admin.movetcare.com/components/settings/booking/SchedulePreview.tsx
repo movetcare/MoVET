@@ -49,7 +49,7 @@ export const SchedulePreview = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<null | { message: string }>(null);
   const [patientType, setPatientType] = useState<
-    "new" | "returning-one" | "returning-two"
+    "new" | "returning-one" | "returning-two" | "returning-three"
   >("new");
   useEffect(() => {
     const fetchAppointmentAvailability = async () => {
@@ -60,7 +60,9 @@ export const SchedulePreview = ({
         date: selectedDate,
         schedule,
         patients:
-          patientType === "returning-two"
+          patientType === "returning-three"
+            ? ["6667", "6669", "6821"]
+            : patientType === "returning-two"
             ? ["6667", "6669"]
             : patientType === "returning-one"
             ? ["6667"]
@@ -258,6 +260,12 @@ export const SchedulePreview = ({
             color={patientType === "returning-two" ? "red" : "black"}
             className="ml-2"
             onClick={() => setPatientType("returning-two")}
+          />
+          <Button
+            text="Existing - 3 Pets"
+            color={patientType === "returning-three" ? "red" : "black"}
+            className="ml-2"
+            onClick={() => setPatientType("returning-three")}
           />
         </div>
       </section>

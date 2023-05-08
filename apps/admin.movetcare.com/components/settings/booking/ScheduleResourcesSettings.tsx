@@ -12,14 +12,18 @@ import { onSnapshot, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { firestore, functions } from "services/firebase";
-import Error from "../../../Error";
+import Error from "../../Error";
 import { Switch, Transition } from "@headlessui/react";
 import { classNames } from "utilities";
 import { Button } from "ui";
 import { NumericFormat } from "react-number-format";
 import { httpsCallable } from "firebase/functions";
 
-export const ResourcesClinicSettings = () => {
+export const ScheduleResourcesSettings = ({
+  schedule,
+}: {
+  schedule: "clinic" | "housecall" | "virtual";
+}) => {
   const [resources, setResources] = useState<any>(null);
   const [activeResources, setActiveResources] = useState<any>(null);
   const [activeResourcesStaggerTimes, setActiveResourcesStaggerTimes] =
@@ -32,8 +36,20 @@ export const ResourcesClinicSettings = () => {
     const unsubscribe = onSnapshot(
       doc(firestore, "configuration", "bookings"),
       (doc: any) => {
-        setActiveResources(doc.data()?.clinicActiveResources);
-        setActiveResourcesStaggerTimes(doc.data()?.clinicActiveResources);
+        setActiveResources(
+          schedule === "clinic"
+            ? doc.data()?.clinicActiveResources
+            : schedule === "housecall"
+            ? doc.data()?.housecallActiveResources
+            : doc.data()?.virtualActiveResources
+        );
+        setActiveResourcesStaggerTimes(
+          schedule === "clinic"
+            ? doc.data()?.clinicActiveResources
+            : schedule === "housecall"
+            ? doc.data()?.housecallActiveResources
+            : doc.data()?.virtualActiveResources
+        );
       },
       (error: any) => {
         setError(error?.message || error);
@@ -99,14 +115,24 @@ export const ResourcesClinicSettings = () => {
   const saveStaggerChanges = async () =>
     await setDoc(
       doc(firestore, "configuration/bookings"),
-      {
-        clinicActiveResources: activeResourcesStaggerTimes,
-        updatedOn: serverTimestamp(),
-      },
+      schedule === "clinic"
+        ? {
+            clinicActiveResources: activeResourcesStaggerTimes,
+            updatedOn: serverTimestamp(),
+          }
+        : schedule === "housecall"
+        ? {
+            housecallActiveResources: activeResourcesStaggerTimes,
+            updatedOn: serverTimestamp(),
+          }
+        : {
+            virtualActiveResources: activeResourcesStaggerTimes,
+            updatedOn: serverTimestamp(),
+          },
       { merge: true }
     )
       .then(() =>
-        toast("Updated Clinic Resources", {
+        toast(`Updated ${schedule?.toUpperCase()} Resources`, {
           position: "top-center",
           icon: (
             <FontAwesomeIcon
@@ -118,17 +144,22 @@ export const ResourcesClinicSettings = () => {
         })
       )
       .catch((error: any) =>
-        toast(`Clinic Resources Update FAILED: ${error?.message}`, {
-          duration: 5000,
-          position: "bottom-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCircleExclamation}
-              size="sm"
-              className="text-movet-red"
-            />
-          ),
-        })
+        toast(
+          `${schedule?.toUpperCase()} Resources Update FAILED: ${
+            error?.message
+          }`,
+          {
+            duration: 5000,
+            position: "bottom-center",
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                size="sm"
+                className="text-movet-red"
+              />
+            ),
+          }
+        )
       )
       .finally(() => setDidTouchStaggerTime(false));
   const updateActiveResources = async (id: number) => {
@@ -145,14 +176,24 @@ export const ResourcesClinicSettings = () => {
 
     await setDoc(
       doc(firestore, "configuration/bookings"),
-      {
-        clinicActiveResources: resources,
-        updatedOn: serverTimestamp(),
-      },
+      schedule === "clinic"
+        ? {
+            clinicActiveResources: resources,
+            updatedOn: serverTimestamp(),
+          }
+        : schedule === "housecall"
+        ? {
+            housecallActiveResources: resources,
+            updatedOn: serverTimestamp(),
+          }
+        : {
+            virtualActiveResources: resources,
+            updatedOn: serverTimestamp(),
+          },
       { merge: true }
     )
       .then(() =>
-        toast("Updated Clinic Resources", {
+        toast(`Updated ${schedule?.toUpperCase()} Resources`, {
           position: "top-center",
           icon: (
             <FontAwesomeIcon
@@ -164,17 +205,22 @@ export const ResourcesClinicSettings = () => {
         })
       )
       .catch((error: any) =>
-        toast(`Clinic Resources Update FAILED: ${error?.message}`, {
-          duration: 5000,
-          position: "bottom-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCircleExclamation}
-              size="sm"
-              className="text-movet-red"
-            />
-          ),
-        })
+        toast(
+          `${schedule?.toUpperCase()} Resources Update FAILED: ${
+            error?.message
+          }`,
+          {
+            duration: 5000,
+            position: "bottom-center",
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                size="sm"
+                className="text-movet-red"
+              />
+            ),
+          }
+        )
       );
   };
   return error ? (

@@ -2,6 +2,15 @@ import { classNames } from "utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breadcrumbs from "components/Breadcrumbs";
 import { subNavigation } from "./SubNavigation";
+import AppointmentBufferSettings from "./AppointmentBufferSettings";
+import { ClosuresSettings } from "./ClosuresSettings";
+import LunchSettings from "./LunchSettings";
+import MultiPatientSettings from "./MultiPatientSettings";
+import OperatingHoursSettings from "./OperatingHoursSettings";
+import { SameDayAppointmentSettings } from "./SameDayAppointmentSettings";
+import { SchedulePreview } from "./SchedulePreview";
+import { ScheduleResourcesSettings } from "./ScheduleResourcesSettings";
+import VcprReasonSettings from "./VcprReasonSettings";
 const PAGE_NAME = subNavigation[4].name;
 const ManageTelehealth = () => {
   return (
@@ -54,7 +63,35 @@ const ManageTelehealth = () => {
               ))}
             </nav>
           </aside>
-          <h1>COMING SOON!</h1>
+          <form className="divide-y divide-movet-gray lg:col-span-9">
+            <div className="divide-y divide-movet-gray">
+              <div className="px-4 sm:px-6">
+                <div>
+                  <h2 className="text-2xl mb-2 leading-6 font-medium text-movet-black">
+                    TELEHEALTH OPTIONS
+                  </h2>
+                  <p className="text-sm text-movet-black -mt-1 mb-8">
+                    Use the options below to configure how clients can book
+                    telehealth appointments.
+                  </p>
+                </div>
+                <SchedulePreview schedule="virtual" />
+                <ul
+                  role="list"
+                  className="mt-4 mb-8 divide-y divide-movet-gray"
+                >
+                  <ClosuresSettings schedule="virtual" />
+                  <OperatingHoursSettings schedule="virtual" />
+                  <ScheduleResourcesSettings schedule="virtual" />
+                  <AppointmentBufferSettings schedule="virtual" />
+                  <LunchSettings schedule="virtual" />
+                  <MultiPatientSettings schedule="virtual" />
+                  <SameDayAppointmentSettings schedule="virtual" />
+                  <VcprReasonSettings schedule="virtual" />
+                </ul>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </section>

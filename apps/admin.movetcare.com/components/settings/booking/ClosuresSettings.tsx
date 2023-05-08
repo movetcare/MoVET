@@ -29,7 +29,11 @@ interface Closure {
   startTime: string;
   endTime: string;
 }
-export const ClosuresClinicSettings = () => {
+export const ClosuresSettings = ({
+  schedule,
+}: {
+  schedule: "clinic" | "housecall" | "virtual";
+}) => {
   const [showAddClosureForm, setShowAddClosureForm] = useState<boolean>(false);
   const [closures, setClosures] = useState<Array<Closure> | null>(null);
   const [closuresData, loading, error] = useDocument(
@@ -58,74 +62,146 @@ export const ClosuresClinicSettings = () => {
 
   useEffect(() => {
     if (closuresData && closuresData.data())
-      setClosures(
-        closuresData.data()?.closureDatesClinic?.map((closure: Closure) => {
-          return {
-            ...closure,
-            startTime:
-              closure?.startTime.toString().length === 3
-                ? `0${closure?.startTime}`
-                : `${closure?.startTime}`,
-            endTime:
-              closure?.endTime.toString().length === 3
-                ? `0${closure?.endTime}`
-                : `${closure?.endTime}`,
-          };
-        })
-      );
+      if (schedule === "clinic") {
+        setClosures(
+          closuresData.data()?.closureDatesClinic?.map((closure: Closure) => {
+            return {
+              ...closure,
+              startTime:
+                closure?.startTime.toString().length === 3
+                  ? `0${closure?.startTime}`
+                  : `${closure?.startTime}`,
+              endTime:
+                closure?.endTime.toString().length === 3
+                  ? `0${closure?.endTime}`
+                  : `${closure?.endTime}`,
+            };
+          })
+        );
+      } else if (schedule === "housecall") {
+        setClosures(
+          closuresData
+            .data()
+            ?.closureDatesHousecall?.map((closure: Closure) => {
+              return {
+                ...closure,
+                startTime:
+                  closure?.startTime.toString().length === 3
+                    ? `0${closure?.startTime}`
+                    : `${closure?.startTime}`,
+                endTime:
+                  closure?.endTime.toString().length === 3
+                    ? `0${closure?.endTime}`
+                    : `${closure?.endTime}`,
+              };
+            })
+        );
+      } else if (schedule === "virtual") {
+        setClosures(
+          closuresData.data()?.closureDatesVirtual?.map((closure: Closure) => {
+            return {
+              ...closure,
+              startTime:
+                closure?.startTime.toString().length === 3
+                  ? `0${closure?.startTime}`
+                  : `${closure?.startTime}`,
+              endTime:
+                closure?.endTime.toString().length === 3
+                  ? `0${closure?.endTime}`
+                  : `${closure?.endTime}`,
+            };
+          })
+        );
+      }
   }, [closuresData]);
 
   const deleteClosureFromFirestore = async (index: number) =>
     await setDoc(
       doc(firestore, "configuration/closures"),
-      {
-        closureDatesClinic: closures?.filter((_, i) => i !== index),
-        updatedOn: serverTimestamp(),
-      },
+      schedule === "clinic"
+        ? {
+            closureDatesClinic: closures?.filter((_, i) => i !== index),
+            updatedOn: serverTimestamp(),
+          }
+        : schedule === "housecall"
+        ? {
+            closureDatesHousecall: closures?.filter((_, i) => i !== index),
+            updatedOn: serverTimestamp(),
+          }
+        : {
+            closureDatesVirtual: closures?.filter((_, i) => i !== index),
+            updatedOn: serverTimestamp(),
+          },
       { merge: true }
     )
       .then(() =>
-        toast(`Your closure deletion will appear in 5 minutes (or less).`, {
-          duration: 5000,
-          position: "bottom-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCircleCheck}
-              size="sm"
-              className="text-movet-green"
-            />
-          ),
-        })
+        toast(
+          `Your ${schedule?.toUpperCase()} closure deletion will appear in ~5 minutes.`,
+          {
+            duration: 5000,
+            position: "bottom-center",
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleCheck}
+                size="sm"
+                className="text-movet-green"
+              />
+            ),
+          }
+        )
       )
       .catch((error: any) =>
-        toast(`Closure Deletion FAILED: ${error?.message}`, {
-          duration: 5000,
-          position: "bottom-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCircleExclamation}
-              size="sm"
-              className="text-movet-red"
-            />
-          ),
-        })
+        toast(
+          `${schedule?.toUpperCase()} Closure Deletion FAILED: ${
+            error?.message
+          }`,
+          {
+            duration: 5000,
+            position: "bottom-center",
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                size="sm"
+                className="text-movet-red"
+              />
+            ),
+          }
+        )
       );
 
   const onSubmit = async (data: any) =>
     await setDoc(
       doc(firestore, "configuration/closures"),
-      {
-        closureDatesClinic: arrayUnion({
-          ...data,
-          startTime: Number(data.startTime),
-          endTime: Number(data.endTime),
-        }),
-        updatedOn: serverTimestamp(),
-      },
+      schedule === "clinic"
+        ? {
+            closureDatesClinic: arrayUnion({
+              ...data,
+              startTime: Number(data.startTime),
+              endTime: Number(data.endTime),
+            }),
+            updatedOn: serverTimestamp(),
+          }
+        : schedule === "housecall"
+        ? {
+            closureDatesHousecall: arrayUnion({
+              ...data,
+              startTime: Number(data.startTime),
+              endTime: Number(data.endTime),
+            }),
+            updatedOn: serverTimestamp(),
+          }
+        : {
+            closureDatesVirtual: arrayUnion({
+              ...data,
+              startTime: Number(data.startTime),
+              endTime: Number(data.endTime),
+            }),
+            updatedOn: serverTimestamp(),
+          },
       { merge: true }
     )
       .then(() =>
-        toast(`Your clinic closure has been added!.`, {
+        toast(`Your ${schedule?.toUpperCase()} closure has been added!.`, {
           duration: 5000,
           position: "bottom-center",
           icon: (
@@ -138,17 +214,20 @@ export const ClosuresClinicSettings = () => {
         })
       )
       .catch((error: any) =>
-        toast(`Clinic Closure Update FAILED: ${error?.message}`, {
-          duration: 5000,
-          position: "bottom-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCircleExclamation}
-              size="sm"
-              className="text-movet-red"
-            />
-          ),
-        })
+        toast(
+          `${schedule?.toUpperCase()} Closure Update FAILED: ${error?.message}`,
+          {
+            duration: 5000,
+            position: "bottom-center",
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                size="sm"
+                className="text-movet-red"
+              />
+            ),
+          }
+        )
       )
       .finally(() => {
         setShowAddClosureForm(false);
@@ -157,7 +236,7 @@ export const ClosuresClinicSettings = () => {
   return (
     <div>
       <Divider />
-      <h3>CLINIC CLOSURES</h3>
+      <h3>Closures</h3>
       <p className="text-sm">
         Use this setting to disable certain times on specific days of the week
         on the appointment availability schedule.

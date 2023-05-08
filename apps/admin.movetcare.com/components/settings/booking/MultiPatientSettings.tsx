@@ -11,9 +11,13 @@ import { useEffect, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { Button } from "ui";
 import { Transition } from "@headlessui/react";
-import Error from "../../../Error";
+import Error from "../../Error";
 
-const MultiPatientClinicSettings = () => {
+const MultiPatientClinicSettings = ({
+  schedule,
+}: {
+  schedule: "clinic" | "housecall" | "virtual";
+}) => {
   const [selectedOnePatientDuration, setSelectedOnePatientDuration] = useState<
     string | null
   >(null);
@@ -34,14 +38,27 @@ const MultiPatientClinicSettings = () => {
     const unsubscribe = onSnapshot(
       doc(firestore, "configuration", "bookings"),
       (doc: any) => {
-        if (doc.data()?.clinicOnePatientDuration)
-          setSelectedOnePatientDuration(doc.data()?.clinicOnePatientDuration);
-        if (doc.data()?.clinicTwoPatientDuration)
-          setSelectedTwoPatientDuration(doc.data()?.clinicTwoPatientDuration);
-        if (doc.data()?.clinicThreePatientDuration)
-          setSelectedThreePatientDuration(
-            doc.data()?.clinicThreePatientDuration
-          );
+        setSelectedOnePatientDuration(
+          schedule === "clinic"
+            ? doc.data()?.clinicOnePatientDuration
+            : schedule === "housecall"
+            ? doc.data()?.housecallOnePatientDuration
+            : doc.data()?.virtualOnePatientDuration
+        );
+        setSelectedTwoPatientDuration(
+          schedule === "clinic"
+            ? doc.data()?.clinicTwoPatientDuration
+            : schedule === "housecall"
+            ? doc.data()?.housecallTwoPatientDuration
+            : doc.data()?.virtualTwoPatientDuration
+        );
+        setSelectedThreePatientDuration(
+          schedule === "clinic"
+            ? doc.data()?.clinicThreePatientDuration
+            : schedule === "housecall"
+            ? doc.data()?.housecallThreePatientDuration
+            : doc.data()?.virtualThreePatientDuration
+        );
       },
       (error: any) => {
         setError(error?.message || error);
@@ -53,29 +70,48 @@ const MultiPatientClinicSettings = () => {
   const saveChanges = async () => {
     await setDoc(
       doc(firestore, "configuration/bookings"),
-      {
-        clinicOnePatientDuration: Number(selectedOnePatientDuration),
-        clinicTwoPatientDuration: Number(selectedTwoPatientDuration),
-        clinicThreePatientDuration: Number(selectedThreePatientDuration),
-        updatedOn: serverTimestamp(),
-      },
+      schedule === "clinic"
+        ? {
+            clinicOnePatientDuration: Number(selectedOnePatientDuration),
+            clinicTwoPatientDuration: Number(selectedTwoPatientDuration),
+            clinicThreePatientDuration: Number(selectedThreePatientDuration),
+            updatedOn: serverTimestamp(),
+          }
+        : schedule === "housecall"
+        ? {
+            housecallOnePatientDuration: Number(selectedOnePatientDuration),
+            housecallTwoPatientDuration: Number(selectedTwoPatientDuration),
+            housecallThreePatientDuration: Number(selectedThreePatientDuration),
+            updatedOn: serverTimestamp(),
+          }
+        : {
+            virtualOnePatientDuration: Number(selectedOnePatientDuration),
+            virtualTwoPatientDuration: Number(selectedTwoPatientDuration),
+            virtualThreePatientDuration: Number(selectedThreePatientDuration),
+            updatedOn: serverTimestamp(),
+          },
       { merge: true }
     )
       .then(() =>
-        toast("Updated Multi-Patient Appointment Duration", {
-          position: "top-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCheckCircle}
-              size="sm"
-              className="text-movet-green"
-            />
-          ),
-        })
+        toast(
+          `Updated ${schedule?.toUpperCase()} Multi-Patient Appointment Duration`,
+          {
+            position: "top-center",
+            icon: (
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                size="sm"
+                className="text-movet-green"
+              />
+            ),
+          }
+        )
       )
       .catch((error: any) =>
         toast(
-          `Multi-Patient Appointment Duration Updated FAILED: ${error?.message}`,
+          `${schedule?.toUpperCase()} Multi-Patient Appointment Duration Updated FAILED: ${
+            error?.message
+          }`,
           {
             duration: 5000,
             position: "bottom-center",

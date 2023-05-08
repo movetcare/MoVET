@@ -2,7 +2,16 @@ import { classNames } from "utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breadcrumbs from "components/Breadcrumbs";
 import { subNavigation } from "./SubNavigation";
-import HousecallSettings from "./HousecallSettings";
+import AppointmentBufferSettings from "./AppointmentBufferSettings";
+import { ClosuresSettings } from "./ClosuresSettings";
+import LunchSettings from "./LunchSettings";
+import MultiPatientSettings from "./MultiPatientSettings";
+import OperatingHoursSettings from "./OperatingHoursSettings";
+import { SameDayAppointmentSettings } from "./SameDayAppointmentSettings";
+import { SchedulePreview } from "./SchedulePreview";
+import { ScheduleResourcesSettings } from "./ScheduleResourcesSettings";
+import VcprReasonSettings from "./VcprReasonSettings";
+import { WinterModeControls } from "../WinterModeControls";
 const PAGE_NAME = subNavigation[3].name;
 const ManageHousecall = () => {
   return (
@@ -55,7 +64,36 @@ const ManageHousecall = () => {
               ))}
             </nav>
           </aside>
-          <HousecallSettings />
+          <div className="divide-y divide-movet-gray lg:col-span-9">
+            <div className="divide-y divide-movet-gray">
+              <div className="px-4 sm:px-6">
+                <div>
+                  <h2 className="text-2xl mb-2 leading-6 font-medium text-movet-black">
+                    HOUSECALL OPTIONS
+                  </h2>
+                  <p className="text-sm text-movet-black -mt-1 mb-8">
+                    Use the options below to configure how clients can book
+                    housecall appointments.
+                  </p>
+                </div>
+                <SchedulePreview schedule="housecall" />
+                <ul
+                  role="list"
+                  className="mt-4 mb-8 divide-y divide-movet-gray"
+                >
+                  <WinterModeControls />
+                  <ClosuresSettings schedule="housecall" />
+                  <OperatingHoursSettings schedule="housecall" />
+                  <ScheduleResourcesSettings schedule="housecall" />
+                  <AppointmentBufferSettings schedule="housecall" />
+                  <LunchSettings schedule="housecall" />
+                  <MultiPatientSettings schedule="housecall" />
+                  <SameDayAppointmentSettings schedule="housecall" />
+                  <VcprReasonSettings schedule="housecall" />
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

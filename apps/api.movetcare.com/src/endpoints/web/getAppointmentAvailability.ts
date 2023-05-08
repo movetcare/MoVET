@@ -529,24 +529,24 @@ const getExistingAppointments = async ({
       const monthNumber = new Date(date).getMonth();
       const existingAppointments: Array<Appointment> = [];
       const scheduleClosures = await getScheduledClosures(schedule);
-      // if (DEBUG) {
-      //   console.log("querySnapshot?.docs?.length", querySnapshot?.docs?.length);
-      //   console.log("scheduleClosures", scheduleClosures);
-      // }
+      if (DEBUG) {
+        console.log("querySnapshot?.docs?.length", querySnapshot?.docs?.length);
+        console.log("scheduleClosures", scheduleClosures);
+      }
       if (querySnapshot?.docs?.length > 0) {
         const reasons = await getReasons(schedule);
 
         querySnapshot.forEach(async (doc: any) => {
-          // if (DEBUG) {
-          // console.log("appointment id", doc.id);
-          // console.log("resource", resource);
-          // console.log("doc.data()?.resources", doc.data()?.resources);
-          // console.log(
-          //   "doc.data()?.resources.includes(resource.id)",
-          //   doc.data()?.resources &&
-          //     doc.data()?.resources.includes(resource.id)
-          // );
-          //}
+          if (DEBUG) {
+            console.log("appointment id", doc.id);
+            console.log("resource", resource);
+            console.log("doc.data()?.resources", doc.data()?.resources);
+            console.log(
+              "doc.data()?.resources.includes(resource.id)",
+              doc.data()?.resources &&
+                doc.data()?.resources.includes(resource.id)
+            );
+          }
           if (
             doc.data()?.start?.toDate().getDate() === calendarDay &&
             doc.data()?.start?.toDate().getMonth() === monthNumber &&
@@ -587,21 +587,22 @@ const getExistingAppointments = async ({
           hour12: false,
         }),
       });
-      scheduleClosures.map((closure: any) => {
-        if (
-          closure?.date?.toDate().getDate() === calendarDay &&
-          closure?.date?.toDate().getMonth() === monthNumber
-        ) {
-          // if (DEBUG) console.log("Schedule Closure Found =>", closure);
-          existingAppointments.push({
-            id: null,
-            reason: closure?.name,
-            resources: [resource.id],
-            start: formatTimeHoursToString(closure?.startTime),
-            end: formatTimeHoursToString(closure?.endTime),
-          });
-        }
-      });
+      if (scheduleClosures && scheduleClosures.length > 0)
+        scheduleClosures.map((closure: any) => {
+          if (
+            closure?.date?.toDate().getDate() === calendarDay &&
+            closure?.date?.toDate().getMonth() === monthNumber
+          ) {
+            // if (DEBUG) console.log("Schedule Closure Found =>", closure);
+            existingAppointments.push({
+              id: null,
+              reason: closure?.name,
+              resources: [resource.id],
+              start: formatTimeHoursToString(closure?.startTime),
+              end: formatTimeHoursToString(closure?.endTime),
+            });
+          }
+        });
       if (DEBUG) console.log("existingAppointments", existingAppointments);
       return existingAppointments;
     })
@@ -640,7 +641,7 @@ const getReasons = async (schedule: AppointmentScheduleTypes) =>
           )
             reasons.push(doc.data()?.id);
         });
-      // if (DEBUG) console.log("reasons", reasons);
+      if (DEBUG) console.log("reasons", reasons);
       return reasons;
     })
     .catch((error: any) => throwError(error));
@@ -848,9 +849,9 @@ const getScheduledClosures = async (schedule: string) =>
       // if (DEBUG)
       //   console.log("configuration/closures => doc.data()", doc.data());
       return schedule === "clinic"
-        ? doc.data()?.closureDatesClinic
+        ? doc.data()?.closureDatesClinic || false
         : schedule === "housecall"
-        ? doc.data()?.closureDatesHousecall
-        : doc.data()?.closureDatesVirtual;
+        ? doc.data()?.closureDatesHousecall || false
+        : doc.data()?.closureDatesVirtual || false;
     })
     .catch((error: any) => throwError(error));

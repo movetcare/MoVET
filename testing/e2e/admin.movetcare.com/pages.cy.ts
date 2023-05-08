@@ -50,8 +50,6 @@ if (Cypress.env().environment === "development")
       cy.visit(Cypress.env().adminUrl + "/settings/");
       cy.get("a[href='/settings/announcement-banner/']").click();
       cy.visit(Cypress.env().adminUrl + "/settings/");
-      cy.get("a[href='/settings/winter-mode/']").click();
-      cy.visit(Cypress.env().adminUrl + "/settings/");
       cy.get("a[href='/settings/tools/']").click();
       cy.visit(Cypress.env().adminUrl + "/settings/");
       cy.get("a[href='/settings/testing/']").click();
@@ -163,11 +161,6 @@ if (Cypress.env().environment === "development")
       cy.location("pathname", {
         timeout: Cypress.env().defaultPathnameTimeOut,
       }).should("eq", "/settings/users/");
-      cy.get("p").contains("You do not have permission to view this page");
-      cy.visit(Cypress.env().adminUrl + "/settings/winter-mode");
-      cy.location("pathname", {
-        timeout: Cypress.env().defaultPathnameTimeOut,
-      }).should("eq", "/settings/winter-mode/");
       cy.get("p").contains("You do not have permission to view this page");
       cy.get("a[href='/signout/']").click();
       cy.get("main button").contains("EMAIL").should("be.enabled");

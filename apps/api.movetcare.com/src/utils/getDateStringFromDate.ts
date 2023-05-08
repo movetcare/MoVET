@@ -5,7 +5,7 @@ export const getDateStringFromDate = (
   format === "timeOnly"
     ? `${date.toLocaleString("en-US", {
         timeZone: "America/Denver",
-        hour: "2-digit",
+        hour: "numeric",
         minute: "2-digit",
         hour12: true,
       })}`
@@ -19,6 +19,6 @@ export const getDateStringFromDate = (
         timeZone: "America/Denver",
         timeZoneName: "short",
         hour12: true,
-        hour: "2-digit",
+        hour: "numeric",
         minute: "2-digit",
       })}`;

@@ -100,7 +100,7 @@ export const HoursStatus = () => {
   };
   return (
     <div className="py-4 flex-col sm:flex-row items-center justify-center">
-      <h3>HOURS STATUS OVERRIDES</h3>
+      {/* <h3>HOURS STATUS OVERRIDES</h3>
       <p className="text-sm">
         Use this setting to override the automated OPEN/CLOSE status on the{" "}
         <a
@@ -343,7 +343,7 @@ export const HoursStatus = () => {
           onClick={() => saveChanges()}
           className="mt-8"
         />
-      </Transition>
+      </Transition> */}
     </div>
   );
 };

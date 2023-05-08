@@ -84,6 +84,8 @@ export const configureSchedule = async (): Promise<boolean> => {
         {
           closureDates,
           closureDatesClinic,
+          closureDatesHousecall: [],
+          closureDatesVirtual: [],
           updatedOn: new Date(),
         },
         { merge: true }
@@ -94,6 +96,8 @@ export const configureSchedule = async (): Promise<boolean> => {
           console.log("Closures Configured => ", {
             closureDates,
             closureDatesClinic,
+            closureDatesHousecall: [],
+            closureDatesVirtual: [],
           })
       )
       .catch((error: any) => throwError(error));

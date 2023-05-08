@@ -2,7 +2,15 @@ import { classNames } from "utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breadcrumbs from "components/Breadcrumbs";
 import { subNavigation } from "./SubNavigation";
-import ClinicSettings from "./clinic/ClinicSettings";
+import { ClosuresSettings } from "./ClosuresSettings";
+import MultiPatientSettings from "./MultiPatientSettings";
+import { SameDayAppointmentSettings } from "./SameDayAppointmentSettings";
+import { SchedulePreview } from "./SchedulePreview";
+import { ScheduleResourcesSettings } from "./ScheduleResourcesSettings";
+import VcprReasonSettings from "./VcprReasonSettings";
+import OperatingHoursSettings from "./OperatingHoursSettings";
+import AppointmentBufferSettings from "./AppointmentBufferSettings";
+import LunchSettings from "./LunchSettings";
 const PAGE_NAME = subNavigation[2].name;
 const ManageClinic = () => {
   return (
@@ -55,7 +63,35 @@ const ManageClinic = () => {
               ))}
             </nav>
           </aside>
-          <ClinicSettings />
+          <form className="divide-y divide-movet-gray lg:col-span-9">
+            <div className="divide-y divide-movet-gray">
+              <div className="px-4 sm:px-6">
+                <div>
+                  <h2 className="text-2xl mb-2 leading-6 font-medium text-movet-black">
+                    CLINIC OPTIONS
+                  </h2>
+                  <p className="text-sm text-movet-black -mt-1 mb-8">
+                    Use the options below to configure how clients can book
+                    appointments at the Clinic.
+                  </p>
+                </div>
+                <SchedulePreview schedule="clinic" />
+                <ul
+                  role="list"
+                  className="mt-4 mb-8 divide-y divide-movet-gray"
+                >
+                  <ClosuresSettings schedule="clinic" />
+                  <OperatingHoursSettings schedule="clinic" />
+                  <ScheduleResourcesSettings schedule="clinic" />
+                  <AppointmentBufferSettings schedule="clinic" />
+                  <LunchSettings schedule="clinic" />
+                  <MultiPatientSettings schedule="clinic" />
+                  <SameDayAppointmentSettings schedule="clinic" />
+                  <VcprReasonSettings schedule="clinic" />
+                </ul>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </section>

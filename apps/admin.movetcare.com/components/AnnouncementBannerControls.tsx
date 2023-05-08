@@ -166,7 +166,7 @@ export const AnnouncementBannerControls = () => {
       { merge: true }
     )
       .then(() =>
-        toast(`Your updates will appear in 5 minutes (or less).`, {
+        toast(`Your updates will appear in ~5 minutes.`, {
           duration: 5000,
           position: "bottom-center",
           icon: (
