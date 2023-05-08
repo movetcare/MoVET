@@ -155,9 +155,14 @@ export const sendBookingRequestAdminNotification = async ({
       payload: {
         to: "info@movetcare.com",
         replyTo: email,
-        subject: `${
-          displayName ? displayName : email ? email : ""
-        } has submitted a new appointment request`,
+        subject: `MoVET | Appointment Request for ${selectedPatients.map(
+          (selectedPatient: any) =>
+            patients.map((patient: any) => {
+              if (selectedPatient === patient?.id) {
+                return patient?.name;
+              }
+            })
+        )}`,
         message,
       },
     });

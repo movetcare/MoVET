@@ -284,7 +284,7 @@ const StandardOperatingHoursClinicSettings = () => {
   ) : (
     <li className="py-4 flex-col sm:flex-row items-center justify-center">
       <div className="flex flex-col mr-4">
-        <h3>Standard Operating Days</h3>
+        <h3>Standard Operating Days & Times</h3>
         <p className="text-sm">
           This controls availability of appointments during each day of the
           week.{" "}

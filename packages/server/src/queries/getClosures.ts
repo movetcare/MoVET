@@ -40,7 +40,13 @@ export const getClosures = async () => {
       });
     if (DEBUG)
       console.log("websiteClosuresToDisplay", websiteClosuresToDisplay);
-    return websiteClosuresToDisplay;
+    return websiteClosuresToDisplay.sort(function (a: Closure, b: Closure) {
+      const keyA = new Date(a.startDate),
+        keyB = new Date(b.startDate);
+      if (keyA < keyB) return -1;
+      if (keyA > keyB) return 1;
+      return 0;
+    });
   } catch (error) {
     console.error(error);
     return { error: (error as any)?.name || JSON.stringify(error) };

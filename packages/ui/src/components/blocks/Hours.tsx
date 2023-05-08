@@ -503,14 +503,14 @@ export const Hours = ({
                 <h3 className="text-xl text-center font-bold pt-2">
                   Clinic @ Belleview Station
                 </h3>
-                <p className="text-center -mb-1 italic">
-                  CURRENTLY{" "}
+                {/* <p className="text-center -mb-1 italic">
+                  CURRENTLY{" "}-{" "}
                   {hoursStatus && hoursStatus.clinicStatus ? (
                     <span className="text-movet-green">OPEN</span>
                   ) : (
                     <span className="text-movet-red">CLOSED</span>
                   )}
-                </p>
+                </p> */}
                 <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                   <div className="w-full">
                     {clinicHours?.map(
@@ -549,14 +549,14 @@ export const Hours = ({
                 <h3 className="text-xl text-center font-bold">
                   Walk-Ins @ Belleview Station
                 </h3>
-                <p className="text-center -mb-1 italic">
-                  CURRENTLY{" "}
+                {/* <p className="text-center -mb-1 italic">
+                  CURRENTLY{" "}-{" "}
                   {hoursStatus && hoursStatus.walkinsStatus ? (
                     <span className="text-movet-green">OPEN</span>
                   ) : (
                     <span className="text-movet-red">CLOSED</span>
                   )}
-                </p>
+                </p> */}
                 <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                   <div className="w-full">
                     {clinicWalkInHours?.map(
@@ -595,14 +595,14 @@ export const Hours = ({
                 <h3 className="text-xl text-center font-bold">
                   Boutique @ Belleview Station
                 </h3>
-                <p className="text-center -mb-1 italic">
-                  CURRENTLY{" "}
+                {/* <p className="text-center -mb-1 italic">
+                  CURRENTLY{" "}-{" "}
                   {hoursStatus && hoursStatus.boutiqueStatus ? (
                     <span className="text-movet-green">OPEN</span>
                   ) : (
                     <span className="text-movet-red">CLOSED</span>
                   )}
-                </p>
+                </p> */}
                 <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                   <div className="w-full">
                     {boutiqueHours?.map(
@@ -639,14 +639,14 @@ export const Hours = ({
                   className="w-full mb-4 text-movet-red"
                 />
                 <h3 className="text-xl text-center">Housecalls</h3>
-                <p className="text-center -mb-1 italic">
-                  CURRENTLY{" "}
+                {/* <p className="text-center -mb-1 italic">
+                  CURRENTLY -{" "}
                   {hoursStatus && hoursStatus.housecallStatus ? (
                     <span className="text-movet-green">OPEN</span>
                   ) : (
                     <span className="text-movet-red">CLOSED</span>
                   )}
-                </p>
+                </p> */}
                 {winterMode &&
                 winterMode?.isActive &&
                 winterMode?.isActiveOnWebsite ? (
