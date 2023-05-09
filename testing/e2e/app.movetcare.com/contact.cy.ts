@@ -16,7 +16,7 @@ describe("contact-form", () => {
       .as("errorMessage")
       .contains("Email must be a valid email address");
     cy.get("input[name='email']").type("CYPRESS_CONTACT+test@TEST.COM");
-    cy.get("input[name='phone-number']").type("9999999999");
+    cy.get("input[name='phone-number']").type("6669999999");
     cy.get("textarea[name='message']").type("CYPRESS TEST 123...");
     cy.get("@submit").click();
     cy.get("h2").contains("Success!");

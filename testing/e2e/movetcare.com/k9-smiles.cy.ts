@@ -39,7 +39,7 @@ describe("k9-smiles-page", () => {
     cy.get("p.text-movet-red")
       .contains("Email must be a valid email address")
       .should("not.exist");
-    cy.get("input[name='phone-number']").type("9999999999");
+    cy.get("input[name='phone-number']").type("6999969996");
     cy.get("p.text-movet-red")
       .contains("A phone number is required")
       .should("not.exist");
@@ -61,7 +61,7 @@ describe("k9-smiles-page", () => {
     cy.get("form.grid input[name='email']").type(
       Cypress.env().contactFormTestUserEmail
     );
-    cy.get("input[name='phone-number']").type("9999999999");
+    cy.get("input[name='phone-number']").type("9699699969");
     cy.get("@submit").should("be.enabled");
     cy.get("@submit").contains("Schedule an Appointment").click();
   });

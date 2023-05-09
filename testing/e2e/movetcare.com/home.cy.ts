@@ -56,7 +56,7 @@ describe("home-page-loads", () => {
     cy.get("#contact-form input[name='email']").type(
       "CYPRESS_CONTACT_HOME+test@TEST.COM"
     );
-    cy.get("#contact-form input[name='phone-number']").type("9999999999");
+    cy.get("#contact-form input[name='phone-number']").type("9996669999");
     cy.get("#contact-form textarea[name='message']").type(
       "CYPRESS TEST 123..."
     );

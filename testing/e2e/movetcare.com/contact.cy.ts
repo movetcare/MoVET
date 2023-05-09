@@ -54,7 +54,7 @@ describe("contact-page-loads", () => {
     cy.get("form.grid input[name='email']").type(
       Cypress.env().contactFormTestUserEmail
     );
-    cy.get("input[name='phone-number']").type("9999999999");
+    cy.get("input[name='phone-number']").type("9999999666");
     cy.get("textarea[name='message']").type("Cypress Test 123...");
     cy.get("@submit").should("be.enabled");
     cy.get("@submit").contains("Submit").click();
