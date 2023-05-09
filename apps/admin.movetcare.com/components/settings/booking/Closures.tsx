@@ -164,7 +164,7 @@ export const Closures = () => {
       {loading ? (
         <Loader message="Loading Closures" />
       ) : (
-        <div className="flex flex-col mr-4">
+        <div className="flex flex-col mr-4 mb-4">
           {(closures === undefined ||
             closures === null ||
             closures?.length < 0) &&
