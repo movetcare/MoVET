@@ -14,7 +14,7 @@ export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
 export { handleContactSubmission } from "./triggers/handleContactSubmission";
 // export { handleFileUpload } from "./triggers/handleFileUpload";
 export { handleAnnouncementBannerUpdate } from "./triggers/handleAnnouncementBannerUpdate";
-export { handleWinterModeUpdate } from "./triggers/handleWinterModeUpdate";
+export { handleBookingConfigUpdate } from "./triggers/handleBookingConfigUpdate";
 export { handleK9SmilesRequest } from "./triggers/handleK9SmilesRequest";
 export { handleOpeningConfigurationUpdate } from "./triggers/handleOpeningConfigurationUpdate";
 export { handleClosuresConfigurationUpdates } from "./triggers/handleClosuresConfigurationUpdates";

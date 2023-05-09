@@ -7,10 +7,10 @@ export const getHoursStatus = async () => {
       .get()
       .then((doc) => {
         return {
-          boutiqueStatus: doc.data()?.boutiqueStatus,
-          clinicStatus: doc.data()?.clinicStatus,
-          housecallStatus: doc.data()?.housecallStatus,
-          walkinsStatus: doc.data()?.walkinsStatus,
+          boutiqueStatus: doc.data()?.boutiqueStatus || null,
+          clinicStatus: doc.data()?.clinicStatus || null,
+          housecallStatus: doc.data()?.housecallStatus || null,
+          walkinsStatus: doc.data()?.walkinsStatus || null,
         };
       });
   } catch (error) {

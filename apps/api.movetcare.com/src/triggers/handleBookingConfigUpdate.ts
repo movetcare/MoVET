@@ -1,26 +1,17 @@
-import { formatDateToMMDDYY } from "./../utils/formatDateToMMDDYYY";
 import { sendNotification } from "../notifications/sendNotification";
 import { environment, functions, request, DEBUG } from "../config/config";
 
-export const handleWinterModeUpdate = functions.firestore
+export const handleBookingConfigUpdate = functions.firestore
   .document("configuration/bookings")
   .onUpdate(async (change: any, context: any) => {
     const { id } = context.params || {};
-    const data = change.after.data()?.winterHousecallMode;
+    const data = change.after.data();
     if (DEBUG)
-      console.log("handleWinterModeUpdate => DATA", {
+      console.log("handleBookingConfigUpdate => DATA", {
         id,
         data,
       });
     if (data !== undefined) {
-      const {
-        isActiveOnWebsite,
-        isActiveOnMobileApp,
-        isActiveOnWebApp,
-        message,
-        startDate,
-        endDate,
-      } = data || {};
       // https://vercel.com/docs/concepts/git/deploy-hooks
       const didTriggerVercelBuildWebhookForMarketingWebsite =
         environment.type === "production"
@@ -63,53 +54,10 @@ export const handleWinterModeUpdate = functions.firestore
             {
               type: "section",
               text: {
-                text: ":snowflake: _Winter Mode Updated!_",
+                text: ":robot_face: _Booking Configuration Updated!_",
                 type: "mrkdwn",
               },
               fields: [
-                {
-                  type: "mrkdwn",
-                  text: "*ACTIVE PERIOD:*",
-                },
-                {
-                  type: "plain_text",
-                  text: `${
-                    startDate?.toDate() !== undefined
-                      ? formatDateToMMDDYY(startDate?.toDate())
-                      : "Missing Start Date"
-                  } - ${
-                    endDate?.toDate() !== undefined
-                      ? formatDateToMMDDYY(endDate?.toDate())
-                      : "Missing End Date"
-                  }`,
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*MESSAGE:*",
-                },
-                {
-                  type: "plain_text",
-                  text: message,
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*ACTIVE ON:*",
-                },
-                {
-                  type: "plain_text",
-                  text:
-                    (isActiveOnWebsite
-                      ? "WEBSITE: :white_check_mark: "
-                      : "WEBSITE: :red_circle: ") +
-                    "\n" +
-                    (isActiveOnWebApp
-                      ? "WEB APP: :white_check_mark: "
-                      : "WEB APP: :red_circle: ") +
-                    "\n" +
-                    (isActiveOnMobileApp
-                      ? "MOBILE: :white_check_mark: "
-                      : "MOBILE: :red_circle: "),
-                },
                 {
                   type: "mrkdwn",
                   text: "*BUILD TRIGGERED:*",

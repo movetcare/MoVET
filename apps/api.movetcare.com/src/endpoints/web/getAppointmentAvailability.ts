@@ -200,8 +200,8 @@ const assignConfiguration = async ({
           : configuration?.housecallOnePatientDuration;
       break;
     case "virtual":
-      standardLunchTime = configuration?.startLunchTime;
-      standardLunchDuration = configuration?.startLunchDuration;
+      standardLunchTime = configuration?.virtualLunchTime;
+      standardLunchDuration = configuration?.virtualLunchDuration;
       sameDayAppointmentLeadTime =
         configuration?.virtualSameDayAppointmentLeadTime;
       appointmentBuffer = configuration?.virtualAppointmentBufferTime;
@@ -343,11 +343,12 @@ const verifyScheduleIsOpen = async (
         endDate: any;
         name: string;
         isActiveForTelehealth: boolean;
-        isActiveForHousecalls: true;
+        isActiveForHousecalls: boolean;
         isActiveForClinic: boolean;
       }) => {
         // if (DEBUG) {
         //   console.log("date", new Date(date));
+        //   console.log("closure OBJECT", closure);
         //   console.log("closure.startDate", closure.startDate.toDate());
         //   console.log("closure.endDate", closure.endDate.toDate());
         //   console.log(
@@ -377,8 +378,8 @@ const verifyScheduleIsOpen = async (
           case "housecall":
             if (closure.isActiveForHousecalls) {
               if (
-                date >= closure.startDate.toDate() &&
-                date <= closure.endDate.toDate()
+                new Date(date) >= closure.startDate.toDate() &&
+                new Date(date) <= closure.endDate.toDate()
               ) {
                 isGlobalClosure = true;
                 closureData = {
@@ -391,8 +392,8 @@ const verifyScheduleIsOpen = async (
           case "virtual":
             if (closure.isActiveForTelehealth) {
               if (
-                date >= closure.startDate.toDate() &&
-                date <= closure.endDate.toDate()
+                new Date(date) >= closure.startDate.toDate() &&
+                new Date(date) <= closure.endDate.toDate()
               ) {
                 isGlobalClosure = true;
                 closureData = {
@@ -495,7 +496,7 @@ const verifyScheduleIsOpen = async (
     calendarDay === new Date().getDate() &&
     monthNumber === new Date().getMonth()
   ) {
-    // if (DEBUG) console.log("VCPR Required - Skipping Today's Appointments");
+    if (DEBUG) console.log("VCPR Required - Skipping Today's Appointments");
     return {
       isOpenOnDate: false,
       closedReason:
@@ -535,7 +536,6 @@ const getExistingAppointments = async ({
       }
       if (querySnapshot?.docs?.length > 0) {
         const reasons = await getReasons(schedule);
-
         querySnapshot.forEach(async (doc: any) => {
           if (DEBUG) {
             console.log("appointment id", doc.id);

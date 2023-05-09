@@ -39,22 +39,15 @@ export const handleOpeningConfigurationUpdate = functions.firestore
               fields: [
                 {
                   type: "mrkdwn",
-                  text: "*DETAILS:*",
-                },
-                {
-                  type: "plain_text",
-                  text: JSON.stringify(data) || "NOT FOUND",
-                },
-                {
-                  type: "mrkdwn",
                   text: "*BUILD TRIGGERED:*",
                 },
                 {
                   type: "plain_text",
                   text:
-                    "Website: " + didTriggerVercelBuildWebhook
+                    "Website: " +
+                    (didTriggerVercelBuildWebhook
                       ? ":white_check_mark:"
-                      : ":red_circle:",
+                      : ":red_circle:"),
                 },
               ],
             },

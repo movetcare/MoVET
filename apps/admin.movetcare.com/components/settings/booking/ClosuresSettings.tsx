@@ -113,7 +113,7 @@ export const ClosuresSettings = ({
           })
         );
       }
-  }, [closuresData]);
+  }, [closuresData, schedule]);
 
   const deleteClosureFromFirestore = async (index: number) =>
     await setDoc(

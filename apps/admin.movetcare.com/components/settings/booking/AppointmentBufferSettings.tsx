@@ -38,7 +38,7 @@ const AppointmentBufferSettings = ({
       (error: any) => setError(error?.message || error)
     );
     return () => unsubscribe();
-  }, []);
+  }, [schedule]);
 
   const saveChanges = async () => {
     if (didTouchBufferTime && selectedBufferTime && selectedBufferTime !== "")

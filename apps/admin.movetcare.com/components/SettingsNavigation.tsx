@@ -3,7 +3,6 @@ import {
   faCalendar,
   faCogs,
   faFlag,
-  faSnowflake,
   faUser,
   faVial,
   faWrench,

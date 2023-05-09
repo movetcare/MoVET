@@ -59,7 +59,7 @@ const LunchSettings = ({
       }
     );
     return () => unsubscribe();
-  }, []);
+  }, [schedule]);
 
   const saveChanges = async () => {
     if (didTouchLunchDuration && selectedLunchDuration)

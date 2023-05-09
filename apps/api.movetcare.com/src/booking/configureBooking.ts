@@ -32,6 +32,8 @@ export const configureBooking = async (): Promise<boolean> => {
       .doc("bookings")
       .set(
         {
+          automatedOpenTime: 900,
+          automatedCloseTime: 1700,
           boutiqueStatus: true,
           clinicStatus: true,
           housecallStatus: true,

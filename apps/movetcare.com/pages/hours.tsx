@@ -52,31 +52,6 @@ export default function HoursPage({
                   >
                     <div className="w-full">
                       <div className="flex w-full">
-                        {/* <span className="mx-2">
-                          {closure?.isActiveForClinic && (
-                            <FontAwesomeIcon
-                              title="Clinic Closed"
-                              size="sm"
-                              icon={faHospital}
-                              className="mr-2"
-                            />
-                          )}
-                          {closure?.isActiveForHousecalls && (
-                            <FontAwesomeIcon
-                              title="Housecalls Closed"
-                              size="sm"
-                              icon={faHouseMedical}
-                            />
-                          )}
-                          {closure?.isActiveForTelehealth && (
-                            <FontAwesomeIcon
-                              title="Telehealth Closed"
-                              size="sm"
-                              icon={faHeadset}
-                              className="ml-2"
-                            />
-                          )}
-                        </span> */}
                         <span className="whitespace-nowrap">
                           {closure.name}
                         </span>

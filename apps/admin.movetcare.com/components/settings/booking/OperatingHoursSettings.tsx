@@ -300,7 +300,7 @@ const OperatingHoursSettings = ({
       }
     );
     return () => unsubscribe();
-  }, []);
+  }, [schedule]);
 
   const saveChanges = async () =>
     await setDoc(

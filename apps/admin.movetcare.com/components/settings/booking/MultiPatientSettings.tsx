@@ -65,7 +65,7 @@ const MultiPatientClinicSettings = ({
       }
     );
     return () => unsubscribe();
-  }, []);
+  }, [schedule]);
 
   const saveChanges = async () => {
     await setDoc(

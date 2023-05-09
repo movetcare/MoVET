@@ -56,7 +56,7 @@ export const ScheduleResourcesSettings = ({
       }
     );
     return () => unsubscribe();
-  }, []);
+  }, [schedule]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(

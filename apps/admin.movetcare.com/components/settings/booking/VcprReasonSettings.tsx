@@ -65,7 +65,7 @@ const VcprReasonSettings = ({
       );
       return () => unsubscribe();
     } else return;
-  }, [reasons]);
+  }, [reasons, schedule]);
 
   const saveChanges = async () => {
     let reasonId: number | null = null;

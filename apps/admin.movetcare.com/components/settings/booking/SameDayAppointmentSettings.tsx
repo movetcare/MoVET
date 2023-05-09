@@ -49,7 +49,7 @@ export const SameDayAppointmentSettings = ({
       }
     );
     return () => unsubscribe();
-  }, []);
+  }, [schedule]);
 
   const saveChanges = async () =>
     await setDoc(

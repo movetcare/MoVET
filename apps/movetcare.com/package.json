@@ -26,7 +26,7 @@
     "@babel/core": "^7.21.8",
     "@tailwindcss/forms": "^0.5.3",
     "@types/lodash.kebabcase": "^4.1.7",
-    "@types/node": "^20.1.0",
+    "@types/node": "^20.1.1",
     "@types/react": "18.2.6",
     "autoprefixer": "^10.4.14",
     "eslint": "8.40.0",

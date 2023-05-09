@@ -99,10 +99,7 @@ export const WinterModeControls = () => {
       <p className="text-sm">
         Use this setting to disable housecalls during the winter months.
       </p>
-      <p className="text-xs italic mt-2">
-        * If you need to disable entire days, use the &quot;CLOSURES &quot;
-        setting on the &quot; &quot; settings page.
-      </p>
+
       <Divider />
       {loading ? (
         <div className="mb-6">

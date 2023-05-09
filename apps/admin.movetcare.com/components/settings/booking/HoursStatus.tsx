@@ -5,6 +5,7 @@ import {
   faHospital,
   faHouseMedical,
   faPersonWalking,
+  faRobot,
   faShop,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -48,6 +49,16 @@ export const HoursStatus = () => {
         setClinicStatus(doc.data()?.clinicStatus || false);
         setHousecallStatus(doc.data()?.housecallStatus || false);
         setWalkinsStatus(doc.data()?.walkinsStatus || false);
+        setStandardOpenTime(
+          doc.data()?.automatedOpenTime?.toString()?.length === 3
+            ? `0${doc.data()?.automatedOpenTime}`
+            : `${doc.data()?.automatedOpenTime}` || false
+        );
+        setStandardCloseTime(
+          doc.data()?.automatedCloseTime?.toString()?.length === 3
+            ? `0${doc.data()?.automatedCloseTime}`
+            : `${doc.data()?.automatedCloseTime}` || false
+        );
         setIsLoading(false);
       },
       (error: any) => {
@@ -57,7 +68,7 @@ export const HoursStatus = () => {
     );
     return () => unsubscribe();
   }, []);
-  const saveChanges = async () => {
+  const saveChanges = async () =>
     await setDoc(
       doc(firestore, "configuration/bookings"),
       {
@@ -65,6 +76,8 @@ export const HoursStatus = () => {
         clinicStatus,
         housecallStatus,
         walkinsStatus,
+        automatedOpenTime: Number(standardOpenTime),
+        automatedCloseTime: Number(standardCloseTime),
         updatedOn: serverTimestamp(),
       },
       { merge: true }
@@ -96,11 +109,17 @@ export const HoursStatus = () => {
       )
       .finally(() => {
         setDidTouchBoutiqueStatus(false);
+        setDidTouchClinicStatus(false);
+        setDidTouchHousecallStatus(false);
+        setDidTouchStandardCloseTime(false);
+        setDidTouchStandardOpenTime(false);
+        setDidTouchBoutiqueStatus(false);
+        setDidTouchWalkInsStatus(false);
       });
-  };
+
   return (
     <div className="py-4 flex-col sm:flex-row items-center justify-center">
-      {/* <h3>HOURS STATUS OVERRIDES</h3>
+      <h3>HOURS STATUS OVERRIDES</h3>
       <p className="text-sm">
         Use this setting to override the automated OPEN/CLOSE status on the{" "}
         <a
@@ -269,8 +288,11 @@ export const HoursStatus = () => {
               </Switch>
             </div>
           </div>
-          <div className="flex justify-center items-center my-4">
-            <h3>Automated OPEN / CLOSED Hours</h3>
+          <h3 className="text-center mt-8">
+            <FontAwesomeIcon icon={faRobot} className="mr-2 text-movet-green" />
+            Automated OPEN / CLOSED Times
+          </h3>
+          <div className="flex justify-center items-center mb-4">
             <div className="flex-col justify-center items-center mx-4">
               <p className="text-center my-2">Start Time</p>
               <PatternFormat
@@ -327,7 +349,9 @@ export const HoursStatus = () => {
           didTouchBoutiqueStatus ||
           didTouchClinicStatus ||
           didTouchWalkInsStatus ||
-          didTouchHousecallStatus
+          didTouchHousecallStatus ||
+          didTouchStandardOpenTime ||
+          didTouchStandardCloseTime
         }
         enter="transition ease-in duration-500"
         leave="transition ease-out duration-64"
@@ -343,7 +367,7 @@ export const HoursStatus = () => {
           onClick={() => saveChanges()}
           className="mt-8"
         />
-      </Transition> */}
+      </Transition>
     </div>
   );
 };
