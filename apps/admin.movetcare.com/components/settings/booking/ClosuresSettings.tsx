@@ -136,7 +136,7 @@ export const ClosuresSettings = ({
     )
       .then(() =>
         toast(
-          `Your ${schedule?.toUpperCase()} closure deletion will appear in ~5 minutes.`,
+          `Your ${schedule?.toUpperCase()} closure deletion will appear in ~ 5 minutes.`,
           {
             duration: 5000,
             position: "bottom-center",

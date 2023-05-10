@@ -6,6 +6,7 @@ import {
   admin,
   throwError,
 } from "../config/config";
+import { addMinutesToDateObject } from "../utils/addMinutesToDateObject";
 const DEBUG = true;
 type AutomationTypes = "clinic" | "housecall" | "boutique" | "walkins";
 export const handleBookingConfigUpdate = functions.firestore
@@ -89,7 +90,7 @@ export const handleBookingConfigUpdate = functions.firestore
     return true;
   });
 
-const updateHoursStatusAutomationTasks = (data: any) => {
+const updateHoursStatusAutomationTasks = async (data: any) => {
   const {
     clinicAutomationStatus,
     housecallAutomationStatus,
@@ -117,80 +118,81 @@ const updateHoursStatusAutomationTasks = (data: any) => {
     isOpenSaturdayAutomation,
     isOpenSundayAutomation,
   } = data;
-  const deleteAutomationTasks = (type: AutomationTypes) => {
+  const deleteAutomationTasks = async (type: AutomationTypes) => {
     const taskId = type + "_hours_status_automation_";
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "monday_open")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "tuesday_open")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "wednesday_open")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "thursday_open")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "friday_open")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "saturday_open")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "sunday_open")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "monday_close")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "tuesday_close")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "wednesday_close")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "thursday_close")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "friday_close")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "saturday_close")
       .delete();
-    admin
+    await admin
       .firestore()
       .collection("tasks_queue")
       .doc(taskId + "sunday_close")
       .delete();
   };
-  const configureAutomationTasks = (type: AutomationTypes) => {
+  const configureAutomationTasks = async (type: AutomationTypes) => {
+    await deleteAutomationTasks(type);
     const taskId = type + "_hours_status_automation_";
     const updateAutomationTask = (
       taskName: string,
@@ -225,25 +227,31 @@ const updateHoursStatusAutomationTasks = (data: any) => {
           : `${automatedCloseTime}`.slice(3)?.length === 1
           ? `0${automatedCloseTime}`.slice(3)
           : `${automatedCloseTime}`.slice(3);
-      const openDate = new Date(
-        nextDateMonth +
-          " " +
-          nextDateDate +
-          " ," +
-          nextDateYear +
-          " " +
-          [openHours, ":", openMinutes].join("") +
-          ":00"
+      const openDate = addMinutesToDateObject(
+        new Date(
+          nextDateMonth +
+            " " +
+            nextDateDate +
+            " ," +
+            nextDateYear +
+            " " +
+            [openHours, ":", openMinutes].join("") +
+            ":00"
+        ),
+        300
       );
-      const closeDate = new Date(
-        nextDateMonth +
-          " " +
-          nextDateDate +
-          " ," +
-          nextDateYear +
-          " " +
-          [closeHours, ":", closeMinutes].join("") +
-          ":00"
+      const closeDate = addMinutesToDateObject(
+        new Date(
+          nextDateMonth +
+            " " +
+            nextDateDate +
+            " ," +
+            nextDateYear +
+            " " +
+            [closeHours, ":", closeMinutes].join("") +
+            ":00"
+        ),
+        300
       );
       if (DEBUG) {
         console.log("nextDateYear", nextDateYear);
@@ -265,11 +273,13 @@ const updateHoursStatusAutomationTasks = (data: any) => {
             options: {
               type,
               action: "open",
+              dayOfWeek,
+              automatedOpenTime,
+              automatedCloseTime,
             },
             worker: "hours_status_automation",
             status: "scheduled",
             performAt: openDate,
-
             createdOn: new Date(),
           },
           { merge: true }
@@ -289,6 +299,9 @@ const updateHoursStatusAutomationTasks = (data: any) => {
             options: {
               type,
               action: "close",
+              dayOfWeek,
+              automatedOpenTime,
+              automatedCloseTime,
             },
             worker: "hours_status_automation",
             status: "scheduled",
@@ -358,12 +371,12 @@ const updateHoursStatusAutomationTasks = (data: any) => {
         automatedCloseTimeSunday
       );
   };
-  if (clinicAutomationStatus) configureAutomationTasks("clinic");
-  else deleteAutomationTasks("clinic");
-  if (housecallAutomationStatus) configureAutomationTasks("housecall");
-  else deleteAutomationTasks("housecall");
-  if (boutiqueAutomationStatus) configureAutomationTasks("boutique");
-  else deleteAutomationTasks("boutique");
-  if (walkinsAutomationStatus) configureAutomationTasks("walkins");
-  else deleteAutomationTasks("walkins");
+  if (clinicAutomationStatus) await configureAutomationTasks("clinic");
+  else await deleteAutomationTasks("clinic");
+  if (housecallAutomationStatus) await configureAutomationTasks("housecall");
+  else await deleteAutomationTasks("housecall");
+  if (boutiqueAutomationStatus) await configureAutomationTasks("boutique");
+  else await deleteAutomationTasks("boutique");
+  if (walkinsAutomationStatus) await configureAutomationTasks("walkins");
+  else await deleteAutomationTasks("walkins");
 };

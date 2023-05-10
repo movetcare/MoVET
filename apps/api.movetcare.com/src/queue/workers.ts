@@ -5,6 +5,7 @@ import { processItemsConfiguration } from "../integrations/provet/entities/item/
 import { processBreedConfiguration } from "../integrations/provet/entities/patient/breeds/processBreedConfiguration";
 import { sendAppointmentReminderNotification } from "../notifications/templates/sendAppointmentReminderNotification";
 import { environment } from "../config/config";
+import { processHoursStatusAutomationUpdate } from "../utils/processHoursStatusAutomationUpdate";
 
 interface Workers {
   [key: string]: (options: any) => Promise<any>;
@@ -34,4 +35,6 @@ export const workers: Workers = {
     await sendBookingRecoveryNotification({ ...options, type: "24_HOUR" }),
   booking_abandonment_notification_3_day: async (options: any) =>
     await sendBookingRecoveryNotification({ ...options, type: "72_HOUR" }),
+  hours_status_automation: async (options: any) =>
+    await processHoursStatusAutomationUpdate(options),
 };

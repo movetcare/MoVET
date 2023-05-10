@@ -26,16 +26,23 @@ export const configureBooking = async (): Promise<boolean> => {
         new Date(today.setDate(today.getDate() + 5))
       );
     }
-    admin
+    await admin
+      .firestore()
+      .collection("configuration")
+      .doc("hours_status")
+      .set({
+        boutiqueStatus: true,
+        clinicStatus: true,
+        housecallStatus: true,
+        walkinsStatus: false,
+      })
+      .catch((error: any) => throwError(error));
+    await admin
       .firestore()
       .collection("configuration")
       .doc("bookings")
       .set(
         {
-          boutiqueStatus: true,
-          clinicStatus: true,
-          housecallStatus: false,
-          walkinsStatus: false,
           clinicAutomationStatus: true,
           housecallAutomationStatus: false,
           boutiqueAutomationStatus: true,

@@ -23,6 +23,7 @@ import { PatternFormat } from "react-number-format";
 
 export const HoursStatus = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingStatus, setIsLoadingStatus] = useState(true);
   const [error, setError] = useState<any>(null);
   const [boutiqueStatus, setBoutiqueStatus] = useState<boolean>(false);
   const [clinicStatus, setClinicStatus] = useState<boolean>(false);
@@ -151,15 +152,25 @@ export const HoursStatus = () => {
     setDidTouchBoutiqueAutomationStatus,
   ] = useState<boolean>(false);
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(firestore, "configuration", "bookings"),
+    const unsubscribeHoursStatusConfiguration = onSnapshot(
+      doc(firestore, "configuration", "hours_status"),
       (doc: any) => {
-        const formatTime = (time: string) =>
-          time?.toString()?.length === 3 ? `0${time}` : `${time}`;
         setBoutiqueStatus(doc.data()?.boutiqueStatus || false);
         setClinicStatus(doc.data()?.clinicStatus || false);
         setHousecallStatus(doc.data()?.housecallStatus || false);
         setWalkinsStatus(doc.data()?.walkinsStatus || false);
+        setIsLoadingStatus(false);
+      },
+      (error: any) => {
+        setError(error?.message || error);
+        setIsLoadingStatus(false);
+      }
+    );
+    const unsubscribeBookingConfiguration = onSnapshot(
+      doc(firestore, "configuration", "bookings"),
+      (doc: any) => {
+        const formatTime = (time: string) =>
+          time?.toString()?.length === 3 ? `0${time}` : `${time}`;
         setIsOpenMonday(doc.data()?.isOpenMondayAutomation || false);
         setIsOpenTuesday(doc.data()?.isOpenTuesdayAutomation || false);
         setIsOpenWednesday(doc.data()?.isOpenWednesdayAutomation || false);
@@ -226,9 +237,56 @@ export const HoursStatus = () => {
         setIsLoading(false);
       }
     );
-    return () => unsubscribe();
+    return () => {
+      unsubscribeBookingConfiguration();
+      unsubscribeHoursStatusConfiguration();
+    };
   }, []);
-  const saveChanges = async () =>
+
+  const saveHoursOverrideChanges = async () =>
+    await setDoc(
+      doc(firestore, "configuration/hours_status"),
+      {
+        boutiqueStatus,
+        clinicStatus,
+        housecallStatus,
+        walkinsStatus,
+        updatedOn: serverTimestamp(),
+      },
+      { merge: true }
+    )
+      .then(() =>
+        toast(`Website Hours Override will Appear in ~ 5 Minutes!`, {
+          position: "top-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              size="sm"
+              className="text-movet-green"
+            />
+          ),
+        })
+      )
+      .catch((error: any) =>
+        toast(`Website Hours Override Update FAILED: ${error?.message}`, {
+          duration: 5000,
+          position: "bottom-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              size="sm"
+              className="text-movet-red"
+            />
+          ),
+        })
+      )
+      .finally(() => {
+        setDidTouchClinicStatus(false);
+        setDidTouchHousecallStatus(false);
+        setDidTouchBoutiqueStatus(false);
+        setDidTouchWalkInsStatus(false);
+      });
+  const saveBookingConfigChanges = async () =>
     await setDoc(
       doc(firestore, "configuration/bookings"),
       {
@@ -266,7 +324,7 @@ export const HoursStatus = () => {
       { merge: true }
     )
       .then(() =>
-        toast(`Website Hours Status Updated will Appear in ~5 Minutes!`, {
+        toast(`Website Hours Status Updated will Appear in ~ 5 Minutes!`, {
           position: "top-center",
           icon: (
             <FontAwesomeIcon
@@ -295,11 +353,6 @@ export const HoursStatus = () => {
         setDidTouchClinicAutomationStatus(false);
         setDidTouchHousecallAutomationStatus(false);
         setDidTouchWalkInsAutomationStatus(false);
-        setDidTouchBoutiqueStatus(false);
-        setDidTouchClinicStatus(false);
-        setDidTouchHousecallStatus(false);
-        setDidTouchBoutiqueStatus(false);
-        setDidTouchWalkInsStatus(false);
         setDidTouchIsOpenMonday(false);
         setDidTouchIsOpenTuesday(false);
         setDidTouchIsOpenWednesday(false);
@@ -342,8 +395,8 @@ export const HoursStatus = () => {
         <FontAwesomeIcon icon={faPowerOff} className="mr-2 text-movet-green" />
         OPEN / CLOSED Hours Overrides
       </h3>
-      {isLoading ? (
-        <Loader message="Loading Openings" />
+      {isLoading || isLoadingStatus ? (
+        <Loader />
       ) : error ? (
         <Error error={error} />
       ) : (
@@ -524,7 +577,7 @@ export const HoursStatus = () => {
               text="SAVE"
               color="red"
               icon={faCheck}
-              onClick={() => saveChanges()}
+              onClick={() => saveHoursOverrideChanges()}
               className="mt-8"
             />
           </Transition>
@@ -1296,7 +1349,7 @@ export const HoursStatus = () => {
           text="SAVE"
           color="red"
           icon={faCheck}
-          onClick={() => saveChanges()}
+          onClick={() => saveBookingConfigChanges()}
           className="mt-8"
         />
       </Transition>

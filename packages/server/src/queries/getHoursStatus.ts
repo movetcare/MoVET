@@ -3,7 +3,7 @@ export const getHoursStatus = async () => {
   try {
     return await firestore
       .collection("configuration")
-      .doc("bookings")
+      .doc("hours_status")
       .get()
       .then((doc) => {
         return {

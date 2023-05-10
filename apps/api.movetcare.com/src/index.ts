@@ -18,7 +18,8 @@ export { handleBookingConfigUpdate } from "./triggers/handleBookingConfigUpdate"
 export { handleK9SmilesRequest } from "./triggers/handleK9SmilesRequest";
 export { handleOpeningConfigurationUpdate } from "./triggers/handleOpeningConfigurationUpdate";
 export { handleClosuresConfigurationUpdates } from "./triggers/handleClosuresConfigurationUpdates";
-
+export { handleHoursStatusUpdate } from "./triggers/handleHoursStatusUpdate";
+export { handleCompletedTask } from "./triggers/handleCompletedTask";
 // export { sendgridWebhook } from "./endpoints/webhooks/sendgridWebhook";
 export { incomingWebhook } from "./endpoints/webhooks/incomingWebhook";
 

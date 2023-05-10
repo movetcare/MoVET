@@ -64,7 +64,7 @@ export const WinterModeControls = () => {
       { merge: true }
     )
       .then(() =>
-        toast(`Your updates will appear in ~5 minutes.`, {
+        toast(`Your updates will appear in ~ 5 minutes.`, {
           duration: 5000,
           position: "bottom-center",
           icon: (
