@@ -131,7 +131,7 @@ export const Openings = () => {
       .finally(() => setShowAddOpeningForm(false));
   return (
     <div className="py-4 flex-col sm:flex-row items-center justify-center">
-      <h3>HOURS OF OPERATION</h3>
+      <h3>HOURS OF OPERATION DISPLAY</h3>
       <p className="text-sm">
         Use this setting to change the days of the week shown on the{" "}
         <a

@@ -147,7 +147,7 @@ export const Closures = () => {
       .finally(() => setShowAddClosureForm(false));
   return (
     <>
-      <h3>CLOSURES</h3>
+      <h3>FULL DAY / MULTI-DAY CLOSURES</h3>
       <p className="text-sm">
         Use this setting to disable certain days of the week on the appointment
         availability schedules and show them on the{" "}

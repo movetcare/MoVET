@@ -140,7 +140,7 @@ export const HoursStatus = () => {
     useState<boolean>(false);
   const [didTouchClinicAutomationStatus, setDidTouchClinicAutomationStatus] =
     useState<boolean>(false);
-  const [didTouchWalkinsAutomationStatus, setDidTouchWalkinsAutomationStatus] =
+  const [didTouchWalkInsAutomationStatus, setDidTouchWalkInsAutomationStatus] =
     useState<boolean>(false);
   const [
     didTouchHousecallAutomationStatus,
@@ -291,6 +291,10 @@ export const HoursStatus = () => {
         })
       )
       .finally(() => {
+        setDidTouchBoutiqueAutomationStatus(false);
+        setDidTouchClinicAutomationStatus(false);
+        setDidTouchHousecallAutomationStatus(false);
+        setDidTouchWalkInsAutomationStatus(false);
         setDidTouchBoutiqueStatus(false);
         setDidTouchClinicStatus(false);
         setDidTouchHousecallStatus(false);
@@ -530,8 +534,8 @@ export const HoursStatus = () => {
             Automated OPEN / CLOSED Times
           </h3>
           <p className="text-center text-xs italic mb-4">
-            *Be sure to update the &quot;HOURS OF OPERATION&quot; section below
-            if you change any of these fields!
+            *Be sure to update the &quot;HOURS OF OPERATION DISPLAY&quot;
+            section below if you change any of these fields!
           </p>
           <div className="flex flex-row justify-center items-center mb-8">
             <div className="flex flex-col w-full mx-auto justify-center items-center">
@@ -650,7 +654,7 @@ export const HoursStatus = () => {
                 checked={walkinsAutomationStatus}
                 onChange={() => {
                   setWalkinsAutomationStatus(!walkinsAutomationStatus);
-                  setDidTouchWalkinsAutomationStatus(true);
+                  setDidTouchWalkInsAutomationStatus(true);
                 }}
                 className={classNames(
                   walkinsAutomationStatus ? "bg-movet-green" : "bg-movet-red",
@@ -1257,7 +1261,7 @@ export const HoursStatus = () => {
         show={
           didTouchBoutiqueAutomationStatus ||
           didTouchClinicAutomationStatus ||
-          didTouchWalkinsAutomationStatus ||
+          didTouchWalkInsAutomationStatus ||
           didTouchHousecallAutomationStatus ||
           didTouchIsOpenMonday ||
           didTouchIsOpenTuesday ||
