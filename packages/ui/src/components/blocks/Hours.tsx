@@ -79,20 +79,20 @@ export const Hours = ({
                 src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
                 className="w-full h-96 rounded-xl"
               />
-              <p className="w-full text-center text-sm italic mt-6 md:mt-4 max-w-lg mx-auto">
+              {/* <p className="w-full text-center text-sm italic mt-6 md:mt-4 max-w-lg mx-auto">
                 * Parking may be a bit challenging due to construction going on
                 in this area. Please leave ample time before your appointment.
                 You are welcome to pull up to the clinic, drop your pet with us
                 and go find parking.
-              </p>
+              </p> */}
               <a
                 href="https://movetcare.com/parking.png"
                 target="_blank"
                 className="flex flex-row items-center justify-center w-full text-center text-sm text-movet-white mt-8 md:mt-4 font-extrabold hover:text-movet-black"
                 rel="noreferrer"
               >
-                <span className="w-6 h-6 mr-2">
-                  <FontAwesomeIcon icon={faParking} />
+                <span className="w-6 h-6 mr-1">
+                  <FontAwesomeIcon icon={faParking} className="mt-1" />
                 </span>
                 <span>View Parking Map</span>
               </a>
@@ -106,20 +106,15 @@ export const Hours = ({
               <h3 className="text-xl text-center font-bold pt-2">
                 Clinic @ Belleview Station
               </h3>
-              <p className="text-center -mb-1 italic text-xs">
-                CURRENTLY -{" "}
-                {hoursStatus && hoursStatus.clinicStatus ? (
-                  <span className="font-extrabold text-xs">OPEN</span>
-                ) : (
-                  <span className="font-extrabold text-xs">CLOSED</span>
-                )}
-              </p>
               <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                 <div className="w-full">
                   {clinicHours?.map(
                     (hours: { days: string }, index: number) => {
                       return (
-                        <div key={hours.days + index} className="flex w-full">
+                        <div
+                          key={hours.days + index}
+                          className="flex w-full uppercase"
+                        >
                           <span>{hours.days}</span>
                           <div className="w-full border-b mb-2 mx-4"></div>
                         </div>
@@ -131,7 +126,10 @@ export const Hours = ({
                   {clinicHours?.map(
                     (hours: { times: string }, index: number) => {
                       return (
-                        <div key={hours.times + index} className="flex w-full">
+                        <div
+                          key={hours.times + index}
+                          className="flex w-full uppercase"
+                        >
                           <span>{hours.times}</span>
                         </div>
                       );
@@ -149,20 +147,15 @@ export const Hours = ({
               <h3 className="text-xl text-center font-bold pt-2">
                 Walk Ins @ Belleview Station
               </h3>
-              <p className="text-center -mb-1 italic text-xs">
-                CURRENTLY -{" "}
-                {hoursStatus && hoursStatus.walkinsStatus ? (
-                  <span className="font-extrabold text-xs">OPEN</span>
-                ) : (
-                  <span className="font-extrabold text-xs">CLOSED</span>
-                )}
-              </p>
               <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                 <div className="w-full">
                   {clinicWalkInHours?.map(
                     (hours: { days: string }, index: number) => {
                       return (
-                        <div key={hours.days + index} className="flex w-full">
+                        <div
+                          key={hours.days + index}
+                          className="flex w-full uppercase"
+                        >
                           <span>{hours.days}</span>
                           <div className="w-full border-b mb-2 mx-4"></div>
                         </div>
@@ -174,7 +167,10 @@ export const Hours = ({
                   {clinicWalkInHours?.map(
                     (hours: { times: string }, index: number) => {
                       return (
-                        <div key={hours.times + index} className="flex w-full">
+                        <div
+                          key={hours.times + index}
+                          className="flex w-full uppercase"
+                        >
                           <span>{hours.times}</span>
                         </div>
                       );
@@ -192,20 +188,15 @@ export const Hours = ({
               <h3 className="text-xl text-center font-bold">
                 Boutique @ Belleview Station
               </h3>
-              <p className="text-center -mb-1 italic text-xs">
-                CURRENTLY -{" "}
-                {hoursStatus && hoursStatus.boutiqueStatus ? (
-                  <span className="font-extrabold text-xs">OPEN</span>
-                ) : (
-                  <span className="font-extrabold text-xs">CLOSED</span>
-                )}
-              </p>
               <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
                 <div className="w-full">
                   {boutiqueHours?.map(
                     (hours: { days: string }, index: number) => {
                       return (
-                        <div key={hours.days + index} className="flex w-full">
+                        <div
+                          key={hours.days + index}
+                          className="flex w-full uppercase"
+                        >
                           <span>{hours.days}</span>
                           <div className="w-full border-b mb-2 mx-4"></div>
                         </div>
@@ -217,7 +208,10 @@ export const Hours = ({
                   {boutiqueHours?.map(
                     (hours: { times: string }, index: number) => {
                       return (
-                        <div key={hours.times + index} className="flex w-full">
+                        <div
+                          key={hours.times + index}
+                          className="flex w-full uppercase"
+                        >
                           <span>{hours.times}</span>
                         </div>
                       );
@@ -233,14 +227,6 @@ export const Hours = ({
                 className="w-full mb-4 text-movet-white"
               />
               <h3 className="text-xl text-center">Housecalls</h3>
-              <p className="text-center -mb-1 italic text-xs">
-                CURRENTLY -{" "}
-                {hoursStatus && hoursStatus.housecallStatus ? (
-                  <span className="font-extrabold text-xs">OPEN</span>
-                ) : (
-                  <span className="font-extrabold text-xs">CLOSED</span>
-                )}
-              </p>
               {winterMode &&
               winterMode?.isActive &&
               winterMode?.isActiveOnWebsite ? (
@@ -253,7 +239,10 @@ export const Hours = ({
                     {housecallHours?.map(
                       (hours: { days: string }, index: number) => {
                         return (
-                          <div key={hours.days + index} className="flex w-full">
+                          <div
+                            key={hours.days + index}
+                            className="flex w-full uppercase"
+                          >
                             <span>{hours.days}</span>
                             <div className="w-full border-b mb-2 mx-4"></div>
                           </div>
@@ -267,7 +256,7 @@ export const Hours = ({
                         return (
                           <div
                             key={hours.times + index}
-                            className="flex w-full"
+                            className="flex w-full uppercase"
                           >
                             <span>{hours.times}</span>
                           </div>
@@ -279,11 +268,6 @@ export const Hours = ({
               )}
             </div>
           </div>
-          <Link href="/hours" className="text-movet-white -mt-8">
-            <h3 className="font-abside text-center text-sm w-full smx-auto mt-4">
-              View Seasonal Closures <FontAwesomeIcon icon={faArrowRight} />
-            </h3>
-          </Link>
         </div>
         <div className="curve h-24 before:ellipse-1 before:w-[70%] before:bg-movet-brown before:h-40 before:translate-x-[64%] before:translate-y-[-31%] before:rounded-[100%_100%_100%_100%_/_100%_100%_100%_76%] after:ellipse-1 after:w-[84%] after:bg-movet-black after:translate-x-[-20%] after:translate-y-[54%] after:rounded-tr-[125%] after:h-32 ">
           <div className="absolute -mt-6 w-full flex justify-center top-[3.825rem] gap-x-2 md:hidden z-10">
@@ -335,7 +319,7 @@ export const Hours = ({
                     )
                   )}
                 </div>
-                <div className="w-max whitespace-nowrap uppercase">
+                <div className="w-max whitespace-nowrap uppercase text-center">
                   {clinicHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
@@ -362,7 +346,7 @@ export const Hours = ({
                     )
                   )}
                 </div>
-                <div className="w-max whitespace-nowrap uppercase">
+                <div className="w-max whitespace-nowrap uppercase text-center">
                   {clinicWalkInHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
@@ -380,20 +364,20 @@ export const Hours = ({
                 src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
                 className="w-full h-96 rounded-xl"
               />
-              <p className="w-full text-center text-sm italic mt-6 md:mt-4">
+              {/* <p className="w-full text-center text-sm italic mt-6 md:mt-4">
                 * Parking may be a bit challenging due to construction going on
                 in this area. Please leave ample time before your appointment.
                 You are welcome to pull up to the clinic, drop your pet with us
                 and go find parking.
-              </p>
+              </p> */}
               <a
                 href="https://movetcare.com/parking.png"
                 target="_blank"
                 className="flex flex-row items-center justify-center w-full text-center text-sm text-movet-white mt-8 md:mt-4 font-extrabold hover:text-movet-black"
                 rel="noreferrer"
               >
-                <span className="w-6 h-6 mr-2">
-                  <FontAwesomeIcon icon={faParking} />
+                <span className="w-6 h-6 mr-1">
+                  <FontAwesomeIcon icon={faParking} className="mt-1" />
                 </span>
                 <span>View Parking Map</span>
               </a>
@@ -416,7 +400,7 @@ export const Hours = ({
                     )
                   )}
                 </div>
-                <div className="w-max whitespace-nowrap uppercase">
+                <div className="w-max whitespace-nowrap uppercase text-center">
                   {boutiqueHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
@@ -448,7 +432,7 @@ export const Hours = ({
                       )
                     )}
                   </div>
-                  <div className="w-max whitespace-nowrap uppercase">
+                  <div className="w-max whitespace-nowrap uppercase text-center">
                     {housecallHours?.map(
                       (hours: { times: string }, index: number) => (
                         <div key={hours.times + index}>{hours.times}</div>
@@ -457,11 +441,6 @@ export const Hours = ({
                   </div>
                 </div>
               )}
-              <Link href="/hours" className="text-movet-white">
-                <h3 className="font-abside text-center text-sm w-full sm:w-2/3 mx-auto mt-4 -mb-4">
-                  View Seasonal Closures <FontAwesomeIcon icon={faArrowRight} />
-                </h3>
-              </Link>
             </div>
           </div>
         </div>
@@ -509,10 +488,9 @@ export const Hours = ({
                   className="w-full h-80 rounded-xl"
                 />
                 <p className="max-w-lg mx-auto text-center text-sm italic mt-6 md:mt-4">
-                  * Parking may be a bit challenging due to construction going
-                  on in this area. Please leave ample time before your
-                  appointment. You are welcome to pull up to the clinic, drop
-                  your pet with us and go find parking.
+                  * Please leave ample time before your appointment. You are
+                  welcome to pull up to the clinic, drop your pet with us and go
+                  find parking.
                 </p>
                 <a
                   href="https://movetcare.com/parking.png"
@@ -520,10 +498,10 @@ export const Hours = ({
                   className="flex flex-row items-center justify-center w-full text-center text-sm text-movet-black mt-8 md:mt-4 font-extrabold hover:text-movet-red duration-300 ease-in-out"
                   rel="noreferrer"
                 >
-                  <span className="w-6 h-6 mr-2">
-                    <FontAwesomeIcon icon={faParking} />
+                  <span className="w-6 h-6 mr-1">
+                    <FontAwesomeIcon icon={faParking} className="mt-1" />
                   </span>
-                  <span className="-mt-1">View Parking Map</span>
+                  <span>View Parking Map</span>
                 </a>
               </div>
               <div>
@@ -753,10 +731,9 @@ export const Hours = ({
                 className="w-full h-80 rounded-xl"
               />
               <p className="w-full text-center text-sm italic mt-6 md:mt-4">
-                * Parking may be a bit challenging due to construction going on
-                in this area. Please leave ample time before your appointment.
-                You are welcome to pull up to the clinic, drop your pet with us
-                and go find parking.
+                * Please leave ample time before your appointment. You are
+                welcome to pull up to the clinic, drop your pet with us and go
+                find parking.
               </p>
               <a
                 href="https://movetcare.com/parking.png"
@@ -764,8 +741,8 @@ export const Hours = ({
                 className="flex flex-row items-center justify-center w-full text-center text-sm text-movet-black mt-8 md:mt-4 font-extrabold hover:text-movet-red duration-300 ease-in-out"
                 rel="noreferrer"
               >
-                <span className="w-6 h-6 mr-2">
-                  <FontAwesomeIcon icon={faParking} />
+                <span className="w-6 h-6 mr-1">
+                  <FontAwesomeIcon icon={faParking} className="mt-1" />
                 </span>
                 <span>View Parking Map</span>
               </a>
@@ -779,6 +756,14 @@ export const Hours = ({
               <h3 className="text-xl text-center font-bold pt-2">
                 Clinic @ Belleview Station
               </h3>
+              <p className="text-center -mb-1 italic">
+                CURRENTLY -{" "}
+                {hoursStatus && hoursStatus.clinicStatus ? (
+                  <span className="text-movet-green font-extrabold">OPEN</span>
+                ) : (
+                  <span className="text-movet-red font-extrabold">CLOSED</span>
+                )}
+              </p>
               <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
                 <div className="w-full">
                   {clinicHours?.map(
@@ -793,7 +778,7 @@ export const Hours = ({
                     )
                   )}
                 </div>
-                <div className="w-max whitespace-nowrap uppercase">
+                <div className="w-max whitespace-nowrap uppercase text-center">
                   {clinicHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
@@ -811,6 +796,14 @@ export const Hours = ({
               <h3 className="text-xl text-center font-bold">
                 Walk-Ins @ Belleview Station
               </h3>
+              <p className="text-center -mb-1 italic">
+                CURRENTLY -{" "}
+                {hoursStatus && hoursStatus.walkinsStatus ? (
+                  <span className="text-movet-green font-extrabold">OPEN</span>
+                ) : (
+                  <span className="text-movet-red font-extrabold">CLOSED</span>
+                )}
+              </p>
               <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap uppercase">
                 <div className="w-full">
                   {clinicWalkInHours?.map(
@@ -825,7 +818,7 @@ export const Hours = ({
                     )
                   )}
                 </div>
-                <div className="w-max whitespace-nowrap uppercase">
+                <div className="w-max whitespace-nowrap uppercase text-center">
                   {clinicWalkInHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
@@ -843,6 +836,14 @@ export const Hours = ({
               <h3 className="text-xl text-center font-bold">
                 Boutique @ Belleview Station
               </h3>
+              <p className="text-center -mb-1 italic">
+                CURRENTLY -{" "}
+                {hoursStatus && hoursStatus.boutiqueStatus ? (
+                  <span className="text-movet-green font-extrabold">OPEN</span>
+                ) : (
+                  <span className="text-movet-red font-extrabold">CLOSED</span>
+                )}
+              </p>
               <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
                 <div className="w-full">
                   {boutiqueHours?.map(
@@ -857,7 +858,7 @@ export const Hours = ({
                     )
                   )}
                 </div>
-                <div className="w-max whitespace-nowrap uppercase">
+                <div className="w-max whitespace-nowrap uppercase text-center">
                   {boutiqueHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
@@ -873,6 +874,14 @@ export const Hours = ({
                 className="w-full mb-4 text-movet-red"
               />
               <h3 className="text-xl text-center">Housecalls</h3>
+              <p className="text-center -mb-1 italic">
+                CURRENTLY -{" "}
+                {hoursStatus && hoursStatus.housecallStatus ? (
+                  <span className="text-movet-green font-extrabold">OPEN</span>
+                ) : (
+                  <span className="text-movet-red font-extrabold">CLOSED</span>
+                )}
+              </p>
               {winterMode &&
               winterMode?.isActive &&
               winterMode?.isActiveOnWebsite ? (
@@ -894,7 +903,7 @@ export const Hours = ({
                       )
                     )}
                   </div>
-                  <div className="w-max whitespace-nowrap uppercase">
+                  <div className="w-max whitespace-nowrap uppercase text-center">
                     {housecallHours?.map(
                       (hours: { times: string }, index: number) => (
                         <div key={hours.times + index}>{hours.times}</div>

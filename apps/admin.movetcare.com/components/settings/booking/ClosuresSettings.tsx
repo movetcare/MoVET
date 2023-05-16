@@ -242,8 +242,8 @@ export const ClosuresSettings = ({
         on the appointment availability schedule.
       </p>
       <p className="text-xs italic mt-2">
-        * If you need to disable entire days, use the &quot;CLOSURES &quot;
-        setting on the &quot;
+        * If you need to disable entire days, use the &quot;FULL DAY / MULTI-DAY
+        CLOSURES &quot; setting on the &quot;
         <Link
           href="/settings/booking/manage-hours/"
           className="text-movet-red hover:underline"

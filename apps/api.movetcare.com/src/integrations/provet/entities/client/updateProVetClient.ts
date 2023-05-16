@@ -109,7 +109,6 @@ export const updateProVetClient = async (payload: any): Promise<boolean> => {
           .replace("-", "")
           .replace("(", "")
           .replace(")", "")}`,
-        preferred_reminders: true,
         description: "Default Phone Number - Used for SMS Alerts",
       })
       .then(async (response: any) => {

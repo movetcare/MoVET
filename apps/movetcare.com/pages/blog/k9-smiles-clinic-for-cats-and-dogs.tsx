@@ -52,7 +52,7 @@ export default function K9Smiles() {
       <section className="flex flex-col items-center justify-center sm:max-w-screen-lg mx-4 sm:mx-auto mt-8 mb-20 px-8 lg:px-20 bg-white rounded-xl p-4 sm:p-8">
         <Image
           className="rounded-xl cursor-pointer"
-          src="/images/blog/k9-smiles-logo.png"
+          src="/images/blog/banish-bad-dog-breath.png"
           alt="k9 Smiles Teeth Cleaning Clinic @ MoVET"
           height={500}
           width={500}

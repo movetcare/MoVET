@@ -29,8 +29,10 @@ export const configureSchedule = async (): Promise<boolean> => {
     }
     const closureDates = [
       {
-        startDate: new Date(),
-        endDate: new Date(today.setDate(today.getDate() + 5)),
+        startDate: new Date(
+          `December 24, ${new Date().getFullYear()} 00:00:00`
+        ),
+        endDate: new Date(`December 26, ${new Date().getFullYear()} 00:00:00`),
         isActiveForClinic: true,
         isActiveForHousecalls: true,
         isActiveForTelehealth: true,
@@ -38,8 +40,8 @@ export const configureSchedule = async (): Promise<boolean> => {
         name: "Christmas Holiday",
       },
       {
-        startDate: new Date(today.setDate(today.getDate() + 10)),
-        endDate: new Date(today.setDate(today.getDate() + 10)),
+        startDate: new Date(`January 1, ${new Date().getFullYear()} 00:00:00`),
+        endDate: new Date(`January 1, ${new Date().getFullYear()} 00:00:00`),
         isActiveForClinic: true,
         isActiveForHousecalls: true,
         isActiveForTelehealth: true,
@@ -48,7 +50,7 @@ export const configureSchedule = async (): Promise<boolean> => {
       },
       {
         startDate: new Date(today.setDate(today.getDate() + 22)),
-        endDate: new Date(today.setDate(today.getDate() + 22)),
+        endDate: new Date(today.setDate(today.getDate() + 25)),
         isActiveForClinic: true,
         isActiveForHousecalls: true,
         isActiveForTelehealth: true,

@@ -10,6 +10,27 @@ import { CallToAction } from "ui";
 const posts = [
   {
     isFeatured: true,
+    title: "Banish Doggy Breath and Get Kissable Canine Smiles Again!",
+    href: "/blog/banish-bad-dog-breath",
+    category: {
+      name: "Health & Wellness",
+      href: "#",
+      color: "bg-movet-yellow",
+    },
+    description:
+      "We are excited to move forward with oral health education and better overall oral care for our canine and feline friends at home with the help of K9 Smiles!",
+    date: "May 17th, 2023",
+    datetime: "2023-05-17",
+    imageUrl: "/images/blog/banish-bad-dog-breath.png",
+    readingTime: "3 min",
+    author: {
+      name: "Barbara Caldwell, DVM",
+      href: "#",
+      imageUrl: "/images/blog/dr-barbara-caldwell.png",
+    },
+  },
+  {
+    isFeatured: false,
     title: "K-9 Smiles Teeth Cleaning Clinic @ MoVET",
     href: "/blog/k9-smiles-clinic-for-cats-and-dogs",
     category: {
@@ -18,7 +39,7 @@ const posts = [
       color: "bg-movet-yellow",
     },
     description:
-      "MoVET is partnering with K-9 Smiles to offer a safe and affordable teeth cleaning clinic for your dog or cat! Their trained technicians clean your pet's teeth under the supervision of one of MoVET's licensed veterinarians. Click to learn more and schedule an appointment!",
+      "MoVET is partnering with K-9 Smiles to offer a safe and affordable teeth cleaning clinic for your dog or cat! Their trained technicians clean your pet's teeth under the supervision of one of MoVET's licensed veterinarians.",
     date: "April 19th, 2023",
     datetime: "2023-03-19",
     imageUrl: "/images/blog/k9-smiles-logo.png",
@@ -117,7 +138,7 @@ const posts = [
     imageUrl: "/images/blog/crop-winter-heartworm.png",
     readingTime: "2 min",
     author: {
-      name: "Dr. Barbra Caldwell",
+      name: "Barbara Caldwell, DVM",
       href: "#",
       imageUrl: "/images/blog/dr-barbara-caldwell.png",
     },

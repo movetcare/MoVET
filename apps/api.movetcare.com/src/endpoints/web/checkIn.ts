@@ -172,7 +172,6 @@ export const checkIn = functions
                             .replace("-", "")
                             .replace("(", "")
                             .replace(")", "")}`,
-                          preferred_reminders: true,
                           description:
                             "Default Phone Number - Used for SMS Alerts",
                         })
