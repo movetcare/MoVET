@@ -20,6 +20,10 @@ export const configureSchedule = async (): Promise<boolean> => {
   } else {
     console.log("STARTING CLOSURES CONFIGURATION");
     const today = new Date();
+    const newYears = new Date(
+      `January 1, ${new Date().getFullYear()} 00:00:00`
+    );
+    newYears.setFullYear(newYears.getFullYear() + 1);
     if (DEBUG) {
       console.log("today", today);
       console.log(
@@ -40,8 +44,8 @@ export const configureSchedule = async (): Promise<boolean> => {
         name: "Christmas Holiday",
       },
       {
-        startDate: new Date(`January 1, ${new Date().getFullYear()} 00:00:00`),
-        endDate: new Date(`January 1, ${new Date().getFullYear()} 00:00:00`),
+        startDate: newYears,
+        endDate: newYears,
         isActiveForClinic: true,
         isActiveForHousecalls: true,
         isActiveForTelehealth: true,

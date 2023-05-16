@@ -19,8 +19,8 @@ const posts = [
     },
     description:
       "We are excited to move forward with oral health education and better overall oral care for our canine and feline friends at home with the help of K9 Smiles!",
-    date: "May 17th, 2023",
-    datetime: "2023-05-17",
+    date: "May 16th, 2023",
+    datetime: "2023-05-16",
     imageUrl: "/images/blog/banish-bad-dog-breath.png",
     readingTime: "3 min",
     author: {

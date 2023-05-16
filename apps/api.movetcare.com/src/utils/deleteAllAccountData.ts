@@ -1,5 +1,5 @@
 import { getAuthUserById } from "./auth/getAuthUserById";
-import { admin, stripe, DEBUG } from "../config/config";
+import { admin, stripe, throwError, functions } from "../config/config";
 import { updateProVetAppointment } from "../integrations/provet/entities/appointment/updateProVetAppointment";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
 import { fetchEntity } from "../integrations/provet/entities/fetchEntity";
@@ -8,7 +8,10 @@ import { sendNotification } from "../notifications/sendNotification";
 import { getCustomerId } from "./getCustomerId";
 import { getProVetIdFromUrl } from "./getProVetIdFromUrl";
 import { deleteCollection } from "./deleteCollection";
-
+import * as client from "@sendgrid/client";
+client.setApiKey(functions.config()?.sendgrid.api_key);
+const sendGridAPI = client;
+const DEBUG = true;
 export const deleteAllAccountData = async (
   uid: string,
   deleteAuthAccount = true
@@ -218,6 +221,44 @@ export const deleteAllAccountData = async (
       )
       .catch((error: any) => DEBUG && console.log(error));
 
+  let clientSendgridId: any = null;
+  await sendGridAPI
+    .request({
+      url: "/v3/marketing/contacts/search",
+      method: "POST",
+      body: {
+        query: `email LIKE '${email}%'`,
+      },
+    })
+    .then(([response]: any) => {
+      if (DEBUG) {
+        console.log(response.statusCode);
+        console.log(response.body);
+      }
+      clientSendgridId = response.body.result[0].id;
+      if (DEBUG) console.log("clientSendgridId", clientSendgridId);
+    })
+    .catch((error: any) => throwError(error));
+
+  if (clientSendgridId)
+    sendGridAPI
+      .request({
+        url: "/v3/marketing/contacts",
+        method: "DELETE",
+        qs: { ids: clientSendgridId },
+      })
+      .then(([response]: any) => {
+        if (DEBUG) {
+          console.log("DELETING CLIENT FROM SENDGRID", {
+            email,
+            clientSendgridId,
+          });
+          console.log(response.statusCode);
+          console.log(response.body);
+        }
+      })
+      .catch((error: any) => throwError(error));
+  else if (DEBUG) console.log("NO CLIENT SENDGRID ID FOUND", email);
   deleteCollection(`clients/${uid}/notifications`)
     .then(() => DEBUG && console.log(`DELETED clients/${uid}/notifications`))
     .catch((error: any) => console.log(error));
