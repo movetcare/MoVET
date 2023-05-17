@@ -43,7 +43,6 @@ export default function ScheduleAnAppointment() {
     },
   });
   const handleError = (error: any) => {
-    console.error(error);
     setError(error);
     reset();
     setIsLoading(false);
@@ -70,12 +69,16 @@ export default function ScheduleAnAppointment() {
           });
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
-            if (result?.client?.uid && result?.id) {
+            const queryString = getUrlQueryStringFromObject(router.query);
+            if (
+              result?.client?.uid &&
+              result?.id &&
+              result?.client?.isExistingClient
+            ) {
               window.localStorage.setItem(
                 "bookingSession",
                 JSON.stringify(result)
               );
-              const queryString = getUrlQueryStringFromObject(router.query);
 
               if (result?.step)
                 router.push(
@@ -97,13 +100,17 @@ export default function ScheduleAnAppointment() {
                   "/schedule-an-appointment/pet-selection" +
                     (queryString ? queryString : "")
                 );
-            } else handleError(result);
+            } else
+              router.push(
+                "/request-an-appointment" + (queryString ? queryString : "")
+              );
           } else handleError(result);
         } catch (error) {
           handleError(error);
         }
       }
-    } else handleError({ message: "SOMETHING WENT WRONG" });
+    } else
+      handleError({ message: "SOMETHING WENT WRONG - Please Try Again..." });
   };
   useEffect(() => {
     if ((window.localStorage.getItem("email") || email) && executeRecaptcha) {

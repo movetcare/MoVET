@@ -67,12 +67,16 @@ export default function Home() {
           });
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
-            if (result?.client?.uid && result?.id) {
+            const queryString = getUrlQueryStringFromObject(router.query);
+            if (
+              result?.client?.uid &&
+              result?.id &&
+              result?.client?.isExistingClient
+            ) {
               window.localStorage.setItem(
                 "bookingSession",
                 JSON.stringify(result)
               );
-              const queryString = getUrlQueryStringFromObject(router.query);
               if (result?.step)
                 router.push(
                   `/schedule-an-appointment/${result.step}` +
@@ -93,7 +97,10 @@ export default function Home() {
                   "/schedule-an-appointment/pet-selection" +
                     (queryString ? queryString : "")
                 );
-            } else handleError(result);
+            } else
+              router.push(
+                "/request-an-appointment" + (queryString ? queryString : "")
+              );
           } else handleError(result);
         } catch (error) {
           handleError(error);

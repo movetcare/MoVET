@@ -10,7 +10,7 @@ export const verifyClientDataExists = async (authUser: UserRecord) =>
     .get()
     .then((doc: any) => {
       if (DEBUG)
-        console.log({
+        console.log("verifyClientDataExists =>", {
           docEmail: doc.data()?.email,
           docFirstName: doc.data()?.firstName,
           docLastName: doc.data()?.lastName,

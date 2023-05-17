@@ -1,6 +1,6 @@
 import { sendNotification } from "../notifications/sendNotification";
-import { environment, functions, request } from "../config/config";
-const DEBUG = true;
+import { DEBUG, environment, functions, request } from "../config/config";
+
 export const handleHoursStatusUpdate = functions.firestore
   .document("configuration/hours_status")
   .onUpdate(async (change: any, context: any) => {

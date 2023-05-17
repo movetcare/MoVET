@@ -26,7 +26,7 @@ export const ToggleInput = ({
     {label && (
       <label
         htmlFor={name || "form-input-element"}
-        className="block text-sm font-medium text-movet-black font-abside mb-2"
+        className="block text-sm font-medium text-movet-black font-abside mb-4"
       >
         {label} {required && <span className="text-movet-red">*</span>}
       </label>

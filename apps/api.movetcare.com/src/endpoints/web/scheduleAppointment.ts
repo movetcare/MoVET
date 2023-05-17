@@ -1,4 +1,4 @@
-import { functions, defaultRuntimeOptions, DEBUG } from "../../config/config";
+import { functions, defaultRuntimeOptions } from "../../config/config";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 import { handleFailedBooking } from "../../booking/session/handleFailedBooking";
 import type { BookingError, Booking } from "../../types/booking";
@@ -12,7 +12,7 @@ import { processLocation } from "../../booking/session/processLocation";
 import { processDateTime } from "../../booking/session/processDateTime";
 import { processReason } from "../../booking/session/processReason";
 import { processStaff } from "../../booking/session/processStaff";
-
+const DEBUG = true;
 export const scheduleAppointment = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<Booking | BookingError> => {

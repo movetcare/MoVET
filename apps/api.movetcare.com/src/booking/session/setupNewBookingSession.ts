@@ -29,7 +29,7 @@ export const setupNewBookingSession = async ({
         "setupNewBookingSession => isExistingClient => startNewSession",
         email
       );
-    return await startNewSession({ email, device });
+    return await startNewSession({ email, device, isExistingClient });
   } else {
     if (DEBUG) console.log("setupNewBookingSession => createNewClient", email);
     const proVetClientData: any = await createProVetClient({
@@ -41,7 +41,8 @@ export const setupNewBookingSession = async ({
         ...proVetClientData,
         password: null,
       });
-      if (didCreateNewClient) return await startNewSession({ email, device });
+      if (didCreateNewClient)
+        return await startNewSession({ email, device, isExistingClient });
       else
         return await handleFailedBooking(
           { email, device },
@@ -58,9 +59,11 @@ export const setupNewBookingSession = async ({
 const startNewSession = async ({
   email,
   device,
+  isExistingClient,
 }: {
   email: string;
   device: string;
+  isExistingClient: boolean | null;
 }): Promise<BookingError | Booking> => {
   const authUser: UserRecord | null = await getAuthUserByEmail(email);
   if (authUser) {
@@ -75,7 +78,7 @@ const startNewSession = async ({
       return {
         ...session,
         patients,
-        client: { uid: authUser?.uid, requiresInfo },
+        client: { uid: authUser?.uid, requiresInfo, isExistingClient },
       };
     } else
       return await handleFailedBooking({ email, device }, "FAILED TO GET DATA");

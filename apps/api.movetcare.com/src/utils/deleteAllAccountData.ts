@@ -1,5 +1,5 @@
 import { getAuthUserById } from "./auth/getAuthUserById";
-import { admin, stripe, throwError, functions } from "../config/config";
+import { admin, stripe, throwError, functions, DEBUG } from "../config/config";
 import { updateProVetAppointment } from "../integrations/provet/entities/appointment/updateProVetAppointment";
 import { updateProVetClient } from "../integrations/provet/entities/client/updateProVetClient";
 import { fetchEntity } from "../integrations/provet/entities/fetchEntity";
@@ -11,7 +11,7 @@ import { deleteCollection } from "./deleteCollection";
 import * as client from "@sendgrid/client";
 client.setApiKey(functions.config()?.sendgrid.api_key);
 const sendGridAPI = client;
-const DEBUG = true;
+
 export const deleteAllAccountData = async (
   uid: string,
   deleteAuthAccount = true

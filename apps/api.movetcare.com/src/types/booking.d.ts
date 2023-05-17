@@ -11,6 +11,7 @@ export type ClientBookingData = {
   phone?: string;
   requiresInfo: boolean;
   uid: string;
+  isExistingClient?: boolean | null;
 };
 
 export type PatientBookingData = {

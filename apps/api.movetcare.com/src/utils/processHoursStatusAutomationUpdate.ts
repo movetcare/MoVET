@@ -1,6 +1,6 @@
-import { admin } from "../config/config";
+import { DEBUG, admin } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
-const DEBUG = true;
+
 export const processHoursStatusAutomationUpdate = async (options: {
   action: "open" | "close";
   type: "clinic" | "housecall" | "walkins" | "boutique";

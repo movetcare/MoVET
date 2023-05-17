@@ -1,7 +1,7 @@
 import { sendNotification } from "../notifications/sendNotification";
-import { functions, admin, throwError } from "../config/config";
+import { functions, admin, throwError, DEBUG } from "../config/config";
 import { addMinutesToDateObject } from "../utils/addMinutesToDateObject";
-const DEBUG = true;
+
 export const handleCompletedTask = functions.firestore
   .document("tasks_completed/{id}")
   .onWrite(async (change: any, context: any) => {
