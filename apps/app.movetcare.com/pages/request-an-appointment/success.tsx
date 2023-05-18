@@ -7,92 +7,47 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { AppHeader } from "components/AppHeader";
 import { useEffect, useState } from "react";
-import { ServerResponse } from "types";
 
 export default function RequestSuccess() {
-  const router = useRouter();
-  const { mode } = router.query || {};
-  const isAppMode = mode === "app";
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<any>(null);
-  const [session, setSession] = useState<any>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
     null
   );
   useEffect(() => {
-    if (session?.id) {
-      const processAppointmentBooking = async () =>
-        (
-          await fetch("/api/schedule-an-appointment", {
-            method: "POST",
-            body: JSON.stringify({ id: session?.id, step: "success" }),
-          })
-        ).json();
-      processAppointmentBooking()
-        .then((response: ServerResponse) => {
-          console.log("SUCCESS SENT!");
-          if (response.error) {
-            handleError({ message: response.error });
-          } else {
-            localStorage.removeItem("email");
-            localStorage.removeItem("bookingSession");
-            setSubmissionSuccess(true);
-          }
-        })
-        .catch((error) => handleError(error))
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  }, [session]);
-  const handleError = (error: any) => {
-    console.error(error);
-    setError(error);
-    setSubmissionSuccess(false);
-    setIsLoading(false);
-  };
+    localStorage.removeItem("email");
+    localStorage.removeItem("bookingSession");
+    setSubmissionSuccess(true);
+  }, []);
+
   return (
     <section className="w-full flex-1">
       <AppHeader />
       <div
         className={`flex items-center justify-center bg-white rounded-xl max-w-lg mx-auto mb-4`}
       >
-        <div className={isAppMode ? "px-4 mb-8" : "p-4"}>
+        <div className={"p-4"}>
           <section className="relative mx-auto">
-            {isLoading || submissionSuccess === null ? (
-              <Loader message="Loading Confirmation..." isAppMode={isAppMode} />
-            ) : error ? (
-              <Error error={error} isAppMode={isAppMode} />
-            ) : (
-              <div
-                className={
-                  isAppMode
-                    ? "flex flex-col items-center justify-center min-h-screen"
-                    : ""
-                }
-              >
-                <div className={isAppMode ? "flex flex-col" : ""}>
-                  <FontAwesomeIcon
-                    icon={faCheckCircle}
-                    size="4x"
-                    className="text-movet-green mx-auto w-full mb-4"
-                  />
-                  <BookingHeader
-                    isAppMode={isAppMode}
-                    title="Appointment Request Successful"
-                    description={
-                      "We will get contact to you as soon as we can to confirm the exact day and time of your appointment!"
-                    }
-                  />
-                  <p className="text-xs italic text-center mt-4 sm:px-8">
-                    Please allow 1 business day for a response. All appointment
-                    requests are responded to in the order they are received.
-                  </p>
-                </div>
+            <div>
+              <div>
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  size="4x"
+                  className="text-movet-green mx-auto w-full mb-4"
+                />
+                <BookingHeader
+                  isAppMode={false}
+                  title="Appointment Request Successful"
+                  description={
+                    "We will get contact to you as soon as we can to confirm the exact day and time of your appointment!"
+                  }
+                />
+                <p className="text-xs italic text-center mt-4 sm:px-8">
+                  Please allow 1 business day for a response. All appointment
+                  requests are responded to in the order they are received.
+                </p>
               </div>
-            )}
+            </div>
           </section>
-          {!isAppMode && submissionSuccess && (
+          {submissionSuccess && (
             <section>
               <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mt-8" />
               <h2 className="text-center mb-0">Download The App!</h2>

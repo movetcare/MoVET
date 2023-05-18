@@ -4,6 +4,7 @@ import { createProVetNote } from "../../integrations/provet/entities/note/create
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
 import { sendNotification } from "../sendNotification";
+const DEBUG = true;
 export const sendBookingRequestClientNotification = async ({
   id,
   bookingRef,
@@ -27,8 +28,9 @@ export const sendBookingRequestClientNotification = async ({
     .get()
     .then((doc: any) => doc.data())
     .catch((error: any) => throwError(error));
-  const { email, displayName, phone, uid } = client;
-  if (!email?.toLowerCase()?.includes("+test")) {
+  const { email, displayName, phone, uid, isExistingClient } = client;
+  //if (!email?.toLowerCase()?.includes("+test")) {
+  if (isExistingClient) {
     const createClientMessage = ({
       messageTemplate,
       client,
@@ -259,5 +261,130 @@ export const sendBookingRequestClientNotification = async ({
         }),
       },
     });
+  } else {
+    if (DEBUG) console.log("Sending CLIENT Appointment Request for New Client");
+    const {
+      locationType,
+      notes,
+      numberOfPets,
+      numberOfPetsWithMinorIllness,
+      selectedDate,
+      selectedTime,
+      specificTime,
+      email,
+      firstName,
+      lastName,
+      phone,
+      id,
+    }: any = await bookingRef
+      .get()
+      .then((doc: any) => doc.data())
+      .catch((error: any) => throwError(error));
+    const message = `<p>Hi ${firstName},</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request below and let us know (by replying to this email) if anything needs to be changed.</p><p><b>---------- CONTACT INFO -----------</b></p>${
+      firstName && lastName
+        ? `<p><b>Name:</b> ${firstName} ${lastName}</p>`
+        : ""
+    }<p><b>Client Email:</b> ${email}</p>${
+      phone
+        ? `<p><b>Client Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
+            phone?.replaceAll("+1", "")
+          )}</a></p>`
+        : ""
+    }
+       <p><b>---------- PET INFO -----------</b></p>
+    ${numberOfPets ? `<p><b>Number of Pets:</b> ${numberOfPets}</p>` : ""}
+    ${
+      numberOfPetsWithMinorIllness
+        ? `<p><b>Pets w/ Minor Illness:</b> ${numberOfPetsWithMinorIllness}</p>`
+        : ""
+    }
+    ${notes && notes !== "" ? `<p><b>Pet Notes:</b> ${notes}</p>` : ""}
+    <p><b>---------- REQUESTED LOCATION & TIME -----------</b></p>
+    ${locationType ? `<p><b>Requested Location:</b> ${locationType}</p>` : ""}
+  ${
+    selectedDate
+      ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
+          new Date(selectedDate)?.toString()
+        )}</p>`
+      : ""
+  }${selectedTime ? `<p><b>Requested Time:</b> ${selectedTime}</p>` : ""}${
+      selectedTime === "Specific Time Preference" && specificTime !== ""
+        ? `<p><b>Specific Time Requested:</b> ${specificTime}</p>`
+        : ""
+    }`;
+    sendNotification({
+      type: "email",
+      payload: {
+        client: client?.uid,
+        to: email,
+        replyTo: "info@movetcare.com",
+        subject: "We have received your appointment request!",
+        message,
+      },
+    });
+    sendNotification({
+      type: "slack",
+      payload: {
+        message: [
+          {
+            type: "section",
+            text: {
+              text: `:exclamation: New Appointment Request - ${id} :exclamation:\n\n${id}`,
+              type: "mrkdwn",
+            },
+            fields: [
+              {
+                type: "mrkdwn",
+                text: "*Client*",
+              },
+              {
+                type: "plain_text",
+                text:
+                  firstName + " " + lastName + " - " + email + " - " + phone,
+              },
+              {
+                type: "mrkdwn",
+                text: "*Patients*",
+              },
+              {
+                type: "plain_text",
+                text:
+                  numberOfPets +
+                  ` pets (${numberOfPetsWithMinorIllness} w/ minor illness)`,
+              },
+              {
+                type: "mrkdwn",
+                text: "*Pet Notes*",
+              },
+              {
+                type: "plain_text",
+                text: notes.length > 0 ? notes : "None",
+              },
+              {
+                type: "mrkdwn",
+                text: "*Location*",
+              },
+              {
+                type: "plain_text",
+                text: locationType,
+              },
+              {
+                type: "mrkdwn",
+                text: "*Requested Time & Date*",
+              },
+              {
+                type: "plain_text",
+                text: `${getYYMMDDFromString(
+                  new Date(selectedDate)?.toString()
+                )} - ${selectedTime} ${
+                  specificTime ? `(${specificTime})` : ""
+                }`,
+              },
+            ],
+          },
+        ],
+      },
+    });
   }
+  //  }
 };

@@ -46,6 +46,7 @@ export { scheduleAppointment } from "./endpoints/web/scheduleAppointment";
 export { getBreedsData } from "./endpoints/web/getBreedsData";
 export { getAppointmentLocations } from "./endpoints/web/getAppointmentLocations";
 export { getReasons } from "./endpoints/web/getReasons";
+export { requestAppointment } from "./endpoints/web/requestAppointment";
 
 export { cancelTerminalAction } from "./endpoints/admin/pos/cancelTerminalAction";
 export { refundPaymentIntent } from "./endpoints/admin/pos/refundPaymentIntent";

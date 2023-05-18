@@ -5,15 +5,15 @@ import type {
   PatientBookingData,
 } from "../../types/booking";
 import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
-import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
 import { handleFailedBooking } from "./handleFailedBooking";
 import { getActiveBookingSession } from "../verification/getActiveBookingSession";
 import { verifyClientDataExists } from "../../utils/auth/verifyClientDataExists";
 import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
-import { DEBUG } from "../../config/config";
-
+import { admin, throwError } from "../../config/config";
+import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
+const DEBUG = true;
 export const setupNewBookingSession = async ({
   email,
   device,
@@ -29,7 +29,7 @@ export const setupNewBookingSession = async ({
         "setupNewBookingSession => isExistingClient => startNewSession",
         email
       );
-    return await startNewSession({ email, device, isExistingClient });
+    return await startNewSession({ email, device });
   } else {
     if (DEBUG) console.log("setupNewBookingSession => createNewClient", email);
     const proVetClientData: any = await createProVetClient({
@@ -41,8 +41,7 @@ export const setupNewBookingSession = async ({
         ...proVetClientData,
         password: null,
       });
-      if (didCreateNewClient)
-        return await startNewSession({ email, device, isExistingClient });
+      if (didCreateNewClient) return await startNewSession({ email, device });
       else
         return await handleFailedBooking(
           { email, device },
@@ -59,11 +58,9 @@ export const setupNewBookingSession = async ({
 const startNewSession = async ({
   email,
   device,
-  isExistingClient,
 }: {
   email: string;
   device: string;
-  isExistingClient: boolean | null;
 }): Promise<BookingError | Booking> => {
   const authUser: UserRecord | null = await getAuthUserByEmail(email);
   if (authUser) {
@@ -78,7 +75,29 @@ const startNewSession = async ({
       return {
         ...session,
         patients,
-        client: { uid: authUser?.uid, requiresInfo, isExistingClient },
+        client: {
+          uid: authUser?.uid,
+          requiresInfo,
+          isExistingClient: await admin
+            .firestore()
+            .collection("appointments")
+            .where("client", "==", authUser?.uid)
+            .where("active", "==", 0)
+            .get()
+            .then((docs: any) => {
+              if (DEBUG)
+                console.log("Closed Appointments - docs.size", docs.size);
+              if (docs.size > 0) {
+                return true;
+              } else {
+                return false;
+              }
+            })
+            .catch((error: any) => {
+              throwError(error);
+              return null;
+            }),
+        },
       };
     } else
       return await handleFailedBooking({ email, device }, "FAILED TO GET DATA");

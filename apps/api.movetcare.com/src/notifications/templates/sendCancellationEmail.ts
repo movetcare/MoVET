@@ -56,6 +56,7 @@ export const sendCancellationEmail = async (
 
     const emailConfig: EmailConfiguration = {
       to: email,
+      bcc: "info@movetcare.com",
       subject: "Your MoVET appointment has been cancelled",
       message: emailText,
     };

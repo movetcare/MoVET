@@ -139,23 +139,23 @@ export const verifyAccount = functions
                   id,
               },
             });
-            sendNotification({
-              type: "email",
-              payload: {
-                to: "support@movetcare.com",
-                subject: `MoVET Account Errors Found for ${authData?.displayName} (${authData?.email})! Please Fix ASAP`,
-                message:
-                  "<p>" +
-                  JSON.stringify(alerts.errors) +
-                  "</p><p><b>" +
-                  (environment.type === "production"
-                    ? "https://admin.movetcare.com"
-                    : "http://localhost:3002") +
-                  "/client?id=" +
-                  id +
-                  "</b></p>",
-              },
-            });
+            // sendNotification({
+            //   type: "email",
+            //   payload: {
+            //     to: "support@movetcare.com",
+            //     subject: `MoVET Account Errors Found for ${authData?.displayName} (${authData?.email})! Please Fix ASAP`,
+            //     message:
+            //       "<p>" +
+            //       JSON.stringify(alerts.errors) +
+            //       "</p><p><b>" +
+            //       (environment.type === "production"
+            //         ? "https://admin.movetcare.com"
+            //         : "http://localhost:3002") +
+            //       "/client?id=" +
+            //       id +
+            //       "</b></p>",
+            //   },
+            // });
           } else if (
             alerts.warnings.length > 0 &&
             !authData?.email?.includes("+test") &&

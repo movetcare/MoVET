@@ -1,4 +1,4 @@
-import { environment, admin, DEBUG } from "../../config/config";
+import { environment, admin } from "../../config/config";
 import type { Booking } from "../../types/booking";
 import type { EmailConfiguration } from "../../types/email.d";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
@@ -9,7 +9,7 @@ import {
 } from "../../utils/getClientNotificationSettings";
 import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
 import { sendNotification } from "../sendNotification";
-
+const DEBUG = true;
 export const sendBookingRecoveryNotification = async ({
   id,
   type,
@@ -60,124 +60,187 @@ const sendAdminBookingRecoveryNotification = async (
   booking: Booking,
   type: "24_HOUR" | "72_HOUR" | "1_HOUR"
 ) => {
-  const {
-    client,
-    id,
-    createdAt,
-    patients,
-    reason,
-    requestedDateTime,
-    location,
-    address,
-    selectedPatients,
-    selectedStaff,
-    step,
-  }: any = booking;
-  const { email, displayName, phone } = client;
-
-  let allPatients = "";
-  if (selectedPatients)
-    selectedPatients?.forEach((selectedPatient: any) => {
-      patients.map((patient: any) => {
-        if (selectedPatient === patient?.id)
-          allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
-            patient?.name
-          }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
-            patient?.gender
-          }</p>${
-            patient?.illnessDetails
-              ? `<p><b>Minor Illness:</b> ${
-                  patient?.illnessDetails
-                    ? `${JSON.stringify(patient?.illnessDetails?.symptoms)} - ${
-                        patient?.illnessDetails?.notes
-                      }`
-                    : " None"
-                }</p>`
-              : ""
-          }${
-            patient.aggressionStatus
-              ? `<p><b>Aggression Status:</b> "${
-                  patient?.aggressionStatus
-                    ? "IS AGGRESSIVE!"
-                    : "Is not aggressive" ||
-                      // eslint-disable-next-line quotes
-                      'UNKNOWN - Update "Is Aggressive" custom field on patient\'s profile in ProVet!'
-                } "</p>`
-              : ""
-          }${
-            patient.vcprRequired
-              ? `<p><b>VCPR Required:</b> ${
-                  patient?.vcprRequired ? "Yes" : "No"
-                }</p>`
-              : ""
-          }<p></p><p></p>`;
+  const { client, id }: any = booking;
+  const { email, displayName, phone, isExistingClient } = client;
+  if (isExistingClient) {
+    let allPatients = "";
+    const {
+      id,
+      createdAt,
+      patients,
+      reason,
+      requestedDateTime,
+      location,
+      address,
+      selectedPatients,
+      selectedStaff,
+      step,
+    }: any = booking;
+    if (selectedPatients)
+      selectedPatients?.forEach((selectedPatient: any) => {
+        patients.map((patient: any) => {
+          if (selectedPatient === patient?.id)
+            allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
+              patient?.name
+            }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
+              patient?.gender
+            }</p>${
+              patient?.illnessDetails
+                ? `<p><b>Minor Illness:</b> ${
+                    patient?.illnessDetails
+                      ? `${JSON.stringify(
+                          patient?.illnessDetails?.symptoms
+                        )} - ${patient?.illnessDetails?.notes}`
+                      : " None"
+                  }</p>`
+                : ""
+            }${
+              patient.aggressionStatus
+                ? `<p><b>Aggression Status:</b> "${
+                    patient?.aggressionStatus
+                      ? "IS AGGRESSIVE!"
+                      : "Is not aggressive" ||
+                        // eslint-disable-next-line quotes
+                        'UNKNOWN - Update "Is Aggressive" custom field on patient\'s profile in ProVet!'
+                  } "</p>`
+                : ""
+            }${
+              patient.vcprRequired
+                ? `<p><b>VCPR Required:</b> ${
+                    patient?.vcprRequired ? "Yes" : "No"
+                  }</p>`
+                : ""
+            }<p></p><p></p>`;
+        });
       });
-    });
 
-  const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
-    ?.toDate()
-    ?.toString()}</p><p><b>Last Step:</b> ${step}</p>${
-    displayName
-      ? `<p><b>Client Name:</b> ${getClientFirstNameFromDisplayName(
-          displayName
-        )}</p>`
-      : ""
-  }<p><b>Client Email:</b> ${email}</p>${
-    phone
-      ? `<p><b>Client Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
-          phone?.replaceAll("+1", "")
-        )}</a></p>`
-      : ""
-  }${
-    Array.isArray(patients) && Array.isArray(selectedPatients)
-      ? allPatients
-      : ""
-  }
+    const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
+      ?.toDate()
+      ?.toString()}</p><p><b>Last Step:</b> ${step}</p>${
+      displayName
+        ? `<p><b>Client Name:</b> ${getClientFirstNameFromDisplayName(
+            displayName
+          )}</p>`
+        : ""
+    }<p><b>Client Email:</b> ${email}</p>${
+      phone
+        ? `<p><b>Client Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
+            phone?.replaceAll("+1", "")
+          )}</a></p>`
+        : ""
+    }${
+      Array.isArray(patients) && Array.isArray(selectedPatients)
+        ? allPatients
+        : ""
+    }
   ${
     reason
       ? `<p><b>Reason:</b> ${reason.label}</p>`
       : "<p><b>Reason:</b> Establish Care Exam</p>"
   }${
-    requestedDateTime?.date
+      requestedDateTime?.date
+        ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
+            requestedDateTime.date
+          )}</p>`
+        : ""
+    }${
+      requestedDateTime?.time
+        ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
+        : ""
+    }${
+      location
+        ? `<p><b>Requested Location:</b> ${location} ${
+            address ? `- ${address?.full} (${address?.info})` : ""
+          }</p>`
+        : ""
+    }${
+      selectedStaff
+        ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
+        : ""
+    }`;
+
+    if (id && email)
+      sendNotification({
+        type: "email",
+        payload: {
+          to: "info@movetcare.com",
+          replyTo: email,
+          subject: `${
+            displayName ? displayName : email ? email : ""
+          } abandoned their appointment booking request on step "${step}" ${
+            type === "24_HOUR"
+              ? "yesterday"
+              : type === "72_HOUR"
+              ? "three days ago"
+              : "one hour ago"
+          }`,
+          message,
+        },
+      });
+  } else {
+    const {
+      locationType,
+      notes,
+      numberOfPets,
+      numberOfPetsWithMinorIllness,
+      selectedDate,
+      selectedTime,
+      specificTime,
+      createdAt,
+      firstName,
+      lastName,
+      phone,
+      email,
+    }: any = booking;
+    const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
+      ?.toDate()
+      ?.toString()}</p>${
+      firstName ? `<p><b>Client Name:</b> ${firstName} ${lastName}</p>` : ""
+    }<p><b>Client Email:</b> ${email}</p>${
+      phone
+        ? `<p><b>Client Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
+            phone?.replaceAll("+1", "")
+          )}</a></p>`
+        : ""
+    }
+    ${numberOfPets ? `<p><b>Number of Pets:</b> ${numberOfPets}</p>` : ""}
+    ${
+      numberOfPetsWithMinorIllness
+        ? `<p><b>Pets w/ Minor Illness:</b> ${numberOfPetsWithMinorIllness}</p>`
+        : ""
+    }
+    ${notes && notes !== "" ? `<p><b>Pet Notes:</b> ${notes}</p>` : ""}
+    ${locationType ? `<p><b>Requested Location:</b> ${locationType}</p>` : ""}
+  ${
+    selectedDate
       ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
-          requestedDateTime.date
+          new Date(selectedDate)?.toString()
         )}</p>`
       : ""
-  }${
-    requestedDateTime?.time
-      ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
-      : ""
-  }${
-    location
-      ? `<p><b>Requested Location:</b> ${location} ${
-          address ? `- ${address?.full} (${address?.info})` : ""
-        }</p>`
-      : ""
-  }${
-    selectedStaff
-      ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
-      : ""
-  }`;
-
-  if (id && email)
-    sendNotification({
-      type: "email",
-      payload: {
-        client: client.uid,
-        to: "info@movetcare.com",
-        replyTo: email,
-        subject: `${
-          displayName ? displayName : email ? email : ""
-        } abandoned their appointment booking request on step "${step}" ${
-          type === "24_HOUR"
-            ? "yesterday"
-            : type === "72_HOUR"
-            ? "three days ago"
-            : "one hour ago"
-        }`,
-        message,
-      },
-    });
+  }${selectedTime ? `<p><b>Requested Time:</b> ${selectedTime}</p>` : ""}${
+      selectedTime === "Specific Time Preference" && specificTime !== ""
+        ? `<p><b>Specific Time Requested:</b> ${specificTime}</p>`
+        : ""
+    }`;
+    if (id && email)
+      sendNotification({
+        type: "email",
+        payload: {
+          to: "info@movetcare.com",
+          replyTo: email,
+          subject: `${
+            displayName ? displayName : email ? email : ""
+          } abandoned their appointment booking request" ${
+            type === "24_HOUR"
+              ? "yesterday"
+              : type === "72_HOUR"
+              ? "three days ago"
+              : "one hour ago"
+          }`,
+          message,
+        },
+      });
+  }
 };
 
 const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {

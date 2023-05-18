@@ -11,7 +11,7 @@ import {
   faLaptopMedical,
   faStethoscope,
 } from "@fortawesome/free-solid-svg-icons";
-import { TextInput } from "ui/src/components/forms/inputs";
+import { EmailInput, TextInput } from "ui/src/components/forms/inputs";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
@@ -20,7 +20,6 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import PhoneInput from "ui/src/components/forms/inputs/PhoneInput";
-import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 import { NumberInput } from "components/inputs/NumberInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ToggleInput } from "components/inputs/ToggleInput";
@@ -67,27 +66,6 @@ addMethod(
   }
 );
 
-const containerStyle = {
-  width: "100%",
-  height: "288px",
-};
-
-const center = {
-  lat: 39.6251,
-  lng: -104.90679,
-};
-const mapOptions = {
-  zoomControl: true,
-  mapTypeControl: false,
-  scaleControl: false,
-  streetViewControl: false,
-  rotateControl: false,
-  fullscreenControl: false,
-  panControl: false,
-  scrollwheel: false,
-  gestureHandling: "none",
-};
-
 export async function getStaticProps() {
   return {
     props: {
@@ -105,7 +83,7 @@ export default function RequestAnAppointment({
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
   const router = useRouter();
-  const { mode } = router.query || {};
+  const { email, mode } = router.query || {};
   const isAppMode = mode === "app";
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
@@ -128,6 +106,7 @@ export default function RequestAnAppointment({
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { isDirty, errors },
   } = useForm({
     mode: "onSubmit",
@@ -138,6 +117,9 @@ export default function RequestAnAppointment({
         phone: string()
           .min(10, "Phone number must be 10 digits")
           .required("A phone number is required"),
+        email: string()
+          .email("Please enter a valid email address")
+          .required("An email address is required"),
         numberOfPets: (string() as any)
           .isValidPetCount("Number of pets must be between 1 and 10")
           .required("A pet count is required"),
@@ -147,19 +129,33 @@ export default function RequestAnAppointment({
           )
           .required("A minor illness pet count is required"),
         locationType: string().required("A location type is required"),
+        specificTime: string(),
       })
     ),
     defaultValues: {
       firstName: "",
       lastName: "",
       phone: "",
+      email: email || "",
       numberOfPets: "1",
       numberOfPetsWithMinorIllness: "0",
       locationType: "Clinic",
       notes: "",
+      specificTime: "",
     },
   });
   const locationSelection = watch("locationType");
+
+  useEffect(() => {
+    if (
+      window.localStorage.getItem("email") === null ||
+      window.localStorage.getItem("bookingSession") === null
+    ) {
+      localStorage.removeItem("email");
+      localStorage.removeItem("bookingSession");
+      router.push("/");
+    }
+  }, [router]);
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -173,6 +169,13 @@ export default function RequestAnAppointment({
     };
     fetchLocations();
   }, []);
+
+  useEffect(() => {
+    setValue(
+      "email",
+      (email as string) || window.localStorage.getItem("email") || ""
+    );
+  }, [email, setValue]);
 
   useEffect(() => {
     if (reasonGroups) {
@@ -224,14 +227,9 @@ export default function RequestAnAppointment({
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     setLoadingMessage("Submitting Your Appointment Request...");
-    const { email } = router.query || {};
-    console.log("data", {
-      ...data,
-      email: email || window.localStorage.getItem("email") || null,
-      selectedDate,
-      selectedTime,
-      device: navigator.userAgent,
-    });
+    const sessionId =
+      JSON.parse(window.localStorage.getItem("bookingSession") as string)?.id ||
+      null;
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
       if (token) {
@@ -241,14 +239,13 @@ export default function RequestAnAppointment({
             "requestAppointment"
           )({
             ...data,
-            email: email || window.localStorage.getItem("email") || null,
             selectedDate,
             selectedTime,
+            id: sessionId,
             device: navigator.userAgent,
             token,
           });
-          console.log("result", result);
-          if (result?.success) router.push("/request-an-appointment/success");
+          if (result) router.push("/request-an-appointment/success");
           else
             handleError({
               message:
@@ -317,6 +314,17 @@ export default function RequestAnAppointment({
                         name="phone"
                         control={control}
                         errors={errors}
+                        required
+                      />
+                    </div>
+                    <div className="sm:col-span-2 my-2">
+                      <EmailInput
+                        label="Email Address"
+                        name="email"
+                        control={control}
+                        errors={errors}
+                        disabled
+                        placeholder={(email as string) || ""}
                         required
                       />
                     </div>
@@ -438,6 +446,17 @@ export default function RequestAnAppointment({
                             ) : null
                         )}
                       </ul>
+                      {selectedTime === appointmentAvailability[4] && (
+                        <TextInput
+                          className="mt-8"
+                          name="specificTime"
+                          label="Specific Time"
+                          placeholder=""
+                          type="text"
+                          errors={errors}
+                          control={control}
+                        />
+                      )}
                     </div>
                     <div className="group flex flex-col justify-center items-center sm:col-span-2 my-4">
                       <Button
