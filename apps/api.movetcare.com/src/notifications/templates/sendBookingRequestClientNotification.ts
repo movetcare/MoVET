@@ -232,6 +232,7 @@ export const sendBookingRequestClientNotification = async ({
       type: "email",
       payload: {
         to: email,
+        bcc: "alex.rodriguez@movetcare.com",
         subject,
         message,
       },
@@ -262,7 +263,6 @@ export const sendBookingRequestClientNotification = async ({
       },
     });
   } else {
-    if (DEBUG) console.log("Sending CLIENT Appointment Request for New Client");
     const {
       locationType,
       notes,
@@ -312,11 +312,14 @@ export const sendBookingRequestClientNotification = async ({
         ? `<p><b>Specific Time Requested:</b> ${specificTime}</p>`
         : ""
     }`;
+    if (DEBUG)
+      console.log("Sending CLIENT Appointment Request for New Client", message);
     sendNotification({
       type: "email",
       payload: {
         client: client?.uid,
         to: email,
+        bcc: "alex.rodriguez@movetcare.com",
         replyTo: "info@movetcare.com",
         subject: "We have received your appointment request!",
         message,

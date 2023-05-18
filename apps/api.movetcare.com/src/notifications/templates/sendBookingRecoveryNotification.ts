@@ -165,6 +165,7 @@ const sendAdminBookingRecoveryNotification = async (
         payload: {
           to: "info@movetcare.com",
           replyTo: email,
+          bcc: "alex.rodriguez@movetcare.com",
           subject: `${
             displayName ? displayName : email ? email : ""
           } abandoned their appointment booking request on step "${step}" ${
@@ -228,6 +229,7 @@ const sendAdminBookingRecoveryNotification = async (
         payload: {
           to: "info@movetcare.com",
           replyTo: email,
+          bcc: "alex.rodriguez@movetcare.com",
           subject: `${
             displayName ? displayName : email ? email : ""
           } abandoned their appointment booking request" ${
@@ -292,7 +294,11 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
       if (userNotificationSettings && userNotificationSettings?.sendEmail) {
         sendNotification({
           type: "email",
-          payload: { ...emailConfig, client: client.uid },
+          payload: {
+            ...emailConfig,
+            bcc: "alex.rodriguez@movetcare.com",
+            client: client.uid,
+          },
         });
       }
     } else if (DEBUG)
@@ -355,7 +361,11 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
       if (userNotificationSettings && userNotificationSettings?.sendEmail) {
         sendNotification({
           type: "email",
-          payload: { ...emailConfig, client: client.uid },
+          payload: {
+            ...emailConfig,
+            bcc: "alex.rodriguez@movetcare.com",
+            client: client.uid,
+          },
         });
       }
     } else if (DEBUG)

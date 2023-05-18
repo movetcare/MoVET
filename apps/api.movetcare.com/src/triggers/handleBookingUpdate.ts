@@ -13,7 +13,7 @@ export const handleBookingUpdate = functions.firestore
     if (DEBUG) console.log("handleBookingUpdate => DATA", { id, data });
     if (data !== undefined) {
       const { step, isActive, cancelReason } = data || {};
-      if (cancelReason) updateBookingCancellation(id, data);
+      if (cancelReason) await updateBookingCancellation(id, data);
       if (isActive) {
         if (
           step === "restart" ||
@@ -24,11 +24,11 @@ export const handleBookingUpdate = functions.firestore
             console.log(
               `REMOVING BOOKING ABANDONMENT AUTOMATION TASK FROM QUEUE FOR ${id}`
             );
-          removeBookingAbandonmentNotifications(id);
+          await removeBookingAbandonmentNotifications(id);
         }
-        if (step === "success" && isActive) archiveBooking(id);
+        if (step === "success" && isActive) await archiveBooking(id);
         else if (step === "restart" || step === "cancelled-client")
-          cancelBooking(id, data);
+          await cancelBooking(id, data);
       } else if (DEBUG)
         console.log(
           `CAN NOT UPDATE AN ARCHIVED (OR DELETED) BOOKING: ${id}`,

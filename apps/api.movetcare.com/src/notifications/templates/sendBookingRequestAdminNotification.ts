@@ -156,6 +156,7 @@ export const sendBookingRequestAdminNotification = async ({
       payload: {
         to: "info@movetcare.com",
         replyTo: email,
+        bcc: "alex.rodriguez@movetcare.com",
         subject: `MoVET | Appointment Request for ${selectedPatients.map(
           (selectedPatient: any) =>
             patients.map((patient: any) => {
@@ -232,7 +233,6 @@ export const sendBookingRequestAdminNotification = async ({
       },
     });
   } else {
-    if (DEBUG) console.log("Sending ADMIN Appointment Request for New Client");
     const {
       locationType,
       notes,
@@ -281,10 +281,13 @@ export const sendBookingRequestAdminNotification = async ({
         ? `<p><b>Specific Time Requested:</b> ${specificTime}</p>`
         : ""
     }`;
+    if (DEBUG)
+      console.log("Sending ADMIN Appointment Request for New Client", message);
     sendNotification({
       type: "email",
       payload: {
         to: "info@movetcare.com",
+        bcc: "alex.rodriguez@movetcare.com",
         replyTo: email,
         subject: `MoVET | Appointment Request for ${
           firstName && lastName ? firstName + " " + lastName : email
