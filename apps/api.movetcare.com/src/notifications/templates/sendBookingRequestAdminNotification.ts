@@ -272,9 +272,9 @@ export const sendBookingRequestAdminNotification = async ({
     ${locationType ? `<p><b>Requested Location:</b> ${locationType}</p>` : ""}
   ${
     selectedDate
-      ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
-          new Date(selectedDate)?.toString()
-        )}</p>`
+      ? `<p><b>Requested Date:</b> ${new Date(
+          selectedDate
+        ).toLocaleDateString()}</p>`
       : ""
   }${selectedTime ? `<p><b>Requested Time:</b> ${selectedTime}</p>` : ""}${
       selectedTime === "Specific Time Preference" && specificTime !== ""
@@ -344,9 +344,9 @@ export const sendBookingRequestAdminNotification = async ({
               },
               {
                 type: "plain_text",
-                text: `${getYYMMDDFromString(
-                  new Date(selectedDate)?.toString()
-                )} - ${selectedTime} ${
+                text: `${new Date(
+                  selectedDate
+                ).toLocaleDateString()} - ${selectedTime} ${
                   specificTime ? `(${specificTime})` : ""
                 }`,
               },
