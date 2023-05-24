@@ -171,6 +171,7 @@ export const sendBookingRequestAdminNotification = async ({
     sendNotification({
       type: "slack",
       payload: {
+        channel: "appointment-request",
         message: [
           {
             type: "section",
@@ -298,6 +299,7 @@ export const sendBookingRequestAdminNotification = async ({
     sendNotification({
       type: "slack",
       payload: {
+        channel: "appointment-request",
         message: [
           {
             type: "section",
@@ -350,7 +352,7 @@ export const sendBookingRequestAdminNotification = async ({
                 text: `${new Date(
                   selectedDate
                 ).toLocaleDateString()} - ${selectedTime} ${
-                  specificTime ? `(${specificTime})` : ""
+                  specificTime ? `- ${specificTime}` : ""
                 }`,
               },
             ],

@@ -238,30 +238,30 @@ export const sendBookingRequestClientNotification = async ({
       },
     });
 
-    sendNotification({
-      type: "slack",
-      payload: {
-        channel: "appointment-request",
-        message: createClientMessage({
-          messageTemplate: "slack",
-          vcprRequired,
-          reason,
-          client,
-          illPatients,
-          patients,
-          id,
-          displayName,
-          createdAt,
-          phone,
-          email,
-          requestedDateTime,
-          location,
-          address,
-          selectedStaff,
-          selectedPatients,
-        }),
-      },
-    });
+    // sendNotification({
+    //   type: "slack",
+    //   payload: {
+    //     channel: "appointment-request",
+    //     message: createClientMessage({
+    //       messageTemplate: "slack",
+    //       vcprRequired,
+    //       reason,
+    //       client,
+    //       illPatients,
+    //       patients,
+    //       id,
+    //       displayName,
+    //       createdAt,
+    //       phone,
+    //       email,
+    //       requestedDateTime,
+    //       location,
+    //       address,
+    //       selectedStaff,
+    //       selectedPatients,
+    //     }),
+    //   },
+    // });
   } else {
     const {
       locationType,
@@ -325,69 +325,69 @@ export const sendBookingRequestClientNotification = async ({
         message,
       },
     });
-    sendNotification({
-      type: "slack",
-      payload: {
-        message: [
-          {
-            type: "section",
-            text: {
-              text: `:exclamation: New Appointment Request - ${id} :exclamation:\n\n${id}`,
-              type: "mrkdwn",
-            },
-            fields: [
-              {
-                type: "mrkdwn",
-                text: "*Client*",
-              },
-              {
-                type: "plain_text",
-                text:
-                  firstName + " " + lastName + " - " + email + " - " + phone,
-              },
-              {
-                type: "mrkdwn",
-                text: "*Patients*",
-              },
-              {
-                type: "plain_text",
-                text:
-                  numberOfPets +
-                  ` pets (${numberOfPetsWithMinorIllness} w/ minor illness)`,
-              },
-              {
-                type: "mrkdwn",
-                text: "*Pet Notes*",
-              },
-              {
-                type: "plain_text",
-                text: notes.length > 0 ? notes : "None",
-              },
-              {
-                type: "mrkdwn",
-                text: "*Location*",
-              },
-              {
-                type: "plain_text",
-                text: locationType,
-              },
-              {
-                type: "mrkdwn",
-                text: "*Requested Time & Date*",
-              },
-              {
-                type: "plain_text",
-                text: `${new Date(
-                  selectedDate
-                ).toLocaleDateString()} - ${selectedTime} ${
-                  specificTime ? `(${specificTime})` : ""
-                }`,
-              },
-            ],
-          },
-        ],
-      },
-    });
+    // sendNotification({
+    //   type: "slack",
+    //   payload: {
+    //     message: [
+    //       {
+    //         type: "section",
+    //         text: {
+    //           text: `:exclamation: New Appointment Request - ${id} :exclamation:\n\n${id}`,
+    //           type: "mrkdwn",
+    //         },
+    //         fields: [
+    //           {
+    //             type: "mrkdwn",
+    //             text: "*Client*",
+    //           },
+    //           {
+    //             type: "plain_text",
+    //             text:
+    //               firstName + " " + lastName + " - " + email + " - " + phone,
+    //           },
+    //           {
+    //             type: "mrkdwn",
+    //             text: "*Patients*",
+    //           },
+    //           {
+    //             type: "plain_text",
+    //             text:
+    //               numberOfPets +
+    //               ` pets (${numberOfPetsWithMinorIllness} w/ minor illness)`,
+    //           },
+    //           {
+    //             type: "mrkdwn",
+    //             text: "*Pet Notes*",
+    //           },
+    //           {
+    //             type: "plain_text",
+    //             text: notes.length > 0 ? notes : "None",
+    //           },
+    //           {
+    //             type: "mrkdwn",
+    //             text: "*Location*",
+    //           },
+    //           {
+    //             type: "plain_text",
+    //             text: locationType,
+    //           },
+    //           {
+    //             type: "mrkdwn",
+    //             text: "*Requested Time & Date*",
+    //           },
+    //           {
+    //             type: "plain_text",
+    //             text: `${new Date(
+    //               selectedDate
+    //             ).toLocaleDateString()} - ${selectedTime} ${
+    //               specificTime ? `(${specificTime})` : ""
+    //             }`,
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // });
   }
   //  }
 };
