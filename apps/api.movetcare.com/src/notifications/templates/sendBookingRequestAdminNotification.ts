@@ -1,4 +1,4 @@
-import { throwError } from "../../config/config";
+import { admin, throwError } from "../../config/config";
 // import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
@@ -7,14 +7,18 @@ import { sendNotification } from "../sendNotification";
 const DEBUG = true;
 export const sendBookingRequestAdminNotification = async ({
   id,
-  bookingRef,
 }: {
   id: string;
-  bookingRef: any;
 }) => {
-  const { client }: any = await bookingRef
+  const { client }: any = await admin
+    .firestore()
+    .collection("bookings")
+    .doc(id)
     .get()
-    .then((doc: any) => doc.data())
+    .then((doc: any) => {
+      if (DEBUG) console.log("START bookingRef doc.data(): ", doc.data());
+      return doc.data();
+    })
     .catch((error: any) => throwError(error));
   const { email, displayName, phone, isExistingClient } = client;
   //if (!email?.toLowerCase()?.includes("+test")) {
@@ -28,9 +32,16 @@ export const sendBookingRequestAdminNotification = async ({
       location,
       address,
       selectedStaff,
-    }: any = await bookingRef
+    }: any = await admin
+      .firestore()
+      .collection("bookings")
+      .doc(id)
       .get()
-      .then((doc: any) => doc.data())
+      .then((doc: any) => {
+        if (DEBUG)
+          console.log("isExistingClient bookingRef doc.data(): ", doc.data());
+        return doc.data();
+      })
       .catch((error: any) => throwError(error));
     let allPatients = "";
     selectedPatients.forEach((selectedPatient: any) => {
@@ -242,16 +253,22 @@ export const sendBookingRequestAdminNotification = async ({
       selectedDate,
       selectedTime,
       specificTime,
-      id,
       firstName,
       lastName,
       email,
       phone,
       createdAt,
-    }: any = await bookingRef
+    }: any = await admin
+      .firestore()
+      .collection("bookings")
+      .doc(id)
       .get()
       .then((doc: any) => {
-        if (DEBUG) console.log("bookingRef doc.data(): ", doc.data());
+        if (DEBUG)
+          console.log(
+            "NOT isExistingClient bookingRef doc.data(): ",
+            doc.data()
+          );
         return doc.data();
       })
       .catch((error: any) => throwError(error));

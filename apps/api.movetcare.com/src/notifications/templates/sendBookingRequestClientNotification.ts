@@ -1,4 +1,4 @@
-import { throwError } from "../../config/config";
+import { admin, throwError } from "../../config/config";
 import { createProVetNote } from "../../integrations/provet/entities/note/createProVetNote";
 // import { formatDateToMMDDYY } from "../../utils/formatDateToMMDDYYY";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
@@ -7,10 +7,8 @@ import { sendNotification } from "../sendNotification";
 const DEBUG = true;
 export const sendBookingRequestClientNotification = async ({
   id,
-  bookingRef,
 }: {
   id: string;
-  bookingRef: any;
 }) => {
   const {
     client,
@@ -24,7 +22,10 @@ export const sendBookingRequestClientNotification = async ({
     illPatients,
     selectedStaff,
     selectedPatients,
-  }: any = await bookingRef
+  }: any = await admin
+    .firestore()
+    .collection("bookings")
+    .doc(id)
     .get()
     .then((doc: any) => doc.data())
     .catch((error: any) => throwError(error));
@@ -275,7 +276,10 @@ export const sendBookingRequestClientNotification = async ({
       firstName,
       lastName,
       phone,
-    }: any = await bookingRef
+    }: any = await admin
+      .firestore()
+      .collection("bookings")
+      .doc(id)
       .get()
       .then((doc: any) => doc.data())
       .catch((error: any) => throwError(error));
