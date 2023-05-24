@@ -275,7 +275,6 @@ export const sendBookingRequestClientNotification = async ({
       firstName,
       lastName,
       phone,
-      id,
     }: any = await bookingRef
       .get()
       .then((doc: any) => doc.data())
