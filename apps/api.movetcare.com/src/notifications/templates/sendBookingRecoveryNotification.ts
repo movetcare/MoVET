@@ -220,7 +220,7 @@ const sendAdminBookingRecoveryNotification = async (
       : ""
   }${selectedTime ? `<p><b>Requested Time:</b> ${selectedTime}</p>` : ""}${
       selectedTime === "Specific Time Preference" && specificTime !== ""
-        ? `<p><b>Specific Time Requested:</b> ${specificTime}</p>`
+        ? `<p><b>Specific Time Requested:</b> "${specificTime}"</p>`
         : ""
     }`;
     if (id && email)

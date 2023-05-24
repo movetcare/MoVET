@@ -308,10 +308,10 @@ export const deleteAllAccountData = async (
     payload: {
       message: `:red_circle: ALL MoVET Account & Data has been DELETED for Client #${uid} =>\n\`\`\`${JSON.stringify(
         {
-          clientIds,
-          patientIds,
-          appointmentIds,
-          customerId,
+          clientIds: clientIds || "None",
+          patientIds: patientIds || "None",
+          appointmentIds: appointmentIds || "None",
+          customerId: customerId || "None",
         }
       )}\`\`\``,
     },
