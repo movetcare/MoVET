@@ -272,6 +272,22 @@ export const sendBookingRequestAdminNotification = async ({
         return doc.data();
       })
       .catch((error: any) => throwError(error));
+    if (DEBUG)
+      console.log("NOT isExistingClient bookingRef vars: ", {
+        id,
+        locationType,
+        notes,
+        numberOfPets,
+        numberOfPetsWithMinorIllness,
+        selectedDate,
+        selectedTime,
+        specificTime,
+        firstName,
+        lastName,
+        email,
+        phone,
+        createdAt,
+      });
     const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
       ?.toDate()
       ?.toString()}</p>${

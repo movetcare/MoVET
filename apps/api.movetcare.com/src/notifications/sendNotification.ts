@@ -33,7 +33,7 @@ export const sendNotification = async ({
       console.log("sendSlackMessageToChannel message", message);
       console.log(
         "sendSlackMessageToChannel payload?.message",
-        payload?.message
+        JSON.stringify(payload?.message)
       );
     }
     const channelId: any = await findSlackChannel(
