@@ -81,7 +81,7 @@ const startNewSession = async ({
           isExistingClient: await admin
             .firestore()
             .collection("appointments")
-            .where("client", "==", authUser?.uid)
+            .where("client", "==", Number(authUser?.uid))
             .where("active", "==", 0)
             .get()
             .then((docs: any) => {

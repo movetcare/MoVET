@@ -3701,8 +3701,8 @@ packages:
     dependencies:
       once: 1.4.0
 
-  /enhanced-resolve@5.14.0:
-    resolution: {integrity: sha512-+DCows0XNwLDcUhbFJPdlQEVnT2zXlCv7hPxemTz86/O+B/hCQ+mb7ydkPKiflpVraqLPCAfu7lDy+hBXueojw==}
+  /enhanced-resolve@5.14.1:
+    resolution: {integrity: sha512-Vklwq2vDKtl0y/vtwjSesgJ5MYS7Etuk5txS8VdKL4AOS1aUlD96zqIfsOSLQsdv3xgMRbtkWM8eG9XDfKUPow==}
     engines: {node: '>=10.13.0'}
     dependencies:
       graceful-fs: 4.2.11
@@ -3915,7 +3915,7 @@ packages:
       eslint-plugin-import: '*'
     dependencies:
       debug: 4.3.4(supports-color@8.1.1)
-      enhanced-resolve: 5.14.0
+      enhanced-resolve: 5.14.1
       eslint: 8.41.0
       eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.59.7)(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5)(eslint@8.41.0)
       eslint-plugin-import: 2.27.5(@typescript-eslint/parser@5.59.7)(eslint-import-resolver-typescript@3.5.5)(eslint@8.41.0)
@@ -6494,7 +6494,7 @@ packages:
   /next-transpile-modules@10.0.0:
     resolution: {integrity: sha512-FyeJ++Lm2Fq31gbThiRCrJlYpIY9QaI7A3TjuhQLzOix8ChQrvn5ny4MhfIthS5cy6+uK1AhDRvxVdW17y3Xdw==}
     dependencies:
-      enhanced-resolve: 5.14.0
+      enhanced-resolve: 5.14.1
     dev: true
 
   /next@13.4.3(@babel/core@7.21.8)(react-dom@18.2.0)(react@18.2.0):
@@ -8467,8 +8467,8 @@ packages:
       prelude-ls: 1.2.1
     dev: true
 
-  /type-coverage-core@2.25.3(typescript@5.0.4):
-    resolution: {integrity: sha512-wQLM7p9GrDvybDXbfWHT/+bLyKzlh0eRVRovgr2zCQN5QGdVsnpA7HwoaivXLOxqMLC/241xMYDysdbVmbO3BQ==}
+  /type-coverage-core@2.26.0(typescript@5.0.4):
+    resolution: {integrity: sha512-/9VQ0ySU1CKbWd/BNnbVYMJ67oOt7qdXXxm4W5VIM07AUB5eelcDjrWG7qdIj0ZafnNkpv+v5qcD68ExOVK+Sw==}
     peerDependencies:
       typescript: 2 || 3 || 4 || 5
     dependencies:
@@ -8528,7 +8528,7 @@ packages:
       react-dom: 16.14.0(react@16.14.0)
       rimraf: 3.0.2
       semantic-ui-react: 0.88.2(react-dom@16.14.0)(react@16.14.0)
-      type-coverage-core: 2.25.3(typescript@5.0.4)
+      type-coverage-core: 2.26.0(typescript@5.0.4)
       typescript: 5.0.4
     dev: true
 
