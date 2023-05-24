@@ -26,7 +26,7 @@ export const handleBookingUpdate = functions.firestore
             );
           await removeBookingAbandonmentNotifications(id);
         }
-        if (step === "success" && isActive) await archiveBooking(id);
+        if (step === "success") await archiveBooking(id);
         else if (step === "restart" || step === "cancelled-client")
           await cancelBooking(id, data);
       } else if (DEBUG)

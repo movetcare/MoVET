@@ -6,7 +6,7 @@ export { resetTestData } from "./endpoints/development/resetTestData";
 
 export { taskRunner } from "./cron/taskRunner";
 export { refreshShifts } from "./cron/refreshShifts";
-export { refreshBreeds } from "./cron/refreshBreeds";
+// export { refreshBreeds } from "./cron/refreshBreeds";
 export { updateTelehealthChatStatusToOffline } from "./cron/updateTelehealthChatStatusToOffline";
 export { rebuildStaticSites as rebuildStaticWebsite } from "./cron/rebuildStaticSites";
 

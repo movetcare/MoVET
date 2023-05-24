@@ -250,7 +250,10 @@ export const sendBookingRequestAdminNotification = async ({
       createdAt,
     }: any = await bookingRef
       .get()
-      .then((doc: any) => doc.data())
+      .then((doc: any) => {
+        if (DEBUG) console.log("bookingRef doc.data(): ", doc.data());
+        return doc.data();
+      })
       .catch((error: any) => throwError(error));
     const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
       ?.toDate()
@@ -290,7 +293,7 @@ export const sendBookingRequestAdminNotification = async ({
         to: "info@movetcare.com",
         bcc: "alex.rodriguez@movetcare.com",
         replyTo: email,
-        subject: `MoVET | Appointment Request for ${
+        subject: `MoVET | Appointment Request from ${
           firstName && lastName ? firstName + " " + lastName : email
         }`,
         message,
@@ -333,7 +336,7 @@ export const sendBookingRequestAdminNotification = async ({
               },
               {
                 type: "plain_text",
-                text: notes.length > 0 ? notes : "None",
+                text: notes?.length > 0 ? notes : "None",
               },
               {
                 type: "mrkdwn",
