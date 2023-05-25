@@ -120,7 +120,12 @@ export const sendBookingRequestAdminNotification = async ({
     });
     const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
       ?.toDate()
-      ?.toString()}</p>${
+      ?.toLocaleString("en-US", {
+        timeZone: "America/Denver",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      })}</p>${
       displayName
         ? `<p><b>Client Name:</b> ${getClientFirstNameFromDisplayName(
             displayName
@@ -290,7 +295,12 @@ export const sendBookingRequestAdminNotification = async ({
       });
     const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
       ?.toDate()
-      ?.toString()}</p>${
+      ?.toLocaleString("en-US", {
+        timeZone: "America/Denver",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      })}</p>${
       firstName ? `<p><b>Client Name:</b> ${firstName} ${lastName}</p>` : ""
     }<p><b>Client Email:</b> ${email}</p>${
       phone

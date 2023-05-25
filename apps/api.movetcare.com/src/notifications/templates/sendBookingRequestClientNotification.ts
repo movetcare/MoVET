@@ -283,7 +283,7 @@ export const sendBookingRequestClientNotification = async ({
       .get()
       .then((doc: any) => doc.data())
       .catch((error: any) => throwError(error));
-    const message = `<p>Hi ${firstName},</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request below and let us know (by replying to this email) if anything needs to be changed.</p><p><b>---------- CONTACT INFO -----------</b></p>${
+    const message = `<p>Hi ${firstName},</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request below and let us know (by replying to this email) if anything needs to be changed.</p>${
       firstName && lastName
         ? `<p><b>Name:</b> ${firstName} ${lastName}</p>`
         : ""
@@ -322,7 +322,7 @@ export const sendBookingRequestClientNotification = async ({
         to: email,
         bcc: "alex.rodriguez@movetcare.com",
         replyTo: "info@movetcare.com",
-        subject: "We have received your appointment request!",
+        subject: "MoVET | We have received your appointment request!",
         message,
       },
     });
