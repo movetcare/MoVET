@@ -1,5 +1,5 @@
-import { slackClient, slackBotToken, DEBUG } from "../../config/config";
-
+import { slackClient, slackBotToken } from "../../config/config";
+const DEBUG = true;
 export const sendSlackMessage = (
   id: string,
   text: string | null,

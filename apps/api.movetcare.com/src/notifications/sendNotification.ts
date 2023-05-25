@@ -5,7 +5,6 @@ import {
   environment,
   throwError,
   request,
-  DEBUG,
 } from "../config/config";
 import { findSlackChannel } from "../utils/logging/findSlackChannel";
 import { sendSlackMessage } from "../utils/logging/sendSlackMessage";
@@ -15,7 +14,7 @@ import {
   UserNotificationSettings,
 } from "../utils/getClientNotificationSettings";
 import { fetchNewGoToAccessToken } from "../integrations/goto/fetchNewGoToAccessToken";
-
+const DEBUG = true;
 export const sendNotification = async ({
   type,
   payload,
