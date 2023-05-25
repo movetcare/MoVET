@@ -5,19 +5,14 @@ import {
   environment,
   defaultRuntimeOptions,
   admin,
-  DEBUG,
   throwError,
 } from "../../config/config";
-
+const DEBUG = true;
 export const webhookProxyDev: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
-  .https.onRequest(async (request: any, response: any) => {
-    if (
-      (environment.type === "staging" || environment.type === "development") &&
-      request.headers.host ===
-        "us-central1-movet-care-staging.cloudfunctions.net"
-    ) {
-      return await admin
+  .https.onRequest(
+    async (request: any, response: any) =>
+      await admin
         .firestore()
         .collection("configuration")
         .doc("development")
@@ -61,8 +56,6 @@ export const webhookProxyDev: Promise<Response> = functions
         })
         .catch((error: any) => {
           throwError(error);
-          return response.status(500).send();
-        });
-    }
-    return response.status(400).send();
-  });
+          return response.status(200).send();
+        })
+  );

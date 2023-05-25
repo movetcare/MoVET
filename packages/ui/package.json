@@ -32,7 +32,7 @@
     "types": "workspace:*",
     "typescript": "^5.0.4",
     "utilities": "workspace:*",
-    "yup": "^1.1.1"
+    "yup": "^1.2.0"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.7",

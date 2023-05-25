@@ -82,16 +82,14 @@ const startNewSession = async ({
             .firestore()
             .collection("appointments")
             .where("client", "==", Number(authUser?.uid))
-            .where("active", "==", 0)
+            .where("active", "==", 1)
+            .where("start", "<=", new Date())
             .get()
             .then((docs: any) => {
               if (DEBUG)
-                console.log("Closed Appointments - docs.size", docs.size);
-              if (docs.size > 0) {
-                return true;
-              } else {
-                return false;
-              }
+                console.log("Past Appointments - docs.size", docs.size);
+              if (docs.size > 0) return true;
+              else return false;
             })
             .catch((error: any) => {
               throwError(error);

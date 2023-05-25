@@ -107,7 +107,7 @@ export const sendBookingRequestClientNotification = async ({
           selectedStaff
             ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
             : ""
-        }<p></p><p>We look forward to seeing you soon!</p><p>- The MoVET Team</p>`;
+        }<p></p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
 
         return {
           subject: "We have received your appointment request!",
@@ -287,22 +287,20 @@ export const sendBookingRequestClientNotification = async ({
       firstName && lastName
         ? `<p><b>Name:</b> ${firstName} ${lastName}</p>`
         : ""
-    }<p><b>Client Email:</b> ${email}</p>${
+    }<p><b>Email:</b> ${email}</p>${
       phone
-        ? `<p><b>Client Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
+        ? `<p><b>Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
             phone?.replaceAll("+1", "")
           )}</a></p>`
         : ""
     }
-       <p><b>---------- PET INFO -----------</b></p>
     ${numberOfPets ? `<p><b>Number of Pets:</b> ${numberOfPets}</p>` : ""}
     ${
-      numberOfPetsWithMinorIllness
+      numberOfPetsWithMinorIllness && numberOfPetsWithMinorIllness > 0
         ? `<p><b>Pets w/ Minor Illness:</b> ${numberOfPetsWithMinorIllness}</p>`
         : ""
     }
     ${notes && notes !== "" ? `<p><b>Pet Notes:</b> ${notes}</p>` : ""}
-    <p><b>---------- REQUESTED LOCATION & TIME -----------</b></p>
     ${locationType ? `<p><b>Requested Location:</b> ${locationType}</p>` : ""}
   ${
     selectedDate
@@ -314,7 +312,7 @@ export const sendBookingRequestClientNotification = async ({
       selectedTime === "Specific Time Preference" && specificTime !== ""
         ? `<p><b>Specific Time Requested:</b> "${specificTime}</p>"`
         : ""
-    }`;
+    }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
     if (DEBUG)
       console.log("Sending CLIENT Appointment Request for New Client", message);
     sendNotification({
