@@ -187,7 +187,7 @@ export const sendBookingRequestAdminNotification = async ({
           {
             type: "section",
             text: {
-              text: `:exclamation: New Appointment Request - ${id} :exclamation:\n\n${id}`,
+              text: `:exclamation: New Appointment Request - ${id} :exclamation:`,
               type: "mrkdwn",
             },
             fields: [
@@ -340,7 +340,7 @@ export const sendBookingRequestAdminNotification = async ({
           {
             type: "section",
             text: {
-              text: `:exclamation: New Appointment Request - ${id} :exclamation:\n\n${id}`,
+              text: `:exclamation: New Appointment Request - ${id} :exclamation:`,
               type: "mrkdwn",
             },
             fields: [
@@ -361,7 +361,7 @@ export const sendBookingRequestAdminNotification = async ({
                 type: "plain_text",
                 text:
                   numberOfPets +
-                  ` pets (${numberOfPetsWithMinorIllness} w/ minor illness)`,
+                  ` Pet(s) (${numberOfPetsWithMinorIllness} w/ Minor Illness)`,
               },
               {
                 type: "mrkdwn",

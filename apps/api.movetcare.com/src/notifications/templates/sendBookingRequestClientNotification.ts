@@ -333,7 +333,7 @@ export const sendBookingRequestClientNotification = async ({
     //       {
     //         type: "section",
     //         text: {
-    //           text: `:exclamation: New Appointment Request - ${id} :exclamation:\n\n${id}`,
+    //           text: `:exclamation: New Appointment Request - ${id} :exclamation:`,
     //           type: "mrkdwn",
     //         },
     //         fields: [
