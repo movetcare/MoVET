@@ -48,7 +48,7 @@ export const sendNotification = async ({
       if (DEBUG)
         console.log(
           "sendNotification => SENDING SLACK MESSAGE AS A BLOCK",
-          payload?.message
+          JSON.stringify(payload?.message)
         );
       sendSlackMessage(channelId, null, payload?.message);
     } else if (payload?.message !== null && message === null) {

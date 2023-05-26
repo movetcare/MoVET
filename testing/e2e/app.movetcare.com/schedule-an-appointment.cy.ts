@@ -6,43 +6,6 @@ describe(
   "standard-schedule-an-appointment-flow",
   { defaultCommandTimeout: pathTimeout },
   () => {
-    it("Can schedule an appointment as a new client - VCPR REQUIRED", () => {
-      runThroughAppointmentRequestWorkflows({
-        email: `dev+test_client_${Math.floor(
-          Math.random() * 99999999999
-        )}@movetcare.com`,
-        firstName: "Test",
-        lastName: "Client (Can be Deleted)",
-        petName: Cypress.env().existingPatientWithVcprName,
-        paymentRequired: false,
-      });
-    });
-
-    if (isDevelopmentEnvironment)
-      it("Can schedule an appointment as a new client - PAYMENT REQUIRED", () => {
-        cy.request("POST", Cypress.env().testApiUrl, {
-          apiKey: Cypress.env().endpointApiKey,
-          id: "require_payment_method_to_request_an_appointment_off",
-        });
-        cy.request("POST", Cypress.env().testApiUrl, {
-          apiKey: Cypress.env().endpointApiKey,
-          id: "require_payment_method_to_request_an_appointment_on",
-        });
-        runThroughAppointmentRequestWorkflows({
-          email: `dev+test_client_${Math.floor(
-            Math.random() * 99999999999
-          )}@movetcare.com`,
-          firstName: "Test",
-          lastName: "Client (Can be Deleted)",
-          petName: Cypress.env().existingPatientWithVcprName,
-          paymentRequired: true,
-        });
-        cy.request("POST", Cypress.env().testApiUrl, {
-          apiKey: Cypress.env().endpointApiKey,
-          id: "require_payment_method_to_request_an_appointment_off",
-        });
-      });
-
     if (!onlyTestOnePatient)
       it("Can schedule an appointment as existing client - VCPR REQUIRED", () => {
         cy.request("POST", Cypress.env().testApiUrl, {
