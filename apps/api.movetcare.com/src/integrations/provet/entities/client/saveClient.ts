@@ -1,13 +1,13 @@
 import {
   admin,
-  DEBUG,
+  // DEBUG,
   // stripe,
   throwError,
 } from "../../../../config/config";
 import { createAuthClient } from "./createAuthClient";
 import { getAuthUserById } from "../../../../utils/auth/getAuthUserById";
 // import { updateStripeCustomer } from "../../../stripe/updateStripeCustomer";
-
+const DEBUG = true;
 export const saveClient = async (
   clientId: number | string,
   proVetClientData: any,

@@ -24,11 +24,9 @@ export const createAuthClient = (
     )
     .then(async (userRecord: any) => {
       if (DEBUG) console.log("Successfully Created New User:", userRecord);
-      const customClaims = {
-        onboardingComplete: false,
+      admin.auth().setCustomUserClaims(userRecord.uid, {
         isClient: true,
-      };
-      admin.auth().setCustomUserClaims(userRecord.uid, customClaims);
+      });
       if (DEBUG) {
         const user = await admin.auth().getUser(userRecord.uid);
         console.log("Custom claims added:", user);
@@ -47,7 +45,6 @@ export const createAuthClient = (
         if (DEBUG) console.log("ATTEMPTING TO SEND WELCOME EMAIL WITHOUT LINK");
         sendWelcomeEmail(proVetClientData?.email, false);
       }
-
       return await saveClient(
         proVetClientData?.id,
         proVetClientData,

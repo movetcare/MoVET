@@ -6,20 +6,19 @@ describe(
   "standard-schedule-an-appointment-flow",
   { defaultCommandTimeout: pathTimeout },
   () => {
-    if (!onlyTestOnePatient)
-      it("Can schedule an appointment as existing client - VCPR REQUIRED", () => {
-        cy.request("POST", Cypress.env().testApiUrl, {
-          apiKey: Cypress.env().endpointApiKey,
-          id: Cypress.env().existingClientNoPaymentId,
-        });
-        runThroughAppointmentRequestWorkflows({
-          email: Cypress.env().existingClientNoPaymentEmail,
-          firstName: "Test",
-          lastName: "Client (DO NOT DELETE!)",
-          petName: Cypress.env().existingPatientWithVcprName,
-          paymentRequired: false,
-        });
+    it("Can schedule an appointment as existing client - VCPR REQUIRED", () => {
+      cy.request("POST", Cypress.env().testApiUrl, {
+        apiKey: Cypress.env().endpointApiKey,
+        id: Cypress.env().existingClientNoPaymentId,
       });
+      runThroughAppointmentRequestWorkflows({
+        email: Cypress.env().existingClientNoPaymentEmail,
+        firstName: "Test",
+        lastName: "Client (DO NOT DELETE!)",
+        petName: Cypress.env().existingPatientWithVcprName,
+        paymentRequired: false,
+      });
+    });
 
     it("Can schedule an appointment as an existing client - VCPR NOT REQUIRED", () => {
       cy.request("POST", Cypress.env().testApiUrl, {
@@ -45,14 +44,14 @@ describe(
         );
       cy.get("label").contains("VCPR REQUIRED TEST CAT").click();
       cy.get("label").as("label").contains("NO VCPR TEST CAT").click();
-      Cypress.on("fail", () => false);
+      // Cypress.on("fail", () => false);
       cy.get("button[type='submit']").click();
       cy.location("pathname", { timeout: pathTimeout }).should(
         "eq",
         "/schedule-an-appointment/location-selection/"
       );
       cy.get("@heading").contains("Choose a Location");
-      Cypress.on("fail", () => true);
+      // Cypress.on("fail", () => true);
       cy.get("#restart").contains("Restart").click();
       cy.get("@heading").contains("Restart Appointment Booking?");
       cy.get("button").contains("CANCEL").click();
@@ -177,12 +176,12 @@ if (isDevelopmentEnvironment)
         cy.get("@heading").contains("Minor Illness Symptoms");
         cy.get("button").contains("CLOSE").click();
         cy.get("button").contains("Skip").click();
-        Cypress.on("fail", () => false);
+        // Cypress.on("fail", () => false);
         cy.location("pathname", { timeout: pathTimeout }).should(
           "eq",
           "/schedule-an-appointment/location-selection/"
         );
-        Cypress.on("fail", () => true);
+        // Cypress.on("fail", () => true);
         cy.get("@heading").contains("Choose a Location");
         cy.get("#restart").contains("Restart").click();
         cy.get("@heading").contains("Restart Appointment Booking?");

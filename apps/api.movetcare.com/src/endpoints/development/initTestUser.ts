@@ -2,7 +2,6 @@ import {
   functions,
   defaultRuntimeOptions,
   throwError,
-  DEBUG,
   stripe,
   admin,
 } from "./../../config/config";
@@ -13,7 +12,7 @@ import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
 import { savePatient } from "../../integrations/provet/entities/patient/savePatient";
 import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
-
+const DEBUG = true;
 export const initTestUser: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {
@@ -164,7 +163,8 @@ const importTestUser = async (
   } else {
     if (DEBUG)
       console.log(
-        `Test User Does NOT Exists, Creating New Auth User and Firestore Document for Client: ${proVetClientData.id}`
+        `Test User Does NOT Exists, Creating New Auth User and Firestore Document for Client: ${proVetClientData.id}`,
+        proVetClientData
       );
     didImportTestUser = await createAuthClient({
       ...proVetClientData,

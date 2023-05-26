@@ -35,13 +35,12 @@ const saveAppointments = async (
   let appointmentsConfigured = 0;
   return await Promise.all(
     appointments.map(async (appointment: Appointment) => {
-      if (new Date(appointment?.start) >= new Date()) {
-        await saveAppointment(appointment)
-          .then(() => {
-            appointmentsConfigured++;
-          })
-          .catch((error: any) => throwError(error));
-      }
+      //if (new Date(appointment?.start) >= new Date())
+      await saveAppointment(appointment)
+        .then(() => {
+          appointmentsConfigured++;
+        })
+        .catch((error: any) => throwError(error));
     })
   )
     .then(async () => {
