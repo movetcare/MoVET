@@ -1,4 +1,4 @@
-import { slackClient, slackBotToken } from "../../config/config";
+import { slackClient, slackBotToken, environment } from "../../config/config";
 const DEBUG = true;
 export const sendSlackMessage = (
   id: string,
@@ -12,20 +12,39 @@ export const sendSlackMessage = (
       blocks: JSON.stringify(blocks),
     });
   try {
-    slackClient.chat.postMessage(
-      blocks
-        ? {
-            token: slackBotToken,
-            channel: id,
-            text: text || "EMPTY",
-            blocks,
-          }
-        : {
-            token: slackBotToken,
-            channel: id,
-            text: text as string,
-          }
-    );
+    if (environment.type === "production")
+      slackClient.chat.postMessage(
+        blocks
+          ? {
+              token: slackBotToken,
+              channel: id,
+              text: text || "EMPTY",
+              blocks,
+            }
+          : {
+              token: slackBotToken,
+              channel: id,
+              text: text as string,
+            }
+      );
+    else
+      console.log(
+        "sendSlackMessage =>",
+        JSON.stringify(
+          blocks
+            ? {
+                token: slackBotToken,
+                channel: id,
+                text: text || "EMPTY",
+                blocks,
+              }
+            : {
+                token: slackBotToken,
+                channel: id,
+                text: text as string,
+              }
+        )
+      );
   } catch (error) {
     console.error(error);
   }
