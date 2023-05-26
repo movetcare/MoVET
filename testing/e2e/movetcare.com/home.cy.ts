@@ -1,10 +1,7 @@
 /* eslint-disable quotes */
 describe("home-page-loads", () => {
-  beforeEach(() => {
-    cy.visit(Cypress.env().websiteUrl);
-  });
-
   it("display home page hero elements", () => {
+    cy.visit(Cypress.env().websiteUrl);
     cy.get("h1").first().contains("Your neighborhood vet,");
     cy.get("h1").last().contains("Delivered");
     cy.get("p span")
@@ -17,6 +14,7 @@ describe("home-page-loads", () => {
   });
 
   it("display working mobile navigation", () => {
+    cy.visit(Cypress.env().websiteUrl);
     cy.get("#mobile-navigation").click();
     cy.get("#mobile-reviews").should("be.visible");
     cy.get("#mobile-services").should("be.visible");
@@ -29,10 +27,12 @@ describe("home-page-loads", () => {
 
   if (Cypress.env().environment === "development")
     it("display working announcement banner", () => {
+      cy.visit(Cypress.env().websiteUrl);
       cy.get('[aria-label="Announcement Link"] p').first().contains("Welcome!");
     });
 
   it("displays all primary content sections", () => {
+    cy.visit(Cypress.env().websiteUrl);
     cy.get("h2").contains("Moving Pet Care Forward");
     cy.get("h2").contains("Additional Amenities");
     cy.get("h2").contains("Our Services");
@@ -43,6 +43,7 @@ describe("home-page-loads", () => {
   });
 
   it("displays all footer links", () => {
+    cy.visit(Cypress.env().websiteUrl);
     cy.get("footer a p").as("footerLinks");
     cy.get("@footerLinks").contains("Privacy Policy");
     cy.get("@footerLinks").contains("Terms of Service");
@@ -51,6 +52,7 @@ describe("home-page-loads", () => {
   });
 
   it("can submit contact form", () => {
+    cy.visit(Cypress.env().websiteUrl);
     cy.get("#contact-form input[name='firstName']").type("CYPRESS");
     cy.get("#contact-form input[name='lastName']").type("TEST");
     cy.get("#contact-form input[name='email']").type(
