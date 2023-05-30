@@ -9,7 +9,7 @@ export type Appointment = {
   user: string;
   additional_users: Array<string>;
   resources: Array<string>;
-  client: string;
+  client: number;
   patients: Array<string>;
   consultation: string | null;
   related_appointments: string | null;

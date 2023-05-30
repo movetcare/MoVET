@@ -1,5 +1,6 @@
 import { DEBUG, throwError } from "../../../../../config/config";
 import type { Appointment } from "../../../../../types/appointment";
+import { getProVetIdFromUrl } from "../../../../../utils/getProVetIdFromUrl";
 import { fetchEntity } from "../../fetchEntity";
 import { saveAppointment } from "../saveAppointment";
 
@@ -35,12 +36,16 @@ const saveAppointments = async (
   let appointmentsConfigured = 0;
   return await Promise.all(
     appointments.map(async (appointment: Appointment) => {
-      //if (new Date(appointment?.start) >= new Date())
-      await saveAppointment(appointment)
-        .then(() => {
-          appointmentsConfigured++;
-        })
-        .catch((error: any) => throwError(error));
+      if (
+        new Date(appointment?.start) >= new Date() ||
+        getProVetIdFromUrl(String(appointment?.client)) === 6008 ||
+        getProVetIdFromUrl(String(appointment?.client)) === 5769
+      )
+        await saveAppointment(appointment)
+          .then(() => {
+            appointmentsConfigured++;
+          })
+          .catch((error: any) => throwError(error));
     })
   )
     .then(async () => {

@@ -39,7 +39,7 @@ export const saveAppointment = async (
     if (proVetAppointmentData?.end)
       data.end = new Date(proVetAppointmentData?.end);
     if (proVetAppointmentData?.client)
-      data.client = getProVetIdFromUrl(proVetAppointmentData?.client);
+      data.client = getProVetIdFromUrl(String(proVetAppointmentData?.client));
     if (proVetAppointmentData?.type) data.type = proVetAppointmentData?.type;
     if (proVetAppointmentData?.telemedicine_room)
       data.telehealthRoom = proVetAppointmentData?.telemedicine_room;

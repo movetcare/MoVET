@@ -27,24 +27,6 @@ export const sendSlackMessage = (
               text: text as string,
             }
       );
-    else
-      console.log(
-        "sendSlackMessage =>",
-        JSON.stringify(
-          blocks
-            ? {
-                token: slackBotToken,
-                channel: id,
-                text: text || "EMPTY",
-                blocks,
-              }
-            : {
-                token: slackBotToken,
-                channel: id,
-                text: text as string,
-              }
-        )
-      );
   } catch (error) {
     console.error(error);
   }

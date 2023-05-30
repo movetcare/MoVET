@@ -1,9 +1,15 @@
-import { slackClient, slackBotToken, throwError } from "../../config/config";
+import {
+  slackClient,
+  slackBotToken,
+  throwError,
+  environment,
+} from "../../config/config";
 
 export const findSlackChannel = async (
   name: string
 ): Promise<string | null> => {
   try {
+    if (environment?.type !== "production") return "SIMULATOR";
     const result = await slackClient.conversations.list({
       token: slackBotToken,
     });

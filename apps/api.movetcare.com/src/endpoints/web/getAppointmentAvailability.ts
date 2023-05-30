@@ -5,19 +5,17 @@ import {
   isAfter,
   isEqual,
 } from "date-fns/fp";
-
 import {
   admin,
   defaultRuntimeOptions,
   functions,
   throwError,
+  DEBUG,
 } from "../../config/config";
 import { formatTimeHoursToDate } from "../../utils/formatTimeHoursToDate";
 import { formatTimeHoursToString } from "../../utils/formatTimeHoursToString";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
-
-const DEBUG = true;
 
 interface Appointment {
   start: any;

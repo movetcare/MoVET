@@ -88,12 +88,12 @@ export const cancelBooking = (
     ${
       requestedDateTime?.date
         ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
-            requestedDateTime.date
+            requestedDateTime?.date
           )}</p>`
         : ""
     }${
             requestedDateTime?.time
-              ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
+              ? `<p><b>Requested Time:</b> ${requestedDateTime?.time}</p>`
               : ""
           }${
             location

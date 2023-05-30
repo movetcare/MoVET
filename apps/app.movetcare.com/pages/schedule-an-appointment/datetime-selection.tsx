@@ -3,45 +3,105 @@ import { useRouter } from "next/router";
 import { Error } from "components/Error";
 import { useEffect, useState } from "react";
 import { Button, Loader } from "ui";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
-import { Transition } from "@headlessui/react";
 import { BookingFooter } from "components/BookingFooter";
-import { TimeInput } from "components/inputs/TimeInput";
 import Calendar from "react-calendar";
-import { formatDateObjectPlusTimeStringIntoString } from "utilities";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { Transition } from "@headlessui/react";
 import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+
+const formatTime = (time: string): string => {
+  const hours =
+    time.toString().length === 3
+      ? `0${time}`.slice(0, 2)
+      : `${time}`.slice(0, 2);
+  const minutes =
+    time.toString().length === 3
+      ? `0${time}`.slice(2)
+      : `${time}`.slice(3)?.length === 1
+      ? "0" + `${time}`.slice(3)
+      : `${time}`.slice(3);
+  return new Date(
+    new Date().toLocaleString("en-US", {
+      timeZone: "America/Denver",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    }) +
+      " " +
+      [hours, ":", minutes].join("") +
+      ":00"
+  ).toLocaleString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+};
 
 export default function DateTime() {
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
+  const [session, setSession] = useState<any>();
+  const [selectedDate, onDateChange] = useState<Date>(today);
+  const [appointmentAvailability, setAppointmentAvailability] =
+    useState<Array<any> | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [closedReason, setClosedReason] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<null | { message: string }>(null);
   const router = useRouter();
   const { mode } = router.query || {};
   const isAppMode = mode === "app";
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<any>(null);
   const [loadingMessage, setLoadingMessage] = useState<string | null>(null);
-  const [selectedTime, onTimeChange] = useState<string | null>(null);
-  const [selectedDate, onDateChange] = useState<Date>(today);
   const { executeRecaptcha } = useGoogleReCaptcha();
   useEffect(() => {
-    if (window.localStorage.getItem("bookingSession") !== null && router) {
-      setIsLoading(false);
-    } else router.push("/schedule-an-appointment");
+    if (window.localStorage.getItem("bookingSession") !== null && router)
+      setSession(
+        JSON.parse(window.localStorage.getItem("bookingSession") as string)
+      );
+    else router.push("/schedule-an-appointment");
   }, [router]);
+  useEffect(() => {
+    const fetchAppointmentAvailability = async () => {
+      const { data: result }: any = await httpsCallable(
+        functions,
+        "getAppointmentAvailability"
+      )({
+        date: selectedDate,
+        schedule:
+          session?.location === "Home"
+            ? "housecall"
+            : session?.location === "Clinic"
+            ? "clinic"
+            : "virtual",
+        patients: session?.selectedPatients,
+      });
+      if (Array.isArray(result)) {
+        setAppointmentAvailability(result);
+        setClosedReason(null);
+      } else if (typeof result === "string") {
+        setAppointmentAvailability(null);
+        setClosedReason(result);
+      } else setError(result);
+      setIsLoading(false);
+    };
+    fetchAppointmentAvailability();
+  }, [selectedDate, session]);
+  useEffect(() => {
+    if (selectedDate) setSelectedTime(null);
+  }, [selectedDate]);
   const handleError = (error: any) => {
     console.error(error);
     setError(error);
     setIsLoading(false);
   };
-  const onSubmit = async (event: any) => {
-    event.preventDefault();
-    setIsLoading(true);
-    setLoadingMessage("Saving Date & Time...");
+  const onSubmit = async () => {
+    //setIsLoading(true);
+    //setLoadingMessage("Saving Date & Time Selection...");
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
       if (token) {
@@ -61,26 +121,27 @@ export default function DateTime() {
             device: navigator.userAgent,
             token,
           });
-          if (result?.error !== true || result?.error === undefined) {
-            setLoadingMessage("Almost finished...");
-            if (result?.client?.uid && result?.id) {
-              window.localStorage.setItem(
-                "bookingSession",
-                JSON.stringify(result)
-              );
-              const queryString = getUrlQueryStringFromObject(router.query);
-              if (result?.checkoutSession)
-                router.push(
-                  "/schedule-an-appointment/payment-confirmation" +
-                    (queryString ? queryString : "")
-                );
-              else if (result.step === "success")
-                router.push(
-                  "/schedule-an-appointment/success" +
-                    (queryString ? queryString : "")
-                );
-            } else handleError(result);
-          } else handleError(result);
+          console.log("result", result);
+          // if (result?.error !== true || result?.error === undefined) {
+          //   setLoadingMessage("Almost finished...");
+          //   if (result?.client?.uid && result?.id) {
+          //     window.localStorage.setItem(
+          //       "bookingSession",
+          //       JSON.stringify(result)
+          //     );
+          //     const queryString = getUrlQueryStringFromObject(router.query);
+          //     if (result?.checkoutSession)
+          //       router.push(
+          //         "/schedule-an-appointment/payment-confirmation" +
+          //           (queryString ? queryString : "")
+          //       );
+          //     else if (result.step === "success")
+          //       router.push(
+          //         "/schedule-an-appointment/success" +
+          //           (queryString ? queryString : "")
+          //       );
+          //   } else handleError(result);
+          // } else handleError(result);
         } catch (error) {
           handleError(error);
         }
@@ -96,164 +157,205 @@ export default function DateTime() {
         }`}
       >
         <div className={isAppMode ? "px-4 mb-8" : ""}>
-          <section className="relative mx-auto">
-            {isLoading ? (
-              <Loader
-                message={loadingMessage || "Loading, please wait..."}
+          <div className="relative mx-auto">
+            <>
+              <BookingHeader
                 isAppMode={isAppMode}
+                title="Choose a Day & Time"
+                description={
+                  "What day and time would you like to schedule an appointment for?"
+                }
               />
-            ) : error ? (
-              <Error error={error} isAppMode={isAppMode} />
-            ) : (
-              <>
-                <BookingHeader
-                  isAppMode={isAppMode}
-                  title="Request a Time"
-                  description={
-                    "What day and time would you like to request an appointment for?"
-                  }
+              <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
+                <Calendar
+                  onChange={(value: any) => {
+                    setIsLoading(true);
+                    onDateChange(value);
+                  }}
+                  value={selectedDate}
+                  minDate={today}
+                  minDetail="month"
+                  className="flex-1 justify-center items-center my-8 w-full mx-auto"
                 />
-                <form onSubmit={onSubmit}>
-                  <Calendar
-                    onChange={(value: any) => onDateChange(value)}
-                    value={selectedDate}
-                    minDate={today}
-                    minDetail="month"
-                    className="flex-1 justify-center items-center my-8 w-full mx-auto"
+                {isLoading ? (
+                  <Loader
+                    message={loadingMessage || "Loading, please wait..."}
+                    isAppMode={isAppMode}
                   />
-                  {JSON.parse(
-                    window.localStorage.getItem("bookingSession") as string
-                  )?.location === "Home" ? (
-                    <>
-                      <h2 className="text-center text-base mb-0">
-                        General Hours of Operation
-                      </h2>
-                      <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside mb-4 whitespace-nowrap font-normal text-sm">
-                        <div className="w-full">
-                          <div className="flex w-full">
-                            <span className="whitespace-nowrap">MON - FRI</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                          <div className="flex w-full">
-                            <span className="whitespace-nowrap">SAT & SUN</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                        </div>
-                        <div className="w-max whitespace-nowrap">
-                          <div>9 AM TO 5 PM</div>
-                          <div>CLOSED</div>
-                        </div>
+                ) : error ? (
+                  <Error error={error} isAppMode={isAppMode} />
+                ) : (
+                  <>
+                    <div className="w-full mx-auto">
+                      <p className="italic text-center -mt-2 font-extrabold text-lg">
+                        {closedReason
+                          ? closedReason
+                          : appointmentAvailability &&
+                            appointmentAvailability?.length > 0
+                          ? "Available Appointment Times"
+                          : "No Appointments Available - Please Select a Different Day..."}
+                      </p>
+                      <div className="flex flex-row w-full mx-auto">
+                        {appointmentAvailability &&
+                        appointmentAvailability.length < 6 ? (
+                          <ul className="w-full">
+                            {appointmentAvailability?.map(
+                              (
+                                appointmentSlot: {
+                                  start: string;
+                                  end: string;
+                                },
+                                index: number
+                              ) => (
+                                <li
+                                  key={index}
+                                  className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
+                                    selectedTime ===
+                                    `${formatTime(
+                                      appointmentSlot.start
+                                    )} - ${formatTime(appointmentSlot.end)}`
+                                      ? " bg-movet-red text-white border-movet-white"
+                                      : " bg-movet-gray/20"
+                                  }`}
+                                  onClick={() =>
+                                    setSelectedTime(
+                                      `${formatTime(
+                                        appointmentSlot.start
+                                      )} - ${formatTime(appointmentSlot.end)}`
+                                    )
+                                  }
+                                >
+                                  <p>
+                                    {formatTime(appointmentSlot.start)} -{" "}
+                                    {formatTime(appointmentSlot.end)}
+                                  </p>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        ) : (
+                          <>
+                            <ul className="w-1/2">
+                              {appointmentAvailability?.map(
+                                (
+                                  appointmentSlot: {
+                                    start: string;
+                                    end: string;
+                                  },
+                                  index: number
+                                ) =>
+                                  index <=
+                                  appointmentAvailability.length / 2 ? (
+                                    <li
+                                      key={index}
+                                      className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
+                                        selectedTime ===
+                                        `${formatTime(
+                                          appointmentSlot.start
+                                        )} - ${formatTime(appointmentSlot.end)}`
+                                          ? " bg-movet-red text-white border-movet-white"
+                                          : " bg-movet-gray/20"
+                                      }`}
+                                      onClick={() =>
+                                        setSelectedTime(
+                                          `${formatTime(
+                                            appointmentSlot.start
+                                          )} - ${formatTime(
+                                            appointmentSlot.end
+                                          )}`
+                                        )
+                                      }
+                                    >
+                                      <p>
+                                        {formatTime(appointmentSlot.start)} -{" "}
+                                        {formatTime(appointmentSlot.end)}
+                                      </p>
+                                    </li>
+                                  ) : null
+                              )}
+                            </ul>
+                            <ul className="w-1/2">
+                              {appointmentAvailability?.map(
+                                (
+                                  appointmentSlot: {
+                                    start: string;
+                                    end: string;
+                                  },
+                                  index: number
+                                ) =>
+                                  index >=
+                                  appointmentAvailability.length / 2 ? (
+                                    <li
+                                      key={index}
+                                      className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
+                                        selectedTime ===
+                                        `${formatTime(
+                                          appointmentSlot.start
+                                        )} - ${formatTime(appointmentSlot.end)}`
+                                          ? " bg-movet-red text-white border-movet-white"
+                                          : " bg-movet-gray/20"
+                                      }`}
+                                      onClick={() =>
+                                        setSelectedTime(
+                                          `${formatTime(
+                                            appointmentSlot.start
+                                          )} - ${formatTime(
+                                            appointmentSlot.end
+                                          )}`
+                                        )
+                                      }
+                                    >
+                                      <p>
+                                        {formatTime(appointmentSlot.start)} -{" "}
+                                        {formatTime(appointmentSlot.end)}
+                                      </p>
+                                    </li>
+                                  ) : null
+                              )}
+                            </ul>
+                          </>
+                        )}
                       </div>
-                      <h2 className="text-center text-base mb-0">
-                        Housecall Appointments
-                      </h2>
-                      <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside mb-4 whitespace-nowrap font-normal text-sm">
-                        <div className="w-full">
-                          <div className="flex w-full">
-                            <span className="whitespace-nowrap">MONDAY</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                          <div className="flex w-full">
-                            <span className="whitespace-nowrap">WEDNESDAY</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                          <div className="flex w-full">
-                            <span className="whitespace-nowrap">FRIDAY</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                        </div>
-                        <div className="w-max whitespace-nowrap">
-                          <div>MORNINGS</div>
-                          <div>AFTERNOONS</div>
-                          <div>MORNINGS</div>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <h2 className="text-center text-base mb-0">
-                        Hours of Operation
-                      </h2>
-                      <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside mb-4 whitespace-nowrap font-normal text-sm">
-                        <div className="w-full">
-                          <div className="flex w-full">
-                            <span className="whitespace-nowrap">MON - FRI</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                          <div className="flex w-full">
-                            <span className="whitespace-nowrap">SAT & SUN</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                        </div>
-                        <div className="w-max whitespace-nowrap">
-                          <div>9 AM TO 5 PM</div>
-                          <div>CLOSED</div>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  {/* <TimePicker
-              onChange={(value: any) => onTimeChange(value)}
-              value={selectedTime}
-              maxTime="16:00"
-              minTime="09:00"
-              disableClock
-              className="border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-xl pl-3 pr-3 py-3 text-left cursor-pointer sm:text-sm placeholder:text-gray font-abside-smooth"
-            /> */}
-                  <TimeInput
-                    onChange={onTimeChange}
-                    value={selectedTime}
-                    label="Enter a Time"
-                  />
-                  <p className="text-movet-black italic text-xs text-center">
-                    *Must be between 09:00 - 16:30
-                  </p>
-                  <Transition
-                    show={
-                      selectedDate !== null &&
-                      selectedTime !== null &&
-                      !selectedTime.includes("H") &&
-                      !selectedTime.includes("M")
-                    }
-                    enter="transition ease-in duration-500"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                  >
-                    <>
-                      <h2 className="text-base mt-8 text-center">
-                        REQUEST AN APPOINTMENT FOR
-                      </h2>
-                      {selectedDate && selectedTime && (
-                        <p className="text-center italic">
-                          {formatDateObjectPlusTimeStringIntoString(
-                            selectedDate,
-                            selectedTime
-                          )}
-                        </p>
-                      )}
-                    </>
-                  </Transition>
-                  <Button
-                    type="submit"
-                    icon={faArrowRight}
-                    disabled={
-                      selectedDate === null ||
-                      selectedTime === null ||
-                      selectedTime.includes("H") ||
-                      selectedTime.includes("M")
-                    }
-                    iconSize={"sm"}
-                    color="black"
-                    text="Continue"
-                    className="mt-8"
-                  />
-                </form>
-                <div className="mt-8">
-                  <BookingFooter />
-                </div>
-              </>
-            )}
-          </section>
+                      <Transition
+                        show={selectedTime === null ? false : true}
+                        enter="transition ease-in duration-500"
+                        leave="transition ease-out duration-500"
+                        leaveTo="opacity-10"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leaveFrom="opacity-100"
+                      >
+                        <>
+                          <p className="mt-6 text-center text-lg italic font-extrabold">
+                            Schedule Appointment For:
+                          </p>
+                          <p className="text-center italic -mt-2">
+                            {selectedDate.toLocaleString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "2-digit",
+                            })}{" "}
+                            - {selectedTime}
+                          </p>
+                        </>
+                      </Transition>
+                    </div>
+                    <Button
+                      text="Continue"
+                      disabled={!selectedTime || !selectedDate}
+                      className="mt-8"
+                      icon={faArrowRight}
+                      color="black"
+                      onClick={() => onSubmit()}
+                    />
+                  </>
+                )}
+              </div>
+              <div className="mt-8">
+                <BookingFooter />
+              </div>
+            </>
+          </div>
         </div>
       </div>
     </section>

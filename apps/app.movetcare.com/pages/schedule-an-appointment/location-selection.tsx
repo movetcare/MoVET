@@ -181,7 +181,7 @@ export default function LocationSelection({
       // if (isLoaded) setIsLoading(false);
       // else if (!isLoaded && !isLoading) setIsLoading(true);
     } else router.push("/schedule-an-appointment");
-  }, [router, isLoading]);
+  }, [router]);
   const handleError = (error: any) => {
     console.error(error);
     setError(error);

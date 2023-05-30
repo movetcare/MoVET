@@ -1,16 +1,11 @@
-import {
-  admin,
-  environment,
-  stripe,
-  throwError,
-  DEBUG,
-} from "../../config/config";
+import { admin, environment, stripe, throwError } from "../../config/config";
+import { createProVetAppointment } from "../../integrations/provet/entities/appointment/createProVetAppointment";
 import { sendNotification } from "../../notifications/sendNotification";
 import type { BookingError, Booking } from "../../types/booking";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 import { handleFailedBooking } from "./handleFailedBooking";
-
+const DEBUG = true;
 export const processDateTime = async (
   id: string,
   requestedDateTime: { date: string; time: string }
@@ -74,37 +69,6 @@ export const processDateTime = async (
             })
           : null;
       if (DEBUG) console.log("STRIPE CHECKOUT SESSION", checkoutSession);
-      await bookingRef
-        .set(
-          {
-            requestedDateTime,
-            checkoutSession: checkoutSession ? checkoutSession?.url : null,
-            step: checkoutSession
-              ? ("datetime-selection" as Booking["step"])
-              : "success",
-            updatedOn: new Date(),
-          },
-          { merge: true }
-        )
-        .catch(async (error: any) => {
-          throwError(error);
-          return await handleFailedBooking(error, "UPDATE DATE TIME FAILED");
-        });
-    } else {
-      await bookingRef
-        .set(
-          {
-            requestedDateTime,
-            checkoutSession: null,
-            step: "success",
-            updatedOn: new Date(),
-          },
-          { merge: true }
-        )
-        .catch(async (error: any) => {
-          throwError(error);
-          return await handleFailedBooking(error, "UPDATE DATE TIME FAILED");
-        });
     }
     if (session && customer) {
       sendNotification({
@@ -167,13 +131,38 @@ export const processDateTime = async (
           ],
         },
       });
+      const scheduleAppointment = async () => {
+        if (DEBUG)
+          console.log("Appointment Data to Format", {
+            client: session?.client?.uid,
+            time: requestedDateTime?.time,
+            date: requestedDateTime?.date,
+            locationType: session?.location,
+            address: session?.address?.full,
+            patientSelection: session?.selectedPatients,
+            totalPatients: session?.selectedPatients?.length,
+          });
+        const { proVetData, movetData }: any = formatAppointmentData({
+          client: session?.client?.uid,
+          time: requestedDateTime?.time,
+          date: requestedDateTime?.date,
+          locationType: session?.location,
+          address: session?.address?.full,
+          patientSelection: session?.selectedPatients,
+          totalPatients: session?.selectedPatients?.length,
+        });
+        console.log("{ proVetData, movetData }", { proVetData, movetData });
+        return (await createProVetAppointment(proVetData, movetData))
+          ? "success"
+          : "datetime-selection";
+      };
       return {
         ...session,
         requestedDateTime,
         checkoutSession: checkoutSession ? checkoutSession?.url : null,
         step: checkoutSession
           ? ("datetime-selection" as Booking["step"])
-          : "success",
+          : await scheduleAppointment(),
         id,
         client: {
           uid: session?.client?.uid,
@@ -190,4 +179,151 @@ export const processDateTime = async (
       { id, requestedDateTime },
       "FAILED TO HANDLE LOCATION"
     );
+};
+
+const convertTime12to24 = (time12h: string): string => {
+  const [time, modifier] = time12h.split(" ");
+  if (DEBUG) {
+    console.log("time", time);
+    console.log("modifier", modifier);
+  }
+  const fixedTime = time?.toString()?.length === 3 ? `0${time}` : `${time}`;
+  const [hours, minutes, seconds] = fixedTime.split(":");
+  let finalHours = String(Number(hours) + 6);
+
+  if (DEBUG) {
+    console.log("hours", hours);
+    console.log("minutes", minutes);
+    console.log("seconds", seconds);
+  }
+
+  if (finalHours === "12") finalHours = "00";
+
+  if (modifier === "PM") {
+    if (DEBUG) console.log("PM DETECTED");
+    const hoursInt = parseInt(finalHours, 10) + 12;
+    finalHours = hoursInt.toString();
+  } else {
+    if (DEBUG) console.log("AM DETECTED");
+    if (parseInt(finalHours, 10) < 10) {
+      finalHours = "0" + finalHours;
+    }
+  }
+
+  if (DEBUG) {
+    console.log("finalHours", finalHours);
+    console.log(
+      "result",
+      `${finalHours}:${minutes}:${seconds ? seconds : "00"}`
+    );
+  }
+  return `${finalHours}:${minutes}:${seconds ? seconds : "00"}`;
+};
+
+const formatToProVetTimestamp = (date: Date) => {
+  const tzo = -date.getTimezoneOffset(),
+    dif = tzo >= 0 ? "+" : "-",
+    pad = (num: number) => {
+      const norm = Math.floor(Math.abs(num));
+      return (norm < 10 ? "0" : "") + norm;
+    };
+
+  return (
+    date.getFullYear() +
+    "-" +
+    pad(date.getMonth() + 1) +
+    "-" +
+    pad(date.getDate()) +
+    "T" +
+    pad(date.getHours()) +
+    ":" +
+    pad(date.getMinutes()) +
+    ":" +
+    pad(date.getSeconds()) +
+    dif +
+    pad(tzo / 60) +
+    ":" +
+    pad(tzo % 60)
+  );
+};
+
+const formatAppointmentData = (appointment: any) => {
+  //const complaintObject: any = [];
+  const time = appointment?.time.split("-");
+  const date = appointment.date.substring(0, appointment.date.indexOf("T"));
+  if (DEBUG) {
+    console.log(
+      "date + T + convertTime12to24(time[0].trim())",
+      date + "T" + convertTime12to24(time[0].trim())
+    );
+    console.log(
+      "date + T + convertTime12to24(time[1].trim())",
+      date + "T" + convertTime12to24(time[1].trim())
+    );
+  }
+  const start = new Date(date + "T" + convertTime12to24(time[0].trim()));
+  const end = new Date(date + "T" + convertTime12to24(time[1].trim()));
+  const duration = end.valueOf() - start.valueOf();
+  if (DEBUG) {
+    console.log("TIME", time);
+    console.log("START", start);
+    console.log("END", end);
+    console.log("DURATION", duration);
+  }
+  const notes =
+    appointment?.locationType === "housecall"
+      ? `Appointment Location: ${appointment?.locationType} - ${appointment?.address}`
+      : `Appointment Location: ${appointment?.locationType}`;
+
+  // appointment.patientSelection.forEach((patient: any, index: number) => {
+  //   delete appointment.patientSelection[index].selected;
+  //   patients.push(`${patient.id}`);
+  //   if (patient.minorIllness) {
+  //     complaintObject.push({
+  //       id: parseInt(patient?.id),
+  //       minorIllness: patient?.minorIllness,
+  //       other: patient?.other,
+  //     });
+  //     notes += ` Patient: ${patient.name} \nSymptom: ${patient?.minorIllness}\nDetails: ${patient.other}\n\n`;
+  //   }
+  // });
+  // const complaint =
+  //   complaintObject.length > 0
+  //     ? JSON.stringify(complaintObject).length > 255
+  //       ? "Unknown - Too Many Patients"
+  //       : JSON.stringify(complaintObject)
+  //     : "No Symptoms of Illness";
+  return {
+    proVetData: {
+      client: appointment?.client,
+      user:
+        appointment?.locationType === "Clinic"
+          ? 7
+          : appointment?.locationType === "Housecall"
+          ? 8
+          : 9,
+      title: `${
+        appointment?.locationType === "Housecall"
+          ? "Housecall Appointment"
+          : appointment?.locationType === "Virtual"
+          ? "Virtual Telehealth Consultation"
+          : "Clinic"
+      } Appointment (${
+        appointment.totalPatients === 1
+          ? "1 Patient"
+          : appointment.totalPatients + "Patients"
+      })`,
+      start: formatToProVetTimestamp(start),
+      end: formatToProVetTimestamp(end),
+      complaint: "Unknown",
+      notes,
+      patients: appointment.patientSelection,
+      duration,
+    },
+    movetData: {
+      locationType: appointment?.locationType,
+      address: appointment?.address,
+      patients: appointment.patientSelection,
+    },
+  };
 };
