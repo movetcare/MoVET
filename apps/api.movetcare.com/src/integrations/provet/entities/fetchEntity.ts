@@ -47,7 +47,7 @@ export const fetchEntity = async (
     const allResults: Array<any> = [];
     const queryUrls: Array<string> = [];
 
-    for (let i = 0; i < initialQuery?.results.length; i++) {
+    for (let i = 0; i < initialQuery?.results?.length; i++) {
       allResults.push(initialQuery?.results[i]);
       resultsAdded++;
     }

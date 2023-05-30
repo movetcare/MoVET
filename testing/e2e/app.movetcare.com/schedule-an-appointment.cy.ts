@@ -6,7 +6,7 @@ describe(
   "standard-schedule-an-appointment-flow",
   { defaultCommandTimeout: pathTimeout },
   () => {
-    it("Can schedule an appointment as existing client - VCPR REQUIRED", () => {
+    it.only("Can schedule an appointment as existing client - VCPR REQUIRED", () => {
       cy.request("POST", Cypress.env().testApiUrl, {
         apiKey: Cypress.env().endpointApiKey,
         id: Cypress.env().existingClientNoPaymentId,
