@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.2.5",
-    "concurrently": "^8.0.1",
+    "concurrently": "^8.1.0",
     "cypress": "^12.13.0",
     "cypress-fail-fast": "^7.0.1",
     "eslint-config-custom": "workspace:*",
@@ -57,7 +57,7 @@
     "lint-staged": "^13.2.2",
     "prettier": "^2.8.8",
     "start-server-and-test": "^2.0.0",
-    "turbo": "^1.9.9",
+    "turbo": "^1.10.1",
     "typescript": "^5.0.4",
     "typescript-coverage-report": "^0.7.0",
     "x2js": "^3.4.4"
