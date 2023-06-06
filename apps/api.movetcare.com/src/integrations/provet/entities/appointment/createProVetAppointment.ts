@@ -16,63 +16,100 @@ export const createProVetAppointment = async (
       end,
       title,
       complaint,
+      reason,
       duration,
       notes,
       patients,
       user,
+      resources,
     } = proVetData;
     if (DEBUG)
       console.log("API REQUEST PAYLOAD ->", {
         client: `${proVetApiUrl}/client/${client}/`,
         user: `${proVetApiUrl}/user/${user}/`,
-        start,
-        end,
-        title,
-        complaint,
-        duration,
-        notes,
-        active: 1,
-        type: 1,
-        patients: patients.map(
-          (patient: any) => `${proVetApiUrl}/patient/${patient}/`
-        ),
-        department: `${proVetApiUrl}/department/${
-          2
-          // environment?.type === 'production' ? '2' : '1'
-        }/`,
-      });
-    const appointmentData = await request
-      .post("/appointment/", {
-        client: `${proVetApiUrl}/client/${client}/`, // Required by PROVET API
-        user: `${proVetApiUrl}/user/${user}/`, // Required by PROVET API
         start, // Required by PROVET API
         end, // Required by PROVET API
         title, // Required by PROVET API
-        complaint, // Required by PROVET API
-        // reason: complaint,
+        complaint: complaint?.substring(0, 254),
+        reason: `${proVetApiUrl}/reason/${reason}/`,
+        resources: resources.map(
+          (resource: any) => `${proVetApiUrl}/resource/${resource}/`
+        ),
         duration,
         notes,
         active: 1,
-        type: 2,
+        type: 2, // Required by PROVET API
         patients: patients.map(
           (patient: any) => `${proVetApiUrl}/patient/${patient}/`
         ),
         department: `${proVetApiUrl}/department/${
           2
           // environment?.type === 'production' ? '2' : '1'
-        }/`,
-      })
+        }/`, // Required by PROVET API
+      });
+    const appointmentData = await request
+      .post(
+        "/appointment/",
+        reason !== null && reason !== undefined
+          ? {
+              client: `${proVetApiUrl}/client/${client}/`,
+              user: `${proVetApiUrl}/user/${user}/`,
+              start, // Required by PROVET API
+              end, // Required by PROVET API
+              title, // Required by PROVET API
+              complaint: complaint?.substring(0, 254),
+              reason: `${proVetApiUrl}/reason/${reason}/`,
+              resources: resources.map(
+                (resource: any) => `${proVetApiUrl}/resource/${resource}/`
+              ),
+              duration,
+              notes,
+              active: 1,
+              type: 2, // Required by PROVET API
+              patients: patients.map(
+                (patient: any) => `${proVetApiUrl}/patient/${patient}/`
+              ),
+              department: `${proVetApiUrl}/department/${
+                2
+                // environment?.type === 'production' ? '2' : '1'
+              }/`, // Required by PROVET API
+            }
+          : {
+              client: `${proVetApiUrl}/client/${client}/`,
+              user: `${proVetApiUrl}/user/${user}/`,
+              start, // Required by PROVET API
+              end, // Required by PROVET API
+              title, // Required by PROVET API
+              complaint: complaint?.substring(0, 254),
+              duration,
+              notes,
+              active: 1,
+              type: 2, // Required by PROVET API
+              patients: patients.map(
+                (patient: any) => `${proVetApiUrl}/patient/${patient}/`
+              ),
+              department: `${proVetApiUrl}/department/${
+                2
+                // environment?.type === 'production' ? '2' : '1'
+              }/`, // Required by PROVET API
+            }
+      )
       .then(async (response: any) => {
         const { data } = response;
         if (DEBUG) console.log("API Response: POST /appointment/ => ", data);
         return data;
       })
       .catch((error: any) => {
-        if (DEBUG)
+        if (DEBUG) {
+          console.log(
+            "API Response ERROR: POST /appointment/ => ",
+            JSON.stringify(error?.response?.data)
+          );
           console.log(
             "error?.response?.data?.non_field_errors",
             error?.response?.data?.non_field_errors
           );
+        }
         if (
           error?.response?.data?.non_field_errors[0]?.includes(
             "already an appointment for this time slot"

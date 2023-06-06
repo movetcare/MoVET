@@ -163,7 +163,7 @@ export const SchedulePreview = ({
                         appointmentSlot: { start: string; end: string },
                         index: number
                       ) =>
-                        index <= appointmentAvailability.length / 2 ? (
+                        index <= appointmentAvailability.length / 2 - 1 ? (
                           <li
                             key={index}
                             className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${

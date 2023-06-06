@@ -712,6 +712,7 @@ const calculateAvailableAppointments = async ({
     )
       availableAppointmentSlots.push({
         name: i,
+        resource: resource?.id,
         start: formatTimeHoursToString(nextAppointmentStartTime),
         end: getTimeHoursFromDate(
           addMinutes(

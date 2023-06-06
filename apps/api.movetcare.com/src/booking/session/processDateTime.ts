@@ -8,7 +8,7 @@ import { handleFailedBooking } from "./handleFailedBooking";
 const DEBUG = true;
 export const processDateTime = async (
   id: string,
-  requestedDateTime: { date: string; time: string }
+  requestedDateTime: { resource: number; date: string; time: string }
 ): Promise<Booking | BookingError> => {
   if (DEBUG) console.log("DATE TIME DATA", requestedDateTime);
   if (requestedDateTime && id) {
@@ -137,21 +137,26 @@ export const processDateTime = async (
             client: session?.client?.uid,
             time: requestedDateTime?.time,
             date: requestedDateTime?.date,
+            resource: requestedDateTime?.resource,
             locationType: session?.location,
             address: session?.address?.full,
+            patients: session?.patients,
             patientSelection: session?.selectedPatients,
+            establishCareExamRequired: session?.establishCareExamRequired,
             totalPatients: session?.selectedPatients?.length,
           });
-        const { proVetData, movetData }: any = formatAppointmentData({
+        const { proVetData, movetData }: any = await formatAppointmentData({
           client: session?.client?.uid,
           time: requestedDateTime?.time,
           date: requestedDateTime?.date,
+          resource: requestedDateTime?.resource,
           locationType: session?.location,
           address: session?.address?.full,
+          patients: session?.patients,
           patientSelection: session?.selectedPatients,
+          establishCareExamRequired: session?.establishCareExamRequired,
           totalPatients: session?.selectedPatients?.length,
         });
-        console.log("{ proVetData, movetData }", { proVetData, movetData });
         return (await createProVetAppointment(proVetData, movetData))
           ? "success"
           : "datetime-selection";
@@ -247,8 +252,8 @@ const formatToProVetTimestamp = (date: Date) => {
   );
 };
 
-const formatAppointmentData = (appointment: any) => {
-  //const complaintObject: any = [];
+const formatAppointmentData = async (appointment: any) => {
+  const complaintObject: any = [];
   const time = appointment?.time.split("-");
   const date = appointment.date.substring(0, appointment.date.indexOf("T"));
   if (DEBUG) {
@@ -270,29 +275,55 @@ const formatAppointmentData = (appointment: any) => {
     console.log("END", end);
     console.log("DURATION", duration);
   }
-  const notes =
-    appointment?.locationType === "housecall"
+  let notes =
+    appointment?.locationType === "Housecall"
       ? `Appointment Location: ${appointment?.locationType} - ${appointment?.address}`
       : `Appointment Location: ${appointment?.locationType}`;
 
-  // appointment.patientSelection.forEach((patient: any, index: number) => {
-  //   delete appointment.patientSelection[index].selected;
-  //   patients.push(`${patient.id}`);
-  //   if (patient.minorIllness) {
-  //     complaintObject.push({
-  //       id: parseInt(patient?.id),
-  //       minorIllness: patient?.minorIllness,
-  //       other: patient?.other,
-  //     });
-  //     notes += ` Patient: ${patient.name} \nSymptom: ${patient?.minorIllness}\nDetails: ${patient.other}\n\n`;
-  //   }
-  // });
-  // const complaint =
-  //   complaintObject.length > 0
-  //     ? JSON.stringify(complaintObject).length > 255
-  //       ? "Unknown - Too Many Patients"
-  //       : JSON.stringify(complaintObject)
-  //     : "No Symptoms of Illness";
+  appointment?.patients?.forEach((patient: any) => {
+    appointment?.patientSelection?.forEach((selectedPatient: any) => {
+      if (DEBUG) {
+        console.log("NOTES");
+        console.log("patient?.id ", patient?.id);
+        console.log("selectedPatient?.id ", selectedPatient);
+        console.log("patient?.illnessDetails ", patient?.illnessDetails);
+      }
+      if (patient?.id === selectedPatient && patient?.illnessDetails) {
+        complaintObject.push({
+          patient: patient?.name,
+          symptom: JSON.stringify(patient?.illnessDetails?.symptoms),
+          notes: patient?.illnessDetails?.notes,
+        });
+        notes += `| Patient: ${patient?.name} \n | Symptom(s): ${JSON.stringify(
+          patient?.illnessDetails?.symptoms
+        )}\n | Details: ${JSON.stringify(patient?.illnessDetails?.notes)}\n\n`;
+      }
+    });
+  });
+  const defaultBookingReasons = await admin
+    .firestore()
+    .collection("configuration")
+    .doc("bookings")
+    .get()
+    .then((doc: any) => doc.data())
+    .catch(async (error: any) => {
+      throwError(error);
+      return await handleFailedBooking(error, "GET DEFAULT REASONS FAILED");
+    });
+
+  const complaint =
+    complaintObject.length > 0
+      ? JSON.stringify(complaintObject).length > 255
+        ? "Unknown - Too Many Patients"
+        : JSON.stringify(complaintObject)
+      : appointment?.establishCareExamRequired
+      ? appointment?.locationType === "Housecall"
+        ? defaultBookingReasons?.housecallStandardVcprReason?.label
+        : appointment?.locationType === "Clinic"
+        ? defaultBookingReasons?.clinicStandardVcprReason?.label
+        : defaultBookingReasons?.virtualStandardVcprReason?.label
+      : "No Symptoms of Illness"; // TODO:// get reason name from list of reasons
+
   return {
     proVetData: {
       client: appointment?.client,
@@ -311,11 +342,19 @@ const formatAppointmentData = (appointment: any) => {
       } Appointment (${
         appointment.totalPatients === 1
           ? "1 Patient"
-          : appointment.totalPatients + "Patients"
+          : appointment.totalPatients + " Patients"
       })`,
       start: formatToProVetTimestamp(start),
       end: formatToProVetTimestamp(end),
-      complaint: "Unknown",
+      complaint,
+      reason: appointment?.establishCareExamRequired
+        ? appointment?.locationType === "Housecall"
+          ? defaultBookingReasons?.housecallStandardVcprReason?.value
+          : appointment?.locationType === "Clinic"
+          ? defaultBookingReasons?.clinicStandardVcprReason?.value
+          : defaultBookingReasons?.virtualStandardVcprReason?.value
+        : null,
+      resources: [appointment?.resource],
       notes,
       patients: appointment.patientSelection,
       duration,
