@@ -165,61 +165,63 @@ export default function IllnessSelection() {
                     pet?.gender?.includes("Female") ? "she" : "he"
                   } experiencing?`}
                 />
-                <legend className="mt-4 text-xl font-medium mb-2 w-full text-center">
-                  Symptoms
-                </legend>
-                {symptoms.map((symptom: any, index: number) => (
-                  <div
-                    key={index}
-                    className={
-                      index === symptoms.length - 1
-                        ? "w-full"
-                        : "w-full border-b border-movet-gray divide-y divide-movet-gray"
-                    }
-                  >
-                    <label
-                      htmlFor={`${symptom?.name}`}
-                      className="text-base select-none font-source-sans-pro flex flex-row items-center py-2 w-full"
+                <div className="w-full px-4">
+                  <legend className="mt-4 text-xl font-medium mb-2 w-full text-center">
+                    Symptoms
+                  </legend>
+                  {symptoms.map((symptom: any, index: number) => (
+                    <div
+                      key={index}
+                      className={
+                        index === symptoms.length - 1
+                          ? "w-full"
+                          : "w-full border-b border-movet-gray divide-y divide-movet-gray"
+                      }
                     >
-                      <p>{symptom?.name}</p>
-                      <span className="text-xs italic text-movet-red ml-2 text-center grow"></span>
-                      <div className="ml-3 flex items-center h-5 flex-none">
-                        <input
-                          id={`${symptom?.name}`}
-                          {...register("symptoms")}
-                          value={`${symptom?.name}`}
-                          type="checkbox"
-                          className="focus:ring-movet-brown h-6 w-6 text-movet-brown border-movet-gray rounded-full ease-in-out duration-500"
-                        />
-                      </div>
-                    </label>
+                      <label
+                        htmlFor={`${symptom?.name}`}
+                        className="text-base select-none font-source-sans-pro flex flex-row items-center py-2 w-full"
+                      >
+                        <p>{symptom?.name}</p>
+                        <span className="text-xs italic text-movet-red ml-2 text-center grow"></span>
+                        <div className="ml-3 flex items-center h-5 flex-none">
+                          <input
+                            id={`${symptom?.name}`}
+                            {...register("symptoms")}
+                            value={`${symptom?.name}`}
+                            type="checkbox"
+                            className="focus:ring-movet-brown h-6 w-6 text-movet-brown border-movet-gray rounded-full ease-in-out duration-500"
+                          />
+                        </div>
+                      </label>
+                    </div>
+                  ))}
+                  <ErrorMessage
+                    errorMessage={errors?.symptoms?.message as string}
+                  />
+                  <div className="mt-4">
+                    <TextInput
+                      label="Tell Us More"
+                      control={control}
+                      errors={errors}
+                      required
+                      name="details"
+                      multiline
+                      numberOfLines={3}
+                      placeholder="Please provide as much detail as possible"
+                    />
                   </div>
-                ))}
-                <ErrorMessage
-                  errorMessage={errors?.symptoms?.message as string}
-                />
-                <div className="mt-4">
-                  <TextInput
-                    label="Tell Us More"
-                    control={control}
-                    errors={errors}
-                    required
-                    name="details"
-                    multiline
-                    numberOfLines={3}
-                    placeholder="Please provide as much detail as possible"
-                  />
-                </div>
-                <div className="flex flex-col justify-center items-center mt-8 mb-4">
-                  <Button
-                    type="submit"
-                    icon={faArrowRight}
-                    disabled={!isDirty}
-                    iconSize={"sm"}
-                    color="black"
-                    text="Continue"
-                    onClick={handleSubmit(onSubmit)}
-                  />
+                  <div className="flex flex-col justify-center items-center mt-8 mb-4">
+                    <Button
+                      type="submit"
+                      icon={faArrowRight}
+                      disabled={!isDirty}
+                      iconSize={"sm"}
+                      color="black"
+                      text="Continue"
+                      onClick={handleSubmit(onSubmit)}
+                    />
+                  </div>
                 </div>
                 <BookingFooter />
               </>

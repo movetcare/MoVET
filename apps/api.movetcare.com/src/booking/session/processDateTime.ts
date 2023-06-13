@@ -157,18 +157,20 @@ export const processDateTime = async (
           establishCareExamRequired: session?.establishCareExamRequired,
           totalPatients: session?.selectedPatients?.length,
         });
-        return (await createProVetAppointment(proVetData, movetData))
-          ? "success"
-          : "datetime-selection";
+        return await createProVetAppointment(proVetData, movetData);
       };
+      const appointmentStatus = await scheduleAppointment();
       return {
         ...session,
         requestedDateTime,
         checkoutSession: checkoutSession ? checkoutSession?.url : null,
         step: checkoutSession
           ? ("datetime-selection" as Booking["step"])
-          : await scheduleAppointment(),
+          : appointmentStatus === "ALREADY_BOOKED"
+          ? "datetime-selection"
+          : "success",
         id,
+        needsRetry: appointmentStatus === "ALREADY_BOOKED",
         client: {
           uid: session?.client?.uid,
           requiresInfo: session?.client?.requiresInfo,
@@ -194,9 +196,10 @@ const convertTime12to24 = (time12h: string): string => {
   }
   const fixedTime = time?.toString()?.length === 3 ? `0${time}` : `${time}`;
   const [hours, minutes, seconds] = fixedTime.split(":");
-  let finalHours = String(Number(hours) + 6);
+  let finalHours = hours; //String(Number(hours) + 6);
 
   if (DEBUG) {
+    console.log("finalHours START", finalHours);
     console.log("hours", hours);
     console.log("minutes", minutes);
     console.log("seconds", seconds);
@@ -204,7 +207,7 @@ const convertTime12to24 = (time12h: string): string => {
 
   if (finalHours === "12") finalHours = "00";
 
-  if (modifier === "PM") {
+  if (modifier === "PM" && finalHours !== "12") {
     if (DEBUG) console.log("PM DETECTED");
     const hoursInt = parseInt(finalHours, 10) + 12;
     finalHours = hoursInt.toString();
@@ -214,9 +217,9 @@ const convertTime12to24 = (time12h: string): string => {
       finalHours = "0" + finalHours;
     }
   }
-
+  finalHours = String(Number(finalHours) + 6);
   if (DEBUG) {
-    console.log("finalHours", finalHours);
+    console.log("finalHours END", finalHours);
     console.log(
       "result",
       `${finalHours}:${minutes}:${seconds ? seconds : "00"}`

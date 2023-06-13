@@ -7,11 +7,9 @@ import {
   mobileClientApiKey,
   DEBUG,
 } from "../../config/config";
-// import { updateProVetAppointment } from "../../integrations/provet/entities/appointment/updateProVetAppointment";
-// import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
-// import { updateProVetPatient } from "../../integrations/provet/entities/patient/updateProVetPatient";
 import { sendNotification } from "../../notifications/sendNotification";
-// import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
+import { updateProVetAppointment } from "../../integrations/provet/entities/appointment/updateProVetAppointment";
+import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
 export const resetTestData: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {
@@ -33,6 +31,38 @@ export const resetTestData: Promise<Response> = functions
             })
           )
           .catch((error: any) => DEBUG && console.error(error));
+        const client = await fetchEntity("client", 6008);
+        let proVetAppointmentIds: Array<number> = [];
+        if (DEBUG)
+          console.log(
+            "QUERY STRING =>",
+            `?client__eq=${client?.id}&active=1
+            &start__gte=${
+              new Date().toISOString().split("T")[0]
+            }%2000:00%2B00:00`
+          );
+        const appointments = await fetchEntity(
+          "appointment",
+          null,
+          `?client__eq=${client?.id}&active=1&start__gte=${
+            new Date().toISOString().split("T")[0]
+          }%2000:00%2B00:00`
+        );
+        if (appointments.length)
+          proVetAppointmentIds = appointments.map(
+            (appointment: any) => appointment?.id
+          );
+
+        if (proVetAppointmentIds.length) {
+          if (DEBUG)
+            console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
+          Promise.all(
+            proVetAppointmentIds.map((id: number) =>
+              updateProVetAppointment({ id, active: 0 })
+            )
+          );
+        } else if (DEBUG)
+          console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
       } else if (request.body?.id === 5769) {
         await disableWinterMode();
         await admin
@@ -90,7 +120,7 @@ export const resetTestData: Promise<Response> = functions
           )
           .catch((error: any) => DEBUG && console.error(error));
 
-        // const client = await fetchEntity("client", 5769);
+        const client = await fetchEntity("client", 5769);
 
         // const proVetPatientIds: Array<number> = [];
         // if (client?.patients.length)
@@ -100,36 +130,38 @@ export const resetTestData: Promise<Response> = functions
 
         // if (DEBUG) console.log("proVetPatientIds", proVetPatientIds);
 
-        // let proVetAppointmentIds: Array<number> = [];
+        let proVetAppointmentIds: Array<number> = [];
 
-        // if (DEBUG)
-        //   console.log(
-        //     "QUERY STRING =>",
-        //     `?client__eq=${client?.id}&active=1
-        //     &start__gte=${new Date().toISOString().split("T")[0]}%2000:00%2B00:00`
-        //   );
-        // const appointments = await fetchEntity(
-        //   "appointment",
-        //   null,
-        //   `?client__eq=${client?.id}&active=1&start__gte=${
-        //     new Date().toISOString().split("T")[0]
-        //   }%2000:00%2B00:00`
-        // );
-        // if (appointments.length)
-        //   proVetAppointmentIds = appointments.map(
-        //     (appointment: any) => appointment?.id
-        //   );
+        if (DEBUG)
+          console.log(
+            "QUERY STRING =>",
+            `?client__eq=${client?.id}&active=1
+            &start__gte=${
+              new Date().toISOString().split("T")[0]
+            }%2000:00%2B00:00`
+          );
+        const appointments = await fetchEntity(
+          "appointment",
+          null,
+          `?client__eq=${client?.id}&active=1&start__gte=${
+            new Date().toISOString().split("T")[0]
+          }%2000:00%2B00:00`
+        );
+        if (appointments.length)
+          proVetAppointmentIds = appointments.map(
+            (appointment: any) => appointment?.id
+          );
 
-        // if (proVetAppointmentIds.length) {
-        //   if (DEBUG)
-        //     console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
-        //   Promise.all(
-        //     proVetAppointmentIds.map((id: number) =>
-        //       updateProVetAppointment({ id, active: 0 })
-        //     )
-        //   );
-        // } else if (DEBUG)
-        //   console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
+        if (proVetAppointmentIds.length) {
+          if (DEBUG)
+            console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
+          Promise.all(
+            proVetAppointmentIds.map((id: number) =>
+              updateProVetAppointment({ id, active: 0 })
+            )
+          );
+        } else if (DEBUG)
+          console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
 
         // if (proVetPatientIds.length) {
         //   if (DEBUG) console.log("ARCHIVING PATIENTS: ", proVetPatientIds);

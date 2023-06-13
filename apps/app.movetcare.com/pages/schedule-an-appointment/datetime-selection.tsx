@@ -1,15 +1,19 @@
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
-import { useEffect, useState } from "react";
-import { Button, Loader } from "ui";
+import { useEffect, useRef, useState } from "react";
+import { Button, Loader, Modal } from "ui";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import { BookingFooter } from "components/BookingFooter";
 import Calendar from "react-calendar";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faE,
+  faExclamationTriangle,
+} from "@fortawesome/free-solid-svg-icons";
 import { Transition } from "@headlessui/react";
 import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 
@@ -55,6 +59,8 @@ export default function DateTime() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoadingFull, setIsLoadingFull] = useState<boolean>(false);
   const [error, setError] = useState<null | { message: string }>(null);
+  const [retryRequired, setRetryRequired] = useState<boolean>(false);
+  const cancelButtonRef = useRef(null);
   const router = useRouter();
   const { mode } = router.query || {};
   const isAppMode = mode === "app";
@@ -82,6 +88,7 @@ export default function DateTime() {
             : "virtual",
         patients: session?.selectedPatients,
       });
+      console.log("result", result);
       if (Array.isArray(result)) {
         setAppointmentAvailability(result);
         setClosedReason(null);
@@ -125,26 +132,27 @@ export default function DateTime() {
             token,
           });
           console.log("result", result);
-          // if (result?.error !== true || result?.error === undefined) {
-          //   setLoadingMessage("Almost finished...");
-          //   if (result?.client?.uid && result?.id) {
-          //     window.localStorage.setItem(
-          //       "bookingSession",
-          //       JSON.stringify(result)
-          //     );
-          //     const queryString = getUrlQueryStringFromObject(router.query);
-          //     if (result?.checkoutSession)
-          //       router.push(
-          //         "/schedule-an-appointment/payment-confirmation" +
-          //           (queryString ? queryString : "")
-          //       );
-          //     else if (result.step === "success")
-          //       router.push(
-          //         "/schedule-an-appointment/success" +
-          //           (queryString ? queryString : "")
-          //       );
-          //   } else handleError(result);
-          // } else handleError(result);
+          if (result?.error !== true || result?.error === undefined) {
+            setLoadingMessage("Almost finished...");
+            if (result.needsRetry) setRetryRequired(true);
+            else if (result?.client?.uid && result?.id) {
+              window.localStorage.setItem(
+                "bookingSession",
+                JSON.stringify(result)
+              );
+              const queryString = getUrlQueryStringFromObject(router.query);
+              if (result?.checkoutSession)
+                router.push(
+                  "/schedule-an-appointment/payment-confirmation" +
+                    (queryString ? queryString : "")
+                );
+              else if (result.step === "success")
+                router.push(
+                  "/schedule-an-appointment/success" +
+                    (queryString ? queryString : "")
+                );
+            } else handleError(result);
+          } else handleError(result);
           setIsLoadingFull(false);
         } catch (error) {
           handleError(error);
@@ -177,6 +185,22 @@ export default function DateTime() {
                   }
                 />
                 <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
+                  <Modal
+                    showModal={retryRequired}
+                    setShowModal={setRetryRequired}
+                    cancelButtonRef={cancelButtonRef}
+                    isLoading={isLoading}
+                    error={error ? <Error message={error} /> : undefined}
+                    content={
+                      <p>
+                        We&apos;re sorry, but there is already an appointment
+                        scheduled for this time. Please select a different time
+                        slot and try again.
+                      </p>
+                    }
+                    title="Something Went Wrong..."
+                    icon={faExclamationTriangle}
+                  />
                   <Calendar
                     onChange={(value: any) => {
                       setIsLoading(true);
@@ -368,6 +392,7 @@ export default function DateTime() {
                       </div>
                       <Button
                         text="Continue"
+                        type="submit"
                         disabled={!selectedTime || !selectedDate}
                         className="mt-8"
                         icon={faArrowRight}

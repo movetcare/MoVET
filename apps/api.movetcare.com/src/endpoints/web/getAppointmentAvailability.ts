@@ -11,6 +11,7 @@ import {
   functions,
   throwError,
   DEBUG,
+  environment,
 } from "../../config/config";
 import { formatTimeHoursToDate } from "../../utils/formatTimeHoursToDate";
 import { formatTimeHoursToString } from "../../utils/formatTimeHoursToString";
@@ -571,20 +572,21 @@ const getExistingAppointments = async ({
             });
         });
       }
-      existingAppointments.push({
-        id: null,
-        reason: null,
-        resources: [resource?.id],
-        start: formatTimeHoursToString(standardLunchTime),
-        end: addMinutes(
-          standardLunchDuration,
-          formatTimeHoursToDate(standardLunchTime)
-        ).toLocaleString("en-US", {
-          hour: "numeric",
-          minute: "numeric",
-          hour12: false,
-        }),
-      });
+      if (environment.type === "production")
+        existingAppointments.push({
+          id: null,
+          reason: null,
+          resources: [resource?.id],
+          start: formatTimeHoursToString(standardLunchTime),
+          end: addMinutes(
+            standardLunchDuration,
+            formatTimeHoursToDate(standardLunchTime)
+          ).toLocaleString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: false,
+          }),
+        });
       if (scheduleClosures && scheduleClosures.length > 0)
         scheduleClosures.map((closure: any) => {
           if (

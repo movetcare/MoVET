@@ -115,7 +115,9 @@ export const sendAppointmentConfirmationEmail = async (
       : appointment?.user === 7
       ? // eslint-disable-next-line quotes
         '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-      : "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+      : appointment?.user === 9
+      ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+      : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
   }${
       appointment?.start
         ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
@@ -140,7 +142,7 @@ export const sendAppointmentConfirmationEmail = async (
     }${
       appointment?.locationType === "Home"
         ? "<p></p><p><b>Home Visit Trip Fee</b>: $60</p><p><b>*Additional charges will apply for add-on diagnostics, medications, pampering, etc.</b></p><p><i>A $60 cancellation fee will be charged if cancellation occurs within 24 hours of your appointment</i></p>"
-        : ""
+        : "" // TODO: Convert waiver text to be conditional based on VCPR status - If VCPR is not established, then include waiver text.
     }<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> (If you have completed a waiver/release for this pet in the past, then a new one is not necessary.)</p><p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.
   </p><p></p><p>Looking forward to meeting you,</p><p>- <a href="https://www.instagram.com/drlexiabramson/">Dr. A</a>, <a href="https://www.instagram.com/nessie_themovetpup/">Nessie</a>, and the <a href="https://www.facebook.com/MOVETCARE/">MoVET Team</a></p>`;
 
