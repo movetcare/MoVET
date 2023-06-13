@@ -88,7 +88,6 @@ export default function DateTime() {
             : "virtual",
         patients: session?.selectedPatients,
       });
-      console.log("result", result);
       if (Array.isArray(result)) {
         setAppointmentAvailability(result);
         setClosedReason(null);
@@ -131,7 +130,6 @@ export default function DateTime() {
             device: navigator.userAgent,
             token,
           });
-          console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
             if (result.needsRetry) setRetryRequired(true);
