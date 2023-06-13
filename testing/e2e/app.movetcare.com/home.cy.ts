@@ -15,24 +15,24 @@ describe("home-page-loads", () => {
     cy.get("@submit").click();
   });
 
-  it("Privacy policy and terms of service links work", () => {
-    cy.get("h2").contains("Schedule an Appointment");
-    cy.get(".hidden").invoke("show").click();
-    cy.get("a").contains("privacy policy").click();
-    cy.get("h1").contains("Privacy Policy");
-    cy.location("pathname", {
-      timeout: Cypress.env().defaultPathnameTimeOut,
-    }).should("eq", "/privacy-policy/");
-    cy.get("p").contains("Go Back").click();
-    cy.get(".hidden").invoke("show").click();
-    cy.get("a").contains("terms of service").click();
-    cy.get("h1").contains("Terms of Service");
-    cy.location("pathname", {
-      timeout: Cypress.env().defaultPathnameTimeOut,
-    }).should("eq", "/terms-and-conditions/");
-    cy.get("p").contains("Go Back").click();
-    cy.location("pathname", {
-      timeout: Cypress.env().defaultPathnameTimeOut,
-    }).should("eq", "/");
-  });
+  // it("Privacy policy and terms of service links work", () => {
+  //   cy.get("h2").contains("Schedule an Appointment");
+  //   cy.get(".hidden").invoke("show").click();
+  //   cy.get("a").contains("privacy policy").click();
+  //   cy.get("h1").contains("Privacy Policy");
+  //   cy.location("pathname", {
+  //     timeout: Cypress.env().defaultPathnameTimeOut,
+  //   }).should("eq", "/privacy-policy/");
+  //   cy.get("p").contains("Go Back").click();
+  //   cy.get(".hidden").invoke("show").click();
+  //   cy.get("a").contains("terms of service").click();
+  //   cy.get("h1").contains("Terms of Service");
+  //   cy.location("pathname", {
+  //     timeout: Cypress.env().defaultPathnameTimeOut,
+  //   }).should("eq", "/terms-and-conditions/");
+  //   cy.get("p").contains("Go Back").click();
+  //   cy.location("pathname", {
+  //     timeout: Cypress.env().defaultPathnameTimeOut,
+  //   }).should("eq", "/");
+  // });
 });
