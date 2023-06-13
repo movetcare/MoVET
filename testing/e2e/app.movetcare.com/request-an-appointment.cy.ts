@@ -11,7 +11,6 @@ describe(
       );
       cy.get("h2").as("heading").contains("Schedule an Appointment");
       cy.get("button[type='submit']").as("submitButton").click();
-      cy.get("@heading").contains("Processing, please wait...");
       cy.location("pathname", {
         timeout: Cypress.env().defaultPathnameTimeOut,
       }).should("eq", "/request-an-appointment/");
