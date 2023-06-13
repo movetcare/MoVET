@@ -35,7 +35,7 @@ export default function ResetPassword() {
     ),
     defaultValues: {
       password: "",
-    },
+    } as any,
   });
 
   useEffect(() => {

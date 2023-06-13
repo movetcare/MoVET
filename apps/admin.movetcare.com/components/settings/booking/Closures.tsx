@@ -59,7 +59,7 @@ export const Closures = () => {
       isActiveForHousecalls: false,
       isActiveForTelehealth: false,
       showOnWebsite: true,
-    },
+    } as any,
   });
   const isActiveForClinic = watch("isActiveForClinic");
   const isActiveForHousecalls = watch("isActiveForHousecalls");

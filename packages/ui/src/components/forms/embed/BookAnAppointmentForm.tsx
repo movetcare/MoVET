@@ -26,7 +26,7 @@ export const BookAnAppointmentForm = ({
     ),
     defaultValues: {
       email: "",
-    },
+    } as any,
   });
   const onSubmit = async (data: any) => {
     window.open(

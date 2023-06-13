@@ -59,8 +59,9 @@ export default function LocationSelection({
   const { mode, housecallRequest } = router.query || {};
   const isAppMode = mode === "app";
   const isHousecallRequest = Boolean(Number(housecallRequest));
-  const [loadingMessage, setLoadingMessage] =
-    useState<string>("Loading Session...");
+  const [loadingMessage, setLoadingMessage] = useState<string>(
+    "Loading, Please Wait..."
+  );
   const [session, setSession] = useState<any>();
   const { executeRecaptcha } = useGoogleReCaptcha();
   const cancelButtonRef = useRef(null);
@@ -90,7 +91,7 @@ export default function LocationSelection({
       location: isHousecallRequest ? "Home" : "Clinic",
       address: null,
       info: "",
-    },
+    } as any,
   });
 
   const locationSelection = watch("location");
@@ -189,7 +190,7 @@ export default function LocationSelection({
   };
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    setLoadingMessage("Processing, please wait...");
+    setLoadingMessage("Processing, Please Wait...");
     let locationId = null;
     reasonGroups.forEach(
       ({ label, value }: { label: string; value: number }) => {
@@ -239,7 +240,7 @@ export default function LocationSelection({
                 }
           );
           if (result?.error !== true || result?.error === undefined) {
-            setLoadingMessage("Almost finished...");
+            setLoadingMessage("Almost Finished...");
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
@@ -274,11 +275,8 @@ export default function LocationSelection({
       >
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
-            {isLoading && !isLoaded ? (
-              <Loader
-                message={!isLoaded ? loadingMessage : "Loading Please Wait..."}
-                isAppMode={isAppMode}
-              />
+            {loadingMessage && isLoading && !isLoaded ? (
+              <Loader message={loadingMessage} isAppMode={isAppMode} />
             ) : error || loadError ? (
               <Error error={error || loadError} isAppMode={isAppMode} />
             ) : (

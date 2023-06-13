@@ -80,7 +80,7 @@ export const configureBooking = async (): Promise<boolean> => {
           clinicOpenTuesdayTime: 930,
           clinicClosedTuesdayTime: 1700,
           clinicOpenWednesday: true,
-          clinicOpenWednesdayTime: 1330,
+          clinicOpenWednesdayTime: 930,
           clinicClosedWednesdayTime: 1630,
           clinicOpenThursday: true,
           clinicOpenThursdayTime: 930,

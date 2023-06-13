@@ -28,8 +28,8 @@ export const initTestUser: Promise<Response> = functions
         (await importTestUser(
           "dev+test_vcpr_not_required@movetcare.com",
           6008,
-          "cus_NHhCBn8D5rsQS2",
-          "pm_1MX7ozDVQU5TYLF1gwB52QNF"
+          "cus_O4miqMJzfJhmBB",
+          "card_1NIdABDVQU5TYLF1Yh2xFp4M"
         )) &&
         (await importTelehealthChat()) &&
         (await importCheckIn())

@@ -64,7 +64,7 @@ export default function PetSelection() {
     ),
     defaultValues: {
       pets: null,
-    },
+    } as any,
   });
   const selectedPets: Array<string> | string | null = watch("pets") as any;
   useEffect(() => {
@@ -157,7 +157,7 @@ export default function PetSelection() {
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
-            setLoadingMessage("Almost finished...");
+            setLoadingMessage("Almost Finished...");
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",

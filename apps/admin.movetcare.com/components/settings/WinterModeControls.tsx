@@ -38,7 +38,7 @@ export const WinterModeControls = () => {
       isActiveOnMobileApp: false,
       isActiveOnWebApp: false,
       enableForNewPatientsOnly: true,
-    },
+    } as any,
   });
   const isActiveOnWebsite = watch("isActiveOnWebsite");
   const isActiveOnMobileApp = watch("isActiveOnMobileApp");

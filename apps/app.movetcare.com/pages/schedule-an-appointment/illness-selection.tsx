@@ -84,7 +84,7 @@ export default function IllnessSelection() {
     defaultValues: {
       symptoms: null,
       details: "",
-    },
+    } as any,
   });
 
   const handleError = (error: any) => {
@@ -95,7 +95,7 @@ export default function IllnessSelection() {
   };
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    setLoadingMessage("Processing, please wait...");
+    setLoadingMessage("Processing, Please Wait...");
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
       if (token) {
@@ -114,7 +114,7 @@ export default function IllnessSelection() {
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
-            setLoadingMessage("Almost finished...");
+            setLoadingMessage("Almost Finished...");
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",

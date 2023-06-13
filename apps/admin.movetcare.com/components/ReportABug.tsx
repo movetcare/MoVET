@@ -4,22 +4,22 @@ import {
   faSmile,
   faBug,
   faEnvelope,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { httpsCallable } from 'firebase/functions';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import { functions, storage } from 'services/firebase';
-import Button from './Button';
-import SelectInput from './inputs/SelectInput';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { httpsCallable } from "firebase/functions";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { functions, storage } from "services/firebase";
+import Button from "./Button";
+import SelectInput from "./inputs/SelectInput";
 import { Loader } from "ui";
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
-const ReportABug = ({ type = 'bug' }: { type?: 'bug' | 'feature' }) => {
+const ReportABug = ({ type = "bug" }: { type?: "bug" | "feature" }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedFiles, setSelectedFiles] = useState<any>();
-  const [isFilePicked, setIsFilePicked] = useState<boolean>(type === 'feature');
+  const [isFilePicked, setIsFilePicked] = useState<boolean>(type === "feature");
   const {
     control,
     register,
@@ -28,17 +28,17 @@ const ReportABug = ({ type = 'bug' }: { type?: 'bug' | 'feature' }) => {
     watch,
     formState: { isValid, isSubmitting, isDirty, errors },
   } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: {
-      name: '',
-      description: '',
-      url: '',
-      application: { id: 'admin', name: 'Admin App - admin.movetcare.com' },
-      priority: { id: 'low', name: 'Low' },
-    },
+      name: "",
+      description: "",
+      url: "",
+      application: { id: "admin", name: "Admin App - admin.movetcare.com" },
+      priority: { id: "low", name: "Low" },
+    } as any,
   });
 
-  const application = watch('application');
+  const application = watch("application");
 
   const changeHandler = (event: any) => {
     setSelectedFiles(event.target.files);
@@ -56,13 +56,13 @@ const ReportABug = ({ type = 'bug' }: { type?: 'bug' | 'feature' }) => {
     description: string;
     url: string;
     application:
-      | { id: 'web'; name: 'Website - movetcare.com' }
-      | { id: 'admin'; name: 'Admin App - admin.movetcare.com' }
-      | { id: 'mobile'; name: 'Mobile iOS/Android App' };
+      | { id: "web"; name: "Website - movetcare.com" }
+      | { id: "admin"; name: "Admin App - admin.movetcare.com" }
+      | { id: "mobile"; name: "Mobile iOS/Android App" };
     priority:
-      | { id: 'low'; name: 'Low' }
-      | { id: 'medium'; name: 'Medium' }
-      | { id: 'high'; name: 'High' };
+      | { id: "low"; name: "Low" }
+      | { id: "medium"; name: "Medium" }
+      | { id: "high"; name: "High" };
   }) => {
     setIsLoading(true);
     const fileUrls: Array<string> = [];
@@ -74,12 +74,12 @@ const ReportABug = ({ type = 'bug' }: { type?: 'bug' | 'feature' }) => {
         );
         const uploadTask = uploadBytesResumable(storageRef, fileData);
         await uploadTask.on(
-          'state_changed',
+          "state_changed",
           (snapshot: any) => {
             const progress = Math.round(
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             );
-            console.log('File Upload %: ', progress);
+            console.log("File Upload %: ", progress);
           },
           (error: any) => {
             toast(error?.message, {
@@ -99,7 +99,7 @@ const ReportABug = ({ type = 'bug' }: { type?: 'bug' | 'feature' }) => {
                 if (index === selectedFiles.length - 1) {
                   await httpsCallable(
                     functions,
-                    'reportABugInternal'
+                    "reportABugInternal"
                   )({
                     type,
                     name,
@@ -112,9 +112,9 @@ const ReportABug = ({ type = 'bug' }: { type?: 'bug' | 'feature' }) => {
                     .then(() => {
                       toast(
                         `Your ${
-                          type === 'feature'
-                            ? 'new feature request'
-                            : 'bug report'
+                          type === "feature"
+                            ? "new feature request"
+                            : "bug report"
                         } has been submitted!`,
                         {
                           icon: (
@@ -163,7 +163,7 @@ const ReportABug = ({ type = 'bug' }: { type?: 'bug' | 'feature' }) => {
     <form
       onSubmit={handleSubmit(onSubmit as any)}
       className={`flex flex-col w-full mx-auto px-4 md:px-8 bg-white p-8 text-movet-black rounded-xl max-w-md justify-center items-center${
-        isLoading ? ' overflow-hidden' : ''
+        isLoading ? " overflow-hidden" : ""
       }`}
     >
       {isLoading ? (
@@ -173,37 +173,37 @@ const ReportABug = ({ type = 'bug' }: { type?: 'bug' | 'feature' }) => {
           <div className="flex flex-col w-full items-center pt-4 mb-4">
             <label className="flex flex-row items-center w-full justify-center italic mt-2 mb-2 text-sm">
               <FontAwesomeIcon
-                icon={type === 'feature' ? faSmile : faBug}
+                icon={type === "feature" ? faSmile : faBug}
                 size="2x"
                 className={
-                  type === 'feature' ? 'text-movet-green' : 'text-movet-red'
+                  type === "feature" ? "text-movet-green" : "text-movet-red"
                 }
               />
               <h1
                 className={`ml-3 italic${
-                  type === 'feature' ? 'text-movet-green' : ' text-movet-red'
+                  type === "feature" ? "text-movet-green" : " text-movet-red"
                 }`}
               >
-                {type === 'feature' ? 'New Feature Request' : 'Report a Bug'}
+                {type === "feature" ? "New Feature Request" : "Report a Bug"}
               </h1>
             </label>
           </div>
           <label className="font-bold my-2 text-sm w-full">
-            Name of {type === 'feature' ? 'Feature' : 'Bug'}
+            Name of {type === "feature" ? "Feature" : "Bug"}
           </label>
           <input
             type="text"
             required
             placeholder="Write Something..."
             className="font-abside-smooth border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm mb-2"
-            {...register('name')}
+            {...register("name")}
           />
           <label className="font-bold my-2 text-sm w-full">Description</label>
           <textarea
             required
             placeholder="Please provide as much detail as possible..."
             className="font-abside-smooth border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm mb-2"
-            {...register('description')}
+            {...register("description")}
           />
           <label className="font-bold mb-2 text-sm w-full mt-2">
             Screenshot(s) or Recording(s)
@@ -225,24 +225,24 @@ const ReportABug = ({ type = 'bug' }: { type?: 'bug' | 'feature' }) => {
             name="application"
             required
             values={[
-              { id: 'web', name: 'Website - movetcare.com' },
-              { id: 'admin', name: 'Admin App - admin.movetcare.com' },
-              { id: 'mobile', name: 'Mobile iOS/Android App' },
+              { id: "web", name: "Website - movetcare.com" },
+              { id: "admin", name: "Admin App - admin.movetcare.com" },
+              { id: "mobile", name: "Mobile iOS/Android App" },
             ]}
             errors={errors}
             control={control}
           />
-          {(application.id === 'admin' || application.id === 'web') && (
+          {(application.id === "admin" || application.id === "web") && (
             <>
               <label className="font-bold mb-2 mt-4 text-sm w-full">
-                Related URL{' '}
+                Related URL{" "}
                 <span className="text-xs italic">(if applicable)</span>
               </label>
               <input
                 type="text"
                 placeholder="ex: https://movetcare.com"
                 className="font-abside-smooth border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm"
-                {...register('url')}
+                {...register("url")}
               />
             </>
           )}
@@ -254,9 +254,9 @@ const ReportABug = ({ type = 'bug' }: { type?: 'bug' | 'feature' }) => {
             name="priority"
             required
             values={[
-              { id: 'low', name: 'Low' },
-              { id: 'medium', name: 'Medium' },
-              { id: 'high', name: 'High' },
+              { id: "low", name: "Low" },
+              { id: "medium", name: "Medium" },
+              { id: "high", name: "High" },
             ]}
             errors={errors}
             control={control}

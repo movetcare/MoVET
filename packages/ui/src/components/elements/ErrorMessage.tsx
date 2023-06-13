@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { capitalizeFirstLetter } from "../../utils";
 
-export const ErrorMessage = ({ errorMessage }: { errorMessage: string }) => (
+export const ErrorMessage = ({ errorMessage }: { errorMessage: any }) => (
   <Transition
     show={Boolean(errorMessage)}
     enter="transition ease-in duration-500"

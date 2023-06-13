@@ -32,7 +32,7 @@ const Tools = () => {
     mode: "onSubmit",
     defaultValues: {
       clientId: null,
-    },
+    } as any,
   });
 
   const onSubmit = async (data: any) => {

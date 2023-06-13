@@ -42,7 +42,7 @@ export const ClientCheckIn = () => {
     ),
     defaultValues: {
       email: "",
-    },
+    } as any,
   });
   const onSubmit = async (data: any) => {
     setIsLoading(true);

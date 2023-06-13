@@ -32,7 +32,7 @@ export const SignUp = () => {
     ),
     defaultValues: {
       email: "",
-    },
+    } as any,
   });
   const onSubmit = async (data: any) => {
     setIsLoading(true);

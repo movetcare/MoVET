@@ -47,7 +47,7 @@ export default function ReasonSelection() {
     ),
     defaultValues: {
       reason: "",
-    },
+    } as any,
   });
   useEffect(() => {
     if (window.localStorage.getItem("bookingSession") === null)
@@ -98,7 +98,7 @@ export default function ReasonSelection() {
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
-            setLoadingMessage("Almost finished...");
+            setLoadingMessage("Almost Finished...");
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",

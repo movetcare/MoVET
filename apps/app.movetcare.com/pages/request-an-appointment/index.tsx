@@ -86,7 +86,7 @@ export default function RequestAnAppointment({
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
   const router = useRouter();
-  const { email, mode } = router.query || {};
+  const { email, mode }: any = router.query || {};
   const isAppMode = mode === "app";
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hideFormSection, setHideFormSection] = useState<boolean>(true);
@@ -146,7 +146,7 @@ export default function RequestAnAppointment({
       locationType: "Clinic",
       notes: "",
       specificTime: "",
-    },
+    } as any,
   });
   const locationSelection = watch("locationType");
   const firstNameSelection = watch("firstName");

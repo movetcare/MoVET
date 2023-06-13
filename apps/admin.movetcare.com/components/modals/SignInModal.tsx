@@ -1,11 +1,11 @@
-import { faPaw, faQuestion } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Transition, Dialog } from '@headlessui/react';
-import Button from 'components/Button';
-import { Countdown } from 'components/Countdown';
-import TextInput from 'components/inputs/TextInput';
-import { Fragment, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import { faPaw, faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Transition, Dialog } from "@headlessui/react";
+import Button from "components/Button";
+import { Countdown } from "components/Countdown";
+import TextInput from "components/inputs/TextInput";
+import { Fragment, useRef } from "react";
+import { useForm } from "react-hook-form";
 
 export const SignInModal = ({
   icon = faQuestion,
@@ -39,7 +39,7 @@ export const SignInModal = ({
     mode: "onSubmit",
     defaultValues: {
       code: "",
-    },
+    } as any,
   });
   const onSubmit = (data: { code: string }) => {
     console.log(data);

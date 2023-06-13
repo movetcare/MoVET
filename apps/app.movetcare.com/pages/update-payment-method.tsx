@@ -44,7 +44,7 @@ export default function UpdatePaymentMethod() {
     ),
     defaultValues: {
       email: "",
-    },
+    } as any,
   });
 
   const updatePaymentMethod = async (data: any) => {

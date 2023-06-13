@@ -40,7 +40,7 @@ export default function ScheduleAnAppointment() {
     ),
     defaultValues: {
       email: "",
-    },
+    } as any,
   });
   const handleError = (error: any) => {
     setError(error);
@@ -49,7 +49,7 @@ export default function ScheduleAnAppointment() {
   };
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    setLoadingMessage("Processing, please wait...");
+    setLoadingMessage("Processing, Please Wait...");
     if (!window.localStorage.getItem("email"))
       window.localStorage.setItem(
         "email",
@@ -68,7 +68,11 @@ export default function ScheduleAnAppointment() {
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
-            setLoadingMessage("Almost finished...");
+            setLoadingMessage(
+              result?.client?.isExistingClient
+                ? "Loading Your Account..."
+                : "Starting Your Session..."
+            );
             const queryString = getUrlQueryStringFromObject(router.query);
             window.localStorage.setItem(
               "bookingSession",

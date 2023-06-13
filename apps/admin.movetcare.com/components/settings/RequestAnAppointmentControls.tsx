@@ -32,7 +32,7 @@ export const RequestAnAppointmentControls = () => {
     mode: "onSubmit",
     defaultValues: {
       requirePaymentMethodToRequestAnAppointment: false,
-    },
+    } as any,
   });
   const requirePaymentMethodToRequestAnAppointment = watch(
     "requirePaymentMethodToRequestAnAppointment"

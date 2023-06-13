@@ -55,7 +55,7 @@ export default function WellnessCheck() {
     ),
     defaultValues: {
       illPets: null,
-    },
+    } as any,
   });
   const selected = watch("illPets") as any;
 
@@ -106,7 +106,7 @@ export default function WellnessCheck() {
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
-            setLoadingMessage("Almost finished...");
+            setLoadingMessage("Almost Finished...");
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
@@ -268,7 +268,7 @@ export default function WellnessCheck() {
                       <li className="my-1">Profuse Bleeding</li>
                       <li className="my-1">Breathing Difficulties</li>
                       <li className="my-1">Fainting / Collapse</li>
-                      <li className="my-1">Discolored / pale gums</li>
+                      <li className="my-1">Discolored / Pale Gums</li>
                       <li className="my-1">Heat Stroke</li>
                       <li className="my-1">Choking / Excessive Coughing</li>
                       <li className="my-1">Bite Wounds</li>

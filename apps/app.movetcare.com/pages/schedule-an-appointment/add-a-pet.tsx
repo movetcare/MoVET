@@ -171,7 +171,7 @@ export default function ContactInfo() {
       weight: "",
       vet: "",
       notes: "",
-    },
+    } as any,
   });
   const name = watch("name");
   const specie = watch("type");
@@ -252,7 +252,7 @@ export default function ContactInfo() {
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
-            setLoadingMessage("Almost finished...");
+            setLoadingMessage("Almost Finished...");
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",

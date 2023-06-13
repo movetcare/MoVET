@@ -49,7 +49,7 @@ export default function CancelAppointmentBookingRequest() {
     defaultValues: {
       reason: "",
       details: "",
-    },
+    } as any,
   });
   const reason: any = watch("reason");
   const processAppointmentBookingCancellationReason = async () =>

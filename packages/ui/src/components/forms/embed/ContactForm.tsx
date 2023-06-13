@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const ContactForm = () => {
   const router = useRouter();
-  const { mode, firstName, lastName, phone, email, appointmentRequest } =
+  const { mode, firstName, lastName, phone, email, appointmentRequest }: any =
     router.query;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -37,7 +37,7 @@ export const ContactForm = () => {
       email: email || "",
       phone: phone || "",
       message: "",
-    },
+    } as any,
   });
   const reason = watch("reason");
 

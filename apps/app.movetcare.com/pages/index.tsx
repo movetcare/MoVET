@@ -38,7 +38,7 @@ export default function Home() {
     ),
     defaultValues: {
       email: "",
-    },
+    } as any,
   });
   const handleError = (error: any) => {
     console.error(error);
@@ -48,7 +48,7 @@ export default function Home() {
   };
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    setLoadingMessage("Processing, please wait...");
+    setLoadingMessage("Processing, Please Wait...");
     window.localStorage.setItem(
       "email",
       data?.email?.toString()?.toLowerCase()
@@ -66,7 +66,11 @@ export default function Home() {
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
-            setLoadingMessage("Almost finished...");
+            setLoadingMessage(
+              result?.client?.isExistingClient
+                ? "Loading Your Account..."
+                : "Starting Your Session..."
+            );
             const queryString = getUrlQueryStringFromObject(router.query);
             window.localStorage.setItem(
               "bookingSession",
@@ -108,7 +112,7 @@ export default function Home() {
   useEffect(() => {
     if ((window.localStorage.getItem("email") || email) && executeRecaptcha) {
       setIsLoading(true);
-      setLoadingMessage("Processing, please wait...");
+      setLoadingMessage("Processing, Please Wait...");
       if (email)
         reset({
           email: (email as string)

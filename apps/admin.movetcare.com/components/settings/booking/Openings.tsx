@@ -46,7 +46,7 @@ export const Openings = () => {
       type: "",
       days: "",
       times: "",
-    },
+    } as any,
   });
   const type = watch("type");
   const days = watch("days");

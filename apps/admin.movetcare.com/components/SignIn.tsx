@@ -45,7 +45,7 @@ export const SignIn = () => {
     mode: "onSubmit",
     defaultValues: {
       phone: "",
-    },
+    } as any,
   });
 
   useEffect(() => {

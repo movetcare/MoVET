@@ -60,7 +60,7 @@ export const AnnouncementBannerControls = () => {
       link: null,
       isActive: false,
       isActiveMobile: false,
-    },
+    } as any,
   });
   const isActiveMobile = watch("isActiveMobile");
   const isActive = watch("isActive");

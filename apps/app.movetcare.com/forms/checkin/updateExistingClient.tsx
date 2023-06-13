@@ -51,7 +51,7 @@ const UpdateExistingClient = () => {
       firstName: "",
       lastName: "",
       phone: "",
-    },
+    } as any,
   });
   useEffect(() => {
     if (typeof window !== "undefined" && sessionStorage) {

@@ -52,7 +52,7 @@ export const ClosuresSettings = ({
       startTime: "",
       endTime: "",
       name: "",
-    },
+    } as any,
   });
 
   const name = watch("name");

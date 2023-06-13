@@ -159,18 +159,33 @@ export const processDateTime = async (
         });
         return await createProVetAppointment(proVetData, movetData);
       };
-      const appointmentStatus = await scheduleAppointment();
+      const appointmentIsScheduled = await scheduleAppointment();
+      if (DEBUG) console.log("appointmentIsScheduled", appointmentIsScheduled);
+      await bookingRef
+        .update({
+          needsRetry: !appointmentIsScheduled,
+          step: checkoutSession
+            ? ("datetime-selection" as Booking["step"])
+            : appointmentIsScheduled
+            ? "success"
+            : "datetime-selection",
+        })
+        .then(() => DEBUG && console.log("DID UPDATE BOOKING"))
+        .catch(async (error: any) => {
+          throwError(error);
+          return await handleFailedBooking(error, "UPDATE BOOKING DATA FAILED");
+        });
       return {
         ...session,
         requestedDateTime,
         checkoutSession: checkoutSession ? checkoutSession?.url : null,
         step: checkoutSession
           ? ("datetime-selection" as Booking["step"])
-          : appointmentStatus === "ALREADY_BOOKED"
-          ? "datetime-selection"
-          : "success",
+          : appointmentIsScheduled
+          ? "success"
+          : "datetime-selection",
         id,
-        needsRetry: appointmentStatus === "ALREADY_BOOKED",
+        needsRetry: !appointmentIsScheduled,
         client: {
           uid: session?.client?.uid,
           requiresInfo: session?.client?.requiresInfo,
@@ -256,7 +271,7 @@ const formatToProVetTimestamp = (date: Date) => {
 };
 
 const formatAppointmentData = async (appointment: any) => {
-  const complaintObject: any = [];
+  // const complaintObject: any = [];
   const time = appointment?.time.split("-");
   const date = appointment.date.substring(0, appointment.date.indexOf("T"));
   if (DEBUG) {
@@ -281,25 +296,26 @@ const formatAppointmentData = async (appointment: any) => {
   let notes =
     appointment?.locationType === "Housecall"
       ? `Appointment Location: ${appointment?.locationType} - ${appointment?.address}`
-      : `Appointment Location: ${appointment?.locationType}`;
+      : appointment?.locationType === "Virtual"
+      ? "Virtual Telehealth Consultation"
+      : "*";
 
   appointment?.patients?.forEach((patient: any) => {
     appointment?.patientSelection?.forEach((selectedPatient: any) => {
       if (DEBUG) {
-        console.log("NOTES");
         console.log("patient?.id ", patient?.id);
         console.log("selectedPatient?.id ", selectedPatient);
         console.log("patient?.illnessDetails ", patient?.illnessDetails);
       }
       if (patient?.id === selectedPatient && patient?.illnessDetails) {
-        complaintObject.push({
-          patient: patient?.name,
-          symptom: JSON.stringify(patient?.illnessDetails?.symptoms),
-          notes: patient?.illnessDetails?.notes,
-        });
-        notes += `| Patient: ${patient?.name} \n | Symptom(s): ${JSON.stringify(
+        // complaintObject.push({
+        //   patient: patient?.name,
+        //   symptom: JSON.stringify(patient?.illnessDetails?.symptoms),
+        //   notes: patient?.illnessDetails?.notes,
+        // });
+        notes += ` Patient: ${patient?.name} - Symptom(s): ${JSON.stringify(
           patient?.illnessDetails?.symptoms
-        )}\n | Details: ${JSON.stringify(patient?.illnessDetails?.notes)}\n\n`;
+        )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)} |`;
       }
     });
   });
@@ -315,11 +331,11 @@ const formatAppointmentData = async (appointment: any) => {
     });
 
   const complaint =
-    complaintObject.length > 0
-      ? JSON.stringify(complaintObject).length > 255
-        ? "Unknown - Too Many Patients"
-        : JSON.stringify(complaintObject)
-      : appointment?.establishCareExamRequired
+    // complaintObject.length > 0
+    //   ? JSON.stringify(complaintObject).length > 255
+    //     ? "Unknown - Too Many Patients"
+    //     : JSON.stringify(complaintObject) :
+    appointment?.establishCareExamRequired
       ? appointment?.locationType === "Housecall"
         ? defaultBookingReasons?.housecallStandardVcprReason?.label
         : appointment?.locationType === "Clinic"
