@@ -78,23 +78,23 @@ const startNewSession = async ({
         client: {
           uid: authUser?.uid,
           requiresInfo,
-          isExistingClient: await admin
-            .firestore()
-            .collection("appointments")
-            .where("client", "==", Number(authUser?.uid))
-            .where("active", "==", 1)
-            .where("start", "<=", new Date())
-            .get()
-            .then((docs: any) => {
-              if (DEBUG)
-                console.log("Past Appointments - docs.size", docs.size);
-              if (docs.size > 0) return true;
-              else return false;
-            })
-            .catch((error: any) => {
-              throwError(error);
-              return null;
-            }),
+          isExistingClient: false, // await admin
+          // .firestore()
+          // .collection("appointments")
+          // .where("client", "==", Number(authUser?.uid))
+          // //.where("active", "==", 1)
+          // .where("start", "<=", new Date())
+          // .get()
+          // .then((docs: any) => {
+          //   if (DEBUG)
+          //     console.log("Past Appointments - docs.size", docs.size);
+          //   if (docs.size > 0) return true;
+          //   else return false;
+          // })
+          // .catch((error: any) => {
+          //   throwError(error);
+          //   return null;
+          // }),
         },
       };
     } else
