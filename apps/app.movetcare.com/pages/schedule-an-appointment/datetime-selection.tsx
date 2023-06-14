@@ -11,7 +11,6 @@ import { BookingFooter } from "components/BookingFooter";
 import Calendar from "react-calendar";
 import {
   faArrowRight,
-  faE,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { Transition } from "@headlessui/react";

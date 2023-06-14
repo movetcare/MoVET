@@ -24,32 +24,8 @@ export const createProVetAppointment = async (
       resources,
     } = proVetData;
     if (DEBUG)
-      console.log("API REQUEST PAYLOAD ->", {
-        client: `${proVetApiUrl}/client/${client}/`,
-        user: `${proVetApiUrl}/user/${user}/`,
-        start, // Required by PROVET API
-        end, // Required by PROVET API
-        title, // Required by PROVET API
-        complaint: complaint?.substring(0, 254),
-        reason: `${proVetApiUrl}/reason/${reason}/`,
-        resources: resources.map(
-          (resource: any) => `${proVetApiUrl}/resource/${resource}/`
-        ),
-        duration,
-        notes,
-        active: 1,
-        type: 2, // Required by PROVET API
-        patients: patients.map(
-          (patient: any) => `${proVetApiUrl}/patient/${patient}/`
-        ),
-        department: `${proVetApiUrl}/department/${
-          2
-          // environment?.type === 'production' ? '2' : '1'
-        }/`, // Required by PROVET API
-      });
-    const appointmentData = await request
-      .post(
-        "/appointment/",
+      console.log(
+        "API REQUEST PAYLOAD ->",
         reason !== null && reason !== undefined
           ? {
               client: `${proVetApiUrl}/client/${client}/`,
@@ -59,14 +35,14 @@ export const createProVetAppointment = async (
               title, // Required by PROVET API
               complaint: complaint?.substring(0, 254),
               reason: `${proVetApiUrl}/reason/${reason}/`,
-              resources: resources.map(
+              resources: resources?.map(
                 (resource: any) => `${proVetApiUrl}/resource/${resource}/`
               ),
               duration,
               notes,
               active: 1,
               type: 2, // Required by PROVET API
-              patients: patients.map(
+              patients: patients?.map(
                 (patient: any) => `${proVetApiUrl}/patient/${patient}/`
               ),
               department: `${proVetApiUrl}/department/${
@@ -85,7 +61,54 @@ export const createProVetAppointment = async (
               notes,
               active: 1,
               type: 2, // Required by PROVET API
-              patients: patients.map(
+              patients: patients?.map(
+                (patient: any) => `${proVetApiUrl}/patient/${patient}/`
+              ),
+              department: `${proVetApiUrl}/department/${
+                2
+                // environment?.type === 'production' ? '2' : '1'
+              }/`, // Required by PROVET API
+            }
+      );
+    const appointmentData = await request
+      .post(
+        "/appointment/",
+        reason !== null && reason !== undefined
+          ? {
+              client: `${proVetApiUrl}/client/${client}/`,
+              //user: `${proVetApiUrl}/user/${user}/`,
+              start, // Required by PROVET API
+              end, // Required by PROVET API
+              title, // Required by PROVET API
+              complaint: complaint?.substring(0, 254),
+              reason: `${proVetApiUrl}/reason/${reason}/`,
+              resources: resources?.map(
+                (resource: any) => `${proVetApiUrl}/resource/${resource}/`
+              ),
+              duration,
+              notes,
+              active: 1,
+              type: 2, // Required by PROVET API
+              patients: patients?.map(
+                (patient: any) => `${proVetApiUrl}/patient/${patient}/`
+              ),
+              department: `${proVetApiUrl}/department/${
+                2
+                // environment?.type === 'production' ? '2' : '1'
+              }/`, // Required by PROVET API
+            }
+          : {
+              client: `${proVetApiUrl}/client/${client}/`,
+              user: `${proVetApiUrl}/user/${user}/`,
+              start, // Required by PROVET API
+              end, // Required by PROVET API
+              title, // Required by PROVET API
+              complaint: complaint?.substring(0, 254),
+              duration,
+              notes,
+              active: 1,
+              type: 2, // Required by PROVET API
+              patients: patients?.map(
                 (patient: any) => `${proVetApiUrl}/patient/${patient}/`
               ),
               department: `${proVetApiUrl}/department/${

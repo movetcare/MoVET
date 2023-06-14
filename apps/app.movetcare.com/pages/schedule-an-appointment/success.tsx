@@ -1,13 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from "next/router";
-import { AppLinks, Loader } from "ui";
-import { Error } from "components/Error";
+import { AppLinks } from "ui";
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { AppHeader } from "components/AppHeader";
-import { useEffect, useState } from "react";
-import { ServerResponse } from "types";
+import { useEffect } from "react";
 
 export default function BookingSuccess() {
   const router = useRouter();
