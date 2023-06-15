@@ -37,7 +37,7 @@ const saveAppointments = async (
   return await Promise.all(
     appointments.map(async (appointment: Appointment) => {
       if (
-        new Date(appointment?.start) >= new Date() ||
+        // new Date(appointment?.start) >= new Date() ||
         getProVetIdFromUrl(String(appointment?.client)) === 6008 ||
         getProVetIdFromUrl(String(appointment?.client)) === 5769
       )
