@@ -126,9 +126,7 @@ export const ClientReviews = ({
       </div>
       <div
         className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
-        onClick={() =>
-          window.open("https://goo.gl/maps/cPraFhpcye9VFL37A", "_blank")
-        }
+        onClick={() => window.open("https://g.co/kgs/aB9ymm", "_blank")}
       >
         <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
           <FontAwesomeIcon icon={faStar} />
@@ -138,20 +136,22 @@ export const ClientReviews = ({
           <FontAwesomeIcon icon={faStar} />
         </div>
         <p className="text-xl text-center mb-4 group-hover:opacity-75">
-          They got me in within 24 hours
+          I have finally found my forever vet office!
         </p>
         <i className="group-hover:opacity-75">
-          &quot;I was browsing for a new veterinary practice for my pup as we
-          just recently moved to Denver. I called around a bit and a good chunk
-          of places were not accepting pets. I then stumbled upon MoVET and they
-          got me in within 24 hours as a new client. The whole process was easy
-          and smooth. The staff is amazing and will walk through any situation
-          with you and provide A+ care. Thanks team and see you soon for our
-          next visit&quot;
+          &quot;I have finally found my forever vet office! MoVET is a mobile
+          and boutique veterinarian. They have a dog wash along with a lot of
+          interesting things in the retail side. You can get treats & toys along
+          with other various pet related products. The veterinarians at MoVET
+          are exceptional! The vets have such good energy. My Chow Chow is very
+          standoffish, but Dr. Caldwell has no problem dealing with her. She
+          sits on the floor and talks to her for a good 15 minutes every time
+          just so she is comfortable with her. also, we have not tried it yet.
+          But they also do mobile house calls.&quot;
         </i>
         <p className="text-center mt-4 group-hover:opacity-75">
           <a
-            href="https://goo.gl/maps/cPraFhpcye9VFL37A"
+            href="https://g.co/kgs/aB9ymm"
             target="_blank"
             rel="noreferrer"
             className="flex flex-row justify-center items-center italic text-center text-movet-black"
@@ -253,6 +253,81 @@ export const ClientReviews = ({
             <p className="text-center mt-4 group-hover:opacity-75">
               <a
                 href="https://g.co/kgs/7L7g1V"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-row justify-center items-center italic text-center text-movet-black"
+              >
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  className="mr-2 text-movet-blue"
+                />{" "}
+                Google Review
+              </a>
+            </p>
+          </div>
+          <div
+            className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
+            onClick={() =>
+              window.open("https://goo.gl/maps/cPraFhpcye9VFL37A", "_blank")
+            }
+          >
+            <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+            </div>
+            <p className="text-xl text-center mb-4 group-hover:opacity-75">
+              They got me in within 24 hours
+            </p>
+            <i className="group-hover:opacity-75">
+              &quot;I was browsing for a new veterinary practice for my pup as
+              we just recently moved to Denver. I called around a bit and a good
+              chunk of places were not accepting pets. I then stumbled upon
+              MoVET and they got me in within 24 hours as a new client. The
+              whole process was easy and smooth. The staff is amazing and will
+              walk through any situation with you and provide A+ care. Thanks
+              team and see you soon for our next visit&quot;
+            </i>
+            <p className="text-center mt-4 group-hover:opacity-75">
+              <a
+                href="https://goo.gl/maps/cPraFhpcye9VFL37A"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-row justify-center items-center italic text-center text-movet-black"
+              >
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  className="mr-2 text-movet-blue"
+                />{" "}
+                Google Review
+              </a>
+            </p>
+          </div>
+          <div
+            className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
+            onClick={() => window.open("https://g.co/kgs/hz7VWk", "_blank")}
+          >
+            <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+            </div>
+            <p className="text-xl text-center mb-4 group-hover:opacity-75">
+              My pup left super happy!
+            </p>
+            <i className="group-hover:opacity-75">
+              &quot;Great vet clinic! Had a wellness appointment with them for
+              my dog and they took their time to do a proper exam and educate me
+              on setting up a wellness plan. Super awesome experience and my pup
+              left super happy!&quot;
+            </i>
+            <p className="text-center mt-4 group-hover:opacity-75">
+              <a
+                href="https://g.co/kgs/hz7VWk"
                 target="_blank"
                 rel="noreferrer"
                 className="flex flex-row justify-center items-center italic text-center text-movet-black"

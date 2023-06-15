@@ -12,6 +12,7 @@ import { createAuthClient } from "../../integrations/provet/entities/client/crea
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
+import { environment, admin, throwError } from "../../config/config";
 const DEBUG = true;
 export const setupNewBookingSession = async ({
   email,
@@ -77,23 +78,26 @@ const startNewSession = async ({
         client: {
           uid: authUser?.uid,
           requiresInfo,
-          isExistingClient: false, // await admin
-          // .firestore()
-          // .collection("appointments")
-          // .where("client", "==", Number(authUser?.uid))
-          // //.where("active", "==", 1)
-          // .where("start", "<=", new Date())
-          // .get()
-          // .then((docs: any) => {
-          //   if (DEBUG)
-          //     console.log("Past Appointments - docs.size", docs.size);
-          //   if (docs.size > 0) return true;
-          //   else return false;
-          // })
-          // .catch((error: any) => {
-          //   throwError(error);
-          //   return null;
-          // }),
+          isExistingClient:
+            environment?.type === "production"
+              ? false
+              : await admin
+                  .firestore()
+                  .collection("appointments")
+                  .where("client", "==", Number(authUser?.uid))
+                  .where("active", "==", 1)
+                  .where("start", "<=", new Date())
+                  .get()
+                  .then((docs: any) => {
+                    if (DEBUG)
+                      console.log("Past Appointments - docs.size", docs.size);
+                    if (docs.size > 0) return true;
+                    else return false;
+                  })
+                  .catch((error: any) => {
+                    throwError(error);
+                    return null;
+                  }),
         },
       };
     } else
