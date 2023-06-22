@@ -512,7 +512,7 @@ const InvoiceDetails = ({
                       as="h3"
                       className="text-xl uppercase leading-6 font-medium text-gray-900"
                     >
-                      Refund ${invoice?.total_with_vat.toFixed(2)} to{" "}
+                      Refund ${invoice?.total_with_vat?.toFixed(2)} to{" "}
                       {invoice?.paymentIntentObject?.charges?.data[0]
                         ?.payment_method_details?.card_present
                         ? invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card_present?.brand.toUpperCase()
@@ -574,7 +574,7 @@ const InvoiceDetails = ({
                             setTransactionState("failed");
                           } else
                             toast(
-                              `Payment of $${invoice?.total_with_vat.toFixed(
+                              `Payment of $${invoice?.total_with_vat?.toFixed(
                                 2
                               )} was successfully refunded${
                                 client?.firstName && client?.lastName
@@ -819,7 +819,7 @@ const InvoiceDetails = ({
                                           ""
                                         )}
                                       </h3>
-                                      <p>${item.data()?.paid.toFixed(2)}</p>
+                                      <p>${item.data()?.paid?.toFixed(2)}</p>
                                     </div>
                                   )
                                 )}
@@ -1095,7 +1095,7 @@ const InvoiceDetails = ({
                                               type === "process_payment_intent"
                                             ) {
                                               toast(
-                                                `Payment of $${invoice?.total_with_vat.toFixed(
+                                                `Payment of $${invoice?.total_with_vat?.toFixed(
                                                   2
                                                 )} was successfully charged${
                                                   client?.firstName &&
@@ -1365,7 +1365,7 @@ const InvoiceDetails = ({
                                       <h3 className="ml-2 my-0 font-medium text-center text-lg">
                                         PAID -
                                         <span className="font-bold ml-1">
-                                          ${invoice?.total_with_vat.toFixed(2)}
+                                          ${invoice?.total_with_vat?.toFixed(2)}
                                         </span>
                                       </h3>
                                     </div>
@@ -1383,7 +1383,8 @@ const InvoiceDetails = ({
                                         size="lg"
                                       />
                                     </span>
-                                    REFUND ${invoice?.total_with_vat.toFixed(2)}{" "}
+                                    REFUND $
+                                    {invoice?.total_with_vat?.toFixed(2)}{" "}
                                     <span className="ml-2 text-xs">
                                       (
                                       {invoice?.paymentIntentObject?.charges
@@ -1437,7 +1438,7 @@ const InvoiceDetails = ({
                                       className="ml-2 font-medium text-center text-sm my-2 md:text-lg flex flex-row items-center"
                                     >
                                       REFUNDED $
-                                      {invoice?.total_with_vat.toFixed(2)}
+                                      {invoice?.total_with_vat?.toFixed(2)}
                                       {invoice?.paymentIntentObject && (
                                         <span className="ml-1">
                                           TO{" "}

@@ -106,13 +106,13 @@ const updatePatientWeight = async (data: any, weight: string) => {
   if (DEBUG)
     console.log("PAYLOAD: ", {
       timestamp: toIsoString(new Date()), // Required by PROVET API
-      weight: parseFloat(weight as string).toFixed(1), // Required by PROVET API
+      weight: parseFloat(weight as string)?.toFixed(1), // Required by PROVET API
     });
   if (weight && data?.id) {
     updatedWeightHistory = await request
       .post(`/patient/${data?.id}/weight/`, {
         timestamp: toIsoString(new Date()), // Required by PROVET API
-        weight: parseFloat(weight).toFixed(1), // Required by PROVET API
+        weight: parseFloat(weight)?.toFixed(1), // Required by PROVET API
       })
       .then(async (response: any) => {
         const { data } = response;
