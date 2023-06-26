@@ -372,15 +372,16 @@ export default function RequestAnAppointment({
         <TextInput
           className="mb-10 mt-4"
           multiline
-          numberOfLines={5}
+          numberOfLines={6}
           label="Notes"
           name="notes"
           control={control}
           errors={errors}
-          placeholder="* Please let us know in advance of any favorite treat, scratching
-          spot, or any behavioral issues you may have encountered with your pet(s)
-          previously. Are they food motivated, territorial, or aggressive
-          towards humans or other pets?"
+          placeholder="* Please provide your pet(s) name, breed, gender, and age. Let us know
+          in advance of any favorite treat, scratching spot, or any behavioral
+          issues you may have encountered with your pet(s) previously. Are they
+          food motivated, territorial, or aggressive towards humans or other
+          pets?"
         />
         <Divider />
         <div className="my-8">
@@ -487,7 +488,7 @@ export default function RequestAnAppointment({
                   isAppMode={isAppMode}
                   title={"Welcome to MoVET!"}
                   description={
-                    "Please submit the form below to start booking your first appointment with us."
+                    "Please submit the form below to start booking an appointment."
                   }
                 />
                 <div className="mt-8 px-1">
