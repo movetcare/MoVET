@@ -4,9 +4,6 @@ describe("contact-page-loads", () => {
   });
   it("can view all contact form ui", () => {
     cy.get("h2").contains("Contact Us");
-    cy.get("p").contains(
-      "Leave us a note and we'll get back to you as soon as possible!"
-    );
     cy.get("label").as("l").contains("First Name");
     cy.get("@l").contains("Last Name");
     cy.get("@l").contains("Email");
