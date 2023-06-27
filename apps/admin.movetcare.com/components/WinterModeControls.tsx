@@ -7,20 +7,18 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import Error from "components/Error";
-import { useEffect, useState } from "react";
-import { auth, firestore } from "services/firebase";
+import { useEffect } from "react";
+import { firestore } from "services/firebase";
 import { Loader } from "ui";
 import { Switch } from "@headlessui/react";
 import { Controller, useForm } from "react-hook-form";
 import { classNames } from "utils/classNames";
 import toast from "react-hot-toast";
-import { onAuthStateChanged } from "firebase/auth";
 import { useDocument } from "react-firebase-hooks/firestore";
 import DateInput from "./inputs/DateInput";
 import TextInput from "./inputs/TextInput";
 
 export const WinterModeControls = () => {
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [settings, loading, error] = useDocument(
     doc(firestore, "configuration/bookings")
   );
