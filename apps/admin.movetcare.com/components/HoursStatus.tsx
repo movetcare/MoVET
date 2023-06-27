@@ -165,9 +165,9 @@ export const HoursStatus = () => {
                     />
                   </h2>
                   <ul className="italic text-extrabold text-center text-movet-yellow">
-                    {boutiqueAutomationStatus && <li>Boutique </li>}
-                    {clinicAutomationStatus && <li>Clinic </li>}
-                    {walkinsAutomationStatus && <li>Clinic Walk-In </li>}
+                    {boutiqueAutomationStatus && <li>Boutique</li>}
+                    {clinicAutomationStatus && <li>Clinic</li>}
+                    {walkinsAutomationStatus && <li>Clinic Walk-In</li>}
                     {housecallAutomationStatus && <li>Housecall</li>}
                   </ul>
                 </>
@@ -197,9 +197,9 @@ export const HoursStatus = () => {
                     />
                   </h2>
                   <ul className="italic text-extrabold text-center text-movet-yellow">
-                    {boutiqueStatusOverride && <li>Boutique </li>}
-                    {clinicStatusOverride && <li>Clinic </li>}
-                    {walkinsStatusOverride && <li>Clinic Walk-In </li>}
+                    {boutiqueStatusOverride && <li>Boutique</li>}
+                    {clinicStatusOverride && <li>Clinic</li>}
+                    {walkinsStatusOverride && <li>Clinic Walk-In</li>}
                     {housecallStatusOverride && <li>Housecall</li>}
                   </ul>
                 </>

@@ -4,12 +4,10 @@ import { SignIn } from "./SignIn";
 import { auth } from "services/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/router";
-import { Loader } from "ui";
 
 const AuthCheck = (props: any) => {
   const { user } = useContext(UserContext);
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -22,25 +20,12 @@ const AuthCheck = (props: any) => {
             setIsAuthorized(true);
           else router.push("/signout");
         }
-        setIsLoading(false);
       }
     });
     return () => unsubscribe();
   }, [user, router]);
 
-  return isLoading ? (
-    <main
-      className={
-        "h-screen flex flex-grow items-center justify-center p-8 md:px-12 lg:px-24 bg-movet-white"
-      }
-    >
-      <Loader />
-    </main>
-  ) : user && isAuthorized ? (
-    props.children
-  ) : (
-    props.fallback || <SignIn />
-  );
+  return user && isAuthorized ? props.children : props.fallback || <SignIn />;
 };
 
 export default AuthCheck;
