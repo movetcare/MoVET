@@ -4,6 +4,7 @@ import {
   faCircleExclamation,
   faHospital,
   faHouseMedical,
+  faMagnifyingGlass,
   faPersonWalking,
   faPowerOff,
   faRobot,
@@ -14,7 +15,7 @@ import { Divider } from "components/Divider";
 import { onSnapshot, doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { firestore } from "services/firebase";
-import { Button, Loader } from "ui";
+import { Button, Hours, Loader } from "ui";
 import Error from "../../Error";
 import { Switch, Transition } from "@headlessui/react";
 import { classNames } from "utilities";
@@ -25,6 +26,10 @@ export const HoursStatus = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingStatus, setIsLoadingStatus] = useState(true);
   const [error, setError] = useState<any>(null);
+  const [winterMode, setWinterMode] = useState<any>(null);
+  const [closures, setClosures] = useState<any>(null);
+  const [hours, setHours] = useState<any>(null);
+  const [hoursStatus, setHoursStatus] = useState<any>(null);
   const [boutiqueStatus, setBoutiqueStatus] = useState<boolean>(false);
   const [clinicStatus, setClinicStatus] = useState<boolean>(false);
   const [housecallStatus, setHousecallStatus] = useState<boolean>(false);
@@ -152,6 +157,55 @@ export const HoursStatus = () => {
     setDidTouchBoutiqueAutomationStatus,
   ] = useState<boolean>(false);
   useEffect(() => {
+    const unsubscribeWinterModeConfiguration = onSnapshot(
+      doc(firestore, "configuration", "bookings"),
+      (doc: any) => {
+        setWinterMode(doc.data()?.winterMode || null);
+        setIsLoadingStatus(false);
+      },
+      (error: any) => {
+        setError(error?.message || error);
+        setIsLoadingStatus(false);
+      }
+    );
+    const unsubscribeClosuresConfiguration = onSnapshot(
+      doc(firestore, "configuration", "closures"),
+      (doc: any) => {
+        setClosures(doc.data()?.closureDates || null);
+        setIsLoadingStatus(false);
+      },
+      (error: any) => {
+        setError(error?.message || error);
+        setIsLoadingStatus(false);
+      }
+    );
+    const unsubscribeHoursConfiguration = onSnapshot(
+      doc(firestore, "configuration", "openings"),
+      (doc: any) => {
+        setHours(doc.data()?.openingDates || null);
+        setIsLoadingStatus(false);
+      },
+      (error: any) => {
+        setError(error?.message || error);
+        setIsLoadingStatus(false);
+      }
+    );
+    const unsubscribehoursStatusConfiguration = onSnapshot(
+      doc(firestore, "configuration", "hours_status"),
+      (doc: any) => {
+        setHoursStatus({
+          boutiqueStatus: doc.data()?.boutiqueStatus || null,
+          clinicStatus: doc.data()?.clinicStatus || null,
+          housecallStatus: doc.data()?.housecallStatus || null,
+          walkinsStatus: doc.data()?.walkinsStatus || null,
+        });
+        setIsLoadingStatus(false);
+      },
+      (error: any) => {
+        setError(error?.message || error);
+        setIsLoadingStatus(false);
+      }
+    );
     const unsubscribeHoursStatusConfiguration = onSnapshot(
       doc(firestore, "configuration", "hours_status"),
       (doc: any) => {
@@ -378,6 +432,19 @@ export const HoursStatus = () => {
 
   return (
     <div className="py-4 flex-col sm:flex-row items-center justify-center">
+      <h3 className="text-center -mb-4">
+        <FontAwesomeIcon
+          icon={faMagnifyingGlass}
+          className="mr-2 text-movet-green"
+        />
+        Website Hours Page Preview
+      </h3>
+      <Hours
+        winterMode={winterMode}
+        hours={hours}
+        hoursStatus={hoursStatus}
+        previewMode
+      />
       <h3>HOURS STATUS OVERRIDES & AUTOMATION</h3>
       <p className="text-sm">
         Use these settings to override the automated OPEN/CLOSE status on the{" "}
@@ -391,16 +458,19 @@ export const HoursStatus = () => {
         .
       </p>
       <Divider />
-      <h3 className="text-center mt-8">
-        <FontAwesomeIcon icon={faPowerOff} className="mr-2 text-movet-green" />
-        OPEN / CLOSED Hours Overrides
-      </h3>
       {isLoading || isLoadingStatus ? (
         <Loader />
       ) : error ? (
         <Error error={error} />
       ) : (
         <>
+          <h3 className="text-center">
+            <FontAwesomeIcon
+              icon={faPowerOff}
+              className="mr-2 text-movet-green"
+            />
+            OPEN / CLOSED Hours Overrides
+          </h3>
           <div className="flex flex-row justify-center items-center mb-8">
             <div className="flex flex-col w-full mx-auto justify-center items-center">
               <FontAwesomeIcon

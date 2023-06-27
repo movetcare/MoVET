@@ -21,7 +21,6 @@
     "constant": "workspace:*",
     "lottie-web": "^5.12.2",
     "next": "13.4.7",
-    "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.0",

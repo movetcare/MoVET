@@ -2,9 +2,9 @@ import {
   faCheckCircle,
   faEnvelopeSquare,
   faHouseMedical,
+  faMessage,
   faPaw,
   faPhone,
-  faSms,
 } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
@@ -18,6 +18,7 @@ import PhoneInput from "../inputs/PhoneInput";
 import type { ContactForm as ContactFormType, ServerResponse } from "types";
 import { CONTACT_REASONS } from "constant";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
 export const ContactForm = () => {
   const router = useRouter();
@@ -100,7 +101,7 @@ export const ContactForm = () => {
       ) : (
         <div id="contact-form">
           {submissionSuccess ? (
-            <div className="text-center">
+            <div className="text-center max-w-3xl">
               <FontAwesomeIcon
                 icon={faCheckCircle}
                 size="4x"
@@ -178,19 +179,6 @@ export const ContactForm = () => {
                   <a
                     className="text-center mb-2 w-full text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
                     target="_blank"
-                    href={"tel:+17205077387"}
-                    rel="noopener noreferrer"
-                  >
-                    <FontAwesomeIcon
-                      icon={faPhone}
-                      size="lg"
-                      className="mr-2 text-movet-red"
-                    />
-                    (720) 507-7387
-                  </a>
-                  <a
-                    className="text-center mb-2 w-full text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
-                    target="_blank"
                     href={"mailto:info@movetcare.com"}
                     rel="noopener noreferrer"
                   >
@@ -201,6 +189,31 @@ export const ContactForm = () => {
                     />
                     info@movetcare.com
                   </a>
+                  <a
+                    className="text-center mb-2 w-full text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                    target="_blank"
+                    href={"tel:+17205077387"}
+                    rel="noopener noreferrer"
+                  >
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      size="lg"
+                      className="mr-2 text-movet-red"
+                    />
+                    (720) 507-7387
+                  </a>
+                  <Link
+                    href="/get-the-app/"
+                    passHref
+                    className="text-center mb-2 w-full text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                  >
+                    <FontAwesomeIcon
+                      icon={faMessage}
+                      size="lg"
+                      className="mr-2 text-movet-red"
+                    />
+                    Chat with Us
+                  </Link>
                 </div>
               </section>
               <section className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 text-left w-full md:w-1/2 px-6 pb-6 pt-0 sm:p-6">

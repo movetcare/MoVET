@@ -72,13 +72,13 @@ const ManageSchedule = () => {
               </div>
               <ul className="mt-4 mb-8 divide-y divide-movet-gray px-8">
                 <li className="py-4 flex-col sm:flex-row items-center justify-center">
-                  <Closures />
-                </li>
-                <li className="py-4 flex-col sm:flex-row items-center justify-center">
                   <HoursStatus />
                 </li>
                 <li className="py-4 flex-col sm:flex-row items-center justify-center">
                   <Openings />
+                </li>
+                <li className="py-4 flex-col sm:flex-row items-center justify-center">
+                  <Closures />
                 </li>
               </ul>
             </div>
