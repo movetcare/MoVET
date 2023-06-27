@@ -1,7 +1,6 @@
 import {
   faPersonWalking,
   faParking,
-  faArrowRight,
   faHospital,
   faHouseMedical,
   faShop,
@@ -13,7 +12,6 @@ import type {
   HoursStatus as HoursStatusType,
 } from "types";
 import Image from "next/image";
-import Link from "next/link";
 
 export const Hours = ({
   winterMode,
@@ -70,33 +68,6 @@ export const Hours = ({
             Hours of Operation
           </h2>
           <div className="grid sm:grid-cols-2 gap-y-12 gap-x-8 mb-12">
-            <div className="col-span-2 -mb-4">
-              <iframe
-                title="Google Map of MoVET @ Belleview Station"
-                loading="lazy"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
-                className="w-full h-96 rounded-xl"
-              />
-              {/* <p className="w-full text-center text-sm italic mt-6 md:mt-4 max-w-lg mx-auto">
-                * Parking may be a bit challenging due to construction going on
-                in this area. Please leave ample time before your appointment.
-                You are welcome to pull up to the clinic, drop your pet with us
-                and go find parking.
-              </p> */}
-              <a
-                href="https://movetcare.com/parking.png"
-                target="_blank"
-                className="flex flex-row items-center justify-center w-full text-center text-sm text-movet-white mt-8 md:mt-4 font-extrabold hover:text-movet-black"
-                rel="noreferrer"
-              >
-                <span className="w-6 h-6 mr-1">
-                  <FontAwesomeIcon icon={faParking} className="mt-1" />
-                </span>
-                <span>View Parking Map</span>
-              </a>
-            </div>
             <div className="w-full max-w-lg">
               <FontAwesomeIcon
                 icon={faHospital}

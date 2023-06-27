@@ -30,14 +30,14 @@
     "react-hot-toast": "^2.4.1",
     "react-json-formatter": "^0.3.2",
     "react-number-format": "^5.2.2",
-    "react-tooltip": "^5.15.0",
+    "react-tooltip": "^5.16.1",
     "remark": "^14.0.3",
     "remark-html": "^15.0.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/lodash.kebabcase": "^4.1.7",
-    "@types/node": "^20.3.1",
+    "@types/node": "^20.3.2",
     "@types/react": "18.2.14",
     "@types/react-datepicker": "^4.11.2",
     "@types/uuid": "^9.0.2",

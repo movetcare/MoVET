@@ -128,7 +128,7 @@ export const Header = () => {
                   <a
                     className="text-center ease-in-out duration-500 w-full lg:w-40 flex justify-center items-center border border-transparent shadow-sm text-movet-white text-sm font-medium font-abside uppercase bg-movet-brown group-hover:bg-movet-dark-brown hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-brown py-2 px-6 rounded-full"
                     target="_blank"
-                    href={"sms://+17205077387"}
+                    href={"sms:+17205077387"}
                     rel="noopener noreferrer"
                     id="text-us-cta"
                   >
@@ -222,7 +222,7 @@ export const Header = () => {
                 <a
                   className="w-full flex justify-center items-center border border-transparent shadow-sm text-movet-white text-base font-abside font-medium uppercase bg-movet-brown group-hover:bg-movet-black hover:bg-movet-dark-brown focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-brown py-2 px-6 rounded-full ease-in-out duration-500"
                   target="_blank"
-                  href={"sms://+17205077387"}
+                  href={"sms:+17205077387"}
                   rel="noopener noreferrer"
                   id="mobile-text-us-cta"
                 >
