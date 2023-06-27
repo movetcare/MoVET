@@ -14,7 +14,7 @@ describe(
       cy.location("pathname", {
         timeout: Cypress.env().defaultPathnameTimeOut,
       }).should("eq", "/request-an-appointment/");
-      cy.get("@heading").contains("Welcome to MoVET");
+      cy.get("@heading").contains("Request an Appointment");
       cy.get("input[name='firstName']").type("Test User");
       cy.get("input[name='lastName']").type("(Can be deleted)");
       cy.get("input[name='phone-number']").type(
