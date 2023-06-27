@@ -3,6 +3,7 @@ import {
   faCalendar,
   faCogs,
   faFlag,
+  faSnowflake,
   faUser,
   faVial,
   faWrench,
@@ -49,6 +50,15 @@ export const SettingsNavigation = () => {
       iconBackground: "bg-movet-magenta bg-opacity-50",
     },
     {
+      title: "Winter Housecall Mode",
+      description:
+        "Control whether or not clients are able to schedule housecall appointments on demand or by request only",
+      href: "/settings/winter-mode/",
+      icon: faSnowflake,
+      iconForeground: "text-movet-blue",
+      iconBackground: "bg-movet-blue bg-opacity-50",
+    },
+    {
       title: "Troubleshooting Tools",
       description:
         "Tools for troubleshooting and debugging various platform issues",
@@ -62,8 +72,8 @@ export const SettingsNavigation = () => {
       description: "Tools for deleting testing data from the platform",
       href: "/settings/testing/",
       icon: faVial,
-      iconForeground: "text-movet-blue",
-      iconBackground: "bg-movet-blue bg-opacity-50",
+      iconForeground: "text-movet-red",
+      iconBackground: "bg-movet-red bg-opacity-50",
     },
   ];
   return (

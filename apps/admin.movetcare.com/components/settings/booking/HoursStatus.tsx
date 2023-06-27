@@ -27,9 +27,7 @@ export const HoursStatus = () => {
   const [isLoadingStatus, setIsLoadingStatus] = useState(true);
   const [error, setError] = useState<any>(null);
   const [winterMode, setWinterMode] = useState<any>(null);
-  const [closures, setClosures] = useState<any>(null);
   const [hours, setHours] = useState<any>(null);
-  const [hoursStatus, setHoursStatus] = useState<any>(null);
   const [boutiqueStatus, setBoutiqueStatus] = useState<boolean>(false);
   const [clinicStatus, setClinicStatus] = useState<boolean>(false);
   const [housecallStatus, setHousecallStatus] = useState<boolean>(false);
@@ -168,37 +166,10 @@ export const HoursStatus = () => {
         setIsLoadingStatus(false);
       }
     );
-    const unsubscribeClosuresConfiguration = onSnapshot(
-      doc(firestore, "configuration", "closures"),
-      (doc: any) => {
-        setClosures(doc.data()?.closureDates || null);
-        setIsLoadingStatus(false);
-      },
-      (error: any) => {
-        setError(error?.message || error);
-        setIsLoadingStatus(false);
-      }
-    );
     const unsubscribeHoursConfiguration = onSnapshot(
       doc(firestore, "configuration", "openings"),
       (doc: any) => {
         setHours(doc.data()?.openingDates || null);
-        setIsLoadingStatus(false);
-      },
-      (error: any) => {
-        setError(error?.message || error);
-        setIsLoadingStatus(false);
-      }
-    );
-    const unsubscribehoursStatusConfiguration = onSnapshot(
-      doc(firestore, "configuration", "hours_status"),
-      (doc: any) => {
-        setHoursStatus({
-          boutiqueStatus: doc.data()?.boutiqueStatus || null,
-          clinicStatus: doc.data()?.clinicStatus || null,
-          housecallStatus: doc.data()?.housecallStatus || null,
-          walkinsStatus: doc.data()?.walkinsStatus || null,
-        });
         setIsLoadingStatus(false);
       },
       (error: any) => {
@@ -294,6 +265,8 @@ export const HoursStatus = () => {
     return () => {
       unsubscribeBookingConfiguration();
       unsubscribeHoursStatusConfiguration();
+      unsubscribeHoursConfiguration();
+      unsubscribeWinterModeConfiguration();
     };
   }, []);
 
@@ -442,7 +415,12 @@ export const HoursStatus = () => {
       <Hours
         winterMode={winterMode}
         hours={hours}
-        hoursStatus={hoursStatus}
+        hoursStatus={{
+          boutiqueStatus,
+          clinicStatus,
+          housecallStatus,
+          walkinsStatus,
+        }}
         previewMode
       />
       <h3>HOURS STATUS OVERRIDES & AUTOMATION</h3>

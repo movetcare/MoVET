@@ -472,7 +472,6 @@ export const Hours = ({
                     welcome to pull up to the clinic, drop your pet with us and
                     go find parking.
                   </p>
-
                   <a
                     href="https://movetcare.com/parking.png"
                     target="_blank"
@@ -705,32 +704,34 @@ export const Hours = ({
             <h2 className="text-4xl text-center mb-8">Hours of Operation</h2>
           )}
           <div className="flex flex-col justify-center items-center rounded-xl bg-white p-8">
-            <div className="sm:px-6">
-              <iframe
-                title="Google Map of MoVET @ Belleview Station"
-                loading="lazy"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
-                className="w-full h-80 rounded-xl"
-              />
-              <p className="w-full text-center text-sm italic mt-6 md:mt-4">
-                * Please leave ample time before your appointment. You are
-                welcome to pull up to the clinic, drop your pet with us and go
-                find parking.
-              </p>
-              <a
-                href="https://movetcare.com/parking.png"
-                target="_blank"
-                className="flex flex-row items-center justify-center w-full text-center text-sm text-movet-black mt-8 md:mt-4 font-extrabold hover:text-movet-red duration-300 ease-in-out"
-                rel="noreferrer"
-              >
-                <span className="w-6 h-6 mr-1">
-                  <FontAwesomeIcon icon={faParking} className="mt-1" />
-                </span>
-                <span>View Parking Map</span>
-              </a>
-            </div>
+            {!previewMode && (
+              <div className="sm:px-6">
+                <iframe
+                  title="Google Map of MoVET @ Belleview Station"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
+                  className="w-full h-80 rounded-xl"
+                />
+                <p className="w-full text-center text-sm italic mt-6 md:mt-4">
+                  * Please leave ample time before your appointment. You are
+                  welcome to pull up to the clinic, drop your pet with us and go
+                  find parking.
+                </p>
+                <a
+                  href="https://movetcare.com/parking.png"
+                  target="_blank"
+                  className="flex flex-row items-center justify-center w-full text-center text-sm text-movet-black mt-8 md:mt-4 font-extrabold hover:text-movet-red duration-300 ease-in-out"
+                  rel="noreferrer"
+                >
+                  <span className="w-6 h-6 mr-1">
+                    <FontAwesomeIcon icon={faParking} className="mt-1" />
+                  </span>
+                  <span>View Parking Map</span>
+                </a>
+              </div>
+            )}
             <div className="mt-8 w-full max-w-lg whitespace-nowrap">
               <FontAwesomeIcon
                 icon={faHospital}
