@@ -96,27 +96,90 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
     housecallAutomationStatus,
     boutiqueAutomationStatus,
     walkinsAutomationStatus,
-    automatedOpenTimeSunday,
-    automatedCloseTimeSunday,
-    automatedOpenTimeMonday,
-    automatedCloseTimeMonday,
-    automatedOpenTimeTuesday,
-    automatedCloseTimeTuesday,
-    automatedOpenTimeWednesday,
-    automatedCloseTimeWednesday,
-    automatedOpenTimeThursday,
-    automatedCloseTimeThursday,
-    automatedOpenTimeFriday,
-    automatedCloseTimeFriday,
-    automatedOpenTimeSaturday,
-    automatedCloseTimeSaturday,
-    isOpenMondayAutomation,
-    isOpenTuesdayAutomation,
-    isOpenWednesdayAutomation,
-    isOpenThursdayAutomation,
-    isOpenFridayAutomation,
-    isOpenSaturdayAutomation,
-    isOpenSundayAutomation,
+    automatedClinicOpenTimeSunday,
+    automatedClinicCloseTimeSunday,
+    automatedClinicOpenTimeMonday,
+    automatedClinicCloseTimeMonday,
+    automatedClinicOpenTimeTuesday,
+    automatedClinicCloseTimeTuesday,
+    automatedClinicOpenTimeWednesday,
+    automatedClinicCloseTimeWednesday,
+    automatedClinicOpenTimeThursday,
+    automatedClinicCloseTimeThursday,
+    automatedClinicOpenTimeFriday,
+    automatedClinicCloseTimeFriday,
+    automatedClinicOpenTimeSaturday,
+    automatedClinicCloseTimeSaturday,
+    isOpenMondayClinicAutomation,
+    isOpenTuesdayClinicAutomation,
+    isOpenWednesdayClinicAutomation,
+    isOpenThursdayClinicAutomation,
+    isOpenFridayClinicAutomation,
+    isOpenSaturdayClinicAutomation,
+    isOpenSundayClinicAutomation,
+    automatedHousecallOpenTimeSunday,
+    automatedHousecallCloseTimeSunday,
+    automatedHousecallOpenTimeMonday,
+    automatedHousecallCloseTimeMonday,
+    automatedHousecallOpenTimeTuesday,
+    automatedHousecallCloseTimeTuesday,
+    automatedHousecallOpenTimeWednesday,
+    automatedHousecallCloseTimeWednesday,
+    automatedHousecallOpenTimeThursday,
+    automatedHousecallCloseTimeThursday,
+    automatedHousecallOpenTimeFriday,
+    automatedHousecallCloseTimeFriday,
+    automatedHousecallOpenTimeSaturday,
+    automatedHousecallCloseTimeSaturday,
+    isOpenMondayHousecallAutomation,
+    isOpenTuesdayHousecallAutomation,
+    isOpenWednesdayHousecallAutomation,
+    isOpenThursdayHousecallAutomation,
+    isOpenFridayHousecallAutomation,
+    isOpenSaturdayHousecallAutomation,
+    isOpenSundayHousecallAutomation,
+    automatedBoutiqueOpenTimeSunday,
+    automatedBoutiqueCloseTimeSunday,
+    automatedBoutiqueOpenTimeMonday,
+    automatedBoutiqueCloseTimeMonday,
+    automatedBoutiqueOpenTimeTuesday,
+    automatedBoutiqueCloseTimeTuesday,
+    automatedBoutiqueOpenTimeWednesday,
+    automatedBoutiqueCloseTimeWednesday,
+    automatedBoutiqueOpenTimeThursday,
+    automatedBoutiqueCloseTimeThursday,
+    automatedBoutiqueOpenTimeFriday,
+    automatedBoutiqueCloseTimeFriday,
+    automatedBoutiqueOpenTimeSaturday,
+    automatedBoutiqueCloseTimeSaturday,
+    isOpenMondayBoutiqueAutomation,
+    isOpenTuesdayBoutiqueAutomation,
+    isOpenWednesdayBoutiqueAutomation,
+    isOpenThursdayBoutiqueAutomation,
+    isOpenFridayBoutiqueAutomation,
+    isOpenSaturdayBoutiqueAutomation,
+    isOpenSundayBoutiqueAutomation,
+    automatedWalkInOpenTimeSunday,
+    automatedWalkInCloseTimeSunday,
+    automatedWalkInOpenTimeMonday,
+    automatedWalkInCloseTimeMonday,
+    automatedWalkInOpenTimeTuesday,
+    automatedWalkInCloseTimeTuesday,
+    automatedWalkInOpenTimeWednesday,
+    automatedWalkInCloseTimeWednesday,
+    automatedWalkInOpenTimeThursday,
+    automatedWalkInCloseTimeThursday,
+    automatedWalkInOpenTimeFriday,
+    automatedWalkInCloseTimeFriday,
+    automatedWalkInOpenTimeSaturday,
+    automatedWalkInCloseTimeSaturday,
+    isOpenMondayWalkInAutomation,
+    isOpenTuesdayWalkInAutomation,
+    isOpenWednesdayWalkInAutomation,
+    isOpenThursdayWalkInAutomation,
+    isOpenFridayWalkInAutomation,
+    isOpenSaturdayWalkInAutomation,
+    isOpenSundayWalkInAutomation,
   } = data;
   const deleteAutomationTasks = async (type: AutomationTypes) => {
     const taskId = type + "_hours_status_automation_";
@@ -321,55 +384,214 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
         )
         .catch((error: any) => throwError(error));
     };
-    if (isOpenMondayAutomation)
-      updateAutomationTask(
-        taskId + "monday_",
-        1,
-        automatedOpenTimeMonday,
-        automatedCloseTimeMonday
-      );
-    if (isOpenTuesdayAutomation)
-      updateAutomationTask(
-        taskId + "tuesday_",
-        2,
-        automatedOpenTimeTuesday,
-        automatedCloseTimeTuesday
-      );
-    if (isOpenWednesdayAutomation)
-      updateAutomationTask(
-        taskId + "wednesday_",
-        3,
-        automatedOpenTimeWednesday,
-        automatedCloseTimeWednesday
-      );
-    if (isOpenThursdayAutomation)
-      updateAutomationTask(
-        taskId + "thursday_",
-        4,
-        automatedOpenTimeThursday,
-        automatedCloseTimeThursday
-      );
-    if (isOpenFridayAutomation)
-      updateAutomationTask(
-        taskId + "friday_",
-        5,
-        automatedOpenTimeFriday,
-        automatedCloseTimeFriday
-      );
-    if (isOpenSaturdayAutomation)
-      updateAutomationTask(
-        taskId + "saturday_",
-        6,
-        automatedOpenTimeSaturday,
-        automatedCloseTimeSaturday
-      );
-    if (isOpenSundayAutomation)
-      updateAutomationTask(
-        taskId + "sunday_",
-        0,
-        automatedOpenTimeSunday,
-        automatedCloseTimeSunday
-      );
+    switch (type) {
+      case "clinic":
+        if (isOpenMondayClinicAutomation)
+          updateAutomationTask(
+            taskId + "monday_",
+            1,
+            automatedClinicOpenTimeMonday,
+            automatedClinicCloseTimeMonday
+          );
+        if (isOpenTuesdayClinicAutomation)
+          updateAutomationTask(
+            taskId + "tuesday_",
+            2,
+            automatedClinicOpenTimeTuesday,
+            automatedClinicCloseTimeTuesday
+          );
+        if (isOpenWednesdayClinicAutomation)
+          updateAutomationTask(
+            taskId + "wednesday_",
+            3,
+            automatedClinicOpenTimeWednesday,
+            automatedClinicCloseTimeWednesday
+          );
+        if (isOpenThursdayClinicAutomation)
+          updateAutomationTask(
+            taskId + "thursday_",
+            4,
+            automatedClinicOpenTimeThursday,
+            automatedClinicCloseTimeThursday
+          );
+        if (isOpenFridayClinicAutomation)
+          updateAutomationTask(
+            taskId + "friday_",
+            5,
+            automatedClinicOpenTimeFriday,
+            automatedClinicCloseTimeFriday
+          );
+        if (isOpenSaturdayClinicAutomation)
+          updateAutomationTask(
+            taskId + "saturday_",
+            6,
+            automatedClinicOpenTimeSaturday,
+            automatedClinicCloseTimeSaturday
+          );
+        if (isOpenSundayClinicAutomation)
+          updateAutomationTask(
+            taskId + "sunday_",
+            0,
+            automatedClinicOpenTimeSunday,
+            automatedClinicCloseTimeSunday
+          );
+        break;
+      case "boutique":
+        if (isOpenMondayBoutiqueAutomation)
+          updateAutomationTask(
+            taskId + "monday_",
+            1,
+            automatedBoutiqueOpenTimeMonday,
+            automatedBoutiqueCloseTimeMonday
+          );
+        if (isOpenTuesdayBoutiqueAutomation)
+          updateAutomationTask(
+            taskId + "tuesday_",
+            2,
+            automatedBoutiqueOpenTimeTuesday,
+            automatedBoutiqueCloseTimeTuesday
+          );
+        if (isOpenWednesdayBoutiqueAutomation)
+          updateAutomationTask(
+            taskId + "wednesday_",
+            3,
+            automatedBoutiqueOpenTimeWednesday,
+            automatedBoutiqueCloseTimeWednesday
+          );
+        if (isOpenThursdayBoutiqueAutomation)
+          updateAutomationTask(
+            taskId + "thursday_",
+            4,
+            automatedBoutiqueOpenTimeThursday,
+            automatedBoutiqueCloseTimeThursday
+          );
+        if (isOpenFridayBoutiqueAutomation)
+          updateAutomationTask(
+            taskId + "friday_",
+            5,
+            automatedBoutiqueOpenTimeFriday,
+            automatedBoutiqueCloseTimeFriday
+          );
+        if (isOpenSaturdayBoutiqueAutomation)
+          updateAutomationTask(
+            taskId + "saturday_",
+            6,
+            automatedBoutiqueOpenTimeSaturday,
+            automatedBoutiqueCloseTimeSaturday
+          );
+        if (isOpenSundayBoutiqueAutomation)
+          updateAutomationTask(
+            taskId + "sunday_",
+            0,
+            automatedBoutiqueOpenTimeSunday,
+            automatedBoutiqueCloseTimeSunday
+          );
+        break;
+      case "housecall":
+        if (isOpenMondayHousecallAutomation)
+          updateAutomationTask(
+            taskId + "monday_",
+            1,
+            automatedHousecallOpenTimeMonday,
+            automatedHousecallCloseTimeMonday
+          );
+        if (isOpenTuesdayHousecallAutomation)
+          updateAutomationTask(
+            taskId + "tuesday_",
+            2,
+            automatedHousecallOpenTimeTuesday,
+            automatedHousecallCloseTimeTuesday
+          );
+        if (isOpenWednesdayHousecallAutomation)
+          updateAutomationTask(
+            taskId + "wednesday_",
+            3,
+            automatedHousecallOpenTimeWednesday,
+            automatedHousecallCloseTimeWednesday
+          );
+        if (isOpenThursdayHousecallAutomation)
+          updateAutomationTask(
+            taskId + "thursday_",
+            4,
+            automatedHousecallOpenTimeThursday,
+            automatedHousecallCloseTimeThursday
+          );
+        if (isOpenFridayHousecallAutomation)
+          updateAutomationTask(
+            taskId + "friday_",
+            5,
+            automatedHousecallOpenTimeFriday,
+            automatedHousecallCloseTimeFriday
+          );
+        if (isOpenSaturdayHousecallAutomation)
+          updateAutomationTask(
+            taskId + "saturday_",
+            6,
+            automatedHousecallOpenTimeSaturday,
+            automatedHousecallCloseTimeSaturday
+          );
+        if (isOpenSundayHousecallAutomation)
+          updateAutomationTask(
+            taskId + "sunday_",
+            0,
+            automatedHousecallOpenTimeSunday,
+            automatedHousecallCloseTimeSunday
+          );
+        break;
+      case "walkins":
+        if (isOpenMondayWalkInAutomation)
+          updateAutomationTask(
+            taskId + "monday_",
+            1,
+            automatedWalkInOpenTimeMonday,
+            automatedWalkInCloseTimeMonday
+          );
+        if (isOpenTuesdayWalkInAutomation)
+          updateAutomationTask(
+            taskId + "tuesday_",
+            2,
+            automatedWalkInOpenTimeTuesday,
+            automatedWalkInCloseTimeTuesday
+          );
+        if (isOpenWednesdayWalkInAutomation)
+          updateAutomationTask(
+            taskId + "wednesday_",
+            3,
+            automatedWalkInOpenTimeWednesday,
+            automatedWalkInCloseTimeWednesday
+          );
+        if (isOpenThursdayWalkInAutomation)
+          updateAutomationTask(
+            taskId + "thursday_",
+            4,
+            automatedWalkInOpenTimeThursday,
+            automatedWalkInCloseTimeThursday
+          );
+        if (isOpenFridayWalkInAutomation)
+          updateAutomationTask(
+            taskId + "friday_",
+            5,
+            automatedWalkInOpenTimeFriday,
+            automatedWalkInCloseTimeFriday
+          );
+        if (isOpenSaturdayWalkInAutomation)
+          updateAutomationTask(
+            taskId + "saturday_",
+            6,
+            automatedWalkInOpenTimeSaturday,
+            automatedWalkInCloseTimeSaturday
+          );
+        if (isOpenSundayWalkInAutomation)
+          updateAutomationTask(
+            taskId + "sunday_",
+            0,
+            automatedWalkInOpenTimeSunday,
+            automatedWalkInCloseTimeSunday
+          );
+        break;
+      default:
+        break;
+    }
   };
   if (clinicAutomationStatus) await configureAutomationTasks("clinic");
   else await deleteAutomationTasks("clinic");
