@@ -97,16 +97,16 @@ const updateAutomationTask = (
       : `${automatedOpenTime}`.slice(3)?.length === 1
       ? `0${automatedOpenTime}`.slice(3)
       : `${automatedOpenTime}`.slice(3);
-  const closeHours =
-    automatedCloseTime.toString().length === 3
-      ? `0${automatedCloseTime}`.slice(0, 2)
-      : `${automatedCloseTime}`.slice(0, 2);
-  const closeMinutes =
-    automatedCloseTime.toString().length === 3
-      ? `0${automatedCloseTime}`.slice(2)
-      : `${automatedCloseTime}`.slice(3)?.length === 1
-      ? `0${automatedCloseTime}`.slice(3)
-      : `${automatedCloseTime}`.slice(3);
+  // const closeHours =
+  //   automatedCloseTime.toString().length === 3
+  //     ? `0${automatedCloseTime}`.slice(0, 2)
+  //     : `${automatedCloseTime}`.slice(0, 2);
+  // const closeMinutes =
+  //   automatedCloseTime.toString().length === 3
+  //     ? `0${automatedCloseTime}`.slice(2)
+  //     : `${automatedCloseTime}`.slice(3)?.length === 1
+  //     ? `0${automatedCloseTime}`.slice(3)
+  //     : `${automatedCloseTime}`.slice(3);
   const openDate = addMinutesToDateObject(
     new Date(
       nextDateMonth +
@@ -120,30 +120,30 @@ const updateAutomationTask = (
     ),
     300
   );
-  const closeDate = addMinutesToDateObject(
-    new Date(
-      nextDateMonth +
-        " " +
-        nextDateDate +
-        " ," +
-        nextDateYear +
-        " " +
-        [closeHours, ":", closeMinutes].join("") +
-        ":00"
-    ),
-    300
-  );
-  if (DEBUG) {
-    console.log("nextDateYear", nextDateYear);
-    console.log("nextDateMonth", nextDateMonth);
-    console.log("nextDateDate", nextDateDate);
-    console.log("openHours", openHours);
-    console.log("openMinutes", openMinutes);
-    console.log("closeHours", closeHours);
-    console.log("closeMinutes", closeMinutes);
-    console.log("openDate", openDate);
-    console.log("closeDate", closeDate);
-  }
+  // const closeDate = addMinutesToDateObject(
+  //   new Date(
+  //     nextDateMonth +
+  //       " " +
+  //       nextDateDate +
+  //       " ," +
+  //       nextDateYear +
+  //       " " +
+  //       [closeHours, ":", closeMinutes].join("") +
+  //       ":00"
+  //   ),
+  //   300
+  // );
+  // if (DEBUG) {
+  //   console.log("nextDateYear", nextDateYear);
+  //   console.log("nextDateMonth", nextDateMonth);
+  //   console.log("nextDateDate", nextDateDate);
+  //   console.log("openHours", openHours);
+  //   console.log("openMinutes", openMinutes);
+  //   console.log("closeHours", closeHours);
+  //   console.log("closeMinutes", closeMinutes);
+  //   console.log("openDate", openDate);
+  //   console.log("closeDate", closeDate);
+  // }
   admin
     .firestore()
     .collection("tasks_queue")

@@ -253,17 +253,17 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
         ),
         300
       );
-      if (DEBUG) {
-        console.log("nextDateYear", nextDateYear);
-        console.log("nextDateMonth", nextDateMonth);
-        console.log("nextDateDate", nextDateDate);
-        console.log("openHours", openHours);
-        console.log("openMinutes", openMinutes);
-        console.log("closeHours", closeHours);
-        console.log("closeMinutes", closeMinutes);
-        console.log("openDate", openDate);
-        console.log("closeDate", closeDate);
-      }
+      // if (DEBUG) {
+      //   console.log("nextDateYear", nextDateYear);
+      //   console.log("nextDateMonth", nextDateMonth);
+      //   console.log("nextDateDate", nextDateDate);
+      //   console.log("openHours", openHours);
+      //   console.log("openMinutes", openMinutes);
+      //   console.log("closeHours", closeHours);
+      //   console.log("closeMinutes", closeMinutes);
+      //   console.log("openDate", openDate);
+      //   console.log("closeDate", closeDate);
+      // }
       admin
         .firestore()
         .collection("tasks_queue")
