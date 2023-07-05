@@ -10,6 +10,28 @@ import { CallToAction } from "ui";
 const posts = [
   {
     isFeatured: true,
+    title:
+      "Pawsitive Vibes: Canine Massage for Optimal Veterinary Health and Wellness",
+    href: "/blog/canine-massage-with-patti-fluegel",
+    category: {
+      name: "Health & Wellness",
+      href: "#",
+      color: "bg-movet-yellow",
+    },
+    description:
+      "Just like humans, dogs can benefit greatly from the power of touch. Canine massage is not only a luxurious treat for your beloved pet, but it also offers a myriad of health benefits that promote relaxation, pain relief, and overall well-being.",
+    date: "July 5th, 2023",
+    datetime: "2023-06-05",
+    imageUrl: "/images/blog/canine-massage.png",
+    readingTime: "3 min",
+    author: {
+      name: "Patti Fluegel, VT, CCMT",
+      href: "#",
+      imageUrl: "/images/blog/patti-fluegel.png",
+    },
+  },
+  {
+    isFeatured: false,
     title: "Banish Doggy Breath and Get Kissable Canine Smiles Again!",
     href: "/blog/banish-bad-dog-breath",
     category: {
@@ -217,7 +239,7 @@ export default function Blog() {
                         <span
                           className={classNames(
                             post.category.color,
-                            "inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white"
+                            "inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white",
                           )}
                         >
                           {post.category.name}
@@ -275,7 +297,7 @@ export default function Blog() {
                 </div>
               ) : (
                 <div key={index}></div>
-              )
+              ),
             )}
           </div>
           <div className="mx-auto sm:pb-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
@@ -302,7 +324,7 @@ export default function Blog() {
                         <span
                           className={classNames(
                             post.category.color,
-                            "inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white"
+                            "inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white",
                           )}
                         >
                           {post.category.name}
@@ -348,7 +370,7 @@ export default function Blog() {
                 </div>
               ) : (
                 <Fragment key={index}></Fragment>
-              )
+              ),
             )}
           </div>
         </div>

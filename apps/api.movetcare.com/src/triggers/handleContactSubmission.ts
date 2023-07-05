@@ -100,11 +100,11 @@ export const handleContactSubmission = functions.firestore
             payload: {
               client: isClient?.uid || null,
               to: "info@movetcare.com",
-              bcc: "alex.rodriguez@movetcare.com",
+              // bcc: "alex.rodriguez@movetcare.com",
               replyTo: email,
               subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName}`,
               message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
-                phone
+                phone,
               )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
             },
           });
@@ -113,7 +113,7 @@ export const handleContactSubmission = functions.firestore
               type: 1,
               subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName} @ ${source}`,
               message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
-                phone
+                phone,
               )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
               client: isClient?.uid,
               patients: [],

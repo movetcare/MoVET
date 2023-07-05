@@ -41,7 +41,7 @@ export const sendBookingRequestAdminNotification = async ({
         if (DEBUG)
           console.log(
             "NOT isExistingClient bookingRef doc.data(): ",
-            doc.data()
+            doc.data(),
           );
         return doc.data();
       })
@@ -74,7 +74,7 @@ export const sendBookingRequestAdminNotification = async ({
     }<p><b>Client Email:</b> ${email}</p>${
       phone
         ? `<p><b>Client Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
-            phone?.replaceAll("+1", "")
+            phone?.replaceAll("+1", ""),
           )}</a></p>`
         : ""
     }
@@ -89,21 +89,21 @@ export const sendBookingRequestAdminNotification = async ({
   ${
     selectedDate
       ? `<p><b>Requested Date:</b> ${new Date(
-          selectedDate
+          selectedDate,
         ).toLocaleDateString()}</p>`
       : ""
   }${selectedTime ? `<p><b>Requested Time:</b> ${selectedTime}</p>` : ""}${
-      selectedTime === "Specific Time Preference" && specificTime !== ""
-        ? `<p><b>Specific Time Requested:</b> "${specificTime}"</p>`
-        : ""
-    }`;
+    selectedTime === "Specific Time Preference" && specificTime !== ""
+      ? `<p><b>Specific Time Requested:</b> "${specificTime}"</p>`
+      : ""
+  }`;
     if (DEBUG)
       console.log("Sending ADMIN Appointment Request for New Client", message);
     sendNotification({
       type: "email",
       payload: {
         to: "info@movetcare.com",
-        bcc: "alex.rodriguez@movetcare.com",
+        // bcc: "alex.rodriguez@movetcare.com",
         replyTo: email,
         subject: `MoVET | Appointment Request from ${
           firstName && lastName ? firstName + " " + lastName : email
@@ -165,7 +165,7 @@ export const sendBookingRequestAdminNotification = async ({
               {
                 type: "plain_text",
                 text: `${new Date(
-                  selectedDate
+                  selectedDate,
                 ).toLocaleDateString()} - ${selectedTime} ${
                   specificTime ? `- ${specificTime}` : ""
                 }`,

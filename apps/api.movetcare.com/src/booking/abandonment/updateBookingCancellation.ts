@@ -18,7 +18,7 @@ export const updateBookingCancellation = async (
     cancelReason,
     cancelDetails,
     selectedPatients,
-  }: Booking
+  }: Booking,
 ) => {
   if (cancelReason) {
     let message = `<p>CANCELLATION REASON: ${cancelReason}</p><p>CANCELLATION DETAILS: ${
@@ -29,16 +29,12 @@ export const updateBookingCancellation = async (
       selectedPatients.forEach((selectedPatient: any) => {
         patients.map((patient: any) => {
           if (selectedPatient === patient?.id)
-            allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
-              patient?.name
-            }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
-              patient?.gender
-            }</p>${
+            allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${patient?.name}</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${patient?.gender}</p>${
               patient?.illnessDetails
                 ? `<p><b>Minor Illness:</b> ${
                     patient?.illnessDetails
                       ? `${JSON.stringify(
-                          patient?.illnessDetails?.symptoms
+                          patient?.illnessDetails?.symptoms,
                         )} - ${patient?.illnessDetails?.notes}`
                       : " None"
                   }</p>`
@@ -66,31 +62,31 @@ export const updateBookingCancellation = async (
     ${
       requestedDateTime?.date
         ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
-            requestedDateTime.date
+            requestedDateTime.date,
           )}</p>`
         : ""
     }${
-        requestedDateTime?.time
-          ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
-          : ""
-      }${
-        location
-          ? `<p><b>Requested Location:</b> ${location} ${
-              address ? `- ${address?.full} (${address?.info})` : ""
-            }</p>`
-          : ""
-      }${
-        selectedStaff
-          ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
-          : ""
-      }<p></p><p>We look forward to seeing you soon!</p><p>- The MoVET Team</p>`;
+      requestedDateTime?.time
+        ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
+        : ""
+    }${
+      location
+        ? `<p><b>Requested Location:</b> ${location} ${
+            address ? `- ${address?.full} (${address?.info})` : ""
+          }</p>`
+        : ""
+    }${
+      selectedStaff
+        ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
+        : ""
+    }<p></p><p>We look forward to seeing you soon!</p><p>- The MoVET Team</p>`;
 
     const subject = `Appointment Booking Request Cancellation Reason Provided: "${cancelReason?.toUpperCase()}"`;
     sendNotification({
       type: "email",
       payload: {
         to: "info@movetcare.com",
-        bcc: "alex.rodriguez@movetcare.com",
+        // bcc: "alex.rodriguez@movetcare.com",
         replyTo: client?.email,
         subject,
         message,

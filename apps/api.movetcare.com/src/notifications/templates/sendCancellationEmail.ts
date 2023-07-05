@@ -7,11 +7,11 @@ import { sendNotification } from "../sendNotification";
 
 export const sendCancellationEmail = async (
   clientId: string,
-  appointmentId: string
+  appointmentId: string,
 ): Promise<void> => {
   if (DEBUG)
     console.log(
-      `sendCancellationEmail -> clientId: ${clientId}, appointmentId: ${appointmentId}`
+      `sendCancellationEmail -> clientId: ${clientId}, appointmentId: ${appointmentId}`,
     );
 
   const { email, displayName } = await getAuthUserById(clientId, [
@@ -37,7 +37,7 @@ export const sendCancellationEmail = async (
     const petNames = appointment?.patients.map((patient: any, index: number) =>
       index !== appointment?.patients.length - 1
         ? `${patient?.name}, `
-        : ` and ${patient?.name}`
+        : ` and ${patient?.name}`,
     );
 
     if (DEBUG) console.log("petNames -> ", petNames);
@@ -49,14 +49,14 @@ export const sendCancellationEmail = async (
     }<p>We are reaching out to let you know that we have received your request to cancel your appointment for ${
       petNames ? petNames : ""
     } on ${getDateStringFromDate(
-      appointment?.start.toDate()
+      appointment?.start.toDate(),
     )}</p><p>Please reach out if you have any questions!</p><p>- The MoVET Team</p>`;
 
     if (DEBUG) console.log("emailText -> ", emailText);
 
     const emailConfig: EmailConfiguration = {
       to: email,
-      bcc: "info@movetcare.com",
+      // bcc: "info@movetcare.com",
       subject: "Your MoVET appointment has been cancelled",
       message: emailText,
     };

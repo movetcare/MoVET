@@ -42,7 +42,7 @@ export const sendBookingRequestClientNotification = async ({
     }<p><b>Email:</b> ${email}</p>${
       phone
         ? `<p><b>Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
-            phone?.replaceAll("+1", "")
+            phone?.replaceAll("+1", ""),
           )}</a></p>`
         : ""
     }
@@ -57,14 +57,14 @@ export const sendBookingRequestClientNotification = async ({
   ${
     selectedDate
       ? `<p><b>Requested Date:</b> ${new Date(
-          selectedDate
+          selectedDate,
         ).toLocaleDateString()}</p>`
       : ""
   }${selectedTime ? `<p><b>Requested Time:</b> ${selectedTime}</p>` : ""}${
-      selectedTime === "Specific Time Preference" && specificTime !== ""
-        ? `<p><b>Specific Time Requested:</b> "${specificTime}"</p>`
-        : ""
-    }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
+    selectedTime === "Specific Time Preference" && specificTime !== ""
+      ? `<p><b>Specific Time Requested:</b> "${specificTime}"</p>`
+      : ""
+  }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
     if (DEBUG)
       console.log("Sending CLIENT Appointment Request for New Client", message);
     sendNotification({
@@ -72,7 +72,7 @@ export const sendBookingRequestClientNotification = async ({
       payload: {
         client: client?.uid,
         to: email,
-        bcc: "alex.rodriguez@movetcare.com",
+        // bcc: "alex.rodriguez@movetcare.com",
         replyTo: "info@movetcare.com",
         subject: "MoVET | We have received your appointment request!",
         message,

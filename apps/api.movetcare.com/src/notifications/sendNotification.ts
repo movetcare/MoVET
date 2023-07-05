@@ -24,7 +24,7 @@ export const sendNotification = async ({
 }): Promise<void> => {
   if (DEBUG) {
     console.log(
-      `sendNotification => NOTIFICATION OF TYPE "${type.toUpperCase()}" TRIGGERED`
+      `sendNotification => NOTIFICATION OF TYPE "${type.toUpperCase()}" TRIGGERED`,
     );
     console.log("sendNotification => PAYLOAD", payload);
   }
@@ -33,7 +33,7 @@ export const sendNotification = async ({
       console.log("sendSlackMessageToChannel message", message);
       console.log(
         "sendSlackMessageToChannel payload?.message",
-        JSON.stringify(payload?.message)
+        JSON.stringify(payload?.message),
       );
     }
     const channelId: any = await findSlackChannel(
@@ -41,28 +41,28 @@ export const sendNotification = async ({
         ? payload?.channel
         : environment.type === "production"
         ? "production-logs"
-        : "development-feed"
+        : "development-feed",
     );
     if (DEBUG) console.log("sendNotification => channelId", channelId);
     if (Array.isArray(payload?.message)) {
       if (DEBUG)
         console.log(
           "sendNotification => SENDING SLACK MESSAGE AS A BLOCK",
-          JSON.stringify(payload?.message)
+          JSON.stringify(payload?.message),
         );
       sendSlackMessage(channelId, null, payload?.message);
     } else if (payload?.message !== null && message === null) {
       if (DEBUG)
         console.log(
           "sendNotification => SENDING SLACK MESSAGE FROM PAYLOAD",
-          payload?.message
+          payload?.message,
         );
       sendSlackMessage(channelId, payload?.message);
     } else if (message) {
       if (DEBUG)
         console.log(
           "sendNotification => SENDING SLACK MESSAGE (HARDCODED)",
-          payload?.message
+          payload?.message,
         );
       sendSlackMessage(channelId, message);
     }
@@ -81,7 +81,7 @@ export const sendNotification = async ({
             ? payload?.to || "info@movetcare.com"
             : "support+staging@movetcare.com",
         from: payload?.from || "info@movetcare.com",
-        bcc: "alex.rodriguez@movetcare.com",
+        // bcc: "alex.rodriguez@movetcare.com",
         replyTo: payload?.replyTo || "info@movetcare.com",
         subject:
           (environment.type === "staging" ? "(STAGING) " : "") +
@@ -102,7 +102,7 @@ export const sendNotification = async ({
                 : "Client"
             }:\n\nTO: ${emailConfig.to}\n\nFROM: ${
               emailConfig.from
-            }\n\nSUBJECT: ${emailConfig.subject}`
+            }\n\nSUBJECT: ${emailConfig.subject}`,
           );
         else if (
           !emailConfig?.to?.toLowerCase()?.includes("+test") &&
@@ -133,7 +133,7 @@ export const sendNotification = async ({
                   .catch((error: any) => throwError(error));
               }
               sendSlackMessageToChannel(
-                `:e-mail: System Email Sent:\n\nTO: ${emailConfig.to}\n\nFROM: ${emailConfig.from}\n\nSUBJECT: ${emailConfig.subject}`
+                `:e-mail: System Email Sent:\n\nTO: ${emailConfig.to}\n\nFROM: ${emailConfig.from}\n\nSUBJECT: ${emailConfig.subject}`,
               );
             })
             .catch((error: any) => {
@@ -143,7 +143,7 @@ export const sendNotification = async ({
                   emailConfig.to
                 }\n\nFROM: ${emailConfig.from}\n\nSUBJECT: ${
                   emailConfig.subject
-                }\n\nREASON: \`\`\`${JSON.stringify(error)}}\`\`\``
+                }\n\nREASON: \`\`\`${JSON.stringify(error)}}\`\`\``,
               );
               if (payload?.client)
                 createProVetNote({
@@ -185,13 +185,14 @@ export const sendNotification = async ({
           .collection("clients")
           .doc(`${payload?.client}`)
           .get()
-          .then((doc: any) =>
-            doc
-              .data()
-              ?.phone.replace("(", "")
-              .replace(")", "")
-              .replace("-", "")
-              .replace(" ", "")
+          .then(
+            (doc: any) =>
+              doc
+                .data()
+                ?.phone.replace("(", "")
+                .replace(")", "")
+                .replace("-", "")
+                .replace(" ", ""),
           )
           .catch((error: any) => throwError(error));
         if (phone) {
@@ -235,10 +236,10 @@ export const sendNotification = async ({
                   if (DEBUG)
                     console.log(
                       "processGoToWebhook => GOTO SMS RESPONSE",
-                      response.data
+                      response.data,
                     );
                   sendSlackMessageToChannel(
-                    `:speech_balloon: System SMS Sent:\n\nTO: ${phone}\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}`
+                    `:speech_balloon: System SMS Sent:\n\nTO: ${phone}\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}`,
                   );
                   createProVetNote({
                     type: 0,
@@ -264,11 +265,9 @@ export const sendNotification = async ({
                 .catch(async (error: any) => {
                   const handleError = (error: any) => {
                     sendSlackMessageToChannel(
-                      `:speech_balloon: System SMS FAILED:\n\nTO: ${phone}\n\nCLIENT: ${
-                        payload?.client
-                      }\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${
-                        payload?.message
-                      }\n\nREASON: ${error?.message || JSON.stringify(error)}`
+                      `:speech_balloon: System SMS FAILED:\n\nTO: ${phone}\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}\n\nREASON: ${
+                        error?.message || JSON.stringify(error)
+                      }`,
                     );
                     createProVetNote({
                       type: 0,
@@ -285,7 +284,7 @@ export const sendNotification = async ({
                   };
                   if (error.message.includes("401")) {
                     const newAccessToken = await fetchNewGoToAccessToken(
-                      refreshToken
+                      refreshToken,
                     );
                     if (DEBUG) console.log("newAccessToken", newAccessToken);
                     if (newAccessToken)
@@ -307,10 +306,10 @@ export const sendNotification = async ({
                           if (DEBUG)
                             console.log(
                               "processGoToWebhook => GOTO SMS RESPONSE",
-                              response.data
+                              response.data,
                             );
                           sendSlackMessageToChannel(
-                            `:speech_balloon: System SMS Sent:\n\nTO: ${phone}\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}`
+                            `:speech_balloon: System SMS Sent:\n\nTO: ${phone}\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}`,
                           );
                           createProVetNote({
                             type: 0,
@@ -349,31 +348,27 @@ export const sendNotification = async ({
                 to: phone,
               });
             sendSlackMessageToChannel(
-              `:speech_balloon: System SMS SKIPPED:\n\nTO: ${phone}\n\nCLIENT: ${
-                payload?.client
-              }\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${
-                payload?.message
-              }\n\nCLIENT SMS ENABLED: ${
+              `:speech_balloon: System SMS SKIPPED:\n\nTO: ${phone}\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}\n\nCLIENT SMS ENABLED: ${
                 userNotificationSettings &&
                 userNotificationSettings?.sendSms.toString()
-              }`
+              }`,
             );
           }
         } else {
           if (DEBUG)
             console.log(
               "DID NOT SEND SMS - MISSING CLIENT PHONE NUMBER",
-              payload?.subject
+              payload?.subject,
             );
           sendSlackMessageToChannel(
-            `:speech_balloon: System SMS FAILED:\n\nTO: ${phone}\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}\n\nREASON: MISSING CLIENT PHONE NUMBER`
+            `:speech_balloon: System SMS FAILED:\n\nTO: ${phone}\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}\n\nREASON: MISSING CLIENT PHONE NUMBER`,
           );
         }
       } else {
         if (DEBUG)
           console.log("DID NOT SEND SMS - MISSING CLIENT ID", payload?.subject);
         sendSlackMessageToChannel(
-          `:speech_balloon: System SMS FAILED:\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}\n\nREASON: MISSING CLIENT ID`
+          `:speech_balloon: System SMS FAILED:\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}\n\nREASON: MISSING CLIENT ID`,
         );
       }
       break;

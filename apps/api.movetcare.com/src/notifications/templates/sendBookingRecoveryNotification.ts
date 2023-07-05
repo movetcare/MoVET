@@ -43,7 +43,7 @@ export const sendBookingRecoveryNotification = async ({
             console.log(
               // eslint-disable-next-line quotes
               "FAILED TO SEND BOOKING ABANDONMENT RECOVERY NOTIFICATION - INCORRECT \"TYPE\" ( '1_HOUR' | '24_HOUR' | '72_HOUR')",
-              type
+              type,
             );
           break;
       }
@@ -52,13 +52,13 @@ export const sendBookingRecoveryNotification = async ({
     console.log(
       // eslint-disable-next-line quotes
       'FAILED TO SEND BOOKING ABANDONMENT RECOVERY NOTIFICATION - MISSING "ID" AND/OR "TYPE"',
-      { id, type }
+      { id, type },
     );
 };
 
 const sendAdminBookingRecoveryNotification = async (
   booking: Booking,
-  type: "24_HOUR" | "72_HOUR" | "1_HOUR"
+  type: "24_HOUR" | "72_HOUR" | "1_HOUR",
 ) => {
   const { client, id }: any = booking;
   const { email, displayName, phone, isExistingClient } = client;
@@ -80,16 +80,12 @@ const sendAdminBookingRecoveryNotification = async (
       selectedPatients?.forEach((selectedPatient: any) => {
         patients.map((patient: any) => {
           if (selectedPatient === patient?.id)
-            allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${
-              patient?.name
-            }</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${
-              patient?.gender
-            }</p>${
+            allPatients += `<p><b>------------- PATIENT -------------</b></p><p><b>Name:</b> ${patient?.name}</p><p><b>Species:</b> ${patient?.species}</p><p><b>Gender:</b> ${patient?.gender}</p>${
               patient?.illnessDetails
                 ? `<p><b>Minor Illness:</b> ${
                     patient?.illnessDetails
                       ? `${JSON.stringify(
-                          patient?.illnessDetails?.symptoms
+                          patient?.illnessDetails?.symptoms,
                         )} - ${patient?.illnessDetails?.notes}`
                       : " None"
                   }</p>`
@@ -119,13 +115,13 @@ const sendAdminBookingRecoveryNotification = async (
       ?.toString()}</p><p><b>Last Step:</b> ${step}</p>${
       displayName
         ? `<p><b>Client Name:</b> ${getClientFirstNameFromDisplayName(
-            displayName
+            displayName,
           )}</p>`
         : ""
     }<p><b>Client Email:</b> ${email}</p>${
       phone
         ? `<p><b>Client Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
-            phone?.replaceAll("+1", "")
+            phone?.replaceAll("+1", ""),
           )}</a></p>`
         : ""
     }${
@@ -138,26 +134,26 @@ const sendAdminBookingRecoveryNotification = async (
       ? `<p><b>Reason:</b> ${reason.label}</p>`
       : "<p><b>Reason:</b> Establish Care Exam</p>"
   }${
-      requestedDateTime?.date
-        ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
-            requestedDateTime.date
-          )}</p>`
-        : ""
-    }${
-      requestedDateTime?.time
-        ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
-        : ""
-    }${
-      location
-        ? `<p><b>Requested Location:</b> ${location} ${
-            address ? `- ${address?.full} (${address?.info})` : ""
-          }</p>`
-        : ""
-    }${
-      selectedStaff
-        ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
-        : ""
-    }`;
+    requestedDateTime?.date
+      ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
+          requestedDateTime.date,
+        )}</p>`
+      : ""
+  }${
+    requestedDateTime?.time
+      ? `<p><b>Requested Time:</b> ${requestedDateTime.time}</p>`
+      : ""
+  }${
+    location
+      ? `<p><b>Requested Location:</b> ${location} ${
+          address ? `- ${address?.full} (${address?.info})` : ""
+        }</p>`
+      : ""
+  }${
+    selectedStaff
+      ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
+      : ""
+  }`;
 
     if (id && email)
       sendNotification({
@@ -165,7 +161,7 @@ const sendAdminBookingRecoveryNotification = async (
         payload: {
           to: "info@movetcare.com",
           replyTo: email,
-          bcc: "alex.rodriguez@movetcare.com",
+          // bcc: "alex.rodriguez@movetcare.com",
           subject: `${
             displayName ? displayName : email ? email : ""
           } abandoned their appointment booking request on step "${step}" ${
@@ -200,7 +196,7 @@ const sendAdminBookingRecoveryNotification = async (
     }<p><b>Client Email:</b> ${email}</p>${
       phone
         ? `<p><b>Client Phone:</b> <a href="tel://${phone}">${formatPhoneNumber(
-            phone?.replaceAll("+1", "")
+            phone?.replaceAll("+1", ""),
           )}</a></p>`
         : ""
     }
@@ -215,21 +211,21 @@ const sendAdminBookingRecoveryNotification = async (
   ${
     selectedDate
       ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
-          new Date(selectedDate)?.toString()
+          new Date(selectedDate)?.toString(),
         )}</p>`
       : ""
   }${selectedTime ? `<p><b>Requested Time:</b> ${selectedTime}</p>` : ""}${
-      selectedTime === "Specific Time Preference" && specificTime !== ""
-        ? `<p><b>Specific Time Requested:</b> "${specificTime}"</p>`
-        : ""
-    }`;
+    selectedTime === "Specific Time Preference" && specificTime !== ""
+      ? `<p><b>Specific Time Requested:</b> "${specificTime}"</p>`
+      : ""
+  }`;
     if (id && email)
       sendNotification({
         type: "email",
         payload: {
           to: "info@movetcare.com",
           replyTo: email,
-          bcc: "alex.rodriguez@movetcare.com",
+          // bcc: "alex.rodriguez@movetcare.com",
           subject: `${
             displayName ? displayName : email ? email : ""
           } abandoned their appointment booking request" ${
@@ -296,7 +292,7 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
           type: "email",
           payload: {
             ...emailConfig,
-            bcc: "alex.rodriguez@movetcare.com",
+            // bcc: "alex.rodriguez@movetcare.com",
             client: client.uid,
           },
         });
@@ -304,18 +300,18 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
     } else if (DEBUG)
       console.log(
         "FAILED TO SEND ONE HOUR BOOKING RECOVERY NOTIFICATION EMAIL",
-        booking
+        booking,
       );
   }
 };
 
 const sendTwentyFourHourBookingRecoveryNotification = async (
-  booking: Booking
+  booking: Booking,
 ) => {
   if (DEBUG)
     console.log(
       "SENDING TWENTY FOUR HOUR BOOKING RECOVERY NOTIFICATION",
-      booking
+      booking,
     );
   const { isActive, client, id } = booking;
   const { email, uid } = client || {};
@@ -363,7 +359,7 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
           type: "email",
           payload: {
             ...emailConfig,
-            bcc: "alex.rodriguez@movetcare.com",
+            // bcc: "alex.rodriguez@movetcare.com",
             client: client.uid,
           },
         });
@@ -371,18 +367,18 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
     } else if (DEBUG)
       console.log(
         "FAILED TO SEND TWENTY FOUR HOUR BOOKING RECOVERY NOTIFICATION",
-        booking
+        booking,
       );
   }
 };
 
 const sendSeventyTwoHourBookingRecoveryNotification = async (
-  booking: Booking
+  booking: Booking,
 ) => {
   if (DEBUG)
     console.log(
       "SENDING SEVENTY TWO HOUR BOOKING RECOVERY NOTIFICATION",
-      booking
+      booking,
     );
   const { isActive, client, id } = booking;
   const { uid, email } = client || {};
@@ -428,6 +424,6 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
   } else if (DEBUG)
     console.log(
       "FAILED TO SEND SEVENTY TWO HOUR BOOKING RECOVERY NOTIFICATION",
-      booking
+      booking,
     );
 };
