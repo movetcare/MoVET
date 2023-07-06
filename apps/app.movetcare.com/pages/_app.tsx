@@ -10,7 +10,7 @@ import ErrorBoundary from "components/ErrorBoundary";
 import { useState, useEffect } from "react";
 
 const AnalyticsTracker = dynamic(() =>
-  import("ui").then((mod) => mod.AnalyticsTracker)
+  import("ui").then((mod) => mod.AnalyticsTracker),
 );
 
 const MoVET = ({ Component, pageProps }: AppProps) => {
@@ -25,6 +25,10 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
         <meta
           name="description"
           content="Sign in to your MoVET account to manage and access your pet's data and schedule appointments!"
+        />
+        <meta
+          name="apple-itunes-app"
+          content="app-id=1478031556, app-argument=webapp"
         />
       </Head>
       {loadAnalytics && <AnalyticsTracker trackerId="G-Y9896HXDFN" />}

@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@types/lodash.kebabcase": "^4.1.7",
-    "@types/node": "^20.3.3",
+    "@types/node": "^20.4.0",
     "@types/react": "18.2.14",
     "@types/react-datepicker": "^4.11.2",
     "@types/uuid": "^9.0.2",
@@ -47,7 +47,7 @@
     "eslint": "8.44.0",
     "eslint-config-custom": "workspace:*",
     "next-transpile-modules": "10.0.0",
-    "postcss": "^8.4.24",
+    "postcss": "^8.4.25",
     "react-select": "^5.7.3",
     "schemas": "workspace:*",
     "tailwindcss": "^3.3.2",
