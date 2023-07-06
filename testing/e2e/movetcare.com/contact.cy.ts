@@ -26,11 +26,11 @@ describe("contact-page-loads", () => {
     cy.get("@submit").contains("Submit").click();
     cy.get("p.text-movet-red").contains("An email address is required");
     cy.get("p.text-movet-red").contains("A message is required");
-    cy.get("form.grid input[name='email']").type("CYPRESS");
+    cy.get(".grid input[name='email']").type("CYPRESS");
     cy.get("@submit").contains("Submit").click();
     cy.get("p.text-movet-red").contains("Email must be a valid email address");
-    cy.get("form.grid input[name='email']").type(
-      "CYPRESS_CONTACT_PAGE+test@TEST.COM"
+    cy.get(".grid input[name='email']").type(
+      "CYPRESS_CONTACT_PAGE+test@TEST.COM",
     );
     cy.get("p.text-movet-red")
       .contains("Email must be a valid email address")
@@ -48,8 +48,8 @@ describe("contact-page-loads", () => {
     cy.get("p.text-movet-red").contains("An email address is required");
     cy.get("p.text-movet-red").contains("A message is required");
     cy.get("input[name='lastName']").type("TEST USER (Safe to Delete)");
-    cy.get("form.grid input[name='email']").type(
-      Cypress.env().contactFormTestUserEmail
+    cy.get(".grid input[name='email']").type(
+      Cypress.env().contactFormTestUserEmail,
     );
     cy.get("input[name='phone-number']").type("9999999666");
     cy.get("textarea[name='message']").type("Cypress Test 123...");
