@@ -43,7 +43,7 @@ export const HoursStatus = () => {
       (error: any) => {
         setError(error?.message || error);
         setIsLoading(false);
-      }
+      },
     );
     const unsubscribeHoursConfiguration = onSnapshot(
       doc(firestore, "configuration", "openings"),
@@ -54,38 +54,38 @@ export const HoursStatus = () => {
       (error: any) => {
         setError(error?.message || error);
         setIsLoading(false);
-      }
+      },
     );
     const unsubscribeHoursStatusConfiguration = onSnapshot(
       doc(firestore, "configuration", "hours_status"),
-      (doc: any) => {
-        setBoutiqueStatusOverride(doc.data()?.boutiqueStatus || false);
-        setClinicStatusOverride(doc.data()?.clinicStatus || false);
-        setHousecallStatusOverride(doc.data()?.housecallStatus || false);
-        setWalkinsStatusOverride(doc.data()?.walkinsStatus || false);
-        setIsLoading(false);
-      },
-      (error: any) => {
-        setError(error?.message || error);
-        setIsLoading(false);
-      }
-    );
-    const unsubscribeBookingConfiguration = onSnapshot(
-      doc(firestore, "configuration", "bookings"),
       (doc: any) => {
         setBoutiqueStatus(doc.data()?.boutiqueStatus || false);
         setClinicStatus(doc.data()?.clinicStatus || false);
         setHousecallStatus(doc.data()?.housecallStatus || false);
         setWalkinsStatus(doc.data()?.walkinsStatus || false);
+        setIsLoading(false);
+      },
+      (error: any) => {
+        setError(error?.message || error);
+        setIsLoading(false);
+      },
+    );
+    const unsubscribeBookingConfiguration = onSnapshot(
+      doc(firestore, "configuration", "bookings"),
+      (doc: any) => {
+        setBoutiqueStatusOverride(doc.data()?.boutiqueStatus || false);
+        setClinicStatusOverride(doc.data()?.clinicStatus || false);
+        setHousecallStatusOverride(doc.data()?.housecallStatus || false);
+        setWalkinsStatusOverride(doc.data()?.walkinsStatus || false);
         setClinicAutomationStatus(doc.data()?.clinicAutomationStatus || false);
         setHousecallAutomationStatus(
-          doc.data()?.housecallAutomationStatus || false
+          doc.data()?.housecallAutomationStatus || false,
         );
         setBoutiqueAutomationStatus(
-          doc.data()?.boutiqueAutomationStatus || false
+          doc.data()?.boutiqueAutomationStatus || false,
         );
         setWalkinsAutomationStatus(
-          doc.data()?.walkinsAutomationStatus || false
+          doc.data()?.walkinsAutomationStatus || false,
         );
 
         setIsLoading(false);
@@ -93,7 +93,7 @@ export const HoursStatus = () => {
       (error: any) => {
         setError(error?.message || error);
         setIsLoading(false);
-      }
+      },
     );
     return () => {
       unsubscribeHoursStatusConfiguration();
