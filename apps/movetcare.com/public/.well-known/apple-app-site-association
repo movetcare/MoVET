@@ -1,0 +1,27 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "KA3S6977Y3.com.movet.inc"
+        ],
+        "components": [
+          {
+            "/": "*",
+            "comment": "Matches all routes"
+          }
+        ]
+      }
+    ]
+  },
+  "activitycontinuation": {
+    "apps": [
+      "KA3S6977Y3.com.movet.inc"
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "KA3S6977Y3.com.movet.inc"
+    ]
+  }
+}
