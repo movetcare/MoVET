@@ -1,0 +1,17 @@
+name: Deploy Firebase Deep Link Site - https://link.movetcare.com
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/link.movetcare.com/**"
+jobs:
+  build_and_preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_MOVET_CARE }}'
+          projectId: movet-care
