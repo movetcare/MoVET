@@ -51,11 +51,11 @@ export const SignIn = () => {
   useEffect(() => {
     setAppVerifier((window as any).recaptchaVerifier);
     (window as any).recaptchaVerifier = new RecaptchaVerifier(
-      "sign-in-button",
+      "sign-in-button" as any,
       {
         size: "invisible",
-      },
-      auth
+      } as any,
+      auth,
     );
   }, []);
 
@@ -101,7 +101,7 @@ export const SignIn = () => {
         })
         .catch(
           (error: any) =>
-            handleError(error) && setTimeout(() => router.reload(), 3000)
+            handleError(error) && setTimeout(() => router.reload(), 3000),
         );
   }, [signInToken, router]);
 
@@ -116,7 +116,7 @@ export const SignIn = () => {
       })
       .catch(
         (error: any) =>
-          handleError(error) && setTimeout(() => router.reload(), 3000)
+          handleError(error) && setTimeout(() => router.reload(), 3000),
       )
       .finally(() => setIsLoading(false));
   };
@@ -171,7 +171,7 @@ export const SignIn = () => {
                         signInWithPopup(auth, provider).catch((error: any) => {
                           if (error.code === "auth/user-disabled") {
                             setSignInError(
-                              "Please contact support for assistance!"
+                              "Please contact support for assistance!",
                             );
                             console.error(error);
                             setShowPhoneAuthFlow(false);
@@ -209,7 +209,7 @@ export const SignIn = () => {
                     icon={faPhone}
                     title="Sign In Code"
                     text={`Please enter 6 digit code we just texted to ${formatPhoneNumber(
-                      phone as string
+                      phone as string,
                     )}`}
                     yesButtonText="SIGN IN"
                     cancelButtonText="Cancel"
