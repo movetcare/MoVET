@@ -24,14 +24,14 @@ export const handleBookingConfigUpdate = functions.firestore
         environment.type === "production"
           ? await request
               .post(
-                "https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false"
+                "https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false",
               )
               .then(async (response: any) => {
                 const { data, status } = response;
                 if (DEBUG)
                   console.log(
                     "API Response: POST https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false =>",
-                    data
+                    data,
                   );
                 return status !== 200 && status !== 201 ? "ERROR" : data;
               })
@@ -41,14 +41,14 @@ export const handleBookingConfigUpdate = functions.firestore
         environment.type === "production"
           ? await request
               .post(
-                "https://api.vercel.com/v1/integrations/deploy/prj_da86e8MG9HWaYYjOhzhDRwznKPtc/Kv7tDyrjjO?buildCache=false"
+                "https://api.vercel.com/v1/integrations/deploy/prj_da86e8MG9HWaYYjOhzhDRwznKPtc/Kv7tDyrjjO?buildCache=false",
               )
               .then(async (response: any) => {
                 const { data, status } = response;
                 if (DEBUG)
                   console.log(
                     "API Response: POST https://api.vercel.com/v1/integrations/deploy/prj_da86e8MG9HWaYYjOhzhDRwznKPtc/Kv7tDyrjjO?buildCache=false =>",
-                    data
+                    data,
                   );
                 return status !== 200 && status !== 201 ? "ERROR" : data;
               })
@@ -85,7 +85,7 @@ export const handleBookingConfigUpdate = functions.firestore
           ],
         },
       });
-      updateHoursStatusAutomationTasks(data);
+      await updateHoursStatusAutomationTasks(data);
     }
     return true;
   });
@@ -257,15 +257,15 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
   const configureAutomationTasks = async (type: AutomationTypes) => {
     await deleteAutomationTasks(type);
     const taskId = type + "_hours_status_automation_";
-    const updateAutomationTask = (
+    const updateAutomationTask = async (
       taskName: string,
       dayOfWeek: number,
       automatedOpenTime: number,
-      automatedCloseTime: number
+      automatedCloseTime: number,
     ) => {
       const nextDate = new Date();
       nextDate.setDate(
-        nextDate.getDate() + ((dayOfWeek + 7 - nextDate.getDay()) % 7)
+        nextDate.getDate() + ((dayOfWeek + 7 - nextDate.getDay()) % 7),
       );
       const nextDateYear = nextDate.getFullYear();
       const nextDateMonth = nextDate.getMonth() + 1;
@@ -299,9 +299,9 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
             nextDateYear +
             " " +
             [openHours, ":", openMinutes].join("") +
-            ":00"
+            ":00",
         ),
-        300
+        300,
       );
       const closeDate = addMinutesToDateObject(
         new Date(
@@ -312,22 +312,22 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
             nextDateYear +
             " " +
             [closeHours, ":", closeMinutes].join("") +
-            ":00"
+            ":00",
         ),
-        300
+        300,
       );
-      // if (DEBUG) {
-      //   console.log("nextDateYear", nextDateYear);
-      //   console.log("nextDateMonth", nextDateMonth);
-      //   console.log("nextDateDate", nextDateDate);
-      //   console.log("openHours", openHours);
-      //   console.log("openMinutes", openMinutes);
-      //   console.log("closeHours", closeHours);
-      //   console.log("closeMinutes", closeMinutes);
-      //   console.log("openDate", openDate);
-      //   console.log("closeDate", closeDate);
-      // }
-      admin
+      if (DEBUG) {
+        console.log("nextDateYear", nextDateYear);
+        console.log("nextDateMonth", nextDateMonth);
+        console.log("nextDateDate", nextDateDate);
+        console.log("openHours", openHours);
+        console.log("openMinutes", openMinutes);
+        console.log("closeHours", closeHours);
+        console.log("closeMinutes", closeMinutes);
+        console.log("openDate", openDate);
+        console.log("closeDate", closeDate);
+      }
+      await admin
         .firestore()
         .collection("tasks_queue")
         .doc(taskName + "open")
@@ -345,15 +345,15 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
             performAt: openDate,
             createdOn: new Date(),
           },
-          { merge: true }
+          { merge: true },
         )
         .then(
           () =>
             DEBUG &&
-            console.log("TASK ADDED TO QUEUE => ", taskName + "open", openDate)
+            console.log("TASK ADDED TO QUEUE => ", taskName + "open", openDate),
         )
         .catch((error: any) => throwError(error));
-      admin
+      await admin
         .firestore()
         .collection("tasks_queue")
         .doc(taskName + "close")
@@ -371,7 +371,7 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
             performAt: closeDate,
             createdOn: new Date(),
           },
-          { merge: true }
+          { merge: true },
         )
         .then(
           () =>
@@ -379,214 +379,214 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
             console.log(
               "TASK ADDED TO QUEUE => ",
               taskName + "close",
-              closeDate
-            )
+              closeDate,
+            ),
         )
         .catch((error: any) => throwError(error));
     };
     switch (type) {
       case "clinic":
         if (isOpenMondayClinicAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "monday_",
             1,
             automatedClinicOpenTimeMonday,
-            automatedClinicCloseTimeMonday
+            automatedClinicCloseTimeMonday,
           );
         if (isOpenTuesdayClinicAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "tuesday_",
             2,
             automatedClinicOpenTimeTuesday,
-            automatedClinicCloseTimeTuesday
+            automatedClinicCloseTimeTuesday,
           );
         if (isOpenWednesdayClinicAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "wednesday_",
             3,
             automatedClinicOpenTimeWednesday,
-            automatedClinicCloseTimeWednesday
+            automatedClinicCloseTimeWednesday,
           );
         if (isOpenThursdayClinicAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "thursday_",
             4,
             automatedClinicOpenTimeThursday,
-            automatedClinicCloseTimeThursday
+            automatedClinicCloseTimeThursday,
           );
         if (isOpenFridayClinicAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "friday_",
             5,
             automatedClinicOpenTimeFriday,
-            automatedClinicCloseTimeFriday
+            automatedClinicCloseTimeFriday,
           );
         if (isOpenSaturdayClinicAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "saturday_",
             6,
             automatedClinicOpenTimeSaturday,
-            automatedClinicCloseTimeSaturday
+            automatedClinicCloseTimeSaturday,
           );
         if (isOpenSundayClinicAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "sunday_",
             0,
             automatedClinicOpenTimeSunday,
-            automatedClinicCloseTimeSunday
+            automatedClinicCloseTimeSunday,
           );
         break;
       case "boutique":
         if (isOpenMondayBoutiqueAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "monday_",
             1,
             automatedBoutiqueOpenTimeMonday,
-            automatedBoutiqueCloseTimeMonday
+            automatedBoutiqueCloseTimeMonday,
           );
         if (isOpenTuesdayBoutiqueAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "tuesday_",
             2,
             automatedBoutiqueOpenTimeTuesday,
-            automatedBoutiqueCloseTimeTuesday
+            automatedBoutiqueCloseTimeTuesday,
           );
         if (isOpenWednesdayBoutiqueAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "wednesday_",
             3,
             automatedBoutiqueOpenTimeWednesday,
-            automatedBoutiqueCloseTimeWednesday
+            automatedBoutiqueCloseTimeWednesday,
           );
         if (isOpenThursdayBoutiqueAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "thursday_",
             4,
             automatedBoutiqueOpenTimeThursday,
-            automatedBoutiqueCloseTimeThursday
+            automatedBoutiqueCloseTimeThursday,
           );
         if (isOpenFridayBoutiqueAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "friday_",
             5,
             automatedBoutiqueOpenTimeFriday,
-            automatedBoutiqueCloseTimeFriday
+            automatedBoutiqueCloseTimeFriday,
           );
         if (isOpenSaturdayBoutiqueAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "saturday_",
             6,
             automatedBoutiqueOpenTimeSaturday,
-            automatedBoutiqueCloseTimeSaturday
+            automatedBoutiqueCloseTimeSaturday,
           );
         if (isOpenSundayBoutiqueAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "sunday_",
             0,
             automatedBoutiqueOpenTimeSunday,
-            automatedBoutiqueCloseTimeSunday
+            automatedBoutiqueCloseTimeSunday,
           );
         break;
       case "housecall":
         if (isOpenMondayHousecallAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "monday_",
             1,
             automatedHousecallOpenTimeMonday,
-            automatedHousecallCloseTimeMonday
+            automatedHousecallCloseTimeMonday,
           );
         if (isOpenTuesdayHousecallAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "tuesday_",
             2,
             automatedHousecallOpenTimeTuesday,
-            automatedHousecallCloseTimeTuesday
+            automatedHousecallCloseTimeTuesday,
           );
         if (isOpenWednesdayHousecallAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "wednesday_",
             3,
             automatedHousecallOpenTimeWednesday,
-            automatedHousecallCloseTimeWednesday
+            automatedHousecallCloseTimeWednesday,
           );
         if (isOpenThursdayHousecallAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "thursday_",
             4,
             automatedHousecallOpenTimeThursday,
-            automatedHousecallCloseTimeThursday
+            automatedHousecallCloseTimeThursday,
           );
         if (isOpenFridayHousecallAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "friday_",
             5,
             automatedHousecallOpenTimeFriday,
-            automatedHousecallCloseTimeFriday
+            automatedHousecallCloseTimeFriday,
           );
         if (isOpenSaturdayHousecallAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "saturday_",
             6,
             automatedHousecallOpenTimeSaturday,
-            automatedHousecallCloseTimeSaturday
+            automatedHousecallCloseTimeSaturday,
           );
         if (isOpenSundayHousecallAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "sunday_",
             0,
             automatedHousecallOpenTimeSunday,
-            automatedHousecallCloseTimeSunday
+            automatedHousecallCloseTimeSunday,
           );
         break;
       case "walkins":
         if (isOpenMondayWalkInAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "monday_",
             1,
             automatedWalkInOpenTimeMonday,
-            automatedWalkInCloseTimeMonday
+            automatedWalkInCloseTimeMonday,
           );
         if (isOpenTuesdayWalkInAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "tuesday_",
             2,
             automatedWalkInOpenTimeTuesday,
-            automatedWalkInCloseTimeTuesday
+            automatedWalkInCloseTimeTuesday,
           );
         if (isOpenWednesdayWalkInAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "wednesday_",
             3,
             automatedWalkInOpenTimeWednesday,
-            automatedWalkInCloseTimeWednesday
+            automatedWalkInCloseTimeWednesday,
           );
         if (isOpenThursdayWalkInAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "thursday_",
             4,
             automatedWalkInOpenTimeThursday,
-            automatedWalkInCloseTimeThursday
+            automatedWalkInCloseTimeThursday,
           );
         if (isOpenFridayWalkInAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "friday_",
             5,
             automatedWalkInOpenTimeFriday,
-            automatedWalkInCloseTimeFriday
+            automatedWalkInCloseTimeFriday,
           );
         if (isOpenSaturdayWalkInAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "saturday_",
             6,
             automatedWalkInOpenTimeSaturday,
-            automatedWalkInCloseTimeSaturday
+            automatedWalkInCloseTimeSaturday,
           );
         if (isOpenSundayWalkInAutomation)
-          updateAutomationTask(
+          await updateAutomationTask(
             taskId + "sunday_",
             0,
             automatedWalkInOpenTimeSunday,
-            automatedWalkInCloseTimeSunday
+            automatedWalkInCloseTimeSunday,
           );
         break;
       default:

@@ -11,7 +11,7 @@ import VcprReasonSettings from "./VcprReasonSettings";
 import OperatingHoursSettings from "./OperatingHoursSettings";
 import AppointmentBufferSettings from "./AppointmentBufferSettings";
 import LunchSettings from "./LunchSettings";
-const PAGE_NAME = subNavigation[2].name;
+const PAGE_NAME = subNavigation[1].name;
 const ManageClinic = () => {
   return (
     <section className="flex flex-row items-center justify-center bg-white rounded-lg overflow-hidden">
@@ -44,7 +44,7 @@ const ManageClinic = () => {
                     item.name === PAGE_NAME
                       ? "bg-movet-red text-movet-white hover:bg-opacity-80 hover:text-movet-white"
                       : "border-transparent text-movet-black hover:bg-movet-white hover:text-movet-black",
-                    "group border-l-4 px-3 py-2 flex items-center text-sm font-medium"
+                    "group border-l-4 px-3 py-2 flex items-center text-sm font-medium",
                   )}
                   aria-current={item.name === PAGE_NAME ? "page" : undefined}
                 >
@@ -54,7 +54,7 @@ const ManageClinic = () => {
                       item.name === PAGE_NAME
                         ? "text-movet-white group-hover:text-movet-white"
                         : "text-movet-black group-hover:text-movet-black",
-                      "flex-shrink-0 -ml-1 mr-3 h-6 w-6"
+                      "flex-shrink-0 -ml-1 mr-3 h-6 w-6",
                     )}
                     aria-hidden="true"
                   />

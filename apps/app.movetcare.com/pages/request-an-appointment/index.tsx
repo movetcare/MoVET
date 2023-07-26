@@ -47,7 +47,7 @@ addMethod(string, "isValidPetCount", function (errorMessage: string) {
         (parseInt(value) >= 1 && parseInt(value) <= 10) ||
         createError({ path, message: errorMessage })
       );
-    }
+    },
   );
 });
 
@@ -64,9 +64,9 @@ addMethod(
           (parseInt(value) >= 0 && parseInt(value) <= 10) ||
           createError({ path, message: errorMessage })
         );
-      }
+      },
     );
-  }
+  },
 );
 
 export async function getStaticProps() {
@@ -101,7 +101,7 @@ export default function RequestAnAppointment({
   }> | null>(null);
   const [selectedDate, onDateChange] = useState<Date>(today);
   const [selectedTime, setSelectedTime] = useState<string>(
-    appointmentAvailability[0]
+    appointmentAvailability[0],
   );
   const cancelButtonRef = useRef(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -129,12 +129,12 @@ export default function RequestAnAppointment({
           .required("A pet count is required"),
         numberOfPetsWithMinorIllness: (string() as any)
           .isValidPetMinorIllnessCount(
-            "Number of pets must be between 0 and 10"
+            "Number of pets must be between 0 and 10",
           )
           .required("A minor illness pet count is required"),
         locationType: string().required("A location type is required"),
         specificTime: string(),
-      })
+      }),
     ),
     defaultValues: {
       firstName: "",
@@ -169,7 +169,7 @@ export default function RequestAnAppointment({
     const fetchLocations = async () => {
       const { data: result }: any = await httpsCallable(
         functions,
-        "getAppointmentLocations"
+        "getAppointmentLocations",
       )();
       if (result?.error !== true || result?.error === undefined) {
         setReasonGroups(result);
@@ -181,7 +181,7 @@ export default function RequestAnAppointment({
   useEffect(() => {
     setValue(
       "email",
-      (email as string) || window.localStorage.getItem("email") || ""
+      (email as string) || window.localStorage.getItem("email") || "",
     );
   }, [email, setValue]);
 
@@ -220,7 +220,7 @@ export default function RequestAnAppointment({
       setOptions(
         items.sort((a, b) => {
           return a.name.localeCompare(b.name);
-        })
+        }),
       );
       setIsLoading(false);
     }
@@ -241,14 +241,14 @@ export default function RequestAnAppointment({
         try {
           const { data: result }: any = await httpsCallable(
             functions,
-            "requestAppointment"
+            "requestAppointment",
           )({
             ...data,
             selectedDate,
             selectedTime,
             id:
               JSON.parse(
-                window.localStorage.getItem("bookingSession") as string
+                window.localStorage.getItem("bookingSession") as string,
               )?.id || null,
             device: navigator.userAgent,
             token,
@@ -275,7 +275,7 @@ export default function RequestAnAppointment({
           try {
             await httpsCallable(
               functions,
-              "requestAppointment"
+              "requestAppointment",
             )({
               firstName: firstNameSelection,
               lastName: lastNameSelection,
@@ -284,7 +284,7 @@ export default function RequestAnAppointment({
               email: emailSelection,
               id:
                 JSON.parse(
-                  window.localStorage.getItem("bookingSession") as string
+                  window.localStorage.getItem("bookingSession") as string,
                 )?.id || null,
               device: navigator.userAgent,
               token,
@@ -377,9 +377,9 @@ export default function RequestAnAppointment({
           name="notes"
           control={control}
           errors={errors}
-          placeholder="* Please provide your pet(s) name, breed, gender, and age. Let us know
-          in advance of any favorite treat, scratching spot, or any behavioral
-          issues you may have encountered with your pet(s) previously. Are they
+          placeholder="* Please provide your pet's name, breed, gender, age, and the reason you are requesting an appointment. Let us know
+          in advance of any favorite treat, scratching spot, or behavioral
+          issues, such as aggression and/or biting. Are they
           food motivated, territorial, or aggressive towards humans or other
           pets?"
         />
@@ -422,7 +422,7 @@ export default function RequestAnAppointment({
                 >
                   <p>{appointmentSlot}</p>
                 </li>
-              ) : null
+              ) : null,
           )}
         </ul>
         {selectedTime === appointmentAvailability[4] && (

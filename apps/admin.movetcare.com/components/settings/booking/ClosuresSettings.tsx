@@ -37,7 +37,7 @@ export const ClosuresSettings = ({
   const [showAddClosureForm, setShowAddClosureForm] = useState<boolean>(false);
   const [closures, setClosures] = useState<Array<Closure> | null>(null);
   const [closuresData, loading, error] = useDocument(
-    doc(firestore, "configuration/closures")
+    doc(firestore, "configuration/closures"),
   );
   const {
     handleSubmit,
@@ -76,7 +76,7 @@ export const ClosuresSettings = ({
                   ? `0${closure?.endTime}`
                   : `${closure?.endTime}`,
             };
-          })
+          }),
         );
       } else if (schedule === "housecall") {
         setClosures(
@@ -94,7 +94,7 @@ export const ClosuresSettings = ({
                     ? `0${closure?.endTime}`
                     : `${closure?.endTime}`,
               };
-            })
+            }),
         );
       } else if (schedule === "virtual") {
         setClosures(
@@ -110,7 +110,7 @@ export const ClosuresSettings = ({
                   ? `0${closure?.endTime}`
                   : `${closure?.endTime}`,
             };
-          })
+          }),
         );
       }
   }, [closuresData, schedule]);
@@ -132,7 +132,7 @@ export const ClosuresSettings = ({
             closureDatesVirtual: closures?.filter((_, i) => i !== index),
             updatedOn: serverTimestamp(),
           },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(
@@ -147,14 +147,12 @@ export const ClosuresSettings = ({
                 className="text-movet-green"
               />
             ),
-          }
-        )
+          },
+        ),
       )
       .catch((error: any) =>
         toast(
-          `${schedule?.toUpperCase()} Closure Deletion FAILED: ${
-            error?.message
-          }`,
+          `${schedule?.toUpperCase()} Closure Deletion FAILED: ${error?.message}`,
           {
             duration: 5000,
             position: "bottom-center",
@@ -165,8 +163,8 @@ export const ClosuresSettings = ({
                 className="text-movet-red"
               />
             ),
-          }
-        )
+          },
+        ),
       );
 
   const onSubmit = async (data: any) =>
@@ -198,7 +196,7 @@ export const ClosuresSettings = ({
             }),
             updatedOn: serverTimestamp(),
           },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Your ${schedule?.toUpperCase()} closure has been added!.`, {
@@ -211,7 +209,7 @@ export const ClosuresSettings = ({
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(
@@ -226,8 +224,8 @@ export const ClosuresSettings = ({
                 className="text-movet-red"
               />
             ),
-          }
-        )
+          },
+        ),
       )
       .finally(() => {
         setShowAddClosureForm(false);
@@ -245,7 +243,7 @@ export const ClosuresSettings = ({
         * If you need to disable entire days, use the &quot;FULL DAY / MULTI-DAY
         CLOSURES &quot; setting on the &quot;
         <Link
-          href="/settings/booking/manage-hours/"
+          href="/settings/manage-hours/"
           className="text-movet-red hover:underline"
         >
           Manage Hours
@@ -326,7 +324,7 @@ export const ClosuresSettings = ({
                                 ":",
                                 closure?.startTime.slice(2),
                               ].join("") +
-                              ":00"
+                              ":00",
                           ).toLocaleString("en-US", {
                             hour: "numeric",
                             minute: "numeric",
@@ -343,7 +341,7 @@ export const ClosuresSettings = ({
                                 ":",
                                 closure?.endTime.slice(2),
                               ].join("") +
-                              ":00"
+                              ":00",
                           ).toLocaleString("en-US", {
                             hour: "numeric",
                             minute: "numeric",
@@ -484,7 +482,7 @@ export const ClosuresSettings = ({
                                     required={true}
                                     className={classNames(
                                       "focus:ring-movet-brown focus:border-movet-brown",
-                                      "py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth"
+                                      "py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth",
                                     )}
                                   />
                                 )}
@@ -526,7 +524,7 @@ export const ClosuresSettings = ({
                                     required={true}
                                     className={classNames(
                                       "focus:ring-movet-brown focus:border-movet-brown",
-                                      "py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth"
+                                      "py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth",
                                     )}
                                   />
                                 )}
@@ -559,7 +557,7 @@ export const ClosuresSettings = ({
                               !isDirty || isSubmitting
                                 ? "w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4"
                                 : "w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4",
-                              "mt-8"
+                              "mt-8",
                             )}
                             icon={faPlus}
                             text="Add Closure"

@@ -124,49 +124,49 @@ const OperatingHoursSettings = ({
             ? doc.data()?.clinicOpenMonday
             : schedule === "housecall"
             ? doc.data()?.housecallOpenMonday
-            : doc.data()?.virtualOpenMonday
+            : doc.data()?.virtualOpenMonday,
         );
         setIsOpenTuesday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenTuesday
             : schedule === "housecall"
             ? doc.data()?.housecallOpenTuesday
-            : doc.data()?.virtualOpenTuesday
+            : doc.data()?.virtualOpenTuesday,
         );
         setIsOpenWednesday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenWednesday
             : schedule === "housecall"
             ? doc.data()?.housecallOpenWednesday
-            : doc.data()?.virtualOpenWednesday
+            : doc.data()?.virtualOpenWednesday,
         );
         setIsOpenThursday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenThursday
             : schedule === "housecall"
             ? doc.data()?.housecallOpenThursday
-            : doc.data()?.virtualOpenThursday
+            : doc.data()?.virtualOpenThursday,
         );
         setIsOpenFriday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenFriday
             : schedule === "housecall"
             ? doc.data()?.housecallOpenFriday
-            : doc.data()?.virtualOpenFriday
+            : doc.data()?.virtualOpenFriday,
         );
         setIsOpenSaturday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenSaturday
             : schedule === "housecall"
             ? doc.data()?.housecallOpenSaturday
-            : doc.data()?.virtualOpenSaturday
+            : doc.data()?.virtualOpenSaturday,
         );
         setIsOpenSunday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenSunday
             : schedule === "housecall"
             ? doc.data()?.housecallOpenSunday
-            : doc.data()?.virtualOpenSunday
+            : doc.data()?.virtualOpenSunday,
         );
         setSelectedStartTimeSunday(
           formatTime(
@@ -174,8 +174,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicOpenSundayTime
               : schedule === "housecall"
               ? doc.data()?.housecallOpenSundayTime
-              : doc.data()?.virtualOpenSundayTime
-          )
+              : doc.data()?.virtualOpenSundayTime,
+          ),
         );
         setSelectedEndTimeSunday(
           formatTime(
@@ -183,8 +183,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicClosedSundayTime
               : schedule === "housecall"
               ? doc.data()?.housecallClosedSundayTime
-              : doc.data()?.virtualClosedSundayTime
-          )
+              : doc.data()?.virtualClosedSundayTime,
+          ),
         );
         setSelectedStartTimeMonday(
           formatTime(
@@ -192,8 +192,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicOpenMondayTime
               : schedule === "housecall"
               ? doc.data()?.housecallOpenMondayTime
-              : doc.data()?.virtualOpenMondayTime
-          )
+              : doc.data()?.virtualOpenMondayTime,
+          ),
         );
         setSelectedEndTimeMonday(
           formatTime(
@@ -201,8 +201,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicClosedMondayTime
               : schedule === "housecall"
               ? doc.data()?.housecallClosedMondayTime
-              : doc.data()?.virtualClosedMondayTime
-          )
+              : doc.data()?.virtualClosedMondayTime,
+          ),
         );
         setSelectedStartTimeTuesday(
           formatTime(
@@ -210,8 +210,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicOpenTuesdayTime
               : schedule === "housecall"
               ? doc.data()?.housecallOpenTuesdayTime
-              : doc.data()?.virtualOpenTuesdayTime
-          )
+              : doc.data()?.virtualOpenTuesdayTime,
+          ),
         );
         setSelectedEndTimeTuesday(
           formatTime(
@@ -219,8 +219,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicClosedTuesdayTime
               : schedule === "housecall"
               ? doc.data()?.housecallClosedTuesdayTime
-              : doc.data()?.virtualClosedTuesdayTime
-          )
+              : doc.data()?.virtualClosedTuesdayTime,
+          ),
         );
         setSelectedStartTimeWednesday(
           formatTime(
@@ -228,8 +228,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicOpenWednesdayTime
               : schedule === "housecall"
               ? doc.data()?.housecallOpenWednesdayTime
-              : doc.data()?.virtualOpenWednesdayTime
-          )
+              : doc.data()?.virtualOpenWednesdayTime,
+          ),
         );
         setSelectedEndTimeWednesday(
           formatTime(
@@ -237,8 +237,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicClosedWednesdayTime
               : schedule === "housecall"
               ? doc.data()?.housecallClosedWednesdayTime
-              : doc.data()?.virtualClosedWednesdayTime
-          )
+              : doc.data()?.virtualClosedWednesdayTime,
+          ),
         );
         setSelectedStartTimeThursday(
           formatTime(
@@ -246,8 +246,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicOpenThursdayTime
               : schedule === "housecall"
               ? doc.data()?.housecallOpenThursdayTime
-              : doc.data()?.virtualOpenThursdayTime
-          )
+              : doc.data()?.virtualOpenThursdayTime,
+          ),
         );
         setSelectedEndTimeThursday(
           formatTime(
@@ -255,8 +255,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicClosedThursdayTime
               : schedule === "housecall"
               ? doc.data()?.housecallClosedThursdayTime
-              : doc.data()?.virtualClosedThursdayTime
-          )
+              : doc.data()?.virtualClosedThursdayTime,
+          ),
         );
         setSelectedStartTimeFriday(
           formatTime(
@@ -264,8 +264,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicOpenFridayTime
               : schedule === "housecall"
               ? doc.data()?.housecallOpenFridayTime
-              : doc.data()?.virtualOpenFridayTime
-          )
+              : doc.data()?.virtualOpenFridayTime,
+          ),
         );
         setSelectedEndTimeFriday(
           formatTime(
@@ -273,8 +273,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicClosedFridayTime
               : schedule === "housecall"
               ? doc.data()?.housecallClosedFridayTime
-              : doc.data()?.virtualClosedFridayTime
-          )
+              : doc.data()?.virtualClosedFridayTime,
+          ),
         );
         setSelectedStartTimeSaturday(
           formatTime(
@@ -282,8 +282,8 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicOpenSaturdayTime
               : schedule === "housecall"
               ? doc.data()?.housecallOpenSaturdayTime
-              : doc.data()?.virtualOpenSaturdayTime
-          )
+              : doc.data()?.virtualOpenSaturdayTime,
+          ),
         );
         setSelectedEndTimeSaturday(
           formatTime(
@@ -291,13 +291,13 @@ const OperatingHoursSettings = ({
               ? doc.data()?.clinicClosedSaturdayTime
               : schedule === "housecall"
               ? doc.data()?.housecallClosedSaturdayTime
-              : doc.data()?.virtualClosedSaturdayTime
-          )
+              : doc.data()?.virtualClosedSaturdayTime,
+          ),
         );
       },
       (error: any) => {
         setError(error?.message || error);
-      }
+      },
     );
     return () => unsubscribe();
   }, [schedule]);
@@ -329,7 +329,7 @@ const OperatingHoursSettings = ({
         clinicClosedSundayTime: Number(selectedEndTimeSunday),
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`${schedule?.toUpperCase()} Days & Hours of Operation Updated!`, {
@@ -341,13 +341,11 @@ const OperatingHoursSettings = ({
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(
-          `${schedule?.toUpperCase()} Days & Hours of Operation Updated FAILED: ${
-            error?.message
-          }`,
+          `${schedule?.toUpperCase()} Days & Hours of Operation Updated FAILED: ${error?.message}`,
           {
             duration: 5000,
             position: "bottom-center",
@@ -358,8 +356,8 @@ const OperatingHoursSettings = ({
                 className="text-movet-red"
               />
             ),
-          }
-        )
+          },
+        ),
       )
       .finally(() => {
         setDidTouchIsOpenMonday(false);
@@ -397,7 +395,7 @@ const OperatingHoursSettings = ({
           <span className="italic font-extrabold">
             Don&apos;t forget to update the{" "}
             <Link
-              href="/settings/booking/manage-hours/"
+              href="/settings/manage-hours/"
               className="text-movet-red hover:underline"
             >
               hours listing on the website
@@ -418,14 +416,14 @@ const OperatingHoursSettings = ({
               }}
               className={classNames(
                 isOpenMonday ? "bg-movet-green" : "bg-movet-red",
-                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
               )}
             >
               <span
                 aria-hidden="true"
                 className={classNames(
                   isOpenMonday ? "translate-x-5" : "translate-x-0",
-                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                 )}
               />
             </Switch>
@@ -492,14 +490,14 @@ const OperatingHoursSettings = ({
               }}
               className={classNames(
                 isOpenTuesday ? "bg-movet-green" : "bg-movet-red",
-                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
               )}
             >
               <span
                 aria-hidden="true"
                 className={classNames(
                   isOpenTuesday ? "translate-x-5" : "translate-x-0",
-                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                 )}
               />
             </Switch>
@@ -566,14 +564,14 @@ const OperatingHoursSettings = ({
               }}
               className={classNames(
                 isOpenWednesday ? "bg-movet-green" : "bg-movet-red",
-                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
               )}
             >
               <span
                 aria-hidden="true"
                 className={classNames(
                   isOpenWednesday ? "translate-x-5" : "translate-x-0",
-                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                 )}
               />
             </Switch>
@@ -640,14 +638,14 @@ const OperatingHoursSettings = ({
               }}
               className={classNames(
                 isOpenThursday ? "bg-movet-green" : "bg-movet-red",
-                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
               )}
             >
               <span
                 aria-hidden="true"
                 className={classNames(
                   isOpenThursday ? "translate-x-5" : "translate-x-0",
-                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                 )}
               />
             </Switch>
@@ -714,14 +712,14 @@ const OperatingHoursSettings = ({
               }}
               className={classNames(
                 isOpenFriday ? "bg-movet-green" : "bg-movet-red",
-                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
               )}
             >
               <span
                 aria-hidden="true"
                 className={classNames(
                   isOpenFriday ? "translate-x-5" : "translate-x-0",
-                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                 )}
               />
             </Switch>
@@ -788,14 +786,14 @@ const OperatingHoursSettings = ({
               }}
               className={classNames(
                 isOpenSaturday ? "bg-movet-green" : "bg-movet-red",
-                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
               )}
             >
               <span
                 aria-hidden="true"
                 className={classNames(
                   isOpenSaturday ? "translate-x-5" : "translate-x-0",
-                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                 )}
               />
             </Switch>
@@ -862,14 +860,14 @@ const OperatingHoursSettings = ({
               }}
               className={classNames(
                 isOpenSunday ? "bg-movet-green" : "bg-movet-red",
-                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
               )}
             >
               <span
                 aria-hidden="true"
                 className={classNames(
                   isOpenSunday ? "translate-x-5" : "translate-x-0",
-                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                 )}
               />
             </Switch>

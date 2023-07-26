@@ -1,10 +1,4 @@
-import {
-  faPersonWalking,
-  faParking,
-  faHospital,
-  faHouseMedical,
-  faShop,
-} from "@fortawesome/free-solid-svg-icons";
+import { faParking } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type {
   Hours as HoursType,
@@ -71,11 +65,21 @@ export const Hours = ({
           </h2>
           <div className="grid sm:grid-cols-2 gap-y-12 gap-x-8 mb-12">
             <div className="w-full max-w-lg">
-              <FontAwesomeIcon
-                icon={faHospital}
-                size="3x"
-                className="w-full mb-4 text-movet-white"
-              />
+              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                <div
+                  className="w-full text-center flex flex-col"
+                  key="In-Clinic Appointments"
+                >
+                  <div className="mx-auto">
+                    <Image
+                      src="/images/icons/clinic.svg"
+                      alt={`In-Clinic Appointments icon`}
+                      width={112}
+                      height={112}
+                    />
+                  </div>
+                </div>
+              </div>
               <h3 className="text-xl text-center font-bold pt-2">
                 Clinic @ Belleview Station
               </h3>
@@ -92,7 +96,7 @@ export const Hours = ({
                           <div className="w-full border-b mb-2 mx-4"></div>
                         </div>
                       );
-                    }
+                    },
                   )}
                 </div>
                 <div className="w-max">
@@ -106,17 +110,27 @@ export const Hours = ({
                           <span>{hours.times}</span>
                         </div>
                       );
-                    }
+                    },
                   )}
                 </div>
               </div>
             </div>
             <div className="w-full max-w-lg">
-              <FontAwesomeIcon
-                icon={faPersonWalking}
-                size="3x"
-                className="w-full mb-4 text-movet-white"
-              />
+              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                <div
+                  className="w-full text-center flex flex-col"
+                  key="Walk In Clinic Appointments"
+                >
+                  <div className="mx-auto">
+                    <Image
+                      src="/images/icons/clinic-2.svg"
+                      alt={`Walk In Clinic Appointments icon`}
+                      width={112}
+                      height={112}
+                    />
+                  </div>
+                </div>
+              </div>
               <h3 className="text-xl text-center font-bold pt-2">
                 Walk Ins @ Belleview Station
               </h3>
@@ -133,7 +147,7 @@ export const Hours = ({
                           <div className="w-full border-b mb-2 mx-4"></div>
                         </div>
                       );
-                    }
+                    },
                   )}
                 </div>
                 <div className="w-max">
@@ -147,17 +161,27 @@ export const Hours = ({
                           <span>{hours.times}</span>
                         </div>
                       );
-                    }
+                    },
                   )}
                 </div>
               </div>
             </div>
             <div className="w-full max-w-lg whitespace-nowrap">
-              <FontAwesomeIcon
-                icon={faShop}
-                size="3x"
-                className="w-full mb-4 text-movet-white"
-              />
+              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                <div
+                  className="w-full text-center flex flex-col"
+                  key="Boutique"
+                >
+                  <div className="mx-auto">
+                    <Image
+                      src="/images/icons/boutique.svg"
+                      alt={`Boutique icon`}
+                      width={112}
+                      height={112}
+                    />
+                  </div>
+                </div>
+              </div>
               <h3 className="text-xl text-center font-bold">
                 Boutique @ Belleview Station
               </h3>
@@ -174,7 +198,7 @@ export const Hours = ({
                           <div className="w-full border-b mb-2 mx-4"></div>
                         </div>
                       );
-                    }
+                    },
                   )}
                 </div>
                 <div className="w-max">
@@ -188,17 +212,27 @@ export const Hours = ({
                           <span>{hours.times}</span>
                         </div>
                       );
-                    }
+                    },
                   )}
                 </div>
               </div>
             </div>
             <div className="w-full max-w-lg items-center">
-              <FontAwesomeIcon
-                icon={faHouseMedical}
-                size="3x"
-                className="w-full mb-4 text-movet-white"
-              />
+              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                <div
+                  className="w-full text-center flex flex-col"
+                  key="Housecall Appointments"
+                >
+                  <div className="mx-auto">
+                    <Image
+                      src="/images/icons/mobile.svg"
+                      alt={`Housecall Appointments icon`}
+                      width={112}
+                      height={112}
+                    />
+                  </div>
+                </div>
+              </div>
               <h3 className="text-xl text-center">Housecalls</h3>
               {winterMode &&
               winterMode?.isActive &&
@@ -220,7 +254,7 @@ export const Hours = ({
                             <div className="w-full border-b mb-2 mx-4"></div>
                           </div>
                         );
-                      }
+                      },
                     )}
                   </div>
                   <div className="w-max">
@@ -234,7 +268,7 @@ export const Hours = ({
                             <span>{hours.times}</span>
                           </div>
                         );
-                      }
+                      },
                     )}
                   </div>
                 </div>
@@ -291,14 +325,14 @@ export const Hours = ({
                         <span className="whitespace-nowrap">{hours.days}</span>
                         <div className="w-full border-b mb-2 mx-4"></div>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase text-center">
                   {clinicHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
-                    )
+                    ),
                   )}
                 </div>
               </div>
@@ -318,14 +352,14 @@ export const Hours = ({
                         <span className="whitespace-nowrap">{hours.days}</span>
                         <div className="w-full border-b mb-2 mx-4"></div>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase text-center">
                   {clinicWalkInHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
-                    )
+                    ),
                   )}
                 </div>
               </div>
@@ -374,14 +408,14 @@ export const Hours = ({
                         <span className="whitespace-nowrap">{hours.days}</span>
                         <div className="w-full border-b mb-2 mx-4"></div>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase text-center">
                   {boutiqueHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
-                    )
+                    ),
                   )}
                 </div>
               </div>
@@ -406,14 +440,14 @@ export const Hours = ({
                           </span>
                           <div className="w-full border-b mb-2 mx-4"></div>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                   <div className="w-max whitespace-nowrap uppercase text-center">
                     {housecallHours?.map(
                       (hours: { times: string }, index: number) => (
                         <div key={hours.times + index}>{hours.times}</div>
-                      )
+                      ),
                     )}
                   </div>
                 </div>
@@ -452,7 +486,7 @@ export const Hours = ({
     <>
       <section className="hidden md:block sm:relative w-full pb-6">
         {hours && hours?.length > 0 && (
-          <div className="relative z-20 px-8 mt-8 max-w-screen-lg mx-auto">
+          <div className="relative px-8 mt-8 max-w-screen-lg mx-auto">
             {!previewMode && (
               <h2 className="text-4xl text-center my-8">Hours of Operation</h2>
             )}
@@ -486,11 +520,21 @@ export const Hours = ({
                 </div>
               )}
               <div>
-                <FontAwesomeIcon
-                  icon={faHospital}
-                  size="3x"
-                  className="w-full mb-4 text-movet-red"
-                />
+                <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                  <div
+                    className="w-full text-center flex flex-col"
+                    key="In-Clinic Appointments"
+                  >
+                    <div className="mx-auto">
+                      <Image
+                        src="/images/icons/clinic.svg"
+                        alt={`In-Clinic Appointments icon`}
+                        width={112}
+                        height={112}
+                      />
+                    </div>
+                  </div>
+                </div>
                 <h3 className="text-xl text-center font-bold pt-2">
                   Clinic @ Belleview Station
                 </h3>
@@ -516,7 +560,7 @@ export const Hours = ({
                             <div className="w-full border-b mb-2 mx-4"></div>
                           </div>
                         );
-                      }
+                      },
                     )}
                   </div>
                   <div className="w-max">
@@ -530,17 +574,27 @@ export const Hours = ({
                             <span>{hours.times}</span>
                           </div>
                         );
-                      }
+                      },
                     )}
                   </div>
                 </div>
               </div>
               <div className="whitespace-nowrap">
-                <FontAwesomeIcon
-                  icon={faPersonWalking}
-                  size="3x"
-                  className="w-full mb-4 text-movet-red"
-                />
+                <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                  <div
+                    className="w-full text-center flex flex-col"
+                    key="Walk In Clinic Appointments"
+                  >
+                    <div className="mx-auto">
+                      <Image
+                        src="/images/icons/clinic-2.svg"
+                        alt={`Walk In Clinic Appointments icon`}
+                        width={112}
+                        height={112}
+                      />
+                    </div>
+                  </div>
+                </div>
                 <h3 className="text-xl text-center font-bold">
                   Walk-Ins @ Belleview Station
                 </h3>
@@ -566,7 +620,7 @@ export const Hours = ({
                             <div className="w-full border-b mb-2 mx-4"></div>
                           </div>
                         );
-                      }
+                      },
                     )}
                   </div>
                   <div className="w-max">
@@ -580,17 +634,27 @@ export const Hours = ({
                             <span>{hours.times}</span>
                           </div>
                         );
-                      }
+                      },
                     )}
                   </div>
                 </div>
               </div>
               <div className="whitespace-nowrap mb-4">
-                <FontAwesomeIcon
-                  icon={faShop}
-                  size="3x"
-                  className="w-full mb-4 text-movet-red"
-                />
+                <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                  <div
+                    className="w-full text-center flex flex-col"
+                    key="Boutique"
+                  >
+                    <div className="mx-auto">
+                      <Image
+                        src="/images/icons/boutique.svg"
+                        alt={`Boutique icon`}
+                        width={112}
+                        height={112}
+                      />
+                    </div>
+                  </div>
+                </div>
                 <h3 className="text-xl text-center font-bold">
                   Boutique @ Belleview Station
                 </h3>
@@ -616,7 +680,7 @@ export const Hours = ({
                             <div className="w-full border-b mb-2 mx-4"></div>
                           </div>
                         );
-                      }
+                      },
                     )}
                   </div>
                   <div className="w-max">
@@ -630,17 +694,27 @@ export const Hours = ({
                             <span>{hours.times}</span>
                           </div>
                         );
-                      }
+                      },
                     )}
                   </div>
                 </div>
               </div>
               <div className="mb-4">
-                <FontAwesomeIcon
-                  icon={faHouseMedical}
-                  size="3x"
-                  className="w-full mb-4 text-movet-red"
-                />
+                <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                  <div
+                    className="w-full text-center flex flex-col"
+                    key="Housecall Appointments"
+                  >
+                    <div className="mx-auto">
+                      <Image
+                        src="/images/icons/mobile.svg"
+                        alt={`Housecall Appointments icon`}
+                        width={112}
+                        height={112}
+                      />
+                    </div>
+                  </div>
+                </div>
                 <h3 className="text-xl text-center">Housecalls</h3>
                 <p className="text-center -mb-1 italic">
                   CURRENTLY -{" "}
@@ -674,7 +748,7 @@ export const Hours = ({
                               <div className="w-full border-b mb-2 mx-4"></div>
                             </div>
                           );
-                        }
+                        },
                       )}
                     </div>
                     <div className="w-max">
@@ -688,7 +762,7 @@ export const Hours = ({
                               <span>{hours.times}</span>
                             </div>
                           );
-                        }
+                        },
                       )}
                     </div>
                   </div>
@@ -733,11 +807,21 @@ export const Hours = ({
               </div>
             )}
             <div className="mt-8 w-full max-w-lg whitespace-nowrap">
-              <FontAwesomeIcon
-                icon={faHospital}
-                size="3x"
-                className="w-full mb-4 text-movet-red"
-              />
+              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                <div
+                  className="w-full text-center flex flex-col"
+                  key="In-Clinic Appointments"
+                >
+                  <div className="mx-auto">
+                    <Image
+                      src="/images/icons/clinic.svg"
+                      alt={`In-Clinic Appointments icon`}
+                      width={112}
+                      height={112}
+                    />
+                  </div>
+                </div>
+              </div>
               <h3 className="text-xl text-center font-bold pt-2">
                 Clinic @ Belleview Station
               </h3>
@@ -760,24 +844,34 @@ export const Hours = ({
                         <span className="whitespace-nowrap">{hours.days}</span>
                         <div className="w-full border-b mb-2 mx-4"></div>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase text-center">
                   {clinicHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
-                    )
+                    ),
                   )}
                 </div>
               </div>
             </div>
             <div className="w-full max-w-lg whitespace-nowrap mt-8">
-              <FontAwesomeIcon
-                icon={faPersonWalking}
-                size="3x"
-                className="w-full mb-4 text-movet-red"
-              />
+              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                <div
+                  className="w-full text-center flex flex-col"
+                  key="Walk In Clinic Appointments"
+                >
+                  <div className="mx-auto">
+                    <Image
+                      src="/images/icons/clinic-2.svg"
+                      alt={`Walk In Clinic Appointments icon`}
+                      width={112}
+                      height={112}
+                    />
+                  </div>
+                </div>
+              </div>
               <h3 className="text-xl text-center font-bold">
                 Walk-Ins @ Belleview Station
               </h3>
@@ -800,24 +894,34 @@ export const Hours = ({
                         <span className="whitespace-nowrap">{hours.days}</span>
                         <div className="w-full border-b mb-2 mx-4"></div>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase text-center">
                   {clinicWalkInHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
-                    )
+                    ),
                   )}
                 </div>
               </div>
             </div>
             <div className="w-full max-w-lg whitespace-nowrap mt-8">
-              <FontAwesomeIcon
-                icon={faShop}
-                size="3x"
-                className="w-full mb-4 text-movet-red"
-              />
+              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                <div
+                  className="w-full text-center flex flex-col"
+                  key="Boutique"
+                >
+                  <div className="mx-auto">
+                    <Image
+                      src="/images/icons/boutique.svg"
+                      alt={`Boutique icon`}
+                      width={112}
+                      height={112}
+                    />
+                  </div>
+                </div>
+              </div>
               <h3 className="text-xl text-center font-bold">
                 Boutique @ Belleview Station
               </h3>
@@ -840,24 +944,34 @@ export const Hours = ({
                         <span className="whitespace-nowrap">{hours.days}</span>
                         <div className="w-full border-b mb-2 mx-4"></div>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase text-center">
                   {boutiqueHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
-                    )
+                    ),
                   )}
                 </div>
               </div>
             </div>
             <div className="w-full max-w-lg items-center my-8">
-              <FontAwesomeIcon
-                icon={faHouseMedical}
-                size="3x"
-                className="w-full mb-4 text-movet-red"
-              />
+              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                <div
+                  className="w-full text-center flex flex-col"
+                  key="Housecall Appointments"
+                >
+                  <div className="mx-auto">
+                    <Image
+                      src="/images/icons/mobile.svg"
+                      alt={`Housecall Appointments icon`}
+                      width={112}
+                      height={112}
+                    />
+                  </div>
+                </div>
+              </div>
               <h3 className="text-xl text-center">Housecalls</h3>
               <p className="text-center -mb-1 italic">
                 CURRENTLY -{" "}
@@ -885,14 +999,14 @@ export const Hours = ({
                           </span>
                           <div className="w-full border-b mb-2 mx-4"></div>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                   <div className="w-max whitespace-nowrap uppercase text-center">
                     {housecallHours?.map(
                       (hours: { times: string }, index: number) => (
                         <div key={hours.times + index}>{hours.times}</div>
-                      )
+                      ),
                     )}
                   </div>
                 </div>

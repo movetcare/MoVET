@@ -9,7 +9,6 @@ import {
   faRedo,
   faAppleAlt,
   faSms,
-  faCheck,
   faEnvelopeSquare,
   faCircleExclamation,
   faSpinner,
@@ -26,17 +25,16 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GOTO_PHONE_URL } from "constants/urls";
 import environment from "utils/environment";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import { useDocument } from "react-firebase-hooks/firestore";
 import { firestore, functions } from "services/firebase";
-import { Button, Loader, Modal } from "ui";
+import { Loader, Modal } from "ui";
 import Error from "components/Error";
 import { timeSince } from "utils/timeSince";
 import { capitalizeFirstLetter } from "utils/capitalizeFirstLetter";
 import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
-import { Transition } from "@headlessui/react";
 import { ClientSearch } from "components/ClientSearch";
 import { isNumeric } from "utilities";
 import { Tooltip } from "react-tooltip";
@@ -55,11 +53,11 @@ const Client = () => {
     useState<boolean>(false);
   const [isLoadingSendPaymentLink, setIsLoadingSendPaymentLink] =
     useState<boolean>(false);
-  const [isLoadingAddingToWaitlist, setIsAddingToWaitlist] =
-    useState<boolean>(false);
+  // const [isLoadingAddingToWaitlist, setIsAddingToWaitlist] =
+  //   useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [clientData, isLoadingClient, errorClient] = useDocument(
-    doc(firestore, `clients/${query?.id}`)
+    doc(firestore, `clients/${query?.id}`),
   );
 
   useEffect(() => {
@@ -83,7 +81,6 @@ const Client = () => {
         id: query?.id,
       })
         .then((result: any) => {
-          console.log("result", result);
           if (
             (result.data?.alerts?.errors &&
               result.data?.alerts?.errors.length > 0) ||
@@ -134,7 +131,7 @@ const Client = () => {
             className="text-movet-yellow"
           />
         ),
-      }
+      },
     );
     const sendPaymentLink = httpsCallable(functions, "sendPaymentLink");
     sendPaymentLink({
@@ -161,7 +158,7 @@ const Client = () => {
                   className="text-movet-green"
                 />
               ),
-            }
+            },
           );
         else
           toast("SOMETHING WENT WRONG SENDING PAYMENT LINK!", {
@@ -190,80 +187,79 @@ const Client = () => {
       .finally(() => setIsLoadingSendPaymentLink(false));
   };
 
-  const addToWaitlist = async () => {
-    setIsAddingToWaitlist(true);
-    if (client?.email && !client?.email?.toLowerCase().includes("missing"))
-      await setDoc(
-        doc(firestore, `waitlist/${client?.email}`),
-        {
-          id: query?.id,
-          email: client?.email,
-          firstName: client?.displayName
-            ? client?.displayName
-            : client?.firstName,
-          lastName: client?.displayName ? "" : client?.lastName,
-          phone:
-            client?.phone !== undefined
-              ? formatPhoneNumber(client?.phone)
-              : client?.phoneNumber
-              ? client?.phoneNumber
-              : "UNKNOWN",
-          status: "complete",
-          isActive: true,
-          customerId: JSON.stringify(client?.customer),
-          paymentMethod:
-            client?.paymentMethods?.length > 0 && client?.paymentMethods[0]
-              ? [
-                  `${client?.paymentMethods[0]?.card?.brand?.toUpperCase()} - ${
-                    client?.paymentMethods[0]?.card?.last4
-                  }`,
-                ]
-              : [],
-          updatedOn: serverTimestamp(),
-        },
-        { merge: true }
-      )
-        .then(() => {
-          toast(`CLIENT ADDED TO WAITLIST`, {
-            position: "top-center",
-            duration: 3500,
-            icon: (
-              <FontAwesomeIcon
-                icon={faCheck}
-                size="lg"
-                className="text-movet-green"
-              />
-            ),
-          });
-          router.push("/dashboard");
-        })
-        .catch((error: any) =>
-          toast(error?.message, {
-            position: "top-center",
-            duration: 5000,
-            icon: (
-              <FontAwesomeIcon
-                icon={faCircleExclamation}
-                className="text-movet-red"
-              />
-            ),
-          })
-        )
-        .finally(() => setIsAddingToWaitlist(false));
-    else {
-      setIsAddingToWaitlist(false);
-      toast("FAILED TO CHECK IN CLIENT - MISSING EMAIL ADDRESS!", {
-        position: "top-center",
-        duration: 5000,
-        icon: (
-          <FontAwesomeIcon
-            icon={faCircleExclamation}
-            className="text-movet-red"
-          />
-        ),
-      });
-    }
-  };
+  // const addToWaitlist = async () => {
+  //   setIsAddingToWaitlist(true);
+  //   if (client?.email && !client?.email?.toLowerCase().includes("missing"))
+  //     await setDoc(
+  //       doc(firestore, `waitlist/${client?.email}`),
+  //       {
+  //         id: query?.id,
+  //         email: client?.email,
+  //         firstName: client?.displayName
+  //           ? client?.displayName
+  //           : client?.firstName,
+  //         lastName: client?.displayName ? "" : client?.lastName,
+  //         phone:
+  //           client?.phone !== undefined
+  //             ? formatPhoneNumber(client?.phone)
+  //             : client?.phoneNumber
+  //             ? client?.phoneNumber
+  //             : "UNKNOWN",
+  //         status: "complete",
+  //         isActive: true,
+  //         customerId: JSON.stringify(client?.customer),
+  //         paymentMethod:
+  //           client?.paymentMethods?.length > 0 && client?.paymentMethods[0]
+  //             ? [
+  //                 `${client?.paymentMethods[0]?.card?.brand?.toUpperCase()} - ${client
+  //                   ?.paymentMethods[0]?.card?.last4}`,
+  //               ]
+  //             : [],
+  //         updatedOn: serverTimestamp(),
+  //       },
+  //       { merge: true },
+  //     )
+  //       .then(() => {
+  //         toast(`CLIENT ADDED TO WAITLIST`, {
+  //           position: "top-center",
+  //           duration: 3500,
+  //           icon: (
+  //             <FontAwesomeIcon
+  //               icon={faCheck}
+  //               size="lg"
+  //               className="text-movet-green"
+  //             />
+  //           ),
+  //         });
+  //         router.push("/dashboard");
+  //       })
+  //       .catch((error: any) =>
+  //         toast(error?.message, {
+  //           position: "top-center",
+  //           duration: 5000,
+  //           icon: (
+  //             <FontAwesomeIcon
+  //               icon={faCircleExclamation}
+  //               className="text-movet-red"
+  //             />
+  //           ),
+  //         }),
+  //       )
+  //       .finally(() => setIsAddingToWaitlist(false));
+  //   else {
+  //     setIsAddingToWaitlist(false);
+  //     toast("FAILED TO CHECK IN CLIENT - MISSING EMAIL ADDRESS!", {
+  //       position: "top-center",
+  //       duration: 5000,
+  //       icon: (
+  //         <FontAwesomeIcon
+  //           icon={faCircleExclamation}
+  //           className="text-movet-red"
+  //         />
+  //       ),
+  //     });
+  //   }
+  // };
   const reloadPage = () => {
     toast(`RELOADING DATA...`, {
       position: "top-center",
@@ -288,7 +284,7 @@ const Client = () => {
     });
     const sendPasswordResetLink = httpsCallable(
       functions,
-      "sendPasswordResetLink"
+      "sendPasswordResetLink",
     );
     sendPasswordResetLink({
       email: client?.email,
@@ -384,7 +380,7 @@ const Client = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
   };
   const Divider = () => <hr className="my-4 border-movet-brown/50" />;
@@ -618,7 +614,7 @@ const Client = () => {
                           client?.email.includes("+test")
                             ? window.open(
                                 `https://us.provetcloud.com/4285/client/${query?.id}/forget`,
-                                "_blank"
+                                "_blank",
                               )
                             : setShowDeleteClientModal(true)
                         }
@@ -700,7 +696,7 @@ const Client = () => {
                                   >
                                     - {warning}
                                   </li>
-                                )
+                                ),
                               )}
                             </ul>
                           </div>
@@ -1117,13 +1113,13 @@ const Client = () => {
                               <div className="mt-2 flex flex-row items-center">
                                 <b>
                                   {capitalizeFirstLetter(
-                                    paymentMethod?.card?.funding
+                                    paymentMethod?.card?.funding,
                                   )}{" "}
                                   {capitalizeFirstLetter(paymentMethod?.type)}:
                                 </b>
                                 <span className="italic ml-2">
                                   {capitalizeFirstLetter(
-                                    paymentMethod?.card?.brand
+                                    paymentMethod?.card?.brand,
                                   )}
                                 </span>
                                 <span className="italic ml-2">
@@ -1146,15 +1142,9 @@ const Client = () => {
                         ))}
                     </ul>
                   </div>
-                  {client?.paymentMethods !== undefined ||
-                  (errors !== null && errors[0] !== "Client Not Found...") ? (
-                    <Divider />
-                  ) : (
-                    <div className="mt-6"></div>
-                  )}
                 </div>
               )}
-              <Transition
+              {/* <Transition
                 show={
                   client?.paymentMethods !== undefined ||
                   (errors !== null &&
@@ -1177,7 +1167,7 @@ const Client = () => {
                   onClick={() => addToWaitlist()}
                   className="hover:bg-movet-green mt-2 mb-6"
                 />
-              </Transition>
+              </Transition> */}
             </>
           )}
         </div>

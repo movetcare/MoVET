@@ -1,6 +1,7 @@
 import {
   faArrowRightToBracket,
   faCalendar,
+  faCalendarCheck,
   faCogs,
   faFlag,
   faSnowflake,
@@ -14,6 +15,15 @@ import { classNames } from "utils/classNames";
 
 export const SettingsNavigation = () => {
   const navigation = [
+    {
+      title: "Manage Hours",
+      description:
+        "Use these settings to override the automated OPEN/CLOSE status on the website hours page",
+      href: "/settings/manage-hours/",
+      icon: faCalendarCheck,
+      iconForeground: "text-movet-green",
+      iconBackground: "bg-movet-green bg-opacity-50",
+    },
     {
       title: "Users",
       description:
@@ -94,7 +104,7 @@ export const SettingsNavigation = () => {
               className={classNames(
                 item.iconBackground,
                 item.iconForeground,
-                "rounded-lg inline-flex p-3 ring-4 ring-white"
+                "rounded-lg inline-flex p-3 ring-4 ring-white",
               )}
             >
               <FontAwesomeIcon

@@ -128,7 +128,7 @@ export const HoursStatus = () => {
               />
             </div>
             <div className="p-8 max-w-3xl mx-auto">
-              <Link href="/settings/booking/manage-hours/">
+              <Link href="/settings/manage-hours/">
                 <>
                   <h2
                     className={`text-center mt-6${
