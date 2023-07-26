@@ -1,12 +1,7 @@
 import { auth } from "services/firebase";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import {
-  signInWithPopup,
-  GoogleAuthProvider,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-} from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleExclamation,
@@ -32,11 +27,11 @@ export const SignIn = () => {
   const [disabledNotice, setDisabledNotice] = useState<boolean>(false);
   const [showPhoneAuthFlow, setShowPhoneAuthFlow] = useState<boolean>(false);
   const [signInError, setSignInError] = useState<string | null>(null);
-  const [appVerifier, setAppVerifier] = useState<any>();
+  // const [appVerifier, setAppVerifier] = useState<any>(null);
   const [signInTokenSent, setSignInTokenSent] = useState<any>(null);
   const [signInToken, setSignInToken] = useState<string | null>(null);
   const [showTokenModal, setShowTokenModal] = useState<boolean>(false);
-  const [phone, setPhone] = useState<string | null>(null);
+  // const [phone, setPhone] = useState<string | null>(null);
   const {
     control,
     handleSubmit,
@@ -48,16 +43,17 @@ export const SignIn = () => {
     } as any,
   });
 
-  useEffect(() => {
-    setAppVerifier((window as any).recaptchaVerifier);
-    (window as any).recaptchaVerifier = new RecaptchaVerifier(
-      "sign-in-button" as any,
-      {
-        size: "invisible",
-      } as any,
-      auth,
-    );
-  }, []);
+  // useEffect(() => {
+  //   if(auth && auth.authStateReady() && appVerifier !== null)
+  //   setAppVerifier((window as any).recaptchaVerifier);
+  //   (window as any).recaptchaVerifier = new RecaptchaVerifier(
+  //     "sign-in-button" as any,
+  //     {
+  //       size: "invisible",
+  //     } as any,
+  //     auth,
+  //   );
+  // }, [auth, appVerifier]);
 
   useEffect(() => {
     if (signInTokenSent && signInToken)
@@ -105,21 +101,21 @@ export const SignIn = () => {
         );
   }, [signInToken, router]);
 
-  const onPhoneSubmit = (data: { phone: string }) => {
-    setIsLoading(true);
-    setPhone(data?.phone);
-    signInWithPhoneNumber(auth, `+1${data?.phone}`, appVerifier)
-      .then((confirmationResult: any) => {
-        (window as any).confirmationResult = confirmationResult;
-        setSignInTokenSent(confirmationResult);
-        setShowTokenModal(true);
-      })
-      .catch(
-        (error: any) =>
-          handleError(error) && setTimeout(() => router.reload(), 3000),
-      )
-      .finally(() => setIsLoading(false));
-  };
+  // const onPhoneSubmit = (data: { phone: string }) => {
+  //   setIsLoading(true);
+  //   setPhone(data?.phone);
+  //   signInWithPhoneNumber(auth, `+1${data?.phone}`, appVerifier)
+  //     .then((confirmationResult: any) => {
+  //       (window as any).confirmationResult = confirmationResult;
+  //       setSignInTokenSent(confirmationResult);
+  //       setShowTokenModal(true);
+  //     })
+  //     .catch(
+  //       (error: any) =>
+  //         handleError(error) && setTimeout(() => router.reload(), 3000),
+  //     )
+  //     .finally(() => setIsLoading(false));
+  // };
 
   const handleError = (error: { message: string }) => {
     console.error(error);
@@ -208,9 +204,9 @@ export const SignIn = () => {
                   <SignInModal
                     icon={faPhone}
                     title="Sign In Code"
-                    text={`Please enter 6 digit code we just texted to ${formatPhoneNumber(
-                      phone as string,
-                    )}`}
+                    // text={`Please enter 6 digit code we just texted to ${formatPhoneNumber(
+                    //   phone as string,
+                    // )}`}
                     yesButtonText="SIGN IN"
                     cancelButtonText="Cancel"
                     modalIsOpen={showTokenModal}
@@ -234,11 +230,12 @@ export const SignIn = () => {
                       icon={faPaw}
                       iconSize={"sm"}
                       loading={isLoading}
-                      disabled={!isDirty || isLoading}
+                      //disabled={!isDirty || isLoading}
+                      disabled
                       color="black"
                       text="Submit"
                       className={"w-full mt-6"}
-                      onClick={handleSubmit(onPhoneSubmit as any)}
+                      // onClick={handleSubmit(onPhoneSubmit as any)}
                     />
                   </form>
                 )}

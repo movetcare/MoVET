@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 export const SignInModal = ({
   icon = faQuestion,
   title,
-  text,
+  text = "",
   yesButtonText = "OK",
   cancelButtonText = "Cancel",
   modalIsOpen = false,
@@ -21,7 +21,7 @@ export const SignInModal = ({
 }: {
   icon?: any;
   title: string;
-  text: string;
+  text?: string;
   yesButtonText?: string;
   cancelButtonText?: string;
   modalIsOpen: boolean;
