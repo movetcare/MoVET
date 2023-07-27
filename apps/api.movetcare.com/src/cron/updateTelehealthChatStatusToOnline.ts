@@ -9,7 +9,7 @@ import { sendNotification } from "../notifications/sendNotification";
 
 export const updateTelehealthChatStatusToOnline: Promise<void> = functions
   .runWith(defaultRuntimeOptions)
-  .pubsub.schedule("0 9 * * *")
+  .pubsub.schedule("0 9 * * 1-5")
   .timeZone("America/Denver")
   .onRun(
     () =>
