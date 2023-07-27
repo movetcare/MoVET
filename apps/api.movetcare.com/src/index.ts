@@ -8,6 +8,7 @@ export { taskRunner } from "./cron/taskRunner";
 export { refreshShifts } from "./cron/refreshShifts";
 // export { refreshBreeds } from "./cron/refreshBreeds";
 export { updateTelehealthChatStatusToOffline } from "./cron/updateTelehealthChatStatusToOffline";
+export { updateTelehealthChatStatusToOnline } from "./cron/updateTelehealthChatStatusToOnline";
 export { rebuildStaticSites as rebuildStaticWebsite } from "./cron/rebuildStaticSites";
 
 export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
