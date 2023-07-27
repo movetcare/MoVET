@@ -9,7 +9,10 @@ export const processHoursStatusAutomationUpdate = async (options: {
   automatedCloseTime: number;
 }) => {
   const { action, type } = options;
-  if (DEBUG) console.log("options", { action, type });
+  if (DEBUG) {
+    console.log("options", { action, type });
+    console.log("process.env.TZ", process.env.TZ);
+  }
   if (action === "open") {
     switch (type) {
       case "clinic":
@@ -22,7 +25,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
               clinicStatus: true,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           );
         break;
       case "walkins":
@@ -35,7 +38,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
               walkinsStatus: true,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           );
         break;
       case "boutique":
@@ -48,7 +51,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
               boutiqueStatus: true,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           );
         break;
       case "housecall":
@@ -61,7 +64,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
               housecallStatus: true,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           );
         break;
       default:
@@ -79,7 +82,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
               clinicStatus: false,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           );
         break;
       case "walkins":
@@ -92,7 +95,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
               walkinsStatus: false,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           );
         break;
       case "boutique":
@@ -105,7 +108,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
               boutiqueStatus: false,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           );
         break;
       case "housecall":
@@ -118,7 +121,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
               housecallStatus: false,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           );
         break;
       default:

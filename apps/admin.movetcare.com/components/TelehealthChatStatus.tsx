@@ -27,7 +27,7 @@ const TelehealthChatStatus = () => {
   const [showTelehealthSettingsMenu, setShowTelehealthSettingsMenu] =
     useState<boolean>(false);
   const [settings, loadingSettings, errorSettings] = useDocument(
-    doc(firestore, "alerts/telehealth")
+    doc(firestore, "alerts/telehealth"),
   );
 
   const {
@@ -76,7 +76,7 @@ const TelehealthChatStatus = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(error?.message, {
@@ -87,7 +87,7 @@ const TelehealthChatStatus = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
   return (
     <>
@@ -177,14 +177,14 @@ const TelehealthChatStatus = () => {
                     onBlur={onBlur}
                     className={classNames(
                       isOnline ? "bg-movet-green" : "bg-movet-red",
-                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
                     <span
                       aria-hidden="true"
                       className={classNames(
                         isOnline ? "translate-x-5" : "translate-x-0",
-                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
                   </Switch>
@@ -195,30 +195,30 @@ const TelehealthChatStatus = () => {
               <FontAwesomeIcon icon={faBell} size="sm" />
               <span className="ml-2">Online Auto-Reply Message</span>
             </label>
-            <input
-              type="text"
+            <textarea
+              rows={6}
               placeholder="Write Something..."
-              className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full"
+              className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-lg"
               {...register("onlineAutoReply")}
             />
             <label className="italic my-2 text-sm">
               <FontAwesomeIcon icon={faBellSlash} size="sm" />
               <span className="ml-2">Offline Auto-Reply Message</span>
             </label>
-            <input
-              type="text"
+            <textarea
+              rows={6}
               placeholder="Write Something..."
-              className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full"
+              className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-lg"
               {...register("offlineAutoReply")}
             />
             <label className="italic my-2 text-sm">
               <FontAwesomeIcon icon={faCalendar} size="sm" />
               <span className="ml-2">Todays Hours of Operation</span>
             </label>
-            <input
-              type="text"
+            <textarea
+              rows={3}
               placeholder="Write Something..."
-              className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full"
+              className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-lg"
               {...register("message")}
             />
             <div className="flex flex-row">

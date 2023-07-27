@@ -2,9 +2,11 @@ import { admin, throwError, DEBUG } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
 // import {configureReminders} from '../integrations/provet/entities/reminder/configureReminders';
 import { workers } from "./workers";
-
 export const processTaskQueue = async (): Promise<void> => {
-  if (DEBUG) console.log("*** PROCESSING TASK QUEUE ***");
+  if (DEBUG) {
+    console.log("*** PROCESSING TASK QUEUE ***");
+    console.log("process.env.TZ", process.env.TZ);
+  }
   const query = admin
     .firestore()
     .collection("tasks_queue")
@@ -41,12 +43,12 @@ export const processTaskQueue = async (): Promise<void> => {
                 status: "complete",
                 markedCompleteOn: new Date(),
               },
-              { merge: true }
+              { merge: true },
             )
             .then(() =>
               task.ref
                 .delete()
-                .catch((error: any) => DEBUG && console.error(error))
+                .catch((error: any) => DEBUG && console.error(error)),
             )
             .catch((error: any) => throwError(error));
         })
@@ -67,7 +69,7 @@ export const processTaskQueue = async (): Promise<void> => {
                 payload: {
                   message: JSON.stringify(task.data()),
                 },
-              })
+              }),
             )
             .catch((error: any) => console.error(error));
           throwError(error);
@@ -96,12 +98,12 @@ export const processTaskQueue = async (): Promise<void> => {
                 status: "complete",
                 markedCompleteOn: new Date(),
               },
-              { merge: true }
+              { merge: true },
             )
             .then(() =>
               task.ref
                 .delete()
-                .catch((error: any) => DEBUG && console.error(error))
+                .catch((error: any) => DEBUG && console.error(error)),
             )
             .catch((error: any) => throwError(error));
         })
@@ -119,7 +121,7 @@ export const processTaskQueue = async (): Promise<void> => {
                 payload: {
                   message: JSON.stringify(task.data()),
                 },
-              })
+              }),
             )
             .catch((error: any) => DEBUG && console.error(error));
           return throwError(error);

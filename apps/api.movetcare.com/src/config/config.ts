@@ -6,7 +6,7 @@ import Stripe from "stripe";
 import * as email from "@sendgrid/mail";
 import * as client from "@sendgrid/client";
 import { WebClient, LogLevel } from "@slack/web-api";
-
+process.env.TZ = "America/Denver";
 let stagingInstance: any = null;
 let productionInstance: any = null;
 export const environment: any = func.config()?.environment;
@@ -27,7 +27,7 @@ export const throwError = (error: any): false => {
       type: "slack",
       payload: {
         message: `:interrobang: NEW ERROR:\`\`\`${JSON.stringify(
-          error || error?.message
+          error || error?.message,
         )}\`\`\``,
       },
     });
@@ -71,12 +71,11 @@ if (environment.type === "development") {
           .config()
           ?.environment.private_key.replace(/\\n/g, "\n"),
       }),
-      databaseURL: `https://${
-        func.config()?.environment.project_id
-      }.firebaseio.com`,
+      databaseURL: `https://${func.config()?.environment
+        .project_id}.firebaseio.com`,
       storageBucket: "movet-care-staging.appspot.com",
     },
-    "staging"
+    "staging",
   );
   stagingInstance.firestore().settings({
     ignoreUndefinedProperties: true,
