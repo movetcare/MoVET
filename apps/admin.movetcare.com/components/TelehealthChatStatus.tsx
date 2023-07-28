@@ -8,6 +8,7 @@ import {
   faCircleExclamation,
   faClockFour,
   faEdit,
+  faFileAlt,
   faSignal,
   faUsers,
   faWrench,
@@ -22,12 +23,17 @@ import toast from "react-hot-toast";
 import { firestore } from "services/firebase";
 import { classNames } from "utils/classNames";
 import Error from "components/Error";
+import Link from "next/link";
+import { Tooltip } from "react-tooltip";
 
 const TelehealthChatStatus = () => {
   const [showTelehealthSettingsMenu, setShowTelehealthSettingsMenu] =
     useState<boolean>(false);
   const [settings, loadingSettings, errorSettings] = useDocument(
     doc(firestore, "alerts/telehealth"),
+  );
+  const [templates, loadingTemplates, errorTemplates] = useDocument(
+    doc(firestore, "configuration/telehealth"),
   );
 
   const {
@@ -36,6 +42,7 @@ const TelehealthChatStatus = () => {
     control,
     watch,
     reset,
+    setValue,
     formState: { isValid, isSubmitting, isDirty },
   } = useForm({
     mode: "onChange",
@@ -91,50 +98,54 @@ const TelehealthChatStatus = () => {
       );
   return (
     <>
-      {loadingSettings && (
+      {(loadingSettings || loadingTemplates) && (
         <div className="text-center text-sm -mt-2 cursor-pointer hover:text-movet-red">
           <h2 className="text-center text-sm -mt-2">
             Loading Telehealth Settings...
           </h2>
         </div>
       )}
-      {errorSettings && (
+      {(errorSettings || errorTemplates) && (
         <div className="text-center text-sm -mt-2 cursor-pointer hover:text-movet-red">
           <Error error={errorSettings} />
         </div>
       )}
-      {settings && !loadingSettings && !errorSettings && (
-        <div
-          className="text-center text-sm -mt-2 cursor-pointer hover:text-movet-red"
-          onClick={() =>
-            setShowTelehealthSettingsMenu(!showTelehealthSettingsMenu)
-          }
-        >
-          <h2 className="text-center text-sm -mt-2">
-            <FontAwesomeIcon icon={faEdit} size="xs" />
-            <span className="ml-2">Status: </span>
-            <span
-              className={`mr-2 italic${
-                settings?.data()?.isOnline
-                  ? " text-movet-green"
-                  : " text-movet-red"
-              }`}
-            >
-              {settings?.data()?.isOnline ? "ONLINE" : "OFFLINE"}
-            </span>
-            <FontAwesomeIcon
-              icon={showTelehealthSettingsMenu ? faCaretDown : faCaretUp}
-              size="xs"
-            />
-          </h2>
-          {/* <h3 className="text-center text-xs">
+      {settings &&
+        !loadingSettings &&
+        !errorSettings &&
+        !loadingTemplates &&
+        !errorTemplates && (
+          <div
+            className="text-center text-sm -mt-2 cursor-pointer hover:text-movet-red"
+            onClick={() =>
+              setShowTelehealthSettingsMenu(!showTelehealthSettingsMenu)
+            }
+          >
+            <h2 className="text-center text-sm -mt-2">
+              <FontAwesomeIcon icon={faEdit} size="xs" />
+              <span className="ml-2">Status: </span>
+              <span
+                className={`mr-2 italic${
+                  settings?.data()?.isOnline
+                    ? " text-movet-green"
+                    : " text-movet-red"
+                }`}
+              >
+                {settings?.data()?.isOnline ? "ONLINE" : "OFFLINE"}
+              </span>
+              <FontAwesomeIcon
+                icon={showTelehealthSettingsMenu ? faCaretDown : faCaretUp}
+                size="xs"
+              />
+            </h2>
+            {/* <h3 className="text-center text-xs">
             <FontAwesomeIcon icon={faUsers} />
             <span className="mx-2">{settings?.data()?.queueSize}</span>
             <FontAwesomeIcon icon={faClockFour} />
             <span className="ml-2">{settings?.data()?.waitTime}</span>
           </h3> */}
-        </div>
-      )}
+          </div>
+        )}
       <menu className="mt-4">
         <Transition
           show={showTelehealthSettingsMenu}
@@ -202,6 +213,52 @@ const TelehealthChatStatus = () => {
               {...register("onlineAutoReply")}
             />
             <label className="italic my-2 text-sm">
+              <FontAwesomeIcon icon={faFileAlt} size="sm" />
+              <span className="ml-2">
+                Online Auto-Reply Templates{" "}
+                <Link href="/settings/telehealth">
+                  <FontAwesomeIcon
+                    icon={faEdit}
+                    size={"sm"}
+                    className="ml-2 hover:text-movet-red"
+                  />
+                </Link>
+              </span>
+              <p className="mt-1 italic text-xs -mb-2">
+                Click on an option below to prefill the field above. Don&apos;t
+                forget to click &apos;Save Changes&apos; once you&apos;re done!
+              </p>
+            </label>
+            <div className="flex flex-col w-full">
+              <ul>
+                {templates &&
+                  (templates as any)
+                    ?.data()
+                    .onlineTemplates.map(
+                      (
+                        template: { title: string; message: string },
+                        index: number,
+                      ) => (
+                        <li
+                          className="border-movet-gray rounded-lg border-2 p-2 my-4 hover:border-movet-black cursor-pointer"
+                          data-tooltip-id={`online-template-${index}`}
+                          data-tooltip-content={template?.message}
+                          onClick={() =>
+                            setValue("onlineAutoReply", template?.message, {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                              shouldTouch: true,
+                            })
+                          }
+                        >
+                          <h4>{template?.title}</h4>
+                          <Tooltip id={`template-${index}`} />
+                        </li>
+                      ),
+                    )}
+              </ul>
+            </div>
+            <label className="italic my-2 text-sm">
               <FontAwesomeIcon icon={faBellSlash} size="sm" />
               <span className="ml-2">Offline Auto-Reply Message</span>
             </label>
@@ -211,6 +268,52 @@ const TelehealthChatStatus = () => {
               className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-lg"
               {...register("offlineAutoReply")}
             />
+            <label className="italic my-2 text-sm">
+              <FontAwesomeIcon icon={faFileAlt} size="sm" />
+              <span className="ml-2">
+                Offline Auto-Reply Templates{" "}
+                <Link href="/settings/telehealth">
+                  <FontAwesomeIcon
+                    icon={faEdit}
+                    size={"sm"}
+                    className="ml-2 hover:text-movet-red"
+                  />
+                </Link>
+              </span>
+              <p className="mt-1 italic text-xs -mb-2">
+                Click on an option below to prefill the field above. Don&apos;t
+                forget to click &apos;Save Changes&apos; once you&apos;re done!
+              </p>
+            </label>
+            <div className="flex flex-col w-full">
+              <ul>
+                {templates &&
+                  (templates as any)
+                    ?.data()
+                    .offlineTemplates.map(
+                      (
+                        template: { title: string; message: string },
+                        index: number,
+                      ) => (
+                        <li
+                          className="border-movet-gray rounded-lg border-2 p-2 my-4 hover:border-movet-black cursor-pointer"
+                          data-tooltip-id={`offline-template-${index}`}
+                          data-tooltip-content={template?.message}
+                          onClick={() =>
+                            setValue("offlineAutoReply", template?.message, {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                              shouldTouch: true,
+                            })
+                          }
+                        >
+                          <h4>{template?.title}</h4>
+                          <Tooltip id={`template-${index}`} />
+                        </li>
+                      ),
+                    )}
+              </ul>
+            </div>
             <label className="italic my-2 text-sm">
               <FontAwesomeIcon icon={faCalendar} size="sm" />
               <span className="ml-2">Todays Hours of Operation</span>
