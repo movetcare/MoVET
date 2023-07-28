@@ -251,7 +251,7 @@ const TelehealthChatStatus = () => {
                             })
                           }
                         >
-                          <h4>{template?.title}</h4>
+                          <h4 className="text-sm italic">{template?.title}</h4>
                           <Tooltip id={`template-${index}`} />
                         </li>
                       ),
