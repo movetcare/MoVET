@@ -4,6 +4,7 @@ import {
   faCalendarCheck,
   faCogs,
   faFlag,
+  faHeadset,
   faSnowflake,
   faUser,
   faVial,
@@ -23,6 +24,15 @@ export const SettingsNavigation = () => {
       icon: faCalendarCheck,
       iconForeground: "text-movet-green",
       iconBackground: "bg-movet-green bg-opacity-50",
+    },
+    {
+      title: "Telehealth Chat Templates",
+      description:
+        "Use these settings to manage all of the telehealth chat auto-responses",
+      href: "/settings/telehealth/",
+      icon: faHeadset,
+      iconForeground: "text-movet-blue",
+      iconBackground: "bg-movet-blue bg-opacity-50",
     },
     {
       title: "Users",
@@ -87,7 +97,7 @@ export const SettingsNavigation = () => {
     },
   ];
   return (
-    <div className="rounded-lg bg-movet-white overflow-hidden shadow divide-y divide-movet-gray sm:divide-y-0 sm:grid sm:grid-cols-2 sm:gap-px">
+    <div className="rounded-lg bg-white overflow-hidden shadow divide-y divide-movet-gray sm:divide-y-0 sm:grid sm:grid-cols-2 sm:gap-px">
       <div className="flex flex-row items-center justify-center col-span-2 bg-white">
         <FontAwesomeIcon icon={faCogs} className="text-movet-red" size="lg" />
         <h1 className="ml-2 my-4 text-lg">Settings</h1>

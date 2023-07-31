@@ -36,7 +36,7 @@
     "react-number-format": "^5.2.2",
     "react-select": "^5.7.4",
     "react-swipeable": "^7.0.1",
-    "react-time-picker": "^6.3.0",
+    "react-time-picker": "^6.5.0",
     "yup": "^1.2.0"
   },
   "devDependencies": {
@@ -51,7 +51,7 @@
     "autoprefixer": "^10.4.14",
     "constant": "workspace:*",
     "csstype": "^3.1.2",
-    "eslint": "8.45.0",
+    "eslint": "8.46.0",
     "eslint-config-custom": "workspace:*",
     "next-transpile-modules": "10.0.1",
     "postcss": "^8.4.27",
