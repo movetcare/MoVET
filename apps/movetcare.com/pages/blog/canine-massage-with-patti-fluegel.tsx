@@ -73,23 +73,6 @@ export default function CanineMassage() {
           </a>
         </p>
         <p className="italic text-xs">July 5th, 2023</p>
-        <hr />
-        <p className="italic text-center text-sm my-4 max-w-2xl">
-          MoVET is proud to welcome and partner with Patti to offer our clients
-          Mobile Massage throughout the Denver area as well as in-clinic days at
-          MoVET @ Belleview Station.
-        </p>
-        <p>Patti&apos;s upcoming In-Clinic dates are:</p>
-        <ul>
-          <li>Saturday, September 9th</li>
-          <li>Saturday, September 23rd</li>
-        </ul>
-        <p>
-          If interested, please email{" "}
-          <a href="mailto://info@movetcare.com">info@movetcare.com</a> or
-          call/text <a href="">720-507-PETS (7387)</a> our office for details.
-        </p>
-        <hr />
         <p>
           Just like humans, dogs can benefit greatly from the power of touch.
           Canine massage is not only a luxurious treat for your beloved pet, but
@@ -184,6 +167,24 @@ export default function CanineMassage() {
           her 5-year-old lab, Jewels, and her 15-year-old border collie mix,
           Coco.
         </p>
+        <hr />
+        <p className="italic text-center mt-4 max-w-2xl">
+          MoVET is proud to welcome and partner with Patti to offer our clients
+          Mobile Massage throughout the Denver area as well as in-clinic days at
+          MoVET @ Belleview Station.
+        </p>
+        <p>Patti&apos;s upcoming In-Clinic dates are:</p>
+        <ul className="mb-2">
+          <li>Saturday, September 9th</li>
+          <li>Saturday, September 23rd</li>
+        </ul>
+        <p className="text-lg italic font-extrabold text-center max-w-xl">
+          If interested, please email{" "}
+          <a href="mailto://info@movetcare.com">info@movetcare.com</a> or
+          call/text <a href="tel://+17205077387">720-507-PETS (7387)</a> our
+          office for details.
+        </p>
+        <hr />
       </section>
       <CallToAction />
     </Layout>
