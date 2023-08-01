@@ -72,17 +72,22 @@ export default function CanineMassage() {
             Patti Fluegel, VT, CCMT
           </a>
         </p>
-        <p className="mb-0">
-          Certified Canine Rehabilitation Practitioner (CCRP)
-        </p>
         <p className="italic text-xs">July 5th, 2023</p>
         <hr />
         <p className="italic text-center text-sm my-4 max-w-2xl">
           MoVET is proud to welcome and partner with Patti to offer our clients
           Mobile Massage throughout the Denver area as well as in-clinic days at
-          MoVET @ Belleview Station. If interested, please email
-          info@movetcare.com or call/text 720-507-PETS (7387) our office for
-          details.
+          MoVET @ Belleview Station.
+        </p>
+        <p>Patti&apos;s upcoming In-Clinic dates are:</p>
+        <ul>
+          <li>Saturday, September 9th</li>
+          <li>Saturday, September 23rd</li>
+        </ul>
+        <p>
+          If interested, please email{" "}
+          <a href="mailto://info@movetcare.com">info@movetcare.com</a> or
+          call/text <a href="">720-507-PETS (7387)</a> our office for details.
         </p>
         <hr />
         <p>
@@ -166,12 +171,12 @@ export default function CanineMassage() {
           </a>{" "}
           - Patti graduated from the New England Institute of Technology with an
           Associates in Science Degree in Veterinary Technology (VT), then went
-          on to pursue a degree as a Certified Canine Rehabilitation
-          Practitioner (CCRP) at the University of Tennessee, a worldwide leader
-          in physical rehabilitation of small animals. She continued to grow her
-          passion for helping geriatric patients and other arthritic dogs and
-          went on to become a Certified Canine Massage Therapist (CCMT) at the
-          Brandenburg Massage Therapy program.
+          on to pursue training as a Canine Rehabilitation Practitioner (CRP) at
+          the University of Tennessee, a worldwide leader in physical
+          rehabilitation of small animals. She continued to grow her passion for
+          helping geriatric patients and other arthritic dogs and went on to
+          become a Certified Canine Massage Therapist (CCMT) at the Brandenburg
+          Massage Therapy program.
         </p>
         <p>
           Now an empty-nester, Patti recently moved across the country from the
