@@ -15,8 +15,51 @@ const Reviews = () => {
         <div className="relative z-40">
           <div className="flex flex-col justify-center items-center max-w-screen-lg mx-auto">
             <h2 className="text-4xl mb-4 tracking-wide mt-8 text-center">
-              Our Happy Clients
+              Reviews
             </h2>
+            <a
+              className="relative z-10 mt-2"
+              href="https://nextdoor.com/pages/movet-centennial-co/"
+              target="_blank"
+            >
+              <div className="flex flex-col sm:flex-row mx-auto justify-center mt-4 mb-12 sm:mb-16 max-w-screen-lg">
+                <div className="w-full py-4 sm:py-0 sm:mx-8 text-center flex flex-col">
+                  <div className="mx-auto hover:animate-bounce duration-500">
+                    <Image
+                      src={"/images/icons/neighborhood_fave_2023.svg"}
+                      alt={`Neighborhood Fave 2023 icon`}
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                </div>
+                <div className="w-full py-4 sm:py-0 sm:mx-8 text-center flex flex-col">
+                  <div className="mx-auto hover:animate-bounce duration-500">
+                    <Image
+                      src={"/images/icons/neighborhood_fave_2022.svg"}
+                      alt={`Neighborhood Fave 2022 icon`}
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                </div>
+                <div className="w-full py-4 sm:py-0 sm:mx-8 text-center flex flex-col">
+                  <div className="mx-auto hover:animate-bounce duration-500">
+                    <Image
+                      src={"/images/icons/neighborhood_fave_2021.svg"}
+                      alt={`Neighborhood Fave 2021 icon`}
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <h3 className="text-lg text-center font-extrabold tracking-tight text-movet-black max-w-lg -mt-8">
+                Voted a Neighborhood Fave for Best Pet services in the Nextdoor
+                App for the past three years!
+              </h3>
+            </a>
             <ClientReviews mode="full" />
             <div className="flex justify-center items-stretch w-full pt-2 max-w-screen-2xl mx-auto mt-0 sm:mt-8">
               <div className="hidden md:flex grow">

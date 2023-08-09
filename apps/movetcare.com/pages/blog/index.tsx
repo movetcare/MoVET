@@ -11,6 +11,62 @@ const posts: Array<BlogPost> = [
   {
     isFeatured: true,
     isExternalLink: true,
+    title:
+      "MoVET @ Belleview Station Voted a Neighborhood Fave in Nextdoor's 2023 Local Business Awards",
+    href: "https://nextdoor.com/pages/movet-centennial-co/",
+    category: [
+      {
+        name: "Press Release",
+        href: "#",
+        color: "bg-movet-green",
+      },
+      { name: "Community", href: "#", color: "bg-movet-magenta" },
+    ],
+    description:
+      '"Neighbors know best, and Nextdoor\'s Neighborhood Faves are the only annual awards celebrating the businesses that are most loved by locals. This prestigious recognition is only awarded to 1% of the local businesses on Nextdoor and is a testament to the positive impact they have had on their community." - Nextdoor CEO Sarah Friar',
+    date: "August 9th, 2023",
+    datetime: "2023-08-09",
+    imageUrl: "/images/blog/nextdoor-fave.jpg",
+    readingTime: "1 min",
+    author: {
+      name: "Nextdoor",
+      href: "#",
+      imageUrl: "/images/blog/nextdoor-logo.png",
+    },
+  },
+  {
+    isFeatured: false,
+    isExternalLink: true,
+    title:
+      "Dr. Caldwell Featured in \"Dog Days of Summer: Chip's Tips & Dale's Don'ts\"",
+    href: "https://www.weathernationtv.com/news/dog-days-of-summer-meet-chip-dale",
+    category: [
+      {
+        name: "Press Release",
+        href: "#",
+        color: "bg-movet-green",
+      },
+      {
+        name: "Health & Wellness",
+        href: "#",
+        color: "bg-movet-yellow",
+      },
+    ],
+    description:
+      "\"The Dog Days of Summer are upon us, meaning it's the hottest time of the year extending from early July into mid-August. WeatherNation has all four paws covered with Chip's Tips and Dale's Don'ts so you and your furry friends can stay safe this season!\"",
+    date: "August 7th, 2023",
+    datetime: "2023-08-07",
+    imageUrl: "/images/blog/weather-nation-feature-dr-caldwell.png",
+    readingTime: "5 min",
+    author: {
+      name: "Weather Nation",
+      href: "#",
+      imageUrl: "/images/blog/weather-nation-logo.png",
+    },
+  },
+  {
+    isFeatured: false,
+    isExternalLink: true,
     title: "MoVET @ Belleview Station Receives 2023 Denver Award",
     href: "https://denverco.businessawardlocal.com/PressReleaseub.aspx?cc=DMN7-ZBZE-R8XX",
     category: {
@@ -28,30 +84,6 @@ const posts: Array<BlogPost> = [
       name: "Denver Award Program",
       href: "#",
       imageUrl: "/images/logos/logo-paw-black.png",
-    },
-  },
-
-  {
-    isFeatured: false,
-    isExternalLink: true,
-    title:
-      "Dr. Caldwell Featured in \"Dog Days of Summer: Chip's Tips & Dale's Don'ts\"",
-    href: "https://www.weathernationtv.com/news/dog-days-of-summer-meet-chip-dale",
-    category: {
-      name: "Health & Wellness",
-      href: "#",
-      color: "bg-movet-yellow",
-    },
-    description:
-      "\"The Dog Days of Summer are upon us, meaning it's the hottest time of the year extending from early July into mid-August. WeatherNation has all four paws covered with Chip's Tips and Dale's Don'ts so you and your furry friends can stay safe this season!\"",
-    date: "August 7th, 2023",
-    datetime: "2023-08-07",
-    imageUrl: "/images/blog/weather-nation-feature-dr-caldwell.png",
-    readingTime: "5 min",
-    author: {
-      name: "Weather Nation",
-      href: "#",
-      imageUrl: "/images/blog/weather-nation-logo.png",
     },
   },
   {
@@ -260,7 +292,7 @@ export default function Blog() {
               From The Blog
             </h2>
           </div>
-          <div className="mx-auto mt-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
+          <div className="mx-auto mt-8 -mb-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
             {posts.map((post: BlogPost, index: number) =>
               post.isFeatured ? (
                 <div
@@ -292,18 +324,33 @@ export default function Blog() {
                   </div>
                   <div className="flex flex-1 flex-col justify-between bg-white p-6">
                     <div className="flex-1">
-                      <p className="text-sm font-medium">
-                        {/*<a href={post.href}>*/}
-                        <span
-                          className={classNames(
-                            post.category.color,
-                            "inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white",
-                          )}
-                        >
-                          {post.category.name}
-                        </span>
-                        {/*</a>*/}
-                      </p>
+                      <div className="flex flex-row items-center">
+                        {Array.isArray(post.category) ? (
+                          post.category.map((cat: any) => (
+                            <p className="text-sm font-medium mr-2">
+                              <span
+                                className={classNames(
+                                  cat.color,
+                                  "inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white",
+                                )}
+                              >
+                                {cat.name}
+                              </span>
+                            </p>
+                          ))
+                        ) : (
+                          <p className="text-sm font-medium">
+                            <span
+                              className={classNames(
+                                post.category.color,
+                                "inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white",
+                              )}
+                            >
+                              {post.category.name}
+                            </span>
+                          </p>
+                        )}
+                      </div>
                       {post.isExternalLink ? (
                         <>
                           <a
@@ -415,16 +462,33 @@ export default function Blog() {
                   </div>
                   <div className="flex flex-1 flex-col justify-between bg-white p-6">
                     <div className="flex-1">
-                      <p className="text-sm font-medium">
-                        <span
-                          className={classNames(
-                            post.category.color,
-                            "inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white",
-                          )}
-                        >
-                          {post.category.name}
-                        </span>
-                      </p>
+                      <div className="flex flex-row items-center">
+                        {Array.isArray(post.category) ? (
+                          post.category.map((cat: any) => (
+                            <p className="text-sm font-medium mr-2">
+                              <span
+                                className={classNames(
+                                  cat.color,
+                                  "inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white",
+                                )}
+                              >
+                                {cat.name}
+                              </span>
+                            </p>
+                          ))
+                        ) : (
+                          <p className="text-sm font-medium">
+                            <span
+                              className={classNames(
+                                post.category.color,
+                                "inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium text-movet-white",
+                              )}
+                            >
+                              {post.category.name}
+                            </span>
+                          </p>
+                        )}
+                      </div>
                       {post.isExternalLink ? (
                         <a
                           href={post.href}

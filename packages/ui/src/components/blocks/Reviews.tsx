@@ -1,5 +1,3 @@
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ClientReviews } from "../elements/ClientReviews";
 import Image from "next/image";
 
@@ -54,21 +52,50 @@ export const Reviews = () => (
           </div>
         </div>
         <div className="text-center text-white max-w-lg relative z-20">
-          <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white">
+          <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-white sm:mb-10">
             Our Happy Clients
           </h2>
-          <p className="text-lg">
-            Online reviews from great clients like you help others to feel
-            confident about choosing MoVET and will help our business grow.
-          </p>
           <a
-            className="text-center ease-in-out duration-500 w-full sm:w-2/3 mx-auto mt-8 flex justify-center items-center border border-transparent shadow-sm text-movet-white text-sm font-medium font-abside uppercase bg-movet-brown group-hover:bg-movet-dark-brown hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-brown py-2 px-6 rounded-full"
+            className="z-10"
+            href="https://nextdoor.com/pages/movet-centennial-co/"
             target="_blank"
-            href="https://g.page/r/CbtAdHSVgeMfEB0/review"
-            rel="noopener noreferrer"
           >
-            <FontAwesomeIcon icon={faPencil} size="lg" className="mr-2" />
-            Add a Review
+            <div className="flex flex-col sm:flex-row mx-auto justify-center mt-4 mb-12 sm:mb-16 max-w-screen-lg">
+              <div className="w-full py-4 sm:py-0 sm:mx-8 text-center flex flex-col">
+                <div className="mx-auto hover:animate-bounce duration-500">
+                  <Image
+                    src={"/images/icons/neighborhood_fave_2023.svg"}
+                    alt={`Neighborhood Fave 2023 icon`}
+                    width={90}
+                    height={90}
+                  />
+                </div>
+              </div>
+              <div className="w-full py-4 sm:py-0 sm:mx-8 text-center flex flex-col">
+                <div className="mx-auto hover:animate-bounce duration-500">
+                  <Image
+                    src={"/images/icons/neighborhood_fave_2022.svg"}
+                    alt={`Neighborhood Fave 2022 icon`}
+                    width={90}
+                    height={90}
+                  />
+                </div>
+              </div>
+              <div className="w-full py-4 sm:py-0 sm:mx-8 text-center flex flex-col">
+                <div className="mx-auto hover:animate-bounce duration-500">
+                  <Image
+                    src={"/images/icons/neighborhood_fave_2021.svg"}
+                    alt={`Neighborhood Fave 2021 icon`}
+                    width={90}
+                    height={90}
+                  />
+                </div>
+              </div>
+            </div>
+            <p className="text-lg sm:text-xl text-center font-extrabold tracking-tight text-movet-white max-w-lg -mt-10 italic mb-16">
+              Voted a Neighborhood Fave for Best Pet services in the Nextdoor
+              App for the past three years!
+            </p>
           </a>
         </div>
         <div className="hidden md:block grow">
@@ -118,7 +145,7 @@ export const Reviews = () => (
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-center items-center max-w-7xl mx-auto sm:p-4 mt-20">
+      <div className="flex flex-col justify-center items-center max-w-7xl mx-auto sm:p-4 -mt-16">
         <ClientReviews />
       </div>
     </div>

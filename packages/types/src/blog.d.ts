@@ -3,7 +3,7 @@ export type BlogPost = {
   isExternalLink?: boolean;
   title: string;
   href: string;
-  category: { name: string; href: string; color: string };
+  category: Array<Category> | Category;
   description: string;
   date: string;
   datetime: string;
@@ -15,3 +15,4 @@ export type BlogPost = {
     imageUrl: string | null;
   };
 };
+type Category = { name: string; href: string; color: string };
