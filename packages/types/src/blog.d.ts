@@ -1,5 +1,6 @@
 export type BlogPost = {
   isFeatured: boolean;
+  isExternalLink?: boolean;
   title: string;
   href: string;
   category: { name: string; href: string; color: string };

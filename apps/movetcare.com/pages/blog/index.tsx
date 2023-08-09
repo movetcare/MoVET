@@ -7,9 +7,55 @@ import Head from "next/head";
 import { Fragment } from "react";
 import { CallToAction } from "ui";
 
-const posts = [
+const posts: Array<BlogPost> = [
   {
     isFeatured: true,
+    isExternalLink: true,
+    title: "MoVET @ Belleview Station Receives 2023 Denver Award",
+    href: "https://denverco.businessawardlocal.com/PressReleaseub.aspx?cc=DMN7-ZBZE-R8XX",
+    category: {
+      name: "Press Release",
+      href: "#",
+      color: "bg-movet-green",
+    },
+    description:
+      '"Each year, the Denver Award Program identifies companies that we believe have achieved exceptional marketing success in their local community and business category. These are local companies that enhance the positive image of small business through service to their customers and our community. These exceptional companies help make the Denver area a great place to live, work and play."',
+    date: "August 2nd, 2023",
+    datetime: "2023-08-02",
+    imageUrl: "/images/logos/logo.png",
+    readingTime: "1 min",
+    author: {
+      name: "Denver Award Program",
+      href: "#",
+      imageUrl: "/images/logos/logo-paw-black.png",
+    },
+  },
+
+  {
+    isFeatured: false,
+    isExternalLink: true,
+    title:
+      "Dr. Caldwell Featured in \"Dog Days of Summer: Chip's Tips & Dale's Don'ts\"",
+    href: "https://www.weathernationtv.com/news/dog-days-of-summer-meet-chip-dale",
+    category: {
+      name: "Health & Wellness",
+      href: "#",
+      color: "bg-movet-yellow",
+    },
+    description:
+      "\"The Dog Days of Summer are upon us, meaning it's the hottest time of the year extending from early July into mid-August. WeatherNation has all four paws covered with Chip's Tips and Dale's Don'ts so you and your furry friends can stay safe this season!\"",
+    date: "August 7th, 2023",
+    datetime: "2023-08-07",
+    imageUrl: "/images/blog/weather-nation-feature-dr-caldwell.png",
+    readingTime: "5 min",
+    author: {
+      name: "Weather Nation",
+      href: "#",
+      imageUrl: "/images/blog/weather-nation-logo.png",
+    },
+  },
+  {
+    isFeatured: false,
     title:
       "Pawsitive Vibes: Canine Massage for Optimal Veterinary Health and Wellness",
     href: "/blog/canine-massage-with-patti-fluegel",
@@ -219,18 +265,30 @@ export default function Blog() {
               post.isFeatured ? (
                 <div
                   key={index}
-                  className="flex flex-col lg:flex-row overflow-hidden rounded-lg shadow-lg col-span-3"
+                  className="flex flex-col lg:flex-row overflow-hidden rounded-lg shadow-lg col-span-3 items-center bg-white"
                 >
-                  <div className="flex-shrink-0 -mb-2">
-                    <Link href={post.href}>
-                      <Image
-                        className="hover:opacity-75 cursor-pointer"
-                        src={post.imageUrl}
-                        alt=""
-                        height={510}
-                        width={510}
-                      />
-                    </Link>
+                  <div className="flex-shrink-0 -mb-2 bg-white">
+                    {post.isExternalLink ? (
+                      <a href={post.href} target="_blank">
+                        <Image
+                          className="hover:opacity-75 cursor-pointer"
+                          src={post.imageUrl}
+                          alt=""
+                          height={510}
+                          width={510}
+                        />
+                      </a>
+                    ) : (
+                      <Link href={post.href}>
+                        <Image
+                          className="hover:opacity-75 cursor-pointer"
+                          src={post.imageUrl}
+                          alt=""
+                          height={510}
+                          width={510}
+                        />
+                      </Link>
+                    )}
                   </div>
                   <div className="flex flex-1 flex-col justify-between bg-white p-6">
                     <div className="flex-1">
@@ -246,22 +304,47 @@ export default function Blog() {
                         </span>
                         {/*</a>*/}
                       </p>
-                      <Link
-                        href={post.href}
-                        className="mt-2 block hover:no-underline"
-                      >
-                        <p className="text-xl font-semibold cursor-pointer text-movet-black hover:no-underline">
-                          {post.title}
-                        </p>
-                      </Link>
-                      <Link
-                        href={post.href}
-                        className="mt-2 block hover:no-underline"
-                      >
-                        <p className="mt-3 text-base cursor-pointer text-movet-black hover:no-underline">
-                          {post.description}
-                        </p>
-                      </Link>
+                      {post.isExternalLink ? (
+                        <>
+                          <a
+                            href={post.href}
+                            target="_blank"
+                            className="mt-2 block hover:no-underline"
+                          >
+                            <p className="text-xl font-semibold cursor-pointer text-movet-black hover:no-underline">
+                              {post.title}
+                            </p>
+                          </a>
+                          <a
+                            href={post.href}
+                            target="_blank"
+                            className="mt-2 block hover:no-underline"
+                          >
+                            <p className="mt-3 text-base cursor-pointer text-movet-black hover:no-underline">
+                              {post.description}
+                            </p>
+                          </a>
+                        </>
+                      ) : (
+                        <>
+                          <Link
+                            href={post.href}
+                            className="mt-2 block hover:no-underline"
+                          >
+                            <p className="text-xl font-semibold cursor-pointer text-movet-black hover:no-underline">
+                              {post.title}
+                            </p>
+                          </Link>
+                          <Link
+                            href={post.href}
+                            className="mt-2 block hover:no-underline"
+                          >
+                            <p className="mt-3 text-base cursor-pointer text-movet-black hover:no-underline">
+                              {post.description}
+                            </p>
+                          </Link>
+                        </>
+                      )}
                     </div>
                     <div className="mt-3 flex items-center">
                       {post.author.imageUrl && (
@@ -305,18 +388,30 @@ export default function Blog() {
               !post.isFeatured ? (
                 <div
                   key={post.title}
-                  className="flex flex-col overflow-hidden rounded-lg shadow-lg"
+                  className="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white"
                 >
                   <div className="flex-shrink-0 -mb-2">
-                    <Link href={post.href}>
-                      <Image
-                        className="hover:opacity-75"
-                        src={post.imageUrl}
-                        alt=""
-                        height={340}
-                        width={520}
-                      />
-                    </Link>
+                    {post.isExternalLink ? (
+                      <a href={post.href} target="_blank">
+                        <Image
+                          className="hover:opacity-75"
+                          src={post.imageUrl}
+                          alt=""
+                          height={340}
+                          width={520}
+                        />
+                      </a>
+                    ) : (
+                      <Link href={post.href}>
+                        <Image
+                          className="hover:opacity-75"
+                          src={post.imageUrl}
+                          alt=""
+                          height={340}
+                          width={520}
+                        />
+                      </Link>
+                    )}
                   </div>
                   <div className="flex flex-1 flex-col justify-between bg-white p-6">
                     <div className="flex-1">
@@ -330,17 +425,32 @@ export default function Blog() {
                           {post.category.name}
                         </span>
                       </p>
-                      <Link
-                        href={post.href}
-                        className="mt-2 block text-movet-black hover:no-underline"
-                      >
-                        <p className="text-xl font-semibold hover:no-underline">
-                          {post.title}
-                        </p>
-                        <p className="mt-3 text-base hover:no-underline">
-                          {post.description}
-                        </p>
-                      </Link>
+                      {post.isExternalLink ? (
+                        <a
+                          href={post.href}
+                          target="_blank"
+                          className="mt-2 block text-movet-black hover:no-underline"
+                        >
+                          <p className="text-xl font-semibold hover:no-underline">
+                            {post.title}
+                          </p>
+                          <p className="mt-3 text-base hover:no-underline">
+                            {post.description}
+                          </p>
+                        </a>
+                      ) : (
+                        <Link
+                          href={post.href}
+                          className="mt-2 block text-movet-black hover:no-underline"
+                        >
+                          <p className="text-xl font-semibold hover:no-underline">
+                            {post.title}
+                          </p>
+                          <p className="mt-3 text-base hover:no-underline">
+                            {post.description}
+                          </p>
+                        </Link>
+                      )}
                     </div>
                     <div className="mt-3 flex items-center">
                       <div className="flex-shrink-0 mt-3">
@@ -349,7 +459,7 @@ export default function Blog() {
                           className="rounded-full"
                           height={40}
                           width={40}
-                          src={post.author.imageUrl}
+                          src={post.author.imageUrl as any}
                           alt=""
                         />
                       </div>
