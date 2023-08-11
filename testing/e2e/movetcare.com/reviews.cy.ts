@@ -4,7 +4,7 @@ describe("reviews-page-loads", () => {
     cy.visit(Cypress.env().websiteUrl + "/reviews");
   });
   it("display reviews list", () => {
-    cy.get("h2").contains("Our Happy Clients");
+    cy.get("h2").contains("Reviews");
     cy.get('*[class^="sm:grid"]').find(".group").should("have.length", 28);
   });
   it("display leave us a review cta", () => {

@@ -11,6 +11,6 @@ describe("blog-page-loads", () => {
     cy.visit(Cypress.env().websiteUrl + "/blog");
     cy.get(".grid")
       .find("*[class^='flex flex-col overflow-hidden rounded-lg shadow-lg']")
-      .should("have.length", 8);
+      .should("have.length", 12);
   });
 });
