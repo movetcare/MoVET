@@ -20,7 +20,7 @@
     "gray-matter": "^4.0.3",
     "lodash.kebabcase": "^4.1.1",
     "lottie-web": "^5.12.2",
-    "next": "^13.4.13",
+    "next": "^13.4.16",
     "react": "18.2.0",
     "react-calendar": "^4.6.0",
     "react-datepicker": "^4.16.0",

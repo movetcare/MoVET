@@ -12,7 +12,7 @@ import { createAuthClient } from "../../integrations/provet/entities/client/crea
 import { createProVetClient } from "../../integrations/provet/entities/client/createProVetClient";
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
-import { environment, admin, throwError } from "../../config/config";
+import { admin, throwError } from "../../config/config";
 const DEBUG = true;
 export const setupNewBookingSession = async ({
   email,
@@ -27,7 +27,7 @@ export const setupNewBookingSession = async ({
     if (DEBUG)
       console.log(
         "setupNewBookingSession => isExistingClient => startNewSession",
-        email
+        email,
       );
     return await startNewSession({ email, device });
   } else {
@@ -45,12 +45,12 @@ export const setupNewBookingSession = async ({
       else
         return await handleFailedBooking(
           { email, device },
-          "FAILED CREATE CLIENT"
+          "FAILED CREATE CLIENT",
         );
     } else
       return await handleFailedBooking(
         { email, device },
-        "CREATE NEW CLIENT FAILED"
+        "CREATE NEW CLIENT FAILED",
       );
   }
 };
@@ -66,7 +66,7 @@ const startNewSession = async ({
   if (authUser) {
     const session: Booking | false = await getActiveBookingSession(
       authUser,
-      device
+      device,
     );
     const requiresInfo = await verifyClientDataExists(authUser);
     const patients: Array<PatientBookingData> | BookingError | any =
@@ -79,25 +79,26 @@ const startNewSession = async ({
           uid: authUser?.uid,
           requiresInfo,
           isExistingClient:
-            environment?.type === "production"
-              ? false
-              : await admin
-                  .firestore()
-                  .collection("appointments")
-                  .where("client", "==", Number(authUser?.uid))
-                  .where("active", "==", 1)
-                  .where("start", "<=", new Date())
-                  .get()
-                  .then((docs: any) => {
-                    if (DEBUG)
-                      console.log("Past Appointments - docs.size", docs.size);
-                    if (docs.size > 0) return true;
-                    else return false;
-                  })
-                  .catch((error: any) => {
-                    throwError(error);
-                    return null;
-                  }),
+            // environment?.type === "production"
+            //   ? false
+            //   :
+            await admin
+              .firestore()
+              .collection("appointments")
+              .where("client", "==", Number(authUser?.uid))
+              .where("active", "==", 1)
+              .where("start", "<=", new Date())
+              .get()
+              .then((docs: any) => {
+                if (DEBUG)
+                  console.log("Past Appointments - docs.size", docs.size);
+                if (docs.size > 0) return true;
+                else return false;
+              })
+              .catch((error: any) => {
+                throwError(error);
+                return null;
+              }),
         },
       };
     } else
@@ -105,7 +106,7 @@ const startNewSession = async ({
   } else {
     return await handleFailedBooking(
       { email, device },
-      "FAILED TO GET AUTH USER"
+      "FAILED TO GET AUTH USER",
     );
   }
 };
