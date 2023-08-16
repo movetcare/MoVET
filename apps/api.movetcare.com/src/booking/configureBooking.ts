@@ -10,10 +10,10 @@ export const configureBooking = async (): Promise<boolean> => {
     .catch(() => false);
   if (alreadyHasConfiguration) {
     console.log(
-      "configuration/booking/ COLLECTION DETECTED - SKIPPING BOOKING CONFIGURATION..."
+      "configuration/booking/ COLLECTION DETECTED - SKIPPING BOOKING CONFIGURATION...",
     );
     console.log(
-      "DELETE THE configuration/booking/ COLLECTION AND RESTART TO REFRESH THE BOOKING CONFIGURATION"
+      "DELETE THE configuration/booking/ COLLECTION AND RESTART TO REFRESH THE BOOKING CONFIGURATION",
     );
     // if (environment.type !== "production") generateTestBookingData();
   } else {
@@ -23,7 +23,7 @@ export const configureBooking = async (): Promise<boolean> => {
       console.log("today", today);
       console.log(
         "5 Days from now",
-        new Date(today.setDate(today.getDate() + 5))
+        new Date(today.setDate(today.getDate() + 5)),
       );
     }
     await admin
@@ -137,21 +137,21 @@ export const configureBooking = async (): Promise<boolean> => {
             { id: 16, staggerTime: 30 },
           ],
           clinicOpenMonday: true,
-          clinicOpenMondayTime: 930,
+          clinicOpenMondayTime: 900,
           clinicClosedMondayTime: 1700,
           clinicOpenTuesday: true,
-          clinicOpenTuesdayTime: 930,
+          clinicOpenTuesdayTime: 900,
           clinicClosedTuesdayTime: 1700,
           clinicOpenWednesday: true,
-          clinicOpenWednesdayTime: 930,
-          clinicClosedWednesdayTime: 1630,
+          clinicOpenWednesdayTime: 900,
+          clinicClosedWednesdayTime: 1700,
           clinicOpenThursday: true,
-          clinicOpenThursdayTime: 930,
+          clinicOpenThursdayTime: 900,
           clinicClosedThursdayTime: 1700,
           clinicOpenFriday: true,
-          clinicOpenFridayTime: 930,
+          clinicOpenFridayTime: 900,
           clinicClosedFridayTime: 1700,
-          clinicOpenSaturday: true,
+          clinicOpenSaturday: false,
           clinicOpenSaturdayTime: 1300,
           clinicClosedSaturdayTime: 1700,
           clinicOpenSunday: false,
@@ -174,19 +174,19 @@ export const configureBooking = async (): Promise<boolean> => {
             { id: 9, staggerTime: 30 },
           ],
           housecallOpenMonday: true,
-          housecallOpenMondayTime: 930,
+          housecallOpenMondayTime: 900,
           housecallClosedMondayTime: 1700,
           housecallOpenTuesday: true,
-          housecallOpenTuesdayTime: 930,
+          housecallOpenTuesdayTime: 900,
           housecallClosedTuesdayTime: 1700,
           housecallOpenWednesday: true,
-          housecallOpenWednesdayTime: 930,
+          housecallOpenWednesdayTime: 900,
           housecallClosedWednesdayTime: 1700,
           housecallOpenThursday: true,
-          housecallOpenThursdayTime: 930,
+          housecallOpenThursdayTime: 900,
           housecallClosedThursdayTime: 1700,
           housecallOpenFriday: true,
-          housecallOpenFridayTime: 930,
+          housecallOpenFridayTime: 900,
           housecallClosedFridayTime: 1700,
           housecallOpenSaturday: true,
           housecallOpenSaturdayTime: 1300,
@@ -211,19 +211,19 @@ export const configureBooking = async (): Promise<boolean> => {
             { id: 18, staggerTime: 15 },
           ],
           virtualOpenMonday: true,
-          virtualOpenMondayTime: 930,
+          virtualOpenMondayTime: 900,
           virtualClosedMondayTime: 1700,
           virtualOpenTuesday: true,
-          virtualOpenTuesdayTime: 930,
+          virtualOpenTuesdayTime: 900,
           virtualClosedTuesdayTime: 1700,
           virtualOpenWednesday: true,
           virtualOpenWednesdayTime: 1330,
-          virtualClosedWednesdayTime: 1630,
+          virtualClosedWednesdayTime: 1700,
           virtualOpenThursday: true,
-          virtualOpenThursdayTime: 930,
+          virtualOpenThursdayTime: 900,
           virtualClosedThursdayTime: 1700,
           virtualOpenFriday: true,
-          virtualOpenFridayTime: 930,
+          virtualOpenFridayTime: 900,
           virtualClosedFridayTime: 1700,
           virtualOpenSaturday: true,
           virtualOpenSaturdayTime: 1300,
@@ -256,7 +256,7 @@ export const configureBooking = async (): Promise<boolean> => {
           },
           updatedOn: new Date(),
         },
-        { merge: true }
+        { merge: true },
       )
       .then(async () => {
         console.log("BOOKING CONFIGURATION COMPLETE");
@@ -277,7 +277,7 @@ export const configureBooking = async (): Promise<boolean> => {
                 isActiveMobile: true,
                 icon: "info-circle",
               },
-              { merge: true }
+              { merge: true },
             )
             .then(async () => {
               console.log("ALERT BANNER SETUP COMPLETE");

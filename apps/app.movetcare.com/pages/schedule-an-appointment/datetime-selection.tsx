@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Transition } from "@headlessui/react";
 import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { environment } from "utilities";
 
 const formatTime = (time: string): string => {
   const hours =
@@ -36,7 +37,7 @@ const formatTime = (time: string): string => {
     }) +
       " " +
       [hours, ":", minutes].join("") +
-      ":00"
+      ":00",
   ).toLocaleString("en-US", {
     hour: "numeric",
     minute: "numeric",
@@ -68,15 +69,25 @@ export default function DateTime() {
   useEffect(() => {
     if (window.localStorage.getItem("bookingSession") !== null && router)
       setSession(
-        JSON.parse(window.localStorage.getItem("bookingSession") as string)
+        JSON.parse(window.localStorage.getItem("bookingSession") as string),
       );
     else router.push("/schedule-an-appointment");
   }, [router]);
   useEffect(() => {
     const fetchAppointmentAvailability = async () => {
+      console.log("PAYLOAD", {
+        date: selectedDate,
+        schedule:
+          session?.location === "Home"
+            ? "housecall"
+            : session?.location === "Clinic"
+            ? "clinic"
+            : "virtual",
+        patients: session?.selectedPatients,
+      });
       const { data: result }: any = await httpsCallable(
         functions,
-        "getAppointmentAvailability"
+        "getAppointmentAvailability",
       )({
         date: selectedDate,
         schedule:
@@ -87,6 +98,7 @@ export default function DateTime() {
             : "virtual",
         patients: session?.selectedPatients,
       });
+      console.log("RESULT", result);
       if (Array.isArray(result)) {
         setAppointmentAvailability(result);
         setClosedReason(null);
@@ -114,11 +126,21 @@ export default function DateTime() {
       if (token) {
         try {
           const session = JSON.parse(
-            window.localStorage.getItem("bookingSession") as string
+            window.localStorage.getItem("bookingSession") as string,
           );
+          console.log("Payload", {
+            requestedDateTime: {
+              resource: selectedResource,
+              date: selectedDate,
+              time: selectedTime,
+            },
+            id: session?.id,
+            device: navigator.userAgent,
+            token,
+          });
           const { data: result }: any = await httpsCallable(
             functions,
-            "scheduleAppointment"
+            "scheduleAppointment",
           )({
             requestedDateTime: {
               resource: selectedResource,
@@ -129,24 +151,25 @@ export default function DateTime() {
             device: navigator.userAgent,
             token,
           });
+          console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
             if (result.needsRetry) setRetryRequired(true);
             else if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
-                JSON.stringify(result)
+                JSON.stringify(result),
               );
               const queryString = getUrlQueryStringFromObject(router.query);
               if (result?.checkoutSession)
                 router.push(
                   "/schedule-an-appointment/payment-confirmation" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else if (result.step === "success")
                 router.push(
                   "/schedule-an-appointment/success" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
             } else handleError(result);
           } else handleError(result);
@@ -236,14 +259,14 @@ export default function DateTime() {
                                     start: string;
                                     end: string;
                                   },
-                                  index: number
+                                  index: number,
                                 ) => (
                                   <li
                                     key={index}
                                     className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
                                       selectedTime ===
                                       `${formatTime(
-                                        appointmentSlot.start
+                                        appointmentSlot.start,
                                       )} - ${formatTime(appointmentSlot.end)}`
                                         ? " bg-movet-red text-white border-movet-white"
                                         : " bg-movet-gray/20"
@@ -251,20 +274,26 @@ export default function DateTime() {
                                     onClick={() => {
                                       setSelectedTime(
                                         `${formatTime(
-                                          appointmentSlot.start
-                                        )} - ${formatTime(appointmentSlot.end)}`
+                                          appointmentSlot.start,
+                                        )} - ${formatTime(
+                                          appointmentSlot.end,
+                                        )}`,
                                       );
                                       setSelectedResource(
-                                        appointmentSlot?.resource
+                                        appointmentSlot?.resource,
                                       );
                                     }}
                                   >
-                                    <p>
-                                      {formatTime(appointmentSlot.start)} -{" "}
-                                      {formatTime(appointmentSlot.end)}
-                                    </p>
+                                    {environment === "production" ? (
+                                      <p>{formatTime(appointmentSlot.start)}</p>
+                                    ) : (
+                                      <p>
+                                        {formatTime(appointmentSlot.start)} -{" "}
+                                        {formatTime(appointmentSlot.end)}
+                                      </p>
+                                    )}
                                   </li>
-                                )
+                                ),
                               )}
                             </ul>
                           ) : (
@@ -277,7 +306,7 @@ export default function DateTime() {
                                       start: string;
                                       end: string;
                                     },
-                                    index: number
+                                    index: number,
                                   ) =>
                                     index <
                                     appointmentAvailability.length / 2 ? (
@@ -286,9 +315,9 @@ export default function DateTime() {
                                         className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
                                           selectedTime ===
                                           `${formatTime(
-                                            appointmentSlot.start
+                                            appointmentSlot.start,
                                           )} - ${formatTime(
-                                            appointmentSlot.end
+                                            appointmentSlot.end,
                                           )}`
                                             ? " bg-movet-red text-white border-movet-white"
                                             : " bg-movet-gray/20"
@@ -296,22 +325,28 @@ export default function DateTime() {
                                         onClick={() => {
                                           setSelectedTime(
                                             `${formatTime(
-                                              appointmentSlot.start
+                                              appointmentSlot.start,
                                             )} - ${formatTime(
-                                              appointmentSlot.end
-                                            )}`
+                                              appointmentSlot.end,
+                                            )}`,
                                           );
                                           setSelectedResource(
-                                            appointmentSlot?.resource
+                                            appointmentSlot?.resource,
                                           );
                                         }}
                                       >
-                                        <p>
-                                          {formatTime(appointmentSlot.start)} -{" "}
-                                          {formatTime(appointmentSlot.end)}
-                                        </p>
+                                        {environment === "production" ? (
+                                          <p>
+                                            {formatTime(appointmentSlot.start)}
+                                          </p>
+                                        ) : (
+                                          <p>
+                                            {formatTime(appointmentSlot.start)}{" "}
+                                            - {formatTime(appointmentSlot.end)}
+                                          </p>
+                                        )}
                                       </li>
-                                    ) : null
+                                    ) : null,
                                 )}
                               </ul>
                               <ul className="w-1/2">
@@ -322,7 +357,7 @@ export default function DateTime() {
                                       start: string;
                                       end: string;
                                     },
-                                    index: number
+                                    index: number,
                                   ) =>
                                     index >=
                                     appointmentAvailability.length / 2 ? (
@@ -331,9 +366,9 @@ export default function DateTime() {
                                         className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
                                           selectedTime ===
                                           `${formatTime(
-                                            appointmentSlot.start
+                                            appointmentSlot.start,
                                           )} - ${formatTime(
-                                            appointmentSlot.end
+                                            appointmentSlot.end,
                                           )}`
                                             ? " bg-movet-red text-white border-movet-white"
                                             : " bg-movet-gray/20"
@@ -341,22 +376,28 @@ export default function DateTime() {
                                         onClick={() => {
                                           setSelectedTime(
                                             `${formatTime(
-                                              appointmentSlot.start
+                                              appointmentSlot.start,
                                             )} - ${formatTime(
-                                              appointmentSlot.end
-                                            )}`
+                                              appointmentSlot.end,
+                                            )}`,
                                           );
                                           setSelectedResource(
-                                            appointmentSlot?.resource
+                                            appointmentSlot?.resource,
                                           );
                                         }}
                                       >
-                                        <p>
-                                          {formatTime(appointmentSlot.start)} -{" "}
-                                          {formatTime(appointmentSlot.end)}
-                                        </p>
+                                        {environment === "production" ? (
+                                          <p>
+                                            {formatTime(appointmentSlot.start)}
+                                          </p>
+                                        ) : (
+                                          <p>
+                                            {formatTime(appointmentSlot.start)}{" "}
+                                            - {formatTime(appointmentSlot.end)}
+                                          </p>
+                                        )}
                                       </li>
-                                    ) : null
+                                    ) : null,
                                 )}
                               </ul>
                             </>

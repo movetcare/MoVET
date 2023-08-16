@@ -54,7 +54,7 @@
     "eslint": "8.47.0",
     "eslint-config-custom": "workspace:*",
     "next-transpile-modules": "10.0.1",
-    "postcss": "^8.4.27",
+    "postcss": "^8.4.28",
     "schemas": "workspace:*",
     "server": "workspace:*",
     "tailwindcss": "^3.3.3",

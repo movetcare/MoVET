@@ -8,7 +8,7 @@ import { handleFailedBooking } from "./handleFailedBooking";
 const DEBUG = true;
 export const processDateTime = async (
   id: string,
-  requestedDateTime: { resource: number; date: string; time: string }
+  requestedDateTime: { resource: number; date: string; time: string },
 ): Promise<Booking | BookingError> => {
   if (DEBUG) console.log("DATE TIME DATA", requestedDateTime);
   if (requestedDateTime && id) {
@@ -26,7 +26,7 @@ export const processDateTime = async (
       .doc("bookings")
       .get()
       .then(
-        (doc: any) => doc.data()?.requirePaymentMethodToRequestAnAppointment
+        (doc: any) => doc.data()?.requirePaymentMethodToRequestAnAppointment,
       )
       .catch(async (error: any) => {
         throwError(error);
@@ -39,7 +39,7 @@ export const processDateTime = async (
     if (paymentMethodIsRequired) {
       validFormOfPayment = await verifyValidPaymentSource(
         session?.client?.uid,
-        customer
+        customer,
       );
       if (DEBUG) console.log("validFormOfPayment", validFormOfPayment);
       checkoutSession =
@@ -157,6 +157,11 @@ export const processDateTime = async (
           establishCareExamRequired: session?.establishCareExamRequired,
           totalPatients: session?.selectedPatients?.length,
         });
+        if (DEBUG)
+          console.log("formatAppointmentData => { proVetData, movetData }", {
+            proVetData,
+            movetData,
+          });
         return await createProVetAppointment(proVetData, movetData);
       };
       const appointmentIsScheduled = await scheduleAppointment();
@@ -194,12 +199,12 @@ export const processDateTime = async (
     } else
       return await handleFailedBooking(
         { id, requestedDateTime },
-        "FAILED TO GET SESSION"
+        "FAILED TO GET SESSION",
       );
   } else
     return await handleFailedBooking(
       { id, requestedDateTime },
-      "FAILED TO HANDLE LOCATION"
+      "FAILED TO HANDLE LOCATION",
     );
 };
 
@@ -237,7 +242,7 @@ const convertTime12to24 = (time12h: string): string => {
     console.log("finalHours END", finalHours);
     console.log(
       "result",
-      `${finalHours}:${minutes}:${seconds ? seconds : "00"}`
+      `${finalHours}:${minutes}:${seconds ? seconds : "00"}`,
     );
   }
   return `${finalHours}:${minutes}:${seconds ? seconds : "00"}`;
@@ -277,11 +282,11 @@ const formatAppointmentData = async (appointment: any) => {
   if (DEBUG) {
     console.log(
       "date + T + convertTime12to24(time[0].trim())",
-      date + "T" + convertTime12to24(time[0].trim())
+      date + "T" + convertTime12to24(time[0].trim()),
     );
     console.log(
       "date + T + convertTime12to24(time[1].trim())",
-      date + "T" + convertTime12to24(time[1].trim())
+      date + "T" + convertTime12to24(time[1].trim()),
     );
   }
   const start = new Date(date + "T" + convertTime12to24(time[0].trim()));
@@ -314,7 +319,7 @@ const formatAppointmentData = async (appointment: any) => {
         //   notes: patient?.illnessDetails?.notes,
         // });
         notes += ` Patient: ${patient?.name} - Symptom(s): ${JSON.stringify(
-          patient?.illnessDetails?.symptoms
+          patient?.illnessDetails?.symptoms,
         )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)} |`;
       }
     });
