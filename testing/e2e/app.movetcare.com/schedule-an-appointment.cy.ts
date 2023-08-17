@@ -144,7 +144,7 @@ if (isDevelopmentEnvironment)
           });
           cy.get("@submitButton").should("be.enabled").click();
         } else cy.get("@submitButton").should("be.enabled").click();
-        cy.get("@heading").contains("Appointment Request Successful");
+        cy.get("@heading").contains("Your Appointment is Scheduled");
       });
 
       it("Can schedule a housecall appointment as an existing client - VCPR NOT REQUIRED (PAYMENT SOURCE REQUIRED)", () => {
@@ -262,7 +262,7 @@ if (isDevelopmentEnvironment)
             apiKey: Cypress.env().endpointApiKey,
             id: "require_payment_method_to_request_an_appointment_off",
           });
-        cy.get("@heading").contains("Appointment Request Successful");
+        cy.get("@heading").contains("Your Appointment is Scheduled");
       });
     }
   );
@@ -708,5 +708,5 @@ const runThroughAppointmentRequestWorkflows = ({
       id: "require_payment_method_to_request_an_appointment_off",
     });
   }
-  cy.get("@heading").contains("Appointment Request Successful");
+  cy.get("@heading").contains("Your Appointment is Scheduled");
 };
