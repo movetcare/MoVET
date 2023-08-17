@@ -422,7 +422,7 @@ export default function DateTime() {
                                 day: "numeric",
                                 year: "2-digit",
                               })}{" "}
-                              - {selectedTime}
+                              - {selectedTime && selectedTime.split("-")[0]}
                             </p>
                           </>
                         </Transition>
