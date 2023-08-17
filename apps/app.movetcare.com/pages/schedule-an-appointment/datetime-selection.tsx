@@ -154,8 +154,11 @@ export default function DateTime() {
           console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
-            if (result.needsRetry) setRetryRequired(true);
-            else if (result?.client?.uid && result?.id) {
+            if (result?.needsRetry) {
+              setRetryRequired(true);
+              setIsLoading(false);
+              setIsLoadingFull(false);
+            } else if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
                 JSON.stringify(result),
@@ -422,7 +425,9 @@ export default function DateTime() {
                                 day: "numeric",
                                 year: "2-digit",
                               })}{" "}
-                              - {selectedTime && selectedTime.split("-")[0]}
+                              -{" "}
+                              {selectedTime &&
+                                selectedTime.split("-")[0].trim()}
                             </p>
                           </>
                         </Transition>

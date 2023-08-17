@@ -1,59 +1,67 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from "next/router";
-import { AppLinks } from "ui";
+import { AppLinks, Loader } from "ui";
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { AppHeader } from "components/AppHeader";
-import { useEffect } from "react";
+import { Error } from "components/Error";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ServerResponse } from "types";
+import { environment } from "utilities";
 
 export default function BookingSuccess() {
   const router = useRouter();
   const { mode } = router.query || {};
   const isAppMode = mode === "app";
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
-  // const [error, setError] = useState<any>(null);
-  // const [session, setSession] = useState<any>(null);
-  // const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
-  //   null
-  // );
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<any>(null);
+  const [session, setSession] = useState<any>(null);
+  const [appointmentData, setAppointmentData] = useState<any>(null);
+  const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
+    null,
+  );
   useEffect(() => {
-    if (window.localStorage.getItem("bookingSession") === null && router)
-      router.push("/schedule-an-appointment");
+    if (window.localStorage.getItem("bookingSession") !== null && router) {
+      setSession(
+        JSON.parse(window.localStorage.getItem("bookingSession") as string),
+      );
+    } else router.push("/schedule-an-appointment");
   }, [router]);
-  // useEffect(() => {
-  //   if (session?.id) {
-  //     const processAppointmentBooking = async () =>
-  //       (
-  //         await fetch("/api/schedule-an-appointment", {
-  //           method: "POST",
-  //           body: JSON.stringify({ id: session?.id, step: "success" }),
-  //         })
-  //       ).json();
-  //     processAppointmentBooking()
-  //       .then((response: ServerResponse) => {
-  //         console.log("SUCCESS SENT!");
-  //         if (response.error) {
-  //           handleError({ message: response.error });
-  //         } else {
-  //           localStorage.removeItem("email");
-  //           localStorage.removeItem("bookingSession");
-  //           setSubmissionSuccess(true);
-  //         }
-  //       })
-  //       .catch((error) => handleError(error))
-  //       .finally(() => {
-  //         setIsLoading(false);
-  //       });
-  //   }
-  // }, [session]);
-  // const handleError = (error: any) => {
-  //   console.error(error);
-  //   setError(error);
-  //   setSubmissionSuccess(false);
-  //   setIsLoading(false);
-  // };
+  useEffect(() => {
+    if (session?.id) {
+      const processAppointmentBooking = async () =>
+        (
+          await fetch("/api/schedule-an-appointment", {
+            method: "POST",
+            body: JSON.stringify({ id: session?.id, step: "complete" }),
+          })
+        ).json();
+      processAppointmentBooking()
+        .then((response: ServerResponse) => {
+          console.log("SUCCESS SENT!");
+          if (response.error) {
+            handleError({ message: response.error });
+          } else {
+            if (environment === "production") localStorage.removeItem("email");
+            localStorage.removeItem("bookingSession");
+            setSubmissionSuccess(true);
+            setAppointmentData((response as any).payload);
+          }
+        })
+        .catch((error) => handleError(error))
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [session]);
+  const handleError = (error: any) => {
+    console.error(error);
+    setError(error);
+    setSubmissionSuccess(false);
+    setIsLoading(false);
+  };
   return (
     <section className="w-full flex-1">
       <AppHeader />
@@ -62,7 +70,7 @@ export default function BookingSuccess() {
       >
         <div className={isAppMode ? "px-4 mb-8" : "p-4"}>
           <section className="relative mx-auto">
-            {/* {isLoading || submissionSuccess === null ? (
+            {isLoading || submissionSuccess === null ? (
               <Loader message="Loading Confirmation..." isAppMode={isAppMode} />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
@@ -87,53 +95,28 @@ export default function BookingSuccess() {
                   )}
                   <BookingHeader
                     isAppMode={isAppMode}
-                    title="Appointment Request Successful"
+                    title="Your Appointment is Scheduled"
                     description={
-                      "We will get contact to you as soon as we can to confirm the exact day and time of your appointment!"
+                      "We can't wait to see you and your fur-family again!"
                     }
                   />
-                  <p className="text-xs italic text-center mt-4 sm:px-8">
-                    Please allow 1 business day for a response. All appointment
-                    requests are responded to in the order they are received.
+                  {environment === "production" && (
+                    <>
+                      <h3>Appointment Details: </h3>
+                      <pre>{JSON.stringify(appointmentData)}</pre>
+                    </>
+                  )}
+                  <p className="text-xs italic text-center mt-4 px-4 sm:px-8">
+                    We will send you an email confirmation shortly. Please{" "}
+                    <Link href="/contact">contact us</Link> us if you have any
+                    questions or do not receive a confirmation email within the
+                    next 24 hours.
                   </p>
                 </div>
               </div>
-            )} */}
-            <div
-              className={
-                isAppMode
-                  ? "flex flex-col items-center justify-center min-h-screen"
-                  : ""
-              }
-            >
-              <div className={isAppMode ? "flex flex-col" : ""}>
-                <FontAwesomeIcon
-                  icon={faCheckCircle}
-                  size="4x"
-                  className="text-movet-green mx-auto w-full mb-4"
-                />
-                {isAppMode && (
-                  <h2 className="text-3xl font-extrabold tracking-tight text-movet-black text-center">
-                    Housecall Request Successful
-                  </h2>
-                )}
-                <BookingHeader
-                  isAppMode={isAppMode}
-                  title="Your Appointment is Scheduled"
-                  description={
-                    "We can't wait to see you and your fur-family again!"
-                  }
-                />
-                <p className="text-xs italic text-center mt-4 sm:px-8">
-                  We will send you an email confirmation shortly. Please{" "}
-                  <Link href="/contact">contact us</Link> us if you have any
-                  questions or do not receive a confirmation email within the
-                  next 24 hours.
-                </p>
-              </div>
-            </div>
+            )}
           </section>
-          {!isAppMode && (
+          {!isLoading && !isAppMode && (
             <section>
               <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mt-8" />
               <h2 className="text-center mb-0">Download The App!</h2>

@@ -28,7 +28,6 @@ export const createProVetAppointment = async (
       reason !== null && reason !== undefined
         ? {
             client: `${proVetApiUrl}/client/${client}/`,
-            //user: `${proVetApiUrl}/user/${user}/`,
             start, // Required by PROVET API
             end, // Required by PROVET API
             title, // Required by PROVET API

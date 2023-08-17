@@ -5,8 +5,13 @@ export const sendResponse = ({
   status,
   error,
   res,
+  payload,
 }: {
   status: ServerResponse["status"];
   error?: ServerResponse["error"];
   res: NextApiResponse<ServerResponse>;
-}) => res.status(status).send(error ? { status, error } : { status });
+  payload?: any;
+}) =>
+  res
+    .status(status)
+    .send(error ? { status, error } : ({ status, payload } as any));

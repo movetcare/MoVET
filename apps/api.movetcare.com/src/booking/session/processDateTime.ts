@@ -138,6 +138,8 @@ export const processDateTime = async (
             time: requestedDateTime?.time,
             date: requestedDateTime?.date,
             resource: requestedDateTime?.resource,
+            reason: session?.reason?.value,
+            selectedStaff: session?.selectedStaff,
             locationType: session?.location,
             address: session?.address?.full,
             patients: session?.patients,
@@ -150,6 +152,8 @@ export const processDateTime = async (
           time: requestedDateTime?.time,
           date: requestedDateTime?.date,
           resource: requestedDateTime?.resource,
+          reason: session?.reason?.value,
+          selectedStaff: session?.selectedStaff,
           locationType: session?.location,
           address: session?.address?.full,
           patients: session?.patients,
@@ -168,12 +172,17 @@ export const processDateTime = async (
       if (DEBUG) console.log("appointmentIsScheduled", appointmentIsScheduled);
       await bookingRef
         .update({
-          needsRetry: !appointmentIsScheduled,
+          needsRetry:
+            appointmentIsScheduled === false ||
+            appointmentIsScheduled === "ALREADY_BOOKED"
+              ? true
+              : false,
           step: checkoutSession
             ? ("datetime-selection" as Booking["step"])
-            : appointmentIsScheduled
-            ? "success"
-            : "datetime-selection",
+            : appointmentIsScheduled === false ||
+              appointmentIsScheduled === "ALREADY_BOOKED"
+            ? "datetime-selection"
+            : "success",
         })
         .then(() => DEBUG && console.log("DID UPDATE BOOKING"))
         .catch(async (error: any) => {
@@ -184,13 +193,18 @@ export const processDateTime = async (
         ...session,
         requestedDateTime,
         checkoutSession: checkoutSession ? checkoutSession?.url : null,
+        needsRetry:
+          appointmentIsScheduled === false ||
+          appointmentIsScheduled === "ALREADY_BOOKED"
+            ? true
+            : false,
         step: checkoutSession
           ? ("datetime-selection" as Booking["step"])
-          : appointmentIsScheduled
-          ? "success"
-          : "datetime-selection",
+          : appointmentIsScheduled === false ||
+            appointmentIsScheduled === "ALREADY_BOOKED"
+          ? "datetime-selection"
+          : "success",
         id,
-        needsRetry: !appointmentIsScheduled,
         client: {
           uid: session?.client?.uid,
           requiresInfo: session?.client?.requiresInfo,
@@ -267,6 +281,7 @@ const formatToProVetTimestamp = (date: Date) => {
 };
 
 const formatAppointmentData = async (appointment: any) => {
+  if (DEBUG) console.log("appointment", appointment);
   // const complaintObject: any = [];
   const time = appointment?.time.split("-");
   const date = appointment.date.substring(0, appointment.date.indexOf("T"));
@@ -315,6 +330,8 @@ const formatAppointmentData = async (appointment: any) => {
       }
     });
   });
+  if (appointment?.selectedStaff)
+    notes += ` Requested Staff: ${appointment?.selectedStaff?.title} ${appointment?.selectedStaff?.firstName} ${appointment?.selectedStaff?.lastName}`;
   const defaultBookingReasons = await admin
     .firestore()
     .collection("configuration")
@@ -338,16 +355,51 @@ const formatAppointmentData = async (appointment: any) => {
         ? defaultBookingReasons?.clinicStandardVcprReason?.label
         : defaultBookingReasons?.virtualStandardVcprReason?.label
       : "No Symptoms of Illness"; // TODO:// get reason name from list of reasons
-
+  if (DEBUG)
+    console.log("appointment RETURN", {
+      proVetData: {
+        client: appointment?.client,
+        title: `${
+          appointment?.locationType === "Housecall"
+            ? "Housecall Appointment"
+            : appointment?.locationType === "Virtual"
+            ? "Virtual Telehealth Consultation"
+            : "Clinic"
+        } Appointment (${
+          appointment.totalPatients === 1
+            ? "1 Patient"
+            : appointment.totalPatients + " Patients"
+        })`,
+        start: formatToProVetTimestamp(start),
+        end: formatToProVetTimestamp(end),
+        complaint,
+        reason: appointment?.establishCareExamRequired
+          ? appointment?.locationType === "Housecall"
+            ? defaultBookingReasons?.housecallStandardVcprReason?.value
+            : appointment?.locationType === "Clinic"
+            ? defaultBookingReasons?.clinicStandardVcprReason?.value
+            : defaultBookingReasons?.virtualStandardVcprReason?.value
+          : appointment?.reason,
+        resources: [appointment?.resource],
+        notes,
+        patients: appointment.patientSelection,
+        duration,
+      },
+      movetData: {
+        locationType: appointment?.locationType,
+        address: appointment?.address,
+        patients: appointment.patientSelection,
+      },
+    });
   return {
     proVetData: {
       client: appointment?.client,
-      user:
-        appointment?.locationType === "Clinic"
-          ? 7
-          : appointment?.locationType === "Housecall"
-          ? 8
-          : 9,
+      //user: null,
+      // appointment?.locationType === "Clinic"
+      //   ? 7
+      //   : appointment?.locationType === "Housecall"
+      //   ? 8
+      //   : 9,
       title: `${
         appointment?.locationType === "Housecall"
           ? "Housecall Appointment"
@@ -368,7 +420,7 @@ const formatAppointmentData = async (appointment: any) => {
           : appointment?.locationType === "Clinic"
           ? defaultBookingReasons?.clinicStandardVcprReason?.value
           : defaultBookingReasons?.virtualStandardVcprReason?.value
-        : null,
+        : appointment?.reason,
       resources: [appointment?.resource],
       notes,
       patients: appointment.patientSelection,
