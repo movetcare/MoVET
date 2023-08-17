@@ -6,11 +6,11 @@ import {
   stripe,
   admin,
   request,
-  DEBUG,
+  //DEBUG,
 } from "../../../config/config";
 import { requestIsAuthorized } from "./requestIsAuthorized";
 import { getCustomerId } from "../../../utils/getCustomerId";
-
+const DEBUG = true;
 export const createPaymentIntent = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
@@ -22,7 +22,7 @@ export const createPaymentIntent = functions
         email?: string;
         paymentMethod?: string;
       },
-      context: any
+      context: any,
     ): Promise<any> => {
       if (DEBUG) {
         console.log("createPaymentIntent context.app => ", context.app);
@@ -35,7 +35,7 @@ export const createPaymentIntent = functions
           const invoiceDetails = await admin
             .firestore()
             .collection(
-              mode === "counter" ? "counter_sales" : "client_invoices"
+              mode === "counter" ? "counter_sales" : "client_invoices",
             )
             .doc(`${invoice}`)
             .get()
@@ -136,15 +136,15 @@ export const createPaymentIntent = functions
           if (DEBUG) {
             console.log(
               "client_due_sum * 100: ",
-              invoiceDetails?.client_due_sum * 100
+              invoiceDetails?.client_due_sum * 100,
             );
             console.log(
               "Math.floor(invoiceDetails?.client_due_sum * 100): ",
-              Math.floor(invoiceDetails?.client_due_sum * 100)
+              Math.floor(invoiceDetails?.client_due_sum * 100),
             );
           }
           paymentIntentConfig.amount = Math.floor(
-            invoiceDetails?.client_due_sum * 100
+            invoiceDetails?.client_due_sum * 100,
           );
           paymentIntentConfig.payment_method_types = ["card_present"];
           paymentIntentConfig.capture_method = "manual";
@@ -156,7 +156,7 @@ export const createPaymentIntent = functions
               paymentIntentConfig.confirm = true;
               paymentIntentConfig.off_session = true;
               paymentIntentConfig.customer = await getCustomerId(
-                `${getProVetIdFromUrl(invoiceDetails?.client)}`
+                `${getProVetIdFromUrl(invoiceDetails?.client)}`,
               );
             } else {
               paymentIntentConfig.off_session = false;
@@ -164,9 +164,9 @@ export const createPaymentIntent = functions
             }
           } else if (DEBUG)
             console.log(`COUNTER SALE DETECTED -> ${JSON.stringify(data)}`);
-          const paymentIntent: any = await stripe.paymentIntents.create(
-            paymentIntentConfig
-          );
+          if (DEBUG) console.log("paymentIntentConfig", paymentIntentConfig);
+          const paymentIntent: any =
+            await stripe.paymentIntents.create(paymentIntentConfig);
           if (DEBUG) console.log("paymentIntent", paymentIntent);
           const params = new URLSearchParams();
           params.append("payment_intent", paymentIntent?.id);
@@ -179,18 +179,17 @@ export const createPaymentIntent = functions
                     headers: {
                       "Content-Type": "application/x-www-form-urlencoded",
                       "Stripe-Version": functions.config()?.stripe?.api_version,
-                      Authorization: `Bearer ${
-                        functions.config()?.stripe?.secret_key
-                      }`,
+                      Authorization: `Bearer ${functions.config()?.stripe
+                        ?.secret_key}`,
                     },
-                  }
+                  },
                 )
                 .then(async (response: any) => {
                   const { data } = response;
                   if (DEBUG)
                     console.log(
                       `RESPONSE: https://api.stripe.com/v1/terminal/readers/${reader}/process_payment_intent =>`,
-                      data
+                      data,
                     );
                   await admin
                     .firestore()
@@ -203,14 +202,14 @@ export const createPaymentIntent = functions
                         ...data,
                         updatedOn: new Date(),
                       },
-                      { merge: true }
+                      { merge: true },
                     )
                     .then(() => true)
                     .catch((error: any) => throwError(error));
                   await admin
                     .firestore()
                     .collection(
-                      mode === "counter" ? "counter_sales" : "client_invoices"
+                      mode === "counter" ? "counter_sales" : "client_invoices",
                     )
                     .doc(`${invoice}`)
                     .set(
@@ -222,7 +221,7 @@ export const createPaymentIntent = functions
                         failureMessage: data?.action?.failure_message,
                         updatedOn: new Date(),
                       },
-                      { merge: true }
+                      { merge: true },
                     )
                     .then(async () =>
                       mode === "client"
@@ -230,7 +229,7 @@ export const createPaymentIntent = functions
                             .firestore()
                             .collection("clients")
                             .doc(
-                              `${getProVetIdFromUrl(invoiceDetails?.client)}`
+                              `${getProVetIdFromUrl(invoiceDetails?.client)}`,
                             )
                             .collection("invoices")
                             .doc(`${invoiceDetails?.id}`)
@@ -244,10 +243,10 @@ export const createPaymentIntent = functions
                                 failureMessage: data?.action?.failure_message,
                                 updatedOn: new Date(),
                               },
-                              { merge: true }
+                              { merge: true },
                             )
                             .catch((error: any) => throwError(error))
-                        : null
+                        : null,
                     )
                     .catch((error: any) => throwError(error));
                   return data?.action || null;
@@ -256,7 +255,7 @@ export const createPaymentIntent = functions
             : await admin
                 .firestore()
                 .collection(
-                  mode === "counter" ? "counter_sales" : "client_invoices"
+                  mode === "counter" ? "counter_sales" : "client_invoices",
                 )
                 .doc(`${invoice}`)
                 .set(
@@ -266,7 +265,7 @@ export const createPaymentIntent = functions
                     paymentIntentObject: paymentIntent,
                     updatedOn: new Date(),
                   },
-                  { merge: true }
+                  { merge: true },
                 )
                 .then(async () =>
                   mode === "client"
@@ -282,18 +281,18 @@ export const createPaymentIntent = functions
                             paymentIntentObject: paymentIntent,
                             updatedOn: new Date(),
                           },
-                          { merge: true }
+                          { merge: true },
                         )
                         .then(() => true)
                         .catch((error: any) => throwError(error))
-                    : null
+                    : null,
                 )
                 .then(() => true)
                 .catch((error: any) => throwError(error));
         } else
           return throwError(
-            `UNABLE TO CREATE PAYMENT INTENT -> ${JSON.stringify(data)}`
+            `UNABLE TO CREATE PAYMENT INTENT -> ${JSON.stringify(data)}`,
           );
       }
-    }
+    },
   );
