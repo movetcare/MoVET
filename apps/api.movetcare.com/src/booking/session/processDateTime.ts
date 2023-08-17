@@ -225,8 +225,9 @@ const convertTime12to24 = (time12h: string): string => {
     console.log("seconds", seconds);
   }
 
-  if (hours === "12") finalHours = "00";
-  if (modifier === "PM") finalHours = parseInt(hours, 10) + 12;
+  if (hours === "12" && modifier == "AM") finalHours = "00";
+  else if (modifier === "PM" && hours !== "12")
+    finalHours = parseInt(hours, 10) + 12;
   if (finalHours.length === 1) finalHours = "0" + finalHours;
   if (DEBUG) {
     console.log("finalHours END", finalHours);
