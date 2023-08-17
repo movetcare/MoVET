@@ -329,8 +329,8 @@ const verifyScheduleIsOpen = async (
     console.log("FIRST calendarDay", calendarDay);
     console.log("exactDateString", date.slice(0, -13) + "24:00:00.000Z");
   }
-  const monthNumber = new Date(date).getMonth();
-  const weekdayNumber = new Date(date).getDay();
+  const monthNumber = new Date(date.slice(0, -13) + "24:00:00.000Z").getMonth();
+  const weekdayNumber = new Date(date.slice(0, -13) + "24:00:00.000Z").getDay();
   const configuration = await getConfiguration();
   const globalClosures = await admin
     .firestore()
@@ -424,11 +424,6 @@ const verifyScheduleIsOpen = async (
     );
     if (isGlobalClosure && closureData) return closureData;
   }
-  if (DEBUG)
-    console.log(
-      "configuration?.clinicOpenSaturday",
-      configuration?.clinicOpenSaturday,
-    );
   switch (schedule) {
     case "clinic":
       if (weekdayNumber === 0) isOpenOnDate = configuration?.clinicOpenSunday;
