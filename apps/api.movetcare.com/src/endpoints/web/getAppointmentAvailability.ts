@@ -752,11 +752,6 @@ const calculateAvailableAppointments = async ({
   let nextAppointmentStartTime =
     resource.staggerTime === 0 ? standardOpenTime : staggeredOpenTime;
   for (let i = 0; i < numberOfAppointments; i++) {
-    // if (DEBUG)
-    //   console.log(
-    //     "nextAppointmentStartTime PRE",
-    //     formatTimeHoursToDate(nextAppointmentStartTime)
-    //   );
     if (
       !isAfter(
         formatTimeHoursToDate(standardCloseTime),

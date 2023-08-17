@@ -60,7 +60,7 @@ export default function LocationSelection({
   const isAppMode = mode === "app";
   const isHousecallRequest = Boolean(Number(housecallRequest));
   const [loadingMessage, setLoadingMessage] = useState<string>(
-    "Loading, Please Wait..."
+    "Loading, Please Wait...",
   );
   const [session, setSession] = useState<any>();
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -113,7 +113,7 @@ export default function LocationSelection({
     const fetchLocations = async () => {
       const { data: result }: any = await httpsCallable(
         functions,
-        "getAppointmentLocations"
+        "getAppointmentLocations",
       )();
       if (result?.error !== true || result?.error === undefined) {
         setReasonGroups(result);
@@ -163,7 +163,7 @@ export default function LocationSelection({
       setOptions(
         items.sort((a, b) => {
           return a.name.localeCompare(b.name);
-        })
+        }),
       );
       setIsLoading(false);
     }
@@ -177,7 +177,7 @@ export default function LocationSelection({
   useEffect(() => {
     if (window.localStorage.getItem("bookingSession") !== null && router) {
       setSession(
-        JSON.parse(window.localStorage.getItem("bookingSession") as string)
+        JSON.parse(window.localStorage.getItem("bookingSession") as string),
       );
       // if (isLoaded) setIsLoading(false);
       // else if (!isLoaded && !isLoading) setIsLoading(true);
@@ -204,7 +204,7 @@ export default function LocationSelection({
         ) {
           locationId = value;
         }
-      }
+      },
     );
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
@@ -212,7 +212,7 @@ export default function LocationSelection({
         try {
           const { data: result }: any = await httpsCallable(
             functions,
-            "scheduleAppointment"
+            "scheduleAppointment",
           )(
             data.location === "Clinic" || data.location === "Virtually"
               ? {
@@ -228,7 +228,7 @@ export default function LocationSelection({
                   address: {
                     full: data.address?.value?.description,
                     parts: data.address?.value?.terms?.map((term: any) =>
-                      term?.value !== undefined ? term?.value : term.long_name
+                      term?.value !== undefined ? term?.value : term.long_name,
                     ),
                     placeId: data.address?.value?.place_id,
                     info: data.info,
@@ -237,25 +237,25 @@ export default function LocationSelection({
                   id: session?.id,
                   device: navigator.userAgent,
                   token,
-                }
+                },
           );
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost Finished...");
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
-                JSON.stringify(result)
+                JSON.stringify(result),
               );
               const queryString = getUrlQueryStringFromObject(router.query);
               if (result.establishCareExamRequired)
                 router.push(
                   "/schedule-an-appointment/datetime-selection" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else
                 router.push(
                   "/schedule-an-appointment/reason-selection" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
             } else handleError(result);
           } else handleError(result);
@@ -492,23 +492,33 @@ export default function LocationSelection({
                     </div>
                   </Transition>
                   <div className="flex flex-col justify-center items-center mt-8 mb-4">
-                    <Button
-                      type="submit"
-                      icon={faArrowRight}
-                      disabled={
-                        (locationSelection === "Clinic" &&
-                          isHousecallRequest &&
-                          (addressSelection === null || hasAddressError)) ||
-                        (locationSelection !== "Clinic" && !isDirty) ||
-                        (locationSelection === "Home" &&
-                          addressSelection === null) ||
-                        (locationSelection === "Home" && hasAddressError)
-                      }
-                      iconSize={"sm"}
-                      color="black"
-                      text="Continue"
-                      onClick={handleSubmit(onSubmit)}
-                    />
+                    <Transition
+                      show={reasonGroups !== false}
+                      enter="transition ease-in duration-500"
+                      leave="transition ease-out"
+                      leaveTo="opacity-0"
+                      enterFrom="opacity-0"
+                      enterTo="opacity-100"
+                      leaveFrom="opacity-100"
+                    >
+                      <Button
+                        type="submit"
+                        icon={faArrowRight}
+                        disabled={
+                          (locationSelection === "Clinic" &&
+                            isHousecallRequest &&
+                            (addressSelection === null || hasAddressError)) ||
+                          (locationSelection !== "Clinic" && !isDirty) ||
+                          (locationSelection === "Home" &&
+                            addressSelection === null) ||
+                          (locationSelection === "Home" && hasAddressError)
+                        }
+                        iconSize={"sm"}
+                        color="black"
+                        text="Continue"
+                        onClick={handleSubmit(onSubmit)}
+                      />
+                    </Transition>
                   </div>
                 </form>
                 <BookingFooter />

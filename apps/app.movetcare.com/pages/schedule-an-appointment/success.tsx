@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { AppHeader } from "components/AppHeader";
 import { useEffect } from "react";
+import Link from "next/link";
 
 export default function BookingSuccess() {
   const router = useRouter();
@@ -118,14 +119,16 @@ export default function BookingSuccess() {
                 )}
                 <BookingHeader
                   isAppMode={isAppMode}
-                  title="Appointment Request Successful"
+                  title="Your Appointment is Scheduled"
                   description={
-                    "We will get contact to you as soon as we can to confirm the exact day and time of your appointment!"
+                    "We can't wait to see you and your fur-family again!"
                   }
                 />
                 <p className="text-xs italic text-center mt-4 sm:px-8">
-                  Please allow 1 business day for a response. All appointment
-                  requests are responded to in the order they are received.
+                  We will send you an email confirmation shortly. Please{" "}
+                  <Link href="/contact">contact us</Link> us if you have any
+                  questions or do not receive a confirmation email within the
+                  next 24 hours.
                 </p>
               </div>
             </div>

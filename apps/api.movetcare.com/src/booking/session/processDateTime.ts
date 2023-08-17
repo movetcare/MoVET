@@ -216,7 +216,7 @@ const convertTime12to24 = (time12h: string): string => {
   }
   const fixedTime = time?.toString()?.length === 3 ? `0${time}` : `${time}`;
   const [hours, minutes, seconds] = fixedTime.split(":");
-  let finalHours = hours; //String(Number(hours) + 6);
+  let finalHours: any = hours; //String(Number(hours) + 6);
 
   if (DEBUG) {
     console.log("finalHours START", finalHours);
@@ -225,19 +225,9 @@ const convertTime12to24 = (time12h: string): string => {
     console.log("seconds", seconds);
   }
 
-  if (finalHours === "12") finalHours = "00";
-
-  if (modifier === "PM" && finalHours !== "12") {
-    if (DEBUG) console.log("PM DETECTED");
-    const hoursInt = parseInt(finalHours, 10) + 12;
-    finalHours = hoursInt.toString();
-  } else {
-    if (DEBUG) console.log("AM DETECTED");
-    if (parseInt(finalHours, 10) < 10) {
-      finalHours = "0" + finalHours;
-    }
-  }
-  finalHours = String(Number(finalHours) + 6);
+  if (hours === "12") finalHours = "00";
+  if (modifier === "PM") finalHours = parseInt(hours, 10) + 12;
+  if (finalHours.length === 1) finalHours = "0" + finalHours;
   if (DEBUG) {
     console.log("finalHours END", finalHours);
     console.log(
