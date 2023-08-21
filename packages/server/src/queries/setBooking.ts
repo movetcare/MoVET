@@ -4,9 +4,11 @@ const DEBUG = false;
 export const setBooking = async (payload: Booking) => {
   const bookingRef = firestore.collection("bookings").doc(`${payload?.id}`);
   if (
-    (payload?.id && payload?.step === "success") ||
-    payload?.step === "restart" ||
-    payload?.step === "cancelled-client"
+    payload?.id &&
+    (payload?.step === "success" ||
+      payload?.step === "complete" ||
+      payload?.step === "restart" ||
+      payload?.step === "cancelled-client")
   )
     try {
       return await bookingRef
@@ -15,7 +17,7 @@ export const setBooking = async (payload: Booking) => {
             step: payload?.step,
             updatedOn: new Date(),
           } as Booking,
-          { merge: true }
+          { merge: true },
         )
         .then(() => {
           if (DEBUG)
@@ -40,7 +42,7 @@ export const setBooking = async (payload: Booking) => {
             ...payload,
             updatedOn: new Date(),
           } as Booking,
-          { merge: true }
+          { merge: true },
         )
         .then(() => {
           if (DEBUG)

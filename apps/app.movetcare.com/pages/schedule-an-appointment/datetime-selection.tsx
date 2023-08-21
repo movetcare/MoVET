@@ -10,7 +10,7 @@ import { BookingHeader } from "components/BookingHeader";
 import { BookingFooter } from "components/BookingFooter";
 import Calendar from "react-calendar";
 import {
-  faArrowRight,
+  faCalendarCheck,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { Transition } from "@headlessui/react";
@@ -433,11 +433,11 @@ export default function DateTime() {
                         </Transition>
                       </div>
                       <Button
-                        text="Continue"
+                        text="Schedule My Appointment"
                         type="submit"
                         disabled={!selectedTime || !selectedDate}
                         className="mt-8"
-                        icon={faArrowRight}
+                        icon={faCalendarCheck}
                         color="black"
                         onClick={() => onSubmit()}
                       />

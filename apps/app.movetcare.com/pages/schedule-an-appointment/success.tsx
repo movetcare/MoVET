@@ -18,7 +18,6 @@ export default function BookingSuccess() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
-  const [appointmentData, setAppointmentData] = useState<any>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
     null,
   );
@@ -40,14 +39,13 @@ export default function BookingSuccess() {
         ).json();
       processAppointmentBooking()
         .then((response: ServerResponse) => {
-          console.log("SUCCESS SENT!");
           if (response.error) {
+            console.error(response);
             handleError({ message: response.error });
           } else {
             if (environment === "production") localStorage.removeItem("email");
-            localStorage.removeItem("bookingSession");
+            // localStorage.removeItem("bookingSession");
             setSubmissionSuccess(true);
-            setAppointmentData((response as any).payload);
           }
         })
         .catch((error) => handleError(error))
@@ -100,12 +98,77 @@ export default function BookingSuccess() {
                       "We can't wait to see you and your fur-family again!"
                     }
                   />
-                  {environment === "production" && (
-                    <>
-                      <h3>Appointment Details: </h3>
-                      <pre>{JSON.stringify(appointmentData)}</pre>
-                    </>
-                  )}
+                  <div className="w-full flex flex-col my-4 items-center">
+                    <h3 className="mb-2 text-lg">Appointment Details: </h3>
+                    <h5 className="font-bold -mb-2">Date & Time</h5>
+                    <p className="italic">
+                      {new Date(
+                        session?.requestedDateTime?.date,
+                      )?.toLocaleDateString("en-us", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}{" "}
+                      @ {session?.requestedDateTime?.time.split("-")[0].trim()}
+                    </p>
+                    <h5 className="font-bold -mb-2">Location</h5>
+                    <p className="italic font-extrabold">
+                      {session?.location === "Home" ? (
+                        `Housecall @ ${session?.address?.full}`
+                      ) : session?.location === "Clinic" ? (
+                        <a
+                          className="text-center font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                          target="_blank"
+                          href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
+                          rel="noopener noreferrer"
+                        >
+                          4912 S Newport St, Denver, CO 80237
+                        </a>
+                      ) : (
+                        "Virtual Telehealth Consultation"
+                      )}
+                    </p>
+                    {session?.address?.info && (
+                      <p className="-mt-2 italic text-sm">
+                        Note: {session?.address?.info}
+                      </p>
+                    )}
+                    <h5 className="font-bold -mb-2">Reason</h5>
+                    <p className="italic font-extrabold">
+                      {session?.establishCareExamRequired
+                        ? "Establish Care Exam"
+                        : session?.reason?.label}
+                    </p>
+                    <h5 className="font-bold -mb-2">
+                      Pet{session?.selectedPatients.length > 1 && "s"}
+                    </h5>
+                    {session?.selectedPatients?.map(
+                      (patientId: string) =>
+                        session?.patients?.map((patient: any) => {
+                          if (patientId === patient?.id)
+                            return (
+                              <>
+                                <p className="italic font-extrabold">
+                                  {patient?.name}
+                                </p>
+                                {patient?.illnessDetails && (
+                                  <>
+                                    <p className="italic -mt-2 text-sm">
+                                      {patient?.illnessDetails?.symptoms}
+                                    </p>
+                                    <p className="italic -mt-2 text-sm">
+                                      {JSON.stringify(
+                                        patient?.illnessDetails?.notes,
+                                      )}
+                                    </p>
+                                  </>
+                                )}
+                              </>
+                            );
+                        }),
+                    )}
+                  </div>
                   <p className="text-xs italic text-center mt-4 px-4 sm:px-8">
                     We will send you an email confirmation shortly. Please{" "}
                     <Link href="/contact">contact us</Link> us if you have any

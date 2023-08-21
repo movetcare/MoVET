@@ -144,6 +144,7 @@ export const processDateTime = async (
             address: session?.address?.full,
             patients: session?.patients,
             patientSelection: session?.selectedPatients,
+            illPatients: session?.illPatients,
             establishCareExamRequired: session?.establishCareExamRequired,
             totalPatients: session?.selectedPatients?.length,
           });
@@ -158,6 +159,7 @@ export const processDateTime = async (
           address: session?.address?.full,
           patients: session?.patients,
           patientSelection: session?.selectedPatients,
+          illPatients: session?.illPatients,
           establishCareExamRequired: session?.establishCareExamRequired,
           totalPatients: session?.selectedPatients?.length,
         });
@@ -305,33 +307,34 @@ const formatAppointmentData = async (appointment: any) => {
     console.log("DURATION", duration);
   }
   let notes =
-    appointment?.locationType === "Housecall"
+    appointment?.locationType === "Home"
       ? `Appointment Location: ${appointment?.locationType} - ${appointment?.address}`
       : appointment?.locationType === "Virtual"
       ? "Virtual Telehealth Consultation"
       : "*";
 
-  appointment?.patients?.forEach((patient: any) => {
-    appointment?.patientSelection?.forEach((selectedPatient: any) => {
-      if (DEBUG) {
-        console.log("patient?.id ", patient?.id);
-        console.log("selectedPatient?.id ", selectedPatient);
-        console.log("patient?.illnessDetails ", patient?.illnessDetails);
-      }
-      if (patient?.id === selectedPatient && patient?.illnessDetails) {
-        // complaintObject.push({
-        //   patient: patient?.name,
-        //   symptom: JSON.stringify(patient?.illnessDetails?.symptoms),
-        //   notes: patient?.illnessDetails?.notes,
-        // });
-        notes += ` Patient: ${patient?.name} - Symptom(s): ${JSON.stringify(
-          patient?.illnessDetails?.symptoms,
-        )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)} |`;
-      }
-    });
-  });
+  appointment?.illPatientSelection?.forEach(
+    (illPatient: string) =>
+      appointment?.patients?.forEach((patient: any) => {
+        if (patient?.id === illPatient) {
+          if (DEBUG)
+            console.log(
+              "ILL PATIENT NOTE",
+              ` | Ill Patient: ${patient?.name} - Symptom(s): ${JSON.stringify(
+                patient?.illnessDetails?.symptoms,
+              )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)}`,
+            );
+          notes += ` | Ill Patient: ${patient?.name} - Symptom(s): ${JSON.stringify(
+            patient?.illnessDetails?.symptoms,
+          )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)}`;
+        }
+      }),
+  );
+
   if (appointment?.selectedStaff)
-    notes += ` Requested Staff: ${appointment?.selectedStaff?.title} ${appointment?.selectedStaff?.firstName} ${appointment?.selectedStaff?.lastName}`;
+    notes += ` | Requested Staff: ${appointment?.selectedStaff?.title} ${appointment?.selectedStaff?.firstName} ${appointment?.selectedStaff?.lastName}`;
+
+  notes += ` | Booking Session ID: ${appointment?.sessionId}`;
   const defaultBookingReasons = await admin
     .firestore()
     .collection("configuration")
@@ -343,24 +346,30 @@ const formatAppointmentData = async (appointment: any) => {
       return await handleFailedBooking(error, "GET DEFAULT REASONS FAILED");
     });
 
-  const complaint =
-    // complaintObject.length > 0
-    //   ? JSON.stringify(complaintObject).length > 255
-    //     ? "Unknown - Too Many Patients"
-    //     : JSON.stringify(complaintObject) :
-    appointment?.establishCareExamRequired
-      ? appointment?.locationType === "Housecall"
-        ? defaultBookingReasons?.housecallStandardVcprReason?.label
-        : appointment?.locationType === "Clinic"
-        ? defaultBookingReasons?.clinicStandardVcprReason?.label
-        : defaultBookingReasons?.virtualStandardVcprReason?.label
-      : "No Symptoms of Illness"; // TODO:// get reason name from list of reasons
+  const complaint = appointment?.establishCareExamRequired
+    ? appointment?.locationType === "Home"
+      ? defaultBookingReasons?.housecallStandardVcprReason?.label
+      : appointment?.locationType === "Clinic"
+      ? defaultBookingReasons?.clinicStandardVcprReason?.label
+      : defaultBookingReasons?.virtualStandardVcprReason?.label
+    : appointment?.reason
+    ? await admin
+        .firestore()
+        .collection("reasons")
+        .doc(`${appointment?.reason}`)
+        .get()
+        .then((doc: any) => doc.data()?.name || "REASON NAME NOT FOUND...")
+        .catch(async (error: any) => {
+          console.error(error);
+          return "REASON NOT FOUND...";
+        })
+    : "No Symptoms of Illness";
   if (DEBUG)
     console.log("appointment RETURN", {
       proVetData: {
         client: appointment?.client,
         title: `${
-          appointment?.locationType === "Housecall"
+          appointment?.locationType === "Home"
             ? "Housecall Appointment"
             : appointment?.locationType === "Virtual"
             ? "Virtual Telehealth Consultation"
@@ -374,7 +383,7 @@ const formatAppointmentData = async (appointment: any) => {
         end: formatToProVetTimestamp(end),
         complaint,
         reason: appointment?.establishCareExamRequired
-          ? appointment?.locationType === "Housecall"
+          ? appointment?.locationType === "Home"
             ? defaultBookingReasons?.housecallStandardVcprReason?.value
             : appointment?.locationType === "Clinic"
             ? defaultBookingReasons?.clinicStandardVcprReason?.value
@@ -394,14 +403,8 @@ const formatAppointmentData = async (appointment: any) => {
   return {
     proVetData: {
       client: appointment?.client,
-      //user: null,
-      // appointment?.locationType === "Clinic"
-      //   ? 7
-      //   : appointment?.locationType === "Housecall"
-      //   ? 8
-      //   : 9,
       title: `${
-        appointment?.locationType === "Housecall"
+        appointment?.locationType === "Home"
           ? "Housecall Appointment"
           : appointment?.locationType === "Virtual"
           ? "Virtual Telehealth Consultation"
@@ -415,7 +418,7 @@ const formatAppointmentData = async (appointment: any) => {
       end: formatToProVetTimestamp(end),
       complaint,
       reason: appointment?.establishCareExamRequired
-        ? appointment?.locationType === "Housecall"
+        ? appointment?.locationType === "Home"
           ? defaultBookingReasons?.housecallStandardVcprReason?.value
           : appointment?.locationType === "Clinic"
           ? defaultBookingReasons?.clinicStandardVcprReason?.value

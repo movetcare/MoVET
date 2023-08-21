@@ -76,6 +76,7 @@ export type Booking = {
     | "datetime-selection"
     | "payment-confirmation"
     | "success"
+    | "complete"
     | "restart"
     | "cancelled-client";
   location?: "home" | "clinic" | "virtual";
