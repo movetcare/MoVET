@@ -10,7 +10,7 @@
   "devDependencies": {
     "typescript": "^5.1.6",
     "eslint": "^8.47.0",
-    "eslint-config-next": "^13.4.17",
+    "eslint-config-next": "^13.4.19",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-turbo": "latest",
     "eslint-plugin-react": "7.33.2",
