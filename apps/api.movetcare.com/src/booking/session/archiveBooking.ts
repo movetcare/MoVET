@@ -1,7 +1,7 @@
 //import { sendBookingRequestAdminNotification } from "../../notifications/templates/sendBookingRequestAdminNotification";
-import { throwError, admin } from "../../config/config";
+import { throwError, admin, DEBUG } from "../../config/config";
 //import { sendBookingRequestClientNotification } from "../../notifications/templates/sendBookingRequestClientNotification";
-const DEBUG = true;
+
 export const archiveBooking = async (id: string) => {
   if (DEBUG) console.log("archiveBooking", id);
   // await sendBookingRequestAdminNotification({ id });

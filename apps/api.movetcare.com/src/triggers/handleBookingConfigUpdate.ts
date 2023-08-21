@@ -5,9 +5,9 @@ import {
   request,
   admin,
   throwError,
+  DEBUG,
 } from "../config/config";
-import { addMinutesToDateObject } from "../utils/addMinutesToDateObject";
-const DEBUG = true;
+
 type AutomationTypes = "clinic" | "housecall" | "boutique" | "walkins";
 export const handleBookingConfigUpdate = functions.firestore
   .document("configuration/bookings")
@@ -290,31 +290,35 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
           : `${automatedCloseTime}`.slice(3)?.length === 1
           ? `0${automatedCloseTime}`.slice(3)
           : `${automatedCloseTime}`.slice(3);
-      const openDate = addMinutesToDateObject(
-        new Date(
-          nextDateMonth +
-            " " +
-            nextDateDate +
-            " ," +
-            nextDateYear +
-            " " +
-            [openHours, ":", openMinutes].join("") +
-            ":00",
-        ),
-        300,
+
+      const openDate = new Date(
+        nextDateMonth +
+          " " +
+          nextDateDate +
+          " ," +
+          nextDateYear +
+          " " +
+          [openHours, ":", openMinutes].join("") +
+          ":00",
       );
-      const closeDate = addMinutesToDateObject(
-        new Date(
-          nextDateMonth +
-            " " +
-            nextDateDate +
-            " ," +
-            nextDateYear +
-            " " +
-            [closeHours, ":", closeMinutes].join("") +
-            ":00",
-        ),
-        300,
+
+      // if (dayOfWeek === new Date().getDay()) {
+      //   const subtractHours = (date: Date, hours: number) => {
+      //     date.setHours(date.getHours() - hours);
+      //     return date;
+      //   };
+      //   openDate = subtractHours(openDate, 3);
+      //   console.log("NEW OPEN DATE", openDate.toLocaleString());
+      // }
+      const closeDate = new Date(
+        nextDateMonth +
+          " " +
+          nextDateDate +
+          " ," +
+          nextDateYear +
+          " " +
+          [closeHours, ":", closeMinutes].join("") +
+          ":00",
       );
       if (DEBUG) {
         console.log("nextDateYear", nextDateYear);
@@ -593,12 +597,12 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
         break;
     }
   };
+  await deleteAutomationTasks("clinic");
+  await deleteAutomationTasks("housecall");
+  await deleteAutomationTasks("boutique");
+  await deleteAutomationTasks("walkins");
   if (clinicAutomationStatus) await configureAutomationTasks("clinic");
-  else await deleteAutomationTasks("clinic");
   if (housecallAutomationStatus) await configureAutomationTasks("housecall");
-  else await deleteAutomationTasks("housecall");
   if (boutiqueAutomationStatus) await configureAutomationTasks("boutique");
-  else await deleteAutomationTasks("boutique");
   if (walkinsAutomationStatus) await configureAutomationTasks("walkins");
-  else await deleteAutomationTasks("walkins");
 };

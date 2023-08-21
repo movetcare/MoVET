@@ -1,6 +1,6 @@
 import { sendNotification } from "../notifications/sendNotification";
 import { functions, admin, throwError } from "../config/config";
-import { addMinutesToDateObject } from "../utils/addMinutesToDateObject";
+
 const DEBUG = true;
 export const handleCompletedTask = functions.firestore
   .document("tasks_completed/{id}")
@@ -107,31 +107,33 @@ const updateAutomationTask = async (
       : `${automatedCloseTime}`.slice(3)?.length === 1
       ? `0${automatedCloseTime}`.slice(3)
       : `${automatedCloseTime}`.slice(3);
-  const openDate = addMinutesToDateObject(
-    new Date(
-      nextDateMonth +
-        " " +
-        nextDateDate +
-        " ," +
-        nextDateYear +
-        " " +
-        [openHours, ":", openMinutes].join("") +
-        ":00",
-    ),
-    300,
+  const openDate = new Date(
+    nextDateMonth +
+      " " +
+      nextDateDate +
+      " ," +
+      nextDateYear +
+      " " +
+      [openHours, ":", openMinutes].join("") +
+      ":00",
   );
-  const closeDate = addMinutesToDateObject(
-    new Date(
-      nextDateMonth +
-        " " +
-        nextDateDate +
-        " ," +
-        nextDateYear +
-        " " +
-        [closeHours, ":", closeMinutes].join("") +
-        ":00",
-    ),
-    300,
+  //  if (dayOfWeek === new Date().getDay()) {
+  //    const subtractHours = (date: Date, hours: number) => {
+  //      date.setHours(date.getHours() - hours);
+  //      return date;
+  //    };
+  //    openDate = subtractHours(openDate, 3);
+  //    console.log("NEW OPEN DATE", openDate.toLocaleString());
+  //  }
+  const closeDate = new Date(
+    nextDateMonth +
+      " " +
+      nextDateDate +
+      " ," +
+      nextDateYear +
+      " " +
+      [closeHours, ":", closeMinutes].join("") +
+      ":00",
   );
   if (DEBUG) {
     console.log("nextDateYear", nextDateYear);

@@ -5,6 +5,7 @@ import {
   environment,
   throwError,
   request,
+  DEBUG,
 } from "../config/config";
 import { findSlackChannel } from "../utils/logging/findSlackChannel";
 import { sendSlackMessage } from "../utils/logging/sendSlackMessage";
@@ -14,7 +15,7 @@ import {
   UserNotificationSettings,
 } from "../utils/getClientNotificationSettings";
 import { fetchNewGoToAccessToken } from "../integrations/goto/fetchNewGoToAccessToken";
-const DEBUG = false;
+
 export const sendNotification = async ({
   type,
   payload,
@@ -283,9 +284,8 @@ export const sendNotification = async ({
                     throwError(error);
                   };
                   if (error.message.includes("401")) {
-                    const newAccessToken = await fetchNewGoToAccessToken(
-                      refreshToken,
-                    );
+                    const newAccessToken =
+                      await fetchNewGoToAccessToken(refreshToken);
                     if (DEBUG) console.log("newAccessToken", newAccessToken);
                     if (newAccessToken)
                       request
