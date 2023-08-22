@@ -53,7 +53,11 @@ export const handleK9SmilesRequest = functions.firestore
           });
         }
         if (DEBUG) console.log("didUpdateClientInfo", didUpdateClientInfo);
-        if (didUpdateClientInfo && authUser?.uid !== null) {
+        if (
+          !email?.toLowerCase()?.includes("+test") &&
+          didUpdateClientInfo &&
+          authUser?.uid !== null
+        ) {
           sendNotification({
             type: "slack",
             payload: {
@@ -124,7 +128,7 @@ export const handleK9SmilesRequest = functions.firestore
         } else {
           if (DEBUG)
             console.log("SKIPPED NOTIFICATION", {
-              email,
+              email: !email?.toLowerCase()?.includes("+test"),
               didUpdateClientInfo,
               authUserUid: authUser?.uid,
             });
