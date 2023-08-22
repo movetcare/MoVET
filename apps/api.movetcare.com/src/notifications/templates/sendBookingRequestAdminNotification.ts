@@ -1,36 +1,35 @@
-import { admin, throwError } from "../../config/config";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { sendNotification } from "../sendNotification";
 const DEBUG = true;
 export const sendBookingRequestAdminNotification = async ({
   id,
+  locationType,
+  notes,
+  numberOfPets,
+  numberOfPetsWithMinorIllness,
+  selectedDate,
+  selectedTime,
+  specificTime,
+  firstName,
+  lastName,
+  email,
+  phone,
+  createdAt,
 }: {
   id: string;
+  locationType: "Home" | "Virtual" | "Clinic";
+  notes: string;
+  numberOfPets: number;
+  numberOfPetsWithMinorIllness: number;
+  selectedDate: string;
+  selectedTime: string;
+  specificTime: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  createdAt: any;
 }) => {
-  const {
-    locationType,
-    notes,
-    numberOfPets,
-    numberOfPetsWithMinorIllness,
-    selectedDate,
-    selectedTime,
-    specificTime,
-    firstName,
-    lastName,
-    email,
-    phone,
-    createdAt,
-  }: any = await admin
-    .firestore()
-    .collection("bookings")
-    .doc(id)
-    .get()
-    .then((doc: any) => {
-      if (DEBUG)
-        console.log("NOT isExistingClient bookingRef doc.data(): ", doc.data());
-      return doc.data();
-    })
-    .catch((error: any) => throwError(error));
   if (DEBUG)
     console.log("NOT isExistingClient bookingRef vars: ", {
       id,

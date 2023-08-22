@@ -1,38 +1,35 @@
-import { admin, throwError } from "../../config/config";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { sendNotification } from "../sendNotification";
 const DEBUG = true;
 export const sendBookingRequestClientNotification = async ({
-  id,
+  locationType,
+  notes,
+  numberOfPets,
+  numberOfPetsWithMinorIllness,
+  selectedDate,
+  selectedTime,
+  specificTime,
+  firstName,
+  lastName,
+  email,
+  phone,
+  client,
 }: {
   id: string;
+  locationType: "Home" | "Virtual" | "Clinic";
+  notes: string;
+  numberOfPets: number;
+  numberOfPetsWithMinorIllness: number;
+  selectedDate: string;
+  selectedTime: string;
+  specificTime: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  createdAt: any;
+  client: { email: string; uid: string; requiresInfo: boolean };
 }) => {
-  const { client }: any = await admin
-    .firestore()
-    .collection("bookings")
-    .doc(id)
-    .get()
-    .then((doc: any) => doc.data())
-    .catch((error: any) => throwError(error));
-  const {
-    locationType,
-    notes,
-    numberOfPets,
-    numberOfPetsWithMinorIllness,
-    selectedDate,
-    selectedTime,
-    specificTime,
-    email,
-    firstName,
-    lastName,
-    phone,
-  }: any = await admin
-    .firestore()
-    .collection("bookings")
-    .doc(id)
-    .get()
-    .then((doc: any) => doc.data())
-    .catch((error: any) => throwError(error));
   const message = `<p>Hi ${firstName},</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request below and let us know (by replying to this email) if anything needs to be changed.</p>${
     firstName && lastName ? `<p><b>Name:</b> ${firstName} ${lastName}</p>` : ""
   }<p><b>Email:</b> ${email}</p>${
