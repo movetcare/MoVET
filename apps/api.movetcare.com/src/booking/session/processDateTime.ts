@@ -138,10 +138,12 @@ export const processDateTime = async (
             time: requestedDateTime?.time,
             date: requestedDateTime?.date,
             resource: requestedDateTime?.resource,
+            sessionId: id,
             reason: session?.reason?.value,
             selectedStaff: session?.selectedStaff,
             locationType: session?.location,
             address: session?.address?.full,
+            addressInfo: session?.address?.info,
             patients: session?.patients,
             patientSelection: session?.selectedPatients,
             illPatients: session?.illPatients,
@@ -154,9 +156,11 @@ export const processDateTime = async (
           date: requestedDateTime?.date,
           resource: requestedDateTime?.resource,
           reason: session?.reason?.value,
+          sessionId: id,
           selectedStaff: session?.selectedStaff,
           locationType: session?.location,
           address: session?.address?.full,
+          addressInfo: session?.address?.info,
           patients: session?.patients,
           patientSelection: session?.selectedPatients,
           illPatients: session?.illPatients,
@@ -308,7 +312,9 @@ const formatAppointmentData = async (appointment: any) => {
   }
   let notes =
     appointment?.locationType === "Home"
-      ? `Appointment Location: ${appointment?.locationType} - ${appointment?.address}`
+      ? `Appointment Location: ${appointment?.locationType} - ${appointment?.address} ${
+          appointment?.addressInfo ? `(${appointment?.addressInfo})` : ""
+        }`
       : appointment?.locationType === "Virtual"
       ? "Virtual Telehealth Consultation"
       : "*";

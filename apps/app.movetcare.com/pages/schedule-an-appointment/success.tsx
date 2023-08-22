@@ -43,8 +43,10 @@ export default function BookingSuccess() {
             console.error(response);
             handleError({ message: response.error });
           } else {
-            if (environment === "production") localStorage.removeItem("email");
-            localStorage.removeItem("bookingSession");
+            if (environment === "production") {
+              localStorage.removeItem("email");
+              localStorage.removeItem("bookingSession");
+            }
             setSubmissionSuccess(true);
           }
         })
@@ -145,28 +147,30 @@ export default function BookingSuccess() {
                     </h5>
                     {session?.selectedPatients?.map(
                       (patientId: string) =>
-                        session?.patients?.map((patient: any) => {
-                          if (patientId === patient?.id)
-                            return (
-                              <>
-                                <p className="italic font-extrabold">
-                                  {patient?.name}
-                                </p>
-                                {patient?.illnessDetails && (
-                                  <>
-                                    <p className="italic -mt-2 text-sm">
-                                      {patient?.illnessDetails?.symptoms}
-                                    </p>
-                                    <p className="italic -mt-2 text-sm">
-                                      {JSON.stringify(
-                                        patient?.illnessDetails?.notes,
-                                      )}
-                                    </p>
-                                  </>
-                                )}
-                              </>
-                            );
-                        }),
+                        session?.patients?.map(
+                          (patient: any, index: number) => {
+                            if (patientId === patient?.id)
+                              return (
+                                <div key={index + "-" + patient?.name}>
+                                  <p className="italic font-extrabold">
+                                    {patient?.name}
+                                  </p>
+                                  {patient?.illnessDetails && (
+                                    <>
+                                      <p className="italic -mt-2 text-sm">
+                                        {patient?.illnessDetails?.symptoms}
+                                      </p>
+                                      <p className="italic -mt-2 text-sm">
+                                        {JSON.stringify(
+                                          patient?.illnessDetails?.notes,
+                                        )}
+                                      </p>
+                                    </>
+                                  )}
+                                </div>
+                              );
+                          },
+                        ),
                     )}
                   </div>
                   <p className="text-xs italic text-center mt-4 px-4 sm:px-8">

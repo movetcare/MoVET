@@ -42,7 +42,7 @@ interface UserDetails {
 }
 
 export const sendAppointmentReminderNotification = async (
-  appointmentDetails: AppointmentDetails
+  appointmentDetails: AppointmentDetails,
 ): Promise<void> => {
   const {
     active,
@@ -64,74 +64,48 @@ export const sendAppointmentReminderNotification = async (
       "phoneNumber",
       "displayName",
     ]);
-    if (!userDetails?.email?.toLowerCase()?.includes("+test")) {
-      const customerId = await getCustomerId(`${client}`);
-      let doesHaveValidPaymentOnFile: false | Array<any> = false;
-      if (customerId)
-        doesHaveValidPaymentOnFile = await verifyValidPaymentSource(
-          `${client}`,
-          customerId
-        );
-      const userNotificationSettings: UserNotificationSettings | false =
-        await getClientNotificationSettings(`${client}`);
-      const clientProvetRecord = await fetchEntity("client", client);
-      const petNames =
-        patients.length > 1
-          ? patients.map((patient: any, index: number) =>
-              index !== patients.length - 1
-                ? `${patient?.name} `
-                : ` and ${patient?.name}`
-            )
-          : patients[0].name;
-      if (DEBUG) {
-        console.log("clientProvetRecord", clientProvetRecord);
-        console.log("petNames -> ", petNames);
-        console.log("send24HourReminder", send24HourReminder);
-        console.log("send30MinReminder", send30MinReminder);
-      }
-      if (send24HourReminder)
-        await send24HourAppointmentNotification(
-          appointmentDetails,
-          userDetails,
-          userNotificationSettings,
-          doesHaveValidPaymentOnFile,
-          clientProvetRecord,
-          petNames
-        );
-      if (send30MinReminder)
-        await send30MinAppointmentNotification(
-          appointmentDetails,
-          userDetails,
-          userNotificationSettings,
-          doesHaveValidPaymentOnFile,
-          clientProvetRecord,
-          petNames
-        );
-    } else {
-      if (DEBUG)
-        console.log(
-          `${
-            appointmentDetails?.active
-              ? "Appointment Archived"
-              : appointmentDetails?.start.toDate() < new Date()
-              ? "Appointment Passed"
-              : "UNKNOWN APPOINTMENT ISSUE"
-          } - DID NOT send appointment reminder...`,
-          appointmentDetails
-        );
-      sendNotification({
-        type: "slack",
-        payload: {
-          message: `:x: ${
-            appointmentDetails?.active
-              ? "Appointment Archived"
-              : appointmentDetails?.start.toDate() < new Date()
-              ? "Appointment Passed"
-              : "UNKNOWN APPOINTMENT ISSUE"
-          } - DID NOT send appointment reminder...`,
-        },
-      });
+    const customerId = await getCustomerId(`${client}`);
+    let doesHaveValidPaymentOnFile: false | Array<any> = false;
+    if (customerId)
+      doesHaveValidPaymentOnFile = await verifyValidPaymentSource(
+        `${client}`,
+        customerId,
+      );
+    const userNotificationSettings: UserNotificationSettings | false =
+      await getClientNotificationSettings(`${client}`);
+    const clientProvetRecord = await fetchEntity("client", client);
+    const petNames =
+      patients.length > 1
+        ? patients.map((patient: any, index: number) =>
+            index !== patients.length - 1
+              ? `${patient?.name} `
+              : ` and ${patient?.name}`,
+          )
+        : patients[0].name;
+    if (DEBUG) {
+      console.log("clientProvetRecord", clientProvetRecord);
+      console.log("petNames -> ", petNames);
+      console.log("send24HourReminder", send24HourReminder);
+      console.log("send30MinReminder", send30MinReminder);
     }
+    if (send24HourReminder)
+      await send24HourAppointmentNotification(
+        appointmentDetails,
+        userDetails,
+        userNotificationSettings,
+        doesHaveValidPaymentOnFile,
+        clientProvetRecord,
+        petNames,
+      );
+    if (send30MinReminder)
+      await send30MinAppointmentNotification(
+        appointmentDetails,
+        userDetails,
+        userNotificationSettings,
+        doesHaveValidPaymentOnFile,
+        clientProvetRecord,
+        petNames,
+      );
   }
 };
 
@@ -141,7 +115,7 @@ const send24HourAppointmentNotification = async (
   userNotificationSettings: UserNotificationSettings | false,
   doesHaveValidPaymentOnFile: false | Array<any>,
   clientProvetRecord: any,
-  petNames: string | Array<string>
+  petNames: string | Array<string>,
 ) => {
   const { id, client, user, start, instructions, patients, reason } =
     appointmentDetails;
@@ -203,13 +177,13 @@ const send24HourAppointmentNotification = async (
             email as string
           )?.replaceAll(
             "+",
-            "%2B"
+            "%2B",
           )}`}" target="_blank">Add a Form of Payment</a></b></p>`
         : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll(
             "+",
-            "%2B"
+            "%2B",
           )}`}" target="_blank">add a form of payment</a></b></p>`
     }<p><b> Handling Tips for your Pet${
       patients.length > 1 ? "s" : ""
@@ -228,7 +202,7 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
       to: email,
       subject: `${petNames}'s Appointment Reminder: ${getDateStringFromDate(
         start?.toDate(),
-        "dateOnly"
+        "dateOnly",
       )} @ ${getDateStringFromDate(start?.toDate(), "timeOnly")}`,
       message: emailText,
     };
@@ -258,7 +232,7 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
         ? patients.map((patient: any, index: number) =>
             index !== patients.length - 1
               ? `${patient?.name} `
-              : ` and ${patient?.name}`
+              : ` and ${patient?.name}`,
           )
         : patients[0].name;
     if (DEBUG) console.log("petNames -> ", petNames);
@@ -322,7 +296,7 @@ const send30MinAppointmentNotification = async (
   userNotificationSettings: UserNotificationSettings | false,
   doesHaveValidPaymentOnFile: false | Array<any>,
   clientProvetRecord: any,
-  petNames: string | Array<string>
+  petNames: string | Array<string>,
 ) => {
   const {
     id,
@@ -366,7 +340,7 @@ const send30MinAppointmentNotification = async (
             clientProvetRecord?.street_address || "UNKNOWN"
           } for your ${getDateStringFromDate(
             start?.toDate(),
-            "timeOnly"
+            "timeOnly",
           )} appointment today.</p>`
         : user === 7
         ? "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
@@ -404,13 +378,13 @@ const send30MinAppointmentNotification = async (
             email as string
           )?.replaceAll(
             "+",
-            "%2B"
+            "%2B",
           )}`}" target="_blank">Add a Form of Payment</a></b></p>`
         : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll(
             "+",
-            "%2B"
+            "%2B",
           )}`}" target="_blank">add a form of payment</a></b></p>`
     }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
     if (DEBUG) console.log("emailText -> ", emailText);
@@ -441,7 +415,7 @@ const send30MinAppointmentNotification = async (
         ? patients.map((patient: any, index: number) =>
             index !== patients.length - 1
               ? `${patient?.name} `
-              : ` and ${patient?.name}`
+              : ` and ${patient?.name}`,
           )
         : patients[0].name;
     if (DEBUG) console.log("petNames -> ", petNames);
@@ -455,7 +429,7 @@ const send30MinAppointmentNotification = async (
             clientProvetRecord?.street_address || "UNKNOWN"
           } for your ${getDateStringFromDate(
             start?.toDate(),
-            "timeOnly"
+            "timeOnly",
           )} appointment today.\n`
         : user === 7
         ? "We are reaching out to remind you of your upcoming appointment with MoVET today.\n\nAPPOINTMENT DETAILS:\n"

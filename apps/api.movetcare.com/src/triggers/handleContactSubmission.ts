@@ -94,31 +94,29 @@ export const handleContactSubmission = functions.firestore
         });
         const isClient = await getAuthUserByEmail(email);
         if (DEBUG) console.log("isClient", isClient);
-        if (!email?.toLowerCase()?.includes("+test")) {
-          sendNotification({
-            type: "email",
-            payload: {
-              client: isClient?.uid || null,
-              to: "info@movetcare.com",
-              // bcc: "alex.rodriguez@movetcare.com",
-              replyTo: email,
-              subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName}`,
-              message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
-                phone,
-              )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
-            },
+        sendNotification({
+          type: "email",
+          payload: {
+            client: isClient?.uid || null,
+            to: "info@movetcare.com",
+            // bcc: "alex.rodriguez@movetcare.com",
+            replyTo: email,
+            subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName}`,
+            message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
+              phone,
+            )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
+          },
+        });
+        if (isClient)
+          createProVetNote({
+            type: 1,
+            subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName} @ ${source}`,
+            message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
+              phone,
+            )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
+            client: isClient?.uid,
+            patients: [],
           });
-          if (isClient)
-            createProVetNote({
-              type: 1,
-              subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName} @ ${source}`,
-              message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
-                phone,
-              )}</a></p><p><b>Message:</b> ${message}</p><p><b>Source:</b> ${source}</p>`,
-              client: isClient?.uid,
-              patients: [],
-            });
-        }
       } catch (error: any) {
         updateContactStatus({
           status: CONTACT_STATUS.ERROR_PROCESSING,

@@ -53,11 +53,7 @@ export const handleK9SmilesRequest = functions.firestore
           });
         }
         if (DEBUG) console.log("didUpdateClientInfo", didUpdateClientInfo);
-        if (
-          !email?.toLowerCase()?.includes("+test") &&
-          didUpdateClientInfo &&
-          authUser?.uid !== null
-        ) {
+        if (didUpdateClientInfo && authUser?.uid !== null) {
           sendNotification({
             type: "slack",
             payload: {
@@ -119,7 +115,7 @@ export const handleK9SmilesRequest = functions.firestore
             type: 1,
             subject: `New K-9 Smiles Appointment Request from ${firstName} ${lastName} @ ${source}`,
             message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(
-              phone
+              phone,
             )}</a></p><p><b>Source:</b> ${source}</p>`,
             client: authUser?.uid as string,
             patients: [],
@@ -128,7 +124,7 @@ export const handleK9SmilesRequest = functions.firestore
         } else {
           if (DEBUG)
             console.log("SKIPPED NOTIFICATION", {
-              email: !email?.toLowerCase()?.includes("+test"),
+              email,
               didUpdateClientInfo,
               authUserUid: authUser?.uid,
             });

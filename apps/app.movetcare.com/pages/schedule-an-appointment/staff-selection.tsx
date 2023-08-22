@@ -32,7 +32,7 @@ export default function StaffSelection() {
     else {
       setStaff(
         JSON.parse(window.localStorage.getItem("bookingSession") as string)
-          ?.staff
+          ?.staff,
       );
       setIsLoading(false);
     }
@@ -52,11 +52,11 @@ export default function StaffSelection() {
         try {
           const { data: result }: any = await httpsCallable(
             functions,
-            "scheduleAppointment"
+            "scheduleAppointment",
           )({
             selectedStaff: data,
             id: JSON.parse(
-              window.localStorage.getItem("bookingSession") as string
+              window.localStorage.getItem("bookingSession") as string,
             )?.id,
             device: navigator.userAgent,
             token,
@@ -66,12 +66,12 @@ export default function StaffSelection() {
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
-                JSON.stringify(result)
+                JSON.stringify(result),
               );
               const queryString = getUrlQueryStringFromObject(router.query);
               router.push(
                 "/schedule-an-appointment/datetime-selection" +
-                  (queryString ? queryString : "")
+                  (queryString ? queryString : ""),
               );
             } else handleError(result);
           } else handleError(result);
@@ -126,7 +126,7 @@ export default function StaffSelection() {
                                   />
                                 ) : (
                                   <Image
-                                    src="https://storage-us.provetcloud.com/provet/4285/users/09339fca5622431ab86783c206483ce0.jpeg"
+                                    src="/icon-192x192.png"
                                     // layout="responsive"
                                     height={80}
                                     width={80}
@@ -171,7 +171,7 @@ export default function StaffSelection() {
                           </div>
                         ) : (
                           <div key={index}></div>
-                        )
+                        ),
                       )}
                     <hr className="text-movet-gray border rounded-full my-8" />
                     <Button
