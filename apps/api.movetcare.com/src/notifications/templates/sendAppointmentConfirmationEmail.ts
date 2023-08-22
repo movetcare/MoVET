@@ -6,6 +6,8 @@ import { getDateStringFromDate } from "../../utils/getDateStringFromDate";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { EmailConfiguration } from "../../types/email.d";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
+import { getCustomerId } from "../../utils/getCustomerId";
+import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 const DEBUG = true;
 export const sendAppointmentConfirmationEmail = async (
   clientId: string,
@@ -41,6 +43,13 @@ export const sendAppointmentConfirmationEmail = async (
   const isNewFlow = appointment?.user ? false : true;
 
   let petNames = null;
+  const customerId = await getCustomerId(`${clientId}`);
+  let doesHaveValidPaymentOnFile: false | Array<any> = false;
+  if (customerId)
+    doesHaveValidPaymentOnFile = await verifyValidPaymentSource(
+      `${clientId}`,
+      customerId,
+    );
   if (isNewFlow) {
     const patientRecords: any = [];
     await Promise.all(
@@ -162,7 +171,17 @@ export const sendAppointmentConfirmationEmail = async (
     appointment?.locationType === "Home"
       ? "<p></p><p><b>Home Visit Trip Fee</b>: $60</p><p><b>*Additional charges will apply for add-on diagnostics, medications, pampering, etc.</b></p><p><i>A $60 cancellation fee will be charged if cancellation occurs within 24 hours of your appointment</i></p>"
       : "" // TODO: Convert waiver text to be conditional based on VCPR status - If VCPR is not established, then include waiver text.
-  } ${
+  }<p></p><p><b>*** KEEP READING ***</b></p><p></p>${
+    doesHaveValidPaymentOnFile !== false &&
+    doesHaveValidPaymentOnFile.length > 0
+      ? ""
+      : `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+          email as string
+        )?.replaceAll(
+          "+",
+          "%2B",
+        )}`}" target="_blank">Add a Form of Payment</a></b></p>`
+  }${
     vcprRequired
       ? // eslint-disable-next-line quotes
         `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> (If you have completed a waiver/release for this pet in the past, then a new one is not necessary.)</p><p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.`
@@ -193,6 +212,13 @@ export const sendAppointmentConfirmationEmail = async (
   }${
     appointment?.instructions &&
     `<p></p><p><b>Instructions: </b>${appointment?.instructions}</p>`
+  }${
+    doesHaveValidPaymentOnFile !== false &&
+    doesHaveValidPaymentOnFile.length > 0
+      ? `<p><b>Payment on File:</b><b>${JSON.stringify(
+          doesHaveValidPaymentOnFile,
+        )}</b></p>`
+      : "<p><b>Payment on File:</b><b> NONE</b></p>"
   }
   ${
     vcprRequired
@@ -260,6 +286,16 @@ export const sendAppointmentConfirmationEmail = async (
     appointment?.locationType === "Home"
       ? "<p></p><p><b>Home Visit Trip Fee</b>: $60</p><p><b>*Additional charges will apply for add-on diagnostics, medications, pampering, etc.</b></p><p><i>A $60 cancellation fee will be charged if cancellation occurs within 24 hours of your appointment</i></p>"
       : "" // TODO: Convert waiver text to be conditional based on VCPR status - If VCPR is not established, then include waiver text.
+  }<p></p><p><b>*** KEEP READING ***</b></p><p></p>${
+    doesHaveValidPaymentOnFile !== false &&
+    doesHaveValidPaymentOnFile.length > 0
+      ? ""
+      : `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+          email as string
+        )?.replaceAll(
+          "+",
+          "%2B",
+        )}`}" target="_blank">Add a Form of Payment</a></b></p>`
   }${
     vcprRequired
       ? `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> (If you have completed a waiver/release for this pet in the past, then a new one is not necessary.)</p><p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.
