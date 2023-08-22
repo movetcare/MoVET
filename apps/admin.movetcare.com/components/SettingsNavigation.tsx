@@ -5,7 +5,6 @@ import {
   faCogs,
   faFlag,
   faHeadset,
-  faSnowflake,
   faUser,
   faVial,
   faWrench,
