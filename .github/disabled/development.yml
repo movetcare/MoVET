@@ -1,0 +1,65 @@
+name: New EAS DEVELOPMENT Builds
+on:
+  push:
+    branches:
+      - "development"
+
+jobs:
+  build:
+    name: New EAS DEVELOPMENT Builds
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PLATFORM_LOGS_STAGING }}
+    steps:
+      - name: Git Repo Checkout
+        id: repo-checkout
+        uses: actions/checkout@master
+
+      - name: Node.js Setup
+        id: node-setup
+        uses: actions/setup-node@master
+        with:
+          node-version: 15.x
+
+      - name: Expo Setup
+        id: expo-setup
+        uses: expo/expo-github-action@v6
+        with:
+          expo-version: latest
+          eas-version: latest
+          username: ${{ secrets.EXPO_USER }}
+          password: ${{ secrets.EXPO_PASS }}
+          token: ${{ secrets.EXPO_TOKEN }}
+          expo-cache: true
+          eas-cache: true
+          packager: npm
+
+      - name: Install Dependencies
+        id: dependency-installs
+        run: |
+          rm -rf node_modules/
+          npm i --force
+
+      - name: Lint Application
+        id: lint
+        run: npm run lint
+
+      - name: Build EMULATOR on EAS for Android
+        id: build-android-emulator
+        run: |
+          echo "${{ secrets.CREDENTIALS_JSON_BASE64}}"| base64 -d > credentials.json
+          echo "${{ secrets.ANDROID_KEY}}" | base64 -d > android.keystore
+          echo "APP_ENVIRONMENT=development" >> .env
+          npx eas-cli build --platform android --profile development --non-interactive --no-wait
+
+      - name: Build SIMULATOR on EAS for iOS
+        id: build-ios-simulator
+        run: npx eas-cli build --platform ios --profile development --non-interactive --no-wait
+
+      - name: Finished GH Action
+        uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#development-feed"
+        if: always()

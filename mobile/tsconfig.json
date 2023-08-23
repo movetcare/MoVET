@@ -1,0 +1,20 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": "./",
+    "paths": {
+      "app/*": ["app/*"],
+      "assets/*": ["assets/*"],
+      "components/*": ["components/*"],
+      "constants/*": ["constants/*"],
+      "contexts/*": ["contexts/*"],
+      "hook/*": ["hook/*"],
+      "services/*": ["services/*"],
+      "utils/*": ["utils/*"],
+      "stores/*": ["stores/*"],
+      "tailwind": ["tailwind.ts"],
+      "firebase-config": ["firebase-config.ts"]
+    }
+  }
+}

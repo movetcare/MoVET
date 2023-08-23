@@ -1,0 +1,87 @@
+name: New EAS BETA Builds
+on:
+  push:
+    branches:
+      - "staging"
+
+jobs:
+  build:
+    name: New EAS BETA Builds
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PLATFORM_LOGS_STAGING }}
+    steps:
+      - name: Git Repo Checkout
+        id: repo-checkout
+        uses: actions/checkout@master
+
+      - name: Node.js Setup
+        id: node-setup
+        uses: actions/setup-node@master
+        with:
+          node-version: 14.x
+
+      - name: Expo Setup
+        id: expo-setup
+        uses: expo/expo-github-action@v7
+        with:
+          expo-version: latest
+          eas-version: latest
+          username: ${{ secrets.EXPO_USER }}
+          password: ${{ secrets.EXPO_PASS }}
+          token: ${{ secrets.EXPO_TOKEN }}
+          expo-cache: true
+          eas-cache: true
+          packager: npm
+
+      - name: Cache Node Modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install Dependencies
+        id: dependency-installs
+        run: npm ci
+
+      - name: Lint Application
+        id: lint
+        run: npm run lint
+
+      - name: Setup EAS
+        id: setup-eas
+        run: |
+          echo "${{ secrets.CREDENTIALS_JSON_BASE64}}"| base64 -d > credentials.json
+          echo "${{ secrets.ANDROID_KEY}}" | base64 -d > android.keystore
+          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT}}" | base64 -d > google-service-account.json
+          echo "APP_ENVIRONMENT=staging" >> .env
+
+      # - name: Prebuild PRODUCTION Apps for iOS & Android
+      #   id: prebuid-ios-and-android
+      #   run: expo prebuild --clean --npm
+
+      - name: Build on EAS for iOS & Android
+        id: build-ios-and-android
+        run: npx eas-cli build --platform all --profile staging --non-interactive
+
+      # - name: Submit iOS Build to App Store
+      #   id: submit-ios-app-store
+      #   run: EXPO_APPLE_APP_SPECIFIC_PASSWORD=${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }} eas submit --platform ios --latest --profile staging
+
+      # - name: Submit Android Build to Play Store
+      #   id: submit-android-play-store
+      #   run: eas submit -p android --latest --profile staging
+
+      - name: Finished GH Action
+        uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#development-feed"
+        if: always()

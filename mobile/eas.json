@@ -1,0 +1,80 @@
+{
+  "build": {
+    "base": {
+      "cache": {
+        "key": "40"
+      },
+      "android": {
+        "env": {
+          "PLATFORM": "android"
+        },
+        "credentialsSource": "local"
+      },
+      "ios": {
+        "env": {
+          "PLATFORM": "ios"
+        }
+      }
+    },
+    "release": {
+      "extends": "base",
+      "distribution": "store",
+      "env": {
+        "APP_ENVIRONMENT": "production"
+      }
+    },
+    "staging": {
+      "extends": "base",
+      "distribution": "store",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "APP_ENVIRONMENT": "staging"
+      }
+    },
+    "development": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
+      },
+      "env": {
+        "APP_ENVIRONMENT": "development"
+      }
+    }
+  },
+  "submit": {
+    "release": {
+      "ios": {
+        "appleId": "dev@movetcare.com",
+        "ascAppId": "1478031556",
+        "appleTeamId": "KA3S6977Y3"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./google-service-account.json",
+        "track": "production",
+        "releaseStatus": "completed"
+      }
+    },
+    "staging": {
+      "ios": {
+        "appleId": "dev@movetcare.com",
+        "ascAppId": "1478031556",
+        "appleTeamId": "KA3S6977Y3"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./google-service-account.json",
+        "track": "beta",
+        "releaseStatus": "completed"
+      }
+    }
+  },
+  "cli": {
+    "version": ">= 0.46.0"
+  }
+}
