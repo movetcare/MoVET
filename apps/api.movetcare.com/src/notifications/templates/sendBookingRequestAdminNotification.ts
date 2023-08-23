@@ -1,3 +1,4 @@
+import { admin, throwError } from "../../config/config";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { sendNotification } from "../sendNotification";
 const DEBUG = true;
@@ -46,6 +47,16 @@ export const sendBookingRequestAdminNotification = async ({
       phone,
       createdAt,
     });
+  const { client }: any = await admin
+    .firestore()
+    .collection("bookings")
+    .doc(id)
+    .get()
+    .then((doc: any) => {
+      if (DEBUG) console.log("START bookingRef doc.data(): ", doc.data());
+      return doc.data();
+    })
+    .catch((error: any) => throwError(error));
   const message = `<p><b>Session ID:</b> ${id}</p><p><b>Started At:</b> ${createdAt
     ?.toDate()
     ?.toLocaleString("en-US", {
@@ -83,79 +94,83 @@ export const sendBookingRequestAdminNotification = async ({
   }`;
   if (DEBUG)
     console.log("Sending ADMIN Appointment Request for New Client", message);
-  sendNotification({
-    type: "email",
-    payload: {
-      to: "info@movetcare.com",
-      // bcc: "alex.rodriguez@movetcare.com",
-      replyTo: email,
-      subject: `MoVET | Appointment Request from ${
-        firstName && lastName ? firstName + " " + lastName : email
-      }`,
-      message,
-    },
-  });
-  sendNotification({
-    type: "slack",
-    payload: {
-      channel: "appointment-request",
-      message: [
-        {
-          type: "section",
-          text: {
-            text: `:exclamation: New Appointment Request - ${id} :exclamation:`,
-            type: "mrkdwn",
+  const { isExistingClient } = client;
+  if (!email?.toLowerCase()?.includes("+test") && !isExistingClient) {
+    sendNotification({
+      type: "email",
+      payload: {
+        to: "info@movetcare.com",
+        // bcc: "alex.rodriguez@movetcare.com",
+        replyTo: email,
+        subject: `MoVET | Appointment Request from ${
+          firstName && lastName ? firstName + " " + lastName : email
+        }`,
+        message,
+      },
+    });
+    sendNotification({
+      type: "slack",
+      payload: {
+        channel: "appointment-request",
+        message: [
+          {
+            type: "section",
+            text: {
+              text: `:exclamation: New Appointment Request - ${id} :exclamation:`,
+              type: "mrkdwn",
+            },
+            fields: [
+              {
+                type: "mrkdwn",
+                text: "*Client*",
+              },
+              {
+                type: "plain_text",
+                text:
+                  firstName + " " + lastName + " - " + email + " - " + phone,
+              },
+              {
+                type: "mrkdwn",
+                text: "*Patients*",
+              },
+              {
+                type: "plain_text",
+                text:
+                  numberOfPets +
+                  ` Pet(s) (${numberOfPetsWithMinorIllness} w/ Minor Illness)`,
+              },
+              {
+                type: "mrkdwn",
+                text: "*Pet Notes*",
+              },
+              {
+                type: "plain_text",
+                text: notes?.length > 0 ? notes : "None",
+              },
+              {
+                type: "mrkdwn",
+                text: "*Location*",
+              },
+              {
+                type: "plain_text",
+                text: locationType,
+              },
+              {
+                type: "mrkdwn",
+                text: "*Requested Time & Date*",
+              },
+              {
+                type: "plain_text",
+                text: `${new Date(
+                  selectedDate,
+                ).toLocaleDateString()} - ${selectedTime} ${
+                  specificTime ? `- ${specificTime}` : ""
+                }`,
+              },
+            ],
           },
-          fields: [
-            {
-              type: "mrkdwn",
-              text: "*Client*",
-            },
-            {
-              type: "plain_text",
-              text: firstName + " " + lastName + " - " + email + " - " + phone,
-            },
-            {
-              type: "mrkdwn",
-              text: "*Patients*",
-            },
-            {
-              type: "plain_text",
-              text:
-                numberOfPets +
-                ` Pet(s) (${numberOfPetsWithMinorIllness} w/ Minor Illness)`,
-            },
-            {
-              type: "mrkdwn",
-              text: "*Pet Notes*",
-            },
-            {
-              type: "plain_text",
-              text: notes?.length > 0 ? notes : "None",
-            },
-            {
-              type: "mrkdwn",
-              text: "*Location*",
-            },
-            {
-              type: "plain_text",
-              text: locationType,
-            },
-            {
-              type: "mrkdwn",
-              text: "*Requested Time & Date*",
-            },
-            {
-              type: "plain_text",
-              text: `${new Date(
-                selectedDate,
-              ).toLocaleDateString()} - ${selectedTime} ${
-                specificTime ? `- ${specificTime}` : ""
-              }`,
-            },
-          ],
-        },
-      ],
-    },
-  });
+        ],
+      },
+    });
+  }
 };

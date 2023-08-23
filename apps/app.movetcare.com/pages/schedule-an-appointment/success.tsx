@@ -119,16 +119,19 @@ export default function BookingSuccess() {
                       {session?.location === "Home" ? (
                         `Housecall @ ${session?.address?.full}`
                       ) : session?.location === "Clinic" ? (
-                        <a
-                          className="text-center font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
-                          target="_blank"
-                          href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
-                          rel="noopener noreferrer"
-                        >
-                          4912 S Newport St, Denver, CO 80237
-                        </a>
+                        <>
+                          <span>MoVET @ Belleview Station - </span>
+                          <a
+                            className="text-center font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                            target="_blank"
+                            href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
+                            rel="noopener noreferrer"
+                          >
+                            4912 S Newport St, Denver, CO 80237
+                          </a>
+                        </>
                       ) : (
-                        "Virtual Telehealth Consultation"
+                        "Virtual Telehealth Consultation - We'll send you a link when it's time!"
                       )}
                     </p>
                     {session?.address?.info && (
