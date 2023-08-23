@@ -22,11 +22,11 @@ export default function BookingSuccess() {
     null,
   );
   useEffect(() => {
-    if (window.localStorage.getItem("bookingSession") !== null && router) {
+    if (window.localStorage.getItem("bookingSession") !== null && router)
       setSession(
         JSON.parse(window.localStorage.getItem("bookingSession") as string),
       );
-    } else router.push("/schedule-an-appointment");
+    else router.push("/schedule-an-appointment");
   }, [router]);
   useEffect(() => {
     if (session?.id) {
@@ -39,10 +39,8 @@ export default function BookingSuccess() {
         ).json();
       processAppointmentBooking()
         .then((response: ServerResponse) => {
-          if (response.error) {
-            console.error(response);
-            handleError({ message: response.error });
-          } else {
+          if (response.error) handleError({ message: response.error });
+          else {
             if (environment === "production") {
               localStorage.removeItem("email");
               localStorage.removeItem("bookingSession");

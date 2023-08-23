@@ -50,9 +50,15 @@ export const sendBookingRequestClientNotification = async ({
     ${locationType ? `<p><b>Requested Location:</b> ${locationType}</p>` : ""}
   ${
     selectedDate
-      ? `<p><b>Requested Date:</b> ${new Date(
-          selectedDate,
-        ).toLocaleDateString()}</p>`
+      ? `<p><b>Requested Date:</b> ${new Date(selectedDate)?.toLocaleDateString(
+          "en-us",
+          {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          },
+        )}</p>`
       : ""
   }${selectedTime ? `<p><b>Requested Time:</b> ${selectedTime}</p>` : ""}${
     selectedTime === "Specific Time Preference" && specificTime !== ""
