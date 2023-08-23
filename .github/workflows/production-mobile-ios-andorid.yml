@@ -7,30 +7,8 @@ on:
       - "mobile/**"
 
 jobs:
-  backup:
-    runs-on: ubuntu-latest
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
-    steps:
-      - uses: act10ns/slack@v1
-        with:
-          status: starting-backup
-          channel: "#production-logs"
-      - uses: actions/checkout@master
-      - id: "auth"
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
-      - name: Backup Firestore
-        id: backup-firestore
-        run: gcloud firestore export gs://movet-care-backups
-      - uses: act10ns/slack@v1
-        with:
-          status: finished-backup
-          channel: "#production-logs"
   build:
     name: New EAS PRODUCTION Builds
-    needs: backup
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
@@ -54,8 +32,6 @@ jobs:
         with:
           expo-version: latest
           eas-version: latest
-          username: ${{ secrets.EXPO_USER }}
-          password: ${{ secrets.EXPO_PASS }}
           token: ${{ secrets.EXPO_TOKEN }}
           expo-cache: true
           eas-cache: true
@@ -75,15 +51,20 @@ jobs:
 
       - name: Install Dependencies
         id: dependency-installs
-        run: npm ci
+        run: |
+          cd mobile
+          npm ci
 
       - name: Lint Application
         id: lint
-        run: npm run lint
+        run: |
+          cd mobile
+          npm run lint
 
       - name: Setup EAS Configurations
         id: setup-eas-configs
         run: |
+          cd mobile
           echo "${{ secrets.CREDENTIALS_JSON_BASE64}}"| base64 -d > credentials.json
           echo "${{ secrets.ANDROID_KEY}}" | base64 -d > android.keystore
           echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT}}" | base64 -d > google-service-account.json
@@ -91,15 +72,21 @@ jobs:
 
       - name: Build PRODUCTION Apps on EAS for iOS & Android
         id: build-ios-and-android
-        run: npx eas-cli build --platform all --profile release --non-interactive
+        run:  |
+          cd mobile
+          npx eas-cli build --platform all --profile release --non-interactive
 
       - name: Submit iOS Build to App Store
         id: submit-ios-app-store
-        run: EXPO_APPLE_APP_SPECIFIC_PASSWORD=${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }} eas submit --platform ios --latest --profile release
+        run:  |
+          cd mobile
+          EXPO_APPLE_APP_SPECIFIC_PASSWORD=${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }} eas submit --platform ios --latest --profile release
 
       - name: Submit Android Build to Play Store
         id: submit-android-play-store
-        run: eas submit -p android --latest --profile release
+        run:  |
+          cd mobile
+          eas submit -p android --latest --profile release
 
       - name: Finished GH Action
         uses: act10ns/slack@v1

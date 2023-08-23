@@ -133,7 +133,7 @@ export default function BookingSuccess() {
                         <>
                           <span>Virtual Telehealth Consultation</span>
                           <br />
-                          <span>
+                          <span className="text-sm">
                             We&apos;ll send you a link when it&apos;s time!
                           </span>
                         </>
