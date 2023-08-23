@@ -100,7 +100,7 @@ export default function BookingSuccess() {
                       "We can't wait to see you and your fur-family again!"
                     }
                   />
-                  <div className="w-full flex flex-col my-4 items-center">
+                  <div className="w-full flex flex-col my-4 items-center text-center">
                     <h3 className="mb-2 text-lg">Appointment Details: </h3>
                     <h5 className="font-bold -mb-2">Date & Time</h5>
                     <p className="italic">
@@ -120,9 +120,10 @@ export default function BookingSuccess() {
                         `Housecall @ ${session?.address?.full}`
                       ) : session?.location === "Clinic" ? (
                         <>
-                          <span>MoVET @ Belleview Station - </span>
+                          <span>MoVET @ Belleview Station</span>
+                          <br />
                           <a
-                            className="text-center font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                            className=" font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
                             target="_blank"
                             href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
                             rel="noopener noreferrer"
@@ -131,7 +132,13 @@ export default function BookingSuccess() {
                           </a>
                         </>
                       ) : (
-                        "Virtual Telehealth Consultation - We'll send you a link when it's time!"
+                        <>
+                          <span>Virtual Telehealth Consultation</span>
+                          <br />
+                          <span>
+                            We&apos;ll send you a link when it&apos;s time!
+                          </span>
+                        </>
                       )}
                     </p>
                     {session?.address?.info && (
@@ -155,15 +162,15 @@ export default function BookingSuccess() {
                             if (patientId === patient?.id)
                               return (
                                 <div key={index + "-" + patient?.name}>
-                                  <p className="italic font-extrabold text-center">
+                                  <p className="italic font-extrabold">
                                     {patient?.name}
                                   </p>
                                   {patient?.illnessDetails && (
                                     <>
-                                      <p className="italic -mt-2 text-sm text-center">
+                                      <p className="italic -mt-2 text-sm">
                                         {patient?.illnessDetails?.symptoms}
                                       </p>
-                                      <p className="italic -mt-2 text-sm text-center">
+                                      <p className="italic -mt-2 text-sm">
                                         {JSON.stringify(
                                           patient?.illnessDetails?.notes,
                                         )}

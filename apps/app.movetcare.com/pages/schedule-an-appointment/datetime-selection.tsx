@@ -75,16 +75,6 @@ export default function DateTime() {
   }, [router]);
   useEffect(() => {
     const fetchAppointmentAvailability = async () => {
-      console.log("PAYLOAD", {
-        date: selectedDate,
-        schedule:
-          session?.location === "Home"
-            ? "housecall"
-            : session?.location === "Clinic"
-            ? "clinic"
-            : "virtual",
-        patients: session?.selectedPatients,
-      });
       const { data: result }: any = await httpsCallable(
         functions,
         "getAppointmentAvailability",
@@ -98,7 +88,6 @@ export default function DateTime() {
             : "virtual",
         patients: session?.selectedPatients,
       });
-      console.log("RESULT", result);
       if (Array.isArray(result)) {
         setAppointmentAvailability(result);
         setClosedReason(null);
@@ -128,16 +117,6 @@ export default function DateTime() {
           const session = JSON.parse(
             window.localStorage.getItem("bookingSession") as string,
           );
-          console.log("Payload", {
-            requestedDateTime: {
-              resource: selectedResource,
-              date: selectedDate,
-              time: selectedTime,
-            },
-            id: session?.id,
-            device: navigator.userAgent,
-            token,
-          });
           const { data: result }: any = await httpsCallable(
             functions,
             "scheduleAppointment",
@@ -151,7 +130,6 @@ export default function DateTime() {
             device: navigator.userAgent,
             token,
           });
-          console.log("result", result);
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage("Almost finished...");
             if (result?.needsRetry) {

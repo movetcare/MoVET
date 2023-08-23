@@ -185,9 +185,9 @@ export const sendAppointmentConfirmationEmail = async (
   }${
     vcprRequired
       ? // eslint-disable-next-line quotes
-        `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> </p><p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.`
+        `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a></p>`
       : ""
-  }
+  }<p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.
   </p><p></p><p>Looking forward to seeing you,</p><p>- <a href="https://www.instagram.com/drlexiabramson/">Dr. A</a>, <a href="https://www.instagram.com/nessie_themovetpup/">Nessie</a>, and the <a href="https://www.facebook.com/MOVETCARE/">MoVET Team</a></p>`;
 
     emailText = `<p>New Appointment Scheduled:</p><p><b>Client</b>: <a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">${
@@ -217,9 +217,9 @@ export const sendAppointmentConfirmationEmail = async (
   }${
     doesHaveValidPaymentOnFile !== false &&
     doesHaveValidPaymentOnFile.length > 0
-      ? `<p></p><p><b>Payment on File:</b><b>${JSON.stringify(
+      ? `<p></p><p><b>Payment on File:</b> ${JSON.stringify(
           doesHaveValidPaymentOnFile,
-        )}</b></p>`
+        )}</p>`
       : "<p></p><p><b>Payment on File:</b><b> NONE</b></p>"
   }
   ${
@@ -297,10 +297,10 @@ export const sendAppointmentConfirmationEmail = async (
         )}`}" target="_blank">Add a Form of Payment</a></b></p>`
   }${
     vcprRequired
-      ? `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> </p><p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.
-  </p>`
+      ? // eslint-disable-next-line quotes
+        `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a></p>`
       : ""
-  }<p></p><p>Looking forward to seeing you,</p><p>- <a href="https://www.instagram.com/drlexiabramson/">Dr. A</a>, <a href="https://www.instagram.com/nessie_themovetpup/">Nessie</a>, and the <a href="https://www.facebook.com/MOVETCARE/">MoVET Team</a></p>`;
+  }<p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.<p></p><p>Looking forward to seeing you,</p><p>- <a href="https://www.instagram.com/drlexiabramson/">Dr. A</a>, <a href="https://www.instagram.com/nessie_themovetpup/">Nessie</a>, and the <a href="https://www.facebook.com/MOVETCARE/">MoVET Team</a></p>`;
 
     emailText = `<p>New Appointment Scheduled:</p><p><b>Client</b>: <a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">${
       email ? email : ""
@@ -331,9 +331,9 @@ ${
     }${
       doesHaveValidPaymentOnFile !== false &&
       doesHaveValidPaymentOnFile.length > 0
-        ? `<p></p><p><b>Payment on File:</b><b>${JSON.stringify(
+        ? `<p></p><p><b>Payment on File:</b> ${JSON.stringify(
             doesHaveValidPaymentOnFile,
-          )}</b></p>`
+          )}</p>`
         : "<p></p><p><b>Payment on File:</b><b> NONE</b></p>"
     }
   ${

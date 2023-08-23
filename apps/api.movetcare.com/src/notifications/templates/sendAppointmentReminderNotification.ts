@@ -201,7 +201,7 @@ const send24HourAppointmentNotification = async (
     locationType === "Home"
       ? "<p></p><p><b>Home Visit Trip Fee</b>: $60</p><p><b>*Additional charges will apply for add-on diagnostics, medications, pampering, etc.</b></p><p><i>A $60 cancellation fee will be charged if cancellation occurs within 24 hours of your appointment</i></p>"
       : "" // TODO: Convert waiver text to be conditional based on VCPR status - If VCPR is not established, then include waiver text.
-  }<p></p><p><b>*** KEEP READING ***</b></p><p></p>${
+  }${
     doesHaveValidPaymentOnFile !== false &&
     doesHaveValidPaymentOnFile.length > 0
       ? ""
@@ -214,9 +214,9 @@ const send24HourAppointmentNotification = async (
   }${
     vcprRequired
       ? // eslint-disable-next-line quotes
-        `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> </p><p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.`
+        `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> </p>`
       : ""
-  }</p><p></p><p><b>*** KEEP READING ***</b></p><p></p>${
+  }${
     doesHaveValidPaymentOnFile !== false &&
     doesHaveValidPaymentOnFile.length > 0
       ? ""
@@ -275,7 +275,7 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
       ? // eslint-disable-next-line quotes
         '<p></p><p><b>Medical Records:</b> Please email (or have your previous vet email) their vaccine and medical records to <a href="mailto://info@movetcare.com" target="_blank">info@movetcare.com</a> <b>prior</b> to your appointment.</p>'
       : ""
-  }<p></p><p><b>*** KEEP READING ***</b></p><p></p>${
+  }${
     doesHaveValidPaymentOnFile !== false &&
     doesHaveValidPaymentOnFile.length > 0
       ? ""
