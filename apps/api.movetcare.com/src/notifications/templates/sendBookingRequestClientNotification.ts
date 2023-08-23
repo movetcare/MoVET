@@ -1,5 +1,7 @@
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { sendNotification } from "../sendNotification";
+import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
 const DEBUG = true;
 export const sendBookingRequestClientNotification = async ({
   locationType,
@@ -13,7 +15,6 @@ export const sendBookingRequestClientNotification = async ({
   lastName,
   email,
   phone,
-  client,
 }: {
   id: string;
   locationType: "Home" | "Virtual" | "Clinic";
@@ -28,8 +29,8 @@ export const sendBookingRequestClientNotification = async ({
   email: string;
   phone: string;
   createdAt: any;
-  client: { email: string; uid: string; requiresInfo: boolean };
 }) => {
+  const client: UserRecord | null = await getAuthUserByEmail(email);
   const message = `<p>Hi ${firstName},</p><p>Thank you for submitting an appointment request with MoVET!</p><p>Please allow 1 business day for a response. All appointment requests are responded to in the order they are received.</p><p>You will hear from us. We promise. We are working hard to give everyone the same service we are known for and can't wait to give you the love and attention you deserve!</p><p>Please be sure to review your appointment request below and let us know (by replying to this email) if anything needs to be changed.</p>${
     firstName && lastName ? `<p><b>Name:</b> ${firstName} ${lastName}</p>` : ""
   }<p><b>Email:</b> ${email}</p>${

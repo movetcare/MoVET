@@ -422,9 +422,9 @@ export default function DateTime() {
                             <p className="text-center italic -mt-2 text-lg">
                               {selectedDate.toLocaleString("en-US", {
                                 weekday: "long",
-                                month: "short",
+                                year: "numeric",
+                                month: "long",
                                 day: "numeric",
-                                year: "2-digit",
                               })}{" "}
                               -{" "}
                               {selectedTime &&

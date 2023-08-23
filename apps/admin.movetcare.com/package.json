@@ -16,7 +16,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.17",
-    "firebase": "^10.2.0",
+    "firebase": "^10.3.0",
     "gray-matter": "^4.0.3",
     "lodash.kebabcase": "^4.1.1",
     "lottie-web": "^5.12.2",

@@ -152,15 +152,15 @@ export default function BookingSuccess() {
                             if (patientId === patient?.id)
                               return (
                                 <div key={index + "-" + patient?.name}>
-                                  <p className="italic font-extrabold">
+                                  <p className="italic font-extrabold text-center">
                                     {patient?.name}
                                   </p>
                                   {patient?.illnessDetails && (
                                     <>
-                                      <p className="italic -mt-2 text-sm">
+                                      <p className="italic -mt-2 text-sm text-center">
                                         {patient?.illnessDetails?.symptoms}
                                       </p>
-                                      <p className="italic -mt-2 text-sm">
+                                      <p className="italic -mt-2 text-sm text-center">
                                         {JSON.stringify(
                                           patient?.illnessDetails?.notes,
                                         )}

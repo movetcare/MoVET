@@ -214,7 +214,7 @@ const send24HourAppointmentNotification = async (
   }${
     vcprRequired
       ? // eslint-disable-next-line quotes
-        `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> (If you have completed a waiver/release for this pet in the past, then a new one is not necessary.)</p><p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.`
+        `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a> </p><p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.`
       : ""
   }</p><p></p><p><b>*** KEEP READING ***</b></p><p></p>${
     doesHaveValidPaymentOnFile !== false &&

@@ -17,7 +17,6 @@ export const archiveBooking = async (id: string) => {
     email,
     phone,
     createdAt,
-    client,
   }: any = await admin
     .firestore()
     .collection("bookings")
@@ -28,7 +27,7 @@ export const archiveBooking = async (id: string) => {
       return doc.data();
     })
     .catch((error: any) => throwError(error));
-  if (client?.requiresInfo) {
+  if (email) {
     await sendBookingRequestAdminNotification({
       id,
       locationType,
@@ -58,7 +57,6 @@ export const archiveBooking = async (id: string) => {
       email,
       phone,
       createdAt,
-      client,
     });
   }
   await admin

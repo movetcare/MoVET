@@ -275,7 +275,8 @@ export default function LocationSelection({
       >
         <div className={isAppMode ? "px-4 mb-8" : ""}>
           <section className="relative mx-auto">
-            {loadingMessage && isLoading && !isLoaded ? (
+            {(loadingMessage && isLoading && !isLoaded) ||
+            reasonGroups === false ? (
               <Loader message={loadingMessage} isAppMode={isAppMode} />
             ) : error || loadError ? (
               <Error error={error || loadError} isAppMode={isAppMode} />
