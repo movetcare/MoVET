@@ -22,7 +22,7 @@ jobs:
         id: deploy-rules
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only storage:rules --non-interactive -f
+          args: deploy --only storage --non-interactive -f
         env:
           PROJECT_ID: movet-care
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_PRODUCTION }}
