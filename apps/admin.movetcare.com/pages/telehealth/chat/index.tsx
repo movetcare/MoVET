@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
 import {
   collection,
@@ -53,11 +54,11 @@ const ChatSession = () => {
   const [messages, loadingMessages, errorMessages] = useCollection(
     firestoreQuery(
       collection(firestore, `telehealth_chat/${query?.id}/log`),
-      orderBy("createdAt", "asc")
-    )
+      orderBy("createdAt", "asc"),
+    ),
   );
   const [session, loadingSession, errorSession] = useDocument(
-    doc(firestore, `telehealth_chat/${query?.id}`)
+    doc(firestore, `telehealth_chat/${query?.id}`),
   );
 
   const {
@@ -71,7 +72,7 @@ const ChatSession = () => {
 
   useEffect(
     () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }),
-    [messages]
+    [messages],
   );
 
   useEffect(() => {
@@ -82,12 +83,11 @@ const ChatSession = () => {
       !didEndChat
     ) {
       toast(
-        `${session.data()?.client?.firstName} ${
-          session.data()?.client?.lastName
-        } ended chat session`,
+        `${session.data()?.client?.firstName} ${session.data()?.client
+          ?.lastName} ended chat session`,
         {
           icon: <FontAwesomeIcon icon={faDoorClosed} size="sm" />,
-        }
+        },
       );
       setDidEndChat(true);
     } else if (
@@ -102,7 +102,7 @@ const ChatSession = () => {
         } ${session && session.data()?.client?.lastName}`,
         {
           icon: <FontAwesomeIcon icon={faDoorClosed} size="sm" />,
-        }
+        },
       );
       setDidEndChat(true);
     }
@@ -124,7 +124,7 @@ const ChatSession = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       )
       .finally(() => {
         router.query.mode !== "embed" && router.push("/telehealth");
@@ -143,14 +143,14 @@ const ChatSession = () => {
           name: "MoVET",
           avatar: "https://movetcare.com/images/logo/logo-paw-black.png",
         },
-      } as ChatMessage
+      } as ChatMessage,
     )
       .then(() => reset())
       .then(
         async () =>
           await updateDoc(doc(firestore, "telehealth_chat", `${query?.id}`), {
             status: "active",
-          })
+          }),
       )
       .catch((error: any) =>
         toast(error?.message, {
@@ -161,7 +161,7 @@ const ChatSession = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
 
   const sendSmsToClient = async () => {
@@ -181,11 +181,11 @@ const ChatSession = () => {
             className="text-movet-yellow"
           />
         ),
-      }
+      },
     );
     await httpsCallable(
       functions,
-      "sendChatMessageAsSms"
+      "sendChatMessageAsSms",
     )({
       email: session?.data()?.client?.email,
       message: `You have received a new message from MoVET!\n\n"${
@@ -204,7 +204,7 @@ const ChatSession = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(error?.message, {
@@ -216,7 +216,7 @@ const ChatSession = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
   };
 
@@ -406,7 +406,19 @@ const ChatSession = () => {
                                   : " bg-movet-red  rounded-br-none "
                               }`}
                             >
-                              <span> {message.data()?.text}</span>
+                              <span>{message.data()?.text}</span>
+                              {message.data()?.image && (
+                                <a
+                                  href={`${message.data()?.image}`}
+                                  target="_blank"
+                                >
+                                  <img
+                                    src={message.data()?.image}
+                                    alt="Uploaded Image"
+                                  />
+                                  {message.data()?.image}
+                                </a>
+                              )}
                               <span className="text-xs">
                                 {message
                                   .data()

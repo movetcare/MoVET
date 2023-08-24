@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useCallback, useEffect, useReducer, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import {
   Bubble,
@@ -12,111 +13,158 @@ import {
 import CustomActions from "components/chat/CustomActions";
 import tw from "tailwind";
 import { AuthStore } from "stores";
-import { onSnapshot, doc } from "firebase/firestore";
-import { firestore } from "firebase-config";
+import {
+  onSnapshot,
+  doc,
+  collection,
+  query,
+  orderBy,
+  limit,
+  addDoc,
+  setDoc,
+} from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { firestore, storage } from "firebase-config";
+import "react-native-get-random-values";
+import { v4 as uuid } from "uuid";
 
-enum ActionKind {
-  SEND_MESSAGE = "SEND_MESSAGE",
-}
-
-function reducer(
-  state: {
-    messages: any[];
-    step: number;
+const defaultMessages: IMessage[] = [
+  {
+    _id: 1,
+    text: "Welcome to MoVET's Telehealth Chat!\n\nPlease submit a question via the field below to start your chat with a MoVET expert.",
+    createdAt: new Date(),
+    system: true,
+    user: {
+      _id: 0,
+      name: "system",
+    },
   },
-  action: {
-    type: ActionKind;
-    payload?: any;
-  }
-) {
-  switch (action.type) {
-    case ActionKind.SEND_MESSAGE: {
-      return {
-        ...state,
-        step: state.step + 1,
-        messages: action.payload,
-      };
-    }
-  }
-}
-
+];
 const ChatIndex = () => {
   const { user } = AuthStore.useState();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [chatUser, setChatUser] = useState<any>();
-  const [state, dispatch] = useReducer(reducer, {
-    messages: [],
-    step: 0,
-  });
+  const [messages, setMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
-    const unsubscribeChatRootDocument = onSnapshot(
-      doc(firestore, "telehealth_chat", `${user?.uid}`),
-      (doc) => {
-        console.log("Current data: ", doc.data());
-        alert(JSON.stringify(doc.data()));
-      }
-    );
-    return () => unsubscribeChatRootDocument();
-  }, []);
+    if (user?.uid) {
+      const unsubscribeChatLogDocuments = onSnapshot(
+        query(
+          collection(firestore, `telehealth_chat/${user?.uid}/log`),
+          orderBy("createdAt", "desc"),
+          limit(1000),
+        ),
+        (querySnapshot) => {
+          const previousMessages: IMessage[] = [];
+          querySnapshot.forEach((doc) => {
+            previousMessages.push({
+              ...(doc?.data() as any),
+              createdAt: doc?.data()?.createdAt.toDate(),
+            });
+          });
+          setMessages(previousMessages);
+          setIsLoading(false);
+        },
+      );
+      return () => unsubscribeChatLogDocuments();
+    }
+  }, [user?.uid]);
 
   useEffect(() => {
     if (user)
       setChatUser({
         _id: user?.uid,
         name: user.displayName,
+        avatar: user.photoURL,
       });
   }, [user]);
 
   useEffect(() => {
-    if (state.messages && state.messages.length === 0)
-      dispatch({
-        type: ActionKind.SEND_MESSAGE,
-        payload: GiftedChat.append(
-          [
-            {
-              _id: 1,
-              text: "Welcome to MoVET's Telehealth Chat!\n\nPlease submit a question via the field below to start your chat with a MoVET expert...",
-              createdAt: new Date(),
-              system: true,
-              user: {
-                _id: 0,
-                name: "system",
-              },
-            },
-          ],
-          [],
-          true
-        ),
-      });
-  }, [state]);
+    if (messages && messages?.length === 0) setMessages(defaultMessages);
+  }, [messages]);
 
   const onSend = useCallback(
-    (messages: any[]) => {
-      const sentMessages = [{ ...messages[0] }];
-      const newMessages = GiftedChat.append(state.messages, sentMessages, true);
-      dispatch({ type: ActionKind.SEND_MESSAGE, payload: newMessages });
+    async (messages: IMessage[] = []) => {
+      await addDoc(
+        collection(firestore, `telehealth_chat/${user?.uid}/log`),
+        messages[0],
+      );
+      if (messages[0].text)
+        await setDoc(
+          doc(firestore, "telehealth_chat", `${user?.uid}`),
+          {
+            updatedOn: new Date(),
+            question: messages[0].text,
+            status: "active",
+          },
+          { merge: true },
+        );
     },
-    [dispatch, state.messages]
+    [user?.uid],
   );
 
-  const onSendFromUser = useCallback(
-    (messages: IMessage[] = []) => {
-      console.log("messages", messages);
-      const createdAt = new Date();
-      const messagesToUpload = messages.map((message) => ({
-        ...message,
-        user,
-        createdAt,
-        _id: Math.round(Math.random() * 1000000),
-      }));
-      onSend(messagesToUpload);
-    },
-    [onSend]
-  );
+  const uploadImageAsync = async (uri: any) => {
+    const blob: any = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = () => resolve(xhr.response);
+
+      xhr.onerror = (error: any) => {
+        console.error(error);
+        alert(error);
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+    });
+    const fileRef = ref(storage, `clients/${user?.uid}/` + uuid());
+    await uploadBytes(fileRef, blob).catch((error) => {
+      console.error(error);
+      alert(error);
+    });
+    blob.close();
+    return await getDownloadURL(fileRef).catch((error) => {
+      console.error(error);
+      alert(error);
+    });
+  };
+
+  const onSendFromUser = useCallback(async (messages: IMessage[] = []) => {
+    setMessages([
+      ...messages,
+      {
+        _id: 1,
+        text: "Uploading file, please wait...",
+        createdAt: new Date(),
+        system: true,
+        user: {
+          _id: 0,
+          name: "system",
+        },
+      },
+    ]);
+    const messagesToUpload: any = messages.map((message) => ({
+      ...message,
+      user: chatUser,
+      createdAt: new Date(),
+      _id: Math.round(Math.random() * 1000000),
+    }));
+        const messagesUploaded: IMessage[] = [];
+        await Promise.all(
+          messagesToUpload.map(async (message: IMessage) =>
+            messagesUploaded.push({
+              ...message,
+              image: (await uploadImageAsync(message?.image)) as string,
+            }),
+          ),
+        );
+    console.log("messagesUploaded", messagesUploaded);
+    onSend(messagesUploaded);
+  }, []);
 
   const renderCustomActions = useCallback(
     (props: any) => <CustomActions {...props} onSend={onSendFromUser} />,
-    [onSendFromUser]
+    [onSendFromUser],
   );
 
   const renderSystemMessage = useCallback((props: any) => {
@@ -140,7 +188,12 @@ const ChatIndex = () => {
   const renderSend = useCallback((props: SendProps<IMessage>) => {
     return (
       <Send {...props} containerStyle={{ justifyContent: "center" }}>
-        <MaterialIcons size={30} color={"tomato"} name={"send"} />
+        <MaterialIcons
+          size={30}
+          color={"tomato"}
+          name={"send"}
+          style={tw`mr-2`}
+        />
       </Send>
     );
   }, []);
@@ -162,7 +215,7 @@ const ChatIndex = () => {
             backgroundColor: tw.color(`movet-white`),
           },
           left: {
-            backgroundColor: tw.color(`movet-white`),
+            backgroundColor: tw.color(`movet-red/20`),
           },
         }}
       />
@@ -173,17 +226,26 @@ const ChatIndex = () => {
       <GiftedChat
         infiniteScroll
         scrollToBottom
-        messages={state.messages}
+        messages={isLoading ? defaultMessages : messages}
         renderBubble={renderBubble}
-        onSend={onSend}
+        onSend={(messages: IMessage[]) => onSend(messages)}
         user={chatUser}
+        renderAvatar={null}
         renderActions={renderCustomActions}
         renderSystemMessage={renderSystemMessage}
         renderSend={renderSend}
         keyboardShouldPersistTaps="never"
         timeTextStyle={{
-          left: { color: tw.color(`movet-black`) },
-          right: { color: tw.color(`movet-black`) },
+          left: {
+            color: tw.color(`movet-black/75`),
+            fontSize: 10,
+            fontStyle: "italic",
+          },
+          right: {
+            color: tw.color(`movet-black/75`),
+            fontSize: 10,
+            fontStyle: "italic",
+          },
         }}
       />
     </View>
