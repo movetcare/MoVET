@@ -48,7 +48,7 @@
     "twrnc": "^3.6.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.10",
+    "@babel/core": "^7.22.11",
     "@expo/metro-config": "^0.10.7",
     "@expo/webpack-config": "^18.1.2",
     "@types/react": "~18.2.21",
