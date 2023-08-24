@@ -24,9 +24,8 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: latest
-          cache: 'pnpm'
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@master
         with:
           record: true
           parallel: true

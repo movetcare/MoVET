@@ -57,7 +57,7 @@ jobs:
         run: npx eas-cli build --platform ios --profile development --non-interactive --no-wait
 
       - name: Finished GH Action
-        uses: act10ns/slack@v1
+        uses: act10ns/slack@master
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}

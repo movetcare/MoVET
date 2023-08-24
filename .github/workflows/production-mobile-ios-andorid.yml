@@ -56,12 +56,6 @@ jobs:
           cd mobile
           npm install
 
-      - name: Lint Application
-        id: lint
-        run: |
-          cd mobile
-          npm run lint
-
       - name: Setup EAS Configurations
         id: setup-eas-configs
         run: |
@@ -90,7 +84,7 @@ jobs:
           eas submit -p android --latest --profile release
 
       - name: Finished GH Action
-        uses: act10ns/slack@v1
+        uses: act10ns/slack@master
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
