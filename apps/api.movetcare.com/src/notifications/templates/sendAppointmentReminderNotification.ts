@@ -181,8 +181,9 @@ const send24HourAppointmentNotification = async (
             )}`
           : ""
       }${
-        instructions !== undefined &&
-        `<p></p><p><b>Instructions: </b>${instructions}</p>`
+        instructions !== undefined
+          ? `<p></p><p><b>Instructions: </b>${instructions}</p>`
+          : ""
       }
   ${
     vcprRequired
@@ -245,7 +246,8 @@ comfortable with us for their visit would be great! We can offer anti-anxiety me
 appointments for some patients that might need a little help relaxing around us.</p><p><i>Please reply to this email <b>before your appointment</b> should 
 you feel your pet(s) needs more options, such as anxiolytics and / or supplements to continue to 
 make your pet's visit more comfortable. We thank you in advance for keeping our staff safe!</i></p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
-    } else
+    } else {
+      const clientProvetRecord = await fetchEntity("client", client);
       emailText = `${
         displayName
           ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
@@ -254,12 +256,18 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
         user
           ? `<p><b>Location: </b>${
               user === 8
-                ? `Housecall - ${appointmentAddress}`
+                ? appointmentAddress
+                  ? `Housecall - ${appointmentAddress}`
+                  : `${
+                      clientProvetRecord?.street_address || "STREET UNKNOWN"
+                    } ${clientProvetRecord?.city || "CITY UNKNOWN"}, ${
+                      clientProvetRecord?.state || "STATE UNKNOWN"
+                    } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
                 : user === 7
                 ? 'MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)'
                 : user === 9
                 ? "Virtual - We'll email you a link when it's time for your consultation"
-                : 'UNKNOWN - <b>Please reply to this email with the appointment location - "Housecall", "MoVET Clinic @ Belleview Station", "Virtual Consultation"</b>'
+                : 'MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)'
             }</p>`
           : ""
       }<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p><p><b>Pet${
@@ -267,8 +275,9 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
       }: </b>${petNames}</p>${
         reasonName !== null ? `<p><b>Reason: </b>${reasonName}</p>` : ""
       }${
-        instructions !== undefined &&
-        `<p></p><p><b>Instructions: </b>${instructions}</p>`
+        instructions !== undefined
+          ? `<p></p><p><b>Instructions: </b>${instructions}</p>`
+          : ""
       }
   ${
     vcprRequired
@@ -304,7 +313,7 @@ comfortable with us for their visit would be great! We can offer anti-anxiety me
 appointments for some patients that might need a little help relaxing around us.</p><p><i>Please reply to this email <b>before your appointment</b> should 
 you feel your pet(s) needs more options, such as anxiolytics and / or supplements to continue to 
 make your pet's visit more comfortable. We thank you in advance for keeping our staff safe!</i></p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
-
+    }
     if (DEBUG) console.log("emailText -> ", emailText);
     const emailConfig: EmailConfiguration = {
       to: email,
@@ -379,7 +388,8 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
               email as string
             )?.replaceAll("+", "%2B")}`}\n`
       }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
-    else
+    else {
+      const clientProvetRecord = await fetchEntity("client", client);
       smsText = `${
         displayName
           ? `Hi ${getClientFirstNameFromDisplayName(displayName)}. `
@@ -388,7 +398,13 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
         user
           ? `Location: ${
               user === 8
-                ? `Housecall - ${appointmentAddress}`
+                ? appointmentAddress
+                  ? `Housecall - ${appointmentAddress}`
+                  : `${
+                      clientProvetRecord?.street_address || "STREET UNKNOWN"
+                    } ${clientProvetRecord?.city || "CITY UNKNOWN"}, ${
+                      clientProvetRecord?.state || "STATE UNKNOWN"
+                    } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
                 : user === 7
                 ? "MoVET Clinic @ 4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9"
                 : user === 9
@@ -412,6 +428,7 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
               email as string
             )?.replaceAll("+", "%2B")}`}\n`
       }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
+    }
     if (DEBUG) console.log("smsText -> ", smsText);
     sendNotification({
       type: "sms",
@@ -516,8 +533,9 @@ const send30MinAppointmentNotification = async (
         ? `<p><b>Location: </b> MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)</p>`
         : ""
     }${
-      instructions !== undefined &&
-      `<p></p><p><b>Instructions: </b>${instructions}</p>`
+      instructions !== undefined
+        ? `<p></p><p><b>Instructions: </b>${instructions}</p>`
+        : ""
     }
   ${
     vcprRequired
@@ -579,8 +597,9 @@ const send30MinAppointmentNotification = async (
         ? `<p><b>Location: </b> MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)</p>`
         : ""
     }${
-      instructions !== undefined &&
-      `<p></p><p><b>Instructions: </b>${instructions}</p>`
+      instructions !== undefined
+        ? `<p></p><p><b>Instructions: </b>${instructions}</p>`
+        : ""
     }
   ${
     vcprRequired
@@ -687,7 +706,7 @@ const send30MinAppointmentNotification = async (
         locationType === "Clinic"
           ? `Location: MoVET Clinic @ Belleview Station (4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9)\n`
           : ""
-      }${instructions !== undefined && `Instructions: ${instructions}`}
+      }${instructions !== undefined ? `Instructions: ${instructions}` : ""}
   ${
     vcprRequired
       ? // eslint-disable-next-line quotes
@@ -731,7 +750,7 @@ const send30MinAppointmentNotification = async (
         user === 7
           ? `Location: MoVET Clinic @ Belleview Station (4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9)\n`
           : ""
-      }${instructions !== undefined && `Instructions: ${instructions}`}
+      }${instructions !== undefined ? `Instructions: ${instructions}` : ""}
   ${
     vcprRequired
       ? // eslint-disable-next-line quotes

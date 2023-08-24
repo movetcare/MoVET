@@ -40,11 +40,11 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.10",
+    "@babel/core": "^7.22.11",
     "@react-google-maps/api": "^2.19.2",
     "@tailwindcss/forms": "^0.5.5",
     "@types/lodash.kebabcase": "^4.1.7",
-    "@types/node": "^20.5.3",
+    "@types/node": "^20.5.4",
     "@types/react": "18.2.21",
     "@types/react-calendar": "^3.9.0",
     "@types/react-time-picker": "^4.0.3",
