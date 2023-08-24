@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - "firestore.rules"
+      - ".github/workflows/production-deploy-firestore-rules.yml"
 jobs:
   deploy:
     name: Deploy Firestore Security Rules

@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "mobile/**"
+      - ".github/workflows/production-mobile-ios-android.yml"
 
 jobs:
   build:
@@ -24,7 +25,7 @@ jobs:
         id: node-setup
         uses: actions/setup-node@master
         with:
-          node-version: 14.x
+          node-version: latest
 
       - name: Expo Setup
         id: expo-setup
@@ -33,25 +34,27 @@ jobs:
           expo-version: latest
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
-          expo-cache: true
-          eas-cache: true
+          # expo-cache: true
+          # eas-cache: true
           packager: npm
 
-      - name: Cache Node Modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+      # - name: Cache Node Modules
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-node-modules
+      #   with:
+      #     path: ~/.npm
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
 
       - name: Install Dependencies
         id: dependency-installs
-        run: npm ci
+        run: |
+          cd mobile
+          npm install
 
       - name: Lint Application
         id: lint
