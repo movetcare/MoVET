@@ -6,7 +6,6 @@ import {
 } from "expo-router";
 import { AuthStore } from "stores";
 import { useEffect } from "react";
-// import { View, Text } from "react-native";
 
 const Index = () => {
   const segments = useSegments();
