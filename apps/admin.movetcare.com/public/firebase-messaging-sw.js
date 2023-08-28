@@ -1,8 +1,6 @@
 /* eslint-disable no-undef */
-importScripts("https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js");
-importScripts(
-  "https://www.gstatic.com/firebasejs/10.3.0/firebase-messaging.js",
-);
+importScripts("https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/8.3.2/firebase-messaging.js");
 
 const firebase = initializeApp({
   projectId: "movet-care",
