@@ -240,6 +240,7 @@ const TelehealthChatStatus = () => {
                         index: number,
                       ) => (
                         <li
+                          key={`online-template-` + index}
                           className="border-movet-gray rounded-lg border-2 p-2 my-4 hover:border-movet-black cursor-pointer"
                           data-tooltip-id={`online-template-${index}`}
                           data-tooltip-content={template?.message}
@@ -296,6 +297,7 @@ const TelehealthChatStatus = () => {
                         index: number,
                       ) => (
                         <li
+                          key={`offline-template-` + index}
                           className="border-movet-gray rounded-lg border-2 p-2 my-4 hover:border-movet-black cursor-pointer"
                           data-tooltip-id={`offline-template-${index}`}
                           data-tooltip-content={template?.message}

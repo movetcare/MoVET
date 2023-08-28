@@ -130,9 +130,9 @@ const send24HourAppointmentNotification = async (
       reasonName,
       doesHaveValidPaymentOnFile,
     });
-  const locationType = notes.includes("Appointment Location: Home -")
+  const locationType = notes?.includes("Appointment Location: Home -")
     ? "Home"
-    : notes.includes("Virtual")
+    : notes?.includes("Virtual")
     ? "Virtually"
     : "Clinic";
   const { email, phoneNumber, displayName } = userDetails;
@@ -154,7 +154,9 @@ const send24HourAppointmentNotification = async (
         return doc?.data()?.vcprRequired;
       })
       .catch((error: any) => throwError(error));
-    const appointmentAddress = notes?.split("-")[1]?.split("|")[0]?.trim();
+    const appointmentAddress = notes?.includes("Appointment Address")
+      ? notes?.split("-")[1]?.split("|")[0]?.trim()
+      : null;
     if (DEBUG) {
       console.log("appointmentAddress", appointmentAddress);
       console.log("vcprRequired", vcprRequired);
@@ -345,7 +347,10 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
   ) {
     if (DEBUG) console.log("SENDING SMS APPOINTMENT NOTIFICATION");
     const isNewFlow = user ? false : true;
-    const appointmentAddress = notes?.split("-")[1]?.split("|")[0]?.trim();
+    const appointmentAddress = notes?.includes("Appointment Address")
+      ? notes?.split("-")[1]?.split("|")[0]?.trim()
+      : null;
+    if (DEBUG) console.log("SMS appointmentAddress", appointmentAddress);
     const petNames =
       patients.length > 1
         ? patients.map((patient: any, index: number) =>
@@ -356,9 +361,9 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
         : patients[0].name;
     if (DEBUG) console.log("petNames -> ", petNames);
     const reasonName = reason ? await getReasonName(reason) : null;
-    const locationType = notes.includes("Appointment Location: Home -")
+    const locationType = notes?.includes("Appointment Location: Home -")
       ? "Home"
-      : notes.includes("Virtual")
+      : notes?.includes("Virtual")
       ? "Virtually"
       : "Clinic";
     let smsText = "";
@@ -487,7 +492,10 @@ const send30MinAppointmentNotification = async (
     email
   ) {
     const isNewFlow = user ? false : true;
-    const appointmentAddress = notes?.split("-")[1]?.split("|")[0]?.trim();
+    const appointmentAddress = notes?.includes("Appointment Address")
+      ? notes?.split("-")[1]?.split("|")[0]?.trim()
+      : null;
+    if (DEBUG) console.log("appointmentAddress", appointmentAddress);
     const vcprRequired = await admin
       .firestore()
       .collection("patients")
@@ -499,9 +507,9 @@ const send30MinAppointmentNotification = async (
       })
       .catch((error: any) => throwError(error));
     if (DEBUG) console.log("petNames -> ", petNames);
-    const locationType = notes.includes("Appointment Location: Home -")
+    const locationType = notes?.includes("Appointment Location: Home -")
       ? "Home"
-      : notes.includes("Virtual")
+      : notes?.includes("Virtual")
       ? "Virtually"
       : "Clinic";
     let emailText = "";
@@ -666,7 +674,10 @@ const send30MinAppointmentNotification = async (
         : patients[0].name;
     if (DEBUG) console.log("petNames -> ", petNames);
     const isNewFlow = user ? false : true;
-    const appointmentAddress = notes?.split("-")[1]?.split("|")[0]?.trim();
+    const appointmentAddress = notes?.includes("Appointment Location:")
+      ? notes?.split("-")[1]?.split("|")[0]?.trim()
+      : null;
+    if (DEBUG) console.log("appointmentAddress", appointmentAddress);
     const vcprRequired = await admin
       .firestore()
       .collection("patients")
@@ -678,9 +689,9 @@ const send30MinAppointmentNotification = async (
       })
       .catch((error: any) => throwError(error));
     if (DEBUG) console.log("petNames -> ", petNames);
-    const locationType = notes.includes("Appointment Location: Home -")
+    const locationType = notes?.includes("Appointment Location: Home -")
       ? "Home"
-      : notes.includes("Virtual")
+      : notes?.includes("Virtual")
       ? "Virtually"
       : "Clinic";
     let smsText = "";
@@ -724,7 +735,8 @@ const send30MinAppointmentNotification = async (
           email as string
         )?.replaceAll("+", "%2B")}\n\n`
   }\nPlease email info@movetcare.com, text (720) 507-7387 us, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
-    else
+    else {
+      const clientProvetRecord = await fetchEntity("client", client);
       smsText = `${
         displayName
           ? `Hi ${getClientFirstNameFromDisplayName(displayName)},\n\n`
@@ -732,7 +744,13 @@ const send30MinAppointmentNotification = async (
       }${
         user === 8
           ? `A MoVET Expert is on their way to ${
-              appointmentAddress || "UNKNOWN"
+              appointmentAddress || appointmentAddress
+                ? `Housecall - ${appointmentAddress}`
+                : `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
+                    clientProvetRecord?.city || "CITY UNKNOWN"
+                  }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
+                    clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
+                  }`
             } for your ${getDateStringFromDate(
               start?.toDate(),
               "timeOnly",
@@ -772,6 +790,7 @@ const send30MinAppointmentNotification = async (
           email as string
         )?.replaceAll("+", "%2B")}\n\n`
   }\nPlease email info@movetcare.com, text (720) 507-7387 us, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
+    }
     if (DEBUG) console.log("smsText -> ", smsText);
     sendNotification({
       type: "sms",

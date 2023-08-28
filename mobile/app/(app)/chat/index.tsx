@@ -43,7 +43,6 @@ const defaultMessages: IMessage[] = [
 const ChatIndex = () => {
   const { user } = AuthStore.useState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [chatUser, setChatUser] = useState<any>();
   const [messages, setMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
@@ -69,15 +68,6 @@ const ChatIndex = () => {
       return () => unsubscribeChatLogDocuments();
     }
   }, [user?.uid]);
-
-  useEffect(() => {
-    if (user)
-      setChatUser({
-        _id: user?.uid,
-        name: user.displayName,
-        avatar: user.photoURL,
-      });
-  }, [user]);
 
   useEffect(() => {
     if (messages && messages?.length === 0) setMessages(defaultMessages);
@@ -145,20 +135,23 @@ const ChatIndex = () => {
     ]);
     const messagesToUpload: any = messages.map((message) => ({
       ...message,
-      user: chatUser,
+      user: {
+        _id: user?.uid,
+        name: user?.displayName,
+        avatar: user?.photoURL,
+      },
       createdAt: new Date(),
       _id: Math.round(Math.random() * 1000000),
     }));
-        const messagesUploaded: IMessage[] = [];
-        await Promise.all(
-          messagesToUpload.map(async (message: IMessage) =>
-            messagesUploaded.push({
-              ...message,
-              image: (await uploadImageAsync(message?.image)) as string,
-            }),
-          ),
-        );
-    console.log("messagesUploaded", messagesUploaded);
+    const messagesUploaded: IMessage[] = [];
+    await Promise.all(
+      messagesToUpload.map(async (message: IMessage) =>
+        messagesUploaded.push({
+          ...message,
+          image: (await uploadImageAsync(message?.image)) as string,
+        }),
+      ),
+    );
     onSend(messagesUploaded);
   }, []);
 
@@ -226,10 +219,14 @@ const ChatIndex = () => {
       <GiftedChat
         infiniteScroll
         scrollToBottom
-        messages={isLoading ? defaultMessages : messages}
+        messages={isLoading || user === null ? defaultMessages : messages}
         renderBubble={renderBubble}
         onSend={(messages: IMessage[]) => onSend(messages)}
-        user={chatUser}
+        user={{
+          _id: user?.uid,
+          name: user?.displayName,
+          avatar: user?.photoURL,
+        }}
         renderAvatar={null}
         renderActions={renderCustomActions}
         renderSystemMessage={renderSystemMessage}

@@ -415,8 +415,8 @@ const ChatSession = () => {
                                   <img
                                     src={message.data()?.image}
                                     alt="Uploaded Image"
+                                    className="mb-2"
                                   />
-                                  {message.data()?.image}
                                 </a>
                               )}
                               <span className="text-xs">

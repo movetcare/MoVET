@@ -47,9 +47,9 @@ const CustomActions = ({
             takePictureAsync(onSend);
             return;
         }
-      }
+      },
     );
-  }, [showActionSheetWithOptions]);
+  }, [showActionSheetWithOptions, onSend]);
 
   const renderIconComponent = useCallback(() => {
     if (renderIcon) {
@@ -60,7 +60,7 @@ const CustomActions = ({
         <Text style={[styles.iconText, iconTextStyle]}>+</Text>
       </View>
     );
-  }, []);
+  }, [iconTextStyle, renderIcon, wrapperStyle]);
 
   return (
     <TouchableOpacity
