@@ -37,14 +37,14 @@
   },
   "devDependencies": {
     "@types/lodash.kebabcase": "^4.1.7",
-    "@types/node": "^20.5.4",
+    "@types/node": "^20.5.7",
     "@types/react": "18.2.21",
     "@types/react-datepicker": "^4.15.0",
     "@types/uuid": "^9.0.2",
     "autoprefixer": "^10.4.15",
     "constant": "workspace:*",
     "csstype": "^3.1.2",
-    "eslint": "8.47.0",
+    "eslint": "8.48.0",
     "eslint-config-custom": "workspace:*",
     "next-transpile-modules": "10.0.1",
     "postcss": "^8.4.28",
@@ -53,7 +53,7 @@
     "tailwindcss": "^3.3.3",
     "tsconfig": "workspace:*",
     "types": "workspace:*",
-    "typescript": "^5.1.6",
+    "typescript": "^5.2.2",
     "ui": "workspace:*",
     "utilities": "workspace:*"
   }
