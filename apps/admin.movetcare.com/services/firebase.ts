@@ -5,7 +5,7 @@ import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import environment from "utils/environment";
-import { getMessaging } from "firebase/messaging";
+import { getMessaging, getToken } from "firebase/messaging";
 
 const isProduction = environment === "production";
 let messaging: any = null;
@@ -40,11 +40,10 @@ export const pushConfig = {
         const status = await Notification.requestPermission();
         console.log("permission", status);
         if (status && status === "granted" && messaging) {
-          const fcm_token = await messaging()
-            .getToken({
-              vapidKey:
-                "BLrLxh7Z6MOHnuBUWwJR0RxBlRtA_3v61x6hZ_nDrrBkuurZbSsgMHM6xSNkDFbnkgfGPKQawzj71Y1mCMjeQKk",
-            })
+          const fcm_token: any = getToken(messaging, {
+            vapidKey:
+              "BLrLxh7Z6MOHnuBUWwJR0RxBlRtA_3v61x6hZ_nDrrBkuurZbSsgMHM6xSNkDFbnkgfGPKQawzj71Y1mCMjeQKk",
+          })
             .then((currentToken: any) => {
               if (currentToken) {
                 console.log("currentToken", currentToken);
