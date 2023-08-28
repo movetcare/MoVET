@@ -13,7 +13,11 @@
     "clean": "rm -rf node_modules && watchman watch-del-all && rm -fr $TMPDIR/haste-map-* && rm -rf $TMPDIR/metro-cache && npm i && npx expo install --fix && npx expo-doctor",
     "check:deps": "npx expo install --check",
     "update": "ncu -u && npm i && npm run clean",
-    "update:version": "node ./incrementVersion.js"
+    "update:version": "node ./incrementVersion.js",
+    "build:all": "npm run build:ios && npm run build:android",
+    "deploy:ios": "eas submit --platform ios --latest --profile release",
+    "deploy:android": "eas submit -p android --latest --profile release",
+    "deploy:all": "eas submit --platform all --latest --profile release"
   },
   "dependencies": {
     "@expo-google-fonts/encode-sans-semi-condensed": "^0.2.3",

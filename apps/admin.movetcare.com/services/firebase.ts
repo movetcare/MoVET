@@ -39,8 +39,8 @@ export const pushConfig = {
 
         const status = await Notification.requestPermission();
         console.log("permission", status);
-        if (status && status === "granted") {
-          const fcm_token = await messaging
+        if (status && status === "granted" && messaging) {
+          const fcm_token = await messaging()
             .getToken({
               vapidKey:
                 "BLrLxh7Z6MOHnuBUWwJR0RxBlRtA_3v61x6hZ_nDrrBkuurZbSsgMHM6xSNkDFbnkgfGPKQawzj71Y1mCMjeQKk",
