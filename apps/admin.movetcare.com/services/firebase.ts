@@ -6,9 +6,9 @@ import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import environment from "utils/environment";
 import { getMessaging, getToken } from "firebase/messaging";
+import localforage from "localforage";
 
 const isProduction = environment === "production";
-let messaging: any = null;
 const firebase: any = initializeApp({
   projectId: isProduction ? "movet-care" : "movet-care-staging",
   appId: isProduction
@@ -26,54 +26,45 @@ const firebase: any = initializeApp({
   messagingSenderId: isProduction ? "516680717319" : "411678558724",
 } as object);
 
+const messaging = typeof window !== "undefined" ? getMessaging(firebase) : null;
+
 export const pushConfig = {
   init: async () => {
-    if (environment === "production")
-      try {
-        messaging =
-          typeof window !== "undefined" ? getMessaging(firebase) : null;
-        const tokenInLocalStorage =
-          await window.localStorage.getItem("fcm_token");
-        console.log("tokenInLocalStorage", tokenInLocalStorage);
-        if (tokenInLocalStorage !== null) return tokenInLocalStorage;
-
-        const status = await Notification.requestPermission();
-        console.log("permission", status);
-        if (status && status === "granted" && messaging) {
-          const fcm_token: any = getToken(messaging, {
-            vapidKey:
-              "BLrLxh7Z6MOHnuBUWwJR0RxBlRtA_3v61x6hZ_nDrrBkuurZbSsgMHM6xSNkDFbnkgfGPKQawzj71Y1mCMjeQKk",
+    try {
+      const tokenInLocalStorage = await localforage.getItem("fcm_token");
+      if (tokenInLocalStorage !== null) return tokenInLocalStorage;
+      const status = await Notification.requestPermission();
+      if (status && status === "granted" && messaging) {
+        const fcm_token: any = getToken(messaging, {
+          vapidKey: isProduction
+            ? "BLrLxh7Z6MOHnuBUWwJR0RxBlRtA_3v61x6hZ_nDrrBkuurZbSsgMHM6xSNkDFbnkgfGPKQawzj71Y1mCMjeQKk"
+            : "BJa6PTEnoKGVnQSZfRbB6LZDvaYnrHJyllf7t13fYpjlrJq7roYqIyFX1xZVKo3V6K3Ay7Sa7M8hE_cRSO0nyaY",
+        })
+          .then((currentToken: any) => {
+            if (currentToken) console.log("currentToken", currentToken);
+            else
+              console.error(
+                "No registration token available. Request permission to generate one.",
+              );
           })
-            .then((currentToken: any) => {
-              if (currentToken) {
-                console.log("currentToken", currentToken);
-              } else {
-                // Show permission request UI
-                console.log(
-                  "No registration token available. Request permission to generate one.",
-                );
-              }
-            })
-            .catch((err: any) => {
-              console.log("An error occurred while retrieving token. ", err);
-              // ...
-            });
-          console.log("fcm_token", fcm_token);
-          if (fcm_token) {
-            window.localStorage.setItem("fcm_token", fcm_token);
-            return fcm_token;
-          }
+          .catch((err: any) =>
+            console.error("An error occurred while retrieving token. ", err),
+          );
+        if (fcm_token) {
+          localforage.setItem("fcm_token", fcm_token);
+          return fcm_token;
         }
-      } catch (error) {
-        console.error(error);
+      } else {
+        console.error("No permission to send push");
         return null;
       }
-    else
-      console.log("PUSH NOTIFICATIONS DISABLED IN NON PRODUCTION ENVIRONMENT");
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   },
 };
-export const messages: any =
-  messaging || typeof window !== "undefined" ? getMessaging(firebase) : null;
+export const messages: any = messaging;
 export const auth: any = getAuth(firebase);
 export const functions: any = getFunctions(firebase);
 export const firestore: any = getFirestore(firebase);

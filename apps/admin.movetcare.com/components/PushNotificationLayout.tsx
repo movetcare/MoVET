@@ -51,7 +51,7 @@ const PushNotificationLayout = ({ children }: any) => {
 
   return (
     <>
-      {/* <Toaster>
+      <Toaster position="top-center" reverseOrder={false}>
         {(t: any) => {
           console.log("T", t);
           return (
@@ -71,7 +71,7 @@ const PushNotificationLayout = ({ children }: any) => {
             </ToastBar>
           );
         }}
-      </Toaster> */}
+      </Toaster>
       {children}
     </>
   );

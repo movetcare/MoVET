@@ -1,8 +1,12 @@
 /* eslint-disable no-undef */
-importScripts("https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/8.3.2/firebase-messaging.js");
+importScripts(
+  "https://www.gstatic.com/firebasejs/9.2.0/firebase-app-compat.js",
+);
+importScripts(
+  "https://www.gstatic.com/firebasejs/9.2.0/firebase-messaging-compat.js",
+);
 
-const firebase = initializeApp({
+firebase.initializeApp({
   projectId: "movet-care",
   appId: "1:516680717319:web:f6ce71c55c87f7d82006a2",
   apiKey: "AIzaSyAiepyL3_lhpvoTDywIXYXVJFpm2bLvSHg",
@@ -13,6 +17,7 @@ const firebase = initializeApp({
 
 const messaging = firebase.messaging();
 
+// https://firebase.google.com/docs/cloud-messaging/concept-options
 messaging.onBackgroundMessage(function (payload) {
   console.log(
     "[firebase-messaging-sw.js] Received background message ",
