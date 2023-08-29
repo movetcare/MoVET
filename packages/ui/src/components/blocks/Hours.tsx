@@ -115,57 +115,6 @@ export const Hours = ({
                 </div>
               </div>
             </div>
-            <div className="w-full max-w-lg">
-              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
-                <div
-                  className="w-full text-center flex flex-col"
-                  key="Walk In Clinic Appointments"
-                >
-                  <div className="mx-auto">
-                    <Image
-                      src="/images/icons/clinic-2.svg"
-                      alt={`Walk In Clinic Appointments icon`}
-                      width={112}
-                      height={112}
-                    />
-                  </div>
-                </div>
-              </div>
-              <h3 className="text-xl text-center font-bold pt-2">
-                Walk Ins @ Belleview Station
-              </h3>
-              <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
-                <div className="w-full">
-                  {clinicWalkInHours?.map(
-                    (hours: { days: string }, index: number) => {
-                      return (
-                        <div
-                          key={hours.days + index}
-                          className="flex w-full uppercase"
-                        >
-                          <span>{hours.days}</span>
-                          <div className="w-full border-b mb-2 mx-4"></div>
-                        </div>
-                      );
-                    },
-                  )}
-                </div>
-                <div className="w-max">
-                  {clinicWalkInHours?.map(
-                    (hours: { times: string }, index: number) => {
-                      return (
-                        <div
-                          key={hours.times + index}
-                          className="flex w-full uppercase"
-                        >
-                          <span>{hours.times}</span>
-                        </div>
-                      );
-                    },
-                  )}
-                </div>
-              </div>
-            </div>
             <div className="w-full max-w-lg whitespace-nowrap">
               <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
                 <div
@@ -203,6 +152,57 @@ export const Hours = ({
                 </div>
                 <div className="w-max">
                   {boutiqueHours?.map(
+                    (hours: { times: string }, index: number) => {
+                      return (
+                        <div
+                          key={hours.times + index}
+                          className="flex w-full uppercase"
+                        >
+                          <span>{hours.times}</span>
+                        </div>
+                      );
+                    },
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="w-full max-w-lg">
+              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                <div
+                  className="w-full text-center flex flex-col"
+                  key="Walk In Clinic Appointments"
+                >
+                  <div className="mx-auto">
+                    <Image
+                      src="/images/icons/clinic-2.svg"
+                      alt={`Walk In Clinic Appointments icon`}
+                      width={112}
+                      height={112}
+                    />
+                  </div>
+                </div>
+              </div>
+              <h3 className="text-xl text-center font-bold pt-2">
+                Walk Ins @ Belleview Station
+              </h3>
+              <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
+                <div className="w-full">
+                  {clinicWalkInHours?.map(
+                    (hours: { days: string }, index: number) => {
+                      return (
+                        <div
+                          key={hours.days + index}
+                          className="flex w-full uppercase"
+                        >
+                          <span>{hours.days}</span>
+                          <div className="w-full border-b mb-2 mx-4"></div>
+                        </div>
+                      );
+                    },
+                  )}
+                </div>
+                <div className="w-max">
+                  {clinicWalkInHours?.map(
                     (hours: { times: string }, index: number) => {
                       return (
                         <div
@@ -336,14 +336,14 @@ export const Hours = ({
                   )}
                 </div>
               </div>
-            </div>
+            </div>{" "}
             <div className="w-full max-w-lg  whitespace-nowrap mt-8">
               <h3 className="text-xl text-center font-bold">
-                Walk-Ins @ Belleview Station
+                Boutique @ Belleview Station
               </h3>
-              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap uppercase">
+              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
                 <div className="w-full">
-                  {clinicWalkInHours?.map(
+                  {boutiqueHours?.map(
                     (hours: { days: string }, index: number) => (
                       <div
                         className="flex w-full uppercase"
@@ -356,7 +356,7 @@ export const Hours = ({
                   )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase text-center">
-                  {clinicWalkInHours?.map(
+                  {boutiqueHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
                     ),
@@ -392,14 +392,14 @@ export const Hours = ({
                   <span>View Parking Map</span>
                 </a>
               </div>
-            )}
+            )}{" "}
             <div className="w-full max-w-lg  whitespace-nowrap mt-8">
               <h3 className="text-xl text-center font-bold">
-                Boutique @ Belleview Station
+                Walk-Ins @ Belleview Station
               </h3>
-              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
+              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap uppercase">
                 <div className="w-full">
-                  {boutiqueHours?.map(
+                  {clinicWalkInHours?.map(
                     (hours: { days: string }, index: number) => (
                       <div
                         className="flex w-full uppercase"
@@ -412,7 +412,7 @@ export const Hours = ({
                   )}
                 </div>
                 <div className="w-max whitespace-nowrap uppercase text-center">
-                  {boutiqueHours?.map(
+                  {clinicWalkInHours?.map(
                     (hours: { times: string }, index: number) => (
                       <div key={hours.times + index}>{hours.times}</div>
                     ),
@@ -583,66 +583,6 @@ export const Hours = ({
                 <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
                   <div
                     className="w-full text-center flex flex-col"
-                    key="Walk In Clinic Appointments"
-                  >
-                    <div className="mx-auto">
-                      <Image
-                        src="/images/icons/clinic-2.svg"
-                        alt={`Walk In Clinic Appointments icon`}
-                        width={112}
-                        height={112}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-xl text-center font-bold">
-                  Walk-Ins @ Belleview Station
-                </h3>
-                <p className="text-center -mb-1 italic">
-                  CURRENTLY -{" "}
-                  {hoursStatus && hoursStatus.walkinsStatus ? (
-                    <span className="text-movet-green font-extrabold">
-                      OPEN
-                    </span>
-                  ) : (
-                    <span className="text-movet-red font-extrabold">
-                      CLOSED
-                    </span>
-                  )}
-                </p>
-                <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
-                  <div className="w-full">
-                    {clinicWalkInHours?.map(
-                      (hours: { days: string }, index: number) => {
-                        return (
-                          <div key={hours.days + index} className="flex w-full">
-                            <span>{hours.days}</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                  <div className="w-max">
-                    {clinicWalkInHours?.map(
-                      (hours: { times: string }, index: number) => {
-                        return (
-                          <div
-                            key={hours.times + index}
-                            className="flex w-full"
-                          >
-                            <span>{hours.times}</span>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="whitespace-nowrap mb-4">
-                <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
-                  <div
-                    className="w-full text-center flex flex-col"
                     key="Boutique"
                   >
                     <div className="mx-auto">
@@ -699,6 +639,66 @@ export const Hours = ({
                   </div>
                 </div>
               </div>
+              <div className="whitespace-nowrap mb-4">
+                <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                  <div
+                    className="w-full text-center flex flex-col"
+                    key="Walk In Clinic Appointments"
+                  >
+                    <div className="mx-auto">
+                      <Image
+                        src="/images/icons/clinic-2.svg"
+                        alt={`Walk In Clinic Appointments icon`}
+                        width={112}
+                        height={112}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <h3 className="text-xl text-center font-bold">
+                  Walk-Ins @ Belleview Station
+                </h3>
+                {/* <p className="text-center -mb-1 italic">
+                  CURRENTLY -{" "}
+                  {hoursStatus && hoursStatus.walkinsStatus ? (
+                    <span className="text-movet-green font-extrabold">
+                      OPEN
+                    </span>
+                  ) : (
+                    <span className="text-movet-red font-extrabold">
+                      CLOSED
+                    </span>
+                  )}
+                </p> */}
+                <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
+                  <div className="w-full">
+                    {clinicWalkInHours?.map(
+                      (hours: { days: string }, index: number) => {
+                        return (
+                          <div key={hours.days + index} className="flex w-full">
+                            <span>{hours.days}</span>
+                            <div className="w-full border-b mb-2 mx-4"></div>
+                          </div>
+                        );
+                      },
+                    )}
+                  </div>
+                  <div className="w-max">
+                    {clinicWalkInHours?.map(
+                      (hours: { times: string }, index: number) => {
+                        return (
+                          <div
+                            key={hours.times + index}
+                            className="flex w-full"
+                          >
+                            <span>{hours.times}</span>
+                          </div>
+                        );
+                      },
+                    )}
+                  </div>
+                </div>
+              </div>
               <div className="mb-4">
                 <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
                   <div
@@ -716,7 +716,7 @@ export const Hours = ({
                   </div>
                 </div>
                 <h3 className="text-xl text-center">Housecalls</h3>
-                <p className="text-center -mb-1 italic">
+                {/* <p className="text-center -mb-1 italic">
                   CURRENTLY -{" "}
                   {hoursStatus && hoursStatus.housecallStatus ? (
                     <span className="text-movet-green font-extrabold">
@@ -727,7 +727,7 @@ export const Hours = ({
                       CLOSED
                     </span>
                   )}
-                </p>
+                </p> */}
                 {winterMode &&
                 winterMode?.isActive &&
                 winterMode?.isActiveOnWebsite ? (
@@ -860,56 +860,6 @@ export const Hours = ({
               <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
                 <div
                   className="w-full text-center flex flex-col"
-                  key="Walk In Clinic Appointments"
-                >
-                  <div className="mx-auto">
-                    <Image
-                      src="/images/icons/clinic-2.svg"
-                      alt={`Walk In Clinic Appointments icon`}
-                      width={112}
-                      height={112}
-                    />
-                  </div>
-                </div>
-              </div>
-              <h3 className="text-xl text-center font-bold">
-                Walk-Ins @ Belleview Station
-              </h3>
-              <p className="text-center -mb-1 italic">
-                CURRENTLY -{" "}
-                {hoursStatus && hoursStatus.walkinsStatus ? (
-                  <span className="text-movet-green font-extrabold">OPEN</span>
-                ) : (
-                  <span className="text-movet-red font-extrabold">CLOSED</span>
-                )}
-              </p>
-              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap uppercase">
-                <div className="w-full">
-                  {clinicWalkInHours?.map(
-                    (hours: { days: string }, index: number) => (
-                      <div
-                        className="flex w-full uppercase"
-                        key={hours.days + index}
-                      >
-                        <span className="whitespace-nowrap">{hours.days}</span>
-                        <div className="w-full border-b mb-2 mx-4"></div>
-                      </div>
-                    ),
-                  )}
-                </div>
-                <div className="w-max whitespace-nowrap uppercase text-center">
-                  {clinicWalkInHours?.map(
-                    (hours: { times: string }, index: number) => (
-                      <div key={hours.times + index}>{hours.times}</div>
-                    ),
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="w-full max-w-lg whitespace-nowrap mt-8">
-              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
-                <div
-                  className="w-full text-center flex flex-col"
                   key="Boutique"
                 >
                   <div className="mx-auto">
@@ -956,6 +906,56 @@ export const Hours = ({
                 </div>
               </div>
             </div>
+            <div className="w-full max-w-lg whitespace-nowrap mt-8">
+              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                <div
+                  className="w-full text-center flex flex-col"
+                  key="Walk In Clinic Appointments"
+                >
+                  <div className="mx-auto">
+                    <Image
+                      src="/images/icons/clinic-2.svg"
+                      alt={`Walk In Clinic Appointments icon`}
+                      width={112}
+                      height={112}
+                    />
+                  </div>
+                </div>
+              </div>
+              <h3 className="text-xl text-center font-bold">
+                Walk-Ins @ Belleview Station
+              </h3>
+              {/* <p className="text-center -mb-1 italic">
+                CURRENTLY -{" "}
+                {hoursStatus && hoursStatus.walkinsStatus ? (
+                  <span className="text-movet-green font-extrabold">OPEN</span>
+                ) : (
+                  <span className="text-movet-red font-extrabold">CLOSED</span>
+                )}
+              </p> */}
+              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap uppercase">
+                <div className="w-full">
+                  {clinicWalkInHours?.map(
+                    (hours: { days: string }, index: number) => (
+                      <div
+                        className="flex w-full uppercase"
+                        key={hours.days + index}
+                      >
+                        <span className="whitespace-nowrap">{hours.days}</span>
+                        <div className="w-full border-b mb-2 mx-4"></div>
+                      </div>
+                    ),
+                  )}
+                </div>
+                <div className="w-max whitespace-nowrap uppercase text-center">
+                  {clinicWalkInHours?.map(
+                    (hours: { times: string }, index: number) => (
+                      <div key={hours.times + index}>{hours.times}</div>
+                    ),
+                  )}
+                </div>
+              </div>
+            </div>
             <div className="w-full max-w-lg items-center my-8">
               <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
                 <div
@@ -973,14 +973,14 @@ export const Hours = ({
                 </div>
               </div>
               <h3 className="text-xl text-center">Housecalls</h3>
-              <p className="text-center -mb-1 italic">
+              {/* <p className="text-center -mb-1 italic">
                 CURRENTLY -{" "}
                 {hoursStatus && hoursStatus.housecallStatus ? (
                   <span className="text-movet-green font-extrabold">OPEN</span>
                 ) : (
                   <span className="text-movet-red font-extrabold">CLOSED</span>
                 )}
-              </p>
+              </p> */}
               {winterMode &&
               winterMode?.isActive &&
               winterMode?.isActiveOnWebsite ? (

@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import Error from "./Error";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import { collection } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { firestore } from "services/firebase";
 import { useRouter } from "next/router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarPlus } from "@fortawesome/free-solid-svg-icons";
+
 interface Option {
   id: string;
   label: string;
@@ -22,7 +25,7 @@ export const ClientSearch = () => {
     collection(firestore, "clients"),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
-    }
+    },
   );
   useEffect(() => {
     if (clientData) {
@@ -49,6 +52,30 @@ export const ClientSearch = () => {
       else router.push(`/client?id=${searchTerm.id}`);
     }
   }, [searchTerm, router]);
+
+  const Option: any = (props: any) => (
+    <>
+      <components.Option {...props}>
+        <div className="flex flex-row items-center justify-between">
+          <div>{props.children}</div>
+          <div>
+            <FontAwesomeIcon
+              icon={faCalendarPlus}
+              size="lg"
+              className="text-movet-gray hover:text-movet-black ease-in-out duration-300 cursor-pointer"
+              onClick={() =>
+                window.open(
+                  `https://app.movetcare.com/?email=${props?.data?.email}`,
+                  "_blank",
+                )
+              }
+            />
+          </div>
+        </div>
+      </components.Option>
+    </>
+  );
+
   const formatOptionLabel = ({
     id,
     label,
@@ -135,6 +162,7 @@ export const ClientSearch = () => {
             options={options || []}
             placeholder="Search for a client by name, email, or phone number..."
             menuPosition="fixed"
+            components={{ Option }}
             styles={{
               input: (base: any) => ({
                 ...base,
