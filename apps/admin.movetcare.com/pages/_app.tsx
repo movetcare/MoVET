@@ -5,18 +5,15 @@ import { UserContext } from "contexts/UserContext";
 import { useUserData } from "hooks/AuthUser";
 import Layout from "components/Layout";
 import ErrorBoundary from "components/ErrorBoundary";
-import PushNotificationLayout from "components/PushNotificationLayout";
 
 const MoVET = ({ Component, pageProps }: AppProps) => {
   const userData: any = useUserData();
   return (
     <ErrorBoundary>
       <UserContext.Provider value={userData}>
-        <PushNotificationLayout>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </PushNotificationLayout>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </UserContext.Provider>
     </ErrorBoundary>
   );

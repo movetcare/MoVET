@@ -233,6 +233,7 @@ export const sendAppointmentConfirmationEmail = async (
       : "<p></p><p><b>Waiver:</b> Not Required"
   }<p></p><p></p><p><b><a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">EDIT APPOINTMENT</a></b></p>`;
   } else {
+    const clientProvetRecord = await fetchEntity("client", Number(clientId));
     emailTextClient = `${
       displayName
         ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
@@ -240,11 +241,25 @@ export const sendAppointmentConfirmationEmail = async (
     }<p>Thank you for reaching out to MoVET!</p><p>We see you have scheduled a new appointment for:</p><ul>${petNames}</ul><p></p><p><b><i>Please confirm we have the right information:</i></b></p>
   ${
     appointment?.locationType === "Home" && appointmentAddress
-      ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
+      ? `<p></p><p><b>Appointment Location</b>: ${
+          appointmentAddress ||
+          `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
+            clientProvetRecord?.city || "CITY UNKNOWN"
+          }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
+            clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
+          }`
+        }</p>`
       : appointment?.locationType === "Virtually"
       ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
       : appointment?.user === 8
-      ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
+      ? `<p></p><p><b>Appointment Location</b>: ${
+          appointmentAddress ||
+          `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
+            clientProvetRecord?.city || "CITY UNKNOWN"
+          }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
+            clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
+          }`
+        }</p>`
       : appointment?.user === 7
       ? // eslint-disable-next-line quotes
         '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
@@ -307,11 +322,25 @@ export const sendAppointmentConfirmationEmail = async (
     }${phoneNumber ? ` - ${phoneNumber}` : ""}</a></p><ul>${petNames}</ul>
 ${
   appointment?.locationType === "Home" && appointmentAddress
-    ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
+    ? `<p></p><p><b>Appointment Location</b>: ${
+        appointmentAddress ||
+        `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
+          clientProvetRecord?.city || "CITY UNKNOWN"
+        }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
+          clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
+        }`
+      }</p>`
     : appointment?.locationType === "Virtually"
     ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
     : appointment?.user === 8
-    ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
+    ? `<p></p><p><b>Appointment Location</b>: ${
+        appointmentAddress ||
+        `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
+          clientProvetRecord?.city || "CITY UNKNOWN"
+        }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
+          clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
+        }`
+      }</p>`
     : appointment?.user === 7
     ? // eslint-disable-next-line quotes
       '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'

@@ -41,7 +41,7 @@ export const pushConfig = {
             : "BJa6PTEnoKGVnQSZfRbB6LZDvaYnrHJyllf7t13fYpjlrJq7roYqIyFX1xZVKo3V6K3Ay7Sa7M8hE_cRSO0nyaY",
         })
           .then((currentToken: any) => {
-            if (currentToken) console.log("currentToken", currentToken);
+            if (currentToken) console.log("fetched token", currentToken);
             else
               console.error(
                 "No registration token available. Request permission to generate one.",

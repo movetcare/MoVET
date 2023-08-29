@@ -5,18 +5,17 @@ import { toast, Toaster, ToastBar } from "react-hot-toast";
 import { useRouter } from "next/router";
 import { faArrowRight, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { onMessage } from "firebase/messaging";
 
-const PushNotificationLayout = ({ children }: any) => {
+const Notifications = ({ children }: any) => {
   const router = useRouter();
   useEffect(() => {
-    setToken();
     if ("serviceWorker" in navigator)
       navigator.serviceWorker.addEventListener("message", (event) => {
         console.log("event for the service worker", event);
       });
     else console.error("service worker not supported");
-
-    async function setToken() {
+    const setToken = async () => {
       try {
         const token = await pushConfig.init();
         if (token) {
@@ -26,32 +25,29 @@ const PushNotificationLayout = ({ children }: any) => {
       } catch (error) {
         console.log(error);
       }
-    }
+    };
+    setToken();
   }, []);
 
-  function getMessage() {
-    const messaging = messages?.messaging();
-    if (messaging)
-      messaging.onMessage((message: any) => {
-        console.log("PUSH MESSAGE", message);
-        toast(JSON.stringify(message), {
-          duration: 5000,
-          position: "top-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCircleCheck}
-              size="sm"
-              className="text-movet-yellow"
-            />
-          ),
-        });
+  const getMessage = () => {
+    onMessage(messages, (message: any) => {
+      console.log("PUSH MESSAGE", message);
+      toast(JSON.stringify(message), {
+        duration: 5000,
+        icon: (
+          <FontAwesomeIcon
+            icon={faCircleCheck}
+            size="sm"
+            className="text-movet-yellow"
+          />
+        ),
       });
-    else console.log("No Messages Found!");
-  }
+    });
+  };
 
   return (
     <>
-      <Toaster position="top-center" reverseOrder={false}>
+      <Toaster position="top-right" reverseOrder={false}>
         {(t: any) => {
           console.log("T", t);
           return (
@@ -77,4 +73,4 @@ const PushNotificationLayout = ({ children }: any) => {
   );
 };
 
-export default PushNotificationLayout;
+export default Notifications;
