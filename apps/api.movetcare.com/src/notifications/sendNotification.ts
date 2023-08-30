@@ -82,7 +82,7 @@ export const sendNotification = async ({
             ? payload?.to || "info@movetcare.com"
             : "support+staging@movetcare.com",
         from: payload?.from || "info@movetcare.com",
-        bcc: "alex.rodriguez@movetcare.com",
+        // bcc: "alex.rodriguez@movetcare.com",
         replyTo: payload?.replyTo || "info@movetcare.com",
         subject:
           (environment.type === "staging" ? "(STAGING) " : "") +

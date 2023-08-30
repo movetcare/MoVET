@@ -99,7 +99,7 @@ export const handleContactSubmission = functions.firestore
           payload: {
             client: isClient?.uid || null,
             to: "info@movetcare.com",
-            // bcc: "alex.rodriguez@movetcare.com",
+            bcc: "alex.rodriguez@movetcare.com",
             replyTo: email,
             subject: `New "${reason.name}" Contact Form Submission from ${firstName} ${lastName}`,
             message: `<p><b>Name:</b> ${firstName} ${lastName}</p><p><b>Email:</b> ${email}</p><p><b>Phone:</b> <a href="tel://+1${phone}">${formatPhoneNumber(

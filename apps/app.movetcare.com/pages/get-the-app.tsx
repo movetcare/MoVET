@@ -7,7 +7,7 @@ import { isAndroid } from "react-device-detect";
 const GetTheApp = () => {
   useEffect(() => {
     window.location.href = isAndroid
-      ? "https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US"
+      ? "https://app.movetcare.com" //"https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US"
       : "https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556";
   }, []);
   return (

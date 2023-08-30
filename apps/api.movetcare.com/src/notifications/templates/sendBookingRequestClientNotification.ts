@@ -72,7 +72,7 @@ export const sendBookingRequestClientNotification = async ({
     payload: {
       client: client?.uid,
       to: email,
-      // bcc: "alex.rodriguez@movetcare.com",
+      bcc: "alex.rodriguez@movetcare.com",
       replyTo: "info@movetcare.com",
       subject: "MoVET | We have received your appointment request!",
       message,

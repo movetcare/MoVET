@@ -70,3 +70,4 @@ export { resyncProVetUsers } from "./endpoints/admin/users/resyncProVetUsers";
 export { resyncProVetResources } from "./endpoints/admin/resources/resyncProVetResources";
 export { resyncReasons } from "./endpoints/reasons/resyncReasons";
 export { sendChatMessageAsSms } from "./endpoints/admin/telehealth/sendChatMessageAsSms";
+export { sendSmsToClient } from "./endpoints/admin/client/sendSmsToClient";

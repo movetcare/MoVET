@@ -1,12 +1,42 @@
 import React, { useEffect } from "react";
 import "firebase/messaging";
-import { messages, pushConfig } from "services/firebase";
+import { messages } from "services/firebase";
 import { toast, Toaster, ToastBar } from "react-hot-toast";
 import { useRouter } from "next/router";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { onMessage } from "firebase/messaging";
 import Image from "next/image";
+import { notifications } from "services/notifications";
+
+// Sample Push Notification
+// https://firebase.google.com/docs/cloud-messaging/js/send-multiple#add_web_push_properties_to_a_notification_payload
+// https://stackoverflow.com/questions/50399170/what-bearer-token-should-i-be-using-for-firebase-cloud-messaging-testing
+// FirebaseError: Messaging: A problem occurred while unsubscribing the user from FCM: FirebaseError: Messaging: A problem occurred while unsubscribing the user from FCM: Requested entity was not found. (messaging/token-unsubscribe-failed). (messaging/token-unsubscribe-failed).
+/*
+curl -X POST -H "Authorization: Bearer $SEVER_PUSH_KEY" -H "Content-Type: application/json" -d '{
+  "message": {
+    "token" : $CLIENT_PUSH_TOKEN,
+    "notification": {
+      "title": "FCM Message",
+      "body": "This is a message from FCM"
+    },
+    "webpush": {
+      "headers": {
+        "Urgency": "high"
+      },
+      "notification": {
+        "body": "This is a message from FCM to web",
+        "requireInteraction": "true",
+        "badge": "/badge-icon.png"
+      },
+      "fcm_options": {
+        "link": "http://localhost:3002/telehealth/chat"
+      }
+    }
+  }
+}' "https://fcm.googleapis.com//v1/projects/movet-care-staging/messages:send"
+*/
 
 const Notifications = ({ children }: any) => {
   const router = useRouter();
@@ -24,10 +54,9 @@ const Notifications = ({ children }: any) => {
   useEffect(() => {
     const setToken = async () => {
       try {
-        const token = await pushConfig.init();
+        const token = await notifications.init();
         if (token) {
           console.log("token", token);
-          //const unsubscribeMessages =
           onMessage(messages, (message: any) => {
             console.log("PUSH MESSAGE", message);
             toast.custom(
@@ -61,7 +90,7 @@ const Notifications = ({ children }: any) => {
           });
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
     setToken();

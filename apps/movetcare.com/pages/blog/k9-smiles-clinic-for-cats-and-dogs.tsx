@@ -75,9 +75,9 @@ export default function K9Smiles() {
           Upcoming Clinics:
         </h3>
         <ul className="text-center mt-2">
-          <li>Saturday June 17th, 9:30AM - 3:30PM</li>
-          <li>Saturday August 26th, 9:30AM - 3:30PM</li>
+          <li>Saturday September 23rd, 9:30AM - 3:30PM</li>
           <li>Saturday October 28th, 9:30AM - 3:30PM</li>
+          <li>Saturday November 11th, 9:30AM - 3:30PM</li>
           <li>Saturday December 9th, 9:30AM - 3:30PM</li>
         </ul>
         <h3 className="text-xl text-center mt-12 font-abside">

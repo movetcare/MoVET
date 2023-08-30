@@ -23,6 +23,7 @@ import {
   faEnvelopesBulk,
   faCalendarPlus,
   faBan,
+  faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GOTO_PHONE_URL } from "constants/urls";
@@ -61,6 +62,8 @@ const Client = () => {
   const [clientData, isLoadingClient, errorClient] = useDocument(
     doc(firestore, `clients/${query?.id}`),
   );
+  const [smsMessage, setSmsMessage] = useState<string>("");
+  const [showSmsModal, setShowSmsModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (query.id) {
@@ -112,6 +115,43 @@ const Client = () => {
         .finally(() => setIsLoadingAccount(false));
     }
   }, [isLoadingClient, clientData, query]);
+
+  const sendClientSMS = () => {
+    const sendSmsToClient = httpsCallable(functions, "sendSmsToClient");
+    sendSmsToClient({
+      id: query?.id,
+      message: smsMessage,
+    })
+      .then(() => {
+        setShowSmsModal(false);
+        setSmsMessage("");
+        toast(
+          `SENT SMS Message to ${client?.displayName} @ ${
+            client?.phoneNumber ? formatPhoneNumber(client?.phoneNumber) : ""
+          }`,
+          {
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleCheck}
+                size="sm"
+                className="text-movet-green"
+              />
+            ),
+          },
+        );
+      })
+      .catch((error: any) =>
+        toast(error?.message, {
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              size="sm"
+              className="text-movet-red"
+            />
+          ),
+        }),
+      );
+  };
 
   const sendPaymentLink = (mode: "SMS" | "EMAIL") => {
     setIsLoadingSendPaymentLink(true);
@@ -550,10 +590,10 @@ const Client = () => {
                       <>
                         <Tooltip id="sendSms" />
                         <div
-                          data-tooltip-content="Send Client an SMS - COMING SOON!"
+                          data-tooltip-content="Send Client an SMS"
                           data-tooltip-id="sendSms"
-                          className="text-movet-gray"
-                          //className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                          onClick={() => setShowSmsModal(true)}
+                          className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
                         >
                           <FontAwesomeIcon icon={faSms} size="lg" />
                         </div>
@@ -1220,6 +1260,31 @@ const Client = () => {
         icon={faTrash}
         action={deleteClient}
         yesButtonText="YES"
+        noButtonText="CANCEL"
+      />
+      <Modal
+        showModal={showSmsModal}
+        setShowModal={setShowSmsModal}
+        cancelButtonRef={cancelButtonRef}
+        isLoading={isLoading}
+        loadingMessage="Sending SMS to Client, Please Wait..."
+        content={
+          <>
+            <h2>
+              Send SMS to {client?.displayName} - {client?.phoneNumber}
+            </h2>
+            <textarea
+              className={
+                "focus:ring-movet-brown focus:border-movet-brown text-movet-black py-3 px-4 block w-full rounded-lg font-abside-smooth"
+              }
+              value={smsMessage}
+              onChange={(e) => setSmsMessage(e.target.value)}
+            />
+          </>
+        }
+        icon={faSms}
+        action={sendClientSMS}
+        yesButtonText="SEND"
         noButtonText="CANCEL"
       />
     </>

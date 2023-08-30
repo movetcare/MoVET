@@ -27,7 +27,7 @@ export const ContactForm = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
-    null
+    null,
   );
   const {
     control,
@@ -150,9 +150,7 @@ export const ContactForm = () => {
           {submissionSuccess === null && (
             <div className="mt-4 flex md:flex-row flex-col">
               <section className="w-full md:w-1/2 p-6">
-                <h2 className="m-0">
-                  MoVET Wellness Clinic & Home Veterinary Services
-                </h2>
+                <h2 className="m-0 text-xl">MoVET @ Belleview Station</h2>
                 <iframe
                   title="Google Map of MoVET @ Belleview Station"
                   loading="lazy"
@@ -162,9 +160,11 @@ export const ContactForm = () => {
                   className="w-full h-80 rounded-xl mb-8 mt-6"
                 />
                 <div className="flex flex-col justify-center items-center">
-                  <h3 className="text-lg">MoVET @ Belleview Station</h3>
+                  <h3 className="text-lg">
+                    Wellness Clinic & Home Veterinary Services
+                  </h3>
                   <a
-                    className="text-center mb-2 w-full mt-4 text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                    className="text-center mb-2 w-full mt-2 text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
                     target="_blank"
                     href={"https://goo.gl/maps/h8eUvU7nsZTDEwHW9"}
                     rel="noopener noreferrer"
