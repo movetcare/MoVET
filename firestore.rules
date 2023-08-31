@@ -13,6 +13,9 @@ service cloud.firestore {
     function clientOwnsPatient() {
       return clientIsAuthed() && request.auth.uid == string(resource.data.client);
     }
+    match /fcmTokens/{uid} {
+      allow read, write: if clientOwnsDocuments(uid) || isMoVETStaff();
+    }
     match /alerts/{sid} {
       allow read: if true;
       allow write: if isMoVETStaff();

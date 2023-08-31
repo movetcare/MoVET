@@ -11,20 +11,18 @@ const Notifications = ({ children }: any) => {
   const router = useRouter();
   const { query } = router;
 
-  useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.addEventListener("message", (event) => {
-        console.log("event for the service worker", event?.data || event);
-      });
-    } else
-      alert(
-        "WARNING - Service Workers are not supported in this browser! Push Notifications will NOT work...",
-      );
-  }, []);
+  // useEffect(() => {
+  //   if ("serviceWorker" in navigator) {
+  //     navigator.serviceWorker.addEventListener("message", (event) => {
+  //       console.log("event for the service worker", event?.data || event);
+  //     });
+  //   } else
+  //     alert(
+  //       "WARNING - Service Workers are not supported in this browser! Push Notifications will NOT work...",
+  //     );
+  // }, []);
 
   useEffect(() => {
-    const setToken = async () => await notifications.configure();
-    setToken();
     notifications
       .onMessageListener()
       .then((payload: any) => {
@@ -64,7 +62,6 @@ const Notifications = ({ children }: any) => {
           );
       })
       .catch((error) => console.error("PUSH NOTIFICATION FAILURE: ", error));
-    return;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
