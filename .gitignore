@@ -15,6 +15,7 @@ googlePlayServiceAccount.json
 *.der
 credentials.json
 google-service-account.json
+example-push-notification.js
 
 # dependencies
 node_modules

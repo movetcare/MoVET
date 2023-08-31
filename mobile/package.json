@@ -58,7 +58,7 @@
     "@expo/metro-config": "^0.10.7",
     "@expo/webpack-config": "^19.0.0",
     "@types/react": "~18.2.21",
-    "@types/uuid": "^9.0.2",
+    "@types/uuid": "^9.0.3",
     "husky": "^8.0.3",
     "semver": "^7.5.4",
     "typescript": "^5.2.2"
