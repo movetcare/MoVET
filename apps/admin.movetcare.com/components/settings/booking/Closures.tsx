@@ -42,7 +42,7 @@ export const Closures = () => {
   const [showAddClosureForm, setShowAddClosureForm] = useState<boolean>(false);
   const [closures, setClosures] = useState<Array<Closure> | null>(null);
   const [closuresData, loading, error] = useDocument(
-    doc(firestore, "configuration/closures")
+    doc(firestore, "configuration/closures"),
   );
   const {
     handleSubmit,
@@ -80,7 +80,7 @@ export const Closures = () => {
         closureDates: closures?.filter((_, i) => i !== index),
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Your closure deletion will appear in ~ 5 minutes.`, {
@@ -93,7 +93,7 @@ export const Closures = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(`Closure Deletion FAILED: ${error?.message}`, {
@@ -106,17 +106,21 @@ export const Closures = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
 
-  const onSubmit = async (data: any) =>
+  const onSubmit = async (data: any) => {
+    const startDate = new Date(data?.startDate);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(data?.endDate);
+    endDate.setHours(0, 0, 0, 0);
     await setDoc(
       doc(firestore, "configuration/closures"),
       {
-        closureDates: arrayUnion(data),
+        closureDates: arrayUnion({ ...data, startDate, endDate }),
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Your closure update will appear in ~ 5 minutes.`, {
@@ -129,7 +133,7 @@ export const Closures = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(`Closure Update FAILED: ${error?.message}`, {
@@ -142,9 +146,10 @@ export const Closures = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       )
       .finally(() => setShowAddClosureForm(false));
+  };
   return (
     <>
       <h3>FULL DAY / MULTI-DAY CLOSURES</h3>
@@ -434,7 +439,7 @@ export const Closures = () => {
                                     isActiveForClinic
                                       ? "bg-movet-green"
                                       : "bg-movet-red",
-                                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                                   )}
                                 >
                                   <span
@@ -443,7 +448,7 @@ export const Closures = () => {
                                       isActiveForClinic
                                         ? "translate-x-5"
                                         : "translate-x-0",
-                                      "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                      "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                                     )}
                                   />
                                 </Switch>
@@ -466,7 +471,7 @@ export const Closures = () => {
                                     isActiveForTelehealth
                                       ? "bg-movet-green"
                                       : "bg-movet-red",
-                                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                                   )}
                                 >
                                   <span
@@ -475,7 +480,7 @@ export const Closures = () => {
                                       isActiveForTelehealth
                                         ? "translate-x-5"
                                         : "translate-x-0",
-                                      "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                      "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                                     )}
                                   />
                                 </Switch>
@@ -498,7 +503,7 @@ export const Closures = () => {
                                     isActiveForHousecalls
                                       ? "bg-movet-green"
                                       : "bg-movet-red",
-                                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                                   )}
                                 >
                                   <span
@@ -507,7 +512,7 @@ export const Closures = () => {
                                       isActiveForHousecalls
                                         ? "translate-x-5"
                                         : "translate-x-0",
-                                      "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                      "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                                     )}
                                   />
                                 </Switch>
@@ -532,7 +537,7 @@ export const Closures = () => {
                                     showOnWebsite
                                       ? "bg-movet-green"
                                       : "bg-movet-red",
-                                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                                   )}
                                 >
                                   <span
@@ -541,7 +546,7 @@ export const Closures = () => {
                                       showOnWebsite
                                         ? "translate-x-5"
                                         : "translate-x-0",
-                                      "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                      "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                                     )}
                                   />
                                 </Switch>
@@ -561,7 +566,7 @@ export const Closures = () => {
                               !isDirty || isSubmitting
                                 ? "w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4"
                                 : "w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4",
-                              "mt-6"
+                              "mt-6",
                             )}
                             icon={faPlus}
                             text="Add Closure"

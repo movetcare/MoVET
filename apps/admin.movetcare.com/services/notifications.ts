@@ -15,6 +15,7 @@ export const notifications = {
                 : "BJa6PTEnoKGVnQSZfRbB6LZDvaYnrHJyllf7t13fYpjlrJq7roYqIyFX1xZVKo3V6K3Ay7Sa7M8hE_cRSO0nyaY",
           })
             .then((currentToken: string) => {
+              console.log("CLIENT PUSH TOKEN", currentToken);
               if (currentToken) return currentToken;
               else {
                 console.error(

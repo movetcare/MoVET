@@ -17,7 +17,7 @@ import { formatTimeHoursToDate } from "../../utils/formatTimeHoursToDate";
 import { formatTimeHoursToString } from "../../utils/formatTimeHoursToString";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
-// const DEBUG = true;
+//const DEBUG = true;
 interface Appointment {
   start: any;
   end: any;
@@ -357,26 +357,29 @@ const verifyScheduleIsOpen = async (
         isActiveForHousecalls: boolean;
         isActiveForClinic: boolean;
       }) => {
-        // if (DEBUG) {
-        //   console.log("date", new Date(date));
-        //   console.log("closure OBJECT", closure);
-        //   console.log("closure.startDate", closure.startDate.toDate());
-        //   console.log("closure.endDate", closure.endDate.toDate());
-        //   console.log(
-        //     "date >= closure.startDate",
-        //     new Date(date) >= closure.startDate.toDate()
-        //   );
-        //   console.log(
-        //     "date <= closure.endDate",
-        //     new Date(date) <= closure.endDate.toDate()
-        //   );
-        // }
+        const checkDate = new Date(date);
+        checkDate.setHours(0, 0, 0, 0);
+        const closureStartDate = closure.startDate.toDate();
+        closureStartDate.setHours(0, 0, 0, 0);
+        const closureEndDate = closure.endDate.toDate();
+        closureEndDate.setHours(0, 0, 0, 0);
+        if (DEBUG) {
+          console.log("date", checkDate);
+          console.log("closure OBJECT", closure);
+          console.log("closureStartDate", closureStartDate);
+          console.log("closureEndDate", closureEndDate);
+          console.log(
+            "date >= closureStartDate",
+            checkDate >= closureStartDate,
+          );
+          console.log("date <= closureEndDate", checkDate <= closureEndDate);
+        }
         switch (schedule) {
           case "clinic":
             if (closure.isActiveForClinic) {
               if (
-                new Date(date) >= closure.startDate.toDate() &&
-                new Date(date) <= closure.endDate.toDate()
+                checkDate >= closureStartDate &&
+                checkDate <= closureEndDate
               ) {
                 isGlobalClosure = true;
                 closureData = {
@@ -389,8 +392,8 @@ const verifyScheduleIsOpen = async (
           case "housecall":
             if (closure.isActiveForHousecalls) {
               if (
-                new Date(date) >= closure.startDate.toDate() &&
-                new Date(date) <= closure.endDate.toDate()
+                checkDate >= closureStartDate &&
+                checkDate <= closureEndDate
               ) {
                 isGlobalClosure = true;
                 closureData = {
@@ -403,8 +406,8 @@ const verifyScheduleIsOpen = async (
           case "virtual":
             if (closure.isActiveForTelehealth) {
               if (
-                new Date(date) >= closure.startDate.toDate() &&
-                new Date(date) <= closure.endDate.toDate()
+                checkDate >= closureStartDate &&
+                checkDate <= closureEndDate
               ) {
                 isGlobalClosure = true;
                 closureData = {
