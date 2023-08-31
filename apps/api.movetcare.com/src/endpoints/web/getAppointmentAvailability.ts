@@ -11,13 +11,13 @@ import {
   functions,
   throwError,
   environment,
-  DEBUG,
+  // DEBUG,
 } from "../../config/config";
 import { formatTimeHoursToDate } from "../../utils/formatTimeHoursToDate";
 import { formatTimeHoursToString } from "../../utils/formatTimeHoursToString";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
-//const DEBUG = true;
+const DEBUG = true;
 interface Appointment {
   start: any;
   end: any;
@@ -338,13 +338,8 @@ const verifyScheduleIsOpen = async (
     .collection("configuration")
     .doc("closures")
     .get()
-    .then((doc: any) => {
-      // if (DEBUG)
-      //   console.log("configuration/closures => doc.data()", doc.data());
-      return doc.data()?.closureDates;
-    })
+    .then((doc: any) => doc.data()?.closureDates)
     .catch((error: any) => throwError(error));
-  // if (DEBUG) console.log("globalClosures", globalClosures);
   if (globalClosures && globalClosures.length > 0) {
     let isGlobalClosure = false;
     let closureData = null;
@@ -573,7 +568,10 @@ const getExistingAppointments = async ({
           },
         ),
       );
-      const monthNumber = new Date(date).getMonth();
+      const monthNumber = new Date(
+        date.slice(0, -13) + "24:00:00.000Z",
+      ).getMonth();
+
       const existingAppointments: Array<Appointment> = [];
       const scheduleClosures = await getScheduledClosures(schedule);
       if (DEBUG) {
@@ -636,6 +634,18 @@ const getExistingAppointments = async ({
         });
       if (scheduleClosures && scheduleClosures.length > 0)
         scheduleClosures.map((closure: any) => {
+          if (DEBUG) {
+            console.log(
+              "closure?.date?.toDate().getDate()",
+              closure?.date?.toDate().getDate(),
+            );
+            console.log("calendarDay", calendarDay);
+            console.log(
+              "closure?.date?.toDate().getMonth()",
+              closure?.date?.toDate().getMonth(),
+            );
+            console.log("monthNumber", monthNumber);
+          }
           if (
             closure?.date?.toDate().getDate() === calendarDay &&
             closure?.date?.toDate().getMonth() === monthNumber
@@ -895,13 +905,11 @@ const getScheduledClosures = async (schedule: string) =>
     .collection("configuration")
     .doc("closures")
     .get()
-    .then((doc: any) => {
-      // if (DEBUG)
-      //   console.log("configuration/closures => doc.data()", doc.data());
-      return schedule === "clinic"
+    .then((doc: any) =>
+      schedule === "clinic"
         ? doc.data()?.closureDatesClinic || false
         : schedule === "housecall"
         ? doc.data()?.closureDatesHousecall || false
-        : doc.data()?.closureDatesVirtual || false;
-    })
+        : doc.data()?.closureDatesVirtual || false,
+    )
     .catch((error: any) => throwError(error));
