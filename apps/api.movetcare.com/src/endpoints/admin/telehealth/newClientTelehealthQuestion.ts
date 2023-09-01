@@ -1,23 +1,23 @@
-import {randomUUID} from "crypto";
+import { randomUUID } from "crypto";
 import {
   functions,
-  DEBUG,
+  //DEBUG,
   environment,
   admin,
   throwError,
 } from "../../../config/config";
-import {getAuthUserById} from "../../../utils/auth/getAuthUserById";
-import {findSlackChannel} from "../../../utils/logging/findSlackChannel";
-import {sendSlackMessage} from "../../../utils/logging/sendSlackMessage";
-
+import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
+import { findSlackChannel } from "../../../utils/logging/findSlackChannel";
+import { sendSlackMessage } from "../../../utils/logging/sendSlackMessage";
+const DEBUG = true;
 export const newClientTelehealthMessage = functions.firestore
   .document("/telehealth_chat/{clientId}/log/{messageId}")
   .onCreate(async (snapshot: any, context: any) => {
-    const {user, text, startNewThread} = snapshot.data();
+    const { user, text, startNewThread } = snapshot.data();
     const channelId: any = await findSlackChannel("telehealth-alerts");
-    const {email, displayName, phoneNumber} = await getAuthUserById(
+    const { email, displayName, phoneNumber } = await getAuthUserById(
       context.params.clientId,
-      ["email", "displayName", "phoneNumber"]
+      ["email", "displayName", "phoneNumber"],
     );
     if (DEBUG) {
       console.log("user", user);
@@ -28,7 +28,6 @@ export const newClientTelehealthMessage = functions.firestore
       console.log("displayName", displayName);
       console.log("phoneNumber", phoneNumber);
     }
-
     if (
       startNewThread &&
       user?._id === context.params.clientId &&
@@ -47,7 +46,7 @@ export const newClientTelehealthMessage = functions.firestore
               : "No ProVet ID Found!?"
           } | ${email ? ` Email: ${email}` : "No Email Found!?"} | ${
             phoneNumber ? `Phone: ${phoneNumber}` : "No Phone Number"
-          }\`\n\n${`:exclamation: _Please respond in a thread ASAP_ : https://admin.movetcare.com/telehealth/chat/?id=${context.params.clientId} :exclamation:`}`
+          }\`\n\n${`:exclamation: _Please respond in a thread ASAP_ : https://admin.movetcare.com/telehealth/chat/?id=${context.params.clientId} :exclamation:`}`,
         );
         if (DEBUG) console.log("result", result);
         if (result?.message?.ts)
@@ -67,11 +66,11 @@ export const newClientTelehealthMessage = functions.firestore
                 lastSlackThread: result?.message?.ts,
                 status: "active",
               },
-              { merge: true }
+              { merge: true },
             )
             .catch((error: any) => throwError(error));
       }
-      const {onlineAutoReply, offlineAutoReply, isOnline} = await admin
+      const { onlineAutoReply, offlineAutoReply, isOnline } = await admin
         .firestore()
         .collection("alerts")
         .doc("telehealth")
@@ -104,10 +103,10 @@ export const newClientTelehealthMessage = functions.firestore
             updatedOn: new Date(),
             status: "active",
           },
-          { merge: true }
+          { merge: true },
         )
         .then(
-          () => DEBUG && console.log("Updated Client Info on Telehealth Chat")
+          () => DEBUG && console.log("Updated Client Info on Telehealth Chat"),
         )
         .catch((error: any) => throwError(error));
       await admin
@@ -137,9 +136,42 @@ export const newClientTelehealthMessage = functions.firestore
                 avatar: "https://movetcare.com/images/logos/logo-paw-black.png",
               },
               createdAt: new Date(),
-            })
+            }),
         )
         .catch((error: any) => throwError(error));
+    }
+    if (user?._id === context.params.clientId) {
+      const adminFcmTokens: any = await admin
+        .firestore()
+        .collection("fcmTokensAdmin")
+        .get()
+        .then((querySnapshot: any) => {
+          const allValidTokens: any = [];
+          querySnapshot.forEach((doc: any) => {
+            if (DEBUG) console.log(doc.id, " => ", doc.data());
+            doc.data()?.tokens?.forEach((token: any) => {
+              console.log("TOKEN ARRAY", token);
+              if (token.isActive) allValidTokens.push(token.token);
+            });
+          });
+          return allValidTokens;
+        });
+      if (DEBUG) console.log("adminFcmTokens", adminFcmTokens);
+      admin.messaging().sendToDevice(
+        adminFcmTokens,
+        {
+          notification: {
+            title: "New Telehealth Message",
+            body: `${displayName} has sent a new message!`,
+            icon: "https://movetcare.com/images/logos/logo-paw-black.png",
+            click_action: `https://admin.movetcare.com/telehealth/chat/?id=${context.params.clientId}`,
+          },
+        },
+        {
+          contentAvailable: true,
+          priority: "high",
+        },
+      );
     }
     return null;
   });

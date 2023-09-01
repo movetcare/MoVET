@@ -27,7 +27,7 @@ export const notifications = {
               if (currentToken) {
                 let existingTokens: any[] = [];
                 const tokenAlreadyExists = await getDoc(
-                  doc(firestore, "fcmTokens", userId),
+                  doc(firestore, "fcmTokensAdmin", userId),
                 ).then((doc: any) => {
                   if (doc.exists()) {
                     existingTokens = doc.data().tokens;
@@ -42,7 +42,7 @@ export const notifications = {
                   } else return false;
                 });
                 if (tokenAlreadyExists === false)
-                  await setDoc(doc(firestore, "fcmTokens", userId), {
+                  await setDoc(doc(firestore, "fcmTokensAdmin", userId), {
                     tokens: [
                       {
                         token: currentToken,
@@ -55,7 +55,7 @@ export const notifications = {
                   });
                 else if (tokenAlreadyExists === undefined)
                   await setDoc(
-                    doc(firestore, "fcmTokens", userId),
+                    doc(firestore, "fcmTokensAdmin", userId),
                     {
                       tokens: arrayUnion({
                         token: currentToken,
@@ -80,7 +80,7 @@ export const notifications = {
                     } else return token;
                   });
                   await setDoc(
-                    doc(firestore, "fcmTokens", userId),
+                    doc(firestore, "fcmTokensAdmin", userId),
                     {
                       tokens: newTokenData,
                       updatedOn: serverTimestamp(),
