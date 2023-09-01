@@ -30,7 +30,7 @@ export const messages: any =
 export const auth: any = getAuth(firebase);
 export const functions: any = getFunctions(firebase);
 export const firestore: any = getFirestore(firebase);
-export const storage = getStorage(firebase);
+export const storage: any = getStorage(firebase);
 
 if (typeof window !== "undefined" && window.location.hostname === "localhost") {
   connectFunctionsEmulator(functions, "localhost", 5001);

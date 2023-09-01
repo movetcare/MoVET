@@ -11,6 +11,7 @@ import { environment } from "utilities";
 
 export const notifications = {
   configure: async (userId: string) => {
+    console.log("CONFIGURING NOTIFICATIONS");
     if (await isSupported())
       try {
         const status = await Notification.requestPermission();

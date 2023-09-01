@@ -4,7 +4,6 @@ import { SignIn } from "./SignIn";
 import { auth } from "services/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/router";
-import Notifications from "./Notifications";
 
 const AuthCheck = (props: any) => {
   const { user } = useContext(UserContext);
@@ -26,11 +25,7 @@ const AuthCheck = (props: any) => {
     return () => unsubscribe();
   }, [user, router]);
 
-  return user && isAuthorized ? (
-    <Notifications>{props.children}</Notifications>
-  ) : (
-    props.fallback || <SignIn />
-  );
+  return user && isAuthorized ? props.children : props.fallback || <SignIn />;
 };
 
 export default AuthCheck;

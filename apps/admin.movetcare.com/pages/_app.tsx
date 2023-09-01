@@ -7,9 +7,20 @@ import Layout from "components/Layout";
 import ErrorBoundary from "components/ErrorBoundary";
 import { useEffect } from "react";
 import { notifications } from "services/notifications";
+import Notifications from "components/Notifications";
 
 const MoVET = ({ Component, pageProps }: AppProps) => {
   const userData: any = useUserData();
+  // useEffect(() => {
+  //   if ("serviceWorker" in navigator) {
+  //     navigator.serviceWorker.addEventListener("message", (event) => {
+  //       console.log("event for the service worker", event?.data || event);
+  //     });
+  //   } else
+  //     alert(
+  //       "WARNING - Service Workers are not supported in this browser! Push Notifications will NOT work...",
+  //     );
+  // }, []);
   useEffect(() => {
     const configurePushToken = async () =>
       await notifications.configure(userData?.user?.uid);
@@ -18,9 +29,11 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
   return (
     <ErrorBoundary>
       <UserContext.Provider value={userData}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <Notifications>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </Notifications>
       </UserContext.Provider>
     </ErrorBoundary>
   );
