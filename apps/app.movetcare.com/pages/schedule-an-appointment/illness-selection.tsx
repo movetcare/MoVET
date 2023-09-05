@@ -14,6 +14,7 @@ import { BookingHeader } from "components/BookingHeader";
 import { BookingFooter } from "components/BookingFooter";
 import TextInput from "components/inputs/TextInput";
 import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { UAParser } from "ua-parser-js";
 
 const symptoms = [
   { name: "Behavioral Concerns", value: "behavioral-concerns" },
@@ -41,7 +42,7 @@ export default function IllnessSelection() {
   useEffect(() => {
     if (window.localStorage.getItem("bookingSession") !== null && router) {
       setSession(
-        JSON.parse(window.localStorage.getItem("bookingSession") as string)
+        JSON.parse(window.localStorage.getItem("bookingSession") as string),
       );
       setIsLoading(false);
     } else router.push("/schedule-an-appointment");
@@ -51,7 +52,7 @@ export default function IllnessSelection() {
     setLoadingMessage("Loading Pet...");
     if (session?.nextPatient) {
       session?.patients.forEach((patient: any) =>
-        patient?.id === session?.nextPatient ? setPet(patient) : null
+        patient?.id === session?.nextPatient ? setPet(patient) : null,
       );
       setIsLoading(false);
     } else if (session?.nextPatient === null && router)
@@ -76,10 +77,10 @@ export default function IllnessSelection() {
             : string()
                 .nullable()
                 .matches(/.*\d/, "A symptom selection is required")
-                .required("A symptom selection is required")
+                .required("A symptom selection is required"),
         ),
         details: string().nullable().required("Please tell us more..."),
-      })
+      }),
     ),
     defaultValues: {
       symptoms: null,
@@ -102,7 +103,7 @@ export default function IllnessSelection() {
         try {
           const { data: result }: any = await httpsCallable(
             functions,
-            "scheduleAppointment"
+            "scheduleAppointment",
           )({
             illnessDetails: {
               symptoms: data.symptoms,
@@ -110,7 +111,12 @@ export default function IllnessSelection() {
               notes: data.details,
             },
             id: session?.id,
-            device: navigator.userAgent,
+            device: JSON.parse(
+              JSON.stringify(UAParser(), function (key: any, value: any) {
+                if (value === undefined) return null;
+                return value;
+              }),
+            ),
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
@@ -118,19 +124,19 @@ export default function IllnessSelection() {
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
-                JSON.stringify(result)
+                JSON.stringify(result),
               );
               reset();
               const queryString = getUrlQueryStringFromObject(router.query);
               if (result?.nextPatient)
                 router.push(
                   "/schedule-an-appointment/illness-selection" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else
                 router.push(
                   "/schedule-an-appointment/location-selection" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
             } else handleError(result);
           } else handleError(result);
@@ -159,9 +165,7 @@ export default function IllnessSelection() {
                 <BookingHeader
                   isAppMode={isAppMode}
                   title="Minor Illness"
-                  description={`We're sorry to hear ${
-                    pet?.name
-                  } is not feeling well. What symptom(s) is ${
+                  description={`We're sorry to hear ${pet?.name} is not feeling well. What symptom(s) is ${
                     pet?.gender?.includes("Female") ? "she" : "he"
                   } experiencing?`}
                 />

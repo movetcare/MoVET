@@ -49,9 +49,6 @@ export const Waitlist = () => {
   const [showArchive, setShowArchive] = useState<boolean>(false);
   const [clients, loading, error] = useCollection(
     query(collection(firestore, "waitlist"), where("isActive", "==", true)),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
   );
 
   const [previousCheckIns, loadingPreviousCheckIns, errorPreviousCheckIns] =
@@ -59,11 +56,8 @@ export const Waitlist = () => {
       query(
         collection(firestore, "waitlist"),
         where("isActive", "==", false),
-        limit(50)
+        limit(50),
       ),
-      {
-        snapshotListenOptions: { includeMetadataChanges: true },
-      }
     );
 
   return (
@@ -113,12 +107,10 @@ export const Waitlist = () => {
                       <a
                         href={
                           environment === "production"
-                            ? `https://us.provetcloud.com/4285/client/${
-                                client?.data()?.id
-                              }/`
-                            : `https://us.provetcloud.com/4285/client/${
-                                client?.data()?.id
-                              }/`
+                            ? `https://us.provetcloud.com/4285/client/${client?.data()
+                                ?.id}/`
+                            : `https://us.provetcloud.com/4285/client/${client?.data()
+                                ?.id}/`
                         }
                         target="_blank"
                         className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -136,21 +128,18 @@ export const Waitlist = () => {
                           title="View in ProVet"
                           href={
                             environment === "production"
-                              ? `https://us.provetcloud.com/4285/client/${
-                                  client?.data()?.id
-                                }/`
-                              : `https://us.provetcloud.com/4285/client/${
-                                  client?.data()?.id
-                                }/`
+                              ? `https://us.provetcloud.com/4285/client/${client?.data()
+                                  ?.id}/`
+                              : `https://us.provetcloud.com/4285/client/${client?.data()
+                                  ?.id}/`
                           }
                           target="_blank"
                           className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
                           rel="noreferrer"
                         >
                           {client?.data()?.firstName && client?.data()?.lastName
-                            ? `${client?.data()?.firstName} ${
-                                client?.data()?.lastName
-                              }`
+                            ? `${client?.data()?.firstName} ${client?.data()
+                                ?.lastName}`
                             : client?.data()?.email}
                         </a>
                       </div>
@@ -277,16 +266,15 @@ export const Waitlist = () => {
                           {
                             updatedOn: serverTimestamp(),
                             isActive: false,
-                          }
+                          },
                         )
                           .then(() =>
                             toast(
                               `${
                                 client?.data()?.firstName &&
                                 client?.data()?.lastName
-                                  ? `${client?.data()?.firstName} ${
-                                      client?.data()?.lastName
-                                    }`
+                                  ? `${client?.data()
+                                      ?.firstName} ${client?.data()?.lastName}`
                                   : client?.data()?.email
                               } has been removed from the waitlist`,
                               {
@@ -296,8 +284,8 @@ export const Waitlist = () => {
                                     size="sm"
                                   />
                                 ),
-                              }
-                            )
+                              },
+                            ),
                           )
                           .catch((error: any) =>
                             toast(error?.message, {
@@ -308,7 +296,7 @@ export const Waitlist = () => {
                                   className="text-movet-red"
                                 />
                               ),
-                            })
+                            }),
                           );
                       }}
                     >
@@ -359,12 +347,10 @@ export const Waitlist = () => {
                           title="View in ProVet"
                           href={
                             environment === "production"
-                              ? `https://us.provetcloud.com/4285/client/${
-                                  client?.data()?.id
-                                }/`
-                              : `https://us.provetcloud.com/4285/client/${
-                                  client?.data()?.id
-                                }/`
+                              ? `https://us.provetcloud.com/4285/client/${client?.data()
+                                  ?.id}/`
+                              : `https://us.provetcloud.com/4285/client/${client?.data()
+                                  ?.id}/`
                           }
                           target="_blank"
                           className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -433,11 +419,11 @@ export const Waitlist = () => {
                                       className="text-movet-yellow"
                                     />
                                   ),
-                                }
+                                },
                               );
                               const checkInText = httpsCallable(
                                 functions,
-                                "checkInText"
+                                "checkInText",
                               );
                               checkInText({
                                 id: client?.data()?.id,
@@ -451,7 +437,7 @@ export const Waitlist = () => {
                                     } @ ${
                                       client?.data()?.phone
                                         ? formatPhoneNumber(
-                                            client?.data()?.phone
+                                            client?.data()?.phone,
                                           )
                                         : ""
                                     }`,
@@ -463,8 +449,8 @@ export const Waitlist = () => {
                                           className="text-movet-green"
                                         />
                                       ),
-                                    }
-                                  )
+                                    },
+                                  ),
                                 )
                                 .catch((error: any) =>
                                   toast(error?.message, {
@@ -475,7 +461,7 @@ export const Waitlist = () => {
                                         className="text-movet-red"
                                       />
                                     ),
-                                  })
+                                  }),
                                 );
                             }}
                             className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -600,12 +586,10 @@ export const Waitlist = () => {
                             <a
                               href={
                                 environment === "production"
-                                  ? `https://us.provetcloud.com/4285/client/${
-                                      client?.data()?.id
-                                    }/`
-                                  : `https://us.provetcloud.com/4285/client/${
-                                      client?.data()?.id
-                                    }/`
+                                  ? `https://us.provetcloud.com/4285/client/${client?.data()
+                                      ?.id}/`
+                                  : `https://us.provetcloud.com/4285/client/${client?.data()
+                                      ?.id}/`
                               }
                               target="_blank"
                               className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -619,12 +603,10 @@ export const Waitlist = () => {
                               <a
                                 href={
                                   environment === "production"
-                                    ? `https://us.provetcloud.com/4285/client/${
-                                        client?.data()?.id
-                                      }/`
-                                    : `https://us.provetcloud.com/4285/client/${
-                                        client?.data()?.id
-                                      }/`
+                                    ? `https://us.provetcloud.com/4285/client/${client?.data()
+                                        ?.id}/`
+                                    : `https://us.provetcloud.com/4285/client/${client?.data()
+                                        ?.id}/`
                                 }
                                 target="_blank"
                                 className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -632,9 +614,8 @@ export const Waitlist = () => {
                               >
                                 {client?.data()?.firstName &&
                                 client?.data()?.lastName
-                                  ? `${client?.data()?.firstName} ${
-                                      client?.data()?.lastName
-                                    }`
+                                  ? `${client?.data()
+                                      ?.firstName} ${client?.data()?.lastName}`
                                   : client?.data()?.email}
                               </a>
                             </div>
@@ -754,7 +735,7 @@ export const Waitlist = () => {
                                       .toString()}
                                   >
                                     {timeSince(
-                                      client?.data()?.updatedOn?.toDate()
+                                      client?.data()?.updatedOn?.toDate(),
                                     )}
                                   </time>
                                 </div>
@@ -797,12 +778,10 @@ export const Waitlist = () => {
                               <a
                                 href={
                                   environment === "production"
-                                    ? `https://us.provetcloud.com/4285/client/${
-                                        client?.data()?.id
-                                      }/`
-                                    : `https://us.provetcloud.com/4285/client/${
-                                        client?.data()?.id
-                                      }/`
+                                    ? `https://us.provetcloud.com/4285/client/${client?.data()
+                                        ?.id}/`
+                                    : `https://us.provetcloud.com/4285/client/${client?.data()
+                                        ?.id}/`
                                 }
                                 target="_blank"
                                 className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -827,9 +806,8 @@ export const Waitlist = () => {
                           {client?.data()?.phone && (
                             <>
                               <a
-                                href={`${GOTO_PHONE_URL}/${
-                                  client?.data()?.phone
-                                }`}
+                                href={`${GOTO_PHONE_URL}/${client?.data()
+                                  ?.phone}`}
                                 target="_blank"
                                 className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
                                 rel="noreferrer"
@@ -851,7 +829,7 @@ export const Waitlist = () => {
                                       } @ ${
                                         client?.data()?.phone
                                           ? formatPhoneNumber(
-                                              client?.data()?.phone
+                                              client?.data()?.phone,
                                             )
                                           : ""
                                       }`,
@@ -863,11 +841,11 @@ export const Waitlist = () => {
                                             className="text-movet-yellow"
                                           />
                                         ),
-                                      }
+                                      },
                                     );
                                     const checkInText = httpsCallable(
                                       functions,
-                                      "checkInText"
+                                      "checkInText",
                                     );
                                     checkInText({
                                       id: client?.data()?.id,
@@ -881,7 +859,7 @@ export const Waitlist = () => {
                                           } @ ${
                                             client?.data()?.phone
                                               ? formatPhoneNumber(
-                                                  client?.data()?.phone
+                                                  client?.data()?.phone,
                                                 )
                                               : ""
                                           }`,
@@ -893,8 +871,8 @@ export const Waitlist = () => {
                                                 className="text-movet-green"
                                               />
                                             ),
-                                          }
-                                        )
+                                          },
+                                        ),
                                       )
                                       .catch((error: any) =>
                                         toast(error?.message, {
@@ -905,7 +883,7 @@ export const Waitlist = () => {
                                               className="text-movet-red"
                                             />
                                           ),
-                                        })
+                                        }),
                                       );
                                   }}
                                   className="mx-2 inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out focus:outline-none hover:text-movet-black"
@@ -989,7 +967,7 @@ export const Waitlist = () => {
                     </li>
                   ) : (
                     <></>
-                  )
+                  ),
                 )}
             </ul>
           )}

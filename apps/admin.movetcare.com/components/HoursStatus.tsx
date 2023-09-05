@@ -1,14 +1,18 @@
 import { faCalendarDay, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import { Hours, Loader } from "ui";
 import Error from "components/Error";
 import { useEffect, useState } from "react";
 import { onSnapshot, doc } from "firebase/firestore";
 import { firestore } from "services/firebase";
-import Link from "next/link";
+import { useRouter } from "next/router";
 
-export const HoursStatus = () => {
+export const HoursStatus = ({
+  mode = "default",
+}: {
+  mode?: "admin" | "default";
+}) => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
   const [winterMode, setWinterMode] = useState<any>(null);
@@ -17,14 +21,6 @@ export const HoursStatus = () => {
   const [clinicStatus, setClinicStatus] = useState<boolean>(false);
   const [housecallStatus, setHousecallStatus] = useState<boolean>(false);
   const [walkinsStatus, setWalkinsStatus] = useState<boolean>(false);
-  const [clinicAutomationStatus, setClinicAutomationStatus] =
-    useState<boolean>(false);
-  const [housecallAutomationStatus, setHousecallAutomationStatus] =
-    useState<boolean>(false);
-  const [boutiqueAutomationStatus, setBoutiqueAutomationStatus] =
-    useState<boolean>(false);
-  const [walkinsAutomationStatus, setWalkinsAutomationStatus] =
-    useState<boolean>(false);
   useEffect(() => {
     const unsubscribeWinterModeConfiguration = onSnapshot(
       doc(firestore, "configuration", "bookings"),
@@ -62,30 +58,8 @@ export const HoursStatus = () => {
         setIsLoading(false);
       },
     );
-    const unsubscribeBookingConfiguration = onSnapshot(
-      doc(firestore, "configuration", "bookings"),
-      (doc: any) => {
-        setClinicAutomationStatus(doc.data()?.clinicAutomationStatus || false);
-        setHousecallAutomationStatus(
-          doc.data()?.housecallAutomationStatus || false,
-        );
-        setBoutiqueAutomationStatus(
-          doc.data()?.boutiqueAutomationStatus || false,
-        );
-        setWalkinsAutomationStatus(
-          doc.data()?.walkinsAutomationStatus || false,
-        );
-
-        setIsLoading(false);
-      },
-      (error: any) => {
-        setError(error?.message || error);
-        setIsLoading(false);
-      },
-    );
     return () => {
       unsubscribeHoursStatusConfiguration();
-      unsubscribeBookingConfiguration();
       unsubscribeHoursConfiguration();
       unsubscribeWinterModeConfiguration();
     };
@@ -114,10 +88,17 @@ export const HoursStatus = () => {
           className="divide-y divide-movet-gray border-t border-movet-gray mt-4"
         >
           <li>
-            <div className="-mb-24">
+            <div
+              className="-mb-10 cursor-pointer"
+              onClick={() => {
+                setIsLoading(true);
+                router.push("/settings/manage-hours/");
+              }}
+            >
               <Hours
                 winterMode={winterMode}
                 hours={hours}
+                mode={mode}
                 hoursStatus={{
                   boutiqueStatus,
                   clinicStatus,
@@ -126,40 +107,6 @@ export const HoursStatus = () => {
                 }}
                 previewMode
               />
-            </div>
-            <div className="p-8 max-w-3xl mx-auto">
-              <Link href="/settings/manage-hours/">
-                <>
-                  <h2
-                    className={`text-center mt-6${
-                      clinicAutomationStatus ||
-                      housecallAutomationStatus ||
-                      boutiqueAutomationStatus ||
-                      walkinsAutomationStatus
-                        ? " text-movet-yellow"
-                        : ""
-                    }`}
-                  >
-                    {clinicAutomationStatus ||
-                    housecallAutomationStatus ||
-                    boutiqueAutomationStatus ||
-                    walkinsAutomationStatus
-                      ? "Active Automations"
-                      : "No Automations Active"}
-                    <FontAwesomeIcon
-                      icon={faEdit}
-                      className="ml-2 text-movet-black"
-                      size="sm"
-                    />
-                  </h2>
-                  <ul className="italic text-extrabold text-center text-movet-yellow">
-                    {boutiqueAutomationStatus && <li>Boutique</li>}
-                    {clinicAutomationStatus && <li>Clinic</li>}
-                    {walkinsAutomationStatus && <li>Clinic Walk-In</li>}
-                    {housecallAutomationStatus && <li>Housecall</li>}
-                  </ul>
-                </>
-              </Link>
             </div>
           </li>
         </ul>

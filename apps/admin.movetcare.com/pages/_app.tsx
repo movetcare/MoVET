@@ -23,7 +23,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
   // }, []);
   useEffect(() => {
     const configurePushToken = async () =>
-      await notifications.configure(userData?.user?.uid);
+      await notifications.configure(userData?.user);
     if (userData?.user?.uid) configurePushToken();
   }, [userData?.user?.uid]);
   return (

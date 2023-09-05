@@ -1,3 +1,4 @@
+import { UAParser } from "ua-parser-js";
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
@@ -21,7 +22,7 @@ export default function ScheduleAnAppointment() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
   const [loadingMessage, setLoadingMessage] = useState<string | null>(
-    "Loading, please wait..."
+    "Loading, please wait...",
   );
   const { executeRecaptcha } = useGoogleReCaptcha();
   const {
@@ -36,7 +37,7 @@ export default function ScheduleAnAppointment() {
         email: string()
           .email("Email must be a valid email address")
           .required("An email address is required"),
-      })
+      }),
     ),
     defaultValues: {
       email: "",
@@ -53,7 +54,7 @@ export default function ScheduleAnAppointment() {
     if (!window.localStorage.getItem("email"))
       window.localStorage.setItem(
         "email",
-        data?.email?.toString()?.toLowerCase()
+        data?.email?.toString()?.toLowerCase(),
       );
     if (executeRecaptcha) {
       const token = await executeRecaptcha("booking");
@@ -61,22 +62,27 @@ export default function ScheduleAnAppointment() {
         try {
           const { data: result }: any = await httpsCallable(
             functions,
-            "scheduleAppointment"
+            "scheduleAppointment",
           )({
             email: data.email?.toLowerCase(),
-            device: navigator.userAgent,
+            device: JSON.parse(
+              JSON.stringify(UAParser(), function (key: any, value: any) {
+                if (value === undefined) return null;
+                return value;
+              }),
+            ),
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
             setLoadingMessage(
               result?.client?.isExistingClient
                 ? "Loading Your Account..."
-                : "Starting Your Session..."
+                : "Starting Your Session...",
             );
             const queryString = getUrlQueryStringFromObject(router.query);
             window.localStorage.setItem(
               "bookingSession",
-              JSON.stringify(result)
+              JSON.stringify(result),
             );
             if (
               result?.client?.uid &&
@@ -86,22 +92,22 @@ export default function ScheduleAnAppointment() {
               if (result?.step)
                 router.push(
                   `/schedule-an-appointment/${result.step}` +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else if (result?.client?.requiresInfo)
                 router.push(
                   "/schedule-an-appointment/contact-info" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else if (result?.patients?.length === 0)
                 router.push(
                   "/schedule-an-appointment/add-a-pet" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else
                 router.push(
                   "/schedule-an-appointment/pet-selection" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
             } else router.push("/request-an-appointment");
           } else handleError(result);

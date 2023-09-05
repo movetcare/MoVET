@@ -1,3 +1,4 @@
+import { UAParser } from "ua-parser-js";
 import { BookingFooter } from "components/BookingFooter";
 import { BookingHeader } from "components/BookingHeader";
 import { Loader, Modal } from "ui";
@@ -219,7 +220,12 @@ export default function LocationSelection({
                   location: data.location,
                   locationId,
                   id: session?.id,
-                  device: navigator.userAgent,
+                  device: JSON.parse(
+                    JSON.stringify(UAParser(), function (key: any, value: any) {
+                      if (value === undefined) return null;
+                      return value;
+                    }),
+                  ),
                   token,
                 }
               : {
@@ -235,7 +241,12 @@ export default function LocationSelection({
                     zipcode,
                   },
                   id: session?.id,
-                  device: navigator.userAgent,
+                  device: JSON.parse(
+                    JSON.stringify(UAParser(), function (key: any, value: any) {
+                      if (value === undefined) return null;
+                      return value;
+                    }),
+                  ),
                   token,
                 },
           );

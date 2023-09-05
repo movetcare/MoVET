@@ -1,3 +1,4 @@
+import { UAParser } from "ua-parser-js";
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
@@ -37,7 +38,7 @@ export default function ContactInfo() {
         phone: string()
           .min(10, "Phone number must be 10 digits")
           .required("A phone number is required"),
-      })
+      }),
     ),
     defaultValues: {
       firstName: "",
@@ -64,11 +65,11 @@ export default function ContactInfo() {
       if (token) {
         try {
           const session = JSON.parse(
-            window.localStorage.getItem("bookingSession") as string
+            window.localStorage.getItem("bookingSession") as string,
           );
           const { data: result }: any = await httpsCallable(
             functions,
-            "scheduleAppointment"
+            "scheduleAppointment",
           )({
             contactInfo: {
               ...data,
@@ -76,7 +77,12 @@ export default function ContactInfo() {
               requiresInfo: session?.client?.requiresInfo,
             },
             id: session?.id,
-            device: navigator.userAgent,
+            device: JSON.parse(
+              JSON.stringify(UAParser(), function (key: any, value: any) {
+                if (value === undefined) return null;
+                return value;
+              }),
+            ),
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
@@ -84,23 +90,23 @@ export default function ContactInfo() {
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
-                JSON.stringify(result)
+                JSON.stringify(result),
               );
               const queryString = getUrlQueryStringFromObject(router.query);
               if (result?.client?.requiresInfo)
                 router.push(
                   "/schedule-an-appointment/contact-info" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else if (result?.patients?.length > 0)
                 router.push(
                   "/schedule-an-appointment/pet-selection" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else if (result?.patients?.length === 0)
                 router.push(
                   "/schedule-an-appointment/add-a-pet" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
             } else handleError(result);
           } else handleError(result);

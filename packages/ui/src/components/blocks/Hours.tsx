@@ -13,12 +13,14 @@ export const Hours = ({
   embed = false,
   hoursStatus,
   previewMode = false,
+  mode = "default",
 }: {
   winterMode: WinterModeType;
   hours: Array<HoursType>;
   hoursStatus: HoursStatusType;
   embed?: boolean;
   previewMode?: boolean;
+  mode?: "admin" | "default";
 }) => {
   const clinicHours: Array<{ days: string; times: string }> = [];
   if (hours && hours.length)
@@ -166,114 +168,118 @@ export const Hours = ({
                 </div>
               </div>
             </div>
-            <div className="w-full max-w-lg">
-              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
-                <div
-                  className="w-full text-center flex flex-col"
-                  key="Walk In Clinic Appointments"
-                >
-                  <div className="mx-auto">
-                    <Image
-                      src="/images/icons/clinic-2.svg"
-                      alt={`Walk In Clinic Appointments icon`}
-                      width={112}
-                      height={112}
-                    />
+            {mode !== "admin" && (
+              <>
+                <div className="w-full max-w-lg">
+                  <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                    <div
+                      className="w-full text-center flex flex-col"
+                      key="Walk In Clinic Appointments"
+                    >
+                      <div className="mx-auto">
+                        <Image
+                          src="/images/icons/clinic-2.svg"
+                          alt={`Walk In Clinic Appointments icon`}
+                          width={112}
+                          height={112}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <h3 className="text-xl text-center font-bold pt-2">
+                    Walk Ins @ Belleview Station
+                  </h3>
+                  <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
+                    <div className="w-full">
+                      {clinicWalkInHours?.map(
+                        (hours: { days: string }, index: number) => {
+                          return (
+                            <div
+                              key={hours.days + index}
+                              className="flex w-full uppercase"
+                            >
+                              <span>{hours.days}</span>
+                              <div className="w-full border-b mb-2 mx-4"></div>
+                            </div>
+                          );
+                        },
+                      )}
+                    </div>
+                    <div className="w-max">
+                      {clinicWalkInHours?.map(
+                        (hours: { times: string }, index: number) => {
+                          return (
+                            <div
+                              key={hours.times + index}
+                              className="flex w-full uppercase"
+                            >
+                              <span>{hours.times}</span>
+                            </div>
+                          );
+                        },
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <h3 className="text-xl text-center font-bold pt-2">
-                Walk Ins @ Belleview Station
-              </h3>
-              <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
-                <div className="w-full">
-                  {clinicWalkInHours?.map(
-                    (hours: { days: string }, index: number) => {
-                      return (
-                        <div
-                          key={hours.days + index}
-                          className="flex w-full uppercase"
-                        >
-                          <span>{hours.days}</span>
-                          <div className="w-full border-b mb-2 mx-4"></div>
-                        </div>
-                      );
-                    },
+                <div className="w-full max-w-lg items-center">
+                  <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                    <div
+                      className="w-full text-center flex flex-col"
+                      key="Housecall Appointments"
+                    >
+                      <div className="mx-auto">
+                        <Image
+                          src="/images/icons/mobile.svg"
+                          alt={`Housecall Appointments icon`}
+                          width={112}
+                          height={112}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <h3 className="text-xl text-center">Housecalls</h3>
+                  {winterMode &&
+                  winterMode?.isActive &&
+                  winterMode?.isActiveOnWebsite ? (
+                    <p className="text-lg text-center italic mb-2">
+                      * {winterMode?.message}
+                    </p>
+                  ) : (
+                    <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
+                      <div className="w-full">
+                        {housecallHours?.map(
+                          (hours: { days: string }, index: number) => {
+                            return (
+                              <div
+                                key={hours.days + index}
+                                className="flex w-full uppercase"
+                              >
+                                <span>{hours.days}</span>
+                                <div className="w-full border-b mb-2 mx-4"></div>
+                              </div>
+                            );
+                          },
+                        )}
+                      </div>
+                      <div className="w-max">
+                        {housecallHours?.map(
+                          (hours: { times: string }, index: number) => {
+                            return (
+                              <div
+                                key={hours.times + index}
+                                className="flex w-full uppercase"
+                              >
+                                <span>{hours.times}</span>
+                              </div>
+                            );
+                          },
+                        )}
+                      </div>
+                    </div>
                   )}
                 </div>
-                <div className="w-max">
-                  {clinicWalkInHours?.map(
-                    (hours: { times: string }, index: number) => {
-                      return (
-                        <div
-                          key={hours.times + index}
-                          className="flex w-full uppercase"
-                        >
-                          <span>{hours.times}</span>
-                        </div>
-                      );
-                    },
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="w-full max-w-lg items-center">
-              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
-                <div
-                  className="w-full text-center flex flex-col"
-                  key="Housecall Appointments"
-                >
-                  <div className="mx-auto">
-                    <Image
-                      src="/images/icons/mobile.svg"
-                      alt={`Housecall Appointments icon`}
-                      width={112}
-                      height={112}
-                    />
-                  </div>
-                </div>
-              </div>
-              <h3 className="text-xl text-center">Housecalls</h3>
-              {winterMode &&
-              winterMode?.isActive &&
-              winterMode?.isActiveOnWebsite ? (
-                <p className="text-lg text-center italic mb-2">
-                  * {winterMode?.message}
-                </p>
-              ) : (
-                <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
-                  <div className="w-full">
-                    {housecallHours?.map(
-                      (hours: { days: string }, index: number) => {
-                        return (
-                          <div
-                            key={hours.days + index}
-                            className="flex w-full uppercase"
-                          >
-                            <span>{hours.days}</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                  <div className="w-max">
-                    {housecallHours?.map(
-                      (hours: { times: string }, index: number) => {
-                        return (
-                          <div
-                            key={hours.times + index}
-                            className="flex w-full uppercase"
-                          >
-                            <span>{hours.times}</span>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </div>
         <div className="curve h-24 before:ellipse-1 before:w-[70%] before:bg-movet-brown before:h-40 before:translate-x-[64%] before:translate-y-[-31%] before:rounded-[100%_100%_100%_100%_/_100%_100%_100%_76%] after:ellipse-1 after:w-[84%] after:bg-movet-black after:translate-x-[-20%] after:translate-y-[54%] after:rounded-tr-[125%] after:h-32 ">
@@ -392,67 +398,75 @@ export const Hours = ({
                   <span>View Parking Map</span>
                 </a>
               </div>
-            )}{" "}
-            <div className="w-full max-w-lg  whitespace-nowrap mt-8">
-              <h3 className="text-xl text-center font-bold">
-                Walk-Ins @ Belleview Station
-              </h3>
-              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap uppercase">
-                <div className="w-full">
-                  {clinicWalkInHours?.map(
-                    (hours: { days: string }, index: number) => (
-                      <div
-                        className="flex w-full uppercase"
-                        key={hours.days + index}
-                      >
-                        <span className="whitespace-nowrap">{hours.days}</span>
-                        <div className="w-full border-b mb-2 mx-4"></div>
+            )}
+            {mode !== "admin" && (
+              <>
+                <div className="w-full max-w-lg  whitespace-nowrap mt-8">
+                  <h3 className="text-xl text-center font-bold">
+                    Walk-Ins @ Belleview Station
+                  </h3>
+                  <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap uppercase">
+                    <div className="w-full">
+                      {clinicWalkInHours?.map(
+                        (hours: { days: string }, index: number) => (
+                          <div
+                            className="flex w-full uppercase"
+                            key={hours.days + index}
+                          >
+                            <span className="whitespace-nowrap">
+                              {hours.days}
+                            </span>
+                            <div className="w-full border-b mb-2 mx-4"></div>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                    <div className="w-max whitespace-nowrap uppercase text-center">
+                      {clinicWalkInHours?.map(
+                        (hours: { times: string }, index: number) => (
+                          <div key={hours.times + index}>{hours.times}</div>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full max-w-lg items-center mt-8 mb-12">
+                  <h3 className="text-xl text-center">Housecalls</h3>
+                  {winterMode &&
+                  winterMode?.isActive &&
+                  winterMode?.isActiveOnWebsite ? (
+                    <p className="text-center italic">
+                      * {winterMode?.message}
+                    </p>
+                  ) : (
+                    <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
+                      <div className="w-full">
+                        {housecallHours?.map(
+                          (hours: { days: string }, index: number) => (
+                            <div
+                              className="flex w-full uppercase"
+                              key={hours.days + index}
+                            >
+                              <span className="whitespace-nowrap">
+                                {hours.days}
+                              </span>
+                              <div className="w-full border-b mb-2 mx-4"></div>
+                            </div>
+                          ),
+                        )}
                       </div>
-                    ),
+                      <div className="w-max whitespace-nowrap uppercase text-center">
+                        {housecallHours?.map(
+                          (hours: { times: string }, index: number) => (
+                            <div key={hours.times + index}>{hours.times}</div>
+                          ),
+                        )}
+                      </div>
+                    </div>
                   )}
                 </div>
-                <div className="w-max whitespace-nowrap uppercase text-center">
-                  {clinicWalkInHours?.map(
-                    (hours: { times: string }, index: number) => (
-                      <div key={hours.times + index}>{hours.times}</div>
-                    ),
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="w-full max-w-lg items-center mt-8 mb-12">
-              <h3 className="text-xl text-center">Housecalls</h3>
-              {winterMode &&
-              winterMode?.isActive &&
-              winterMode?.isActiveOnWebsite ? (
-                <p className="text-center italic">* {winterMode?.message}</p>
-              ) : (
-                <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
-                  <div className="w-full">
-                    {housecallHours?.map(
-                      (hours: { days: string }, index: number) => (
-                        <div
-                          className="flex w-full uppercase"
-                          key={hours.days + index}
-                        >
-                          <span className="whitespace-nowrap">
-                            {hours.days}
-                          </span>
-                          <div className="w-full border-b mb-2 mx-4"></div>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                  <div className="w-max whitespace-nowrap uppercase text-center">
-                    {housecallHours?.map(
-                      (hours: { times: string }, index: number) => (
-                        <div key={hours.times + index}>{hours.times}</div>
-                      ),
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </div>
         <div className="curve h-24 before:ellipse-1 before:w-[70%] before:bg-movet-brown before:h-40 before:translate-x-[64%] before:translate-y-[-31%] before:rounded-[100%_100%_100%_100%_/_100%_100%_100%_76%] after:ellipse-1 after:w-[84%] after:bg-movet-black after:translate-x-[-20%] after:translate-y-[54%] after:rounded-tr-[125%] after:h-32 ">
@@ -550,34 +564,39 @@ export const Hours = ({
                     </span>
                   )}
                 </p>
-                <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
-                  <div className="w-full">
-                    {clinicHours?.map(
-                      (hours: { days: string }, index: number) => {
-                        return (
-                          <div key={hours.days + index} className="flex w-full">
-                            <span>{hours.days}</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                        );
-                      },
-                    )}
+                {mode !== "admin" && (
+                  <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
+                    <div className="w-full">
+                      {clinicHours?.map(
+                        (hours: { days: string }, index: number) => {
+                          return (
+                            <div
+                              key={hours.days + index}
+                              className="flex w-full"
+                            >
+                              <span>{hours.days}</span>
+                              <div className="w-full border-b mb-2 mx-4"></div>
+                            </div>
+                          );
+                        },
+                      )}
+                    </div>
+                    <div className="w-max">
+                      {clinicHours?.map(
+                        (hours: { times: string }, index: number) => {
+                          return (
+                            <div
+                              key={hours.times + index}
+                              className="flex w-full"
+                            >
+                              <span>{hours.times}</span>
+                            </div>
+                          );
+                        },
+                      )}
+                    </div>
                   </div>
-                  <div className="w-max">
-                    {clinicHours?.map(
-                      (hours: { times: string }, index: number) => {
-                        return (
-                          <div
-                            key={hours.times + index}
-                            className="flex w-full"
-                          >
-                            <span>{hours.times}</span>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
               <div className="whitespace-nowrap">
                 <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
@@ -610,134 +629,10 @@ export const Hours = ({
                     </span>
                   )}
                 </p>
-                <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
-                  <div className="w-full">
-                    {boutiqueHours?.map(
-                      (hours: { days: string }, index: number) => {
-                        return (
-                          <div key={hours.days + index} className="flex w-full">
-                            <span>{hours.days}</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                  <div className="w-max">
-                    {boutiqueHours?.map(
-                      (hours: { times: string }, index: number) => {
-                        return (
-                          <div
-                            key={hours.times + index}
-                            className="flex w-full"
-                          >
-                            <span>{hours.times}</span>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="whitespace-nowrap mb-4">
-                <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
-                  <div
-                    className="w-full text-center flex flex-col"
-                    key="Walk In Clinic Appointments"
-                  >
-                    <div className="mx-auto">
-                      <Image
-                        src="/images/icons/clinic-2.svg"
-                        alt={`Walk In Clinic Appointments icon`}
-                        width={112}
-                        height={112}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-xl text-center font-bold">
-                  Walk-Ins @ Belleview Station
-                </h3>
-                {/* <p className="text-center -mb-1 italic">
-                  CURRENTLY -{" "}
-                  {hoursStatus && hoursStatus.walkinsStatus ? (
-                    <span className="text-movet-green font-extrabold">
-                      OPEN
-                    </span>
-                  ) : (
-                    <span className="text-movet-red font-extrabold">
-                      CLOSED
-                    </span>
-                  )}
-                </p> */}
-                <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
-                  <div className="w-full">
-                    {clinicWalkInHours?.map(
-                      (hours: { days: string }, index: number) => {
-                        return (
-                          <div key={hours.days + index} className="flex w-full">
-                            <span>{hours.days}</span>
-                            <div className="w-full border-b mb-2 mx-4"></div>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                  <div className="w-max">
-                    {clinicWalkInHours?.map(
-                      (hours: { times: string }, index: number) => {
-                        return (
-                          <div
-                            key={hours.times + index}
-                            className="flex w-full"
-                          >
-                            <span>{hours.times}</span>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="mb-4">
-                <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
-                  <div
-                    className="w-full text-center flex flex-col"
-                    key="Housecall Appointments"
-                  >
-                    <div className="mx-auto">
-                      <Image
-                        src="/images/icons/mobile.svg"
-                        alt={`Housecall Appointments icon`}
-                        width={112}
-                        height={112}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-xl text-center">Housecalls</h3>
-                {/* <p className="text-center -mb-1 italic">
-                  CURRENTLY -{" "}
-                  {hoursStatus && hoursStatus.housecallStatus ? (
-                    <span className="text-movet-green font-extrabold">
-                      OPEN
-                    </span>
-                  ) : (
-                    <span className="text-movet-red font-extrabold">
-                      CLOSED
-                    </span>
-                  )}
-                </p> */}
-                {winterMode &&
-                winterMode?.isActive &&
-                winterMode?.isActiveOnWebsite ? (
-                  <p className="text-lg text-center italic mb-2">
-                    * {winterMode?.message}
-                  </p>
-                ) : (
+                {mode !== "admin" && (
                   <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                     <div className="w-full">
-                      {housecallHours?.map(
+                      {boutiqueHours?.map(
                         (hours: { days: string }, index: number) => {
                           return (
                             <div
@@ -752,7 +647,7 @@ export const Hours = ({
                       )}
                     </div>
                     <div className="w-max">
-                      {housecallHours?.map(
+                      {boutiqueHours?.map(
                         (hours: { times: string }, index: number) => {
                           return (
                             <div
@@ -768,6 +663,142 @@ export const Hours = ({
                   </div>
                 )}
               </div>
+              {mode !== "admin" && (
+                <>
+                  <div className="whitespace-nowrap mb-4">
+                    <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                      <div
+                        className="w-full text-center flex flex-col"
+                        key="Walk In Clinic Appointments"
+                      >
+                        <div className="mx-auto">
+                          <Image
+                            src="/images/icons/clinic-2.svg"
+                            alt={`Walk In Clinic Appointments icon`}
+                            width={112}
+                            height={112}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <h3 className="text-xl text-center font-bold">
+                      Walk-Ins @ Belleview Station
+                    </h3>
+                    {/* <p className="text-center -mb-1 italic">
+                  CURRENTLY -{" "}
+                  {hoursStatus && hoursStatus.walkinsStatus ? (
+                    <span className="text-movet-green font-extrabold">
+                      OPEN
+                    </span>
+                  ) : (
+                    <span className="text-movet-red font-extrabold">
+                      CLOSED
+                    </span>
+                  )}
+                </p> */}
+                    <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
+                      <div className="w-full">
+                        {clinicWalkInHours?.map(
+                          (hours: { days: string }, index: number) => {
+                            return (
+                              <div
+                                key={hours.days + index}
+                                className="flex w-full"
+                              >
+                                <span>{hours.days}</span>
+                                <div className="w-full border-b mb-2 mx-4"></div>
+                              </div>
+                            );
+                          },
+                        )}
+                      </div>
+                      <div className="w-max">
+                        {clinicWalkInHours?.map(
+                          (hours: { times: string }, index: number) => {
+                            return (
+                              <div
+                                key={hours.times + index}
+                                className="flex w-full"
+                              >
+                                <span>{hours.times}</span>
+                              </div>
+                            );
+                          },
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mb-4">
+                    <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                      <div
+                        className="w-full text-center flex flex-col"
+                        key="Housecall Appointments"
+                      >
+                        <div className="mx-auto">
+                          <Image
+                            src="/images/icons/mobile.svg"
+                            alt={`Housecall Appointments icon`}
+                            width={112}
+                            height={112}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <h3 className="text-xl text-center">Housecalls</h3>
+                    {/* <p className="text-center -mb-1 italic">
+                  CURRENTLY -{" "}
+                  {hoursStatus && hoursStatus.housecallStatus ? (
+                    <span className="text-movet-green font-extrabold">
+                      OPEN
+                    </span>
+                  ) : (
+                    <span className="text-movet-red font-extrabold">
+                      CLOSED
+                    </span>
+                  )}
+                </p> */}
+                    {winterMode &&
+                    winterMode?.isActive &&
+                    winterMode?.isActiveOnWebsite ? (
+                      <p className="text-lg text-center italic mb-2">
+                        * {winterMode?.message}
+                      </p>
+                    ) : (
+                      <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
+                        <div className="w-full">
+                          {housecallHours?.map(
+                            (hours: { days: string }, index: number) => {
+                              return (
+                                <div
+                                  key={hours.days + index}
+                                  className="flex w-full"
+                                >
+                                  <span>{hours.days}</span>
+                                  <div className="w-full border-b mb-2 mx-4"></div>
+                                </div>
+                              );
+                            },
+                          )}
+                        </div>
+                        <div className="w-max">
+                          {housecallHours?.map(
+                            (hours: { times: string }, index: number) => {
+                              return (
+                                <div
+                                  key={hours.times + index}
+                                  className="flex w-full"
+                                >
+                                  <span>{hours.times}</span>
+                                </div>
+                              );
+                            },
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}
@@ -906,26 +937,28 @@ export const Hours = ({
                 </div>
               </div>
             </div>
-            <div className="w-full max-w-lg whitespace-nowrap mt-8">
-              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
-                <div
-                  className="w-full text-center flex flex-col"
-                  key="Walk In Clinic Appointments"
-                >
-                  <div className="mx-auto">
-                    <Image
-                      src="/images/icons/clinic-2.svg"
-                      alt={`Walk In Clinic Appointments icon`}
-                      width={112}
-                      height={112}
-                    />
+            {mode !== "admin" && (
+              <>
+                <div className="w-full max-w-lg whitespace-nowrap mt-8">
+                  <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                    <div
+                      className="w-full text-center flex flex-col"
+                      key="Walk In Clinic Appointments"
+                    >
+                      <div className="mx-auto">
+                        <Image
+                          src="/images/icons/clinic-2.svg"
+                          alt={`Walk In Clinic Appointments icon`}
+                          width={112}
+                          height={112}
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <h3 className="text-xl text-center font-bold">
-                Walk-Ins @ Belleview Station
-              </h3>
-              {/* <p className="text-center -mb-1 italic">
+                  <h3 className="text-xl text-center font-bold">
+                    Walk-Ins @ Belleview Station
+                  </h3>
+                  {/* <p className="text-center -mb-1 italic">
                 CURRENTLY -{" "}
                 {hoursStatus && hoursStatus.walkinsStatus ? (
                   <span className="text-movet-green font-extrabold">OPEN</span>
@@ -933,47 +966,49 @@ export const Hours = ({
                   <span className="text-movet-red font-extrabold">CLOSED</span>
                 )}
               </p> */}
-              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap uppercase">
-                <div className="w-full">
-                  {clinicWalkInHours?.map(
-                    (hours: { days: string }, index: number) => (
-                      <div
-                        className="flex w-full uppercase"
-                        key={hours.days + index}
-                      >
-                        <span className="whitespace-nowrap">{hours.days}</span>
-                        <div className="w-full border-b mb-2 mx-4"></div>
-                      </div>
-                    ),
-                  )}
-                </div>
-                <div className="w-max whitespace-nowrap uppercase text-center">
-                  {clinicWalkInHours?.map(
-                    (hours: { times: string }, index: number) => (
-                      <div key={hours.times + index}>{hours.times}</div>
-                    ),
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="w-full max-w-lg items-center my-8">
-              <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
-                <div
-                  className="w-full text-center flex flex-col"
-                  key="Housecall Appointments"
-                >
-                  <div className="mx-auto">
-                    <Image
-                      src="/images/icons/mobile.svg"
-                      alt={`Housecall Appointments icon`}
-                      width={112}
-                      height={112}
-                    />
+                  <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap uppercase">
+                    <div className="w-full">
+                      {clinicWalkInHours?.map(
+                        (hours: { days: string }, index: number) => (
+                          <div
+                            className="flex w-full uppercase"
+                            key={hours.days + index}
+                          >
+                            <span className="whitespace-nowrap">
+                              {hours.days}
+                            </span>
+                            <div className="w-full border-b mb-2 mx-4"></div>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                    <div className="w-max whitespace-nowrap uppercase text-center">
+                      {clinicWalkInHours?.map(
+                        (hours: { times: string }, index: number) => (
+                          <div key={hours.times + index}>{hours.times}</div>
+                        ),
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <h3 className="text-xl text-center">Housecalls</h3>
-              {/* <p className="text-center -mb-1 italic">
+                <div className="w-full max-w-lg items-center my-8">
+                  <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
+                    <div
+                      className="w-full text-center flex flex-col"
+                      key="Housecall Appointments"
+                    >
+                      <div className="mx-auto">
+                        <Image
+                          src="/images/icons/mobile.svg"
+                          alt={`Housecall Appointments icon`}
+                          width={112}
+                          height={112}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <h3 className="text-xl text-center">Housecalls</h3>
+                  {/* <p className="text-center -mb-1 italic">
                 CURRENTLY -{" "}
                 {hoursStatus && hoursStatus.housecallStatus ? (
                   <span className="text-movet-green font-extrabold">OPEN</span>
@@ -981,37 +1016,41 @@ export const Hours = ({
                   <span className="text-movet-red font-extrabold">CLOSED</span>
                 )}
               </p> */}
-              {winterMode &&
-              winterMode?.isActive &&
-              winterMode?.isActiveOnWebsite ? (
-                <p className="text-center italic">* {winterMode?.message}</p>
-              ) : (
-                <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
-                  <div className="w-full">
-                    {housecallHours?.map(
-                      (hours: { days: string }, index: number) => (
-                        <div
-                          className="flex w-full uppercase"
-                          key={hours.days + index}
-                        >
-                          <span className="whitespace-nowrap">
-                            {hours.days}
-                          </span>
-                          <div className="w-full border-b mb-2 mx-4"></div>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                  <div className="w-max whitespace-nowrap uppercase text-center">
-                    {housecallHours?.map(
-                      (hours: { times: string }, index: number) => (
-                        <div key={hours.times + index}>{hours.times}</div>
-                      ),
-                    )}
-                  </div>
+                  {winterMode &&
+                  winterMode?.isActive &&
+                  winterMode?.isActiveOnWebsite ? (
+                    <p className="text-center italic">
+                      * {winterMode?.message}
+                    </p>
+                  ) : (
+                    <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
+                      <div className="w-full">
+                        {housecallHours?.map(
+                          (hours: { days: string }, index: number) => (
+                            <div
+                              className="flex w-full uppercase"
+                              key={hours.days + index}
+                            >
+                              <span className="whitespace-nowrap">
+                                {hours.days}
+                              </span>
+                              <div className="w-full border-b mb-2 mx-4"></div>
+                            </div>
+                          ),
+                        )}
+                      </div>
+                      <div className="w-max whitespace-nowrap uppercase text-center">
+                        {housecallHours?.map(
+                          (hours: { times: string }, index: number) => (
+                            <div key={hours.times + index}>{hours.times}</div>
+                          ),
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </div>
       </section>

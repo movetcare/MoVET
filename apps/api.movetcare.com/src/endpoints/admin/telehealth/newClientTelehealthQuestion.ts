@@ -157,6 +157,7 @@ export const newClientTelehealthMessage = functions.firestore
           return allValidTokens;
         });
       if (DEBUG) console.log("adminFcmTokens", adminFcmTokens);
+      //TODO: https://firebase.google.com/docs/reference/admin/node/firebase-admin.messaging.messaging.md#messagingsendtodevice
       admin.messaging().sendToDevice(
         adminFcmTokens,
         {

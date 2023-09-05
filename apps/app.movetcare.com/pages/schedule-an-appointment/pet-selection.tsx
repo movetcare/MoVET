@@ -1,3 +1,4 @@
+import { UAParser } from "ua-parser-js";
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
@@ -58,9 +59,9 @@ export default function PetSelection() {
                 .required("A pet selection is required")
             : string()
                 .matches(/.*\d/, "A pet selection is required")
-                .required("A pet selection is required")
+                .required("A pet selection is required"),
         ),
-      })
+      }),
     ),
     defaultValues: {
       pets: null,
@@ -113,12 +114,12 @@ export default function PetSelection() {
   useEffect(() => {
     if (window.localStorage.getItem("bookingSession") !== null && router) {
       setSession(
-        JSON.parse(window.localStorage.getItem("bookingSession") as string)
+        JSON.parse(window.localStorage.getItem("bookingSession") as string),
       );
       if (isHousecallRequest) {
         const pets: any = [];
         JSON.parse(
-          window.localStorage.getItem("bookingSession") as string
+          window.localStorage.getItem("bookingSession") as string,
         )?.patients.forEach((patient: any) => {
           if (patient.vcprRequired) pets.push(patient);
         });
@@ -126,7 +127,7 @@ export default function PetSelection() {
       } else
         setPets(
           JSON.parse(window.localStorage.getItem("bookingSession") as string)
-            ?.patients
+            ?.patients,
         );
       setIsLoading(false);
     } else router.push("/schedule-an-appointment");
@@ -146,14 +147,19 @@ export default function PetSelection() {
         try {
           const { data: result }: any = await httpsCallable(
             functions,
-            "scheduleAppointment"
+            "scheduleAppointment",
           )({
             petSelection: {
               ...data,
             },
             establishCareExamRequired,
             id: session?.id,
-            device: navigator.userAgent,
+            device: JSON.parse(
+              JSON.stringify(UAParser(), function (key: any, value: any) {
+                if (value === undefined) return null;
+                return value;
+              }),
+            ),
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
@@ -161,19 +167,19 @@ export default function PetSelection() {
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
-                JSON.stringify(result)
+                JSON.stringify(result),
               );
               const queryString = getUrlQueryStringFromObject(router.query);
               if (result?.selectedPatients?.length > 0)
                 if (result?.establishCareExamRequired)
                   router.push(
                     "/schedule-an-appointment/wellness-check" +
-                      (queryString ? queryString : "")
+                      (queryString ? queryString : ""),
                   );
                 else
                   router.push(
                     "/schedule-an-appointment/location-selection" +
-                      (queryString ? queryString : "")
+                      (queryString ? queryString : ""),
                   );
             } else handleError(result);
           } else handleError(result);
@@ -217,7 +223,7 @@ export default function PetSelection() {
                 {pets
                   .sort(
                     (item: any, nextItem: any) =>
-                      nextItem.vcprRequired - item.vcprRequired
+                      nextItem.vcprRequired - item.vcprRequired,
                   )
                   .map((pet: any, index: number) => (
                     <div

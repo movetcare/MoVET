@@ -7,8 +7,7 @@ import * as email from "@sendgrid/mail";
 import * as client from "@sendgrid/client";
 import { WebClient, LogLevel } from "@slack/web-api";
 process.env.TZ = "America/Denver";
-let stagingInstance: any = null;
-let productionInstance: any = null;
+let firebaseInstance: any = null;
 export const environment: any = func.config()?.environment;
 export const DEBUG = false;
 //environment.type !== "production" && environment.type !== "development";
@@ -50,39 +49,30 @@ export const defaultRuntimeOptions = {
   //maxInstances: 100,
 };
 
-productionInstance = firebase.initializeApp();
+firebaseInstance = firebase.initializeApp(
+  environment.type !== "production"
+    ? {
+        credential: firebase.credential.cert({
+          projectId: func.config()?.environment.project_id,
+          clientEmail: func.config()?.environment.client_email,
+          privateKey: func
+            .config()
+            ?.environment.private_key.replace(/\\n/g, "\n"),
+        }),
+      }
+    : {},
+);
 
 if (environment.type === "development") {
-  productionInstance.firestore().settings({
+  firebaseInstance.firestore().settings({
     host: "localhost:8080",
     ssl: false,
     ignoreUndefinedProperties: true,
     experimentalForceLongPolling: true,
   });
-  func.app.setEmulatedAdminApp(productionInstance);
-} else if (environment.type === "staging") {
-  stagingInstance = firebase.initializeApp(
-    {
-      credential: firebase.credential.cert({
-        projectId: func.config()?.environment.project_id,
-        clientEmail: func.config()?.environment.client_email,
-        privateKey: func
-          .config()
-          ?.environment.private_key.replace(/\\n/g, "\n"),
-      }),
-      databaseURL: `https://${func.config()?.environment
-        .project_id}.firebaseio.com`,
-      storageBucket: "movet-care-staging.appspot.com",
-    },
-    "staging",
-  );
-  stagingInstance.firestore().settings({
-    ignoreUndefinedProperties: true,
-    experimentalForceLongPolling: true,
-  });
-} else if (environment.type === "production") {
-  productionInstance.firestore().settings({ ignoreUndefinedProperties: true });
-}
+  func.app.setEmulatedAdminApp(firebaseInstance);
+} else
+  firebaseInstance.firestore().settings({ ignoreUndefinedProperties: true });
 
 axios.defaults.baseURL = func.config()?.provet_cloud?.api_base;
 (axios.defaults.headers as any).common["Authorization"] = func.config()
@@ -98,8 +88,7 @@ export const proVetAppUrl: string = func.config()?.provet_cloud?.app_url;
 export const proVetApiUrl: string = func.config()?.provet_cloud?.api_base;
 export const recaptchaSecretKey: string = func.config()?.recaptcha?.secret_key;
 export const request: any = axios;
-export const admin: any =
-  environment.type !== "staging" ? productionInstance : stagingInstance;
+export const admin: any = firebaseInstance;
 export const functions: any = func;
 export const stripeApiVersion: any = func.config()?.stripe?.api_version;
 export const stripeWebhookSecret = func.config()?.stripe?.webhook_secret;

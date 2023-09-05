@@ -1,3 +1,4 @@
+import { UAParser } from "ua-parser-js";
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
@@ -49,9 +50,9 @@ export default function WellnessCheck() {
             ? array()
                 .max(3, "Only 3 pets are allowed per appointment")
                 .of(string())
-            : string().nullable()
+            : string().nullable(),
         ),
-      })
+      }),
     ),
     defaultValues: {
       illPets: null,
@@ -62,7 +63,7 @@ export default function WellnessCheck() {
   useEffect(() => {
     if (window.localStorage.getItem("bookingSession") !== null && router) {
       const sessionData = JSON.parse(
-        window.localStorage.getItem("bookingSession") as string
+        window.localStorage.getItem("bookingSession") as string,
       );
       const selectedPatientsData: any = [];
       sessionData?.selectedPatients?.forEach((patientId: string) => {
@@ -90,19 +91,24 @@ export default function WellnessCheck() {
       if (data?.illPets === null)
         router.push(
           "/schedule-an-appointment/location-selection" +
-            (queryString ? queryString : "")
+            (queryString ? queryString : ""),
         );
       else if (token) {
         try {
           const { data: result }: any = await httpsCallable(
             functions,
-            "scheduleAppointment"
+            "scheduleAppointment",
           )({
             illPetSelection: {
               ...data,
             },
             id: session?.id,
-            device: navigator.userAgent,
+            device: JSON.parse(
+              JSON.stringify(UAParser(), function (key: any, value: any) {
+                if (value === undefined) return null;
+                return value;
+              }),
+            ),
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
@@ -110,13 +116,13 @@ export default function WellnessCheck() {
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
-                JSON.stringify(result)
+                JSON.stringify(result),
               );
 
               if (result?.nextPatient)
                 router.push(
                   "/schedule-an-appointment/illness-selection" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else handleError(result);
             } else handleError(result);
@@ -159,7 +165,7 @@ export default function WellnessCheck() {
                 {pets
                   .sort(
                     (item: any, nextItem: any) =>
-                      nextItem.vcprRequired - item.vcprRequired
+                      nextItem.vcprRequired - item.vcprRequired,
                   )
                   .map((pet: any, index: number) => (
                     <div

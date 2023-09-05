@@ -8,9 +8,10 @@ import {
 import { getToken, isSupported, onMessage } from "firebase/messaging";
 import { firestore, messages } from "services/firebase";
 import { environment } from "utilities";
+import { UAParser } from "ua-parser-js";
 
 export const notifications = {
-  configure: async (userId: string) => {
+  configure: async (user: any) => {
     console.log("CONFIGURING NOTIFICATIONS");
     if (await isSupported())
       try {
@@ -25,9 +26,14 @@ export const notifications = {
             .then(async (currentToken: string) => {
               console.log("CLIENT PUSH TOKEN", currentToken);
               if (currentToken) {
+                const deviceInfo = JSON.parse(
+                  JSON.stringify(UAParser(), (key: any, value: any) =>
+                    value === undefined ? null : value,
+                  ),
+                );
                 let existingTokens: any[] = [];
                 const tokenAlreadyExists = await getDoc(
-                  doc(firestore, "fcmTokensAdmin", userId),
+                  doc(firestore, "fcmTokensAdmin", user?.uid),
                 ).then((doc: any) => {
                   if (doc.exists()) {
                     existingTokens = doc.data().tokens;
@@ -42,27 +48,43 @@ export const notifications = {
                   } else return false;
                 });
                 if (tokenAlreadyExists === false)
-                  await setDoc(doc(firestore, "fcmTokensAdmin", userId), {
+                  await setDoc(doc(firestore, "fcmTokensAdmin", user?.uid), {
                     tokens: [
                       {
                         token: currentToken,
                         isActive: true,
-                        device: navigator.userAgent,
+                        device: deviceInfo,
                         createdOn: new Date(),
                       },
                     ],
+                    user: {
+                      displayName: user?.displayName,
+                      email: user?.email,
+                      emailVerified: user?.emailVerified,
+                      photoURL: user?.photoURL,
+                      uid: user?.uid,
+                      phoneNumber: user?.phoneNumber,
+                    },
                     createdOn: serverTimestamp(),
                   });
                 else if (tokenAlreadyExists === undefined)
                   await setDoc(
-                    doc(firestore, "fcmTokensAdmin", userId),
+                    doc(firestore, "fcmTokensAdmin", user?.uid),
                     {
                       tokens: arrayUnion({
                         token: currentToken,
                         isActive: true,
-                        device: navigator.userAgent,
+                        device: deviceInfo,
                         createdOn: new Date(),
                       }),
+                      user: {
+                        displayName: user?.displayName,
+                        email: user?.email,
+                        emailVerified: user?.emailVerified,
+                        photoURL: user?.photoURL,
+                        uid: user?.uid,
+                        phoneNumber: user?.phoneNumber,
+                      },
                       updatedOn: serverTimestamp(),
                     },
                     { merge: true },
@@ -73,16 +95,24 @@ export const notifications = {
                       return {
                         token: currentToken,
                         isActive: true,
-                        device: navigator.userAgent,
+                        device: deviceInfo,
                         updatedOn: new Date(),
                         createdOn: token.createdOn,
                       };
                     } else return token;
                   });
                   await setDoc(
-                    doc(firestore, "fcmTokensAdmin", userId),
+                    doc(firestore, "fcmTokensAdmin", user?.uid),
                     {
                       tokens: newTokenData,
+                      user: {
+                        displayName: user?.displayName,
+                        email: user?.email,
+                        emailVerified: user?.emailVerified,
+                        photoURL: user?.photoURL,
+                        uid: user?.uid,
+                        phoneNumber: user?.phoneNumber,
+                      },
                       updatedOn: serverTimestamp(),
                     },
                     { merge: true },
@@ -112,7 +142,7 @@ export const notifications = {
         return false;
       }
     else {
-      console.log("Notifications not supported! Missing Browser APIs");
+      console.error("Notifications not supported! Missing Browser APIs");
       return false;
     }
   },

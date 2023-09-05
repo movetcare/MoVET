@@ -1,3 +1,4 @@
+import { UAParser } from "ua-parser-js";
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
@@ -58,7 +59,12 @@ export default function StaffSelection() {
             id: JSON.parse(
               window.localStorage.getItem("bookingSession") as string,
             )?.id,
-            device: navigator.userAgent,
+            device: JSON.parse(
+              JSON.stringify(UAParser(), function (key: any, value: any) {
+                if (value === undefined) return null;
+                return value;
+              }),
+            ),
             token,
           });
           if (result?.error !== true || result?.error === undefined) {

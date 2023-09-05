@@ -1,3 +1,4 @@
+import { UAParser } from "ua-parser-js";
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
@@ -41,9 +42,9 @@ export default function ReasonSelection() {
               })
             : string()
                 .matches(/.*\d/, "A selection selection is required")
-                .required("A selection selection is required")
+                .required("A selection selection is required"),
         ),
-      })
+      }),
     ),
     defaultValues: {
       reason: "",
@@ -57,10 +58,10 @@ export default function ReasonSelection() {
     const fetchReasons = async () => {
       const { data: result }: any = await httpsCallable(
         functions,
-        "getReasons"
+        "getReasons",
       )({
         reasonGroup: JSON.parse(
-          window.localStorage.getItem("bookingSession") as string
+          window.localStorage.getItem("bookingSession") as string,
         )?.locationId,
       });
       if (result?.error !== true || result?.error === undefined) {
@@ -86,15 +87,20 @@ export default function ReasonSelection() {
       if (token) {
         try {
           const session = JSON.parse(
-            window.localStorage.getItem("bookingSession") as string
+            window.localStorage.getItem("bookingSession") as string,
           );
           const { data: result }: any = await httpsCallable(
             functions,
-            "scheduleAppointment"
+            "scheduleAppointment",
           )({
             ...data,
             id: session?.id,
-            device: navigator.userAgent,
+            device: JSON.parse(
+              JSON.stringify(UAParser(), function (key: any, value: any) {
+                if (value === undefined) return null;
+                return value;
+              }),
+            ),
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
@@ -102,18 +108,18 @@ export default function ReasonSelection() {
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
-                JSON.stringify(result)
+                JSON.stringify(result),
               );
               const queryString = getUrlQueryStringFromObject(router.query);
               if (result.staff)
                 router.push(
                   "/schedule-an-appointment/staff-selection" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else
                 router.push(
                   "/schedule-an-appointment/datetime-selection" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
             } else handleError(result);
           } else handleError(result);

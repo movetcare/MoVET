@@ -1,3 +1,4 @@
+import { UAParser } from "ua-parser-js";
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
@@ -46,7 +47,7 @@ addMethod(string as any, "isBeforeToday", function (errorMessage: string) {
       return (
         today > valueAsDate || createError({ path, message: errorMessage })
       );
-    }
+    },
   );
 });
 
@@ -61,7 +62,7 @@ addMethod(string as any, "isValidDay", function (errorMessage: string) {
       return (
         (day <= 31 && day >= 1) || createError({ path, message: errorMessage })
       );
-    }
+    },
   );
 });
 
@@ -77,7 +78,7 @@ addMethod(string as any, "isValidMonth", function (errorMessage: string) {
         (month <= 12 && month >= 1) ||
         createError({ path, message: errorMessage })
       );
-    }
+    },
   );
 });
 
@@ -91,7 +92,7 @@ addMethod(string as any, "isValidWeight", function (errorMessage: string) {
         (parseInt(value) >= 1 && parseInt(value) <= 300) ||
         createError({ path, message: errorMessage })
       );
-    }
+    },
   );
 });
 
@@ -139,7 +140,7 @@ export default function ContactInfo() {
               })
             : string()
                 .matches(/.*\d/, "A breed selection is required")
-                .required("A breed selection is required")
+                .required("A breed selection is required"),
         ),
         weight: (string() as any)
           .isValidWeight("Weight must be between 1 and 300 pounds")
@@ -156,9 +157,9 @@ export default function ContactInfo() {
               })
             : string()
                 .matches(/.*\d/, "A selection is required")
-                .required("A selection is required")
+                .required("A selection is required"),
         ),
-      })
+      }),
     ),
     defaultValues: {
       name: "",
@@ -181,7 +182,7 @@ export default function ContactInfo() {
   useEffect(() => {
     if (window.localStorage.getItem("bookingSession") !== null && router) {
       setSession(
-        JSON.parse(window.localStorage.getItem("bookingSession") as string)
+        JSON.parse(window.localStorage.getItem("bookingSession") as string),
       );
       setIsLoading(false);
     } else router.push("/schedule-an-appointment");
@@ -190,7 +191,7 @@ export default function ContactInfo() {
     const fetchBreeds = async () => {
       const { data: result }: any = await httpsCallable(
         functions,
-        "getBreedsData"
+        "getBreedsData",
       )();
       if (result?.error !== true || result?.error === undefined)
         if (result[0].breeds !== false && result[1].breeds !== false)
@@ -205,11 +206,11 @@ export default function ContactInfo() {
                   breeds: breed?.breeds.map(
                     ({ title, id }: { title: string; id: string }) => {
                       return { value: id, label: title };
-                    }
+                    },
                   ),
                 };
-              }
-            )
+              },
+            ),
           );
         else setError({ message: "FAILED TO GET BREEDS" });
       else setError(result);
@@ -243,12 +244,12 @@ export default function ContactInfo() {
         try {
           const { data: result }: any = await httpsCallable(
             functions,
-            "scheduleAppointment"
+            "scheduleAppointment",
           )({
             addAPet: data,
             //{ ...data, records, photo },
             id: session?.id,
-            device: navigator.userAgent,
+            device: UAParser,
             token,
           });
           if (result?.error !== true || result?.error === undefined) {
@@ -256,23 +257,23 @@ export default function ContactInfo() {
             if (result?.client?.uid && result?.id) {
               window.localStorage.setItem(
                 "bookingSession",
-                JSON.stringify(result)
+                JSON.stringify(result),
               );
               const queryString = getUrlQueryStringFromObject(router.query);
               if (result?.client?.requiresInfo)
                 router.push(
                   "/schedule-an-appointment/contact-info" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else if (result?.patients?.length > 0)
                 router.push(
                   "/schedule-an-appointment/pet-selection" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
               else if (result?.patients?.length === 0)
                 router.push(
                   "/schedule-an-appointment/add-a-pet" +
-                    (queryString ? queryString : "")
+                    (queryString ? queryString : ""),
                 );
             } else handleError(result);
           } else handleError(result);

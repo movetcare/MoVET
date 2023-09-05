@@ -1,3 +1,4 @@
+import { UAParser } from "ua-parser-js";
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
@@ -250,7 +251,12 @@ export default function RequestAnAppointment({
               JSON.parse(
                 window.localStorage.getItem("bookingSession") as string,
               )?.id || null,
-            device: navigator.userAgent,
+            device: JSON.parse(
+              JSON.stringify(UAParser(), function (key: any, value: any) {
+                if (value === undefined) return null;
+                return value;
+              }),
+            ),
             token,
           });
           if (result) router.push("/request-an-appointment/success");
@@ -286,7 +292,12 @@ export default function RequestAnAppointment({
                 JSON.parse(
                   window.localStorage.getItem("bookingSession") as string,
                 )?.id || null,
-              device: navigator.userAgent,
+              device: JSON.parse(
+                JSON.stringify(UAParser(), function (key: any, value: any) {
+                  if (value === undefined) return null;
+                  return value;
+                }),
+              ),
               token,
             });
           } catch (error) {

@@ -197,6 +197,12 @@ const Footer: React.FC = () => {
                 </div>
               </Link>
               <p className="text-movet-white text-xl mx-3">|</p>
+              <Link href="/push-notifications">
+                <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center">
+                  <FontAwesomeIcon icon={faBell} size="lg" />
+                </div>
+              </Link>
+              <p className="text-movet-white text-xl mx-3">|</p>
             </>
           )}
           <a

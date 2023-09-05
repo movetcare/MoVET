@@ -279,7 +279,7 @@ export const HoursStatus = () => {
       (error: any) => {
         setError(error?.message || error);
         setIsLoadingStatus(false);
-      }
+      },
     );
     const unsubscribeHoursConfiguration = onSnapshot(
       doc(firestore, "configuration", "openings"),
@@ -290,7 +290,7 @@ export const HoursStatus = () => {
       (error: any) => {
         setError(error?.message || error);
         setIsLoadingStatus(false);
-      }
+      },
     );
     const unsubscribeHoursStatusConfiguration = onSnapshot(
       doc(firestore, "configuration", "hours_status"),
@@ -304,7 +304,7 @@ export const HoursStatus = () => {
       (error: any) => {
         setError(error?.message || error);
         setIsLoadingStatus(false);
-      }
+      },
     );
     const unsubscribeBookingConfiguration = onSnapshot(
       doc(firestore, "configuration", "bookings"),
@@ -312,273 +312,273 @@ export const HoursStatus = () => {
         const formatTime = (time: string) =>
           time?.toString()?.length === 3 ? `0${time}` : `${time}`;
         setIsOpenClinicMonday(
-          doc.data()?.isOpenMondayClinicAutomation || false
+          doc.data()?.isOpenMondayClinicAutomation || false,
         );
         setIsOpenClinicTuesday(
-          doc.data()?.isOpenTuesdayClinicAutomation || false
+          doc.data()?.isOpenTuesdayClinicAutomation || false,
         );
         setIsOpenClinicWednesday(
-          doc.data()?.isOpenWednesdayClinicAutomation || false
+          doc.data()?.isOpenWednesdayClinicAutomation || false,
         );
         setIsOpenClinicThursday(
-          doc.data()?.isOpenThursdayClinicAutomation || false
+          doc.data()?.isOpenThursdayClinicAutomation || false,
         );
         setIsOpenClinicFriday(
-          doc.data()?.isOpenFridayClinicAutomation || false
+          doc.data()?.isOpenFridayClinicAutomation || false,
         );
         setIsOpenClinicSaturday(
-          doc.data()?.isOpenSaturdayClinicAutomation || false
+          doc.data()?.isOpenSaturdayClinicAutomation || false,
         );
         setIsOpenClinicSunday(
-          doc.data()?.isOpenSundayClinicAutomation || false
+          doc.data()?.isOpenSundayClinicAutomation || false,
         );
         setClinicAutomationStatus(doc.data()?.clinicAutomationStatus || false);
         setHousecallAutomationStatus(
-          doc.data()?.housecallAutomationStatus || false
+          doc.data()?.housecallAutomationStatus || false,
         );
         setBoutiqueAutomationStatus(
-          doc.data()?.boutiqueAutomationStatus || false
+          doc.data()?.boutiqueAutomationStatus || false,
         );
         setWalkinsAutomationStatus(
-          doc.data()?.walkinsAutomationStatus || false
+          doc.data()?.walkinsAutomationStatus || false,
         );
         setSelectedClinicStartTimeMonday(
-          formatTime(doc.data()?.automatedClinicOpenTimeMonday)
+          formatTime(doc.data()?.automatedClinicOpenTimeMonday),
         );
         setSelectedClinicEndTimeMonday(
-          formatTime(doc.data()?.automatedClinicCloseTimeMonday)
+          formatTime(doc.data()?.automatedClinicCloseTimeMonday),
         );
         setSelectedClinicStartTimeTuesday(
-          formatTime(doc.data()?.automatedClinicOpenTimeTuesday)
+          formatTime(doc.data()?.automatedClinicOpenTimeTuesday),
         );
         setSelectedClinicEndTimeTuesday(
-          formatTime(doc.data()?.automatedClinicCloseTimeTuesday)
+          formatTime(doc.data()?.automatedClinicCloseTimeTuesday),
         );
         setSelectedClinicStartTimeWednesday(
-          formatTime(doc.data()?.automatedClinicOpenTimeWednesday)
+          formatTime(doc.data()?.automatedClinicOpenTimeWednesday),
         );
         setSelectedClinicEndTimeWednesday(
-          formatTime(doc.data()?.automatedClinicCloseTimeWednesday)
+          formatTime(doc.data()?.automatedClinicCloseTimeWednesday),
         );
         setSelectedClinicStartTimeThursday(
-          formatTime(doc.data()?.automatedClinicOpenTimeThursday)
+          formatTime(doc.data()?.automatedClinicOpenTimeThursday),
         );
         setSelectedClinicEndTimeThursday(
-          formatTime(doc.data()?.automatedClinicCloseTimeThursday)
+          formatTime(doc.data()?.automatedClinicCloseTimeThursday),
         );
         setSelectedClinicStartTimeFriday(
-          formatTime(doc.data()?.automatedClinicOpenTimeFriday)
+          formatTime(doc.data()?.automatedClinicOpenTimeFriday),
         );
         setSelectedClinicEndTimeFriday(
-          formatTime(doc.data()?.automatedClinicCloseTimeFriday)
+          formatTime(doc.data()?.automatedClinicCloseTimeFriday),
         );
         setSelectedClinicStartTimeSaturday(
-          formatTime(doc.data()?.automatedClinicOpenTimeSaturday)
+          formatTime(doc.data()?.automatedClinicOpenTimeSaturday),
         );
         setSelectedClinicEndTimeSaturday(
-          formatTime(doc.data()?.automatedClinicCloseTimeSaturday)
+          formatTime(doc.data()?.automatedClinicCloseTimeSaturday),
         );
         setSelectedClinicStartTimeSunday(
-          formatTime(doc.data()?.automatedClinicOpenTimeSunday)
+          formatTime(doc.data()?.automatedClinicOpenTimeSunday),
         );
         setSelectedClinicEndTimeSunday(
-          formatTime(doc.data()?.automatedClinicCloseTimeSunday)
+          formatTime(doc.data()?.automatedClinicCloseTimeSunday),
         );
         setIsOpenHousecallMonday(
-          doc.data()?.isOpenMondayHousecallAutomation || false
+          doc.data()?.isOpenMondayHousecallAutomation || false,
         );
         setIsOpenHousecallTuesday(
-          doc.data()?.isOpenTuesdayHousecallAutomation || false
+          doc.data()?.isOpenTuesdayHousecallAutomation || false,
         );
         setIsOpenHousecallWednesday(
-          doc.data()?.isOpenWednesdayHousecallAutomation || false
+          doc.data()?.isOpenWednesdayHousecallAutomation || false,
         );
         setIsOpenHousecallThursday(
-          doc.data()?.isOpenThursdayHousecallAutomation || false
+          doc.data()?.isOpenThursdayHousecallAutomation || false,
         );
         setIsOpenHousecallFriday(
-          doc.data()?.isOpenFridayHousecallAutomation || false
+          doc.data()?.isOpenFridayHousecallAutomation || false,
         );
         setIsOpenHousecallSaturday(
-          doc.data()?.isOpenSaturdayHousecallAutomation || false
+          doc.data()?.isOpenSaturdayHousecallAutomation || false,
         );
         setIsOpenHousecallSunday(
-          doc.data()?.isOpenSundayHousecallAutomation || false
+          doc.data()?.isOpenSundayHousecallAutomation || false,
         );
         setSelectedHousecallStartTimeMonday(
-          formatTime(doc.data()?.automatedHousecallOpenTimeMonday)
+          formatTime(doc.data()?.automatedHousecallOpenTimeMonday),
         );
         setSelectedHousecallEndTimeMonday(
-          formatTime(doc.data()?.automatedHousecallCloseTimeMonday)
+          formatTime(doc.data()?.automatedHousecallCloseTimeMonday),
         );
         setSelectedHousecallStartTimeTuesday(
-          formatTime(doc.data()?.automatedHousecallOpenTimeTuesday)
+          formatTime(doc.data()?.automatedHousecallOpenTimeTuesday),
         );
         setSelectedHousecallEndTimeTuesday(
-          formatTime(doc.data()?.automatedHousecallCloseTimeTuesday)
+          formatTime(doc.data()?.automatedHousecallCloseTimeTuesday),
         );
         setSelectedHousecallStartTimeWednesday(
-          formatTime(doc.data()?.automatedHousecallOpenTimeWednesday)
+          formatTime(doc.data()?.automatedHousecallOpenTimeWednesday),
         );
         setSelectedHousecallEndTimeWednesday(
-          formatTime(doc.data()?.automatedHousecallCloseTimeWednesday)
+          formatTime(doc.data()?.automatedHousecallCloseTimeWednesday),
         );
         setSelectedHousecallStartTimeThursday(
-          formatTime(doc.data()?.automatedHousecallOpenTimeThursday)
+          formatTime(doc.data()?.automatedHousecallOpenTimeThursday),
         );
         setSelectedHousecallEndTimeThursday(
-          formatTime(doc.data()?.automatedHousecallCloseTimeThursday)
+          formatTime(doc.data()?.automatedHousecallCloseTimeThursday),
         );
         setSelectedHousecallStartTimeFriday(
-          formatTime(doc.data()?.automatedHousecallOpenTimeFriday)
+          formatTime(doc.data()?.automatedHousecallOpenTimeFriday),
         );
         setSelectedHousecallEndTimeFriday(
-          formatTime(doc.data()?.automatedHousecallCloseTimeFriday)
+          formatTime(doc.data()?.automatedHousecallCloseTimeFriday),
         );
         setSelectedHousecallStartTimeSaturday(
-          formatTime(doc.data()?.automatedHousecallOpenTimeSaturday)
+          formatTime(doc.data()?.automatedHousecallOpenTimeSaturday),
         );
         setSelectedHousecallEndTimeSaturday(
-          formatTime(doc.data()?.automatedHousecallCloseTimeSaturday)
+          formatTime(doc.data()?.automatedHousecallCloseTimeSaturday),
         );
         setSelectedHousecallStartTimeSunday(
-          formatTime(doc.data()?.automatedHousecallOpenTimeSunday)
+          formatTime(doc.data()?.automatedHousecallOpenTimeSunday),
         );
         setSelectedHousecallEndTimeSunday(
-          formatTime(doc.data()?.automatedHousecallCloseTimeSunday)
+          formatTime(doc.data()?.automatedHousecallCloseTimeSunday),
         );
         setIsOpenBoutiqueMonday(
-          doc.data()?.isOpenMondayBoutiqueAutomation || false
+          doc.data()?.isOpenMondayBoutiqueAutomation || false,
         );
         setIsOpenBoutiqueTuesday(
-          doc.data()?.isOpenTuesdayBoutiqueAutomation || false
+          doc.data()?.isOpenTuesdayBoutiqueAutomation || false,
         );
         setIsOpenBoutiqueWednesday(
-          doc.data()?.isOpenWednesdayBoutiqueAutomation || false
+          doc.data()?.isOpenWednesdayBoutiqueAutomation || false,
         );
         setIsOpenBoutiqueThursday(
-          doc.data()?.isOpenThursdayBoutiqueAutomation || false
+          doc.data()?.isOpenThursdayBoutiqueAutomation || false,
         );
         setIsOpenBoutiqueFriday(
-          doc.data()?.isOpenFridayBoutiqueAutomation || false
+          doc.data()?.isOpenFridayBoutiqueAutomation || false,
         );
         setIsOpenBoutiqueSaturday(
-          doc.data()?.isOpenSaturdayBoutiqueAutomation || false
+          doc.data()?.isOpenSaturdayBoutiqueAutomation || false,
         );
         setIsOpenBoutiqueSunday(
-          doc.data()?.isOpenSundayBoutiqueAutomation || false
+          doc.data()?.isOpenSundayBoutiqueAutomation || false,
         );
         setSelectedBoutiqueStartTimeMonday(
-          formatTime(doc.data()?.automatedBoutiqueOpenTimeMonday)
+          formatTime(doc.data()?.automatedBoutiqueOpenTimeMonday),
         );
         setSelectedBoutiqueEndTimeMonday(
-          formatTime(doc.data()?.automatedBoutiqueCloseTimeMonday)
+          formatTime(doc.data()?.automatedBoutiqueCloseTimeMonday),
         );
         setSelectedBoutiqueStartTimeTuesday(
-          formatTime(doc.data()?.automatedBoutiqueOpenTimeTuesday)
+          formatTime(doc.data()?.automatedBoutiqueOpenTimeTuesday),
         );
         setSelectedBoutiqueEndTimeTuesday(
-          formatTime(doc.data()?.automatedBoutiqueCloseTimeTuesday)
+          formatTime(doc.data()?.automatedBoutiqueCloseTimeTuesday),
         );
         setSelectedBoutiqueStartTimeWednesday(
-          formatTime(doc.data()?.automatedBoutiqueOpenTimeWednesday)
+          formatTime(doc.data()?.automatedBoutiqueOpenTimeWednesday),
         );
         setSelectedBoutiqueEndTimeWednesday(
-          formatTime(doc.data()?.automatedBoutiqueCloseTimeWednesday)
+          formatTime(doc.data()?.automatedBoutiqueCloseTimeWednesday),
         );
         setSelectedBoutiqueStartTimeThursday(
-          formatTime(doc.data()?.automatedBoutiqueOpenTimeThursday)
+          formatTime(doc.data()?.automatedBoutiqueOpenTimeThursday),
         );
         setSelectedBoutiqueEndTimeThursday(
-          formatTime(doc.data()?.automatedBoutiqueCloseTimeThursday)
+          formatTime(doc.data()?.automatedBoutiqueCloseTimeThursday),
         );
         setSelectedBoutiqueStartTimeFriday(
-          formatTime(doc.data()?.automatedBoutiqueOpenTimeFriday)
+          formatTime(doc.data()?.automatedBoutiqueOpenTimeFriday),
         );
         setSelectedBoutiqueEndTimeFriday(
-          formatTime(doc.data()?.automatedBoutiqueCloseTimeFriday)
+          formatTime(doc.data()?.automatedBoutiqueCloseTimeFriday),
         );
         setSelectedBoutiqueStartTimeSaturday(
-          formatTime(doc.data()?.automatedBoutiqueOpenTimeSaturday)
+          formatTime(doc.data()?.automatedBoutiqueOpenTimeSaturday),
         );
         setSelectedBoutiqueEndTimeSaturday(
-          formatTime(doc.data()?.automatedBoutiqueCloseTimeSaturday)
+          formatTime(doc.data()?.automatedBoutiqueCloseTimeSaturday),
         );
         setSelectedBoutiqueStartTimeSunday(
-          formatTime(doc.data()?.automatedBoutiqueOpenTimeSunday)
+          formatTime(doc.data()?.automatedBoutiqueOpenTimeSunday),
         );
         setSelectedBoutiqueEndTimeSunday(
-          formatTime(doc.data()?.automatedBoutiqueCloseTimeSunday)
+          formatTime(doc.data()?.automatedBoutiqueCloseTimeSunday),
         );
         setIsOpenWalkInMonday(
-          doc.data()?.isOpenMondayWalkInAutomation || false
+          doc.data()?.isOpenMondayWalkInAutomation || false,
         );
         setIsOpenWalkInTuesday(
-          doc.data()?.isOpenTuesdayWalkInAutomation || false
+          doc.data()?.isOpenTuesdayWalkInAutomation || false,
         );
         setIsOpenWalkInWednesday(
-          doc.data()?.isOpenWednesdayWalkInAutomation || false
+          doc.data()?.isOpenWednesdayWalkInAutomation || false,
         );
         setIsOpenWalkInThursday(
-          doc.data()?.isOpenThursdayWalkInAutomation || false
+          doc.data()?.isOpenThursdayWalkInAutomation || false,
         );
         setIsOpenWalkInFriday(
-          doc.data()?.isOpenFridayWalkInAutomation || false
+          doc.data()?.isOpenFridayWalkInAutomation || false,
         );
         setIsOpenWalkInSaturday(
-          doc.data()?.isOpenSaturdayWalkInAutomation || false
+          doc.data()?.isOpenSaturdayWalkInAutomation || false,
         );
         setIsOpenWalkInSunday(
-          doc.data()?.isOpenSundayWalkInAutomation || false
+          doc.data()?.isOpenSundayWalkInAutomation || false,
         );
         setSelectedWalkInStartTimeMonday(
-          formatTime(doc.data()?.automatedWalkInOpenTimeMonday)
+          formatTime(doc.data()?.automatedWalkInOpenTimeMonday),
         );
         setSelectedWalkInEndTimeMonday(
-          formatTime(doc.data()?.automatedWalkInCloseTimeMonday)
+          formatTime(doc.data()?.automatedWalkInCloseTimeMonday),
         );
         setSelectedWalkInStartTimeTuesday(
-          formatTime(doc.data()?.automatedWalkInOpenTimeTuesday)
+          formatTime(doc.data()?.automatedWalkInOpenTimeTuesday),
         );
         setSelectedWalkInEndTimeTuesday(
-          formatTime(doc.data()?.automatedWalkInCloseTimeTuesday)
+          formatTime(doc.data()?.automatedWalkInCloseTimeTuesday),
         );
         setSelectedWalkInStartTimeWednesday(
-          formatTime(doc.data()?.automatedWalkInOpenTimeWednesday)
+          formatTime(doc.data()?.automatedWalkInOpenTimeWednesday),
         );
         setSelectedWalkInEndTimeWednesday(
-          formatTime(doc.data()?.automatedWalkInCloseTimeWednesday)
+          formatTime(doc.data()?.automatedWalkInCloseTimeWednesday),
         );
         setSelectedWalkInStartTimeThursday(
-          formatTime(doc.data()?.automatedWalkInOpenTimeThursday)
+          formatTime(doc.data()?.automatedWalkInOpenTimeThursday),
         );
         setSelectedWalkInEndTimeThursday(
-          formatTime(doc.data()?.automatedWalkInCloseTimeThursday)
+          formatTime(doc.data()?.automatedWalkInCloseTimeThursday),
         );
         setSelectedWalkInStartTimeFriday(
-          formatTime(doc.data()?.automatedWalkInOpenTimeFriday)
+          formatTime(doc.data()?.automatedWalkInOpenTimeFriday),
         );
         setSelectedWalkInEndTimeFriday(
-          formatTime(doc.data()?.automatedWalkInCloseTimeFriday)
+          formatTime(doc.data()?.automatedWalkInCloseTimeFriday),
         );
         setSelectedWalkInStartTimeSaturday(
-          formatTime(doc.data()?.automatedWalkInOpenTimeSaturday)
+          formatTime(doc.data()?.automatedWalkInOpenTimeSaturday),
         );
         setSelectedWalkInEndTimeSaturday(
-          formatTime(doc.data()?.automatedWalkInCloseTimeSaturday)
+          formatTime(doc.data()?.automatedWalkInCloseTimeSaturday),
         );
         setSelectedWalkInStartTimeSunday(
-          formatTime(doc.data()?.automatedWalkInOpenTimeSunday)
+          formatTime(doc.data()?.automatedWalkInOpenTimeSunday),
         );
         setSelectedWalkInEndTimeSunday(
-          formatTime(doc.data()?.automatedWalkInCloseTimeSunday)
+          formatTime(doc.data()?.automatedWalkInCloseTimeSunday),
         );
         setIsLoading(false);
       },
       (error: any) => {
         setError(error?.message || error);
         setIsLoading(false);
-      }
+      },
     );
     return () => {
       unsubscribeBookingConfiguration();
@@ -598,7 +598,7 @@ export const HoursStatus = () => {
         walkinsStatus,
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Website Hours Override will Appear in ~ 5 Minutes!`, {
@@ -610,7 +610,7 @@ export const HoursStatus = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(`Website Hours Override Update FAILED: ${error?.message}`, {
@@ -623,7 +623,7 @@ export const HoursStatus = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       )
       .finally(() => {
         setDidEditField(false);
@@ -651,19 +651,19 @@ export const HoursStatus = () => {
         automatedClinicOpenTimeTuesday: Number(selectedClinicStartTimeTuesday),
         automatedClinicCloseTimeTuesday: Number(selectedClinicEndTimeTuesday),
         automatedClinicOpenTimeWednesday: Number(
-          selectedClinicStartTimeWednesday
+          selectedClinicStartTimeWednesday,
         ),
         automatedClinicCloseTimeWednesday: Number(
-          selectedClinicEndTimeWednesday
+          selectedClinicEndTimeWednesday,
         ),
         automatedClinicOpenTimeThursday: Number(
-          selectedClinicStartTimeThursday
+          selectedClinicStartTimeThursday,
         ),
         automatedClinicCloseTimeThursday: Number(selectedClinicEndTimeThursday),
         automatedClinicOpenTimeFriday: Number(selectedClinicStartTimeFriday),
         automatedClinicCloseTimeFriday: Number(selectedClinicEndTimeFriday),
         automatedClinicOpenTimeSaturday: Number(
-          selectedClinicStartTimeSaturday
+          selectedClinicStartTimeSaturday,
         ),
         automatedClinicCloseTimeSaturday: Number(selectedClinicEndTimeSaturday),
         isOpenMondayClinicAutomation,
@@ -674,40 +674,40 @@ export const HoursStatus = () => {
         isOpenSaturdayClinicAutomation,
         isOpenSundayClinicAutomation,
         automatedBoutiqueOpenTimeSunday: Number(
-          selectedBoutiqueStartTimeSunday
+          selectedBoutiqueStartTimeSunday,
         ),
         automatedBoutiqueCloseTimeSunday: Number(selectedBoutiqueEndTimeSunday),
         automatedBoutiqueOpenTimeMonday: Number(
-          selectedBoutiqueStartTimeMonday
+          selectedBoutiqueStartTimeMonday,
         ),
         automatedBoutiqueCloseTimeMonday: Number(selectedBoutiqueEndTimeMonday),
         automatedBoutiqueOpenTimeTuesday: Number(
-          selectedBoutiqueStartTimeTuesday
+          selectedBoutiqueStartTimeTuesday,
         ),
         automatedBoutiqueCloseTimeTuesday: Number(
-          selectedBoutiqueEndTimeTuesday
+          selectedBoutiqueEndTimeTuesday,
         ),
         automatedBoutiqueOpenTimeWednesday: Number(
-          selectedBoutiqueStartTimeWednesday
+          selectedBoutiqueStartTimeWednesday,
         ),
         automatedBoutiqueCloseTimeWednesday: Number(
-          selectedBoutiqueEndTimeWednesday
+          selectedBoutiqueEndTimeWednesday,
         ),
         automatedBoutiqueOpenTimeThursday: Number(
-          selectedBoutiqueStartTimeThursday
+          selectedBoutiqueStartTimeThursday,
         ),
         automatedBoutiqueCloseTimeThursday: Number(
-          selectedBoutiqueEndTimeThursday
+          selectedBoutiqueEndTimeThursday,
         ),
         automatedBoutiqueOpenTimeFriday: Number(
-          selectedBoutiqueStartTimeFriday
+          selectedBoutiqueStartTimeFriday,
         ),
         automatedBoutiqueCloseTimeFriday: Number(selectedBoutiqueEndTimeFriday),
         automatedBoutiqueOpenTimeSaturday: Number(
-          selectedBoutiqueStartTimeSaturday
+          selectedBoutiqueStartTimeSaturday,
         ),
         automatedBoutiqueCloseTimeSaturday: Number(
-          selectedBoutiqueEndTimeSaturday
+          selectedBoutiqueEndTimeSaturday,
         ),
         isOpenMondayBoutiqueAutomation,
         isOpenTuesdayBoutiqueAutomation,
@@ -723,19 +723,19 @@ export const HoursStatus = () => {
         automatedWalkInOpenTimeTuesday: Number(selectedWalkInStartTimeTuesday),
         automatedWalkInCloseTimeTuesday: Number(selectedWalkInEndTimeTuesday),
         automatedWalkInOpenTimeWednesday: Number(
-          selectedWalkInStartTimeWednesday
+          selectedWalkInStartTimeWednesday,
         ),
         automatedWalkInCloseTimeWednesday: Number(
-          selectedWalkInEndTimeWednesday
+          selectedWalkInEndTimeWednesday,
         ),
         automatedWalkInOpenTimeThursday: Number(
-          selectedWalkInStartTimeThursday
+          selectedWalkInStartTimeThursday,
         ),
         automatedWalkInCloseTimeThursday: Number(selectedWalkInEndTimeThursday),
         automatedWalkInOpenTimeFriday: Number(selectedWalkInStartTimeFriday),
         automatedWalkInCloseTimeFriday: Number(selectedWalkInEndTimeFriday),
         automatedWalkInOpenTimeSaturday: Number(
-          selectedWalkInStartTimeSaturday
+          selectedWalkInStartTimeSaturday,
         ),
         automatedWalkInCloseTimeSaturday: Number(selectedWalkInEndTimeSaturday),
         isOpenMondayWalkInAutomation,
@@ -746,46 +746,46 @@ export const HoursStatus = () => {
         isOpenSaturdayWalkInAutomation,
         isOpenSundayWalkInAutomation,
         automatedHousecallOpenTimeSunday: Number(
-          selectedHousecallStartTimeSunday
+          selectedHousecallStartTimeSunday,
         ),
         automatedHousecallCloseTimeSunday: Number(
-          selectedHousecallEndTimeSunday
+          selectedHousecallEndTimeSunday,
         ),
         automatedHousecallOpenTimeMonday: Number(
-          selectedHousecallStartTimeMonday
+          selectedHousecallStartTimeMonday,
         ),
         automatedHousecallCloseTimeMonday: Number(
-          selectedHousecallEndTimeMonday
+          selectedHousecallEndTimeMonday,
         ),
         automatedHousecallOpenTimeTuesday: Number(
-          selectedHousecallStartTimeTuesday
+          selectedHousecallStartTimeTuesday,
         ),
         automatedHousecallCloseTimeTuesday: Number(
-          selectedHousecallEndTimeTuesday
+          selectedHousecallEndTimeTuesday,
         ),
         automatedHousecallOpenTimeWednesday: Number(
-          selectedHousecallStartTimeWednesday
+          selectedHousecallStartTimeWednesday,
         ),
         automatedHousecallCloseTimeWednesday: Number(
-          selectedHousecallEndTimeWednesday
+          selectedHousecallEndTimeWednesday,
         ),
         automatedHousecallOpenTimeThursday: Number(
-          selectedHousecallStartTimeThursday
+          selectedHousecallStartTimeThursday,
         ),
         automatedHousecallCloseTimeThursday: Number(
-          selectedHousecallEndTimeThursday
+          selectedHousecallEndTimeThursday,
         ),
         automatedHousecallOpenTimeFriday: Number(
-          selectedHousecallStartTimeFriday
+          selectedHousecallStartTimeFriday,
         ),
         automatedHousecallCloseTimeFriday: Number(
-          selectedHousecallEndTimeFriday
+          selectedHousecallEndTimeFriday,
         ),
         automatedHousecallOpenTimeSaturday: Number(
-          selectedHousecallStartTimeSaturday
+          selectedHousecallStartTimeSaturday,
         ),
         automatedHousecallCloseTimeSaturday: Number(
-          selectedHousecallEndTimeSaturday
+          selectedHousecallEndTimeSaturday,
         ),
         isOpenMondayHousecallAutomation,
         isOpenTuesdayHousecallAutomation,
@@ -796,7 +796,7 @@ export const HoursStatus = () => {
         isOpenSundayHousecallAutomation,
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Website Hours Status Updated will Appear in ~ 5 Minutes!`, {
@@ -808,7 +808,7 @@ export const HoursStatus = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(`Website Hours Status Update FAILED: ${error?.message}`, {
@@ -821,7 +821,7 @@ export const HoursStatus = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       )
       .finally(() => {
         setDidTouchBoutiqueAutomationStatus(false);
@@ -832,7 +832,7 @@ export const HoursStatus = () => {
         setShowAutomationSchedule(false);
       });
   const updateAutomationSchedule = (
-    type: "clinic" | "housecall" | "boutique" | "walkins"
+    type: "clinic" | "housecall" | "boutique" | "walkins",
   ) => {
     if (type === editAutomationSchedule || editAutomationSchedule === null)
       setShowAutomationSchedule(!showAutomationSchedule);
@@ -913,14 +913,14 @@ export const HoursStatus = () => {
                 }}
                 className={classNames(
                   clinicStatus ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={classNames(
                     clinicStatus ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                   )}
                 />
               </Switch>
@@ -951,19 +951,19 @@ export const HoursStatus = () => {
                 }}
                 className={classNames(
                   boutiqueStatus ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={classNames(
                     boutiqueStatus ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                   )}
                 />
               </Switch>
             </div>
-            <div className="flex flex-col w-full mx-auto justify-center items-center">
+            {/* <div className="flex flex-col w-full mx-auto justify-center items-center">
               <FontAwesomeIcon
                 icon={faPersonWalking}
                 size="3x"
@@ -991,14 +991,14 @@ export const HoursStatus = () => {
                 }}
                 className={classNames(
                   walkinsStatus ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={classNames(
                     walkinsStatus ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                   )}
                 />
               </Switch>
@@ -1029,18 +1029,18 @@ export const HoursStatus = () => {
                 }}
                 className={classNames(
                   housecallStatus ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={classNames(
                     housecallStatus ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                   )}
                 />
               </Switch>
-            </div>
+            </div> */}
           </div>
           <Transition
             show={
@@ -1106,14 +1106,14 @@ export const HoursStatus = () => {
                 }}
                 className={classNames(
                   clinicAutomationStatus ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={classNames(
                     clinicAutomationStatus ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                   )}
                 />
               </Switch>
@@ -1157,7 +1157,7 @@ export const HoursStatus = () => {
                 }}
                 className={classNames(
                   boutiqueAutomationStatus ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                 )}
               >
                 <span
@@ -1166,7 +1166,7 @@ export const HoursStatus = () => {
                     boutiqueAutomationStatus
                       ? "translate-x-5"
                       : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                   )}
                 />
               </Switch>
@@ -1180,7 +1180,7 @@ export const HoursStatus = () => {
                 </p>
               )}
             </div>
-            <div className="flex flex-col w-full mx-auto justify-center items-center">
+            {/* <div className="flex flex-col w-full mx-auto justify-center items-center">
               <FontAwesomeIcon
                 icon={faPersonWalking}
                 size="3x"
@@ -1285,7 +1285,7 @@ export const HoursStatus = () => {
                   <FontAwesomeIcon icon={faEdit} className="ml-2" />
                 </p>
               )}
-            </div>
+            </div> */}
           </div>
           <Transition
             show={showAutomationSchedule}
@@ -1327,12 +1327,12 @@ export const HoursStatus = () => {
                           break;
                         case "housecall":
                           setIsOpenHousecallMonday(
-                            !isOpenMondayHousecallAutomation
+                            !isOpenMondayHousecallAutomation,
                           );
                           break;
                         case "boutique":
                           setIsOpenBoutiqueMonday(
-                            !isOpenMondayBoutiqueAutomation
+                            !isOpenMondayBoutiqueAutomation,
                           );
                           break;
                         case "walkins":
@@ -1361,7 +1361,7 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : "",
-                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
                     <span
@@ -1384,7 +1384,7 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : "",
-                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
                   </Switch>
@@ -1509,22 +1509,22 @@ export const HoursStatus = () => {
                       switch (editAutomationSchedule) {
                         case "clinic":
                           setIsOpenClinicTuesday(
-                            !isOpenTuesdayClinicAutomation
+                            !isOpenTuesdayClinicAutomation,
                           );
                           break;
                         case "housecall":
                           setIsOpenHousecallTuesday(
-                            !isOpenTuesdayHousecallAutomation
+                            !isOpenTuesdayHousecallAutomation,
                           );
                           break;
                         case "boutique":
                           setIsOpenBoutiqueTuesday(
-                            !isOpenTuesdayBoutiqueAutomation
+                            !isOpenTuesdayBoutiqueAutomation,
                           );
                           break;
                         case "walkins":
                           setIsOpenWalkInTuesday(
-                            !isOpenTuesdayWalkInAutomation
+                            !isOpenTuesdayWalkInAutomation,
                           );
                           break;
                         default:
@@ -1550,7 +1550,7 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : "",
-                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
                     <span
@@ -1573,7 +1573,7 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : "",
-                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
                   </Switch>
@@ -1698,22 +1698,22 @@ export const HoursStatus = () => {
                       switch (editAutomationSchedule) {
                         case "clinic":
                           setIsOpenClinicWednesday(
-                            !isOpenWednesdayClinicAutomation
+                            !isOpenWednesdayClinicAutomation,
                           );
                           break;
                         case "housecall":
                           setIsOpenHousecallWednesday(
-                            !isOpenWednesdayHousecallAutomation
+                            !isOpenWednesdayHousecallAutomation,
                           );
                           break;
                         case "boutique":
                           setIsOpenBoutiqueWednesday(
-                            !isOpenWednesdayBoutiqueAutomation
+                            !isOpenWednesdayBoutiqueAutomation,
                           );
                           break;
                         case "walkins":
                           setIsOpenWalkInWednesday(
-                            !isOpenWednesdayWalkInAutomation
+                            !isOpenWednesdayWalkInAutomation,
                           );
                           break;
                         default:
@@ -1739,7 +1739,7 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : "",
-                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
                     <span
@@ -1762,7 +1762,7 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : "",
-                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
                   </Switch>
@@ -1800,7 +1800,7 @@ export const HoursStatus = () => {
                             break;
                           case "housecall":
                             setSelectedHousecallStartTimeWednesday(
-                              target.value
+                              target.value,
                             );
                             break;
                           case "boutique":
@@ -1889,22 +1889,22 @@ export const HoursStatus = () => {
                       switch (editAutomationSchedule) {
                         case "clinic":
                           setIsOpenClinicThursday(
-                            !isOpenThursdayClinicAutomation
+                            !isOpenThursdayClinicAutomation,
                           );
                           break;
                         case "housecall":
                           setIsOpenHousecallThursday(
-                            !isOpenThursdayHousecallAutomation
+                            !isOpenThursdayHousecallAutomation,
                           );
                           break;
                         case "boutique":
                           setIsOpenBoutiqueThursday(
-                            !isOpenThursdayBoutiqueAutomation
+                            !isOpenThursdayBoutiqueAutomation,
                           );
                           break;
                         case "walkins":
                           setIsOpenWalkInThursday(
-                            !isOpenThursdayWalkInAutomation
+                            !isOpenThursdayWalkInAutomation,
                           );
                           break;
                         default:
@@ -1930,7 +1930,7 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : "",
-                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
                     <span
@@ -1953,7 +1953,7 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : "",
-                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
                   </Switch>
@@ -2081,12 +2081,12 @@ export const HoursStatus = () => {
                           break;
                         case "housecall":
                           setIsOpenHousecallFriday(
-                            !isOpenFridayHousecallAutomation
+                            !isOpenFridayHousecallAutomation,
                           );
                           break;
                         case "boutique":
                           setIsOpenBoutiqueFriday(
-                            !isOpenFridayBoutiqueAutomation
+                            !isOpenFridayBoutiqueAutomation,
                           );
                           break;
                         case "walkins":
@@ -2115,7 +2115,7 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : "",
-                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
                     <span
@@ -2138,7 +2138,7 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : "",
-                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
                   </Switch>
@@ -2263,22 +2263,22 @@ export const HoursStatus = () => {
                       switch (editAutomationSchedule) {
                         case "clinic":
                           setIsOpenClinicSaturday(
-                            !isOpenSaturdayClinicAutomation
+                            !isOpenSaturdayClinicAutomation,
                           );
                           break;
                         case "housecall":
                           setIsOpenHousecallSaturday(
-                            !isOpenSaturdayHousecallAutomation
+                            !isOpenSaturdayHousecallAutomation,
                           );
                           break;
                         case "boutique":
                           setIsOpenBoutiqueSaturday(
-                            !isOpenSaturdayBoutiqueAutomation
+                            !isOpenSaturdayBoutiqueAutomation,
                           );
                           break;
                         case "walkins":
                           setIsOpenWalkInSaturday(
-                            !isOpenSaturdayWalkInAutomation
+                            !isOpenSaturdayWalkInAutomation,
                           );
                           break;
                         default:
@@ -2304,7 +2304,7 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : "",
-                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
                     <span
@@ -2327,7 +2327,7 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : "",
-                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
                   </Switch>
@@ -2455,12 +2455,12 @@ export const HoursStatus = () => {
                           break;
                         case "housecall":
                           setIsOpenHousecallSunday(
-                            !isOpenSundayHousecallAutomation
+                            !isOpenSundayHousecallAutomation,
                           );
                           break;
                         case "boutique":
                           setIsOpenBoutiqueSunday(
-                            !isOpenSundayBoutiqueAutomation
+                            !isOpenSundayBoutiqueAutomation,
                           );
                           break;
                         case "walkins":
@@ -2489,7 +2489,7 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : "",
-                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
                     <span
@@ -2512,7 +2512,7 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : "",
-                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
                   </Switch>

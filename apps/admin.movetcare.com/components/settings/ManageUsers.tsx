@@ -26,10 +26,10 @@ const ManageUsers = () => {
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false);
   const [showDebug, setShowDebug] = useState<boolean>(false);
   const [admins, loadingAdmins, errorAdmins] = useCollection(
-    query(collection(firestore, "admins"), orderBy("roles"))
+    query(collection(firestore, "admins"), orderBy("roles")),
   );
   const [users, loadingUsers, errorUsers] = useCollection(
-    query(collection(firestore, "users"), orderBy("updatedOn", "desc"))
+    query(collection(firestore, "users"), orderBy("updatedOn", "desc")),
   );
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -65,7 +65,7 @@ const ManageUsers = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(error?.message, {
@@ -76,7 +76,7 @@ const ManageUsers = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
   };
 
@@ -172,7 +172,7 @@ const ManageUsers = () => {
                                   admin.data()?.roles.length > 1 &&
                                   index !== admin.data()?.roles.length - 1
                                     ? `${role?.toUpperCase()}, `
-                                    : role?.toUpperCase()
+                                    : role?.toUpperCase(),
                                 )}
                             </td>
                           </tr>
@@ -216,7 +216,7 @@ const ManageUsers = () => {
                             </span>
                           ) : (
                             ""
-                          )
+                          ),
                         )}
                     </>
                   </p>
@@ -338,7 +338,7 @@ const ManageUsers = () => {
                                   rel="noreferrer"
                                 >
                                   {formatPhoneNumber(
-                                    user.data()?.phone.slice(2)
+                                    user.data()?.phone.slice(2),
                                   )}
                                 </a>
                               </td>
@@ -379,7 +379,7 @@ const ManageUsers = () => {
                           </>
                         ) : (
                           <></>
-                        )
+                        ),
                       )}
                   </tbody>
                 </table>
