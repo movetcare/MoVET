@@ -22,6 +22,9 @@ service cloud.firestore {
     match /fcmTokensAdmin/{uid} {
       allow read, write: if isMoVETStaff();
     }
+    match /fcmTokensClient/{uid} {
+      allow read, write: if clientOwnsDocuments(uid) || isMoVETStaff();
+    }
     match /alerts/{sid} {
       allow read: if true;
       allow write: if isMoVETStaff();

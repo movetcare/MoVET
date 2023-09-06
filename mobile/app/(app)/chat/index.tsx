@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Bubble,
   GiftedChat,
@@ -21,6 +21,9 @@ import {
   limit,
   addDoc,
   setDoc,
+  arrayUnion,
+  getDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { firestore, storage } from "firebase-config";
@@ -28,7 +31,7 @@ import "react-native-get-random-values";
 import { v4 as uuid } from "uuid";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
-import { Text, View, Button, Platform } from "react-native";
+import { View, Platform } from "react-native";
 import * as Notifications from "expo-notifications";
 
 Notifications.setNotificationHandler({
@@ -57,7 +60,7 @@ const registerForPushNotificationsAsync = async () => {
       projectId: Constants?.expoConfig?.extra?.eas?.projectId,
     });
     alert("PUSH TOKEN: " + JSON.stringify(token));
-  } else alert("Must use physical device for Push Notifications");
+  } else console.log("Must use physical device for Push Notifications!");
 
   if (Platform.OS === "android")
     Notifications.setNotificationChannelAsync("default", {
@@ -86,34 +89,191 @@ const ChatIndex = () => {
   const { user } = AuthStore.useState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
-  const [notification, setNotification] = useState<any>(false);
-  const notificationListener: any = useRef();
-  const responseListener: any = useRef();
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token: any) =>
-      setExpoPushToken(token),
-    );
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-        alert(JSON.stringify(notification));
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-        alert(JSON.stringify(response));
-      });
-    return () => {
-      Notifications.removeNotificationSubscription(
-        (notificationListener as any).current,
+    // registerForPushNotificationsAsync().then(async (token: any) => {
+    //   alert("TOKEN: " + JSON.stringify(token));
+    //   const deviceInfo = JSON.parse(
+    //     JSON.stringify(Device, (key: any, value: any) =>
+    //       value === undefined ? null : value,
+    //     ),
+    //   );
+    //   let existingTokens: any[] = [];
+    //   const tokenAlreadyExists = await getDoc(
+    //     doc(firestore, "fcmTokensClient", user?.uid),
+    //   ).then((doc: any) => {
+    //     if (doc.exists()) {
+    //       existingTokens = doc.data().tokens;
+    //       if (
+    //         doc.data().tokens.find((token: any) => token.token === token?.data)
+    //       )
+    //         return true;
+    //     } else return false;
+    //   });
+    //   if (tokenAlreadyExists === false)
+    //     await setDoc(doc(firestore, "fcmTokensClient", user?.uid), {
+    //       tokens: [
+    //         {
+    //           token: token?.data,
+    //           isActive: true,
+    //           device: deviceInfo,
+    //           createdOn: new Date(),
+    //         },
+    //       ],
+    //       user: {
+    //         displayName: user?.displayName,
+    //         email: user?.email,
+    //         emailVerified: user?.emailVerified,
+    //         photoURL: user?.photoURL,
+    //         uid: user?.uid,
+    //         phoneNumber: user?.phoneNumber,
+    //       },
+    //       createdOn: serverTimestamp(),
+    //     });
+    //   else if (tokenAlreadyExists === undefined)
+    //     await setDoc(
+    //       doc(firestore, "fcmTokensClient", user?.uid),
+    //       {
+    //         tokens: arrayUnion({
+    //           token: token?.data,
+    //           isActive: true,
+    //           device: deviceInfo,
+    //           createdOn: new Date(),
+    //         }),
+    //         user: {
+    //           displayName: user?.displayName,
+    //           email: user?.email,
+    //           emailVerified: user?.emailVerified,
+    //           photoURL: user?.photoURL,
+    //           uid: user?.uid,
+    //           phoneNumber: user?.phoneNumber,
+    //         },
+    //         updatedOn: serverTimestamp(),
+    //       },
+    //       { merge: true },
+    //     );
+    //   else if (tokenAlreadyExists) {
+    //     const newTokenData = existingTokens.map((token: any) => {
+    //       if (token.token === token?.data) {
+    //         return {
+    //           token: token?.data,
+    //           isActive: true,
+    //           device: deviceInfo,
+    //           updatedOn: new Date(),
+    //           createdOn: token.createdOn,
+    //         };
+    //       } else return token;
+    //     });
+    //     await setDoc(
+    //       doc(firestore, "fcmTokensClient", user?.uid),
+    //       {
+    //         tokens: newTokenData,
+    //         user: {
+    //           displayName: user?.displayName,
+    //           email: user?.email,
+    //           emailVerified: user?.emailVerified,
+    //           photoURL: user?.photoURL,
+    //           uid: user?.uid,
+    //           phoneNumber: user?.phoneNumber,
+    //         },
+    //         updatedOn: serverTimestamp(),
+    //       },
+    //       { merge: true },
+    //     );
+    //   }
+    // });
+    const test = async () => {
+      const token = { data: "testTOKEN" };
+      const deviceInfo = JSON.parse(
+        JSON.stringify(Device, (key: any, value: any) =>
+          value === undefined ? null : value,
+        ),
       );
-      Notifications.removeNotificationSubscription(
-        (responseListener as any).current,
-      );
+      let existingTokens: any[] = [];
+      const tokenAlreadyExists = await getDoc(
+        doc(firestore, "fcmTokensClient", user?.uid),
+      ).then((doc: any) => {
+        if (doc.exists()) {
+          existingTokens = doc.data().tokens;
+          if (
+            doc.data().tokens.find((token: any) => token.token === token?.data)
+          )
+            return true;
+        } else return false;
+      });
+      if (tokenAlreadyExists === false)
+        await setDoc(doc(firestore, "fcmTokensClient", user?.uid), {
+          tokens: [
+            {
+              token: token?.data,
+              isActive: true,
+              device: deviceInfo,
+              createdOn: new Date(),
+            },
+          ],
+          user: {
+            displayName: user?.displayName,
+            email: user?.email,
+            emailVerified: user?.emailVerified,
+            photoURL: user?.photoURL,
+            uid: user?.uid,
+            phoneNumber: user?.phoneNumber,
+          },
+          createdOn: serverTimestamp(),
+        });
+      else if (tokenAlreadyExists === undefined)
+        await setDoc(
+          doc(firestore, "fcmTokensClient", user?.uid),
+          {
+            tokens: arrayUnion({
+              token: token?.data,
+              isActive: true,
+              device: deviceInfo,
+              createdOn: new Date(),
+            }),
+            user: {
+              displayName: user?.displayName,
+              email: user?.email,
+              emailVerified: user?.emailVerified,
+              photoURL: user?.photoURL,
+              uid: user?.uid,
+              phoneNumber: user?.phoneNumber,
+            },
+            updatedOn: serverTimestamp(),
+          },
+          { merge: true },
+        );
+      else if (tokenAlreadyExists) {
+        const newTokenData = existingTokens.map((token: any) => {
+          if (token.token === token?.data) {
+            return {
+              token: token?.data,
+              isActive: true,
+              device: deviceInfo,
+              updatedOn: new Date(),
+              createdOn: token.createdOn,
+            };
+          } else return token;
+        });
+        await setDoc(
+          doc(firestore, "fcmTokensClient", user?.uid),
+          {
+            tokens: newTokenData,
+            user: {
+              displayName: user?.displayName,
+              email: user?.email,
+              emailVerified: user?.emailVerified,
+              photoURL: user?.photoURL,
+              uid: user?.uid,
+              phoneNumber: user?.phoneNumber,
+            },
+            updatedOn: serverTimestamp(),
+          },
+          { merge: true },
+        );
+      }
     };
+    test();
   }, []);
 
   useEffect(() => {
@@ -307,7 +467,7 @@ const ChatIndex = () => {
   };
   return (
     <View style={tw`flex-1 bg-white`}>
-      {expoPushToken && (
+      {/* {expoPushToken && (
         <View
           style={{
             flex: 1,
@@ -336,7 +496,7 @@ const ChatIndex = () => {
             }}
           />
         </View>
-      )}
+      )} */}
       <GiftedChat
         infiniteScroll
         scrollToBottom

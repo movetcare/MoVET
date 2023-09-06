@@ -37,6 +37,8 @@ export default function Layout() {
     }
 
     Notifications.getLastNotificationResponseAsync().then((response) => {
+      console.log("response?.notification", response?.notification);
+      if (response?.notification) alert(JSON.stringify(response?.notification));
       if (!isMounted || !response?.notification) {
         return;
       }
