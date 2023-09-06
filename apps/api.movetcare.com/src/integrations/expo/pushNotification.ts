@@ -1,15 +1,16 @@
-import {DEBUG, expoAccessToken, throwError} from "../../config/config";
-import {Expo} from "expo-server-sdk";
-import {Request, Response} from "express";
-
-const expo = new Expo({accessToken: expoAccessToken});
+import { expoAccessToken, throwError } from "../../config/config";
+import { Expo } from "expo-server-sdk";
+import { Request, Response } from "express";
+const DEBUG = true;
+const expo = new Expo({ accessToken: expoAccessToken });
 
 export const pushNotification = async (
   request: Request,
-  response: Response
+  response: Response,
 ): Promise<any> => {
-  const {to, sound, title, body, data} = request.body;
-  if (DEBUG) console.log("NEW PUSH REQUEST: ", {to, sound, title, body, data});
+  const { to, sound, title, body, data } = request.body;
+  if (DEBUG)
+    console.log("NEW PUSH REQUEST: ", { to, sound, title, body, data });
   const messages = [];
   if (!Expo.isExpoPushToken(to))
     console.error(`Push token ${to} is not a valid Expo push token`);

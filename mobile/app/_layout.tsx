@@ -5,6 +5,8 @@ import { useFonts } from "expo-font";
 import { updateUserAuth } from "services/Auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "firebase-config";
+import * as Notifications from "expo-notifications";
+import { router } from "expo-router";
 export { ErrorBoundary } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
@@ -15,8 +17,32 @@ export default function Layout() {
       updateUserAuth(user),
     );
 
+    let isMounted = true;
+
+    function redirect(notification: Notifications.Notification) {
+      const url = notification.request.content.data?.url;
+      if (url) {
+        router.push(url);
+      }
+    }
+
+    Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (!isMounted || !response?.notification) {
+        return;
+      }
+      redirect(response?.notification);
+    });
+
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        redirect(response.notification);
+      },
+    );
+
     return () => {
       unsubscribeAuth();
+      isMounted = false;
+      subscription.remove();
     };
   }, []);
 
