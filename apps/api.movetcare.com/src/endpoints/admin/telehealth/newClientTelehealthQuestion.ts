@@ -9,6 +9,8 @@ import {
 import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { findSlackChannel } from "../../../utils/logging/findSlackChannel";
 import { sendSlackMessage } from "../../../utils/logging/sendSlackMessage";
+import { sendNotification } from "../../../notifications/sendNotification";
+import { truncateString } from "../../../utils/truncateString";
 const DEBUG = true;
 export const newClientTelehealthMessage = functions.firestore
   .document("/telehealth_chat/{clientId}/log/{messageId}")
@@ -141,38 +143,25 @@ export const newClientTelehealthMessage = functions.firestore
         .catch((error: any) => throwError(error));
     }
     if (user?._id === context.params.clientId) {
-      const adminFcmTokens: any = await admin
-        .firestore()
-        .collection("fcmTokensAdmin")
-        .get()
-        .then((querySnapshot: any) => {
-          const allValidTokens: any = [];
-          querySnapshot.forEach((doc: any) => {
-            if (DEBUG) console.log(doc.id, " => ", doc.data());
-            doc.data()?.tokens?.forEach((token: any) => {
-              console.log("TOKEN ARRAY", token);
-              if (token.isActive) allValidTokens.push(token.token);
-            });
-          });
-          return allValidTokens;
-        });
-      if (DEBUG) console.log("adminFcmTokens", adminFcmTokens);
-      //TODO: https://firebase.google.com/docs/reference/admin/node/firebase-admin.messaging.messaging.md#messagingsendtodevice
-      admin.messaging().sendToDevice(
-        adminFcmTokens,
-        {
-          notification: {
-            title: "New Telehealth Message",
-            body: `${displayName} has sent a new message!`,
-            icon: "https://movetcare.com/images/logos/logo-paw-black.png",
-            click_action: `https://admin.movetcare.com/telehealth/chat/?id=${context.params.clientId}`,
-          },
+      sendNotification({
+        type: "push",
+        payload: {
+          category: "admin-telehealth",
+          title: "New Telehealth Message",
+          message: `${displayName} has sent a new message!`,
+          path: `/telehealth/chat/?id=${context.params.clientId}`,
         },
-        {
-          contentAvailable: true,
-          priority: "high",
+      });
+    } else
+      sendNotification({
+        type: "push",
+        payload: {
+          user: { uid: context.params.clientId },
+          category: "client-telehealth",
+          title: "New Message from MoVET",
+          message: truncateString(text),
+          path: `/telehealth/chat/?id=${context.params.clientId}`,
         },
-      );
-    }
+      });
     return null;
   });

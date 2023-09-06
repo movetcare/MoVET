@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useCallback, useEffect, useState } from "react";
-import { View } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Bubble,
   GiftedChat,
@@ -27,6 +26,44 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { firestore, storage } from "firebase-config";
 import "react-native-get-random-values";
 import { v4 as uuid } from "uuid";
+import Constants from "expo-constants";
+import * as Device from "expo-device";
+import { Text, View, Button, Platform } from "react-native";
+import * as Notifications from "expo-notifications";
+
+const registerForPushNotificationsAsync = async () => {
+  let token;
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    token = await Notifications.getExpoPushTokenAsync({
+      projectId: Constants?.expoConfig?.extra?.eas?.projectId || null,
+    });
+    console.log("PUSH TOKEN", token);
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: tw.color("movet-red"),
+    });
+  }
+
+  return token;
+};
 
 const defaultMessages: IMessage[] = [
   {
@@ -44,6 +81,20 @@ const ChatIndex = () => {
   const { user } = AuthStore.useState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
+  const [notification, setNotification] = useState<any>(false);
+  const notificationListener: any = useRef();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token: any) =>
+      setExpoPushToken(token),
+    );
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+        alert(JSON.stringify(notification));
+      });
+  }, []);
 
   useEffect(() => {
     if (user?.uid) {
@@ -216,6 +267,31 @@ const ChatIndex = () => {
   };
   return (
     <View style={tw`flex-1 bg-white`}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "space-around",
+        }}
+      >
+        <Text>Your expo push token: {expoPushToken}</Text>
+        <View style={{ alignItems: "center", justifyContent: "center" }}>
+          <Text>
+            Title: {notification && notification.request.content.title}{" "}
+          </Text>
+          <Text>Body: {notification && notification.request.content.body}</Text>
+          <Text>
+            Data:{" "}
+            {notification && JSON.stringify(notification.request.content.data)}
+          </Text>
+        </View>
+        <Button
+          title="Press to Send Notification"
+          onPress={async () => {
+            await sendPushNotification(expoPushToken);
+          }}
+        />
+      </View>
       <GiftedChat
         infiniteScroll
         scrollToBottom

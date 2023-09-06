@@ -71,10 +71,12 @@ export const TestAdminPushNotifications = () => {
     if (loadingFcmTokensAdmin) setIsLoading(loadingFcmTokensAdmin);
   }, [loadingFcmTokensAdmin]);
 
-  const onSubmit = async (data: any) =>
-    await setDoc(doc(firestore, `push_notifications/${uuid()}`), {
+  const onSubmit = async (data: any) => {
+    const id = uuid();
+    await setDoc(doc(firestore, `push_notifications/${id}`), {
       ...data,
       user: selectedUser,
+      id,
       createdBy: {
         uid: auth?.currentUser?.uid,
         email: auth?.currentUser?.email,
@@ -115,6 +117,7 @@ export const TestAdminPushNotifications = () => {
         setIsLoading(false);
         reset();
       });
+  };
 
   const Option: any = (props: any) => (
     <>

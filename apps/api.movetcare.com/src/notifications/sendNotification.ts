@@ -20,7 +20,7 @@ export const sendNotification = async ({
   type,
   payload,
 }: {
-  type: "slack" | "email" | "sms";
+  type: "slack" | "email" | "sms" | "push";
   payload: any;
 }): Promise<void> => {
   if (DEBUG) {
@@ -371,6 +371,133 @@ export const sendNotification = async ({
           `:speech_balloon: System SMS FAILED:\n\nCLIENT: ${payload?.client}\n\nSUBJECT: ${payload?.subject}\n\nMESSAGE: ${payload?.message}\n\nREASON: MISSING CLIENT ID`,
         );
       }
+      break;
+    case "push":
+      if (
+        payload?.category === "admin-telehealth" ||
+        payload?.category === "client-telehealth"
+      ) {
+        let adminFcmTokens: Array<string> | null = null;
+        let clientFcmTokens: Array<string> | null = null;
+        if (payload?.category === "admin-telehealth")
+          adminFcmTokens = await admin
+            .firestore()
+            .collection("fcmTokensAdmin")
+            .get()
+            .then((querySnapshot: any) => {
+              const allValidTokens: Array<string> = [];
+              querySnapshot.forEach((doc: any) => {
+                if (DEBUG) console.log(doc.id, " => ", doc.data());
+                doc.data()?.tokens?.forEach((token: any) => {
+                  console.log("TOKEN ARRAY", token);
+                  if (token.isActive) allValidTokens.push(token.token);
+                });
+              });
+              return allValidTokens;
+            })
+            .catch((error: any) => throwError(error));
+        if (payload?.category === "client-telehealth")
+          clientFcmTokens = await admin
+            .firestore()
+            .collection("fcmTokensClient")
+            .doc(payload?.user?.uid)
+            .get()
+            .then((doc: any) => {
+              const allValidTokens: Array<string> = [];
+              if (DEBUG) console.log(doc.id, " => ", doc.data());
+              doc.data()?.tokens?.forEach((token: any) => {
+                console.log("TOKEN ARRAY", token);
+                if (token.isActive) allValidTokens.push(token.token);
+              });
+              return allValidTokens;
+            })
+            .catch((error: any) => throwError(error));
+        if (DEBUG) {
+          console.log("adminFcmTokens", adminFcmTokens);
+          console.log("clientFcmTokens", clientFcmTokens);
+        }
+        if (
+          (adminFcmTokens && adminFcmTokens.length > 0) ||
+          (clientFcmTokens && clientFcmTokens.length > 0)
+        )
+          admin
+            .messaging()
+            .sendMulticast({
+              tokens: adminFcmTokens || clientFcmTokens,
+              notification: {
+                title: payload?.title,
+                body: payload?.message,
+              },
+              data: payload?.data || { test: "testing" },
+              webpush: {
+                headers: {
+                  Urgency: payload?.urgency || "high",
+                },
+                notification: {
+                  body: payload?.message,
+                  requireInteraction: "true",
+                  badge: "/images/logo/logo-paw-black.png",
+                },
+                fcm_options: {
+                  link:
+                    (environment?.type === "production"
+                      ? "https://admin.movetcare.com"
+                      : "http://localhost:3002") + payload?.path,
+                },
+              },
+            })
+            .then((response: any) => {
+              sendSlackMessageToChannel(
+                `:outbox_tray: Push Notifications Sent! (${payload?.id})\nPAYLOAD:\n${JSON.stringify(
+                  {
+                    tokens: adminFcmTokens || clientFcmTokens,
+                    notification: {
+                      title: payload?.title,
+                      body: payload?.message,
+                    },
+                    data: payload?.data || { test: "testing" },
+                    webpush: {
+                      headers: {
+                        Urgency: payload?.urgency || "high",
+                      },
+                      notification: {
+                        body: payload?.message,
+                        requireInteraction: "true",
+                        badge: "/images/logo/logo-paw-black.png",
+                      },
+                      fcm_options: {
+                        link:
+                          (environment?.type === "production"
+                            ? "https://admin.movetcare.com"
+                            : "http://localhost:3002") + payload?.path,
+                      },
+                    },
+                  },
+                )}\nRESPONSE:\n${JSON.stringify(response)}`,
+              );
+              if (response.failureCount > 0) {
+                const failedTokens: any = [];
+                response.responses.forEach((resp: any, index: number) => {
+                  if (!resp.success) {
+                    failedTokens.push(
+                      adminFcmTokens
+                        ? adminFcmTokens[index]
+                        : clientFcmTokens
+                        ? clientFcmTokens[index]
+                        : [],
+                    );
+                  }
+                });
+                if (DEBUG)
+                  console.log(
+                    "List of tokens that caused failures: " + failedTokens,
+                  );
+              }
+            })
+            .catch((error: any) => throwError(error));
+        else if (DEBUG)
+          console.log("NO TOKENS FOUND", { adminFcmTokens, clientFcmTokens });
+      } else if (DEBUG) console.log("UNSUPPORTED PUSH NOTIFICATION TYPE!");
       break;
     default:
       break;
