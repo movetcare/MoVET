@@ -30,6 +30,7 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import { Text, View, Button, Platform } from "react-native";
 import * as Notifications from "expo-notifications";
+import { ErrorBoundaryProps } from "expo-router";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -39,16 +40,18 @@ Notifications.setNotificationHandler({
   }),
 });
 
+export function ErrorBoundary(props: ErrorBoundaryProps) {
+  return (
+    <View style={{ flex: 1 }}>
+      <Text>{props.error.message}</Text>
+      <Text>{JSON.stringify(props.error)}</Text>
+      <Text onPress={props.retry}>Try Again?</Text>
+    </View>
+  );
+}
+
 const registerForPushNotificationsAsync = async () => {
   let token;
-  alert(
-    "Constants?.expoConfig?.extra " +
-      JSON.stringify(Constants?.expoConfig?.extra),
-  );
-  alert(
-    "Constants?.expoConfig?.extra?.eas?.projectId " +
-      Constants?.expoConfig?.extra?.eas?.projectId,
-  );
   if (Device.isDevice) {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
@@ -62,21 +65,18 @@ const registerForPushNotificationsAsync = async () => {
       return;
     }
     token = await Notifications.getExpoPushTokenAsync({
-      projectId: Constants?.expoConfig?.extra?.eas?.projectId || null,
+      projectId: Constants?.expoConfig?.extra?.eas?.projectId,
     });
-    console.log("PUSH TOKEN", token);
-  } else {
-    alert("Must use physical device for Push Notifications");
-  }
+    alert("PUSH TOKEN: " + token);
+  } else alert("Must use physical device for Push Notifications");
 
-  if (Platform.OS === "android") {
+  if (Platform.OS === "android")
     Notifications.setNotificationChannelAsync("default", {
       name: "default",
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: tw.color("movet-red"),
     });
-  }
 
   return token;
 };

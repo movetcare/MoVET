@@ -7,7 +7,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "firebase-config";
 import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
-export { ErrorBoundary } from "expo-router";
+//export { ErrorBoundary } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
 
