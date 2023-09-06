@@ -41,6 +41,14 @@ Notifications.setNotificationHandler({
 
 const registerForPushNotificationsAsync = async () => {
   let token;
+  alert(
+    "Constants?.expoConfig?.extra " +
+      JSON.stringify(Constants?.expoConfig?.extra),
+  );
+  alert(
+    "Constants?.expoConfig?.extra?.eas?.projectId " +
+      Constants?.expoConfig?.extra?.eas?.projectId,
+  );
   if (Device.isDevice) {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
@@ -53,8 +61,6 @@ const registerForPushNotificationsAsync = async () => {
       alert("Failed to get push token for push notification!");
       return;
     }
-    alert("Constants?.expoConfig?.extra?.eas?.projectId = ") +
-      Constants?.expoConfig?.extra?.eas?.projectId;
     token = await Notifications.getExpoPushTokenAsync({
       projectId: Constants?.expoConfig?.extra?.eas?.projectId || null,
     });

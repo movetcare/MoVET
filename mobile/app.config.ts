@@ -103,7 +103,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ],
     extra: {
       eas: {
-        projectId: "e338e0ce-a592-44f3-b700-e69d46390080",
+        projectId:
+          process.env.EXPO_PROJECT_ID || "e338e0ce-a592-44f3-b700-e69d46390080",
       },
     },
   };

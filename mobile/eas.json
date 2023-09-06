@@ -20,7 +20,8 @@
       "extends": "base",
       "distribution": "store",
       "env": {
-        "APP_ENVIRONMENT": "production"
+        "APP_ENVIRONMENT": "production",
+        "EXPO_PROJECT_ID": "e338e0ce-a592-44f3-b700-e69d46390080"
       }
     },
     "staging": {
@@ -30,7 +31,8 @@
         "buildType": "apk"
       },
       "env": {
-        "APP_ENVIRONMENT": "staging"
+        "APP_ENVIRONMENT": "staging",
+        "EXPO_PROJECT_ID": "e338e0ce-a592-44f3-b700-e69d46390080"
       }
     },
     "development": {
@@ -44,7 +46,8 @@
         "simulator": true
       },
       "env": {
-        "APP_ENVIRONMENT": "development"
+        "APP_ENVIRONMENT": "development",
+        "EXPO_PROJECT_ID": "e338e0ce-a592-44f3-b700-e69d46390080"
       }
     }
   },
