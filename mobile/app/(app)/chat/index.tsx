@@ -30,7 +30,6 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import { Text, View, Button, Platform } from "react-native";
 import * as Notifications from "expo-notifications";
-import { ErrorBoundaryProps } from "expo-router";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -39,16 +38,6 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true,
   }),
 });
-
-export function ErrorBoundary(props: ErrorBoundaryProps) {
-  return (
-    <View style={{ flex: 1 }}>
-      <Text>{props.error.message}</Text>
-      <Text>{JSON.stringify(props.error)}</Text>
-      <Text onPress={props.retry}>Try Again?</Text>
-    </View>
-  );
-}
 
 const registerForPushNotificationsAsync = async () => {
   let token;
@@ -67,7 +56,7 @@ const registerForPushNotificationsAsync = async () => {
     token = await Notifications.getExpoPushTokenAsync({
       projectId: Constants?.expoConfig?.extra?.eas?.projectId,
     });
-    alert("PUSH TOKEN: " + token);
+    alert("PUSH TOKEN: " + JSON.stringify(token));
   } else alert("Must use physical device for Push Notifications");
 
   if (Platform.OS === "android")
@@ -318,31 +307,36 @@ const ChatIndex = () => {
   };
   return (
     <View style={tw`flex-1 bg-white`}>
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "space-around",
-        }}
-      >
-        <Text>Your expo push token: {expoPushToken}</Text>
-        <View style={{ alignItems: "center", justifyContent: "center" }}>
-          <Text>
-            Title: {notification && notification.request.content.title}{" "}
-          </Text>
-          <Text>Body: {notification && notification.request.content.body}</Text>
-          <Text>
-            Data:{" "}
-            {notification && JSON.stringify(notification.request.content.data)}
-          </Text>
-        </View>
-        <Button
-          title="Press to Send Notification"
-          onPress={async () => {
-            await sendPushNotification(expoPushToken as any);
+      {expoPushToken && (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "space-around",
           }}
-        />
-      </View>
+        >
+          <Text>Your expo push token: {JSON.stringify(expoPushToken)}</Text>
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <Text>
+              Title: {notification && notification.request.content.title}{" "}
+            </Text>
+            <Text>
+              Body: {notification && notification.request.content.body}
+            </Text>
+            <Text>
+              Data:{" "}
+              {notification &&
+                JSON.stringify(notification.request.content.data)}
+            </Text>
+          </View>
+          <Button
+            title="Press to Send Notification"
+            onPress={async () => {
+              await sendPushNotification(expoPushToken as any);
+            }}
+          />
+        </View>
+      )}
       <GiftedChat
         infiniteScroll
         scrollToBottom

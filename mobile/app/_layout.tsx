@@ -1,4 +1,4 @@
-import { SplashScreen, Stack } from "expo-router";
+import { ErrorBoundaryProps, SplashScreen, Stack } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
@@ -7,9 +7,19 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "firebase-config";
 import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
+import { View, Text } from "react-native";
 //export { ErrorBoundary } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
+
+export function ErrorBoundary(props: ErrorBoundaryProps) {
+  return (
+    <View style={{ flex: 1 }}>
+      <Text>{props.error.message}</Text>
+      <Text onPress={props.retry}>Try Again?</Text>
+    </View>
+  );
+}
 
 export default function Layout() {
   useEffect(() => {
