@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "516680717319",
+    "firebase_url": "https://movet-care.firebaseio.com",
+    "project_id": "movet-care",
+    "storage_bucket": "movet-care.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:516680717319:android:640ae9439c7d27072006a2",
+        "android_client_info": {
+          "package_name": "com.movet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "516680717319-kd6lmr1u8k7b7iu9op9uv31cssk38gb6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIC9YiVU9itxrzKkFvMvyDdkuXzBXrZLw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "516680717319-dkp04ups8fbvchbg8u698un66dg4qq0a.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "516680717319-kjgu8p5o7p3ftgpsqs9cv0kpnr382juk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.movet.inc",
+                "app_store_id": "1478031556"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,7 @@
-import { ExpoConfig, ConfigContext } from '@expo/config';
+/* eslint-disable import/no-anonymous-default-export */
+import { ExpoConfig, ConfigContext } from "@expo/config";
 
-const versions = require('./version.json');
+const versions = require("./version.json");
 const isProduction = process.env.APP_ENVIRONMENT === "production";
 
 export default ({ config }: ConfigContext): ExpoConfig => {
@@ -73,35 +74,32 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       package: "com.movet",
       versionCode: versions.buildVersion,
       permissions: ["CAMERA", "READ_CALENDAR", "WRITE_CALENDAR"],
+      googleServicesFile: "./google-services.json",
     },
     plugins: [
       "expo-router",
-      // [
-      //   "expo-camera",
-      //   {
-      //     cameraPermission: "Allow $(PRODUCT_NAME) to access your camera.",
-      //   },
-      // ],
-      // [
-      //   "expo-media-library",
-      //   {
-      //     photosPermission: "Allow $(PRODUCT_NAME) to access your photos.",
-      //     savePhotosPermission: "Allow $(PRODUCT_NAME) to save photos.",
-      //     isAccessMediaLocationEnabled: true,
-      //   },
-      // ],
-      // [
-      //   "expo-notifications",
-      //   {
-      //     //icon: './local/path/to/myNotificationIcon.png',
-      //     color: "#E76159",
-      //     // sounds: [
-      //     //   './local/path/to/mySound.wav',
-      //     //   './local/path/to/myOtherSound.wav',
-      //     // ],
-      //     mode: isProduction ? "production" : "development",
-      //   },
-      // ],
+      [
+        "expo-camera",
+        {
+          cameraPermission: "Allow $(PRODUCT_NAME) to access your camera.",
+        },
+      ],
+      [
+        "expo-media-library",
+        {
+          photosPermission: "Allow $(PRODUCT_NAME) to access your photos.",
+          savePhotosPermission: "Allow $(PRODUCT_NAME) to save photos.",
+          isAccessMediaLocationEnabled: true,
+        },
+      ],
+      [
+        "expo-notifications",
+        {
+          icon: "./assets/images/icons/app-icon.png",
+          color: "#E76159",
+          mode: isProduction ? "production" : "development",
+        },
+      ],
     ],
     extra: {
       eas: {

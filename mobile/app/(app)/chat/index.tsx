@@ -31,6 +31,14 @@ import * as Device from "expo-device";
 import { Text, View, Button, Platform } from "react-native";
 import * as Notifications from "expo-notifications";
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: true,
+  }),
+});
+
 const registerForPushNotificationsAsync = async () => {
   let token;
   if (Device.isDevice) {
@@ -45,6 +53,8 @@ const registerForPushNotificationsAsync = async () => {
       alert("Failed to get push token for push notification!");
       return;
     }
+    alert("Constants?.expoConfig?.extra?.eas?.projectId = ") +
+      Constants?.expoConfig?.extra?.eas?.projectId;
     token = await Notifications.getExpoPushTokenAsync({
       projectId: Constants?.expoConfig?.extra?.eas?.projectId || null,
     });
@@ -84,6 +94,7 @@ const ChatIndex = () => {
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
   const [notification, setNotification] = useState<any>(false);
   const notificationListener: any = useRef();
+  const responseListener: any = useRef();
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token: any) =>
@@ -94,6 +105,20 @@ const ChatIndex = () => {
         setNotification(notification);
         alert(JSON.stringify(notification));
       });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+        alert(JSON.stringify(response));
+      });
+    return () => {
+      Notifications.removeNotificationSubscription(
+        (notificationListener as any).current,
+      );
+      Notifications.removeNotificationSubscription(
+        (responseListener as any).current,
+      );
+    };
   }, []);
 
   useEffect(() => {
@@ -123,6 +148,26 @@ const ChatIndex = () => {
   useEffect(() => {
     if (messages && messages?.length === 0) setMessages(defaultMessages);
   }, [messages]);
+
+  async function sendPushNotification(expoPushToken: string) {
+    const message = {
+      to: expoPushToken,
+      sound: "default",
+      title: "Original Title",
+      body: "And here is the body!",
+      data: { someData: "goes here" },
+    };
+
+    await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+  }
 
   const onSend = useCallback(
     async (messages: IMessage[] = []) => {
@@ -288,7 +333,7 @@ const ChatIndex = () => {
         <Button
           title="Press to Send Notification"
           onPress={async () => {
-            await sendPushNotification(expoPushToken);
+            await sendPushNotification(expoPushToken as any);
           }}
         />
       </View>
