@@ -15,7 +15,8 @@ import {
   UserNotificationSettings,
 } from "../utils/getClientNotificationSettings";
 import { fetchNewGoToAccessToken } from "../integrations/goto/fetchNewGoToAccessToken";
-const DEBUG = true;
+//import { pushNotification } from "../integrations/expo/pushNotification";
+const DEBUG = false;
 export const sendNotification = async ({
   type,
   payload,
@@ -51,21 +52,21 @@ export const sendNotification = async ({
           "sendNotification => SENDING SLACK MESSAGE AS A BLOCK",
           JSON.stringify(payload?.message),
         );
-      sendSlackMessage(channelId, null, payload?.message);
+      sendSlackMessage(channelId, JSON.stringify(payload?.message), null);
     } else if (payload?.message !== null && message === null) {
       if (DEBUG)
         console.log(
           "sendNotification => SENDING SLACK MESSAGE FROM PAYLOAD",
           payload?.message,
         );
-      sendSlackMessage(channelId, payload?.message);
+      sendSlackMessage(channelId, JSON.stringify(payload?.message));
     } else if (message) {
       if (DEBUG)
         console.log(
           "sendNotification => SENDING SLACK MESSAGE (HARDCODED)",
           payload?.message,
         );
-      sendSlackMessage(channelId, message);
+      sendSlackMessage(channelId, JSON.stringify(message));
     }
   };
 
@@ -416,10 +417,7 @@ export const sendNotification = async ({
           console.log("adminFcmTokens", adminFcmTokens);
           console.log("clientFcmTokens", clientFcmTokens);
         }
-        if (
-          (adminFcmTokens && adminFcmTokens.length > 0) ||
-          (clientFcmTokens && clientFcmTokens.length > 0)
-        )
+        if (adminFcmTokens && adminFcmTokens.length > 0)
           admin
             .messaging()
             .sendMulticast({
@@ -495,7 +493,9 @@ export const sendNotification = async ({
               }
             })
             .catch((error: any) => throwError(error));
-        else if (DEBUG)
+        else if (clientFcmTokens && clientFcmTokens.length > 0) {
+          //pushNotification();
+        } else if (DEBUG)
           console.log("NO TOKENS FOUND", { adminFcmTokens, clientFcmTokens });
       } else if (DEBUG) console.log("UNSUPPORTED PUSH NOTIFICATION TYPE!");
       break;
