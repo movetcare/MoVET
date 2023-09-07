@@ -1,4 +1,4 @@
-import { faCalendarDay, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarDay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Hours, Loader } from "ui";
 import Error from "components/Error";

@@ -7,8 +7,8 @@ import { useState } from "react";
 import { TestAdminPushNotifications } from "./TestAdminPushNotifications";
 
 export const PushNotificationsWidget = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<any>(null);
+  const [isLoading] = useState(false);
+  const [error] = useState<any>(null);
 
   return (
     <AdminCheck>

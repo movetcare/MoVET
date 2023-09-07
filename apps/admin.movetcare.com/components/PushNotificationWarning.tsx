@@ -1,4 +1,4 @@
-import { faLink, faWarning } from "@fortawesome/free-solid-svg-icons";
+import { faWarning } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isSupported } from "firebase/messaging";
 import { useEffect, useState } from "react";

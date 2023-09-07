@@ -864,28 +864,32 @@ export const Hours = ({
                   <span className="text-movet-red font-extrabold">CLOSED</span>
                 )}
               </p>
-              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
-                <div className="w-full">
-                  {clinicHours?.map(
-                    (hours: { days: string }, index: number) => (
-                      <div
-                        className="flex w-full uppercase"
-                        key={hours.days + index}
-                      >
-                        <span className="whitespace-nowrap">{hours.days}</span>
-                        <div className="w-full border-b mb-2 mx-4"></div>
-                      </div>
-                    ),
-                  )}
+              {mode !== "admin" && (
+                <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
+                  <div className="w-full">
+                    {clinicHours?.map(
+                      (hours: { days: string }, index: number) => (
+                        <div
+                          className="flex w-full uppercase"
+                          key={hours.days + index}
+                        >
+                          <span className="whitespace-nowrap">
+                            {hours.days}
+                          </span>
+                          <div className="w-full border-b mb-2 mx-4"></div>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                  <div className="w-max whitespace-nowrap uppercase text-center">
+                    {clinicHours?.map(
+                      (hours: { times: string }, index: number) => (
+                        <div key={hours.times + index}>{hours.times}</div>
+                      ),
+                    )}
+                  </div>
                 </div>
-                <div className="w-max whitespace-nowrap uppercase text-center">
-                  {clinicHours?.map(
-                    (hours: { times: string }, index: number) => (
-                      <div key={hours.times + index}>{hours.times}</div>
-                    ),
-                  )}
-                </div>
-              </div>
+              )}
             </div>
             <div className="w-full max-w-lg whitespace-nowrap mt-8">
               <div className="flex flex-col sm:flex-row mx-auto justify-center max-w-screen-lg -mt-8">
@@ -914,28 +918,32 @@ export const Hours = ({
                   <span className="text-movet-red font-extrabold">CLOSED</span>
                 )}
               </p>
-              <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
-                <div className="w-full">
-                  {boutiqueHours?.map(
-                    (hours: { days: string }, index: number) => (
-                      <div
-                        className="flex w-full uppercase"
-                        key={hours.days + index}
-                      >
-                        <span className="whitespace-nowrap">{hours.days}</span>
-                        <div className="w-full border-b mb-2 mx-4"></div>
-                      </div>
-                    ),
-                  )}
+              {mode !== "admin" && (
+                <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
+                  <div className="w-full">
+                    {boutiqueHours?.map(
+                      (hours: { days: string }, index: number) => (
+                        <div
+                          className="flex w-full uppercase"
+                          key={hours.days + index}
+                        >
+                          <span className="whitespace-nowrap">
+                            {hours.days}
+                          </span>
+                          <div className="w-full border-b mb-2 mx-4"></div>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                  <div className="w-max whitespace-nowrap uppercase text-center">
+                    {boutiqueHours?.map(
+                      (hours: { times: string }, index: number) => (
+                        <div key={hours.times + index}>{hours.times}</div>
+                      ),
+                    )}
+                  </div>
                 </div>
-                <div className="w-max whitespace-nowrap uppercase text-center">
-                  {boutiqueHours?.map(
-                    (hours: { times: string }, index: number) => (
-                      <div key={hours.times + index}>{hours.times}</div>
-                    ),
-                  )}
-                </div>
-              </div>
+              )}
             </div>
             {mode !== "admin" && (
               <>

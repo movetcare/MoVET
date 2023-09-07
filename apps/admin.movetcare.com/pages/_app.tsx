@@ -25,7 +25,7 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
     const configurePushToken = async () =>
       await notifications.configure(userData?.user);
     if (userData?.user?.uid) configurePushToken();
-  }, [userData?.user?.uid]);
+  }, [userData?.user]);
   return (
     <ErrorBoundary>
       <UserContext.Provider value={userData}>

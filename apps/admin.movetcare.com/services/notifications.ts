@@ -23,7 +23,9 @@ export const notifications = {
                 : "BJa6PTEnoKGVnQSZfRbB6LZDvaYnrHJyllf7t13fYpjlrJq7roYqIyFX1xZVKo3V6K3Ay7Sa7M8hE_cRSO0nyaY",
           })
             .then(async (currentToken: string) => {
+              console.log("CLIENT PUSH TOKEN", currentToken);
               if (currentToken) {
+                console.log("PUSH TOKEN", currentToken);
                 const deviceInfo = JSON.parse(
                   JSON.stringify(UAParser(), (key: any, value: any) =>
                     value === undefined ? null : value,
@@ -65,29 +67,55 @@ export const notifications = {
                     },
                     createdOn: serverTimestamp(),
                   });
-                else if (tokenAlreadyExists === undefined)
-                  await setDoc(
-                    doc(firestore, "fcmTokensAdmin", user?.uid),
-                    {
-                      tokens: arrayUnion({
-                        token: currentToken,
-                        isActive: true,
-                        device: deviceInfo,
-                        createdOn: new Date(),
-                      }),
-                      user: {
-                        displayName: user?.displayName,
-                        email: user?.email,
-                        emailVerified: user?.emailVerified,
-                        photoURL: user?.photoURL,
-                        uid: user?.uid,
-                        phoneNumber: user?.phoneNumber,
+                else if (tokenAlreadyExists === undefined) {
+                  let tokenToMakeActive = null;
+                  existingTokens.forEach((token: any) => {
+                    if (token.token === currentToken) {
+                      token.isActive = true;
+                      token.updatedOn = new Date();
+                      tokenToMakeActive = currentToken;
+                    }
+                  });
+                  if (tokenToMakeActive)
+                    await setDoc(
+                      doc(firestore, "fcmTokensAdmin", user?.uid),
+                      {
+                        tokens: existingTokens,
+                        user: {
+                          displayName: user?.displayName,
+                          email: user?.email,
+                          emailVerified: user?.emailVerified,
+                          photoURL: user?.photoURL,
+                          uid: user?.uid,
+                          phoneNumber: user?.phoneNumber,
+                        },
+                        updatedOn: serverTimestamp(),
                       },
-                      updatedOn: serverTimestamp(),
-                    },
-                    { merge: true },
-                  );
-                else if (tokenAlreadyExists) {
+                      { merge: true },
+                    );
+                  else
+                    await setDoc(
+                      doc(firestore, "fcmTokensAdmin", user?.uid),
+                      {
+                        tokens: arrayUnion({
+                          token: currentToken,
+                          isActive: true,
+                          device: deviceInfo,
+                          createdOn: new Date(),
+                        }),
+                        user: {
+                          displayName: user?.displayName,
+                          email: user?.email,
+                          emailVerified: user?.emailVerified,
+                          photoURL: user?.photoURL,
+                          uid: user?.uid,
+                          phoneNumber: user?.phoneNumber,
+                        },
+                        updatedOn: serverTimestamp(),
+                      },
+                      { merge: true },
+                    );
+                } else if (tokenAlreadyExists) {
                   const newTokenData = existingTokens.map((token: any) => {
                     if (token.token === currentToken) {
                       return {

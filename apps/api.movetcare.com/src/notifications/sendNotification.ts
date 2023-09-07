@@ -16,7 +16,7 @@ import {
 } from "../utils/getClientNotificationSettings";
 import { fetchNewGoToAccessToken } from "../integrations/goto/fetchNewGoToAccessToken";
 //import { pushNotification } from "../integrations/expo/pushNotification";
-const DEBUG = false;
+const DEBUG = true;
 export const sendNotification = async ({
   type,
   payload,
@@ -48,7 +48,7 @@ export const sendNotification = async ({
     if (DEBUG) console.log("sendNotification => channelId", channelId);
     if (
       Array.isArray(payload?.message) &&
-      payload?.message?.fields?.length <= 10
+      payload?.message[0]?.fields?.length <= 10
     ) {
       if (DEBUG) {
         console.log(
@@ -382,12 +382,9 @@ export const sendNotification = async ({
       }
       break;
     case "push":
-      if (
-        payload?.category === "admin-telehealth" ||
-        payload?.category === "client-telehealth"
-      ) {
+      if (payload?.category === "admin-telehealth") {
         let adminFcmTokens: Array<string> | null = null;
-        let clientFcmTokens: Array<string> | null = null;
+        const allAdminTokenData: Array<any> = [];
         if (payload?.category === "admin-telehealth")
           adminFcmTokens = await admin
             .firestore()
@@ -398,38 +395,23 @@ export const sendNotification = async ({
               querySnapshot.forEach((doc: any) => {
                 if (DEBUG) console.log(doc.id, " => ", doc.data());
                 doc.data()?.tokens?.forEach((token: any) => {
-                  console.log("TOKEN ARRAY", token);
-                  if (token.isActive) allValidTokens.push(token.token);
+                  if (token.isActive) {
+                    allValidTokens.push(token.token);
+                    allAdminTokenData.push({ uid: doc.id, token: token.token });
+                  }
                 });
-              });
-              return allValidTokens;
-            })
-            .catch((error: any) => throwError(error));
-        if (payload?.category === "client-telehealth")
-          clientFcmTokens = await admin
-            .firestore()
-            .collection("fcmTokensClient")
-            .doc(payload?.user?.uid)
-            .get()
-            .then((doc: any) => {
-              const allValidTokens: Array<string> = [];
-              if (DEBUG) console.log(doc.id, " => ", doc.data());
-              doc.data()?.tokens?.forEach((token: any) => {
-                console.log("TOKEN ARRAY", token);
-                if (token.isActive) allValidTokens.push(token.token);
               });
               return allValidTokens;
             })
             .catch((error: any) => throwError(error));
         if (DEBUG) {
           console.log("adminFcmTokens", adminFcmTokens);
-          console.log("clientFcmTokens", clientFcmTokens);
         }
         if (adminFcmTokens && adminFcmTokens.length > 0)
           admin
             .messaging()
             .sendMulticast({
-              tokens: adminFcmTokens || clientFcmTokens,
+              tokens: adminFcmTokens,
               notification: {
                 title: payload?.title,
                 body: payload?.message,
@@ -452,11 +434,11 @@ export const sendNotification = async ({
                 },
               },
             })
-            .then((response: any) => {
+            .then(async (response: any) => {
               sendSlackMessageToChannel(
-                `:outbox_tray: Push Notifications Sent! (${payload?.id})\nPAYLOAD:\n${JSON.stringify(
+                `:outbox_tray: Push Notifications Sent!\nPAYLOAD:\n${JSON.stringify(
                   {
-                    tokens: adminFcmTokens || clientFcmTokens,
+                    tokens: adminFcmTokens,
                     notification: {
                       title: payload?.title,
                       body: payload?.message,
@@ -486,11 +468,7 @@ export const sendNotification = async ({
                 response.responses.forEach((resp: any, index: number) => {
                   if (!resp.success) {
                     failedTokens.push(
-                      adminFcmTokens
-                        ? adminFcmTokens[index]
-                        : clientFcmTokens
-                        ? clientFcmTokens[index]
-                        : [],
+                      adminFcmTokens ? adminFcmTokens[index] : [],
                     );
                   }
                 });
@@ -498,13 +476,68 @@ export const sendNotification = async ({
                   console.log(
                     "List of tokens that caused failures: " + failedTokens,
                   );
+                if (failedTokens.length > 0) {
+                  const adminTokensToDisable: Array<{
+                    uid: string;
+                    token: string;
+                  }> = [];
+                  allAdminTokenData.map((tokenData: any) => {
+                    if (failedTokens.includes(tokenData.token))
+                      adminTokensToDisable.push({
+                        uid: tokenData.uid,
+                        token: tokenData.token,
+                      });
+                  });
+                  if (DEBUG)
+                    console.log("adminTokensToDisable", adminTokensToDisable);
+                  await Promise.all(
+                    adminTokensToDisable.map(async (tokenData: any) => {
+                      const adminUserTokens = await admin
+                        .firestore()
+                        .collection("fcmTokensAdmin")
+                        .doc(tokenData.uid)
+                        .get()
+                        .then((doc: any) => doc.data().tokens)
+                        .catch((error: any) => throwError(error));
+                      if (adminUserTokens) {
+                        const updatedTokens = adminUserTokens.map(
+                          (token: any) => {
+                            if (token.token === tokenData.token)
+                              return { ...token, isActive: false };
+                            else return token;
+                          },
+                        );
+                        await admin
+                          .firestore()
+                          .collection("fcmTokensAdmin")
+                          .doc(tokenData.uid)
+                          .update({ tokens: updatedTokens })
+                          .catch((error: any) => throwError(error));
+                      }
+                    }),
+                  );
+                }
               }
             })
             .catch((error: any) => throwError(error));
-        else if (clientFcmTokens && clientFcmTokens.length > 0) {
-          //pushNotification();
-        } else if (DEBUG)
-          console.log("NO TOKENS FOUND", { adminFcmTokens, clientFcmTokens });
+        else if (DEBUG) console.log("NO TOKENS FOUND", { adminFcmTokens });
+      } else if (payload?.category === "client-telehealth") {
+        const clientFcmTokens = await admin
+          .firestore()
+          .collection("fcmTokensClient")
+          .doc(payload?.user?.uid)
+          .get()
+          .then((doc: any) => {
+            const allValidTokens: Array<string> = [];
+            if (DEBUG) console.log(doc.id, " => ", doc.data());
+            doc.data()?.tokens?.forEach((token: any) => {
+              console.log("TOKEN ARRAY", token);
+              if (token.isActive) allValidTokens.push(token.token);
+            });
+            return allValidTokens;
+          })
+          .catch((error: any) => throwError(error));
+        if (DEBUG) console.log("clientFcmTokens", clientFcmTokens);
       } else if (DEBUG) console.log("UNSUPPORTED PUSH NOTIFICATION TYPE!");
       break;
     default:
