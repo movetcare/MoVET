@@ -13,7 +13,7 @@ import { createProVetClient } from "../../integrations/provet/entities/client/cr
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
 import { admin, throwError } from "../../config/config";
-const DEBUG = true;
+const DEBUG = false;
 export const setupNewBookingSession = async ({
   email,
   device,

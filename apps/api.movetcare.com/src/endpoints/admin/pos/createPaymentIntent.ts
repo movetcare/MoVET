@@ -10,7 +10,7 @@ import {
 } from "../../../config/config";
 import { requestIsAuthorized } from "./requestIsAuthorized";
 import { getCustomerId } from "../../../utils/getCustomerId";
-const DEBUG = true;
+const DEBUG = false;
 export const createPaymentIntent = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

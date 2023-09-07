@@ -4,7 +4,7 @@ import { functions } from "./../config/config";
 import { archiveBooking } from "../booking/session/archiveBooking";
 import type { Booking } from "../types/booking";
 import { updateBookingCancellation } from "../booking/abandonment/updateBookingCancellation";
-const DEBUG = true;
+const DEBUG = false;
 export const handleBookingUpdate = functions.firestore
   .document("bookings/{id}")
   .onWrite(async (change: any, context: any) => {
@@ -22,7 +22,7 @@ export const handleBookingUpdate = functions.firestore
         ) {
           if (DEBUG)
             console.log(
-              `REMOVING BOOKING ABANDONMENT AUTOMATION TASK FROM QUEUE FOR ${id}`
+              `REMOVING BOOKING ABANDONMENT AUTOMATION TASK FROM QUEUE FOR ${id}`,
             );
           await removeBookingAbandonmentNotifications(id);
         }
@@ -32,7 +32,7 @@ export const handleBookingUpdate = functions.firestore
       } else if (DEBUG)
         console.log(
           `CAN NOT UPDATE AN ARCHIVED (OR DELETED) BOOKING: ${id}`,
-          data
+          data,
         );
     }
     return true;

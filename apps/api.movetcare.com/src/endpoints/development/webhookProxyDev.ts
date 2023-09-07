@@ -7,7 +7,7 @@ import {
   admin,
   throwError,
 } from "../../config/config";
-const DEBUG = true;
+const DEBUG = false;
 export const webhookProxyDev: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(
@@ -27,7 +27,7 @@ export const webhookProxyDev: Promise<Response> = functions
                     `${doc.data()?.url}/${
                       environment.project_id
                     }/us-central1/incomingWebhook/stripe/webhook/`,
-                    request.body
+                    request.body,
                   )
                   .then((res: any) => {
                     if (DEBUG) console.log("NGROK RESPONSE => ", res.body);
@@ -42,7 +42,7 @@ export const webhookProxyDev: Promise<Response> = functions
                     `${doc.data()?.url}/${
                       environment.project_id
                     }/us-central1/incomingWebhook/provet/webhook/`,
-                    request.body
+                    request.body,
                   )
                   .then((res: any) => {
                     if (DEBUG) console.log("NGROK RESPONSE => ", res.body);
@@ -51,11 +51,11 @@ export const webhookProxyDev: Promise<Response> = functions
                   .catch((error: any) => {
                     throwError(error);
                     return response.status(200).send();
-                  })
+                  }),
           );
         })
         .catch((error: any) => {
           throwError(error);
           return response.status(200).send();
-        })
+        }),
   );

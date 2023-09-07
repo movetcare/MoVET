@@ -1,7 +1,7 @@
 import { admin, throwError } from "../../config/config";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { sendNotification } from "../sendNotification";
-const DEBUG = true;
+const DEBUG = false;
 export const sendBookingRequestAdminNotification = async ({
   id,
   locationType,

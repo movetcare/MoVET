@@ -52,21 +52,21 @@ export const sendNotification = async ({
           "sendNotification => SENDING SLACK MESSAGE AS A BLOCK",
           JSON.stringify(payload?.message),
         );
-      sendSlackMessage(channelId, JSON.stringify(payload?.message), null);
+      sendSlackMessage(channelId, null, payload?.message);
     } else if (payload?.message !== null && message === null) {
       if (DEBUG)
         console.log(
           "sendNotification => SENDING SLACK MESSAGE FROM PAYLOAD",
           payload?.message,
         );
-      sendSlackMessage(channelId, JSON.stringify(payload?.message));
+      sendSlackMessage(channelId, payload?.message);
     } else if (message) {
       if (DEBUG)
         console.log(
           "sendNotification => SENDING SLACK MESSAGE (HARDCODED)",
           payload?.message,
         );
-      sendSlackMessage(channelId, JSON.stringify(message));
+      sendSlackMessage(channelId, message);
     }
   };
 

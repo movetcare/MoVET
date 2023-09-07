@@ -1,7 +1,7 @@
 import { sendNotification } from "../notifications/sendNotification";
 import { functions, admin, throwError } from "../config/config";
 
-const DEBUG = true;
+const DEBUG = false;
 export const handleCompletedTask = functions.firestore
   .document("tasks_completed/{id}")
   .onWrite(async (change: any, context: any) => {

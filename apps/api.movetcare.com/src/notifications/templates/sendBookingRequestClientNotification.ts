@@ -2,7 +2,7 @@ import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { sendNotification } from "../sendNotification";
 import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-const DEBUG = true;
+const DEBUG = false;
 export const sendBookingRequestClientNotification = async ({
   locationType,
   notes,

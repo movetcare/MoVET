@@ -249,7 +249,12 @@ export default function ContactInfo() {
             addAPet: data,
             //{ ...data, records, photo },
             id: session?.id,
-            device: UAParser,
+            device: JSON.parse(
+              JSON.stringify(UAParser(), function (key: any, value: any) {
+                if (value === undefined) return null;
+                return value;
+              }),
+            ),
             token,
           });
           if (result?.error !== true || result?.error === undefined) {

@@ -9,14 +9,14 @@ import { updateProVetClient } from "../../integrations/provet/entities/client/up
 import type { BookingError } from "../../types/booking";
 import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
-const DEBUG = true;
+const DEBUG = false;
 export const requestAppointment = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<true | BookingError> => {
     if (DEBUG)
       console.log(
         "requestAppointment => INCOMING REQUEST PAYLOAD requestAppointment => ",
-        data
+        data,
       );
     const { token, id, firstName, lastName, phone, email, saveInfo } = data;
     if (token) {
@@ -38,14 +38,14 @@ export const requestAppointment = functions
                 updatedOn: new Date(),
                 isActive: true,
               },
-              { merge: true }
+              { merge: true },
             )
             .then(() => true)
             .catch((error: any) => {
               throwError(error);
               return handleFailedBooking(
                 data,
-                error?.message || "PROCESSING FAILED"
+                error?.message || "PROCESSING FAILED",
               );
             });
         } else if (id && phone && email) {
@@ -66,14 +66,14 @@ export const requestAppointment = functions
                 isActive: true,
                 step: "success",
               },
-              { merge: true }
+              { merge: true },
             )
             .then(() => true)
             .catch((error: any) => {
               throwError(error);
               return handleFailedBooking(
                 data,
-                error?.message || "PROCESSING FAILED"
+                error?.message || "PROCESSING FAILED",
               );
             });
         } else return await handleFailedBooking(data, "FAILED TO GET SESSION");

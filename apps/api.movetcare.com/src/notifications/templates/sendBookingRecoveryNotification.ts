@@ -9,7 +9,7 @@ import {
 } from "../../utils/getClientNotificationSettings";
 import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
 import { sendNotification } from "../sendNotification";
-const DEBUG = true;
+const DEBUG = false;
 export const sendBookingRecoveryNotification = async ({
   id,
   type,

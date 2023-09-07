@@ -12,7 +12,7 @@ import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
 import { savePatient } from "../../integrations/provet/entities/patient/savePatient";
 import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
-const DEBUG = true;
+const DEBUG = false;
 export const initTestUser: Promise<Response> = functions
   .runWith(defaultRuntimeOptions)
   .https.onRequest(async (request: any, response: any) => {
@@ -23,13 +23,13 @@ export const initTestUser: Promise<Response> = functions
           "dev+test@movetcare.com",
           5769,
           "cus_NHh7gfsz2LsVnp",
-          "pm_1MX7jnDVQU5TYLF1k3iHdDKc"
+          "pm_1MX7jnDVQU5TYLF1k3iHdDKc",
         )) &&
         (await importTestUser(
           "dev+test_vcpr_not_required@movetcare.com",
           6008,
           "cus_O4miqMJzfJhmBB",
-          "card_1NIdABDVQU5TYLF1Yh2xFp4M"
+          "card_1NIdABDVQU5TYLF1Yh2xFp4M",
         )) &&
         (await importTelehealthChat()) &&
         (await importCheckIn())
@@ -47,12 +47,12 @@ const deleteDefaultUsers = async () =>
         if (deleteUsersResult.successCount > 0)
           console.log(
             `Successfully deleted ${deleteUsersResult.successCount} users`,
-            deleteUsersResult
+            deleteUsersResult,
           );
         if (deleteUsersResult.failureCount > 0)
           console.log(
             `Failed to delete ${deleteUsersResult.failureCount} users`,
-            deleteUsersResult
+            deleteUsersResult,
           );
       }
       if (deleteUsersResult.errors.length > 0) {
@@ -122,7 +122,7 @@ const importDefaultUsers = async (): Promise<boolean> =>
           if (DEBUG) {
             console.error(
               `Error importing user ${indexedError.index}`,
-              indexedError
+              indexedError,
             );
           }
         });
@@ -132,12 +132,12 @@ const importDefaultUsers = async (): Promise<boolean> =>
           if (results.successCount > 0)
             console.log(
               `Successfully imported ${results.successCount} users`,
-              results
+              results,
             );
           if (results.failureCount > 0)
             console.log(
               `Failed to import ${results.failureCount} users`,
-              results
+              results,
             );
         }
         return true;
@@ -149,7 +149,7 @@ const importTestUser = async (
   email: string,
   id: number,
   customer: string,
-  paymentMethod: string
+  paymentMethod: string,
 ): Promise<boolean> => {
   const proVetClientData = await fetchEntity("client", id);
   let didImportTestUser = false;
@@ -157,14 +157,14 @@ const importTestUser = async (
   if (testUserAlreadyExists === true) {
     if (DEBUG)
       console.log(
-        `Test User Already Exists, Updating Firestore Document ID: ${proVetClientData.id}`
+        `Test User Already Exists, Updating Firestore Document ID: ${proVetClientData.id}`,
       );
     didImportTestUser = await saveClient(id, proVetClientData, null);
   } else {
     if (DEBUG)
       console.log(
         `Test User Does NOT Exists, Creating New Auth User and Firestore Document for Client: ${proVetClientData.id}`,
-        proVetClientData
+        proVetClientData,
       );
     didImportTestUser = await createAuthClient({
       ...proVetClientData,
@@ -175,7 +175,7 @@ const importTestUser = async (
   await importPatientData(proVetClientData);
   await importCustomerData(
     id,
-    await stripe.customers.retrieve(customer).finally(() => true)
+    await stripe.customers.retrieve(customer).finally(() => true),
   );
   await importCustomerPaymentMethod(id, {
     ...(await stripe.paymentMethods
@@ -192,14 +192,14 @@ const importTestUser = async (
         id,
         customer,
         paymentMethod,
-      })}`
+      })}`,
     );
 };
 
 const importPatientData = async (proVetClientData: any) => {
   const patientIds: any = [];
   proVetClientData.patients.map((patientUrl: string) =>
-    patientIds.push(getProVetIdFromUrl(patientUrl))
+    patientIds.push(getProVetIdFromUrl(patientUrl)),
   );
   let patientsConfigured = 0;
   return await Promise.all(
@@ -207,13 +207,13 @@ const importPatientData = async (proVetClientData: any) => {
       const patient = await fetchEntity("patient", parseInt(patientId));
       await savePatient(patient);
       patientsConfigured++;
-    })
+    }),
   )
     .then(async () => {
       if (patientsConfigured === patientIds.length) return true;
       else
         return throwError(
-          `ERROR: ${patientsConfigured} Out of ${patientIds.length} Patients Imported`
+          `ERROR: ${patientsConfigured} Out of ${patientIds.length} Patients Imported`,
         );
     })
     .catch((error: any) => throwError(error));
@@ -229,13 +229,13 @@ const importCustomerData = async (client: number, stripeCustomerData: any) =>
         customer: stripeCustomerData.id,
         updatedOn: new Date(),
       },
-      { merge: true }
+      { merge: true },
     )
     .catch((error: any) => throwError(error));
 
 const importCustomerPaymentMethod = async (
   client: number,
-  paymentMethod: any
+  paymentMethod: any,
 ) =>
   await admin
     .firestore()
@@ -264,7 +264,7 @@ const importTelehealthChat = async () =>
         lastSlackThread: "12345",
         createdAt: new Date(),
       },
-      { merge: true }
+      { merge: true },
     )
     .then(
       async () =>
@@ -284,7 +284,7 @@ const importTelehealthChat = async () =>
             },
             createdAt: new Date(),
           })
-          .catch((error: any) => throwError(error))
+          .catch((error: any) => throwError(error)),
     )
     .catch((error: any) => throwError(error));
 
@@ -310,7 +310,7 @@ const importCheckIn = async (): Promise<boolean> => {
         lastName,
         paymentMethod: {
           ...(await stripe.paymentMethods.retrieve(
-            "pm_1MX7jnDVQU5TYLF1k3iHdDKc"
+            "pm_1MX7jnDVQU5TYLF1k3iHdDKc",
           )),
           active: true,
           updatedOn: new Date(),
@@ -319,7 +319,7 @@ const importCheckIn = async (): Promise<boolean> => {
         status: "complete",
         updatedOn: new Date(),
       },
-      { merge: true }
+      { merge: true },
     )
     .then(() => true)
     .catch((error: any) => throwError(error));
