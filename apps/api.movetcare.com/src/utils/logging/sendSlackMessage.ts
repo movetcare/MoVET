@@ -1,5 +1,5 @@
 import { slackClient, slackBotToken, environment } from "../../config/config";
-const DEBUG = true;
+const DEBUG = false;
 export const sendSlackMessage = (
   id: string,
   text: string | null,
@@ -22,20 +22,19 @@ export const sendSlackMessage = (
           },
     );
   if (environment.type === "production")
-    slackClient.chat
-      .postMessage(
-        blocks
-          ? {
-              token: slackBotToken,
-              channel: id,
-              text: text || "EMPTY",
-              blocks,
-            }
-          : {
-              token: slackBotToken,
-              channel: id,
-              text: text as string,
-            },
-      )
-      .catch((error: any) => console.error(error));
+    slackClient.chat.postMessage(
+      blocks
+        ? {
+            token: slackBotToken,
+            channel: id,
+            text: text || "EMPTY",
+            blocks,
+          }
+        : {
+            token: slackBotToken,
+            channel: id,
+            text: text as string,
+          },
+    );
+  //.catch((error: any) => console.error(error));
 };

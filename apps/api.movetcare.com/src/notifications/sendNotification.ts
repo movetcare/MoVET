@@ -46,12 +46,16 @@ export const sendNotification = async ({
         : "development-feed",
     );
     if (DEBUG) console.log("sendNotification => channelId", channelId);
-    if (Array.isArray(payload?.message)) {
-      if (DEBUG)
+    if (
+      Array.isArray(payload?.message) &&
+      payload?.message?.fields?.length <= 10
+    ) {
+      if (DEBUG) {
         console.log(
           "sendNotification => SENDING SLACK MESSAGE AS A BLOCK",
           JSON.stringify(payload?.message),
         );
+      }
       sendSlackMessage(channelId, null, payload?.message);
     } else if (payload?.message !== null && message === null) {
       if (DEBUG)
@@ -67,7 +71,11 @@ export const sendNotification = async ({
           payload?.message,
         );
       sendSlackMessage(channelId, message);
-    }
+    } else
+      console.log("SLACK MESSAGE NOT SENT - BAD MESSAGE FORMAT", {
+        message,
+        payload: payload?.message,
+      });
   };
 
   switch (type) {

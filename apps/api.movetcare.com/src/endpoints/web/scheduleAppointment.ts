@@ -12,14 +12,14 @@ import { processLocation } from "../../booking/session/processLocation";
 import { processDateTime } from "../../booking/session/processDateTime";
 import { processReason } from "../../booking/session/processReason";
 import { processStaff } from "../../booking/session/processStaff";
-const DEBUG = true;
+const DEBUG = false;
 export const scheduleAppointment = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<Booking | BookingError> => {
     if (DEBUG)
       console.log(
         "scheduleAppointment => INCOMING REQUEST PAYLOAD scheduleAppointment => ",
-        data
+        data,
       );
     const {
       token,
@@ -42,7 +42,7 @@ export const scheduleAppointment = functions
           if (DEBUG)
             console.log(
               "scheduleAppointment => setupNewBookingSession => ",
-              data
+              data,
             );
           return await setupNewBookingSession(data);
         } else if (id) {
@@ -50,7 +50,7 @@ export const scheduleAppointment = functions
             if (DEBUG)
               console.log(
                 "scheduleAppointment => processContactInfo => ",
-                contactInfo
+                contactInfo,
               );
             return await processContactInfo(id, contactInfo);
           } else if (addAPet) {
@@ -61,39 +61,39 @@ export const scheduleAppointment = functions
             if (DEBUG)
               console.log(
                 "scheduleAppointment => processPetSelection => ",
-                petSelection
+                petSelection,
               );
             return await processPetSelection(
               id,
               Array.isArray(petSelection.pets)
                 ? petSelection.pets
                 : [petSelection.pets],
-              establishCareExamRequired
+              establishCareExamRequired,
             );
           } else if (illPetSelection) {
             if (DEBUG)
               console.log(
                 "scheduleAppointment => processIllPetSelection => ",
-                illPetSelection
+                illPetSelection,
               );
             return await processIllPetSelection(
               id,
               Array.isArray(illPetSelection?.illPets)
                 ? illPetSelection?.illPets
-                : [illPetSelection?.illPets]
+                : [illPetSelection?.illPets],
             );
           } else if (illnessDetails) {
             if (DEBUG)
               console.log(
                 "scheduleAppointment => processIllnessDetails => ",
-                illnessDetails
+                illnessDetails,
               );
             return await processIllnessDetails(id, illnessDetails);
           } else if (location) {
             if (DEBUG)
               console.log(
                 "scheduleAppointment => processLocation => ",
-                location
+                location,
               );
             return await processLocation(data);
           } else if (reason) {
@@ -108,7 +108,7 @@ export const scheduleAppointment = functions
             if (DEBUG)
               console.log(
                 "scheduleAppointment => processDateTime => ",
-                requestedDateTime
+                requestedDateTime,
               );
             return await processDateTime(id, requestedDateTime);
           } else

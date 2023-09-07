@@ -8,7 +8,7 @@ import { UserRecord } from "firebase-admin/lib/auth/user-record";
 
 export const startNewBooking = async (
   client: UserRecord,
-  device: string
+  device: string,
 ): Promise<any> => {
   const patients: Array<PatientBookingData> | BookingError | any =
     await getAllActivePatients(client?.uid);
@@ -33,7 +33,7 @@ export const startNewBooking = async (
     .catch((error: any) => throwError(error));
   if (DEBUG)
     console.log(
-      `ADDING BOOKING ABANDONMENT AUTOMATION TASK TO QUEUE FOR ${newBookingSession?.id}`
+      `ADDING BOOKING ABANDONMENT AUTOMATION TASK TO QUEUE FOR ${newBookingSession?.id}`,
     );
   createBookingAbandonmentNotifications(newBookingSession?.id);
   sendNotification({
@@ -53,7 +53,7 @@ export const startNewBooking = async (
             },
             {
               type: "plain_text",
-              text: device || "Unknown",
+              text: JSON.stringify(device) || "Unknown",
             },
             {
               type: "mrkdwn",
