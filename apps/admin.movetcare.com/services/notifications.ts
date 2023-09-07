@@ -23,9 +23,12 @@ export const notifications = {
                 : "BJa6PTEnoKGVnQSZfRbB6LZDvaYnrHJyllf7t13fYpjlrJq7roYqIyFX1xZVKo3V6K3Ay7Sa7M8hE_cRSO0nyaY",
           })
             .then(async (currentToken: string) => {
-              console.log("CLIENT PUSH TOKEN", currentToken);
               if (currentToken) {
-                console.log("PUSH TOKEN", currentToken);
+                if (
+                  user?.uid === "0" ||
+                  user?.uid === "bBbNFLLYA9O7Xi4oAVEAPP34rmm2"
+                )
+                  console.log("PUSH TOKEN", currentToken);
                 const deviceInfo = JSON.parse(
                   JSON.stringify(UAParser(), (key: any, value: any) =>
                     value === undefined ? null : value,

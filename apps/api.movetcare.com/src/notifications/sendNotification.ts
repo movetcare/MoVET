@@ -436,32 +436,13 @@ export const sendNotification = async ({
             })
             .then(async (response: any) => {
               sendSlackMessageToChannel(
-                `:outbox_tray: Push Notifications Sent!\nPAYLOAD:\n${JSON.stringify(
-                  {
-                    tokens: adminFcmTokens,
-                    notification: {
-                      title: payload?.title,
-                      body: payload?.message,
-                    },
-                    data: payload?.data || { test: "testing" },
-                    webpush: {
-                      headers: {
-                        Urgency: payload?.urgency || "high",
-                      },
-                      notification: {
-                        body: payload?.message,
-                        requireInteraction: "true",
-                        badge: "/images/logo/logo-paw-black.png",
-                      },
-                      fcm_options: {
-                        link:
-                          (environment?.type === "production"
-                            ? "https://admin.movetcare.com"
-                            : "http://localhost:3002") + payload?.path,
-                      },
-                    },
-                  },
-                )}\nRESPONSE:\n${JSON.stringify(response)}`,
+                `:outbox_tray: Push Notifications Sent to ${
+                  (adminFcmTokens as any).length
+                } devices${
+                  response?.failureCount.length > 0
+                    ? ` with ${response?.failureCount} failures`
+                    : ""
+                } - "${payload?.title} | ${payload?.message}"`,
               );
               if (response.failureCount > 0) {
                 const failedTokens: any = [];

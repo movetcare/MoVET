@@ -59,7 +59,7 @@ const sendAdminBookingRecoveryNotification = async (
   type: "24_HOUR" | "72_HOUR" | "1_HOUR",
 ) => {
   const { client, id }: any = booking;
-  const { email, displayName, phone, isExistingClient } = client;
+  const { email, displayName, phone, isExistingClient } = client || {};
   if (isExistingClient) {
     let allPatients = "";
     const {
