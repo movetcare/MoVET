@@ -25,6 +25,15 @@ export const SettingsNavigation = () => {
       iconBackground: "bg-movet-green bg-opacity-50",
     },
     {
+      title: "Booking",
+      description:
+        "Customize how shifts in ProVet integrate with the MoVET platform's appointment scheduling system",
+      href: "/settings/booking/",
+      icon: faCalendar,
+      iconForeground: "text-movet-brown",
+      iconBackground: "bg-movet-brown bg-opacity-50",
+    },
+    {
       title: "Telehealth Chat Templates",
       description:
         "Use these settings to manage all of the telehealth chat auto-responses",
@@ -42,15 +51,7 @@ export const SettingsNavigation = () => {
       iconForeground: "text-movet-yellow",
       iconBackground: "bg-movet-yellow bg-opacity-50",
     },
-    {
-      title: "Booking",
-      description:
-        "Customize how shifts in ProVet integrate with the MoVET platform's appointment scheduling system",
-      href: "/settings/booking/",
-      icon: faCalendar,
-      iconForeground: "text-movet-brown",
-      iconBackground: "bg-movet-brown bg-opacity-50",
-    },
+
     {
       title: "Announcement Banner",
       description:

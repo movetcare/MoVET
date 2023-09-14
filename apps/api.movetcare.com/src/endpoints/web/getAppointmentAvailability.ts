@@ -126,7 +126,120 @@ export const getAppointmentAvailability = functions
             if (b.start > a.start) return -1;
             return 0;
           });
-        } else return closedReason || "Something Went Wrong...";
+        } else {
+          const forcedOpenings = await getForcedOpenings(schedule);
+          const calendarDay = Number(
+            new Date(date.slice(0, -13) + "24:00:00.000Z")?.toLocaleDateString(
+              "en-us",
+              {
+                day: "numeric",
+              },
+            ),
+          );
+          const monthNumber =
+            new Date(date.slice(0, -13) + "24:00:00.000Z").getMonth() + 1;
+          const yearNumber = new Date(
+            date.slice(0, -13) + "24:00:00.000Z",
+          ).getFullYear();
+          if (DEBUG) {
+            console.log("CLOSED calendarDay", calendarDay);
+            console.log("CLOSED monthNumber", monthNumber);
+            console.log("CLOSED yearNumber", yearNumber);
+          }
+          if (forcedOpenings && forcedOpenings.length > 0) {
+            let uniqueAppointmentTimes: any = [];
+            await Promise.all(
+              forcedOpenings.map(async (opening: any) => {
+                if (DEBUG) {
+                  console.log(
+                    "opening?.date?.toDate().getDate()",
+                    opening?.date?.toDate().getDate(),
+                  );
+                  console.log("calendarDay", calendarDay);
+                  console.log(
+                    "opening?.date?.toDate().getMonth() + 1",
+                    opening?.date?.toDate().getMonth() + 1,
+                  );
+                  console.log("monthNumber", monthNumber);
+                }
+                if (
+                  calendarDay === opening?.date?.toDate().getDate() &&
+                  monthNumber === opening?.date?.toDate().getMonth() + 1 &&
+                  yearNumber === opening?.date?.toDate().getFullYear()
+                ) {
+                  const allAvailableAppointmentTimes: any = [];
+                  await Promise.all(
+                    resources.map(async (resource: ActiveResource) => {
+                      let existingAppointmentsForResource: Array<{
+                        start: any;
+                        end: any;
+                      }> = [];
+                      existingAppointmentsForResource =
+                        await getExistingAppointments({
+                          date,
+                          schedule,
+                          resource,
+                          standardLunchTime,
+                          standardLunchDuration,
+                        });
+                      allAvailableAppointmentTimes.push(
+                        await calculateAvailableAppointments({
+                          schedule,
+                          existingAppointmentsForResource,
+                          date,
+                          resource,
+                          standardOpenTime: opening?.startTime,
+                          standardCloseTime: opening?.endTime,
+                          appointmentDuration,
+                          appointmentBuffer,
+                          sameDayAppointmentLeadTime,
+                        }),
+                      );
+                    }),
+                  );
+                  if (DEBUG)
+                    console.log(
+                      "allAvailableAppointmentTimes",
+                      allAvailableAppointmentTimes,
+                    );
+                  const consolidatedAvailableAppointmentTimes: any = [];
+                  allAvailableAppointmentTimes.forEach((timeSlots: any) =>
+                    timeSlots.forEach((timeSlot: any) =>
+                      consolidatedAvailableAppointmentTimes.push(timeSlot),
+                    ),
+                  );
+                  if (DEBUG)
+                    console.log(
+                      "consolidatedAvailableAppointmentTimes",
+                      consolidatedAvailableAppointmentTimes,
+                    );
+                  const uniqueIds: any = [];
+                  uniqueAppointmentTimes =
+                    consolidatedAvailableAppointmentTimes.filter(
+                      (element: any) => {
+                        const isDuplicate = uniqueIds.includes(element.start);
+                        if (!isDuplicate) {
+                          uniqueIds.push(element.start);
+                          return true;
+                        }
+                        return false;
+                      },
+                    );
+                  uniqueAppointmentTimes.sort((a: any, b: any) => {
+                    if (a.start > b.start) return 1;
+                    if (b.start > a.start) return -1;
+                    return 0;
+                  });
+                }
+              }),
+            );
+            if (DEBUG)
+              console.log("uniqueAppointmentTimes", uniqueAppointmentTimes);
+            return uniqueAppointmentTimes.length > 0
+              ? uniqueAppointmentTimes
+              : closedReason;
+          } else return closedReason || "Something Went Wrong...";
+        }
       }
       return "Loading...";
     },
@@ -332,7 +445,8 @@ const verifyScheduleIsOpen = async (
     console.log("FIRST calendarDay", calendarDay);
     console.log("exactDateString", date.slice(0, -13) + "24:00:00.000Z");
   }
-  const monthNumber = new Date(date.slice(0, -13) + "24:00:00.000Z").getMonth();
+  const monthNumber =
+    new Date(date.slice(0, -13) + "24:00:00.000Z").getMonth() + 1;
   const weekdayNumber = new Date(date.slice(0, -13) + "24:00:00.000Z").getDay();
   const configuration = await getConfiguration();
   const globalClosures = await admin
@@ -511,14 +625,14 @@ const verifyScheduleIsOpen = async (
     console.log("calendarDay", calendarDay);
     console.log("new Date().getDate()", new Date().getDate());
     console.log("monthNumber", monthNumber);
-    console.log("new Date().getMonth()", new Date().getMonth());
+    console.log("new Date().getMonth()+ 1", new Date().getMonth() + 1);
     console.log(
       "calendarDay === new Date().getDate()",
       calendarDay === new Date().getDate(),
     );
     console.log(
-      "monthNumber === new Date().getMonth()",
-      monthNumber === new Date().getMonth(),
+      "monthNumber === new Date().getMonth() + 1",
+      monthNumber === new Date().getMonth() + 1,
     );
   }
   if (
@@ -531,7 +645,7 @@ const verifyScheduleIsOpen = async (
       ? configuration?.virtualSameDayAppointmentVcprRequired
       : null) &&
     calendarDay === new Date().getDate() &&
-    monthNumber === new Date().getMonth()
+    monthNumber === new Date().getMonth() + 1
   ) {
     return {
       isOpenOnDate: false,
@@ -570,9 +684,8 @@ const getExistingAppointments = async ({
           },
         ),
       );
-      const monthNumber = new Date(
-        date.slice(0, -13) + "24:00:00.000Z",
-      ).getMonth();
+      const monthNumber =
+        new Date(date.slice(0, -13) + "24:00:00.000Z").getMonth() + 1;
 
       const existingAppointments: Array<Appointment> = [];
       const scheduleClosures = await getScheduledClosures(schedule);
@@ -596,7 +709,7 @@ const getExistingAppointments = async ({
           }
           if (
             doc.data()?.start?.toDate().getDate() === calendarDay &&
-            doc.data()?.start?.toDate().getMonth() === monthNumber &&
+            doc.data()?.start?.toDate().getMonth() + 1 === monthNumber &&
             doc.data()?.resources &&
             doc.data()?.resources.includes(resource.id) &&
             reasons.includes(getProVetIdFromUrl(doc.data()?.reason))
@@ -644,14 +757,14 @@ const getExistingAppointments = async ({
             );
             console.log("calendarDay", calendarDay);
             console.log(
-              "closure?.date?.toDate().getMonth()",
-              closure?.date?.toDate().getMonth(),
+              "closure?.date?.toDate().getMonth()+ 1",
+              closure?.date?.toDate().getMonth() + 1,
             );
             console.log("monthNumber", monthNumber);
           }
           if (
             closure?.date?.toDate().getDate() === calendarDay &&
-            closure?.date?.toDate().getMonth() === monthNumber
+            closure?.date?.toDate().getMonth() + 1 === monthNumber
           ) {
             // if (DEBUG) console.log("Schedule Closure Found =>", closure);
 
@@ -725,7 +838,8 @@ const calculateAvailableAppointments = async ({
       },
     ),
   );
-  const monthNumber = new Date(date.slice(0, -13) + "24:00:00.000Z").getMonth();
+  const monthNumber =
+    new Date(date.slice(0, -13) + "24:00:00.000Z").getMonth() + 1;
   const yearNumber = new Date(
     date.slice(0, -13) + "24:00:00.000Z",
   ).getFullYear();
@@ -810,7 +924,8 @@ const calculateAvailableAppointments = async ({
 
   if (
     new Date()?.getDate() === calendarDay &&
-    new Date()?.getMonth() === monthNumber
+    new Date()?.getMonth() + 1 === monthNumber &&
+    new Date()?.getFullYear() === yearNumber
   ) {
     if (DEBUG) {
       console.log("REMOVING PAST APPOINTMENTS!");
@@ -870,8 +985,8 @@ const calculateAvailableAppointments = async ({
           formatTimeHoursToDate(availableAppointmentSlot.start),
         );
         console.log(
-          "formatTimeHoursToDate(availableAppointmentSlot.start)",
-          formatTimeHoursToDate(availableAppointmentSlot.start),
+          "formatTimeHoursToDate(availableAppointmentSlot.end)",
+          formatTimeHoursToDate(availableAppointmentSlot.end),
         );
       }
       if (
@@ -893,7 +1008,7 @@ const calculateAvailableAppointments = async ({
         //     existingAppointment,
         //   });
         if (forcedOpenings && forcedOpenings.length > 0)
-          forcedOpenings.map((opening: any) => {
+          forcedOpenings.forEach((opening: any) => {
             if (DEBUG) {
               console.log(
                 "opening?.date?.toDate().getDate()",
@@ -901,36 +1016,17 @@ const calculateAvailableAppointments = async ({
               );
               console.log("calendarDay", calendarDay);
               console.log(
-                "opening?.date?.toDate().getMonth()",
-                opening?.date?.toDate().getMonth(),
+                "opening?.date?.toDate().getMonth() + 1",
+                opening?.date?.toDate().getMonth() + 1,
               );
               console.log("monthNumber", monthNumber);
             }
             if (
               opening?.date?.toDate().getDate() === calendarDay &&
-              opening?.date?.toDate().getMonth() === monthNumber
+              opening?.date?.toDate().getMonth() + 1 === monthNumber &&
+              opening?.date?.toDate().getFullYear() === yearNumber
             ) {
               if (DEBUG) console.log("Schedule opening Found =>", opening);
-              // if (
-              //   areIntervalsOverlapping(
-              //     {
-              //       start: formatTimeHoursToDate(opening.startTime),
-              //       end: formatTimeHoursToDate(opening.endTime),
-              //     },
-              //     {
-              //       start: formatTimeHoursToDate(
-              //         availableAppointmentSlot.start,
-              //       ),
-              //       end: formatTimeHoursToDate(availableAppointmentSlot.end),
-              //     },
-              //   )
-              // )
-              //   console.log(
-              //     "SKIPPING CLOSURE REMOVAL DUE TO OVERLAP W/ FORCED OPENING",
-              //   );
-              // else appointmentSlotsToRemove.push(availableAppointmentSlot);
-
-              //;
               const selectedDayStartHours =
                 availableAppointmentSlot.start.toString().length === 3
                   ? `0${availableAppointmentSlot.start}`.slice(0, 2)
@@ -941,16 +1037,6 @@ const calculateAvailableAppointments = async ({
                   : `${availableAppointmentSlot.start}`.slice(3)?.length === 1
                   ? `0${availableAppointmentSlot.start}`.slice(3)
                   : `${availableAppointmentSlot.start}`.slice(3);
-              // const selectedDayEndHours =
-              //   availableAppointmentSlot.end.toString().length === 3
-              //     ? `0${availableAppointmentSlot.end}`.slice(0, 2)
-              //     : `${availableAppointmentSlot.end}`.slice(0, 2);
-              // const selectedDayEndMinutes =
-              //   availableAppointmentSlot.end.toString().length === 3
-              //     ? `0${availableAppointmentSlot.end}`.slice(2)
-              //     : `${availableAppointmentSlot.end}`.slice(3)?.length === 1
-              //     ? `0${availableAppointmentSlot.end}`.slice(3)
-              //     : `${availableAppointmentSlot.end}`.slice(3);
               const forcedOpenStartHours =
                 opening.startTime.toString().length === 3
                   ? `0${opening.startTime}`.slice(0, 2)
@@ -974,14 +1060,14 @@ const calculateAvailableAppointments = async ({
               if (DEBUG) {
                 console.log("interval", {
                   start: new Date(
-                    `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                    `${yearNumber} ${monthNumber} ${calendarDay} ` +
                       [forcedOpenStartHours, ":", forcedOpenStartMinutes].join(
                         "",
                       ) +
                       ":00",
                   ),
                   end: new Date(
-                    `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                    `${yearNumber} ${monthNumber} ${calendarDay} ` +
                       [forcedOpenCloseHours, ":", forcedOpenCloseMinutes].join(
                         "",
                       ) +
@@ -991,7 +1077,7 @@ const calculateAvailableAppointments = async ({
                 console.log(
                   "apt slot",
                   new Date(
-                    `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                    `${yearNumber} ${monthNumber} ${calendarDay} ` +
                       [
                         selectedDayStartHours,
                         ":",
@@ -1005,7 +1091,7 @@ const calculateAvailableAppointments = async ({
                 !isWithinInterval(
                   {
                     start: new Date(
-                      `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                      `${yearNumber} ${monthNumber} ${calendarDay} ` +
                         [
                           forcedOpenStartHours,
                           ":",
@@ -1014,7 +1100,7 @@ const calculateAvailableAppointments = async ({
                         ":00",
                     ),
                     end: new Date(
-                      `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                      `${yearNumber} ${monthNumber} ${calendarDay} ` +
                         [
                           forcedOpenCloseHours,
                           ":",
@@ -1024,7 +1110,7 @@ const calculateAvailableAppointments = async ({
                     ),
                   },
                   new Date(
-                    `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                    `${yearNumber} ${monthNumber} ${calendarDay} ` +
                       [
                         selectedDayStartHours,
                         ":",
@@ -1033,36 +1119,6 @@ const calculateAvailableAppointments = async ({
                       ":00",
                   ),
                 )
-                // &&
-                // !isWithinInterval(
-                //   {
-                //     start: new Date(
-                //       `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
-                //         [
-                //           forcedOpenStartHours,
-                //           ":",
-                //           forcedOpenStartMinutes,
-                //         ].join("") +
-                //         ":00",
-                //     ),
-                //     end: new Date(
-                //       `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
-                //         [
-                //           forcedOpenCloseHours,
-                //           ":",
-                //           forcedOpenCloseMinutes,
-                //         ].join("") +
-                //         ":00",
-                //     ),
-                //   },
-                //   new Date(
-                //     `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
-                //       [selectedDayEndHours, ":", selectedDayEndMinutes].join(
-                //         "",
-                //       ) +
-                //       ":00",
-                //   ),
-                // )
               )
                 appointmentSlotsToRemove.push(availableAppointmentSlot);
               else
@@ -1070,7 +1126,7 @@ const calculateAvailableAppointments = async ({
                   "SKIPPING CLOSURE REMOVAL DUE TO OVERLAP W/ FORCED OPENING",
                   {
                     start: new Date(
-                      `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                      `${yearNumber} ${monthNumber} ${calendarDay} ` +
                         [
                           forcedOpenStartHours,
                           ":",
@@ -1079,7 +1135,7 @@ const calculateAvailableAppointments = async ({
                         ":00",
                     ),
                     end: new Date(
-                      `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                      `${yearNumber} ${monthNumber} ${calendarDay} ` +
                         [
                           forcedOpenCloseHours,
                           ":",
@@ -1089,6 +1145,8 @@ const calculateAvailableAppointments = async ({
                     ),
                   },
                 );
+            } else {
+              appointmentSlotsToRemove.push(availableAppointmentSlot);
             }
           });
         else appointmentSlotsToRemove.push(availableAppointmentSlot);
