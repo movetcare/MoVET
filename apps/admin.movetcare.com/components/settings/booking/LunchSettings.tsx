@@ -19,7 +19,7 @@ const LunchSettings = ({
   schedule: "clinic" | "housecall" | "virtual";
 }) => {
   const [selectedLunchTime, setSelectedLunchTime] = useState<string | null>(
-    null
+    null,
   );
   const [didTouchLunchTime, setDidTouchLunchTime] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
@@ -44,19 +44,19 @@ const LunchSettings = ({
               : `${doc.data()?.housecallLunchTime}`
             : doc.data()?.virtualLunchTime.toString().length === 3
             ? `0${doc.data()?.virtualLunchTime}`
-            : `${doc.data()?.virtualLunchTime}`
+            : `${doc.data()?.virtualLunchTime}`,
         );
         setSelectedLunchDuration(
           schedule === "clinic"
             ? doc.data()?.clinicLunchDuration
             : schedule === "housecall"
             ? doc.data()?.housecallLunchDuration
-            : doc.data()?.virtualLunchDuration
+            : doc.data()?.virtualLunchDuration,
         );
       },
       (error: any) => {
         setError(error?.message || error);
-      }
+      },
     );
     return () => unsubscribe();
   }, [schedule]);
@@ -79,7 +79,7 @@ const LunchSettings = ({
               virtualLunchDuration: Number(selectedLunchDuration),
               updatedOn: serverTimestamp(),
             },
-        { merge: true }
+        { merge: true },
       )
         .then(() =>
           toast(
@@ -93,17 +93,14 @@ const LunchSettings = ({
                   className="text-movet-green"
                 />
               ),
-            }
-          )
+            },
+          ),
         )
         .catch((error: any) =>
           toast(
-            `${schedule?.toUpperCase()} Lunch Duration Updated FAILED: ${
-              error?.message
-            }`,
+            `${schedule?.toUpperCase()} Lunch Duration Updated FAILED: ${error?.message}`,
             {
               duration: 5000,
-              position: "bottom-center",
               icon: (
                 <FontAwesomeIcon
                   icon={faCircleExclamation}
@@ -111,8 +108,8 @@ const LunchSettings = ({
                   className="text-movet-red"
                 />
               ),
-            }
-          )
+            },
+          ),
         );
     if (didTouchLunchTime && selectedLunchTime && selectedLunchTime !== "")
       await setDoc(
@@ -131,7 +128,7 @@ const LunchSettings = ({
               virtualLunchTime: Number(selectedLunchTime),
               updatedOn: serverTimestamp(),
             },
-        { merge: true }
+        { merge: true },
       )
         .then(() =>
           toast(
@@ -145,17 +142,14 @@ const LunchSettings = ({
                   className="text-movet-green"
                 />
               ),
-            }
-          )
+            },
+          ),
         )
         .catch((error: any) =>
           toast(
-            `${schedule?.toUpperCase()} Lunch Time Updated FAILED: ${
-              error?.message
-            }`,
+            `${schedule?.toUpperCase()} Lunch Time Updated FAILED: ${error?.message}`,
             {
               duration: 5000,
-              position: "bottom-center",
               icon: (
                 <FontAwesomeIcon
                   icon={faCircleExclamation}
@@ -163,8 +157,8 @@ const LunchSettings = ({
                   className="text-movet-red"
                 />
               ),
-            }
-          )
+            },
+          ),
         );
     setDidTouchLunchDuration(false);
     setDidTouchLunchTime(false);

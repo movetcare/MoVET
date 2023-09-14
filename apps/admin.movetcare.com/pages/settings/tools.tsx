@@ -46,7 +46,7 @@ const Tools = () => {
         performAt: serverTimestamp(),
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(
         () =>
@@ -64,13 +64,13 @@ const Tools = () => {
                   className="text-movet-green"
                 />
               ),
-            }
-          )
+            },
+          ),
       )
       .catch((error: any) =>
         toast(`MoVET Account Creation FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}
@@ -78,7 +78,7 @@ const Tools = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       )
       .finally(() => {
         setIsLoading(false);
@@ -127,7 +127,7 @@ const Tools = () => {
                       onClick={() =>
                         window.open(
                           "http://localhost:5001/movet-care-staging/us-central1/taskRunnerDev",
-                          "_blank"
+                          "_blank",
                         )
                       }
                       className="mb-3"

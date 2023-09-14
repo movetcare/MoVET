@@ -398,7 +398,7 @@ const OperatingHoursSettings = ({
           `${schedule?.toUpperCase()} Days & Hours of Operation Updated FAILED: ${error?.message}`,
           {
             duration: 5000,
-            position: "bottom-center",
+
             icon: (
               <FontAwesomeIcon
                 icon={faCircleExclamation}

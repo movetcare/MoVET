@@ -11,7 +11,7 @@ import { findSlackChannel } from "../../../utils/logging/findSlackChannel";
 import { sendSlackMessage } from "../../../utils/logging/sendSlackMessage";
 import { sendNotification } from "../../../notifications/sendNotification";
 import { truncateString } from "../../../utils/truncateString";
-const DEBUG = true;
+const DEBUG = false;
 export const newClientTelehealthMessage = functions.firestore
   .document("/telehealth_chat/{clientId}/log/{messageId}")
   .onCreate(async (snapshot: any, context: any) => {

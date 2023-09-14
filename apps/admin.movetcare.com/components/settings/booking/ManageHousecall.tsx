@@ -12,6 +12,7 @@ import { SchedulePreview } from "./SchedulePreview";
 import { ScheduleResourcesSettings } from "./ScheduleResourcesSettings";
 import VcprReasonSettings from "./VcprReasonSettings";
 import { WinterModeControls } from "../WinterModeControls";
+import { OpeningsSettings } from "./OpeningsSettings";
 const PAGE_NAME = subNavigation[2].name;
 const ManageHousecall = () => {
   return (
@@ -83,6 +84,7 @@ const ManageHousecall = () => {
                 >
                   <WinterModeControls />
                   <ClosuresSettings schedule="housecall" />
+                  <OpeningsSettings schedule="housecall" />
                   <OperatingHoursSettings schedule="housecall" />
                   <ScheduleResourcesSettings schedule="housecall" />
                   <AppointmentBufferSettings schedule="housecall" />

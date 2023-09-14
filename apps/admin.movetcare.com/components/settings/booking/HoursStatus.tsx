@@ -613,7 +613,7 @@ export const HoursStatus = () => {
       .catch((error: any) =>
         toast(`Website Hours Override Update FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}
@@ -811,7 +811,7 @@ export const HoursStatus = () => {
       .catch((error: any) =>
         toast(`Website Hours Status Update FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}

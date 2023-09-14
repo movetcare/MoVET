@@ -20,7 +20,7 @@ import { Divider } from "components/Divider";
 
 export const WinterModeControls = () => {
   const [settings, loading, error] = useDocument(
-    doc(firestore, "configuration/bookings")
+    doc(firestore, "configuration/bookings"),
   );
   const {
     handleSubmit,
@@ -61,12 +61,12 @@ export const WinterModeControls = () => {
         winterHousecallMode: data,
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Your updates will appear in ~ 5 minutes.`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleCheck}
@@ -74,12 +74,12 @@ export const WinterModeControls = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(`Winter Housecall Mode Update FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}
@@ -87,7 +87,7 @@ export const WinterModeControls = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
 
   return loading ? (
@@ -171,14 +171,14 @@ export const WinterModeControls = () => {
                       onBlur={onBlur}
                       className={classNames(
                         isActiveOnWebsite ? "bg-movet-green" : "bg-movet-red",
-                        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                       )}
                     >
                       <span
                         aria-hidden="true"
                         className={classNames(
                           isActiveOnWebsite ? "translate-x-5" : "translate-x-0",
-                          "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                          "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                         )}
                       />
                     </Switch>
@@ -197,14 +197,14 @@ export const WinterModeControls = () => {
                       onBlur={onBlur}
                       className={classNames(
                         isActiveOnWebApp ? "bg-movet-green" : "bg-movet-red",
-                        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                       )}
                     >
                       <span
                         aria-hidden="true"
                         className={classNames(
                           isActiveOnWebApp ? "translate-x-5" : "translate-x-0",
-                          "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                          "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                         )}
                       />
                     </Switch>
@@ -223,7 +223,7 @@ export const WinterModeControls = () => {
                       onBlur={onBlur}
                       className={classNames(
                         isActiveOnMobileApp ? "bg-movet-green" : "bg-movet-red",
-                        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                       )}
                     >
                       <span
@@ -232,7 +232,7 @@ export const WinterModeControls = () => {
                           isActiveOnMobileApp
                             ? "translate-x-5"
                             : "translate-x-0",
-                          "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                          "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                         )}
                       />
                     </Switch>
@@ -253,7 +253,7 @@ export const WinterModeControls = () => {
                         enableForNewPatientsOnly
                           ? "bg-movet-green"
                           : "bg-movet-red",
-                        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                       )}
                     >
                       <span
@@ -262,7 +262,7 @@ export const WinterModeControls = () => {
                           enableForNewPatientsOnly
                             ? "translate-x-5"
                             : "translate-x-0",
-                          "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                          "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                         )}
                       />
                     </Switch>
@@ -277,7 +277,7 @@ export const WinterModeControls = () => {
                   !isDirty || isSubmitting
                     ? "w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4"
                     : "w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4",
-                  "mt-6"
+                  "mt-6",
                 )}
               >
                 <FontAwesomeIcon icon={faCheck} size="lg" />

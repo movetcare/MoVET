@@ -416,7 +416,13 @@ export const sendNotification = async ({
                 title: payload?.title,
                 body: payload?.message,
               },
-              data: payload?.data || { test: "testing" },
+              data: {
+                link:
+                  (environment?.type === "production"
+                    ? "https://admin.movetcare.com"
+                    : "http://localhost:3002") +
+                  (payload?.path || "/telehealth"),
+              },
               webpush: {
                 headers: {
                   Urgency: payload?.urgency || "high",
@@ -426,11 +432,12 @@ export const sendNotification = async ({
                   requireInteraction: "true",
                   badge: "/images/logo/logo-paw-black.png",
                 },
-                fcm_options: {
+                fcmOptions: {
                   link:
                     (environment?.type === "production"
                       ? "https://admin.movetcare.com"
-                      : "http://localhost:3002") + payload?.path,
+                      : "http://localhost:3002") +
+                    (payload?.path || "/telehealth"),
                 },
               },
             })
@@ -503,9 +510,9 @@ export const sendNotification = async ({
             .catch((error: any) => throwError(error));
         else if (DEBUG) console.log("NO TOKENS FOUND", { adminFcmTokens });
       } else if (payload?.category === "client-telehealth") {
-        const clientFcmTokens = await admin
+        const clientsPushTokens = await admin
           .firestore()
-          .collection("fcmTokensClient")
+          .collection("clientsPushTokens")
           .doc(payload?.user?.uid)
           .get()
           .then((doc: any) => {
@@ -518,7 +525,7 @@ export const sendNotification = async ({
             return allValidTokens;
           })
           .catch((error: any) => throwError(error));
-        if (DEBUG) console.log("clientFcmTokens", clientFcmTokens);
+        if (DEBUG) console.log("clientsPushTokens", clientsPushTokens);
       } else if (DEBUG) console.log("UNSUPPORTED PUSH NOTIFICATION TYPE!");
       break;
     default:

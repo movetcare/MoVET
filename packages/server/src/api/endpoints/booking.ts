@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { setBooking } from "../../queries/setBooking";
 import { sendResponse } from "../sendResponse";
 
-const DEBUG = true;
+const DEBUG = false;
 const logSource =
   "(API) /request-an-appointment -> processAppointmentBookingRequest()";
 const allowedMethods = ["POST"];

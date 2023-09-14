@@ -35,7 +35,7 @@ const VcprReasonSettings = ({
   const [didTouchStandardVcprReason, setDidTouchStandardVcprReason] =
     useState<boolean>(false);
   const [reasons, loadingReasons, errorReasons] = useCollection(
-    query(collection(firestore, "reasons"), orderBy("name", "asc"))
+    query(collection(firestore, "reasons"), orderBy("name", "asc")),
   );
   useEffect(() => {
     if (reasons) {
@@ -61,7 +61,7 @@ const VcprReasonSettings = ({
         (error: any) => {
           setError(error?.message || error);
           setIsLoading(false);
-        }
+        },
       );
       return () => unsubscribe();
     } else return;
@@ -73,7 +73,7 @@ const VcprReasonSettings = ({
       reasons.docs.forEach((reason: any) =>
         reason.data()?.name === selectedStandardVcprReason
           ? (reasonId = reason.data()?.id)
-          : null
+          : null,
       );
     await setDoc(
       doc(firestore, "configuration/bookings"),
@@ -100,7 +100,7 @@ const VcprReasonSettings = ({
             },
             updatedOn: serverTimestamp(),
           },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(
@@ -114,17 +114,15 @@ const VcprReasonSettings = ({
                 className="text-movet-green"
               />
             ),
-          }
-        )
+          },
+        ),
       )
       .catch((error: any) =>
         toast(
-          `Default ${schedule?.toUpperCase()} VCPR Reason Update FAILED: ${
-            error?.message
-          }`,
+          `Default ${schedule?.toUpperCase()} VCPR Reason Update FAILED: ${error?.message}`,
           {
             duration: 5000,
-            position: "bottom-center",
+
             icon: (
               <FontAwesomeIcon
                 icon={faCircleExclamation}
@@ -132,8 +130,8 @@ const VcprReasonSettings = ({
                 className="text-movet-red"
               />
             ),
-          }
-        )
+          },
+        ),
       )
       .finally(() => {
         setDidTouchStandardVcprReason(false);
@@ -218,7 +216,7 @@ const VcprReasonSettings = ({
                                   active
                                     ? "text-movet-white bg-movet-brown"
                                     : "text-movet-black",
-                                  "text-left cursor-default select-none relative py-2 pl-4 pr-4"
+                                  "text-left cursor-default select-none relative py-2 pl-4 pr-4",
                                 )
                               }
                               value={item.data()?.name}
@@ -230,7 +228,7 @@ const VcprReasonSettings = ({
                                       selected
                                         ? "font-semibold"
                                         : "font-normal",
-                                      "block truncate ml-2"
+                                      "block truncate ml-2",
                                     )}
                                   >
                                     #{item.data()?.id}- {item.data()?.name}
@@ -241,7 +239,7 @@ const VcprReasonSettings = ({
                                         active
                                           ? "text-white"
                                           : "text-movet-black",
-                                        "absolute inset-y-0 left-0 flex items-center pl-1.5"
+                                        "absolute inset-y-0 left-0 flex items-center pl-1.5",
                                       )}
                                     >
                                       <FontAwesomeIcon

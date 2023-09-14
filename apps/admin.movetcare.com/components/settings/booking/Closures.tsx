@@ -85,7 +85,7 @@ export const Closures = () => {
       .then(() =>
         toast(`Your closure deletion will appear in ~ 5 minutes.`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleCheck}
@@ -98,7 +98,7 @@ export const Closures = () => {
       .catch((error: any) =>
         toast(`Closure Deletion FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}
@@ -125,7 +125,7 @@ export const Closures = () => {
       .then(() =>
         toast(`Your closure update will appear in ~ 5 minutes.`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleCheck}
@@ -138,7 +138,7 @@ export const Closures = () => {
       .catch((error: any) =>
         toast(`Closure Update FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}

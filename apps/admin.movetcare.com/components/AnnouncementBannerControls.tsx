@@ -163,12 +163,12 @@ export const AnnouncementBannerControls = () => {
         icon: (data.icon as any)?.id,
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Your updates will appear in ~ 5 minutes.`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleCheck}
@@ -176,12 +176,12 @@ export const AnnouncementBannerControls = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(`Announcement banner update FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}
@@ -189,7 +189,7 @@ export const AnnouncementBannerControls = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
 
   return isAdmin ? (
@@ -338,14 +338,14 @@ export const AnnouncementBannerControls = () => {
                               onBlur={onBlur}
                               className={classNames(
                                 isActive ? "bg-movet-green" : "bg-movet-red",
-                                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                               )}
                             >
                               <span
                                 aria-hidden="true"
                                 className={classNames(
                                   isActive ? "translate-x-5" : "translate-x-0",
-                                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                                 )}
                               />
                             </Switch>
@@ -388,7 +388,7 @@ export const AnnouncementBannerControls = () => {
                                 isActiveMobile
                                   ? "bg-movet-green"
                                   : "bg-movet-red",
-                                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                               )}
                             >
                               <span
@@ -397,7 +397,7 @@ export const AnnouncementBannerControls = () => {
                                   isActiveMobile
                                     ? "translate-x-5"
                                     : "translate-x-0",
-                                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                                 )}
                               />
                             </Switch>
@@ -445,7 +445,7 @@ export const AnnouncementBannerControls = () => {
                             <span
                               className={classNames(
                                 "ml-2 text-movet-white",
-                                colorClasses
+                                colorClasses,
                               )}
                             >
                               Color

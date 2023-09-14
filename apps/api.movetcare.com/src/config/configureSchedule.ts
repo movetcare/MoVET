@@ -1,6 +1,7 @@
 import { admin, throwError, DEBUG } from "./config";
 
 export const configureSchedule = async (): Promise<boolean> => {
+  const today = new Date();
   const alreadyHasClosureConfiguration = await admin
     .firestore()
     .collection("configuration")
@@ -11,30 +12,29 @@ export const configureSchedule = async (): Promise<boolean> => {
 
   if (alreadyHasClosureConfiguration) {
     console.log(
-      "configuration/closures DOCUMENT DETECTED - SKIPPING CONFIGURATION..."
+      "configuration/closures DOCUMENT DETECTED - SKIPPING CONFIGURATION...",
     );
     console.log(
-      "DELETE THE configuration/closures DOCUMENT COLLECTION AND RESTART TO REFRESH THE ADMIN CONFIGURATION"
+      "DELETE THE configuration/closures DOCUMENT COLLECTION AND RESTART TO REFRESH THE ADMIN CONFIGURATION",
     );
     return true;
   } else {
     console.log("STARTING CLOSURES CONFIGURATION");
-    const today = new Date();
     const newYears = new Date(
-      `January 1, ${new Date().getFullYear()} 00:00:00`
+      `January 1, ${new Date().getFullYear()} 00:00:00`,
     );
     newYears.setFullYear(newYears.getFullYear() + 1);
     if (DEBUG) {
       console.log("today", today);
       console.log(
         "5 Days: from now",
-        new Date(today.setDate(today.getDate() + 5))
+        new Date(today.setDate(today.getDate() + 5)),
       );
     }
     const closureDates = [
       {
         startDate: new Date(
-          `December 24, ${new Date().getFullYear()} 00:00:00`
+          `December 24, ${new Date().getFullYear()} 00:00:00`,
         ),
         endDate: new Date(`December 26, ${new Date().getFullYear()} 00:00:00`),
         isActiveForClinic: true,
@@ -94,7 +94,7 @@ export const configureSchedule = async (): Promise<boolean> => {
           closureDatesVirtual: [],
           updatedOn: new Date(),
         },
-        { merge: true }
+        { merge: true },
       )
       .then(
         async () =>
@@ -104,7 +104,7 @@ export const configureSchedule = async (): Promise<boolean> => {
             closureDatesClinic,
             closureDatesHousecall: [],
             closureDatesVirtual: [],
-          })
+          }),
       )
       .catch((error: any) => throwError(error));
   }
@@ -117,10 +117,10 @@ export const configureSchedule = async (): Promise<boolean> => {
     .catch(() => false);
   if (alreadyHasHoursConfiguration) {
     console.log(
-      "configuration/openings DOCUMENT DETECTED - SKIPPING CONFIGURATION..."
+      "configuration/openings DOCUMENT DETECTED - SKIPPING CONFIGURATION...",
     );
     console.log(
-      "DELETE THE configuration/openings DOCUMENT COLLECTION AND RESTART TO REFRESH THE ADMIN CONFIGURATION"
+      "DELETE THE configuration/openings DOCUMENT COLLECTION AND RESTART TO REFRESH THE ADMIN CONFIGURATION",
     );
     return true;
   } else {
@@ -159,6 +159,26 @@ export const configureSchedule = async (): Promise<boolean> => {
       { days: "Mon - FRI", times: " 9am TO 5PM", type: "Housecalls" },
       { days: "Sat & sun", times: "CLOSed", type: "Housecalls" },
     ];
+    const openingDatesClinic = [
+      {
+        name: "Test Opening for Development - 1",
+        startTime: 1300,
+        endTime: 1500,
+        date: new Date(),
+      },
+      {
+        name: "Test Opening for Development - 2",
+        startTime: 1300,
+        endTime: 1500,
+        date: new Date(today.setDate(today.getDate() + 1)),
+      },
+      {
+        name: "Test Opening for Development - 3",
+        startTime: 1000,
+        endTime: 1400,
+        date: new Date(today.setDate(today.getDate() + 1)),
+      },
+    ];
     await admin
       .firestore()
       .collection("configuration")
@@ -166,12 +186,13 @@ export const configureSchedule = async (): Promise<boolean> => {
       .set(
         {
           openingDates,
+          openingDatesClinic,
           updatedOn: new Date(),
         },
-        { merge: true }
+        { merge: true },
       )
       .then(
-        async () => DEBUG && console.log("Hours Configured => ", openingDates)
+        async () => DEBUG && console.log("Hours Configured => ", openingDates),
       )
       .catch((error: any) => throwError(error));
   }

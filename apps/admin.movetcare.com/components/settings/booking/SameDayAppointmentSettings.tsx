@@ -34,19 +34,19 @@ export const SameDayAppointmentSettings = ({
             ? doc.data()?.clinicSameDayAppointmentVcprRequired
             : schedule === "housecall"
             ? doc.data()?.housecallSameDayAppointmentVcprRequired
-            : doc.data()?.virtualSameDayAppointmentVcprRequired
+            : doc.data()?.virtualSameDayAppointmentVcprRequired,
         );
         setSelectedLeadTime(
           schedule === "clinic"
             ? doc.data()?.clinicSameDayAppointmentLeadTime
             : schedule === "housecall"
             ? doc.data()?.housecallSameDayAppointmentLeadTime
-            : doc.data()?.virtualSameDayAppointmentLeadTime
+            : doc.data()?.virtualSameDayAppointmentLeadTime,
         );
       },
       (error: any) => {
         setError(error?.message || error);
-      }
+      },
     );
     return () => unsubscribe();
   }, [schedule]);
@@ -71,7 +71,7 @@ export const SameDayAppointmentSettings = ({
             virtualSameDayAppointmentLeadTime: Number(selectedLeadTime),
             updatedOn: serverTimestamp(),
           },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(
@@ -85,17 +85,15 @@ export const SameDayAppointmentSettings = ({
                 className="text-movet-green"
               />
             ),
-          }
-        )
+          },
+        ),
       )
       .catch((error: any) =>
         toast(
-          `${schedule.toUpperCase()} Same Day Appointment Settings Update FAILED: ${
-            error?.message
-          }`,
+          `${schedule.toUpperCase()} Same Day Appointment Settings Update FAILED: ${error?.message}`,
           {
             duration: 5000,
-            position: "bottom-center",
+
             icon: (
               <FontAwesomeIcon
                 icon={faCircleExclamation}
@@ -103,8 +101,8 @@ export const SameDayAppointmentSettings = ({
                 className="text-movet-red"
               />
             ),
-          }
-        )
+          },
+        ),
       )
       .finally(() => {
         setDidTouchVcprRequired(false);
@@ -134,14 +132,14 @@ export const SameDayAppointmentSettings = ({
               }}
               className={classNames(
                 vcprRequired ? "bg-movet-green" : "bg-movet-red",
-                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
               )}
             >
               <span
                 aria-hidden="true"
                 className={classNames(
                   vcprRequired ? "translate-x-5" : "translate-x-0",
-                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                 )}
               />
             </Switch>

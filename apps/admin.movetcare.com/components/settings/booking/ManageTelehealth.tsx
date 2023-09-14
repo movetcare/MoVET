@@ -11,6 +11,7 @@ import { SameDayAppointmentSettings } from "./SameDayAppointmentSettings";
 import { SchedulePreview } from "./SchedulePreview";
 import { ScheduleResourcesSettings } from "./ScheduleResourcesSettings";
 import VcprReasonSettings from "./VcprReasonSettings";
+import { OpeningsSettings } from "./OpeningsSettings";
 const PAGE_NAME = subNavigation[3].name;
 const ManageTelehealth = () => {
   return (
@@ -81,6 +82,7 @@ const ManageTelehealth = () => {
                   className="mt-4 mb-8 divide-y divide-movet-gray"
                 >
                   <ClosuresSettings schedule="virtual" />
+                  <OpeningsSettings schedule="virtual" />
                   <OperatingHoursSettings schedule="virtual" />
                   <ScheduleResourcesSettings schedule="virtual" />
                   <AppointmentBufferSettings schedule="virtual" />

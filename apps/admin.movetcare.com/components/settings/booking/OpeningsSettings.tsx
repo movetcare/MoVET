@@ -21,23 +21,24 @@ import { Loader, Button, ErrorMessage } from "ui";
 import { TextInput } from "ui/src/components/forms/inputs";
 import { classNames } from "utilities";
 import Error from "components/Error";
-import Link from "next/link";
 import { PatternFormat } from "react-number-format";
-interface Closure {
+
+interface Opening {
   name: string;
   date: any;
   startTime: string;
   endTime: string;
 }
-export const ClosuresSettings = ({
+export const OpeningsSettings = ({
   schedule,
 }: {
   schedule: "clinic" | "housecall" | "virtual";
 }) => {
-  const [showAddClosureForm, setShowAddClosureForm] = useState<boolean>(false);
-  const [closures, setClosures] = useState<Array<Closure> | null>(null);
-  const [closuresData, loading, error] = useDocument(
-    doc(firestore, "configuration/closures"),
+  const [showAddOpeningsForm, setShowAddOpeningsForm] =
+    useState<boolean>(false);
+  const [openings, setOpenings] = useState<Array<Opening> | null>(null);
+  const [openingsData, loading, error] = useDocument(
+    doc(firestore, "configuration/openings"),
   );
   const {
     handleSubmit,
@@ -61,82 +62,146 @@ export const ClosuresSettings = ({
   const endTime = watch("endTime");
 
   useEffect(() => {
-    if (closuresData && closuresData.data())
+    if (openingsData && openingsData.data())
       if (schedule === "clinic") {
-        setClosures(
-          closuresData.data()?.closureDatesClinic?.map((closure: Closure) => {
+        setOpenings(
+          openingsData.data()?.openingDatesClinic?.map((opening: Opening) => {
             return {
-              ...closure,
+              ...opening,
               startTime:
-                closure?.startTime.toString().length === 3
-                  ? `0${closure?.startTime}`
-                  : `${closure?.startTime}`,
+                opening?.startTime.toString().length === 3
+                  ? `0${opening?.startTime}`
+                  : `${opening?.startTime}`,
               endTime:
-                closure?.endTime.toString().length === 3
-                  ? `0${closure?.endTime}`
-                  : `${closure?.endTime}`,
+                opening?.endTime.toString().length === 3
+                  ? `0${opening?.endTime}`
+                  : `${opening?.endTime}`,
             };
           }),
         );
       } else if (schedule === "housecall") {
-        setClosures(
-          closuresData
+        setOpenings(
+          openingsData
             .data()
-            ?.closureDatesHousecall?.map((closure: Closure) => {
+            ?.openingDatesHousecall?.map((opening: Opening) => {
               return {
-                ...closure,
+                ...opening,
                 startTime:
-                  closure?.startTime.toString().length === 3
-                    ? `0${closure?.startTime}`
-                    : `${closure?.startTime}`,
+                  opening?.startTime.toString().length === 3
+                    ? `0${opening?.startTime}`
+                    : `${opening?.startTime}`,
                 endTime:
-                  closure?.endTime.toString().length === 3
-                    ? `0${closure?.endTime}`
-                    : `${closure?.endTime}`,
+                  opening?.endTime.toString().length === 3
+                    ? `0${opening?.endTime}`
+                    : `${opening?.endTime}`,
               };
             }),
         );
       } else if (schedule === "virtual") {
-        setClosures(
-          closuresData.data()?.closureDatesVirtual?.map((closure: Closure) => {
+        setOpenings(
+          openingsData.data()?.openingDatesVirtual?.map((opening: Opening) => {
             return {
-              ...closure,
+              ...opening,
               startTime:
-                closure?.startTime.toString().length === 3
-                  ? `0${closure?.startTime}`
-                  : `${closure?.startTime}`,
+                opening?.startTime.toString().length === 3
+                  ? `0${opening?.startTime}`
+                  : `${opening?.startTime}`,
               endTime:
-                closure?.endTime.toString().length === 3
-                  ? `0${closure?.endTime}`
-                  : `${closure?.endTime}`,
+                opening?.endTime.toString().length === 3
+                  ? `0${opening?.endTime}`
+                  : `${opening?.endTime}`,
             };
           }),
         );
       }
-  }, [closuresData, schedule]);
+  }, [openingsData, schedule]);
 
-  const deleteClosureFromFirestore = async (index: number) =>
+  const deleteOpeningFromFirestore = async (index: number) =>
     await setDoc(
-      doc(firestore, "configuration/closures"),
+      doc(firestore, "configuration/openings"),
       schedule === "clinic"
         ? {
-            closureDatesClinic: closures?.filter((_, i) => i !== index),
+            openingDatesClinic: openings?.filter((_, i) => i !== index),
             updatedOn: serverTimestamp(),
           }
         : schedule === "housecall"
         ? {
-            closureDatesHousecall: closures?.filter((_, i) => i !== index),
+            openingDatesHousecall: openings?.filter((_, i) => i !== index),
             updatedOn: serverTimestamp(),
           }
         : {
-            closureDatesVirtual: closures?.filter((_, i) => i !== index),
+            openingDatesVirtual: openings?.filter((_, i) => i !== index),
             updatedOn: serverTimestamp(),
           },
       { merge: true },
     )
       .then(() =>
         toast(
-          `Your ${schedule?.toUpperCase()} closure deletion will appear in ~ 5 minutes.`,
+          `Your ${schedule?.toUpperCase()} opening deletion will appear in ~ 5 minutes.`,
+          {
+            duration: 5000,
+
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleCheck}
+                size="sm"
+                className="text-movet-green"
+              />
+            ),
+          },
+        ),
+      )
+      .catch((error: any) =>
+        toast(
+          `${schedule?.toUpperCase()} Opening Deletion FAILED: ${error?.message}`,
+          {
+            duration: 5000,
+
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                size="sm"
+                className="text-movet-red"
+              />
+            ),
+          },
+        ),
+      );
+
+  const onSubmit = async (data: any) =>
+    await setDoc(
+      doc(firestore, "configuration/openings"),
+      schedule === "clinic"
+        ? {
+            openingDatesClinic: arrayUnion({
+              ...data,
+              startTime: Number(data.startTime),
+              endTime: Number(data.endTime),
+            }),
+            updatedOn: serverTimestamp(),
+          }
+        : schedule === "housecall"
+        ? {
+            openingDatesHousecall: arrayUnion({
+              ...data,
+              startTime: Number(data.startTime),
+              endTime: Number(data.endTime),
+            }),
+            updatedOn: serverTimestamp(),
+          }
+        : {
+            openingDatesVirtual: arrayUnion({
+              ...data,
+              startTime: Number(data.startTime),
+              endTime: Number(data.endTime),
+            }),
+            updatedOn: serverTimestamp(),
+          },
+      { merge: true },
+    )
+      .then(() =>
+        toast(
+          `Your ${schedule?.toUpperCase()} forced opening has been added!.`,
           {
             duration: 5000,
             icon: (
@@ -151,66 +216,7 @@ export const ClosuresSettings = ({
       )
       .catch((error: any) =>
         toast(
-          `${schedule?.toUpperCase()} Closure Deletion FAILED: ${error?.message}`,
-          {
-            duration: 5000,
-            icon: (
-              <FontAwesomeIcon
-                icon={faCircleExclamation}
-                size="sm"
-                className="text-movet-red"
-              />
-            ),
-          },
-        ),
-      );
-
-  const onSubmit = async (data: any) =>
-    await setDoc(
-      doc(firestore, "configuration/closures"),
-      schedule === "clinic"
-        ? {
-            closureDatesClinic: arrayUnion({
-              ...data,
-              startTime: Number(data.startTime),
-              endTime: Number(data.endTime),
-            }),
-            updatedOn: serverTimestamp(),
-          }
-        : schedule === "housecall"
-        ? {
-            closureDatesHousecall: arrayUnion({
-              ...data,
-              startTime: Number(data.startTime),
-              endTime: Number(data.endTime),
-            }),
-            updatedOn: serverTimestamp(),
-          }
-        : {
-            closureDatesVirtual: arrayUnion({
-              ...data,
-              startTime: Number(data.startTime),
-              endTime: Number(data.endTime),
-            }),
-            updatedOn: serverTimestamp(),
-          },
-      { merge: true },
-    )
-      .then(() =>
-        toast(`Your ${schedule?.toUpperCase()} closure has been added!.`, {
-          duration: 5000,
-          icon: (
-            <FontAwesomeIcon
-              icon={faCircleCheck}
-              size="sm"
-              className="text-movet-green"
-            />
-          ),
-        }),
-      )
-      .catch((error: any) =>
-        toast(
-          `${schedule?.toUpperCase()} Closure Update FAILED: ${error?.message}`,
+          `${schedule?.toUpperCase()} Forced Opening Update FAILED: ${error?.message}`,
           {
             duration: 5000,
             icon: (
@@ -224,40 +230,31 @@ export const ClosuresSettings = ({
         ),
       )
       .finally(() => {
-        setShowAddClosureForm(false);
+        setShowAddOpeningsForm(false);
         reset();
       });
   return (
     <div>
-      <Divider />
-      <h3>Partial Closures</h3>
+      <h3>Forced Openings</h3>
       <p className="text-sm">
-        Use this setting to disable certain times on specific days of the week
-        on the appointment availability schedule.
+        Use this setting to override closures at certain times on specific days
+        of the week on the appointment availability schedule.
       </p>
-      <p className="text-xs italic mt-2">
-        * If you need to disable entire days, use the &quot;FULL DAY / MULTI-DAY
-        CLOSURES &quot; setting on the &quot;
-        <Link
-          href="/settings/manage-hours/"
-          className="text-movet-red hover:underline"
-        >
-          Manage Hours
-        </Link>
-        &quot; settings page.
-      </p>
+
       <Divider />
       {loading ? (
-        <Loader message="Loading Closures" />
+        <Loader message="Loading Forced Openings" />
       ) : (
         <div className="flex flex-col mr-4">
-          {(closures === undefined ||
-            closures === null ||
-            closures?.length < 0) &&
-            !showAddClosureForm && (
-              <h1 className="text-lg my-4 italic">No Closures Found...</h1>
+          {(openings === undefined ||
+            openings === null ||
+            openings?.length < 0) &&
+            !showAddOpeningsForm && (
+              <h1 className="text-lg my-4 italic">
+                No Forced Openings Found...
+              </h1>
             )}
-          {closures && closures?.length > 0 && (
+          {openings && openings?.length > 0 && (
             <table className="min-w-full divide-y divide-gray-300">
               <thead>
                 <tr>
@@ -292,16 +289,16 @@ export const ClosuresSettings = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
-                {closures &&
-                  closures.map((closure: Closure, index: number) => (
+                {openings &&
+                  openings.map((opening: Opening, index: number) => (
                     <tr key={index}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-movet-black sm:pl-0">
-                        {closure.name}
+                        {opening.name}
                       </td>
                       <td className="whitespace-nowrap py-4 px-3 text-sm">
                         <p>
-                          {closure?.date &&
-                            closure?.date
+                          {opening?.date &&
+                            opening?.date
                               ?.toDate()
                               ?.toLocaleDateString("en-us", {
                                 weekday: "short",
@@ -312,13 +309,13 @@ export const ClosuresSettings = ({
                         </p>
                       </td>
                       <td className="whitespace-nowrap py-4 px-3 text-sm">
-                        {closure?.startTime && (
+                        {opening?.startTime && (
                           <p>{`${new Date(
                             "February 04, 2022 " +
                               [
-                                closure?.startTime.slice(0, 2),
+                                opening?.startTime.slice(0, 2),
                                 ":",
-                                closure?.startTime.slice(2),
+                                opening?.startTime.slice(2),
                               ].join("") +
                               ":00",
                           ).toLocaleString("en-US", {
@@ -329,13 +326,13 @@ export const ClosuresSettings = ({
                         )}
                       </td>
                       <td className="whitespace-nowrap py-4 px-3 text-sm">
-                        {closure?.endTime && (
+                        {opening?.endTime && (
                           <p>{`${new Date(
                             "February 04, 2022 " +
                               [
-                                closure?.endTime.slice(0, 2),
+                                opening?.endTime.slice(0, 2),
                                 ":",
-                                closure?.endTime.slice(2),
+                                opening?.endTime.slice(2),
                               ].join("") +
                               ":00",
                           ).toLocaleString("en-US", {
@@ -348,7 +345,7 @@ export const ClosuresSettings = ({
                       <td
                         className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0"
                         onClick={async () =>
-                          await deleteClosureFromFirestore(index)
+                          await deleteOpeningFromFirestore(index)
                         }
                       >
                         <FontAwesomeIcon icon={faTrash} />
@@ -359,7 +356,7 @@ export const ClosuresSettings = ({
             </table>
           )}
           <Transition
-            show={showAddClosureForm}
+            show={showAddOpeningsForm}
             enter="transition ease-in duration-250"
             leave="transition ease-out duration-250"
             leaveTo="opacity-10"
@@ -375,7 +372,7 @@ export const ClosuresSettings = ({
                   size="lg"
                 />
                 <h1 className="ml-2 my-4 text-lg cursor-pointer">
-                  Add a Closure
+                  Add a Forced Opening
                 </h1>
               </div>
               {loading ? (
@@ -556,7 +553,7 @@ export const ClosuresSettings = ({
                               "mt-8",
                             )}
                             icon={faPlus}
-                            text="Add Closure"
+                            text="Add Forced Opening"
                           />
                         </div>
                       </div>
@@ -566,9 +563,9 @@ export const ClosuresSettings = ({
               )}
             </div>
           </Transition>
-          {showAddClosureForm ? (
+          {showAddOpeningsForm ? (
             <Button
-              onClick={() => setShowAddClosureForm(false)}
+              onClick={() => setShowAddOpeningsForm(false)}
               text="Close"
               icon={faTimes}
               color="red"
@@ -576,8 +573,8 @@ export const ClosuresSettings = ({
             />
           ) : (
             <Button
-              onClick={() => setShowAddClosureForm(true)}
-              text="Add Closure"
+              onClick={() => setShowAddOpeningsForm(true)}
+              text="Add Forced Opening"
               icon={faCalendarTimes}
               color="black"
               className="mt-4 mb-8"

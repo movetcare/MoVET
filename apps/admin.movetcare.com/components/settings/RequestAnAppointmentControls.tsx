@@ -20,7 +20,7 @@ import { useDocument } from "react-firebase-hooks/firestore";
 export const RequestAnAppointmentControls = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [settings, loading, error] = useDocument(
-    doc(firestore, "configuration/bookings")
+    doc(firestore, "configuration/bookings"),
   );
   const {
     handleSubmit,
@@ -35,7 +35,7 @@ export const RequestAnAppointmentControls = () => {
     } as any,
   });
   const requirePaymentMethodToRequestAnAppointment = watch(
-    "requirePaymentMethodToRequestAnAppointment"
+    "requirePaymentMethodToRequestAnAppointment",
   );
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -53,7 +53,7 @@ export const RequestAnAppointmentControls = () => {
   useEffect(() => {
     console.log(
       "settings.data()",
-      settings?.data()?.requirePaymentMethodToRequestAnAppointment
+      settings?.data()?.requirePaymentMethodToRequestAnAppointment,
     );
     if (settings && settings.data())
       reset({
@@ -70,12 +70,12 @@ export const RequestAnAppointmentControls = () => {
           data.requirePaymentMethodToRequestAnAppointment,
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Update Successful!`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleCheck}
@@ -83,12 +83,12 @@ export const RequestAnAppointmentControls = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(`Payment Method Required Update FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}
@@ -96,7 +96,7 @@ export const RequestAnAppointmentControls = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
 
   return isAdmin ? (
@@ -151,7 +151,7 @@ export const RequestAnAppointmentControls = () => {
                             requirePaymentMethodToRequestAnAppointment
                               ? "bg-movet-green"
                               : "bg-movet-red",
-                            "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                            "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                           )}
                         >
                           <span
@@ -160,7 +160,7 @@ export const RequestAnAppointmentControls = () => {
                               requirePaymentMethodToRequestAnAppointment
                                 ? "translate-x-5"
                                 : "translate-x-0",
-                              "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                              "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                             )}
                           />
                         </Switch>
@@ -174,7 +174,7 @@ export const RequestAnAppointmentControls = () => {
                       !isDirty || isSubmitting
                         ? "w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4"
                         : "w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4",
-                      "mt-6"
+                      "mt-6",
                     )}
                   >
                     <FontAwesomeIcon icon={faWrench} size="lg" />

@@ -1,4 +1,5 @@
 import {
+  isWithinInterval,
   addMinutes,
   areIntervalsOverlapping,
   differenceInMinutes,
@@ -81,6 +82,7 @@ export const getAppointmentAvailability = functions
               });
               allAvailableAppointmentTimes.push(
                 await calculateAvailableAppointments({
+                  schedule,
                   existingAppointmentsForResource,
                   date,
                   resource,
@@ -574,6 +576,7 @@ const getExistingAppointments = async ({
 
       const existingAppointments: Array<Appointment> = [];
       const scheduleClosures = await getScheduledClosures(schedule);
+
       if (DEBUG) {
         console.log("querySnapshot?.docs?.length", querySnapshot?.docs?.length);
         console.log("scheduleClosures", scheduleClosures);
@@ -651,6 +654,7 @@ const getExistingAppointments = async ({
             closure?.date?.toDate().getMonth() === monthNumber
           ) {
             // if (DEBUG) console.log("Schedule Closure Found =>", closure);
+
             existingAppointments.push({
               id: null,
               reason: closure?.name,
@@ -703,6 +707,7 @@ const getReasons = async (schedule: AppointmentScheduleTypes) =>
     })
     .catch((error: any) => throwError(error));
 const calculateAvailableAppointments = async ({
+  schedule,
   existingAppointmentsForResource,
   date,
   standardOpenTime,
@@ -720,7 +725,10 @@ const calculateAvailableAppointments = async ({
       },
     ),
   );
-  const monthNumber = new Date(date).getMonth();
+  const monthNumber = new Date(date.slice(0, -13) + "24:00:00.000Z").getMonth();
+  const yearNumber = new Date(
+    date.slice(0, -13) + "24:00:00.000Z",
+  ).getFullYear();
   const appointmentSlotsToRemove: any = [];
   let availableAppointmentSlots = [];
   let staggeredOpenTime: null | number = null;
@@ -833,6 +841,9 @@ const calculateAvailableAppointments = async ({
       (appointmentSlot: any) => !pastAppointments.includes(appointmentSlot),
     );
   }
+
+  const forcedOpenings = await getForcedOpenings(schedule);
+
   availableAppointmentSlots.map((availableAppointmentSlot: any) => {
     existingAppointmentsForResource.map((existingAppointment: any) => {
       if (DEBUG) {
@@ -881,7 +892,206 @@ const calculateAvailableAppointments = async ({
         //     availableAppointmentSlot,
         //     existingAppointment,
         //   });
-        appointmentSlotsToRemove.push(availableAppointmentSlot);
+        if (forcedOpenings && forcedOpenings.length > 0)
+          forcedOpenings.map((opening: any) => {
+            if (DEBUG) {
+              console.log(
+                "opening?.date?.toDate().getDate()",
+                opening?.date?.toDate().getDate(),
+              );
+              console.log("calendarDay", calendarDay);
+              console.log(
+                "opening?.date?.toDate().getMonth()",
+                opening?.date?.toDate().getMonth(),
+              );
+              console.log("monthNumber", monthNumber);
+            }
+            if (
+              opening?.date?.toDate().getDate() === calendarDay &&
+              opening?.date?.toDate().getMonth() === monthNumber
+            ) {
+              if (DEBUG) console.log("Schedule opening Found =>", opening);
+              // if (
+              //   areIntervalsOverlapping(
+              //     {
+              //       start: formatTimeHoursToDate(opening.startTime),
+              //       end: formatTimeHoursToDate(opening.endTime),
+              //     },
+              //     {
+              //       start: formatTimeHoursToDate(
+              //         availableAppointmentSlot.start,
+              //       ),
+              //       end: formatTimeHoursToDate(availableAppointmentSlot.end),
+              //     },
+              //   )
+              // )
+              //   console.log(
+              //     "SKIPPING CLOSURE REMOVAL DUE TO OVERLAP W/ FORCED OPENING",
+              //   );
+              // else appointmentSlotsToRemove.push(availableAppointmentSlot);
+
+              //;
+              const selectedDayStartHours =
+                availableAppointmentSlot.start.toString().length === 3
+                  ? `0${availableAppointmentSlot.start}`.slice(0, 2)
+                  : `${availableAppointmentSlot.start}`.slice(0, 2);
+              const selectedDayStartMinutes =
+                availableAppointmentSlot.start.toString().length === 3
+                  ? `0${availableAppointmentSlot.start}`.slice(2)
+                  : `${availableAppointmentSlot.start}`.slice(3)?.length === 1
+                  ? `0${availableAppointmentSlot.start}`.slice(3)
+                  : `${availableAppointmentSlot.start}`.slice(3);
+              // const selectedDayEndHours =
+              //   availableAppointmentSlot.end.toString().length === 3
+              //     ? `0${availableAppointmentSlot.end}`.slice(0, 2)
+              //     : `${availableAppointmentSlot.end}`.slice(0, 2);
+              // const selectedDayEndMinutes =
+              //   availableAppointmentSlot.end.toString().length === 3
+              //     ? `0${availableAppointmentSlot.end}`.slice(2)
+              //     : `${availableAppointmentSlot.end}`.slice(3)?.length === 1
+              //     ? `0${availableAppointmentSlot.end}`.slice(3)
+              //     : `${availableAppointmentSlot.end}`.slice(3);
+              const forcedOpenStartHours =
+                opening.startTime.toString().length === 3
+                  ? `0${opening.startTime}`.slice(0, 2)
+                  : `${opening.startTime}`.slice(0, 2);
+              const forcedOpenStartMinutes =
+                opening.startTime.toString().length === 3
+                  ? `0${opening.startTime}`.slice(2)
+                  : `${opening.startTime}`.slice(3)?.length === 1
+                  ? `0${opening.startTime}`.slice(3)
+                  : `${opening.startTime}`.slice(3);
+              const forcedOpenCloseHours =
+                opening.endTime.toString().length === 3
+                  ? `0${opening.endTime}`.slice(0, 2)
+                  : `${opening.endTime}`.slice(0, 2);
+              const forcedOpenCloseMinutes =
+                opening.endTime.toString().length === 3
+                  ? `0${opening.endTime}`.slice(2)
+                  : `${opening.endTime}`.slice(3)?.length === 1
+                  ? `0${opening.endTime}`.slice(3)
+                  : `${opening.endTime}`.slice(3);
+              if (DEBUG) {
+                console.log("interval", {
+                  start: new Date(
+                    `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                      [forcedOpenStartHours, ":", forcedOpenStartMinutes].join(
+                        "",
+                      ) +
+                      ":00",
+                  ),
+                  end: new Date(
+                    `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                      [forcedOpenCloseHours, ":", forcedOpenCloseMinutes].join(
+                        "",
+                      ) +
+                      ":00",
+                  ),
+                });
+                console.log(
+                  "apt slot",
+                  new Date(
+                    `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                      [
+                        selectedDayStartHours,
+                        ":",
+                        selectedDayStartMinutes,
+                      ].join("") +
+                      ":00",
+                  ),
+                );
+              }
+              if (
+                !isWithinInterval(
+                  {
+                    start: new Date(
+                      `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                        [
+                          forcedOpenStartHours,
+                          ":",
+                          forcedOpenStartMinutes,
+                        ].join("") +
+                        ":00",
+                    ),
+                    end: new Date(
+                      `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                        [
+                          forcedOpenCloseHours,
+                          ":",
+                          forcedOpenCloseMinutes,
+                        ].join("") +
+                        ":00",
+                    ),
+                  },
+                  new Date(
+                    `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                      [
+                        selectedDayStartHours,
+                        ":",
+                        selectedDayStartMinutes,
+                      ].join("") +
+                      ":00",
+                  ),
+                )
+                // &&
+                // !isWithinInterval(
+                //   {
+                //     start: new Date(
+                //       `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                //         [
+                //           forcedOpenStartHours,
+                //           ":",
+                //           forcedOpenStartMinutes,
+                //         ].join("") +
+                //         ":00",
+                //     ),
+                //     end: new Date(
+                //       `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                //         [
+                //           forcedOpenCloseHours,
+                //           ":",
+                //           forcedOpenCloseMinutes,
+                //         ].join("") +
+                //         ":00",
+                //     ),
+                //   },
+                //   new Date(
+                //     `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                //       [selectedDayEndHours, ":", selectedDayEndMinutes].join(
+                //         "",
+                //       ) +
+                //       ":00",
+                //   ),
+                // )
+              )
+                appointmentSlotsToRemove.push(availableAppointmentSlot);
+              else
+                console.log(
+                  "SKIPPING CLOSURE REMOVAL DUE TO OVERLAP W/ FORCED OPENING",
+                  {
+                    start: new Date(
+                      `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                        [
+                          forcedOpenStartHours,
+                          ":",
+                          forcedOpenStartMinutes,
+                        ].join("") +
+                        ":00",
+                    ),
+                    end: new Date(
+                      `${yearNumber} ${monthNumber + 1} ${calendarDay} ` +
+                        [
+                          forcedOpenCloseHours,
+                          ":",
+                          forcedOpenCloseMinutes,
+                        ].join("") +
+                        ":00",
+                    ),
+                  },
+                );
+            }
+          });
+        else appointmentSlotsToRemove.push(availableAppointmentSlot);
       }
       // else if (DEBUG)
       //   console.log("INTERVALS ARE OVERLAPPING", {
@@ -911,5 +1121,20 @@ const getScheduledClosures = async (schedule: string) =>
         : schedule === "housecall"
         ? doc.data()?.closureDatesHousecall || false
         : doc.data()?.closureDatesVirtual || false,
+    )
+    .catch((error: any) => throwError(error));
+
+const getForcedOpenings = async (schedule: string) =>
+  await admin
+    .firestore()
+    .collection("configuration")
+    .doc("openings")
+    .get()
+    .then((doc: any) =>
+      schedule === "clinic"
+        ? doc.data()?.openingDatesClinic || false
+        : schedule === "housecall"
+        ? doc.data()?.openingDatesHousecall || false
+        : doc.data()?.openingDatesVirtual || false,
     )
     .catch((error: any) => throwError(error));

@@ -11,6 +11,7 @@ import VcprReasonSettings from "./VcprReasonSettings";
 import OperatingHoursSettings from "./OperatingHoursSettings";
 import AppointmentBufferSettings from "./AppointmentBufferSettings";
 import LunchSettings from "./LunchSettings";
+import { OpeningsSettings } from "./OpeningsSettings";
 const PAGE_NAME = subNavigation[1].name;
 const ManageClinic = () => {
   return (
@@ -81,6 +82,7 @@ const ManageClinic = () => {
                   className="mt-4 mb-8 divide-y divide-movet-gray"
                 >
                   <ClosuresSettings schedule="clinic" />
+                  <OpeningsSettings schedule="clinic" />
                   <OperatingHoursSettings schedule="clinic" />
                   <ScheduleResourcesSettings schedule="clinic" />
                   <AppointmentBufferSettings schedule="clinic" />

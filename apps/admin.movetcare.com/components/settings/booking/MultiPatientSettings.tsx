@@ -43,26 +43,26 @@ const MultiPatientClinicSettings = ({
             ? doc.data()?.clinicOnePatientDuration
             : schedule === "housecall"
             ? doc.data()?.housecallOnePatientDuration
-            : doc.data()?.virtualOnePatientDuration
+            : doc.data()?.virtualOnePatientDuration,
         );
         setSelectedTwoPatientDuration(
           schedule === "clinic"
             ? doc.data()?.clinicTwoPatientDuration
             : schedule === "housecall"
             ? doc.data()?.housecallTwoPatientDuration
-            : doc.data()?.virtualTwoPatientDuration
+            : doc.data()?.virtualTwoPatientDuration,
         );
         setSelectedThreePatientDuration(
           schedule === "clinic"
             ? doc.data()?.clinicThreePatientDuration
             : schedule === "housecall"
             ? doc.data()?.housecallThreePatientDuration
-            : doc.data()?.virtualThreePatientDuration
+            : doc.data()?.virtualThreePatientDuration,
         );
       },
       (error: any) => {
         setError(error?.message || error);
-      }
+      },
     );
     return () => unsubscribe();
   }, [schedule]);
@@ -90,7 +90,7 @@ const MultiPatientClinicSettings = ({
             virtualThreePatientDuration: Number(selectedThreePatientDuration),
             updatedOn: serverTimestamp(),
           },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(
@@ -104,17 +104,15 @@ const MultiPatientClinicSettings = ({
                 className="text-movet-green"
               />
             ),
-          }
-        )
+          },
+        ),
       )
       .catch((error: any) =>
         toast(
-          `${schedule?.toUpperCase()} Multi-Patient Appointment Duration Updated FAILED: ${
-            error?.message
-          }`,
+          `${schedule?.toUpperCase()} Multi-Patient Appointment Duration Updated FAILED: ${error?.message}`,
           {
             duration: 5000,
-            position: "bottom-center",
+
             icon: (
               <FontAwesomeIcon
                 icon={faCircleExclamation}
@@ -122,8 +120,8 @@ const MultiPatientClinicSettings = ({
                 className="text-movet-red"
               />
             ),
-          }
-        )
+          },
+        ),
       )
       .finally(() => {
         setDidTouchOnePatientDuration(false);

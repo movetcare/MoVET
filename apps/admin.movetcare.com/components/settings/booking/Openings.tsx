@@ -33,7 +33,7 @@ export const Openings = () => {
   const [showAddOpeningForm, setShowAddOpeningForm] = useState<boolean>(false);
   const [Openings, setOpenings] = useState<Array<Opening> | null>(null);
   const [openingsData, loading, error] = useDocument(
-    doc(firestore, "configuration/openings")
+    doc(firestore, "configuration/openings"),
   );
   const {
     handleSubmit,
@@ -64,12 +64,12 @@ export const Openings = () => {
         openingDates: Openings?.filter((_, i) => i !== index),
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Your opening deletion will appear in 5 minutes (or less).`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleCheck}
@@ -77,12 +77,12 @@ export const Openings = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(`opening Deletion FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}
@@ -90,7 +90,7 @@ export const Openings = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
 
   const onSubmit = async (data: any) =>
@@ -100,12 +100,12 @@ export const Openings = () => {
         openingDates: arrayUnion({ ...data, type: data.type.id }),
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Your opening update will appear in 5 minutes (or less).`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleCheck}
@@ -113,12 +113,12 @@ export const Openings = () => {
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(`opening Update FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}
@@ -126,7 +126,7 @@ export const Openings = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       )
       .finally(() => setShowAddOpeningForm(false));
   return (
@@ -329,7 +329,7 @@ export const Openings = () => {
                               !isDirty || isSubmitting
                                 ? "w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4"
                                 : "w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4",
-                              "mt-6"
+                              "mt-6",
                             )}
                             icon={faPlus}
                             text="Add Opening"

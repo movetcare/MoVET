@@ -59,7 +59,7 @@ export const TelehealthChatTemplates = ({
     ).catch((error: any) =>
       toast(`Template Deletion FAILED: ${error?.message}`, {
         duration: 5000,
-        position: "bottom-center",
+
         icon: (
           <FontAwesomeIcon
             icon={faCircleExclamation}
@@ -87,7 +87,7 @@ export const TelehealthChatTemplates = ({
       .catch((error: any) =>
         toast(`Template Creation FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}

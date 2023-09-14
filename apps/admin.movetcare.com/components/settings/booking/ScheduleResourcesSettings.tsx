@@ -41,19 +41,19 @@ export const ScheduleResourcesSettings = ({
             ? doc.data()?.clinicActiveResources
             : schedule === "housecall"
             ? doc.data()?.housecallActiveResources
-            : doc.data()?.virtualActiveResources
+            : doc.data()?.virtualActiveResources,
         );
         setActiveResourcesStaggerTimes(
           schedule === "clinic"
             ? doc.data()?.clinicActiveResources
             : schedule === "housecall"
             ? doc.data()?.housecallActiveResources
-            : doc.data()?.virtualActiveResources
+            : doc.data()?.virtualActiveResources,
         );
       },
       (error: any) => {
         setError(error?.message || error);
-      }
+      },
     );
     return () => unsubscribe();
   }, [schedule]);
@@ -70,7 +70,7 @@ export const ScheduleResourcesSettings = ({
       },
       (error: any) => {
         setError(error?.message || error);
-      }
+      },
     );
     return () => unsubscribe();
   }, []);
@@ -97,7 +97,7 @@ export const ScheduleResourcesSettings = ({
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(error?.message, {
@@ -108,7 +108,7 @@ export const ScheduleResourcesSettings = ({
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
   };
 
@@ -129,7 +129,7 @@ export const ScheduleResourcesSettings = ({
             virtualActiveResources: activeResourcesStaggerTimes,
             updatedOn: serverTimestamp(),
           },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Updated ${schedule?.toUpperCase()} Resources`, {
@@ -141,16 +141,14 @@ export const ScheduleResourcesSettings = ({
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(
-          `${schedule?.toUpperCase()} Resources Update FAILED: ${
-            error?.message
-          }`,
+          `${schedule?.toUpperCase()} Resources Update FAILED: ${error?.message}`,
           {
             duration: 5000,
-            position: "bottom-center",
+
             icon: (
               <FontAwesomeIcon
                 icon={faCircleExclamation}
@@ -158,8 +156,8 @@ export const ScheduleResourcesSettings = ({
                 className="text-movet-red"
               />
             ),
-          }
-        )
+          },
+        ),
       )
       .finally(() => setDidTouchStaggerTime(false));
   const updateActiveResources = async (id: number) => {
@@ -168,7 +166,7 @@ export const ScheduleResourcesSettings = ({
     resources.map(
       (resource: { id: number; staggerTime: number }, index: number) => {
         if (resource.id === id) removeIndex = index;
-      }
+      },
     );
     if (removeIndex !== null && removeIndex > -1)
       resources.splice(removeIndex, 1);
@@ -190,7 +188,7 @@ export const ScheduleResourcesSettings = ({
             virtualActiveResources: resources,
             updatedOn: serverTimestamp(),
           },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(`Updated ${schedule?.toUpperCase()} Resources`, {
@@ -202,16 +200,14 @@ export const ScheduleResourcesSettings = ({
               className="text-movet-green"
             />
           ),
-        })
+        }),
       )
       .catch((error: any) =>
         toast(
-          `${schedule?.toUpperCase()} Resources Update FAILED: ${
-            error?.message
-          }`,
+          `${schedule?.toUpperCase()} Resources Update FAILED: ${error?.message}`,
           {
             duration: 5000,
-            position: "bottom-center",
+
             icon: (
               <FontAwesomeIcon
                 icon={faCircleExclamation}
@@ -219,8 +215,8 @@ export const ScheduleResourcesSettings = ({
                 className="text-movet-red"
               />
             ),
-          }
-        )
+          },
+        ),
       );
   };
   return error ? (
@@ -250,7 +246,7 @@ export const ScheduleResourcesSettings = ({
               activeResources.map(
                 (
                   activeResource: { id: number; staggerTime: number },
-                  index: number
+                  index: number,
                 ) => {
                   if (activeResource?.id === resource.id)
                     return (
@@ -286,8 +282,8 @@ export const ScheduleResourcesSettings = ({
                         </p>
                       </li>
                     );
-                }
-              )
+                },
+              ),
             )}
         </ul>
         <Transition
@@ -340,7 +336,7 @@ export const ScheduleResourcesSettings = ({
               activeResources.map(
                 (activeResource: { id: number; staggerTime: number }) => {
                   if (activeResource?.id === resource.id) isActive = true;
-                }
+                },
               );
               return (
                 <Switch.Group
@@ -371,14 +367,14 @@ export const ScheduleResourcesSettings = ({
                     onChange={async () => updateActiveResources(resource.id)}
                     className={classNames(
                       isActive ? "bg-movet-green" : "bg-movet-gray",
-                      "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray"
+                      "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray",
                     )}
                   >
                     <span
                       aria-hidden="true"
                       className={classNames(
                         isActive ? "translate-x-5" : "translate-x-0",
-                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
                   </Switch>

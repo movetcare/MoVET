@@ -28,10 +28,10 @@ import { httpsCallable } from "firebase/functions";
 
 const GeneralSettings = () => {
   const [reasonGroups, loadingReasonGroups, errorReasonGroups] = useCollection(
-    query(collection(firestore, "reason_groups"), orderBy("isVisible", "desc"))
+    query(collection(firestore, "reason_groups"), orderBy("isVisible", "desc")),
   );
   const [reasons, loadingReasons, errorReasons] = useCollection(
-    query(collection(firestore, "reasons"), orderBy("name", "asc"))
+    query(collection(firestore, "reasons"), orderBy("name", "asc")),
   );
   const toggleReasonVisibility = async ({
     id,
@@ -50,7 +50,7 @@ const GeneralSettings = () => {
         isVisible: isVisible !== undefined ? !isVisible : false,
         updatedOn: serverTimestamp(),
       },
-      { merge: true }
+      { merge: true },
     )
       .then(() =>
         toast(
@@ -68,13 +68,13 @@ const GeneralSettings = () => {
                 }`}
               />
             ),
-          }
-        )
+          },
+        ),
       )
       .catch((error: any) =>
         toast(`Service "${name}" Update FAILED: ${error?.message}`, {
           duration: 5000,
-          position: "bottom-center",
+
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}
@@ -82,7 +82,7 @@ const GeneralSettings = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
   };
 
@@ -135,7 +135,7 @@ const GeneralSettings = () => {
               className="text-movet-red"
             />
           ),
-        })
+        }),
       );
   };
   return (
@@ -213,7 +213,7 @@ const GeneralSettings = () => {
                                 group.data()?.isVisible
                                   ? "bg-movet-green"
                                   : "bg-movet-gray",
-                                "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray"
+                                "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray",
                               )}
                             >
                               <span
@@ -222,7 +222,7 @@ const GeneralSettings = () => {
                                   group.data()?.isVisible
                                     ? "translate-x-5"
                                     : "translate-x-0",
-                                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                                 )}
                               />
                             </Switch>
@@ -262,14 +262,14 @@ const GeneralSettings = () => {
                                     checked={reason.data()?.isVisible}
                                     onChange={async () =>
                                       await toggleReasonVisibility(
-                                        reason.data()
+                                        reason.data(),
                                       )
                                     }
                                     className={classNames(
                                       reason.data()?.isVisible
                                         ? "bg-movet-green"
                                         : "bg-movet-gray",
-                                      "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray"
+                                      "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray",
                                     )}
                                   >
                                     <span
@@ -278,7 +278,7 @@ const GeneralSettings = () => {
                                         reason.data()?.isVisible
                                           ? "translate-x-5"
                                           : "translate-x-0",
-                                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                        "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                                       )}
                                     />
                                   </Switch>
@@ -298,7 +298,7 @@ const GeneralSettings = () => {
                   onClick={() =>
                     window.open(
                       "https://us.provetcloud.com/4285/organization/administration/reasons/",
-                      "_blank"
+                      "_blank",
                     )
                   }
                 >

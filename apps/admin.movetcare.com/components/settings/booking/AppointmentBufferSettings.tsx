@@ -19,7 +19,7 @@ const AppointmentBufferSettings = ({
   schedule: "clinic" | "housecall" | "virtual";
 }) => {
   const [selectedBufferTime, setSelectedBufferTime] = useState<string | null>(
-    null
+    null,
   );
   const [didTouchBufferTime, setDidTouchBufferTime] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
@@ -33,9 +33,9 @@ const AppointmentBufferSettings = ({
             ? doc.data()?.clinicAppointmentBufferTime
             : schedule === "housecall"
             ? doc.data()?.housecallAppointmentBufferTime
-            : doc.data()?.virtualAppointmentBufferTime
+            : doc.data()?.virtualAppointmentBufferTime,
         ),
-      (error: any) => setError(error?.message || error)
+      (error: any) => setError(error?.message || error),
     );
     return () => unsubscribe();
   }, [schedule]);
@@ -58,7 +58,7 @@ const AppointmentBufferSettings = ({
               virtualAppointmentBufferTime: Number(selectedBufferTime),
               updatedOn: serverTimestamp(),
             },
-        { merge: true }
+        { merge: true },
       )
         .then(() =>
           toast(
@@ -72,17 +72,14 @@ const AppointmentBufferSettings = ({
                   className="text-movet-green"
                 />
               ),
-            }
-          )
+            },
+          ),
         )
         .catch((error: any) =>
           toast(
-            `${schedule?.toUpperCase()} Appointment Buffer Time Update FAILED: ${
-              error?.message
-            }`,
+            `${schedule?.toUpperCase()} Appointment Buffer Time Update FAILED: ${error?.message}`,
             {
               duration: 5000,
-              position: "bottom-center",
               icon: (
                 <FontAwesomeIcon
                   icon={faCircleExclamation}
@@ -90,8 +87,8 @@ const AppointmentBufferSettings = ({
                   className="text-movet-red"
                 />
               ),
-            }
-          )
+            },
+          ),
         );
     setDidTouchBufferTime(false);
   };
