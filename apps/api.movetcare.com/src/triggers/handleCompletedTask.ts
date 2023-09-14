@@ -20,6 +20,7 @@ export const handleCompletedTask = functions.firestore
       const { action, automatedCloseTime, automatedOpenTime, dayOfWeek, type } =
         data.options;
       await updateAutomationTask(
+        id,
         type,
         action,
         id,
@@ -71,6 +72,7 @@ export const handleCompletedTask = functions.firestore
     return true;
   });
 const updateAutomationTask = async (
+  id: string,
   type: string,
   action: "open" | "close",
   taskName: string,
@@ -161,7 +163,7 @@ const updateAutomationTask = async (
         },
         worker: "hours_status_automation",
         status: "scheduled",
-        performAt: openDate,
+        performAt: id.includes("open") ? openDate : closeDate,
         createdOn: new Date(),
       },
       { merge: true },
@@ -181,7 +183,7 @@ const updateAutomationTask = async (
             },
             worker: "hours_status_automation",
             status: "scheduled",
-            performAt: openDate,
+            performAt: id.includes("open") ? openDate : closeDate,
             createdOn: new Date(),
           },
         }),
