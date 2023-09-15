@@ -47,7 +47,7 @@
     "@types/lodash.kebabcase": "^4.1.7",
     "@types/node": "^20.6.1",
     "@types/react": "18.2.21",
-    "@types/react-calendar": "^3.9.0",
+    "@types/react-calendar": "^4.1.0",
     "@types/react-time-picker": "^4.0.3",
     "@types/ua-parser-js": "^0.7.37",
     "autoprefixer": "^10.4.15",
