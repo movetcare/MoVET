@@ -23,10 +23,10 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.17",
+    "@babel/core": "^7.22.19",
     "@tailwindcss/forms": "^0.5.6",
     "@types/lodash.kebabcase": "^4.1.7",
-    "@types/node": "^20.6.0",
+    "@types/node": "^20.6.1",
     "@types/react": "18.2.21",
     "autoprefixer": "^10.4.15",
     "eslint": "8.49.0",

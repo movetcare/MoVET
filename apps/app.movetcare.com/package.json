@@ -18,7 +18,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.17",
     "@hookform/resolvers": "^3.3.1",
-    "firebase": "^10.3.1",
+    "firebase": "^10.4.0",
     "lodash.kebabcase": "^4.1.1",
     "lottie-web": "^5.12.2",
     "next": "^13.4.19",
@@ -41,11 +41,11 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.17",
+    "@babel/core": "^7.22.19",
     "@react-google-maps/api": "^2.19.2",
     "@tailwindcss/forms": "^0.5.6",
     "@types/lodash.kebabcase": "^4.1.7",
-    "@types/node": "^20.6.0",
+    "@types/node": "^20.6.1",
     "@types/react": "18.2.21",
     "@types/react-calendar": "^3.9.0",
     "@types/react-time-picker": "^4.0.3",
