@@ -52,16 +52,11 @@ const registerForPushNotificationsAsync = async () => {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
-    if (finalStatus !== "granted") {
-      alert("Failed to get push token for push notification!");
-      return;
-    }
+    if (finalStatus !== "granted") return { data: "MISSING_PERMISSION" };
     token = await Notifications.getExpoPushTokenAsync({
       projectId: Constants?.expoConfig?.extra?.eas?.projectId,
     });
-    alert("PUSH TOKEN: " + JSON.stringify(token));
-  } else console.log("Must use physical device for Push Notifications!");
-
+  } else return { data: "SIMULATOR_TOKEN" };
   if (Platform.OS === "android")
     Notifications.setNotificationChannelAsync("default", {
       name: "default",
@@ -69,7 +64,6 @@ const registerForPushNotificationsAsync = async () => {
       vibrationPattern: [0, 250, 250, 250],
       lightColor: tw.color("movet-red"),
     });
-
   return token;
 };
 
@@ -91,99 +85,7 @@ const ChatIndex = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
-    // registerForPushNotificationsAsync().then(async (token: any) => {
-    //   alert("TOKEN: " + JSON.stringify(token));
-    //   const deviceInfo = JSON.parse(
-    //     JSON.stringify(Device, (key: any, value: any) =>
-    //       value === undefined ? null : value,
-    //     ),
-    //   );
-    //   let existingTokens: any[] = [];
-    //   const tokenAlreadyExists = await getDoc(
-    //     doc(firestore, "fcmTokensClient", user?.uid),
-    //   ).then((doc: any) => {
-    //     if (doc.exists()) {
-    //       existingTokens = doc.data().tokens;
-    //       if (
-    //         doc.data().tokens.find((token: any) => token.token === token?.data)
-    //       )
-    //         return true;
-    //     } else return false;
-    //   });
-    //   if (tokenAlreadyExists === false)
-    //     await setDoc(doc(firestore, "fcmTokensClient", user?.uid), {
-    //       tokens: [
-    //         {
-    //           token: token?.data,
-    //           isActive: true,
-    //           device: deviceInfo,
-    //           createdOn: new Date(),
-    //         },
-    //       ],
-    //       user: {
-    //         displayName: user?.displayName,
-    //         email: user?.email,
-    //         emailVerified: user?.emailVerified,
-    //         photoURL: user?.photoURL,
-    //         uid: user?.uid,
-    //         phoneNumber: user?.phoneNumber,
-    //       },
-    //       createdOn: serverTimestamp(),
-    //     });
-    //   else if (tokenAlreadyExists === undefined)
-    //     await setDoc(
-    //       doc(firestore, "fcmTokensClient", user?.uid),
-    //       {
-    //         tokens: arrayUnion({
-    //           token: token?.data,
-    //           isActive: true,
-    //           device: deviceInfo,
-    //           createdOn: new Date(),
-    //         }),
-    //         user: {
-    //           displayName: user?.displayName,
-    //           email: user?.email,
-    //           emailVerified: user?.emailVerified,
-    //           photoURL: user?.photoURL,
-    //           uid: user?.uid,
-    //           phoneNumber: user?.phoneNumber,
-    //         },
-    //         updatedOn: serverTimestamp(),
-    //       },
-    //       { merge: true },
-    //     );
-    //   else if (tokenAlreadyExists) {
-    //     const newTokenData = existingTokens.map((token: any) => {
-    //       if (token.token === token?.data) {
-    //         return {
-    //           token: token?.data,
-    //           isActive: true,
-    //           device: deviceInfo,
-    //           updatedOn: new Date(),
-    //           createdOn: token.createdOn,
-    //         };
-    //       } else return token;
-    //     });
-    //     await setDoc(
-    //       doc(firestore, "fcmTokensClient", user?.uid),
-    //       {
-    //         tokens: newTokenData,
-    //         user: {
-    //           displayName: user?.displayName,
-    //           email: user?.email,
-    //           emailVerified: user?.emailVerified,
-    //           photoURL: user?.photoURL,
-    //           uid: user?.uid,
-    //           phoneNumber: user?.phoneNumber,
-    //         },
-    //         updatedOn: serverTimestamp(),
-    //       },
-    //       { merge: true },
-    //     );
-    //   }
-    // });
-    const test = async () => {
-      const token = { data: "testTOKEN" };
+    registerForPushNotificationsAsync().then(async (token: any) => {
       const deviceInfo = JSON.parse(
         JSON.stringify(Device, (key: any, value: any) =>
           value === undefined ? null : value,
@@ -191,18 +93,22 @@ const ChatIndex = () => {
       );
       let existingTokens: any[] = [];
       const tokenAlreadyExists = await getDoc(
-        doc(firestore, "fcmTokensClient", user?.uid),
+        doc(firestore, "push_tokens", user?.uid),
       ).then((doc: any) => {
         if (doc.exists()) {
           existingTokens = doc.data().tokens;
           if (
-            doc.data().tokens.find((token: any) => token.token === token?.data)
+            doc
+              .data()
+              .tokens.find(
+                (existingToken: any) => existingToken.token === token?.data,
+              )
           )
             return true;
         } else return false;
       });
       if (tokenAlreadyExists === false)
-        await setDoc(doc(firestore, "fcmTokensClient", user?.uid), {
+        await setDoc(doc(firestore, "push_tokens", user?.uid), {
           tokens: [
             {
               token: token?.data,
@@ -223,7 +129,7 @@ const ChatIndex = () => {
         });
       else if (tokenAlreadyExists === undefined)
         await setDoc(
-          doc(firestore, "fcmTokensClient", user?.uid),
+          doc(firestore, "push_tokens", user?.uid),
           {
             tokens: arrayUnion({
               token: token?.data,
@@ -244,19 +150,19 @@ const ChatIndex = () => {
           { merge: true },
         );
       else if (tokenAlreadyExists) {
-        const newTokenData = existingTokens.map((token: any) => {
-          if (token.token === token?.data) {
+        const newTokenData = existingTokens.map((existingToken: any) => {
+          if (existingToken?.token === token?.data) {
             return {
               token: token?.data,
               isActive: true,
               device: deviceInfo,
               updatedOn: new Date(),
-              createdOn: token.createdOn,
+              createdOn: existingToken?.createdOn,
             };
-          } else return token;
+          } else return existingToken;
         });
         await setDoc(
-          doc(firestore, "fcmTokensClient", user?.uid),
+          doc(firestore, "push_tokens", user?.uid),
           {
             tokens: newTokenData,
             user: {
@@ -272,8 +178,7 @@ const ChatIndex = () => {
           { merge: true },
         );
       }
-    };
-    test();
+    });
   }, []);
 
   useEffect(() => {
@@ -303,26 +208,6 @@ const ChatIndex = () => {
   useEffect(() => {
     if (messages && messages?.length === 0) setMessages(defaultMessages);
   }, [messages]);
-
-  async function sendPushNotification(expoPushToken: string) {
-    const message = {
-      to: expoPushToken,
-      sound: "default",
-      title: "Original Title",
-      body: "And here is the body!",
-      data: { someData: "goes here" },
-    };
-
-    await fetch("https://exp.host/--/api/v2/push/send", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Accept-encoding": "gzip, deflate",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(message),
-    });
-  }
 
   const onSend = useCallback(
     async (messages: IMessage[] = []) => {
@@ -374,12 +259,12 @@ const ChatIndex = () => {
     setMessages([
       ...messages,
       {
-        _id: 1,
+        _id: "1",
         text: "Uploading file, please wait...",
         createdAt: new Date(),
         system: true,
         user: {
-          _id: 0,
+          _id: "0",
           name: "system",
         },
       },
@@ -387,12 +272,12 @@ const ChatIndex = () => {
     const messagesToUpload: any = messages.map((message) => ({
       ...message,
       user: {
-        _id: user?.uid,
+        _id: `${user?.uid}`,
         name: user?.displayName,
         avatar: user?.photoURL,
       },
       createdAt: new Date(),
-      _id: Math.round(Math.random() * 1000000),
+      _id: `${Math.round(Math.random() * 1000000)}`,
     }));
     const messagesUploaded: IMessage[] = [];
     await Promise.all(
@@ -467,36 +352,6 @@ const ChatIndex = () => {
   };
   return (
     <View style={tw`flex-1 bg-white`}>
-      {/* {expoPushToken && (
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "space-around",
-          }}
-        >
-          <Text>Your expo push token: {JSON.stringify(expoPushToken)}</Text>
-          <View style={{ alignItems: "center", justifyContent: "center" }}>
-            <Text>
-              Title: {notification && notification.request.content.title}{" "}
-            </Text>
-            <Text>
-              Body: {notification && notification.request.content.body}
-            </Text>
-            <Text>
-              Data:{" "}
-              {notification &&
-                JSON.stringify(notification.request.content.data)}
-            </Text>
-          </View>
-          <Button
-            title="Press to Send Notification"
-            onPress={async () => {
-              await sendPushNotification(expoPushToken as any);
-            }}
-          />
-        </View>
-      )} */}
       <GiftedChat
         infiniteScroll
         scrollToBottom

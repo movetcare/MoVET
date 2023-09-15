@@ -3,7 +3,7 @@ import { Button, Text, View } from "react-native";
 import { signOff } from "services/Auth";
 import { AuthStore } from "stores";
 
-const Tab2Index = () => {
+const Settings = () => {
   const router = useRouter();
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -19,11 +19,10 @@ const Tab2Index = () => {
       <Button
         onPress={async () => {
           if (await signOff()) router.replace("/(auth)/login");
-
         }}
         title="LOGOUT"
       />
     </View>
   );
 };
-export default Tab2Index;
+export default Settings;

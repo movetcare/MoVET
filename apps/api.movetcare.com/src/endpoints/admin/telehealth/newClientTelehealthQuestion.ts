@@ -160,7 +160,7 @@ export const newClientTelehealthMessage = functions.firestore
           category: "client-telehealth",
           title: "New Message from MoVET",
           message: truncateString(text),
-          path: `/telehealth/chat/?id=${context.params.clientId}`,
+          path: "/chat",
         },
       });
     return null;

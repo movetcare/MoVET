@@ -13,16 +13,13 @@ service cloud.firestore {
     function clientOwnsPatient() {
       return clientIsAuthed() && request.auth.uid == string(resource.data.client);
     }
-    match /fcmTokens/{uid} {
-      allow read, write: if clientOwnsDocuments(uid) || isMoVETStaff();
-    }
     match /push_notifications/{nid} {
       allow read, write: if isMoVETStaff();
     }
-    match /fcmTokensAdmin/{uid} {
+    match /admin_push_tokens/{uid} {
       allow read, write: if isMoVETStaff();
     }
-    match /fcmTokensClient/{uid} {
+    match /push_tokens/{uid} {
       allow read, write: if clientOwnsDocuments(uid) || isMoVETStaff();
     }
     match /alerts/{sid} {

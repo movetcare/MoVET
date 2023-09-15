@@ -1,3 +1,4 @@
+import { sendPushNotificationViaExpo } from "./../integrations/expo/sendPushNotificationViaExpo";
 /* eslint-disable no-case-declarations */
 import {
   admin,
@@ -15,6 +16,7 @@ import {
   UserNotificationSettings,
 } from "../utils/getClientNotificationSettings";
 import { fetchNewGoToAccessToken } from "../integrations/goto/fetchNewGoToAccessToken";
+import { ExpoPushTicket } from "expo-server-sdk";
 //import { pushNotification } from "../integrations/expo/pushNotification";
 const DEBUG = true;
 export const sendNotification = async ({
@@ -385,28 +387,25 @@ export const sendNotification = async ({
       if (payload?.category === "admin-telehealth") {
         let adminFcmTokens: Array<string> | null = null;
         const allAdminTokenData: Array<any> = [];
-        if (payload?.category === "admin-telehealth")
-          adminFcmTokens = await admin
-            .firestore()
-            .collection("fcmTokensAdmin")
-            .get()
-            .then((querySnapshot: any) => {
-              const allValidTokens: Array<string> = [];
-              querySnapshot.forEach((doc: any) => {
-                if (DEBUG) console.log(doc.id, " => ", doc.data());
-                doc.data()?.tokens?.forEach((token: any) => {
-                  if (token.isActive) {
-                    allValidTokens.push(token.token);
-                    allAdminTokenData.push({ uid: doc.id, token: token.token });
-                  }
-                });
+        adminFcmTokens = await admin
+          .firestore()
+          .collection("admin_push_tokens")
+          .get()
+          .then((querySnapshot: any) => {
+            const allValidTokens: Array<string> = [];
+            querySnapshot.forEach((doc: any) => {
+              if (DEBUG) console.log(doc.id, " => ", doc.data());
+              doc.data()?.tokens?.forEach((token: any) => {
+                if (token.isActive) {
+                  allValidTokens.push(token.token);
+                  allAdminTokenData.push({ uid: doc.id, token: token.token });
+                }
               });
-              return allValidTokens;
-            })
-            .catch((error: any) => throwError(error));
-        if (DEBUG) {
-          console.log("adminFcmTokens", adminFcmTokens);
-        }
+            });
+            return allValidTokens;
+          })
+          .catch((error: any) => throwError(error));
+        if (DEBUG) console.log("adminFcmTokens", adminFcmTokens);
         if (adminFcmTokens && adminFcmTokens.length > 0)
           admin
             .messaging()
@@ -443,7 +442,7 @@ export const sendNotification = async ({
             })
             .then(async (response: any) => {
               sendSlackMessageToChannel(
-                `:outbox_tray: Push Notifications Sent to ${
+                `:outbox_tray: ADMIN Push Notifications Sent to ${
                   (adminFcmTokens as any).length
                 } devices${
                   response?.failureCount.length > 0
@@ -482,7 +481,7 @@ export const sendNotification = async ({
                     adminTokensToDisable.map(async (tokenData: any) => {
                       const adminUserTokens = await admin
                         .firestore()
-                        .collection("fcmTokensAdmin")
+                        .collection("admin_push_tokens")
                         .doc(tokenData.uid)
                         .get()
                         .then((doc: any) => doc.data().tokens)
@@ -497,7 +496,7 @@ export const sendNotification = async ({
                         );
                         await admin
                           .firestore()
-                          .collection("fcmTokensAdmin")
+                          .collection("admin_push_tokens")
                           .doc(tokenData.uid)
                           .update({ tokens: updatedTokens })
                           .catch((error: any) => throwError(error));
@@ -510,9 +509,10 @@ export const sendNotification = async ({
             .catch((error: any) => throwError(error));
         else if (DEBUG) console.log("NO TOKENS FOUND", { adminFcmTokens });
       } else if (payload?.category === "client-telehealth") {
-        const clientsPushTokens = await admin
+        const allClientTokenData: Array<any> = [];
+        const clientPushTokens = await admin
           .firestore()
-          .collection("clientsPushTokens")
+          .collection("push_tokens")
           .doc(payload?.user?.uid)
           .get()
           .then((doc: any) => {
@@ -520,12 +520,105 @@ export const sendNotification = async ({
             if (DEBUG) console.log(doc.id, " => ", doc.data());
             doc.data()?.tokens?.forEach((token: any) => {
               console.log("TOKEN ARRAY", token);
-              if (token.isActive) allValidTokens.push(token.token);
+              if (token.isActive) {
+                allValidTokens.push(token.token);
+                allClientTokenData.push({ uid: doc.id, token: token.token });
+              }
             });
             return allValidTokens;
           })
           .catch((error: any) => throwError(error));
-        if (DEBUG) console.log("clientsPushTokens", clientsPushTokens);
+        if (DEBUG) console.log("clientPushTokens", clientPushTokens);
+        if (clientPushTokens && clientPushTokens.length > 0)
+          sendPushNotificationViaExpo({
+            to: clientPushTokens,
+            title: payload?.title,
+            body: payload?.message,
+            data: {
+              link: payload?.path || "/chat",
+            },
+          })
+            .then(
+              async (response: {
+                failureCount: number;
+                responses: Array<ExpoPushTicket>;
+              }) => {
+                sendSlackMessageToChannel(
+                  `:outbox_tray: CLIENT Push Notifications Sent to ${
+                    (clientPushTokens as any).length
+                  } devices${
+                    response?.failureCount > 0
+                      ? ` with ${response?.failureCount} failures`
+                      : ""
+                  } - "${payload?.title} | ${payload?.message}"`,
+                );
+                if (response.failureCount > 0) {
+                  const failedTokens: any = [];
+                  response.responses.forEach((resp: ExpoPushTicket) => {
+                    if (resp.status === "error") {
+                      failedTokens.push((resp.details as any)?.expoPushToken);
+                    }
+                  });
+                  if (DEBUG)
+                    console.log(
+                      "List of tokens that caused failures: " + failedTokens,
+                    );
+                  if (failedTokens.length > 0) {
+                    const clientTokensToDisable: Array<{
+                      uid: string;
+                      token: string;
+                    }> = [];
+                    allClientTokenData.map((tokenData: any) => {
+                      if (failedTokens.includes(tokenData.token))
+                        clientTokensToDisable.push({
+                          uid: tokenData.uid,
+                          token: tokenData.token,
+                        });
+                    });
+                    if (DEBUG)
+                      console.log(
+                        "clientTokensToDisable",
+                        clientTokensToDisable,
+                      );
+                    await Promise.all(
+                      clientTokensToDisable.map(async (tokenData: any) => {
+                        const clientTokens = await admin
+                          .firestore()
+                          .collection("push_tokens")
+                          .doc(tokenData.uid)
+                          .get()
+                          .then((doc: any) => doc.data().tokens)
+                          .catch((error: any) => throwError(error));
+                        if (clientTokens) {
+                          const updatedTokens = clientTokens.map(
+                            (token: any) => {
+                              if (token.token === tokenData.token)
+                                return {
+                                  ...token,
+                                  isActive: false,
+                                  updatedOn: new Date(),
+                                };
+                              else return token;
+                            },
+                          );
+                          await admin
+                            .firestore()
+                            .collection("push_tokens")
+                            .doc(tokenData.uid)
+                            .update({
+                              tokens: updatedTokens,
+                              updatedOn: new Date(),
+                            })
+                            .catch((error: any) => throwError(error));
+                        }
+                      }),
+                    );
+                  }
+                }
+              },
+            )
+            .catch((error: any) => throwError(error));
+        else if (DEBUG) console.log("NO TOKENS FOUND", { clientPushTokens });
       } else if (DEBUG) console.log("UNSUPPORTED PUSH NOTIFICATION TYPE!");
       break;
     default:

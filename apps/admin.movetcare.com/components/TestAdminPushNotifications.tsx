@@ -29,7 +29,7 @@ export const TestAdminPushNotifications = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [activeAdminTokens, setActiveAdminTokens] = useState<any>(null);
   const [fcmTokensAdmin, loadingFcmTokensAdmin, errorFcmTokensAdmin] =
-    useCollection(query(collection(firestore, "fcmTokensAdmin")));
+    useCollection(query(collection(firestore, "admin_push_tokens")));
   const {
     handleSubmit,
     control,
