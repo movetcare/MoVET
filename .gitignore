@@ -50,6 +50,7 @@ yarn-error.log*
 
 # turbo
 .turbo
+.vercel
 
 # environment variables
 .env.local

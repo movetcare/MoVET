@@ -10,6 +10,23 @@ import { CallToAction } from "ui";
 const posts: Array<BlogPost> = [
   {
     isFeatured: true,
+    title: "Annual HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 29th at 1PM",
+    href: "/blog/howl-o-ween",
+    category: { name: "Community", href: "#", color: "bg-movet-magenta" },
+    description:
+      "Join us at the Belleview Station Dog Park for this fun and FREE event! Enjoy a Photo Booth, Treats, and Belly Rubs. Dress your furry friend in their most adorable, scary, or hilarious costume. The more creative the better!",
+    date: "Oct 29th, 2022",
+    datetime: "2022-10-29",
+    imageUrl: "/images/blog/howl-o-ween-clip.png",
+    readingTime: "3 min",
+    author: {
+      name: "Dr. A",
+      href: "#",
+      imageUrl: "/images/blog/dr-a.png",
+    },
+  },
+  {
+    isFeatured: false,
     isExternalLink: true,
     title:
       "MoVET @ Belleview Station Voted a Neighborhood Fave in Nextdoor's 2023 Local Business Awards",
@@ -241,23 +258,6 @@ const posts: Array<BlogPost> = [
       name: "Barbara Caldwell, DVM",
       href: "#",
       imageUrl: "/images/blog/dr-barbara-caldwell.png",
-    },
-  },
-  {
-    isFeatured: false,
-    title: "HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 30th @ 1pm",
-    href: "/blog/howl-o-ween",
-    category: { name: "Community", href: "#", color: "bg-movet-magenta" },
-    description:
-      "Come one come all! Join us, Oct 30th at 1pm in the Belleview Station Dog Park to show off your Halloween Best! We'll have a fall themed photo booth to capture this once-a-year attire!",
-    date: "Oct 20th, 2022",
-    datetime: "2022-10-20",
-    imageUrl: "/images/blog/howl-o-ween.png",
-    readingTime: "3 min",
-    author: {
-      name: "Dr. A",
-      href: "#",
-      imageUrl: "/images/blog/dr-a.png",
     },
   },
   {
