@@ -49,7 +49,7 @@
   "devDependencies": {
     "@types/node": "^20.7.0",
     "concurrently": "^8.2.1",
-    "cypress": "^13.2.0",
+    "cypress": "^13.3.0",
     "cypress-fail-fast": "^7.0.3",
     "eslint-config-custom": "workspace:*",
     "git-branch-is": "^4.0.0",

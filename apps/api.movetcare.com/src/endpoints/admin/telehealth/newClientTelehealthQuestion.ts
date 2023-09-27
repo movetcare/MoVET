@@ -80,10 +80,10 @@ export const newClientTelehealthMessage = functions.firestore
         .then((doc: any) => {
           return {
             onlineAutoReply: displayName
-              ? `Hi ${displayName},\n`
+              ? `Hi ${displayName}!\n` + doc.data()?.onlineAutoReply
               : "" + doc.data()?.onlineAutoReply,
             offlineAutoReply: displayName
-              ? `Hi ${displayName},\n`
+              ? `Hi ${displayName}!\n` + doc.data()?.offlineAutoReply
               : "" + doc.data()?.offlineAutoReply,
             isOnline: doc.data()?.isOnline,
           };
@@ -115,13 +115,14 @@ export const newClientTelehealthMessage = functions.firestore
           () => DEBUG && console.log("Updated Client Info on Telehealth Chat"),
         )
         .catch((error: any) => throwError(error));
+      const messageId = randomUUID();
       await admin
         .firestore()
         .collection("telehealth_chat")
         .doc(context.params.clientId)
         .collection("log")
         .add({
-          _id: randomUUID(),
+          _id: messageId,
           text: isOnline ? onlineAutoReply : offlineAutoReply,
           user: {
             _id: "0",
@@ -134,7 +135,7 @@ export const newClientTelehealthMessage = functions.firestore
           () =>
             DEBUG &&
             console.log("Auto Reply Successfully Generated: ", {
-              _id: randomUUID(),
+              _id: messageId,
               text: isOnline ? onlineAutoReply : offlineAutoReply,
               user: {
                 _id: "0",
