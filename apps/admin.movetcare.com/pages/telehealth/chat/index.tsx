@@ -8,6 +8,7 @@ import {
   serverTimestamp,
   addDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { Tooltip } from "react-tooltip";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
@@ -21,6 +22,8 @@ import {
   faUserCircle,
   faIdBadge,
   faSms,
+  faCat,
+  faDog,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import environment from "utils/environment";
@@ -61,6 +64,12 @@ const ChatSession = () => {
     doc(firestore, `telehealth_chat/${query?.id}`),
   );
 
+  const [patients, loadingPatients, errorPatients] = useCollection(
+    firestoreQuery(
+      collection(firestore, `patients`),
+      where("client", "==", Number(query?.id)),
+    ),
+  );
   const {
     register,
     handleSubmit,
@@ -238,6 +247,8 @@ const ChatSession = () => {
         !errorSession &&
         !loadingMessages &&
         !errorMessages &&
+        !loadingPatients &&
+        !errorPatients &&
         messages ? (
           <>
             <div className="flex sm:items-center justify-between md:pb-6 border-b border-movet-gray px-8 py-4">
@@ -311,6 +322,56 @@ const ChatSession = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
+                {patients && patients.docs.length <= 5 ? (
+                  <ul>
+                    {patients.docs.map((patient: any) => (
+                      <li key={patient.data()?.id}>
+                        <a
+                          href={`https://us.provetcloud.com/4285/client/${patient.data()
+                            ?.client}/tabs/?patient_id=${patient.data()?.id}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="hover:underline hover:text-movet-red italic"
+                        >
+                          {patient
+                            .data()
+                            ?.species?.toLowerCase()
+                            ?.includes("cat") ? (
+                            <FontAwesomeIcon
+                              icon={faCat}
+                              size="sm"
+                              className="mr-1"
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faDog}
+                              size="sm"
+                              className="mr-1"
+                            />
+                          )}
+                          {patient.data()?.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : patients && patients.docs.length > 5 ? (
+                  <>
+                    <b className="flex flex-row items-center justify-center">
+                      Patients:
+                      <a
+                        href={`https://us.provetcloud.com/4285/client/${patients.docs[0].data()
+                          ?.client}/`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="hover:underline hover:text-movet-red text-lg font-extrabold ml-1"
+                      >
+                        {patients.docs.length}
+                      </a>
+                    </b>
+                  </>
+                ) : (
+                  <b>No Patients Found!</b>
+                )}
                 <Tooltip id="sendSmsToClient" />
                 <div
                   data-tooltip-id="sendSmsToClient"
@@ -465,7 +526,8 @@ const ChatSession = () => {
                           ? "Write Something..."
                           : "This message will not be seen until the client downloads the MoVET mobile app"
                       }
-                      className="flex items=center w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 pl-8 pr-12 bg-white rounded-full mb-4 lg:-mb-4 h-18 md:h-11"
+                      rows={6}
+                      className="flex items=center w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 pl-8 pr-12 bg-white rounded-md mb-4 lg:-mb-4 h-18 md:h-20"
                       {...register("message", { required: true })}
                     />
                     <div className="absolute right-0 items-center inset-y-0">
@@ -477,8 +539,8 @@ const ChatSession = () => {
                         disabled={!isDirty || isSubmitting || !isValid}
                         className={
                           !isDirty || isSubmitting || !isValid
-                            ? "inline-flex items-center justify-center rounded-full h-10 w-10 text-movet-gray focus:outline-none mr-1 mt-3 md:mt-0"
-                            : "cursor-pointer inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-1 mt-3 md:mt-0"
+                            ? "inline-flex items-center justify-center rounded-full h-10 w-10 text-movet-gray focus:outline-none mr-1 mt-8 md:mt-4"
+                            : "cursor-pointer inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-1 mt-8 md:mt-4"
                         }
                       >
                         <FontAwesomeIcon icon={faPaperPlane} size="lg" />

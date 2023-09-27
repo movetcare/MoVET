@@ -24,7 +24,12 @@ import { firestore } from "services/firebase";
 import { classNames } from "utils/classNames";
 import Error from "components/Error";
 import Link from "next/link";
-import { Tooltip } from "react-tooltip";
+import Select, { components } from "react-select";
+
+interface Option {
+  title: string;
+  message: string;
+}
 
 const TelehealthChatStatus = () => {
   const [showTelehealthSettingsMenu, setShowTelehealthSettingsMenu] =
@@ -35,6 +40,41 @@ const TelehealthChatStatus = () => {
   const [templates, loadingTemplates, errorTemplates] = useDocument(
     doc(firestore, "configuration/telehealth"),
   );
+  const [onlineTemplateOptions, setOnlineTemplateOptions] =
+    useState<Array<Option> | null>(null);
+  const [offlineTemplateOptions, setOfflineTemplateOptions] =
+    useState<Array<Option> | null>(null);
+
+  useEffect(() => {
+    if (templates && offlineTemplateOptions === null) {
+      const offlineTemplates: Array<Option> = [];
+      templates?.data()?.offlineTemplates.map((offlineTemplate: Option) => {
+        offlineTemplates.push(offlineTemplate);
+      });
+      setOfflineTemplateOptions(offlineTemplates);
+    }
+  }, [templates, offlineTemplateOptions]);
+
+  useEffect(() => {
+    if (templates && onlineTemplateOptions === null) {
+      const onlineTemplates: Array<Option> = [];
+      templates?.data()?.onlineTemplates.map((onlineTemplate: Option) => {
+        onlineTemplates.push(onlineTemplate);
+      });
+      setOnlineTemplateOptions(onlineTemplates);
+    }
+  }, [templates, onlineTemplateOptions]);
+
+  const customFilter = (option: any, searchText: string) => {
+    if (
+      (option.data.title &&
+        option.data.title.toLowerCase().includes(searchText.toLowerCase())) ||
+      (option.data.message &&
+        option.data.message.toLowerCase().includes(searchText.toLowerCase()))
+    ) {
+      return true;
+    } else return false;
+  };
 
   const {
     register,
@@ -57,6 +97,8 @@ const TelehealthChatStatus = () => {
   });
 
   const isOnline = watch("isOnline");
+  const onlineAutoReplyText = watch("onlineAutoReply");
+  const offlineAutoReplyText = watch("offlineAutoReply");
 
   useEffect(() => {
     if (settings && settings.data()) reset(settings.data());
@@ -96,6 +138,32 @@ const TelehealthChatStatus = () => {
           ),
         }),
       );
+
+  const Option: any = (props: any) => (
+    <>
+      <components.Option {...props}>
+        <div className="flex flex-row items-center justify-between">
+          <div>{props.children}</div>
+        </div>
+      </components.Option>
+    </>
+  );
+
+  const formatOptionLabel = ({
+    message,
+    title,
+  }: {
+    message: string;
+    title: string;
+  }) => (
+    <div className="flex flex-col">
+      <p className="flex flex-row items-center text-lg">{title}</p>
+      <p className="text-sm">
+        {message?.substring(0, 180)} {message?.length > 180 ? `...` : ""}
+      </p>
+    </div>
+  );
+
   return (
     <>
       {(loadingSettings || loadingTemplates) && (
@@ -230,35 +298,113 @@ const TelehealthChatStatus = () => {
               </p>
             </label>
             <div className="flex flex-col w-full">
-              <ul>
-                {templates &&
-                  (templates as any)
-                    ?.data()
-                    .onlineTemplates.map(
-                      (
-                        template: { title: string; message: string },
-                        index: number,
-                      ) => (
-                        <li
-                          key={`online-template-` + index}
-                          className="border-movet-gray rounded-lg border-2 p-2 my-4 hover:border-movet-black cursor-pointer"
-                          data-tooltip-id={`online-template-${index}`}
-                          data-tooltip-content={template?.message}
-                          onClick={() =>
-                            setValue("onlineAutoReply", template?.message, {
-                              shouldValidate: true,
-                              shouldDirty: true,
-                              shouldTouch: true,
-                            })
-                          }
-                        >
-                          <h4 className="text-sm italic">{template?.title}</h4>
-                          <Tooltip id={`template-${index}`} />
-                        </li>
-                      ),
-                    )}
-              </ul>
+              <Select
+                isClearable
+                isSearchable
+                closeMenuOnSelect
+                closeMenuOnScroll
+                escapeClearsValue
+                menuShouldScrollIntoView
+                openMenuOnClick
+                isLoading={onlineTemplateOptions === null}
+                loadingMessage={() => "Loading Templates..."}
+                noOptionsMessage={() => "No Templates Found..."}
+                formatOptionLabel={formatOptionLabel}
+                filterOption={customFilter}
+                value={onlineAutoReplyText}
+                onChange={(value: any) =>
+                  setValue("onlineAutoReply", value?.message, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
+                options={onlineTemplateOptions || []}
+                placeholder="Select a Template"
+                menuPosition="fixed"
+                components={{ Option }}
+                styles={{
+                  input: (base: any) => ({
+                    ...base,
+                    fontFamily: "Abside Smooth",
+                    borderWidth: 0,
+                    borderColor: "transparent",
+                    boxShadow: "none",
+                    "input:focus": {
+                      boxShadow: "none",
+                      borderWidth: 0,
+                      borderColor: "transparent",
+                    },
+                    "input:hover": {
+                      boxShadow: "none",
+                      borderWidth: 0,
+                      borderColor: "transparent",
+                    },
+                  }),
+                  control: (base: any) => ({
+                    ...base,
+                    boxShadow: "none",
+                    borderWidth: 0,
+                    borderColor: "transparent",
+                    fontFamily: "Abside Smooth",
+                  }),
+                  option: (base: any, state: any) => ({
+                    ...base,
+                    boxShadow: "none",
+                    fontWeight: state.isSelected ? "bold" : "normal",
+                    fontFamily: "Abside Smooth",
+                    color: state.isSelected ? "#f6f2f0" : "#232127",
+                    backgroundColor: state.isSelected
+                      ? "#E76159"
+                      : "transparent",
+                  }),
+                  singleValue: (base, state) => ({
+                    ...base,
+                    borderWidth: 0,
+                    borderColor: "transparent",
+                    fontFamily: "Abside Smooth",
+                    color: (state.data as any).color,
+                  }),
+                  indicatorSeparator: (base: any) => ({
+                    ...base,
+                    backgroundColor: "#232127",
+                  }),
+                  dropdownIndicator: (base: any) => ({
+                    ...base,
+                    color: "#232127",
+                    ":hover": {
+                      color: "#232127",
+                    },
+                  }),
+                }}
+                theme={(theme: any) => ({
+                  ...theme,
+                  borderRadius: 0,
+                  colors: {
+                    ...theme.colors,
+                    danger: "#E76159",
+                    primary50: "#A15643",
+                    primary: "#232127",
+                  },
+                })}
+                className="search-input border-movet-black/50 relative border w-full bg-white rounded-xl py-2 text-left cursor-pointer sm:text-sm mt-4 mb-8"
+              />
             </div>
+            <button
+              type="submit"
+              onClick={() =>
+                setShowTelehealthSettingsMenu(!showTelehealthSettingsMenu)
+              }
+              disabled={!isDirty || isSubmitting || !isValid}
+              className={
+                !isDirty || isSubmitting || !isValid
+                  ? "w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4 bg-movet-red/75 mb-4"
+                  : "w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out hover:bg-movet-green focus:outline-none mr-4 bg-movet-red text-movet-white mb-4"
+              }
+            >
+              <FontAwesomeIcon icon={faWrench} size="lg" />
+              <span className="ml-2">Save Changes</span>
+            </button>
             <label className="italic my-2 text-sm">
               <FontAwesomeIcon icon={faBellSlash} size="sm" />
               <span className="ml-2">Offline Auto-Reply Message</span>
@@ -287,34 +433,97 @@ const TelehealthChatStatus = () => {
               </p>
             </label>
             <div className="flex flex-col w-full">
-              <ul>
-                {templates &&
-                  (templates as any)
-                    ?.data()
-                    .offlineTemplates.map(
-                      (
-                        template: { title: string; message: string },
-                        index: number,
-                      ) => (
-                        <li
-                          key={`offline-template-` + index}
-                          className="border-movet-gray rounded-lg border-2 p-2 my-4 hover:border-movet-black cursor-pointer"
-                          data-tooltip-id={`offline-template-${index}`}
-                          data-tooltip-content={template?.message}
-                          onClick={() =>
-                            setValue("offlineAutoReply", template?.message, {
-                              shouldValidate: true,
-                              shouldDirty: true,
-                              shouldTouch: true,
-                            })
-                          }
-                        >
-                          <h4>{template?.title}</h4>
-                          <Tooltip id={`template-${index}`} />
-                        </li>
-                      ),
-                    )}
-              </ul>
+              <Select
+                isClearable
+                isSearchable
+                closeMenuOnSelect
+                closeMenuOnScroll
+                escapeClearsValue
+                menuShouldScrollIntoView
+                openMenuOnClick
+                isLoading={offlineTemplateOptions === null}
+                loadingMessage={() => "Loading Templates..."}
+                noOptionsMessage={() => "No Templates Found..."}
+                formatOptionLabel={formatOptionLabel}
+                filterOption={customFilter}
+                value={offlineAutoReplyText}
+                onChange={(value: any) =>
+                  setValue("offlineAutoReply", value?.message, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
+                options={offlineTemplateOptions || []}
+                placeholder="Select a Template"
+                menuPosition="fixed"
+                components={{ Option }}
+                styles={{
+                  input: (base: any) => ({
+                    ...base,
+                    fontFamily: "Abside Smooth",
+                    borderWidth: 0,
+                    borderColor: "transparent",
+                    boxShadow: "none",
+                    "input:focus": {
+                      boxShadow: "none",
+                      borderWidth: 0,
+                      borderColor: "transparent",
+                    },
+                    "input:hover": {
+                      boxShadow: "none",
+                      borderWidth: 0,
+                      borderColor: "transparent",
+                    },
+                  }),
+                  control: (base: any) => ({
+                    ...base,
+                    boxShadow: "none",
+                    borderWidth: 0,
+                    borderColor: "transparent",
+                    fontFamily: "Abside Smooth",
+                  }),
+                  option: (base: any, state: any) => ({
+                    ...base,
+                    boxShadow: "none",
+                    fontWeight: state.isSelected ? "bold" : "normal",
+                    fontFamily: "Abside Smooth",
+                    color: state.isSelected ? "#f6f2f0" : "#232127",
+                    backgroundColor: state.isSelected
+                      ? "#E76159"
+                      : "transparent",
+                  }),
+                  singleValue: (base, state) => ({
+                    ...base,
+                    borderWidth: 0,
+                    borderColor: "transparent",
+                    fontFamily: "Abside Smooth",
+                    color: (state.data as any).color,
+                  }),
+                  indicatorSeparator: (base: any) => ({
+                    ...base,
+                    backgroundColor: "#232127",
+                  }),
+                  dropdownIndicator: (base: any) => ({
+                    ...base,
+                    color: "#232127",
+                    ":hover": {
+                      color: "#232127",
+                    },
+                  }),
+                }}
+                theme={(theme: any) => ({
+                  ...theme,
+                  borderRadius: 0,
+                  colors: {
+                    ...theme.colors,
+                    danger: "#E76159",
+                    primary50: "#A15643",
+                    primary: "#232127",
+                  },
+                })}
+                className="search-input border-movet-black/50 relative border w-full bg-white rounded-xl py-2 text-left cursor-pointer sm:text-sm mt-4 mb-8"
+              />
             </div>
             <label className="italic my-2 text-sm">
               <FontAwesomeIcon icon={faCalendar} size="sm" />
@@ -361,8 +570,8 @@ const TelehealthChatStatus = () => {
               disabled={!isDirty || isSubmitting || !isValid}
               className={
                 !isDirty || isSubmitting || !isValid
-                  ? "w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4"
-                  : "w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out text-movet-black hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none mr-4"
+                  ? "w-full items-center justify-center rounded-full h-10 text-movet-gray focus:outline-none mr-4 bg-movet-red/75"
+                  : "w-full cursor-pointer items-center justify-center rounded-full h-10 transition duration-500 ease-in-out hover:bg-movet-green focus:outline-none mr-4 bg-movet-red text-movet-white"
               }
             >
               <FontAwesomeIcon icon={faWrench} size="lg" />

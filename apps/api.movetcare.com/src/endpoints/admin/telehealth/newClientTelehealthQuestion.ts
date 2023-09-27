@@ -79,8 +79,12 @@ export const newClientTelehealthMessage = functions.firestore
         .get()
         .then((doc: any) => {
           return {
-            onlineAutoReply: doc.data()?.onlineAutoReply,
-            offlineAutoReply: doc.data()?.offlineAutoReply,
+            onlineAutoReply: displayName
+              ? `Hi ${displayName},\n`
+              : "" + doc.data()?.onlineAutoReply,
+            offlineAutoReply: displayName
+              ? `Hi ${displayName},\n`
+              : "" + doc.data()?.offlineAutoReply,
             isOnline: doc.data()?.isOnline,
           };
         });

@@ -201,10 +201,10 @@ export const sendNotification = async ({
             (doc: any) =>
               doc
                 .data()
-                ?.phone.replace("(", "")
-                .replace(")", "")
-                .replace("-", "")
-                .replace(" ", ""),
+                ?.phone?.replace("(", "")
+                ?.replace(")", "")
+                ?.replace("-", "")
+                ?.replace(" ", ""),
           )
           .catch((error: any) => throwError(error));
         if (phone) {

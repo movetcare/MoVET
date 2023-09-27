@@ -64,7 +64,8 @@ service cloud.firestore {
       }
     }
     match /patients/{pid} {
-      allow read, write: if clientOwnsPatient();
+      allow read, write: if clientOwnsPatient() || isMoVETStaff();
+      allow list: if isMoVETStaff();
     }
     match /reminders/{pid} {
       allow read, write: if clientIsAuthed() && request.auth.uid  == string(resource.data.client);
