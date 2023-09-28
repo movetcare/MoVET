@@ -8,7 +8,7 @@ export interface UserNotificationSettings {
 
 export const getCustomerId = async (
   id: string,
-  skipCreate = false
+  skipCreate = false,
 ): Promise<string> =>
   await admin
     .firestore()
@@ -21,7 +21,7 @@ export const getCustomerId = async (
         console.log(
           "document.data()?.customer === undefined || document.data()?.customer === null",
           document.data()?.customer === undefined ||
-            document.data()?.customer === null
+            document.data()?.customer === null,
         );
       }
       return (document.data()?.customer === undefined ||
@@ -34,10 +34,10 @@ export const getCustomerId = async (
 
 const createNewCustomer = async (
   id: string,
-  document: any
+  document: any,
 ): Promise<string> => {
   const { firstName, lastName, email, phone, street, state, city, zipCode } =
-    document.data() as {
+    (document.data() as {
       firstName: string;
       lastName: string;
       email: string;
@@ -46,7 +46,7 @@ const createNewCustomer = async (
       state: string;
       city: string;
       zipCode: string;
-    };
+    }) || {};
   const { data: matchingCustomers } = await stripe.customers.list({
     email,
   });
@@ -54,7 +54,7 @@ const createNewCustomer = async (
     console.log("Existing Customers => ", matchingCustomers);
     console.log(
       "Number of Existing Customers w/ Same Email",
-      matchingCustomers.length
+      matchingCustomers.length,
     );
   }
   let customer: Stripe.Customer | any = null;
@@ -112,7 +112,7 @@ const createNewCustomer = async (
       if (DEBUG)
         console.log(
           `customer.metadata?.clientId (${customerData.metadata?.clientId}) === id  (${id}) `,
-          customerData.metadata?.clientId === id
+          customerData.metadata?.clientId === id,
         );
       if (customerData.metadata?.clientId === id)
         matchedCustomer = customerData;

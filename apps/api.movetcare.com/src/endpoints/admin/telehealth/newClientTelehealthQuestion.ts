@@ -11,6 +11,9 @@ import { findSlackChannel } from "../../../utils/logging/findSlackChannel";
 import { sendSlackMessage } from "../../../utils/logging/sendSlackMessage";
 import { sendNotification } from "../../../notifications/sendNotification";
 import { truncateString } from "../../../utils/truncateString";
+import { getClientFirstNameFromDisplayName } from "../../../utils/getClientFirstNameFromDisplayName";
+import type { PatientBookingData } from "../../../types/booking";
+import { getAllActivePatients } from "../../../utils/getAllActivePatients";
 const DEBUG = false;
 export const newClientTelehealthMessage = functions.firestore
   .document("/telehealth_chat/{clientId}/log/{messageId}")
@@ -30,6 +33,27 @@ export const newClientTelehealthMessage = functions.firestore
       console.log("displayName", displayName);
       console.log("phoneNumber", phoneNumber);
     }
+    if (user?._id === context.params.clientId) {
+      sendNotification({
+        type: "push",
+        payload: {
+          category: "admin-telehealth",
+          title: "New Telehealth Message",
+          message: `${displayName} has sent a new message!`,
+          path: `/telehealth/chat/?id=${context.params.clientId}`,
+        },
+      });
+    } else
+      sendNotification({
+        type: "push",
+        payload: {
+          user: { uid: context.params.clientId },
+          category: "client-telehealth",
+          title: "New Message from MoVET",
+          message: truncateString(text),
+          path: "/chat",
+        },
+      });
     if (
       startNewThread &&
       user?._id === context.params.clientId &&
@@ -72,6 +96,16 @@ export const newClientTelehealthMessage = functions.firestore
             )
             .catch((error: any) => throwError(error));
       }
+      const patients: Array<PatientBookingData> | any =
+        await getAllActivePatients(context.params.clientId);
+      const patientQuestion =
+        Array.isArray(patients) && patients?.length > 0
+          ? patients?.length > 1
+            ? `While you wait, please let us know which pet is this for.\n${patients.map(
+                (patient: PatientBookingData) => `\n- ${patient?.name}`,
+              )}`
+            : `Is this inquiry for ${patients[0]?.name} or a different pet?`
+          : "While you wait, please let us know which pet is this for.\n\nProvide your pet's name, age, and breed. As well as any symptoms you are seeing or questions you have for us.";
       const { onlineAutoReply, offlineAutoReply, isOnline } = await admin
         .firestore()
         .collection("alerts")
@@ -80,10 +114,12 @@ export const newClientTelehealthMessage = functions.firestore
         .then((doc: any) => {
           return {
             onlineAutoReply: displayName
-              ? `Hi ${displayName}!\n` + doc.data()?.onlineAutoReply
+              ? `Hi ${getClientFirstNameFromDisplayName(displayName)}.\n\n` +
+                doc.data()?.onlineAutoReply
               : "" + doc.data()?.onlineAutoReply,
             offlineAutoReply: displayName
-              ? `Hi ${displayName}!\n` + doc.data()?.offlineAutoReply
+              ? `Hi ${getClientFirstNameFromDisplayName(displayName)}.\n\n` +
+                doc.data()?.offlineAutoReply
               : "" + doc.data()?.offlineAutoReply,
             isOnline: doc.data()?.isOnline,
           };
@@ -115,14 +151,15 @@ export const newClientTelehealthMessage = functions.firestore
           () => DEBUG && console.log("Updated Client Info on Telehealth Chat"),
         )
         .catch((error: any) => throwError(error));
-      const messageId = randomUUID();
+      const autoReplyMessageId = randomUUID();
+      const autoReplyQuestionMessageId = randomUUID();
       await admin
         .firestore()
         .collection("telehealth_chat")
         .doc(context.params.clientId)
         .collection("log")
         .add({
-          _id: messageId,
+          _id: autoReplyMessageId,
           text: isOnline ? onlineAutoReply : offlineAutoReply,
           user: {
             _id: "0",
@@ -135,7 +172,7 @@ export const newClientTelehealthMessage = functions.firestore
           () =>
             DEBUG &&
             console.log("Auto Reply Successfully Generated: ", {
-              _id: messageId,
+              _id: autoReplyMessageId,
               text: isOnline ? onlineAutoReply : offlineAutoReply,
               user: {
                 _id: "0",
@@ -146,27 +183,54 @@ export const newClientTelehealthMessage = functions.firestore
             }),
         )
         .catch((error: any) => throwError(error));
+
+      const patientNames =
+        Array.isArray(patients) && patients?.length > 0
+          ? patients.map((patient: PatientBookingData) => patient?.name)
+          : null;
+
+      let patientMentioned = false;
+      if (patientNames)
+        patientNames?.map((name: string) => {
+          if (text?.toLowerCase()?.includes(name?.toLowerCase()))
+            patientMentioned = true;
+        });
+
+      if (
+        (Array.isArray(patients) && patients?.length === 0) ||
+        !patientMentioned
+      )
+        await admin
+          .firestore()
+          .collection("telehealth_chat")
+          .doc(context.params.clientId)
+          .collection("log")
+          .add({
+            _id: autoReplyQuestionMessageId,
+            text: patientQuestion,
+            user: {
+              _id: "0",
+              name: "MoVET",
+              avatar: "https://movetcare.com/images/logos/logo-paw-black.png",
+            },
+            createdAt: new Date(),
+          })
+          .then(
+            () =>
+              DEBUG &&
+              console.log("Auto Reply Successfully Generated: ", {
+                _id: autoReplyQuestionMessageId,
+                text: patientQuestion,
+                user: {
+                  _id: "0",
+                  name: "MoVET",
+                  avatar:
+                    "https://movetcare.com/images/logos/logo-paw-black.png",
+                },
+                createdAt: new Date(),
+              }),
+          )
+          .catch((error: any) => throwError(error));
     }
-    if (user?._id === context.params.clientId) {
-      sendNotification({
-        type: "push",
-        payload: {
-          category: "admin-telehealth",
-          title: "New Telehealth Message",
-          message: `${displayName} has sent a new message!`,
-          path: `/telehealth/chat/?id=${context.params.clientId}`,
-        },
-      });
-    } else
-      sendNotification({
-        type: "push",
-        payload: {
-          user: { uid: context.params.clientId },
-          category: "client-telehealth",
-          title: "New Message from MoVET",
-          message: truncateString(text),
-          path: "/chat",
-        },
-      });
     return null;
   });
