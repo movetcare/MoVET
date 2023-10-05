@@ -535,7 +535,7 @@ export const sendNotification = async ({
             title: payload?.title,
             body: payload?.message,
             data: {
-              link: payload?.path || "/chat",
+              path: payload?.path || "/chat",
             },
           })
             .then(

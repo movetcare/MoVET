@@ -211,10 +211,16 @@ const ChatIndex = () => {
 
   const onSend = useCallback(
     async (messages: IMessage[] = []) => {
-      await addDoc(
-        collection(firestore, `telehealth_chat/${user?.uid}/log`),
-        messages[0],
-      );
+      await addDoc(collection(firestore, `telehealth_chat/${user?.uid}/log`), {
+        ...messages[0],
+        startNewThread: await getDoc(
+          doc(firestore, "telehealth_chat", user?.uid),
+        ).then((doc: any) => {
+          if (doc.exists())
+            return doc.data()?.status === "active" ? false : true;
+          else return true;
+        }),
+      });
       if (messages[0].text)
         await setDoc(
           doc(firestore, "telehealth_chat", `${user?.uid}`),

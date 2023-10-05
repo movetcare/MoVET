@@ -47,11 +47,11 @@ export const CallToAction = () => {
                   SCHEDULE AN APPOINTMENT
                 </p>
                 <BookAnAppointmentForm />
-                <div className="flex justify-center">
+                {/* <div className="flex justify-center">
                   <p className="text-sm font-abside my-3 text-movet-white">
                     OR
                   </p>
-                </div>
+                </div> */}
                 <div className="flex justify-center">
                   <AppLinks />
                 </div>

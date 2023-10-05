@@ -29,26 +29,20 @@ export default function Layout() {
 
     let isMounted = true;
 
-    function redirect(notification: Notifications.Notification) {
-      const url = notification.request.content.data?.url;
-      if (url) {
-        router.push(url);
-      }
-    }
+    const redirect = (notification: Notifications.Notification) => {
+      const url = notification.request.content.data?.path;
+      if (url) router.push(url);
+    };
 
     Notifications.getLastNotificationResponseAsync().then((response) => {
       console.log("response?.notification", response?.notification);
       if (response?.notification) alert(JSON.stringify(response?.notification));
-      if (!isMounted || !response?.notification) {
-        return;
-      }
+      if (!isMounted || !response?.notification) return;
       redirect(response?.notification);
     });
 
     const subscription = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        redirect(response.notification);
-      },
+      (response) => redirect(response.notification),
     );
 
     return () => {

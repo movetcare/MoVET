@@ -1,9 +1,9 @@
-import Image from "next/image";
-import { classNames } from "../../utils";
+// import Image from "next/image";
+// import { classNames } from "../../utils";
 
 export const AppLinks = ({ size = "sm" }: { size?: "sm" | "lg" }) => (
   <>
-    <a
+    {/* <a
       href="https://apps.apple.com/us/app/movet-on-demand-vet-services/id1478031556"
       target="_blank"
       rel="noreferrer"
@@ -19,7 +19,7 @@ export const AppLinks = ({ size = "sm" }: { size?: "sm" | "lg" }) => (
           "-mt-2 opacity-80 hover:opacity-100 ease-in-out duration-500",
         )}
       />
-    </a>
+    </a> */}
     {/* <a
       href="https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
       target="_blank"

@@ -1,11 +1,12 @@
-import { admin, throwError, DEBUG } from "../../../../config/config";
+import { admin, throwError } from "../../../../config/config";
 import { Request, Response } from "express";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { fetchEntity } from "../fetchEntity";
 
+const DEBUG = true;
 export const processInvoicePaymentWebhook = async (
   request: Request,
-  response: Response
+  response: Response,
 ): Promise<Response> => {
   const { invoicepayment_id } = request.body;
   if (
@@ -18,16 +19,16 @@ export const processInvoicePaymentWebhook = async (
       console.log(`processInvoicePaymentWebhook ID: ${invoicepayment_id}`);
     const invoicepayment = await fetchEntity(
       "invoicepayment",
-      invoicepayment_id
+      invoicepayment_id,
     );
     if (DEBUG)
       console.log(
         "processInvoicePaymentWebhook Invoice Payment Details => ",
-        invoicepayment
+        invoicepayment,
       );
     const invoice = await fetchEntity(
       "invoice",
-      getProVetIdFromUrl(invoicepayment?.invoice)
+      getProVetIdFromUrl(invoicepayment?.invoice),
     );
     if (DEBUG)
       console.log("processInvoicePaymentWebhook Invoice Details => ", invoice);
@@ -38,7 +39,7 @@ export const processInvoicePaymentWebhook = async (
       for (let i = 0; i < invoice?.invoice_payment.length; i++) {
         const invoicePaymentItem = await fetchEntity(
           "invoicepayment",
-          getProVetIdFromUrl(invoice?.invoice_payment[i])
+          getProVetIdFromUrl(invoice?.invoice_payment[i]),
         );
         invoicePaymentDetails.push(invoicePaymentItem);
       }
@@ -56,7 +57,7 @@ export const processInvoicePaymentWebhook = async (
               ...invoice,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           )
           .then(async () => {
             if (invoicePaymentDetails && invoicePaymentDetails.length > 0) {
@@ -72,14 +73,14 @@ export const processInvoicePaymentWebhook = async (
                       updatedOn: new Date(),
                       ...invoicePaymentDetails[i],
                     },
-                    { merge: true }
+                    { merge: true },
                   )
                   .then(
                     () =>
                       DEBUG &&
                       console.log(
-                        `SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`
-                      )
+                        `SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`,
+                      ),
                   )
                   .catch((error: any) => throwError(error));
               }
@@ -98,7 +99,7 @@ export const processInvoicePaymentWebhook = async (
                     ...invoice,
                     updatedOn: new Date(),
                   },
-                  { merge: true }
+                  { merge: true },
                 )
                 .then(async () => {
                   if (
@@ -117,37 +118,39 @@ export const processInvoicePaymentWebhook = async (
                             updatedOn: new Date(),
                             ...invoicePaymentDetails[i],
                           },
-                          { merge: true }
+                          { merge: true },
                         )
                         .then(
                           () =>
                             DEBUG &&
                             console.log(
-                              `SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`
-                            )
+                              `SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`,
+                            ),
                         )
                         .catch((error: any) => throwError(error));
                     }
                   }
                 })
-                .catch((error: any) => throwError(error))
+                .catch((error: any) => throwError(error)),
           )
           .then(async () => {
             if (invoice?.credit_note_original_invoice) {
               if (DEBUG)
                 console.log(
                   "invoice?.credit_note_original_invoice",
-                  invoice?.credit_note_original_invoice
+                  invoice?.credit_note_original_invoice,
                 );
               await admin
                 .firestore()
                 .collection("client_invoices")
                 .doc(
-                  `${getProVetIdFromUrl(invoice?.credit_note_original_invoice)}`
+                  `${getProVetIdFromUrl(
+                    invoice?.credit_note_original_invoice,
+                  )}`,
                 )
                 .set(
                   { updatedOn: new Date(), paymentStatus: "fully-refunded" },
-                  { merge: true }
+                  { merge: true },
                 )
                 .then(
                   async () =>
@@ -158,17 +161,17 @@ export const processInvoicePaymentWebhook = async (
                       .collection("invoices")
                       .doc(
                         getProVetIdFromUrl(
-                          `${invoice?.credit_note_original_invoice}`
-                        )
+                          `${invoice?.credit_note_original_invoice}`,
+                        ),
                       )
                       .set(
                         {
                           updatedOn: new Date(),
                           paymentStatus: "fully-refunded",
                         },
-                        { merge: true }
+                        { merge: true },
                       )
-                      .catch((error: any) => throwError(error))
+                      .catch((error: any) => throwError(error)),
                 )
                 .catch((error: any) => throwError(error));
             }
@@ -184,7 +187,7 @@ export const processInvoicePaymentWebhook = async (
               ...invoice,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           )
           .then(async () => {
             if (invoicePaymentDetails && invoicePaymentDetails.length > 0) {
@@ -200,14 +203,14 @@ export const processInvoicePaymentWebhook = async (
                       updatedOn: new Date(),
                       ...invoicePaymentDetails[i],
                     },
-                    { merge: true }
+                    { merge: true },
                   )
                   .then(
                     () =>
                       DEBUG &&
                       console.log(
-                        `SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`
-                      )
+                        `SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`,
+                      ),
                   )
                   .catch((error: any) => throwError(error));
               }
@@ -218,17 +221,19 @@ export const processInvoicePaymentWebhook = async (
               if (DEBUG)
                 console.log(
                   "invoice?.credit_note_original_invoice",
-                  invoice?.credit_note_original_invoice
+                  invoice?.credit_note_original_invoice,
                 );
               await admin
                 .firestore()
                 .collection("counter_sales")
                 .doc(
-                  `${getProVetIdFromUrl(invoice?.credit_note_original_invoice)}`
+                  `${getProVetIdFromUrl(
+                    invoice?.credit_note_original_invoice,
+                  )}`,
                 )
                 .set(
                   { updatedOn: new Date(), paymentStatus: "fully-refunded" },
-                  { merge: true }
+                  { merge: true },
                 )
                 .catch((error: any) => throwError(error));
             }
