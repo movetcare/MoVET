@@ -1,14 +1,13 @@
 import { ErrorBoundaryProps, SplashScreen, Stack } from "expo-router";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useEffect } from "react";
-import { useFonts } from "expo-font";
 import { updateUserAuth } from "services/Auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "firebase-config";
 import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
-import { View, Text } from "react-native";
-//export { ErrorBoundary } from "expo-router";
+import { useDeviceContext } from "twrnc";
+import tw from "tailwind";
+import { View, Text } from "components/Themed";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,7 +20,8 @@ export function ErrorBoundary(props: ErrorBoundaryProps) {
   );
 }
 
-export default function Layout() {
+const Layout = () => {
+  useDeviceContext(tw);
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user: any) =>
       updateUserAuth(user),
@@ -35,7 +35,6 @@ export default function Layout() {
     };
 
     Notifications.getLastNotificationResponseAsync().then((response) => {
-      console.log("response?.notification", response?.notification);
       if (response?.notification) alert(JSON.stringify(response?.notification));
       if (!isMounted || !response?.notification) return;
       redirect(response?.notification);
@@ -52,20 +51,6 @@ export default function Layout() {
     };
   }, []);
 
-  const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/Abside-Regular.ttf"),
-    ...FontAwesome.font,
-  });
-
-  useEffect(() => {
-    if (error) {
-      console.error(error);
-      alert("ERROR: " + JSON.stringify(error));
-      throw error;
-    }
-  }, [error]);
-
-  if (!loaded) SplashScreen.hideAsync();
   return (
     <Stack
       screenOptions={{
@@ -73,4 +58,6 @@ export default function Layout() {
       }}
     />
   );
-}
+};
+
+export default Layout;

@@ -1,6 +1,10 @@
 import { CallToAction, ClientReviews } from "ui";
 import Image from "next/image";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowAltCircleRight,
+  faArrowRight,
+  faPencil,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Layout from "components/Layout";
 import Head from "next/head";
@@ -61,6 +65,15 @@ const Reviews = () => {
               </h3>
             </a>
             <ClientReviews mode="full" />
+            <a
+              className="no-underline text-center ease-in-out duration-500 max-w-md sm:w-2/3 mx-auto mt-8 flex justify-center items-center border border-transparent shadow-sm text-movet-white text-sm font-medium font-abside uppercase bg-movet-black group-hover:bg-movet-white hover:bg-movet-red focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-brown py-2 px-6 rounded-full mb-16 sm:mb-0"
+              target="_blank"
+              href="https://www.google.com/maps/place/MoVET+@+Belleview+Station/@39.6250879,-104.9093559,17z/data=!4m8!3m7!1s0x876c87d97389a0f5:0x1fe38195747440bb!8m2!3d39.6250879!4d-104.906781!9m1!1b1!16s%2Fg%2F11rv8st06f?entry=ttu"
+              rel="noopener noreferrer"
+            >
+              <FontAwesomeIcon icon={faArrowRight} size="lg" className="mr-2" />
+              View All Reviews
+            </a>
             <div className="flex justify-center items-stretch w-full pt-2 max-w-screen-2xl mx-auto mt-0 sm:mt-8">
               <div className="hidden md:flex grow">
                 <div className="w-full max-w-[16rem] relative mt-24 mx-auto">
