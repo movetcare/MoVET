@@ -2,11 +2,22 @@ import { faArrowLeft, faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { Button } from "ui";
+import { Button, PopUpAd } from "ui";
 import Layout from "components/Layout";
 import Head from "next/head";
+import { getPopUpAd } from "server";
+import type { PopUpAd as PopUpAdType } from "types";
+import Link from "next/link";
 
-const AppointmentPrep = () => {
+export async function getStaticProps() {
+  return {
+    props: {
+      popUpAd: (await getPopUpAd()) || null,
+    } as any,
+  };
+}
+
+const AppointmentPrep = ({ popUpAd }: { popUpAd: PopUpAdType }) => {
   const router = useRouter();
   return (
     <Layout>
@@ -143,6 +154,28 @@ const AppointmentPrep = () => {
           <p className="ml-2">Go Back</p>
         </div>
       </section>
+      {popUpAd?.isActive && (
+        <PopUpAd
+          autoOpen={popUpAd?.autoOpen}
+          icon={popUpAd?.icon}
+          title={popUpAd?.title}
+          description={popUpAd?.description}
+          adComponent={
+            <Link
+              href={popUpAd?.urlRedirect || "/images/logos/logo-paw-black.png"}
+            >
+              <Image
+                className="rounded-xl"
+                src={popUpAd?.imagePath || "/images/logos/logo-paw-black.png"}
+                alt={popUpAd?.title}
+                height={popUpAd?.height || 200}
+                width={popUpAd?.width || 200}
+              />
+            </Link>
+          }
+          ignoreUrlPath={popUpAd?.ignoreUrlPath}
+        />
+      )}
     </Layout>
   );
 };

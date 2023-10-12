@@ -6,8 +6,13 @@ import type {
   Closures as ClosuresType,
   Hours as HoursType,
   HoursStatus as HoursStatusType,
+  PopUpAd as PopUpAdType,
 } from "types";
 import { getWinterMode, getClosures, getHours, getHoursStatus } from "server";
+import Link from "next/link";
+import Image from "next/image";
+import { getPopUpAd } from "server";
+import { PopUpAd } from "ui";
 
 export async function getStaticProps() {
   return {
@@ -16,6 +21,7 @@ export async function getStaticProps() {
       closures: (await getClosures()) || null,
       hours: (await getHours()) || null,
       hoursStatus: (await getHoursStatus()) || null,
+      popUpAd: (await getPopUpAd()) || null,
     } as any,
   };
 }
@@ -25,11 +31,13 @@ export default function HoursPage({
   closures,
   hours,
   hoursStatus,
+  popUpAd,
 }: {
   winterMode: WinterModeType;
   closures: Array<ClosuresType>;
   hours: Array<HoursType>;
   hoursStatus: HoursStatusType;
+  popUpAd: PopUpAdType;
 }) {
   return (
     <Layout>
@@ -73,6 +81,28 @@ export default function HoursPage({
         </section>
       )}
       <CallToAction />
+      {popUpAd?.isActive && (
+        <PopUpAd
+          autoOpen={popUpAd?.autoOpen}
+          icon={popUpAd?.icon}
+          title={popUpAd?.title}
+          description={popUpAd?.description}
+          adComponent={
+            <Link
+              href={popUpAd?.urlRedirect || "/images/logos/logo-paw-black.png"}
+            >
+              <Image
+                className="rounded-xl"
+                src={popUpAd?.imagePath || "/images/logos/logo-paw-black.png"}
+                alt={popUpAd?.title}
+                height={popUpAd?.height || 200}
+                width={popUpAd?.width || 200}
+              />
+            </Link>
+          }
+          ignoreUrlPath={popUpAd?.ignoreUrlPath}
+        />
+      )}
     </Layout>
   );
 }

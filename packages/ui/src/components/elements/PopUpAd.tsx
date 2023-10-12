@@ -1,32 +1,49 @@
-import { faTags, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBell,
+  faBullhorn,
+  faExclamationCircle,
+  faIcons,
+  faInfoCircle,
+  faStar,
+  faTags,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, Fragment, useEffect } from "react";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import { usePopper } from "react-popper";
 import { useRouter } from "next/router";
+import type { PopUpAd as PopUpAdType } from "types";
 
 export const PopUpAd = ({
-  icon = faTags,
+  icon = "bullhorn",
   title = "New Offers & Deals @ MoVET",
   description,
   autoOpen = true,
   adComponent,
-  ignoreUrlPath = null,
-}: {
-  icon?: any;
-  title?: string;
-  autoOpen?: boolean;
-  description: string;
-  urlRedirect?: null | string;
-  adComponent: any;
-  ignoreUrlPath?: string | null;
-}) => {
+  ignoreUrlPath,
+}: PopUpAdType) => {
   const router = useRouter();
   const { mode } = router.query || {};
   const [referenceElement, setReferenceElement] = useState<any>();
   const [popperElement, setPopperElement] = useState<any>();
   const { styles, attributes } = usePopper(referenceElement, popperElement);
   const [showModal, setShowModal] = useState<boolean | null>(null);
+  const popUpIcon =
+    icon === "bullhorn"
+      ? faBullhorn
+      : icon === "exclamation-circle"
+      ? faExclamationCircle
+      : icon === "bell"
+      ? faBell
+      : icon === "star"
+      ? faStar
+      : icon === "info-circle"
+      ? faInfoCircle
+      : icon === "tags"
+      ? faTags
+      : faIcons;
+
   useEffect(() => {
     if (
       (localStorage &&
@@ -54,7 +71,7 @@ export const PopUpAd = ({
                 title={title}
                 className="fixed z-50 bottom-4 sm:bottom-10 sm:right-8 right-4 bg-movet-tan w-12 h-12 sm:w-16 sm:h-16 rounded-full drop-shadow-lg flex justify-center items-center text-movet-brown hover:text-movet-white text-2xl sm:text-3xl hover:bg-movet-red hover:drop-shadow-2xl duration-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-movet-brown"
               >
-                <FontAwesomeIcon icon={icon} size="sm" />
+                <FontAwesomeIcon icon={popUpIcon} size="sm" />
               </Popover.Button>
               <Popover.Overlay className="fixed inset-0 bg-movet-black opacity-30 z-50" />
               <Transition

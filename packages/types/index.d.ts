@@ -8,3 +8,4 @@ export * from "./src/winter-mode";
 export * from "./src/closures";
 export * from "./src/hours";
 export * from "./src/hours-status";
+export * from "./src/pop-up-ad";

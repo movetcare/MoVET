@@ -1,7 +1,20 @@
 import Layout from "components/Layout";
 import Head from "next/head";
+import Link from "next/link";
+import Image from "next/image";
+import { getPopUpAd } from "server";
+import { PopUpAd } from "ui";
+import type { PopUpAd as PopUpAdType } from "types";
 
-export default function Careers() {
+export async function getStaticProps() {
+  return {
+    props: {
+      popUpAd: (await getPopUpAd()) || null,
+    } as any,
+  };
+}
+
+export default function Careers({ popUpAd }: { popUpAd: PopUpAdType }) {
   return (
     <Layout>
       <Head>
@@ -22,7 +35,7 @@ export default function Careers() {
           self-washing dog bath station, where pampering is a must! Healthcare
           is so much more than treating an illness for us, it&apos;s personal.
         </p>
-        <h4 className='mt-8 mb-2 text-base font-extrabold text-left'>
+        <h4 className="mt-8 mb-2 text-base font-extrabold text-left">
           Benefits of Working with MoVET
         </h4>
         <ul className="list-disc ml-8 my-4 text-left">
@@ -360,6 +373,28 @@ export default function Careers() {
           </p>
         </div>
       </section>
+      {popUpAd?.isActive && (
+        <PopUpAd
+          autoOpen={popUpAd?.autoOpen}
+          icon={popUpAd?.icon}
+          title={popUpAd?.title}
+          description={popUpAd?.description}
+          adComponent={
+            <Link
+              href={popUpAd?.urlRedirect || "/images/logos/logo-paw-black.png"}
+            >
+              <Image
+                className="rounded-xl"
+                src={popUpAd?.imagePath || "/images/logos/logo-paw-black.png"}
+                alt={popUpAd?.title}
+                height={popUpAd?.height || 200}
+                width={popUpAd?.width || 200}
+              />
+            </Link>
+          }
+          ignoreUrlPath={popUpAd?.ignoreUrlPath}
+        />
+      )}
     </Layout>
   );
 }

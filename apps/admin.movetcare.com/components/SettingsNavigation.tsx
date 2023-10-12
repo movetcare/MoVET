@@ -53,10 +53,10 @@ export const SettingsNavigation = () => {
     },
 
     {
-      title: "Announcement Banner",
+      title: "Announcement Banners & Pop-Ups",
       description:
-        "Change the announcement banner displayed on the website and web/mobile apps",
-      href: "/settings/announcement-banner/",
+        "Change the announcement banners displayed on the website and mobile apps in addition to pop-ups displayed on the website",
+      href: "/settings/announcement-banners-and-pop-ups/",
       icon: faFlag,
       iconForeground: "text-movet-pink",
       iconBackground: "bg-movet-pink bg-opacity-50",

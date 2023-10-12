@@ -6,7 +6,6 @@ import { environment } from "utilities";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import ErrorBoundary from "components/ErrorBoundary";
-// import { PopUpAd } from "ui";
 
 const AnalyticsTracker = dynamic(() =>
   import("ui").then((mod) => mod.AnalyticsTracker),
@@ -32,21 +31,6 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
       </Head>
       {loadAnalytics && <AnalyticsTracker trackerId="G-Y9896HXDFN" />}
       <Component {...pageProps} />
-      {/* <PopUpAd
-        description="Spend $30 or more in the MoVET boutique on November 25th and get a FREE veterinary exam!"
-        adComponent={
-          <Link href="/blog/black-friday-deal-2022">
-            <Image
-              className="rounded-xl"
-              src="/images/blog/black-friday-deal-2022.png"
-              alt="MoVET's 2022 Black Friday Deal"
-              height={200}
-              width={400}
-            />
-          </Link>
-        }
-        ignoreUrlPath="/blog/black-friday-deal-2022/"
-      /> */}
     </ErrorBoundary>
   );
 };

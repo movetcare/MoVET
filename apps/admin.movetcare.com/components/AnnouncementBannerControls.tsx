@@ -476,20 +476,20 @@ export const AnnouncementBannerControls = () => {
                         <FontAwesomeIcon icon={faHeading} size="sm" />
                         <span className="ml-2">Title</span>
                       </label>
-                      <input
-                        type="text"
+                      <textarea
+                        min={4}
                         placeholder="Write Something..."
-                        className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full"
+                        className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-lg"
                         {...register("title")}
                       />
                       <label className="italic my-2 text-sm">
                         <FontAwesomeIcon icon={faMessage} size="sm" />
                         <span className="ml-2">Message</span>
                       </label>
-                      <input
-                        type="text"
+                      <textarea
+                        min={4}
                         placeholder="Write Something..."
-                        className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-full"
+                        className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-lg"
                         {...register("message")}
                       />
                       <label className="italic my-2 text-sm">

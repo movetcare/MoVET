@@ -17,10 +17,11 @@ import { configureBooking } from "../booking/configureBooking";
 import { sendNotification } from "../notifications/sendNotification";
 import { configureSchedule } from "./configureSchedule";
 import { configureResources } from "../integrations/provet/entities/resource/configureResources";
+import { configurePopUpAd } from "./configurePopUpAd";
 
 export const initProVetConfig = async (
   { body: { apiKey, type } }: Request<{ body: any }>,
-  response: Response
+  response: Response,
 ): Promise<Response> => {
   if (apiKey === mobileClientApiKey) {
     if (environment.type === "production")
@@ -50,6 +51,7 @@ export const initProVetConfig = async (
             (await configureAppointmentEstimates()) &&
             (await configureAppointmentOptionDetails()) &&
             (await configureTelehealthStatus()) &&
+            (await configurePopUpAd()) &&
             (await configureAppointments()) &&
             (await configureResources()) &&
             (await admin
@@ -67,14 +69,14 @@ export const initProVetConfig = async (
                   performAt: new Date(),
                   createdOn: new Date(),
                 },
-                { merge: true }
+                { merge: true },
               )
               .then(async () => {
                 console.log("APP CONFIGURATION TASK ADDED TO QUEUE!");
                 console.log(
                   `PLEASE WAIT ~${
                     entities.length * 1.5
-                  } MINUTES FOR THE TASK QUEUE TO FINISH PROCESSING...`
+                  } MINUTES FOR THE TASK QUEUE TO FINISH PROCESSING...`,
                 );
 
                 return response.status(200).send();
@@ -86,7 +88,7 @@ export const initProVetConfig = async (
           );
         else {
           console.log(
-            "PRODUCTION ENVIRONMENT DETECTED - SKIPPING APP CONFIGURATION AUTOMATION"
+            "PRODUCTION ENVIRONMENT DETECTED - SKIPPING APP CONFIGURATION AUTOMATION",
           );
           return response.status(200).send();
         }

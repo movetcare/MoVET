@@ -1,15 +1,23 @@
 import { CallToAction, ClientReviews } from "ui";
-import Image from "next/image";
-import {
-  faArrowAltCircleRight,
-  faArrowRight,
-  faPencil,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Layout from "components/Layout";
 import Head from "next/head";
+import Link from "next/link";
+import Image from "next/image";
+import { getPopUpAd } from "server";
+import { PopUpAd } from "ui";
+import type { PopUpAd as PopUpAdType } from "types";
 
-const Reviews = () => {
+export async function getStaticProps() {
+  return {
+    props: {
+      popUpAd: (await getPopUpAd()) || null,
+    } as any,
+  };
+}
+
+const Reviews = ({ popUpAd }: { popUpAd: PopUpAdType }) => {
   return (
     <Layout>
       <Head>
@@ -191,6 +199,28 @@ const Reviews = () => {
         </div>
       </section>
       <CallToAction />
+      {popUpAd?.isActive && (
+        <PopUpAd
+          autoOpen={popUpAd?.autoOpen}
+          icon={popUpAd?.icon}
+          title={popUpAd?.title}
+          description={popUpAd?.description}
+          adComponent={
+            <Link
+              href={popUpAd?.urlRedirect || "/images/logos/logo-paw-black.png"}
+            >
+              <Image
+                className="rounded-xl"
+                src={popUpAd?.imagePath || "/images/logos/logo-paw-black.png"}
+                alt={popUpAd?.title}
+                height={popUpAd?.height || 200}
+                width={popUpAd?.width || 200}
+              />
+            </Link>
+          }
+          ignoreUrlPath={popUpAd?.ignoreUrlPath}
+        />
+      )}
     </Layout>
   );
 };

@@ -3,6 +3,8 @@ import { AnnouncementBannerControls } from "components/AnnouncementBannerControl
 const AnnouncementBanner = () => (
   <AdminCheck>
     <AnnouncementBannerControls />
+    {/* <AnnouncementBannerControls />
+    <AnnouncementBannerControls /> */}
   </AdminCheck>
 );
 

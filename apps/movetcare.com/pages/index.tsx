@@ -4,9 +4,8 @@ import {
   getHours,
   getWinterMode,
   getHoursStatus,
+  getPopUpAd,
 } from "server";
-// import { useRouter } from "next/router";
-// import { useEffect, useState } from "react";
 import {
   Hero,
   BookAnAppointmentForm,
@@ -18,6 +17,7 @@ import {
   Reviews,
   Contact,
   CallToAction,
+  PopUpAd,
 } from "ui";
 
 import type {
@@ -25,7 +25,10 @@ import type {
   WinterMode as WinterModeType,
   Hours as HoursType,
   HoursStatus as HoursStatusType,
+  PopUpAd as PopUpAdType,
 } from "types";
+import Link from "next/link";
+import Image from "next/image";
 
 export async function getStaticProps() {
   return {
@@ -34,6 +37,7 @@ export async function getStaticProps() {
       winterMode: (await getWinterMode()) || null,
       hours: (await getHours()) || null,
       hoursStatus: (await getHoursStatus()) || null,
+      popUpAd: (await getPopUpAd()) || null,
     } as any,
   };
 }
@@ -43,11 +47,13 @@ export default function Home({
   winterMode,
   hours,
   hoursStatus,
+  popUpAd,
 }: {
   announcement: AnnouncementType;
   winterMode: WinterModeType;
   hours: Array<HoursType>;
   hoursStatus: HoursStatusType;
+  popUpAd: PopUpAdType;
 }) {
   return (
     <Layout announcement={announcement}>
@@ -90,6 +96,28 @@ export default function Home({
         <Contact />
         <CallToAction />
       </div>
+      {popUpAd?.isActive && (
+        <PopUpAd
+          autoOpen={popUpAd?.autoOpen}
+          icon={popUpAd?.icon}
+          title={popUpAd?.title}
+          description={popUpAd?.description}
+          adComponent={
+            <Link
+              href={popUpAd?.urlRedirect || "/images/logos/logo-paw-black.png"}
+            >
+              <Image
+                className="rounded-xl"
+                src={popUpAd?.imagePath || "/images/logos/logo-paw-black.png"}
+                alt={popUpAd?.title}
+                height={popUpAd?.height || 200}
+                width={popUpAd?.width || 200}
+              />
+            </Link>
+          }
+          ignoreUrlPath={popUpAd?.ignoreUrlPath}
+        />
+      )}
     </Layout>
   );
 }

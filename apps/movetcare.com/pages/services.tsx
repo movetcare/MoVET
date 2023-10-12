@@ -3,9 +3,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CallToAction, ClientReviews, Services } from "ui";
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
+import { getPopUpAd } from "server";
+import { PopUpAd } from "ui";
+import type { PopUpAd as PopUpAdType } from "types";
 import Layout from "components/Layout";
 
-export default function ServicesPage() {
+export async function getStaticProps() {
+  return {
+    props: {
+      popUpAd: (await getPopUpAd()) || null,
+    } as any,
+  };
+}
+
+export default function ServicesPage({ popUpAd }: { popUpAd: PopUpAdType }) {
   return (
     <Layout>
       <Head>
@@ -34,6 +46,28 @@ export default function ServicesPage() {
         </div>
       </section>
       <CallToAction />
+      {popUpAd?.isActive && (
+        <PopUpAd
+          autoOpen={popUpAd?.autoOpen}
+          icon={popUpAd?.icon}
+          title={popUpAd?.title}
+          description={popUpAd?.description}
+          adComponent={
+            <Link
+              href={popUpAd?.urlRedirect || "/images/logos/logo-paw-black.png"}
+            >
+              <Image
+                className="rounded-xl"
+                src={popUpAd?.imagePath || "/images/logos/logo-paw-black.png"}
+                alt={popUpAd?.title}
+                height={popUpAd?.height || 200}
+                width={popUpAd?.width || 200}
+              />
+            </Link>
+          }
+          ignoreUrlPath={popUpAd?.ignoreUrlPath}
+        />
+      )}
     </Layout>
   );
 }

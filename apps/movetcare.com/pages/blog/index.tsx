@@ -5,7 +5,9 @@ import { classNames } from "utilities";
 import { BlogPost } from "types";
 import Head from "next/head";
 import { Fragment } from "react";
-import { CallToAction } from "ui";
+import { CallToAction, PopUpAd } from "ui";
+import { getPopUpAd } from "server";
+import type { PopUpAd as PopUpAdType } from "types";
 
 const posts: Array<BlogPost> = [
   {
@@ -279,7 +281,15 @@ const posts: Array<BlogPost> = [
   },
 ];
 
-export default function Blog() {
+export async function getStaticProps() {
+  return {
+    props: {
+      popUpAd: (await getPopUpAd()) || null,
+    } as any,
+  };
+}
+
+export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
   return (
     <Layout>
       <Head>
@@ -550,6 +560,28 @@ export default function Blog() {
         </div>
       </section>
       <CallToAction />
+      {popUpAd?.isActive && (
+        <PopUpAd
+          autoOpen={popUpAd?.autoOpen}
+          icon={popUpAd?.icon}
+          title={popUpAd?.title}
+          description={popUpAd?.description}
+          adComponent={
+            <Link
+              href={popUpAd?.urlRedirect || "/images/logos/logo-paw-black.png"}
+            >
+              <Image
+                className="rounded-xl"
+                src={popUpAd?.imagePath || "/images/logos/logo-paw-black.png"}
+                alt={popUpAd?.title}
+                height={popUpAd?.height || 200}
+                width={popUpAd?.width || 200}
+              />
+            </Link>
+          }
+          ignoreUrlPath={popUpAd?.ignoreUrlPath}
+        />
+      )}
     </Layout>
   );
 }

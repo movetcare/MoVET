@@ -102,7 +102,12 @@ export const newClientTelehealthMessage = functions.firestore
         Array.isArray(patients) && patients?.length > 0
           ? patients?.length > 1
             ? `While you wait, please let us know which pet is this for.\n${patients.map(
-                (patient: PatientBookingData) => `\n- ${patient?.name}`,
+                (patient: PatientBookingData, index: number) =>
+                  `\n${
+                    index === patients?.length - 1
+                      ? ` or ${patient?.name}`
+                      : patient?.name
+                  }`,
               )}`
             : `Is this inquiry for ${patients[0]?.name} or a different pet?`
           : "While you wait, please let us know which pet is this for.\n\nProvide your pet's name, age, and breed. As well as any symptoms you are seeing or questions you have for us.";

@@ -271,6 +271,79 @@ export const ClientReviews = ({
           </div>
           <div
             className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
+            onClick={() => window.open("https://g.co/kgs/kjBK8F", "_blank")}
+          >
+            <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+            </div>
+            <p className="text-xl text-center mb-4 group-hover:opacity-75">
+              Always a great experience with friendly, knowledgeable people
+            </p>
+            <i className="group-hover:opacity-75">
+              &quot;Always a great experience with friendly, knowledgeable
+              people. My dog loves coming here and he can always pick up his
+              favorite treats, Saint Rocco&apos;s Cheeseburger treats. I have
+              recommended this place multiple times and I am sure my dog, Kuma,
+              would recommend it too.&quot;
+            </i>
+            <p className="text-center mt-4 group-hover:opacity-75">
+              <a
+                href="https://g.co/kgs/kjBK8F"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-row justify-center items-center italic text-center text-movet-black"
+              >
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  className="mr-2 text-movet-blue"
+                />{" "}
+                Google Review
+              </a>
+            </p>
+          </div>
+          <div
+            className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
+            onClick={() => window.open("https://g.co/kgs/pedLtb", "_blank")}
+          >
+            <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+            </div>
+            <p className="text-xl text-center mb-4 group-hover:opacity-75">
+              Dr. Caldwell took the time to meticulously answer all my questions
+            </p>
+            <i className="group-hover:opacity-75">
+              &quot;Took Luna to our initial vet appointment and could not be
+              more satisfied! Both Dr. Caldwell and Dawn showed extreme care for
+              Luna and I could tell she loved them. Dr. Caldwell took the time
+              to meticulously answer all my questions. Place was overall very
+              clean. Pro for me is that it&apos;s walking distance from my apt!
+              Officially found Luna&apos;s vet! &quot;
+            </i>
+            <p className="text-center mt-4 group-hover:opacity-75">
+              <a
+                href="https://g.co/kgs/pedLtb"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-row justify-center items-center italic text-center text-movet-black"
+              >
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  className="mr-2 text-movet-blue"
+                />{" "}
+                Google Review
+              </a>
+            </p>
+          </div>
+          <div
+            className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4 cursor-pointer"
             onClick={() => window.open("https://g.co/kgs/7L7g1V", "_blank")}
           >
             <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
@@ -396,7 +469,7 @@ export const ClientReviews = ({
               <FontAwesomeIcon icon={faStar} />
             </div>
             <p className="text-xl text-center mb-4 group-hover:opacity-75">
-              They always go the extra mile
+              Our babies are so more relaxed in the atmosphere here at MoVET!
             </p>
             <i className="group-hover:opacity-75">
               &quot; We love Dr Barb Caldwell! She&apos;s amazing and takes time
