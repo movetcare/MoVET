@@ -25,13 +25,10 @@ interface Client {
 const Testing = () => {
   const [testClients, setTestClients] = useState<Array<Client> | null>(null);
   const [archivedClients, setArchivedClients] = useState<Array<any> | null>(
-    null
+    null,
   );
   const [clientData, loading, error] = useCollection(
     collection(firestore, "clients"),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
   );
   useEffect(() => {
     if (clientData) {
@@ -78,8 +75,8 @@ const Testing = () => {
                 testClients.forEach((testClient: Client) =>
                   window.open(
                     `https://us.provetcloud.com/4285/client/${testClient?.id}/forget`,
-                    "_blank"
-                  )
+                    "_blank",
+                  ),
                 )
               }
               className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"

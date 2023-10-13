@@ -12,7 +12,7 @@ const Layout = ({ children }: any) => {
     router.pathname === "/signout" ||
     router.pathname.includes("/test/login") ||
     router.query.mode === "embed";
-  const announcementBanner = useAnnouncementBanner();
+  const announcementBanner = useAnnouncementBanner({ mode: "web" });
   return router.pathname.includes("/test/login") ? (
     <main
       className={

@@ -261,7 +261,7 @@ export const configureBooking = async (): Promise<boolean> => {
       .then(async () => {
         console.log("BOOKING CONFIGURATION COMPLETE");
         // if (environment.type !== "production") generateTestBookingData();
-        if (environment.type !== "production")
+        if (environment.type !== "production") {
           admin
             .firestore()
             .collection("alerts")
@@ -270,19 +270,39 @@ export const configureBooking = async (): Promise<boolean> => {
               {
                 color: "#DAAA00",
                 message:
-                  "This is your own personal local development environment...",
+                  "MOBILE - This is your own personal local development environment...",
                 title: "Welcome!",
                 link: "/contact",
-                isActive: true,
                 isActiveMobile: true,
                 icon: "info-circle",
               },
               { merge: true },
             )
             .then(async () => {
-              console.log("ALERT BANNER SETUP COMPLETE");
+              console.log("MOBILE ALERT BANNER SETUP COMPLETE");
               return true;
             });
+          admin
+            .firestore()
+            .collection("alerts")
+            .doc("banner_web")
+            .set(
+              {
+                color: "#DAAA00",
+                message:
+                  "WEB - This is your own personal local development environment...",
+                title: "Welcome!",
+                link: "/contact",
+                isActive: true,
+                icon: "info-circle",
+              },
+              { merge: true },
+            )
+            .then(async () => {
+              console.log("WEB ALERT BANNER SETUP COMPLETE");
+              return true;
+            });
+        }
       })
       .catch((error: any) => throwError(error));
   }

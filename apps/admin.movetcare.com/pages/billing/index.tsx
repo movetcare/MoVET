@@ -2,39 +2,33 @@ import {
   faCheckToSlot,
   faFileInvoiceDollar,
   faHomeUser,
-} from '@fortawesome/free-solid-svg-icons';
-import InvoiceList from 'components/InvoiceList';
-import Terminal from 'components/Terminal';
-import { query, collection, where, orderBy, limit } from 'firebase/firestore';
-import Head from 'next/head';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { firestore } from 'services/firebase';
-
-const listenerOptions = {
-  snapshotListenOptions: { includeMetadataChanges: true },
-};
+} from "@fortawesome/free-solid-svg-icons";
+import InvoiceList from "components/InvoiceList";
+import Terminal from "components/Terminal";
+import { query, collection, where, orderBy, limit } from "firebase/firestore";
+import Head from "next/head";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { firestore } from "services/firebase";
 
 export default function Billing() {
   const [counterSales, loadingCounterSales, errorCounterSales] = useCollection(
     query(
-      collection(firestore, 'counter_sales'),
-      where('client_due_sum', '>', 0),
-      where('credit_note', '==', false),
-      where('status', '==', 3),
-      orderBy('client_due_sum', 'desc')
+      collection(firestore, "counter_sales"),
+      where("client_due_sum", ">", 0),
+      where("credit_note", "==", false),
+      where("status", "==", 3),
+      orderBy("client_due_sum", "desc"),
     ),
-    listenerOptions
   );
   const [clientInvoices, loadingClientInvoices, errorClientInvoices] =
     useCollection(
       query(
-        collection(firestore, 'client_invoices'),
-        where('credit_note', '==', false),
-        where('client_due_sum', '>', 0),
-        where('status', '==', 3),
-        orderBy('client_due_sum', 'desc')
+        collection(firestore, "client_invoices"),
+        where("credit_note", "==", false),
+        where("client_due_sum", ">", 0),
+        where("status", "==", 3),
+        orderBy("client_due_sum", "desc"),
       ),
-      listenerOptions
     );
 
   const [
@@ -43,13 +37,12 @@ export default function Billing() {
     errorCompletedCounterSales,
   ] = useCollection(
     query(
-      collection(firestore, 'counter_sales'),
-      where('client_due_sum', '==', 0),
-      where('status', '==', 3),
-      orderBy('id', 'desc'),
-      limit(50)
+      collection(firestore, "counter_sales"),
+      where("client_due_sum", "==", 0),
+      where("status", "==", 3),
+      orderBy("id", "desc"),
+      limit(50),
     ),
-    listenerOptions
   );
   const [
     completedClientInvoices,
@@ -57,13 +50,12 @@ export default function Billing() {
     errorCompletedClientInvoices,
   ] = useCollection(
     query(
-      collection(firestore, 'client_invoices'),
-      where('client_due_sum', '==', 0),
-      where('status', '==', 3),
-      orderBy('id', 'desc'),
-      limit(50)
+      collection(firestore, "client_invoices"),
+      where("client_due_sum", "==", 0),
+      where("status", "==", 3),
+      orderBy("id", "desc"),
+      limit(50),
     ),
-    listenerOptions
   );
 
   return (

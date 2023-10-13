@@ -12,9 +12,15 @@ export const getPopUpAd = async () => {
           icon: doc.data()?.icon || "bullhorn",
           title: doc.data()?.title || "MISSING: title",
           description: doc.data()?.description || "MISSING: description",
-          imagePath: doc.data()?.imagePath || "MISSING: imagePath",
-          urlRedirect: doc.data()?.urlRedirect || "MISSING: urlRedirect",
-          ignoreUrlPath: doc.data()?.ignoreUrlPath || "MISSING: ignoreUrlPath",
+          imagePath:
+            "https://movetcare.com" + doc.data()?.imagePath ||
+            "https://movetcare.com/images/logos/logo-paw-black.png",
+          urlRedirect:
+            "https://movetcare.com" + doc.data()?.urlRedirect ||
+            "https://movetcare.com",
+          ignoreUrlPath:
+            "https://movetcare.com" + doc.data()?.ignoreUrlPath ||
+            "https://movetcare.com",
           isActive: doc.data()?.isActive || false,
           autoOpen: doc.data()?.autoOpen || false,
           height: doc.data()?.height || 400,

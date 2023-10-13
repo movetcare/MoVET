@@ -1,8 +1,8 @@
-import { collection, limit, query, where } from 'firebase/firestore';
-import { useCollection } from 'react-firebase-hooks/firestore';
+import { collection, limit, query, where } from "firebase/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
 import { Loader } from "ui";
-import { firestore } from 'services/firebase';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { firestore } from "services/firebase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faChevronCircleRight,
@@ -11,35 +11,29 @@ import {
   faCircleUser,
   faClockFour,
   faCommentMedical,
-} from '@fortawesome/free-solid-svg-icons';
-import { timeSince } from 'utils/timeSince';
-import Link from 'next/link';
-import Error from 'components/Error';
-import TelehealthChatStatus from './TelehealthChatStatus';
-import { useState } from 'react';
+} from "@fortawesome/free-solid-svg-icons";
+import { timeSince } from "utils/timeSince";
+import Link from "next/link";
+import Error from "components/Error";
+import TelehealthChatStatus from "./TelehealthChatStatus";
+import { useState } from "react";
 
-const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
+const TelehealthChatSummary = ({ mode }: { mode?: "sidebar" }) => {
   const [showArchive, setShowArchive] = useState<boolean>(false);
   const [activeChats, loadingActiveChats, errorActiveChats] = useCollection(
     query(
-      collection(firestore, 'telehealth_chat'),
-      where('status', '==', 'active')
+      collection(firestore, "telehealth_chat"),
+      where("status", "==", "active"),
     ),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
   );
 
   const [completedChats, loadingCompletedChats, errorCompletedChats] =
     useCollection(
       query(
-        collection(firestore, 'telehealth_chat'),
-        where('status', '==', 'complete'),
-        limit(50)
+        collection(firestore, "telehealth_chat"),
+        where("status", "==", "complete"),
+        limit(50),
       ),
-      {
-        snapshotListenOptions: { includeMetadataChanges: true },
-      }
     );
 
   return (
@@ -113,7 +107,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                     ?.toString()}
                                 >
                                   {timeSince(
-                                    session?.data()?.updatedOn?.toDate()
+                                    session?.data()?.updatedOn?.toDate(),
                                   )}
                                 </time>
                               ) : session?.data()?.createdAt ? (
@@ -124,7 +118,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                     ?.toString()}
                                 >
                                   {timeSince(
-                                    session?.data()?.createdAt?.toDate()
+                                    session?.data()?.createdAt?.toDate(),
                                   )}
                                 </time>
                               ) : (
@@ -135,7 +129,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                     ?.toString()}
                                 >
                                   {timeSince(
-                                    session?.data()?.createdOn?.toDate()
+                                    session?.data()?.createdOn?.toDate(),
                                   )}
                                 </time>
                               )}
@@ -158,7 +152,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                       ?.toString()}
                                   >
                                     {timeSince(
-                                      session?.data()?.updatedOn?.toDate()
+                                      session?.data()?.updatedOn?.toDate(),
                                     )}
                                   </time>
                                 ) : session?.data()?.createdAt ? (
@@ -169,7 +163,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                       ?.toString()}
                                   >
                                     {timeSince(
-                                      session?.data()?.createdAt?.toDate()
+                                      session?.data()?.createdAt?.toDate(),
                                     )}
                                   </time>
                                 ) : (
@@ -180,7 +174,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                       ?.toString()}
                                   >
                                     {timeSince(
-                                      session?.data()?.createdOn?.toDate()
+                                      session?.data()?.createdOn?.toDate(),
                                     )}
                                   </time>
                                 )}
@@ -272,7 +266,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                       ?.toString()}
                                   >
                                     {timeSince(
-                                      session?.data()?.updatedOn?.toDate()
+                                      session?.data()?.updatedOn?.toDate(),
                                     )}
                                   </time>
                                 ) : session?.data()?.createdAt ? (
@@ -283,7 +277,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                       ?.toString()}
                                   >
                                     {timeSince(
-                                      session?.data()?.createdAt?.toDate()
+                                      session?.data()?.createdAt?.toDate(),
                                     )}
                                   </time>
                                 ) : (
@@ -294,7 +288,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                       ?.toString()}
                                   >
                                     {timeSince(
-                                      session?.data()?.createdOn?.toDate()
+                                      session?.data()?.createdOn?.toDate(),
                                     )}
                                   </time>
                                 )}
@@ -317,7 +311,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                         ?.toString()}
                                     >
                                       {timeSince(
-                                        session?.data()?.updatedOn?.toDate()
+                                        session?.data()?.updatedOn?.toDate(),
                                       )}
                                     </time>
                                   ) : session?.data()?.createdAt ? (
@@ -328,7 +322,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                         ?.toString()}
                                     >
                                       {timeSince(
-                                        session?.data()?.createdAt?.toDate()
+                                        session?.data()?.createdAt?.toDate(),
                                       )}
                                     </time>
                                   ) : (
@@ -339,7 +333,7 @@ const TelehealthChatSummary = ({ mode }: { mode?: 'sidebar' }) => {
                                         ?.toString()}
                                     >
                                       {timeSince(
-                                        session?.data()?.createdOn?.toDate()
+                                        session?.data()?.createdOn?.toDate(),
                                       )}
                                     </time>
                                   )}

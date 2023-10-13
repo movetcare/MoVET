@@ -23,9 +23,6 @@ export const ClientSearch = () => {
   const [options, setOptions] = useState<Array<Option> | null>(null);
   const [clientData, loading, error] = useCollection(
     collection(firestore, "clients"),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    },
   );
   useEffect(() => {
     if (clientData) {

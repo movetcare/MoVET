@@ -161,12 +161,10 @@ const AppointmentPrep = ({ popUpAd }: { popUpAd: PopUpAdType }) => {
           title={popUpAd?.title}
           description={popUpAd?.description}
           adComponent={
-            <Link
-              href={popUpAd?.urlRedirect || "/images/logos/logo-paw-black.png"}
-            >
+            <Link href={popUpAd?.urlRedirect as string}>
               <Image
                 className="rounded-xl"
-                src={popUpAd?.imagePath || "/images/logos/logo-paw-black.png"}
+                src={popUpAd?.imagePath as string}
                 alt={popUpAd?.title}
                 height={popUpAd?.height || 200}
                 width={popUpAd?.width || 200}

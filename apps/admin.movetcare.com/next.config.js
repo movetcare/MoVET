@@ -13,5 +13,5 @@ module.exports = withTM({
     locales: ["en"],
     defaultLocale: "en",
   },
-  images: { domains: ["storage-us.provetcloud.com"] },
+  images: { domains: ["storage-us.provetcloud.com", "movetcare.com"] },
 });

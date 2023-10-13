@@ -24,9 +24,6 @@ const Terminal = () => {
   const [readerError, setReaderError] = useState<any>();
   const [terminals, loadingTerminals, errorTerminals]: any = useCollection(
     query(collection(firestore, "configuration/pos/terminals")),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
   );
 
   useEffect(() => {
@@ -52,7 +49,7 @@ const Terminal = () => {
           icon: <FontAwesomeIcon icon={faCashRegister} size="2x" />,
           position: "top-center",
           duration: 5000,
-        }
+        },
       );
       if (reader?.status === "online") setShowReaderDetails(false);
     }
@@ -84,7 +81,7 @@ const Terminal = () => {
           icon: <FontAwesomeIcon icon={faCashRegister} size="2x" />,
           position: "top-center",
           duration: 10000,
-        }
+        },
       );
     }
   }, [errorTerminals, readerError]);
@@ -329,7 +326,7 @@ const Terminal = () => {
                           });
                           const resetTerminal = httpsCallable(
                             functions,
-                            "resetTerminal"
+                            "resetTerminal",
                           );
                           resetTerminal()
                             .then((result: any) => {
@@ -525,7 +522,7 @@ const Terminal = () => {
                         </td>
                       </tr>
                     </>
-                  )
+                  ),
                 )}
               {reader?.display?.set_reader_display?.cart && (
                 <>

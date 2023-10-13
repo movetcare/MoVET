@@ -22,12 +22,11 @@ export const InvoiceItems = ({
       query(
         collection(
           firestore,
-          `${isClientInvoice ? "client_invoices" : "counter_sales"}/${id}/items`
-        )
+          `${
+            isClientInvoice ? "client_invoices" : "counter_sales"
+          }/${id}/items`,
+        ),
       ),
-      {
-        snapshotListenOptions: { includeMetadataChanges: true },
-      }
     );
   return !loadingInvoiceItems &&
     invoiceItems &&

@@ -4,11 +4,15 @@ export const getAnnouncement = async () => {
   try {
     const announcement: any = await firestore
       .collection("alerts")
-      .doc("banner")
+      .doc("banner_web")
       .get()
-      .then((doc) => doc.data());
+      .then((doc) => doc.data())
+      .catch((error: any) => {
+        console.log(error);
+        return false;
+      });
     const { color, message, title, link, isActive, isActiveMobile, icon } =
-      announcement as {
+      (announcement as {
         color: string;
         message: string;
         title: string;
@@ -16,7 +20,7 @@ export const getAnnouncement = async () => {
         isActive: boolean;
         isActiveMobile: boolean;
         icon: string;
-      };
+      }) || {};
     if (DEBUG)
       console.log("(SSG) FIRESTORE QUERY -> getAnnouncement() =>", {
         color,

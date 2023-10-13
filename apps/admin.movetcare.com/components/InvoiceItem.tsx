@@ -90,14 +90,11 @@ const InvoiceItemHeader = ({
     query(
       collection(
         firestore,
-        `${invoice?.client ? "client_invoices" : "counter_sales"}/${
-          invoice?.id
-        }/payments`
-      )
+        `${
+          invoice?.client ? "client_invoices" : "counter_sales"
+        }/${invoice?.id}/payments`,
+      ),
     ),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
   );
   return (
     <div
@@ -235,7 +232,7 @@ const InvoiceItemHeader = ({
                           </span>
                         </a>
                       </>
-                    )
+                    ),
                 )}
             </div>
             {client?.firstName && client?.lastName && (
@@ -298,7 +295,7 @@ const InvoiceItemHeader = ({
                     >
                       <FontAwesomeIcon icon={faCreditCard} size="sm" />
                     </a>
-                  )
+                  ),
               )}
           </div>
           <div className="hidden md:flex flex-row justify-end items-center">
@@ -359,35 +356,26 @@ const InvoiceDetails = ({
       query(
         collection(
           firestore,
-          `${invoice?.client ? "client_invoices" : "counter_sales"}/${
-            invoice?.id
-          }/items`
-        )
+          `${
+            invoice?.client ? "client_invoices" : "counter_sales"
+          }/${invoice?.id}/items`,
+        ),
       ),
-      {
-        snapshotListenOptions: { includeMetadataChanges: true },
-      }
     );
   const [invoicePayments, loadingInvoicePayments, errorInvoicePayments]: any =
     useCollection(
       query(
         collection(
           firestore,
-          `${invoice?.client ? "client_invoices" : "counter_sales"}/${
-            invoice?.id
-          }/payments`
-        )
+          `${
+            invoice?.client ? "client_invoices" : "counter_sales"
+          }/${invoice?.id}/payments`,
+        ),
       ),
-      {
-        snapshotListenOptions: { includeMetadataChanges: true },
-      }
     );
 
   const [terminals, loadingTerminals, errorTerminals]: any = useCollection(
     query(collection(firestore, "configuration/pos/terminals")),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
   );
 
   useEffect(() => {
@@ -545,7 +533,7 @@ const InvoiceDetails = ({
                       setRefundModalIsOpen(false);
                       const refundPaymentIntent = httpsCallable(
                         functions,
-                        "refundPaymentIntent"
+                        "refundPaymentIntent",
                       );
                       refundPaymentIntent({
                         paymentIntent: invoice?.paymentIntent || "not-found",
@@ -564,7 +552,7 @@ const InvoiceDetails = ({
                                     className="text-movet-red"
                                   />
                                 ),
-                              }
+                              },
                             );
                             setPaymentError({
                               code: "refund-failed",
@@ -575,7 +563,7 @@ const InvoiceDetails = ({
                           } else
                             toast(
                               `Payment of $${invoice?.total_with_vat?.toFixed(
-                                2
+                                2,
                               )} was successfully refunded${
                                 client?.firstName && client?.lastName
                                   ? ` to ${client?.firstName} ${client?.lastName}`
@@ -589,7 +577,7 @@ const InvoiceDetails = ({
                                     size="sm"
                                   />
                                 ),
-                              }
+                              },
                             );
                           toast(
                             `DONT FORGET TO ADD A CREDIT NOTE IN PROVET FOR INVOICE #${invoice?.id}`,
@@ -601,7 +589,7 @@ const InvoiceDetails = ({
                                   size="sm"
                                 />
                               ),
-                            }
+                            },
                           );
                         })
                         .catch((error: any) => {
@@ -813,7 +801,7 @@ const InvoiceDetails = ({
                                           ?.data[0]?.payment_method_details &&
                                         item.data()?.created ? (
                                           <span className="text-xs">{`- ${getMMDDFromDate(
-                                            new Date(item.data()?.created)
+                                            new Date(item.data()?.created),
                                           )}`}</span>
                                         ) : (
                                           ""
@@ -821,7 +809,7 @@ const InvoiceDetails = ({
                                       </h3>
                                       <p>${item.data()?.paid?.toFixed(2)}</p>
                                     </div>
-                                  )
+                                  ),
                                 )}
                             </div>
                           )}
@@ -904,7 +892,7 @@ const InvoiceDetails = ({
                                       <p className="italic text-xs">
                                         The invoice amount decimal is .
                                         {String(invoice?.client_due_sum).slice(
-                                          -2
+                                          -2,
                                         )}
                                         . This will cause an error to be
                                         returned. To fix this, edit the invoice
@@ -927,7 +915,7 @@ const InvoiceDetails = ({
                                     setLoadingMessage("Cancelling Payment...");
                                     const cancelTerminalAction = httpsCallable(
                                       functions,
-                                      "cancelTerminalAction"
+                                      "cancelTerminalAction",
                                     );
                                     cancelTerminalAction({
                                       reader: reader?.id,
@@ -938,7 +926,7 @@ const InvoiceDetails = ({
                                         setTransactionState(null);
                                       })
                                       .catch((error: any) =>
-                                        setPaymentError(error)
+                                        setPaymentError(error),
                                       )
                                       .finally(() => setIsLoading(false));
                                   }}
@@ -978,11 +966,11 @@ const InvoiceDetails = ({
                                     onClick={async () => {
                                       setIsLoading(true);
                                       setLoadingMessage(
-                                        "Preparing Card Reader"
+                                        "Preparing Card Reader",
                                       );
                                       const createPaymentIntent = httpsCallable(
                                         functions,
-                                        "createPaymentIntent"
+                                        "createPaymentIntent",
                                       );
                                       createPaymentIntent({
                                         invoice: invoice?.id,
@@ -1007,7 +995,7 @@ const InvoiceDetails = ({
                                             type === "process_payment_intent"
                                           )
                                             setTransactionState(
-                                              process_payment_intent?.payment_intent
+                                              process_payment_intent?.payment_intent,
                                             );
                                           else if (
                                             failure_code &&
@@ -1021,7 +1009,7 @@ const InvoiceDetails = ({
                                           }
                                         })
                                         .catch((error: any) =>
-                                          setPaymentError(error)
+                                          setPaymentError(error),
                                         )
                                         .finally(() => setIsLoading(false));
                                     }}
@@ -1061,17 +1049,16 @@ const InvoiceDetails = ({
                                       onClick={async () => {
                                         setIsLoading(true);
                                         setLoadingMessage(`Charging $${invoice?.client_due_sum?.toFixed(
-                                          2
+                                          2,
                                         )} to ${paymentMethod
                                           .data()
                                           ?.card?.brand.toUpperCase()}
-                                        - ${
-                                          paymentMethod.data()?.card?.last4
-                                        }`);
+                                        - ${paymentMethod.data()?.card
+                                          ?.last4}`);
                                         const createPaymentIntent =
                                           httpsCallable(
                                             functions,
-                                            "createPaymentIntent"
+                                            "createPaymentIntent",
                                           );
                                         createPaymentIntent({
                                           invoice: invoice?.id,
@@ -1096,7 +1083,7 @@ const InvoiceDetails = ({
                                             ) {
                                               toast(
                                                 `Payment of $${invoice?.total_with_vat?.toFixed(
-                                                  2
+                                                  2,
                                                 )} was successfully charged${
                                                   client?.firstName &&
                                                   client?.lastName
@@ -1111,10 +1098,10 @@ const InvoiceDetails = ({
                                                       size="sm"
                                                     />
                                                   ),
-                                                }
+                                                },
                                               );
                                               setTransactionState(
-                                                process_payment_intent?.payment_intent
+                                                process_payment_intent?.payment_intent,
                                               );
                                             } else if (
                                               failure_code &&
@@ -1135,7 +1122,7 @@ const InvoiceDetails = ({
                                                       className="text-movet-red"
                                                     />
                                                   ),
-                                                }
+                                                },
                                               );
                                             }
                                           })
@@ -1174,7 +1161,7 @@ const InvoiceDetails = ({
                                           {`${new Date(
                                             paymentMethod
                                               .data()
-                                              ?.updatedOn.toDate()
+                                              ?.updatedOn.toDate(),
                                           ).toDateString()} @ ${paymentMethod
                                             .data()
                                             ?.updatedOn.toDate()
@@ -1188,7 +1175,7 @@ const InvoiceDetails = ({
                                         </span>
                                       </>
                                     </button>
-                                  )
+                                  ),
                               )}
                             {invoice?.client_due_sum === 0 &&
                               invoice?.invoice_payment?.length === 1 &&
@@ -1333,7 +1320,7 @@ const InvoiceDetails = ({
                                                 ? "https://us.provetcloud.com/4285/billing/invoice/"
                                                 : "https://us.provetcloud.com/4285/billing/invoice/"
                                             }${getProVetIdFromUrl(
-                                              invoice?.first_original_invoice
+                                              invoice?.first_original_invoice,
                                             )}
           `}
                                             target="_blank"
@@ -1342,7 +1329,7 @@ const InvoiceDetails = ({
                                           >
                                             #
                                             {getProVetIdFromUrl(
-                                              invoice?.first_original_invoice
+                                              invoice?.first_original_invoice,
                                             )}
                                           </a>
                                         </h3>
@@ -1515,7 +1502,7 @@ const InvoiceDetails = ({
                                         ISSUE REFUND
                                       </a>
                                     )
-                                  )
+                                  ),
                               )}
                             {environment !== "production" &&
                               transactionState &&
@@ -1537,7 +1524,7 @@ const InvoiceDetails = ({
                                           Status:{" "}
                                           {invoice?.paymentStatus?.replace(
                                             "_",
-                                            " "
+                                            " ",
                                           )}
                                         </p>
                                         <p className="italic text-xs">
@@ -1554,7 +1541,7 @@ const InvoiceDetails = ({
                                         onClick={async () =>
                                           await simulatePayment(
                                             reader?.id,
-                                            "4242424242424242"
+                                            "4242424242424242",
                                           )
                                         }
                                         className="mt-6 flex flex-row bg-movet-green group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-white"
@@ -1573,7 +1560,7 @@ const InvoiceDetails = ({
                                           onClick={async () =>
                                             await simulatePayment(
                                               reader?.id,
-                                              "4000000000000119"
+                                              "4000000000000119",
                                             )
                                           }
                                           className="mr-2 mt-6 flex flex-row bg-movet-red group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-white"
@@ -1591,7 +1578,7 @@ const InvoiceDetails = ({
                                           onClick={async () =>
                                             await simulatePayment(
                                               reader?.id,
-                                              "4000000000000002"
+                                              "4000000000000002",
                                             )
                                           }
                                           className="ml-2 mt-6 flex flex-row bg-movet-red group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-white"
@@ -1611,7 +1598,7 @@ const InvoiceDetails = ({
                                           onClick={async () =>
                                             await simulatePayment(
                                               reader?.id,
-                                              "4000000000009995"
+                                              "4000000000009995",
                                             )
                                           }
                                           className="mr-2 mt-6 flex flex-row bg-movet-red group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-white"
@@ -1629,7 +1616,7 @@ const InvoiceDetails = ({
                                           onClick={async () =>
                                             await simulatePayment(
                                               reader?.id,
-                                              "4000000000009987"
+                                              "4000000000009987",
                                             )
                                           }
                                           className="ml-2 mt-6 flex flex-row bg-movet-red group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-white"
@@ -1649,7 +1636,7 @@ const InvoiceDetails = ({
                                           onClick={async () =>
                                             await simulatePayment(
                                               reader?.id,
-                                              "4000000000009979"
+                                              "4000000000009979",
                                             )
                                           }
                                           className="mr-2 mt-6 flex flex-row bg-movet-red group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-white"
@@ -1667,7 +1654,7 @@ const InvoiceDetails = ({
                                           onClick={async () =>
                                             await simulatePayment(
                                               reader?.id,
-                                              "4000000000000069"
+                                              "4000000000000069",
                                             )
                                           }
                                           className="ml-2 mt-6 flex flex-row bg-movet-red group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-white"
@@ -1688,12 +1675,12 @@ const InvoiceDetails = ({
                                           setTransactionState("in_progress");
                                           setIsLoading(true);
                                           setLoadingMessage(
-                                            "Cancelling Payment..."
+                                            "Cancelling Payment...",
                                           );
                                           const cancelTerminalAction =
                                             httpsCallable(
                                               functions,
-                                              "cancelTerminalAction"
+                                              "cancelTerminalAction",
                                             );
                                           cancelTerminalAction({
                                             reader: reader?.id,
@@ -1705,7 +1692,7 @@ const InvoiceDetails = ({
                                               setTransactionState(null);
                                             })
                                             .catch((error: any) =>
-                                              setPaymentError(error)
+                                              setPaymentError(error),
                                             )
                                             .finally(() => setIsLoading(false));
                                         }}
@@ -1741,7 +1728,7 @@ const InvoiceDetails = ({
                                         Status:{" "}
                                         {invoice?.paymentStatus?.replace(
                                           "_",
-                                          " "
+                                          " ",
                                         )}
                                       </p>
                                       <p className="italic text-xs">
@@ -1760,11 +1747,11 @@ const InvoiceDetails = ({
                                     setTransactionState("in_progress");
                                     setIsLoading(true);
                                     setLoadingMessage(
-                                      "Resetting Card Reader..."
+                                      "Resetting Card Reader...",
                                     );
                                     const cancelTerminalAction = httpsCallable(
                                       functions,
-                                      "cancelTerminalAction"
+                                      "cancelTerminalAction",
                                     );
                                     cancelTerminalAction({
                                       reader: reader?.id,
@@ -1774,7 +1761,7 @@ const InvoiceDetails = ({
                                         setTransactionState(null);
                                       })
                                       .catch((error: any) =>
-                                        setPaymentError(error)
+                                        setPaymentError(error),
                                       )
                                       .finally(() => setIsLoading(false));
                                   }}
@@ -1839,14 +1826,14 @@ const InvoiceDetails = ({
                                               Status:{" "}
                                               {invoice?.paymentStatus?.replace(
                                                 "_",
-                                                " "
+                                                " ",
                                               )}
                                             </p>
                                             <p className="italic text-xs">
                                               Type:{" "}
                                               {JSON.stringify(
                                                 invoice?.paymentIntentObject
-                                                  ?.payment_method_types
+                                                  ?.payment_method_types,
                                               )}
                                             </p>
                                             <p className="italic text-xs">
@@ -1919,14 +1906,14 @@ const InvoiceDetails = ({
                                       Status:{" "}
                                       {invoice?.paymentStatus?.replace(
                                         "_",
-                                        " "
+                                        " ",
                                       )}
                                     </p>
                                     <p className="italic text-xs">
                                       Type:{" "}
                                       {JSON.stringify(
                                         invoice?.paymentIntentObject
-                                          ?.payment_method_types
+                                          ?.payment_method_types,
                                       )}
                                     </p>
                                     <p className="italic text-xs">
@@ -2091,18 +2078,18 @@ const getProVetIdFromUrl = (url: string | null): number | null => {
 const InvoiceItem = ({ key, invoice }: { key: number; invoice: Invoice }) => {
   const [showInvoiceDetails, setShowInvoiceDetails] = useState<boolean>(false);
   const [client] = useDocument(
-    doc(firestore, `clients/${getProVetIdFromUrl(invoice?.client)?.toString()}`)
+    doc(
+      firestore,
+      `clients/${getProVetIdFromUrl(invoice?.client)?.toString()}`,
+    ),
   );
   const [paymentMethods] = useCollection(
     collection(
       firestore,
       `clients/${getProVetIdFromUrl(
-        invoice?.client
-      )?.toString()}/payment_methods`
+        invoice?.client,
+      )?.toString()}/payment_methods`,
     ),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
   );
   const [transactionState, setTransactionState] = useState<any>();
 
