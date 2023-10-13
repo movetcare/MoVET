@@ -357,7 +357,7 @@ export const WebPopUpAdControls = () => {
                           </div>
                           <label className="italic my-2 text-sm">
                             <FontAwesomeIcon icon={faHeading} size="sm" />
-                            <span className="ml-2">Title</span>
+                            <span className="ml-2">SEO Title</span>
                           </label>
                           <textarea
                             min={4}
@@ -367,7 +367,7 @@ export const WebPopUpAdControls = () => {
                           />
                           <label className="italic my-2 text-sm">
                             <FontAwesomeIcon icon={faMessage} size="sm" />
-                            <span className="ml-2">Description</span>
+                            <span className="ml-2">SEO Description</span>
                           </label>
                           <textarea
                             min={4}

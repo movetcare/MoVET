@@ -11,21 +11,21 @@ export const handleAnnouncementBannerUpdate = functions.firestore
         id,
         data,
       });
-    if (id === "banner" && data !== undefined) {
+    if ((id === "banner_web" || id === "pop_up_ad") && data !== undefined) {
       const { isActive, isActiveMobile, link, message, title } = data || {};
       // https://vercel.com/docs/concepts/git/deploy-hooks
       const didTriggerVercelBuildWebhook =
         isActive && environment.type === "production"
           ? await request
               .post(
-                "https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false"
+                "https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false",
               )
               .then(async (response: any) => {
                 const { data, status } = response;
                 if (DEBUG)
                   console.log(
                     "API Response: POST https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false =>",
-                    data
+                    data,
                   );
                 return status !== 200 && status !== 201 ? "ERROR" : data;
               })
