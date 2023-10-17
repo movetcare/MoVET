@@ -1,5 +1,6 @@
 import { DEBUG, admin } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
+import { todayIsAGlobalClosure } from "./todayIsAGlobalClosure";
 
 export const processHoursStatusAutomationUpdate = async (options: {
   action: "open" | "close";
@@ -14,58 +15,63 @@ export const processHoursStatusAutomationUpdate = async (options: {
     console.log("process.env.TZ", process.env.TZ);
   }
   if (action === "open") {
+    const todayIsAClosure = await todayIsAGlobalClosure();
     switch (type) {
       case "clinic":
-        await admin
-          .firestore()
-          .collection("configuration")
-          .doc("hours_status")
-          .set(
-            {
-              clinicStatus: true,
-              updatedOn: new Date(),
-            },
-            { merge: true },
-          );
+        if (todayIsAClosure === false)
+          await admin
+            .firestore()
+            .collection("configuration")
+            .doc("hours_status")
+            .set(
+              {
+                clinicStatus: true,
+                updatedOn: new Date(),
+              },
+              { merge: true },
+            );
         break;
       case "walkins":
-        await admin
-          .firestore()
-          .collection("configuration")
-          .doc("hours_status")
-          .set(
-            {
-              walkinsStatus: true,
-              updatedOn: new Date(),
-            },
-            { merge: true },
-          );
+        if (todayIsAClosure === false)
+          await admin
+            .firestore()
+            .collection("configuration")
+            .doc("hours_status")
+            .set(
+              {
+                walkinsStatus: true,
+                updatedOn: new Date(),
+              },
+              { merge: true },
+            );
         break;
       case "boutique":
-        await admin
-          .firestore()
-          .collection("configuration")
-          .doc("hours_status")
-          .set(
-            {
-              boutiqueStatus: true,
-              updatedOn: new Date(),
-            },
-            { merge: true },
-          );
+        if (todayIsAClosure === false)
+          await admin
+            .firestore()
+            .collection("configuration")
+            .doc("hours_status")
+            .set(
+              {
+                boutiqueStatus: true,
+                updatedOn: new Date(),
+              },
+              { merge: true },
+            );
         break;
       case "housecall":
-        await admin
-          .firestore()
-          .collection("configuration")
-          .doc("hours_status")
-          .set(
-            {
-              housecallStatus: true,
-              updatedOn: new Date(),
-            },
-            { merge: true },
-          );
+        if (todayIsAClosure === false)
+          await admin
+            .firestore()
+            .collection("configuration")
+            .doc("hours_status")
+            .set(
+              {
+                housecallStatus: true,
+                updatedOn: new Date(),
+              },
+              { merge: true },
+            );
         break;
       default:
         break;
