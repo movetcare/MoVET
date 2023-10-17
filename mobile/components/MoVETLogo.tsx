@@ -1,4 +1,3 @@
-import { isDarkMode } from "constants/isDarkMode";
 import React from "react";
 import { Image, useColorScheme } from "react-native";
 
@@ -17,6 +16,7 @@ export const MoVETLogo = ({
   style?: any;
   override?: "default" | "white" | "black" | "paw-white" | "paw-black";
 }) => {
+  const isDarkMode = useColorScheme() !== "light";
   let source = null;
   switch (override) {
     case "default":

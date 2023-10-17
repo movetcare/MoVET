@@ -7,7 +7,9 @@ import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
 import { useDeviceContext } from "twrnc";
 import tw from "tailwind";
-import { View, Text } from "components/Themed";
+import { View, Text } from "components/themed";
+import { FontAwesome } from "@expo/vector-icons";
+import { useFonts } from "expo-font";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -50,6 +52,25 @@ const Layout = () => {
       subscription.remove();
     };
   }, []);
+
+  const [loaded, error] = useFonts({
+    Abside: require("../assets/fonts/Abside-Regular.ttf"),
+    Parkinson: require("../assets/fonts/Parkinson-Bold.ttf"),
+    "Abside Smooth": require("../assets/fonts/Abside-Smooth.ttf"),
+    "Source Sans Pro": require("../assets/fonts/SourceSansPro-Regular.ttf"),
+    "Source Sans Pro Italic": require("../assets/fonts/SourceSansPro-Italic.ttf"),
+    ...FontAwesome.font,
+  });
+
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+      alert("ERROR: " + JSON.stringify(error));
+      throw error;
+    }
+  }, [error]);
+
+  if (!loaded) SplashScreen.hideAsync();
 
   return (
     <Stack

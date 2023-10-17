@@ -14,6 +14,5 @@ export const View = (props: ViewProps) => {
     { light: lightColor, dark: darkColor },
     "background",
   );
-  console.log("VIEW backgroundColor", backgroundColor);
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 };

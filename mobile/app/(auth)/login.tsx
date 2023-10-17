@@ -1,4 +1,4 @@
-import { StyleSheet, ImageBackground, useColorScheme } from "react-native";
+import { ImageBackground, useColorScheme } from "react-native";
 import React, { useState } from "react";
 import { signIn } from "services/Auth";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -7,7 +7,15 @@ import { sendEmailVerification } from "firebase/auth";
 import tw from "tailwind";
 import { MoVETLogo } from "components/MoVETLogo";
 import { useForm } from "react-hook-form";
-import { EmailInput, View } from "components/themed";
+import {
+  EmailInput,
+  View,
+  PasswordInput,
+  TextButton,
+  ActionButton,
+  SubmitButton,
+} from "components/themed";
+import { router } from "expo-router";
 const backgroundLight = require("assets/images/backgrounds/sign-in-background.png");
 const backgroundDark = require("assets/images/backgrounds/sign-in-background.png");
 
@@ -24,6 +32,9 @@ export default function LogIn() {
   const [showVerificationButton, setShowVerificationButton] =
     useState<boolean>(false);
 
+  const onSubmit = (data: any) => {
+    console.log("data", data);
+  };
   return (
     <KeyboardAwareScrollView
       showsVerticalScrollIndicator={false}
@@ -75,13 +86,7 @@ export default function LogIn() {
                 <TextButton
                   title="RESEND ACCOUNT VERIFICATION EMAIL"
                   style={tw`text-xs text-center"`}
-                  onPress={() =>
-                    sendEmailVerification(
-                      firebase,
-                      showVerificationButton,
-                      showVerificationButton,
-                    )
-                  }
+                  onPress={() => console.log("SEND VERIFICATION EMAIL TAPPED")}
                 />
               ) : (
                 <TextButton
@@ -96,16 +101,22 @@ export default function LogIn() {
             <SubmitButton
               handleSubmit={handleSubmit}
               onSubmit={onSubmit}
-              disabled={!isDirty || loading}
-              loading={loading}
-              title={loading ? "Signing In..." : "Sign In"}
+              disabled={!isDirty}
+              loading={false}
+              title={
+                //loading ? "Signing In..." :
+                "Sign In"
+              }
             />
             <ActionButton
               title="Join MoVET"
               onPress={() =>
-                navigation.navigate("SignUp", {
-                  email: (getValues("email" as any) as string)?.toLowerCase(),
-                })
+                router.push(
+                  "create-account",
+                  // {
+                  //   email: (getValues("email" as any) as string)?.toLowerCase(),
+                  // }
+                )
               }
             />
           </View>
@@ -148,19 +159,3 @@ export default function LogIn() {
     // </View>
   );
 }
-
-const styles = StyleSheet.create({
-  label: {
-    marginBottom: 4,
-    color: "#455fff",
-  },
-  textInput: {
-    width: 250,
-    borderWidth: 1,
-    borderRadius: 4,
-    borderColor: "#455fff",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginBottom: 8,
-  },
-});

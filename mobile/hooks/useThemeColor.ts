@@ -7,10 +7,7 @@ export function useThemeColor(
 ) {
   const theme = useColorScheme() ?? "light";
   const colorFromProps = props[theme];
-  console.log("DEVICE THEME", theme);
-  if (colorFromProps) {
-    return colorFromProps;
-  } else {
-    return Colors[theme][colorName];
-  }
+  if (colorFromProps) return colorFromProps;
+  else return Colors[theme][colorName];
+  
 }
