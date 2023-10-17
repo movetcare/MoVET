@@ -18,7 +18,7 @@ export const BookingHeader = ({
             {title}
           </h2>
         )}
-        <p className="mt-4 text-lg leading-6 text-movet-black">{description}</p>
+        <p className="text-lg leading-6 text-movet-black">{description}</p>
       </div>
     </div>
   );

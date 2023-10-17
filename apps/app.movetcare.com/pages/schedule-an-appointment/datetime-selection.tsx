@@ -400,20 +400,97 @@ export default function DateTime() {
                           leaveFrom="opacity-100"
                         >
                           <>
-                            <p className="mt-6 text-center text-xl italic font-extrabold">
-                              Selected Date & Time:
-                            </p>
-                            <p className="text-center italic -mt-2 text-lg">
-                              {selectedDate.toLocaleString("en-US", {
-                                weekday: "long",
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              })}{" "}
-                              -{" "}
-                              {selectedTime &&
-                                selectedTime.split("-")[0].trim()}
-                            </p>
+                            <hr className="mt-8 mb-8 text-movet-gray" />
+                            <div className="w-full flex flex-col mt-4 items-center text-center">
+                              <h3 className="mt-2 text-lg">
+                                Ready to Schedule Your Appointment?
+                              </h3>
+                              <p className="italic mb-6 text-sm">
+                                Please confirm your appointment details below
+                              </p>
+                              <h5 className="font-bold">Date & Time</h5>
+                              <p className="italic">
+                                {selectedDate.toLocaleString("en-US", {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                })}{" "}
+                                -{" "}
+                                {selectedTime &&
+                                  selectedTime.split("-")[0].trim()}
+                              </p>
+                              <h5 className="font-bold -mb-2">Location</h5>
+                              <p className="italic font-extrabold">
+                                {session?.location === "Home" ? (
+                                  `Housecall @ ${session?.address?.full}`
+                                ) : session?.location === "Clinic" ? (
+                                  <>
+                                    <span>MoVET @ Belleview Station</span>
+                                    <br />
+                                    <a
+                                      className=" font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                                      target="_blank"
+                                      href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
+                                      rel="noopener noreferrer"
+                                    >
+                                      4912 S Newport St, Denver, CO 80237
+                                    </a>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span>Virtual Telehealth Consultation</span>
+                                  </>
+                                )}
+                              </p>
+                              {session?.address?.info && (
+                                <p className="-mt-2 italic text-sm">
+                                  Note: {session?.address?.info}
+                                </p>
+                              )}
+                              <h5 className="font-bold -mb-2">Reason</h5>
+                              <p className="italic font-extrabold">
+                                {session?.establishCareExamRequired
+                                  ? "Establish Care Exam"
+                                  : session?.reason?.label}
+                              </p>
+                              <h5 className="font-bold -mb-2">
+                                Pet{session?.selectedPatients.length > 1 && "s"}
+                              </h5>
+                              {session?.selectedPatients?.map(
+                                (patientId: string) =>
+                                  session?.patients?.map(
+                                    (patient: any, index: number) => {
+                                      if (patientId === patient?.id)
+                                        return (
+                                          <div
+                                            key={index + "-" + patient?.name}
+                                          >
+                                            <p className="italic font-extrabold">
+                                              {patient?.name}
+                                            </p>
+                                            {patient?.illnessDetails && (
+                                              <>
+                                                <p className="italic -mt-2 text-sm">
+                                                  {
+                                                    patient?.illnessDetails
+                                                      ?.symptoms
+                                                  }
+                                                </p>
+                                                <p className="italic -mt-2 text-sm">
+                                                  {JSON.stringify(
+                                                    patient?.illnessDetails
+                                                      ?.notes,
+                                                  )}
+                                                </p>
+                                              </>
+                                            )}
+                                          </div>
+                                        );
+                                    },
+                                  ),
+                              )}
+                            </div>
                           </>
                         </Transition>
                       </div>

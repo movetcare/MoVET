@@ -19,7 +19,7 @@ export default function CancelAppointmentBookingRequest() {
   const isAppMode = mode === "app";
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
-    null
+    null,
   );
 
   const [reasonSubmissionSuccess, setReasonSubmissionSuccess] = useState<
@@ -42,9 +42,9 @@ export default function CancelAppointmentBookingRequest() {
               })
             : string()
                 .matches(/.*\d/, "A selection selection is required")
-                .required("A selection selection is required")
+                .required("A selection selection is required"),
         ),
-      })
+      }),
     ),
     defaultValues: {
       reason: "",
@@ -221,7 +221,7 @@ export default function CancelAppointmentBookingRequest() {
               </>
             )}
           </section>
-          {!isAppMode && !isLoading && (
+          {/* {!isAppMode && !isLoading && (
             <section>
               <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mt-8" />
               <h2 className="text-center mb-0">Download The App!</h2>
@@ -233,7 +233,7 @@ export default function CancelAppointmentBookingRequest() {
                 appointments, chat with us, and more!
               </p>
             </section>
-          )}
+          )} */}
         </div>
       </div>
     </section>

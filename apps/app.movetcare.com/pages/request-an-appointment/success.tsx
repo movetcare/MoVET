@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 export default function RequestSuccess() {
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
-    null
+    null,
   );
   useEffect(() => {
     localStorage.removeItem("email");
@@ -45,7 +45,7 @@ export default function RequestSuccess() {
               </div>
             </div>
           </section>
-          {submissionSuccess && (
+          {/* {submissionSuccess && (
             <section>
               <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mt-8" />
               <h2 className="text-center mb-0">Download The App!</h2>
@@ -57,7 +57,7 @@ export default function RequestSuccess() {
                 appointments, chat with us, and more!
               </p>
             </section>
-          )}
+          )} */}
         </div>
       </div>
     </section>

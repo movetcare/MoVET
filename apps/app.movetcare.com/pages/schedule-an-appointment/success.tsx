@@ -84,7 +84,7 @@ export default function BookingSuccess() {
                   <FontAwesomeIcon
                     icon={faCheckCircle}
                     size="4x"
-                    className="text-movet-green mx-auto w-full mb-4"
+                    className="text-movet-green mx-auto w-full mb-4 mt-8"
                   />
                   {isAppMode && (
                     <h2 className="text-3xl font-extrabold tracking-tight text-movet-black text-center">
@@ -191,7 +191,7 @@ export default function BookingSuccess() {
               </div>
             )}
           </section>
-          {!isLoading && !isAppMode && (
+          {/* {!isLoading && !isAppMode && (
             <section>
               <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mt-8" />
               <h2 className="text-center mb-0">Download The App!</h2>
@@ -203,7 +203,7 @@ export default function BookingSuccess() {
                 appointments, chat with us, and more!
               </p>
             </section>
-          )}
+          )} */}
         </div>
       </div>
     </section>
