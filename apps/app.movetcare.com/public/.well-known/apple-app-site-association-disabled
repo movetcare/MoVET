@@ -8,7 +8,9 @@
         "components": [
           {
             "/": "/account/sign-in",
-            "comment": "Matches all routes"
+            "?": {
+              "success": "true"
+            }
           }
         ]
       }
