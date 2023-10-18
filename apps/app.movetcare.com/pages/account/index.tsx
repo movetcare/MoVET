@@ -10,6 +10,8 @@ export default function Account() {
 
   useEffect(() => {
     if (router && mode) {
+      alert("mode:" + mode);
+      alert("query:" + JSON.stringify(router.query));
       if (mode === "verifyEmail")
         router.replace({
           pathname: "/account/verify",

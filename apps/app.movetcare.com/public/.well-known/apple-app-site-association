@@ -7,12 +7,7 @@
         ],
         "components": [
           {
-            "/": "*",
-            "exclude": true,
-            "comment": "Matches all routes"
-          },
-          {
-            "/": "/account/*",
+            "/": "/sign-in",
             "comment": "Matches all routes"
           }
         ]
