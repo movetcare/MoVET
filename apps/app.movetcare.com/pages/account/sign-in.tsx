@@ -7,38 +7,23 @@ import { useEffect } from "react";
 export default function Account() {
   const router = useRouter();
   const { mode } = router.query;
-
+  const signInText = "Signing Into Your Account...";
   useEffect(() => {
     if (router && mode) {
       alert("mode:" + mode);
       alert("query:" + JSON.stringify(router.query));
-      if (mode === "resetPassword")
-        router.replace({
-          pathname: "/account/reset-password",
-          query: router.query,
-        });
-      else if (mode === "signIn") {
-        router.replace({
-          pathname: "/account/sign-in",
-          query: router.query,
-        });
-      } else
-        router.replace({
-          pathname: "/404",
-          query: router.query,
-        });
     }
   }, [router, mode]);
 
   return (
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
       <Head>
-        <title>Loading Your Account...</title>
+        <title>{signInText}</title>
       </Head>
       <main className="w-full flex-1 overflow-hidden">
         <AppHeader />
         <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8">
-          <Loader message="Loading Your Account..." />
+          <Loader message={signInText} />
         </section>
       </main>
     </div>

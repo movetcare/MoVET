@@ -16,35 +16,31 @@ export default function Verify() {
     useState<boolean>(false);
 
   useEffect(() => {
-    if (router) alert(JSON.stringify(router.query));
-  }, [router]);
-  // useEffect(() => {
-  //   if (mode === "verifyEmail" && oobCode && apiKey) {
-  //     applyActionCode(auth, oobCode as string)
-  //       .then(() => setVerificationSuccessful(true))
-  //       .catch((error: any) => {
-  //         console.error(error.message);
-  //         setVerificationSuccessful(false);
-  //       })
-  //       .finally(() => setLoading(false));
-  //   }
-  //   else
-  //     router.replace({
-  //       pathname: "/404",
-  //       query: router.query,
-  //     });
-  // }, [router, mode, oobCode, apiKey]);
+    if (mode === "verifyEmail" && oobCode && apiKey) {
+      applyActionCode(auth, oobCode as string)
+        .then(() => setVerificationSuccessful(true))
+        .catch((error: any) => {
+          console.error(error.message);
+          setVerificationSuccessful(false);
+        })
+        .finally(() => setLoading(false));
+    } else
+      router.replace({
+        pathname: "/404",
+        query: router.query,
+      });
+  }, [router, mode, oobCode, apiKey]);
 
-  // useEffect(() => {
-  //   if (verificationSuccessful)
-  //     setTimeout(() => {
-  //       window.location.href = (continueUrl as string)
-  //         ? (continueUrl as string)?.replaceAll("3000", "3001")?.toString()
-  //         : environment === "production"
-  //         ? "movet://onboarding"
-  //         : "exp://172.16.30.224:19000/--/onboarding";
-  //     }, 1500);
-  // }, [verificationSuccessful, continueUrl]);
+  useEffect(() => {
+    if (verificationSuccessful)
+      setTimeout(() => {
+        window.location.href = (continueUrl as string)
+          ? (continueUrl as string)?.replaceAll("3000", "3001")?.toString()
+          : environment === "production"
+          ? "movet://onboarding"
+          : "exp://172.16.30.224:19000/--/onboarding";
+      }, 1500);
+  }, [verificationSuccessful, continueUrl]);
 
   return (
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">

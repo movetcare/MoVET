@@ -18,7 +18,7 @@ export const signIn = async (email: string, password: string) => {
     // });
     // return { user: auth.currentUser };
     await sendSignInLinkToEmail(auth, email, {
-      url: getPlatformUrl() + "/account/?mode=verifyEmail&email=" + email,
+      url: getPlatformUrl("mobile") + "/sign-in-success",
       iOS: {
         bundleId: "com.movet.inc",
       },

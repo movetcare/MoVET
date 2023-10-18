@@ -100,10 +100,7 @@ export default function LogIn() {
                   style={tw`text-xs text-center`}
                   onPress={() =>
                     sendEmailVerification(user, {
-                      url:
-                        getPlatformUrl() +
-                        "/account/verify?email=" +
-                        user?.email,
+                      url: getPlatformUrl("mobile") + "/sign-in-success",
                       iOS: {
                         bundleId: "com.movet.inc",
                       },
