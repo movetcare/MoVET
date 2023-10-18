@@ -38,8 +38,10 @@ export default function LogIn() {
   //const { user } = AuthStore.useState();
 
   const { email, link, success } = useLocalSearchParams();
+  const params = useLocalSearchParams();
 
   useEffect(() => {
+    alert("useLocalSearchParams() = " + JSON.stringify(params));
     const signInUserWithLink = async (email: string, link: string) =>
       await signInWithLink(email, link).then((user: any) => {
         alert("SIGN IN SUCCESS! " + JSON.stringify(user));
@@ -47,7 +49,7 @@ export default function LogIn() {
     if (email && link && success)
       signInUserWithLink(email as string, link as string);
     console.log({ email, link, success });
-  }, [email, link, success]);
+  }, [email, link, success, params]);
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);

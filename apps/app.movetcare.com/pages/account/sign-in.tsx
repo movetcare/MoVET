@@ -12,6 +12,22 @@ export default function Account() {
     if (router && mode) {
       alert("mode:" + mode);
       alert("query:" + JSON.stringify(router.query));
+      alert(
+        "REDIRECTING TO: " +
+          "movet://sign-in?email=" +
+          router.query.email +
+          "&link=" +
+          `?mode=${router.query?.mode}&oobCode=${router.query?.oobCode}&continueUrl=${router.query?.continueUrl}&lang=${router.query?.lang}&apiKey=${router.query?.apiKey}` +
+          "&success=" +
+          router.query.success,
+      );
+      window.location.href =
+        "movet://sign-in?email=" +
+        router.query.email +
+        "&link=" +
+        `https://app.movetcare.com/account?mode=${router.query?.mode}&oobCode=${router.query?.oobCode}&continueUrl=${router.query?.continueUrl}&lang=${router.query?.lang}&apiKey=${router.query?.apiKey}` +
+        "&success=" +
+        router.query.success;
     }
   }, [router, mode]);
 

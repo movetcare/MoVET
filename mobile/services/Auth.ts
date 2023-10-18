@@ -20,7 +20,7 @@ export const signIn = async (email: string, password: string) => {
         installApp: true,
         minimumVersion: "12",
       },
-      handleCodeInApp: true,
+      // handleCodeInApp: true,
     });
     return true;
   } catch (error: any) {
