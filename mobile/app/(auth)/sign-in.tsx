@@ -1,9 +1,9 @@
 import { ImageBackground, useColorScheme } from "react-native";
-import React, { useState } from "react";
-import { signIn } from "services/Auth";
+import React, { useEffect, useState } from "react";
+import { signIn, signInWithLink } from "services/Auth";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import DeviceDimensions from "utils/DeviceDimensions";
-import { sendEmailVerification } from "firebase/auth";
+//import { sendEmailVerification } from "firebase/auth";
 import tw from "tailwind";
 import { MoVETLogo } from "components/MoVETLogo";
 import { useForm } from "react-hook-form";
@@ -15,9 +15,9 @@ import {
   ActionButton,
   SubmitButton,
 } from "components/themed";
-import { router } from "expo-router";
-import { AuthStore } from "stores/AuthStore";
-import { getPlatformUrl } from "utils/getPlatformUrl";
+import { router, useLocalSearchParams } from "expo-router";
+// import { AuthStore } from "stores/AuthStore";
+// import { getPlatformUrl } from "utils/getPlatformUrl";
 
 const backgroundLight = require("assets/images/backgrounds/sign-in-background.png");
 const backgroundDark = require("assets/images/backgrounds/sign-in-background.png");
@@ -32,19 +32,28 @@ export default function LogIn() {
     mode: "onSubmit",
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showVerificationButton, setShowVerificationButton] =
-    useState<boolean>(false);
+  // const [showVerificationButton, setShowVerificationButton] =
+  //   useState<boolean>(false);
 
-  const { user } = AuthStore.useState();
+  //const { user } = AuthStore.useState();
+
+  const { email, link, success } = useLocalSearchParams();
+
+  useEffect(() => {
+    const signInUserWithLink = async (email: string, link: string) =>
+      await signInWithLink(email, link).then((user: any) => {
+        alert("SIGN IN SUCCESS! " + JSON.stringify(user));
+      });
+    if (email && link && success)
+      signInUserWithLink(email as string, link as string);
+    console.log({ email, link, success });
+  }, [email, link, success]);
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    await signIn(data?.email, data?.password)
-      .then((user: any) => {
-        if (user?.emailVerified) router.push("/home");
-        else setShowVerificationButton(true);
-      })
-      .finally(() => setIsLoading(false));
+    await signIn(data?.email, data?.password).finally(() =>
+      setIsLoading(false),
+    );
   };
 
   return (
@@ -94,13 +103,16 @@ export default function LogIn() {
             <View
               style={tw`flex-row bg-movet-white dark:bg-movet-black rounded-xl mt-2 p-2 opacity-75`}
             >
-              {showVerificationButton ? (
+              {/* {showVerificationButton ? (
                 <TextButton
                   title="RESEND ACCOUNT VERIFICATION EMAIL"
                   style={tw`text-xs text-center`}
                   onPress={() =>
                     sendEmailVerification(user, {
-                      url: getPlatformUrl("mobile") + "/sign-in-success",
+                      url:
+                        getPlatformUrl() +
+                        "/sign-in?success=true&email=" +
+                        user?.email,
                       iOS: {
                         bundleId: "com.movet.inc",
                       },
@@ -126,7 +138,19 @@ export default function LogIn() {
                     })
                   }
                 />
-              )}
+              )} */}
+              <TextButton
+                title="Forgot Password?"
+                style={tw`text-xs`}
+                onPress={() =>
+                  router.push({
+                    pathname: "/forgot-password",
+                    params: {
+                      email: getValues("email" as any)?.toLowerCase(),
+                    },
+                  })
+                }
+              />
             </View>
           </View>
           <View style={tw`w-full pb-12 px-8 bg-transparent items-center`}>

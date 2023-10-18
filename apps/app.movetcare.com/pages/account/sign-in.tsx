@@ -24,6 +24,7 @@ export default function Account() {
         <AppHeader />
         <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8">
           <Loader message={signInText} />
+          <code>{JSON.stringify(router.query)}</code>
         </section>
       </main>
     </div>
