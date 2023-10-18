@@ -18,7 +18,7 @@ const Settings = () => {
       <Text>{AuthStore.getRawState().user?.displayName}</Text>
       <Button
         onPress={async () => {
-          if (await signOff()) router.replace("/(auth)/login");
+          if (await signOff()) router.replace("/(auth)/sign-in");
         }}
         title="LOGOUT"
       />

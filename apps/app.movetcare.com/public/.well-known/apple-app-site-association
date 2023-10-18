@@ -8,6 +8,11 @@
         "components": [
           {
             "/": "*",
+            "exclude": true,
+            "comment": "Matches all routes"
+          },
+          {
+            "/": "/account/*",
             "comment": "Matches all routes"
           }
         ]

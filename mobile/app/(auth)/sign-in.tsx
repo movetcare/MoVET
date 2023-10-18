@@ -16,6 +16,9 @@ import {
   SubmitButton,
 } from "components/themed";
 import { router } from "expo-router";
+import { AuthStore } from "stores/AuthStore";
+import { getPlatformUrl } from "utils/getPlatformUrl";
+
 const backgroundLight = require("assets/images/backgrounds/sign-in-background.png");
 const backgroundDark = require("assets/images/backgrounds/sign-in-background.png");
 
@@ -28,13 +31,22 @@ export default function LogIn() {
   } = useForm<FormData>({
     mode: "onSubmit",
   });
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showVerificationButton, setShowVerificationButton] =
     useState<boolean>(false);
 
-  const onSubmit = (data: any) => {
-    console.log("data", data);
+  const { user } = AuthStore.useState();
+
+  const onSubmit = async (data: any) => {
+    setIsLoading(true);
+    await signIn(data?.email, data?.password)
+      .then((user: any) => {
+        if (user?.emailVerified) router.push("/home");
+        else setShowVerificationButton(true);
+      })
+      .finally(() => setIsLoading(false));
   };
+
   return (
     <KeyboardAwareScrollView
       showsVerticalScrollIndicator={false}
@@ -71,13 +83,13 @@ export default function LogIn() {
               control={control}
               error={((errors as any)["email"] as any)?.message as string}
               textContentType="username"
-              //editable={!loading}
+              editable={!isLoading}
             />
             <PasswordInput
               control={control}
               error={((errors as any)["password"] as any)?.message as string}
               textContentType="password"
-              //editable={!loading}
+              editable={!isLoading}
             />
             <View
               style={tw`flex-row bg-movet-white dark:bg-movet-black rounded-xl mt-2 p-2 opacity-75`}
@@ -85,14 +97,37 @@ export default function LogIn() {
               {showVerificationButton ? (
                 <TextButton
                   title="RESEND ACCOUNT VERIFICATION EMAIL"
-                  style={tw`text-xs text-center"`}
-                  onPress={() => console.log("SEND VERIFICATION EMAIL TAPPED")}
+                  style={tw`text-xs text-center`}
+                  onPress={() =>
+                    sendEmailVerification(user, {
+                      url:
+                        getPlatformUrl() +
+                        "/account/verify?email=" +
+                        user?.email,
+                      iOS: {
+                        bundleId: "com.movet.inc",
+                      },
+                      android: {
+                        packageName: "com.movet",
+                        installApp: true,
+                        minimumVersion: "12",
+                      },
+                      handleCodeInApp: true,
+                    })
+                  }
                 />
               ) : (
                 <TextButton
                   title="Forgot Password?"
                   style={tw`text-xs`}
-                  onPress={() => console.log("FORGOT PASSWORD TAPPED")}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/forgot-password",
+                      params: {
+                        email: getValues("email" as any)?.toLowerCase(),
+                      },
+                    })
+                  }
                 />
               )}
             </View>
@@ -103,59 +138,22 @@ export default function LogIn() {
               onSubmit={onSubmit}
               disabled={!isDirty}
               loading={false}
-              title={
-                //loading ? "Signing In..." :
-                "Sign In"
-              }
+              title={isLoading ? "Signing In..." : "Sign In"}
             />
             <ActionButton
               title="Join MoVET"
               onPress={() =>
-                router.push(
-                  "create-account",
-                  // {
-                  //   email: (getValues("email" as any) as string)?.toLowerCase(),
-                  // }
-                )
+                router.push({
+                  pathname: "/sign-up",
+                  params: {
+                    email: getValues("email" as any)?.toLowerCase(),
+                  },
+                })
               }
             />
           </View>
         </View>
       </ImageBackground>
     </KeyboardAwareScrollView>
-    // <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    //   <View>
-    //     <Text style={styles.label}>Email</Text>
-    //     <TextInput
-    //       placeholder="email"
-    //       autoCapitalize="none"
-    //       nativeID="email"
-    //       onChangeText={(text) => {
-    //         emailRef.current = text;
-    //       }}
-    //       style={styles.textInput}
-    //     />
-    //   </View>
-    //   <View>
-    //     <Text style={styles.label}>Password</Text>
-    //     <TextInput
-    //       placeholder="password"
-    //       secureTextEntry={true}
-    //       nativeID="password"
-    //       onChangeText={(text) => {
-    //         passwordRef.current = text;
-    //       }}
-    //       style={styles.textInput}
-    //     />
-    //   </View>
-    //   <Text
-    //     onPress={async () =>
-    //       await signIn(emailRef.current, passwordRef.current)
-    //     }
-    //   >
-    //     Login
-    //   </Text>
-    //   <Text onPress={() => router.push("/create-account")}>Create Account</Text>
-    // </View>
   );
 }

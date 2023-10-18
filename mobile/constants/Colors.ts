@@ -1,20 +1,19 @@
 /* eslint-disable import/no-anonymous-default-export */
-const tintColorLight = "#2f95dc";
-const tintColorDark = "#fff";
+import tw from "tailwind";
 
 export default {
   light: {
-    text: "#000",
-    background: "#fff",
-    tint: tintColorLight,
+    text: tw.color("movet-black"),
+    background: tw.color("movet-white"),
+    tint: tw.color("movet-red"),
     tabIconDefault: "#ccc",
-    tabIconSelected: tintColorLight,
+    tabIconSelected: tw.color("movet-red"),
   },
   dark: {
-    text: "#fff",
-    background: "#000",
-    tint: tintColorDark,
+    text: tw.color("movet-white"),
+    background: tw.color("movet-black"),
+    tint: tw.color("movet-white"),
     tabIconDefault: "#ccc",
-    tabIconSelected: tintColorDark,
+    tabIconSelected: tw.color("movet-white"),
   },
 };

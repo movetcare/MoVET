@@ -35,11 +35,11 @@ export default function Account() {
           pathname: "/sign-out",
           query: router.query,
         });
-      else
-        router.replace({
-          pathname: "/404",
-          query: router.query,
-        });
+      // else
+      //   router.replace({
+      //     pathname: "/404",
+      //     query: router.query,
+      //   });
     }
   }, [router, mode]);
 
