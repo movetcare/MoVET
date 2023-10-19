@@ -5,19 +5,22 @@ import { useRouter } from "next/router";
 
 export const PrivacyPolicy = () => {
   const router = useRouter();
+  const { mode } = router.query;
   return (
     <>
       <Head>
         <title>Privacy Policy</title>
       </Head>
       <section className="max-w-screen-lg bg-white rounded-xl p-4 sm:p-8 mx-4 sm:mx-auto m-4 sm:m-8">
-        <div
-          className="flex flex-row justify-center items-center my-4 cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <FontAwesomeIcon icon={faArrowLeft} />
-          <p className="ml-2">Go Back</p>
-        </div>
+        {mode !== "app" && (
+          <div
+            className="flex flex-row justify-center items-center my-4 cursor-pointer"
+            onClick={() => router.back()}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+            <p className="ml-2">Go Back</p>
+          </div>
+        )}
         <h1>Privacy Policy</h1>
         <h2>Introduction</h2>
         <p>
@@ -565,13 +568,15 @@ export const PrivacyPolicy = () => {
           This Policy was posted on April 1st 2022, and last revised on, and
           effective as of, April 1st 2022.
         </p>
-        <div
-          className="flex flex-row justify-center items-center my-4 cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <FontAwesomeIcon icon={faArrowLeft} />
-          <p className="ml-2">Go Back</p>
-        </div>
+        {mode !== "app" && (
+          <div
+            className="flex flex-row justify-center items-center my-4 cursor-pointer"
+            onClick={() => router.back()}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+            <p className="ml-2">Go Back</p>
+          </div>
+        )}
       </section>
     </>
   );

@@ -1,6 +1,8 @@
+import { router } from "expo-router";
 import { auth } from "firebase-config";
 import {
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signOut,
   sendSignInLinkToEmail,
   signInWithEmailLink,
@@ -8,36 +10,48 @@ import {
 import { AuthStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 
-export const signIn = async (email: string, password: string) => {
+export const signIn = async (email: string, password?: string | undefined) => {
   AuthStore.update((store) => {
     store.user = { email };
   });
-  try {
-    await sendSignInLinkToEmail(auth, email, {
-      url: getPlatformUrl() + "/home",
-      iOS: {
-        bundleId: "com.movet.inc",
-      },
-      android: {
-        packageName: "com.movet",
-        installApp: true,
-        minimumVersion: "12",
-      },
-      handleCodeInApp: true,
-    });
-    return true;
-  } catch (error: any) {
-    console.error(error);
-    alert(error?.code + '\n\n"' + error?.customData?.message + '"');
-    return false;
-  }
+  if (password) {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      AuthStore.update((store) => {
+        store.user = auth.currentUser;
+        store.isLoggedIn = true;
+      });
+      router.replace("/(app)/home");
+    } catch (error: any) {
+      console.error(error);
+      alert(error?.code + '\n\n"' + error?.customData?.message + '"');
+      return false;
+    }
+  } else
+    try {
+      await sendSignInLinkToEmail(auth, email, {
+        url: getPlatformUrl() + "/home",
+        iOS: {
+          bundleId: "com.movet.inc",
+        },
+        android: {
+          packageName: "com.movet",
+          installApp: true,
+          minimumVersion: "12",
+        },
+        handleCodeInApp: true,
+      });
+      return true;
+    } catch (error: any) {
+      console.error(error);
+      alert(error?.code + '\n\n"' + error?.customData?.message + '"');
+      return false;
+    }
 };
 
 export const signInWithLink = async (email: string, link: string) =>
   await signInWithEmailLink(auth, email, link)
     .then((result) => {
-      console.log("SIGN IN SUCCESS!", result);
-      alert("result" + JSON.stringify(result));
       AuthStore.update((store) => {
         store.user = result.user;
         store.isLoggedIn = true;

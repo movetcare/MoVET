@@ -8,14 +8,7 @@ const Settings = () => {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Stack.Screen options={{ headerShown: true, title: "Settings" }} />
-      {/* <Text style={{ fontFamily: "EncodeSansSemiCondensed_100Thin" }}>
-        EncodeSansSemiCondensed_100Thin
-      </Text>
-      <Text style={{ fontFamily: "EncodeSansSemiCondensed_300Light" }}>
-        EncodeSansSemiCondensed_300Light
-      </Text> */}
-      <Text>{AuthStore.getRawState().user?.email}</Text>
-      <Text>{AuthStore.getRawState().user?.displayName}</Text>
+      <Text>{JSON.stringify(AuthStore.getRawState()?.user)}</Text>
       <Button
         onPress={async () => {
           if (await signOff()) router.replace("/(auth)/sign-in");

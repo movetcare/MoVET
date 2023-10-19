@@ -1,9 +1,4 @@
-import {
-  useRouter,
-  useSegments,
-  useRootNavigationState,
-  SplashScreen,
-} from "expo-router";
+import { useRouter, useSegments, useRootNavigationState } from "expo-router";
 import { AuthStore } from "stores";
 import { useEffect } from "react";
 import { isProductionEnvironment } from "utils/isProductionEnvironment";
@@ -17,8 +12,7 @@ const Index = () => {
     if (!navigationState?.key || !initialized) return;
     else {
       if (isProductionEnvironment)
-        alert("segments: " + JSON.stringify(segments));
-      SplashScreen.hideAsync();
+        alert("index segments: " + JSON.stringify(segments));
       if (!isLoggedIn && segments[0] !== "(auth)")
         router.replace("/(auth)/sign-in");
       else if (isLoggedIn) router.replace("/(app)/home");

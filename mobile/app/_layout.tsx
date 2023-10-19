@@ -7,7 +7,7 @@ import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
 import { useDeviceContext } from "twrnc";
 import tw from "tailwind";
-import { View, Text } from "components/themed";
+import { ErrorLayout } from "components/themed";
 import { FontAwesome } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 
@@ -15,10 +15,12 @@ SplashScreen.preventAutoHideAsync();
 
 export function ErrorBoundary(props: ErrorBoundaryProps) {
   return (
-    <View style={{ flex: 1 }}>
-      <Text>{props.error.message}</Text>
-      <Text onPress={props.retry}>Try Again?</Text>
-    </View>
+    <ErrorLayout
+      message={props.error.message}
+      actionTitle={"Retry"}
+      actionIconName="redo"
+      action={props.retry}
+    />
   );
 }
 
@@ -63,11 +65,7 @@ const Layout = () => {
   });
 
   useEffect(() => {
-    if (error) {
-      console.error(error);
-      alert("ERROR: " + JSON.stringify(error));
-      throw error;
-    }
+    if (error) throw error;
   }, [error]);
 
   if (!loaded) SplashScreen.hideAsync();

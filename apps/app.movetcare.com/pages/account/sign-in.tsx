@@ -9,15 +9,8 @@ export default function Account() {
   const { mode, oobCode, continueUrl, lang, apiKey } = router.query;
   const signInText = "Signing Into Your Account...";
   useEffect(() => {
-    if (router && mode && oobCode && continueUrl && lang && apiKey) {
-      alert("mode:" + mode);
-      alert("query:" + JSON.stringify(router.query));
-      alert(
-        "REDIRECTING TO: " +
-          `movet://sign-in?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
-      );
+    if (router && mode && oobCode && continueUrl && lang && apiKey)
       window.location.href = `movet://sign-in?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`;
-    }
   }, [router, mode, oobCode, continueUrl, lang, apiKey]);
 
   return (
@@ -29,7 +22,6 @@ export default function Account() {
         <AppHeader />
         <section className="relative max-w-xl mx-auto bg-white rounded-xl p-4 mb-8 sm:p-8">
           <Loader message={signInText} />
-          <code>{JSON.stringify(router.query)}</code>
         </section>
       </main>
     </div>

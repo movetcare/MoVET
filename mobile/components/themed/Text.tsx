@@ -21,7 +21,7 @@ export const HeadingText = (props: TextProps) => {
   return (
     <Text
       {...otherProps}
-      style={[{ color }, tw`capitalize font-parkinson-bold text-2xl`, style]}
+      style={[{ color }, tw`capitalize font-parkinson text-2xl`, style]}
     />
   );
 };
@@ -32,7 +32,7 @@ export const SubHeadingText = (props: TextProps) => {
   return (
     <Text
       {...otherProps}
-      style={[{ color }, tw`uppercase leading-6 font-abside-regular`, style]}
+      style={[{ color }, tw`uppercase leading-6 font-abside`, style]}
     />
   );
 };
@@ -43,11 +43,7 @@ export const BodyText = (props: TextProps) => {
   return (
     <Text
       {...otherProps}
-      style={[
-        { color },
-        tw`font-source-sans-pro-regular rounded-xl text-base`,
-        style,
-      ]}
+      style={[{ color }, tw`font-source-sans-pro rounded-xl text-base`, style]}
     />
   );
 };
