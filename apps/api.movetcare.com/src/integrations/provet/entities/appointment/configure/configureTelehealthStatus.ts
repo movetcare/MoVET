@@ -41,7 +41,7 @@ export const configureTelehealthStatus = async (): Promise<boolean> => {
             {
               title: "Closed for the Day",
               message:
-                "Thanks for reaching out! Our office is currently closed. We will reopen tomorrow morning at 9 am.",
+                "Thanks for reaching out! Our office is currently closed. We will reopen at 9:00 AM.",
             },
             {
               title: "Holiday Closure",
