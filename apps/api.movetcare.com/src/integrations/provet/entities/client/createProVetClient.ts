@@ -1,11 +1,11 @@
-import {request, throwError, DEBUG} from "../../../../config/config";
-import {verifyExistingClient} from "../../../../utils/auth/verifyExistingClient";
-import {capitalizeFirstLetter} from "../../../../utils/capitalizeFirstLetter";
+import { request, throwError, DEBUG } from "../../../../config/config";
+import { verifyExistingClient } from "../../../../utils/auth/verifyExistingClient";
+import { capitalizeFirstLetter } from "../../../../utils/capitalizeFirstLetter";
 import { updateSendGridContact } from "../../../sendgrid/updateSendGridContact";
 
 export const createProVetClient = async (data: {
   email: string;
-  zip_code: string | null;
+  zip_code?: string | null;
   firstname?: string;
   lastname?: string;
 }): Promise<any> => {

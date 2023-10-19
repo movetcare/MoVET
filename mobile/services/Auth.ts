@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { auth } from "firebase-config";
+import { auth, functions } from "firebase-config";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -7,6 +7,7 @@ import {
   sendSignInLinkToEmail,
   signInWithEmailLink,
 } from "firebase/auth";
+import { httpsCallable } from "firebase/functions";
 import { AuthStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 
@@ -29,18 +30,30 @@ export const signIn = async (email: string, password?: string | undefined) => {
     }
   } else
     try {
-      await sendSignInLinkToEmail(auth, email, {
-        url: getPlatformUrl() + "/home",
-        iOS: {
-          bundleId: "com.movet.inc",
-        },
-        android: {
-          packageName: "com.movet",
-          installApp: true,
-          minimumVersion: "12",
-        },
-        handleCodeInApp: true,
-      });
+      const verifyClient = httpsCallable(functions, "verifyClient");
+      verifyClient({ email })
+        .then(async (result) => {
+          if (result.data) {
+            await sendSignInLinkToEmail(auth, email, {
+              url: getPlatformUrl() + "/home",
+              iOS: {
+                bundleId: "com.movet.inc",
+              },
+              android: {
+                packageName: "com.movet",
+                installApp: true,
+                minimumVersion: "12",
+              },
+              handleCodeInApp: true,
+            });
+            return true;
+          } else alert("Client Verification FAILED: " + JSON.stringify(result));
+          return false;
+        })
+        .catch((error) => {
+          alert(JSON.stringify(error));
+        });
+
       return true;
     } catch (error: any) {
       console.error(error);
@@ -94,11 +107,10 @@ export const signUp = async (email: string, password: string) => {
   }
 };
 
-export const updateUserAuth = async (user: any) => {
-  console.log("updateUserAuth", user);
+export const updateUserAuth = async (user: any) =>
   AuthStore.update((store) => {
     store.user = user;
     store.isLoggedIn = user ? true : false;
     store.initialized = true;
   });
-};
+

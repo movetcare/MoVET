@@ -53,15 +53,20 @@ export default function LogIn() {
       );
   }, [mode, oobCode, continueUrl, lang, apiKey, user?.email]);
 
-  useEffect(() => {
-    if (isLoggedIn) router.replace((redirectPath as string) || "/(app)/home");
-  }, [isLoggedIn]);
+useEffect(() => {
+  if (isLoggedIn) router.replace((redirectPath as string) || "/(app)/home");
+}, [isLoggedIn]);
 
-  const signInUserWithLink = async (email: string, link: string) =>
-    await signInWithLink(email, link)
-      .then((user: any) => (user ? router.replace("/(app)/home") : null))
-      .catch((error: any) => alert(JSON.stringify(error)));
-
+const signInUserWithLink = async (email: string, link: string) => {
+  setIsLoading(true);
+  await signInWithLink(email, link)
+    .then((user: any) => (user ? router.replace("/(app)/home") : null))
+    .catch((error: any) => alert(JSON.stringify(error)))
+    .finally(() => {
+      setIsLoading(false);
+      setShowVerificationButton(true);
+    });
+};
   const onSubmit = async (data: { email: string; password?: string }) => {
     setIsLoading(true);
     await signIn(data?.email, data?.password)

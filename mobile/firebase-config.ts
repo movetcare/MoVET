@@ -8,6 +8,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import firebaseEmulatorConfig from "./firebase.json";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 const { emulators } = firebaseEmulatorConfig;
 
 const FIREBASE_KEYS = __DEV__
@@ -50,6 +51,7 @@ export const auth = initializeAuth(app, {
 });
 export const firestore = getFirestore(app);
 export const storage = getStorage(app);
+export const functions = getFunctions(app);
 
 if (__DEV__) {
   console.log("DEVELOPMENT MODE DETECTED - USING LOCAL FIREBASE EMULATORS", {
@@ -79,5 +81,10 @@ if (__DEV__) {
     getStorage(app),
     emulators.storage.host,
     emulators.storage.port,
+  );
+  connectFunctionsEmulator(
+    getFunctions(app),
+    emulators.functions.host,
+    emulators.functions.port,
   );
 }
