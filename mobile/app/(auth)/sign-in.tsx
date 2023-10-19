@@ -32,9 +32,16 @@ export default function LogIn() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showVerificationButton, setShowVerificationButton] =
     useState<boolean>(false);
-  const { user } = AuthStore.useState();
-  const { mode, oobCode, continueUrl, lang, apiKey, withPassword } =
-    useLocalSearchParams();
+  const { user, isLoggedIn } = AuthStore.useState();
+  const {
+    mode,
+    oobCode,
+    continueUrl,
+    lang,
+    apiKey,
+    withPassword,
+    redirectPath,
+  } = useLocalSearchParams();
   const isDarkMode = useColorScheme() !== "light";
 
   useEffect(() => {
@@ -45,6 +52,10 @@ export default function LogIn() {
           `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
       );
   }, [mode, oobCode, continueUrl, lang, apiKey, user?.email]);
+
+  useEffect(() => {
+    if (isLoggedIn) router.replace((redirectPath as string) || "/(app)/home");
+  }, [isLoggedIn]);
 
   const signInUserWithLink = async (email: string, link: string) =>
     await signInWithLink(email, link)
@@ -57,7 +68,7 @@ export default function LogIn() {
       .then(
         () =>
           !data?.password &&
-          alert(`Check your email (${data?.email}) for a login link.`),
+          alert(`Check your email - ${data?.email} for a login link.`),
       )
       .catch((error: any) => alert(JSON.stringify(error)))
       .finally(() => {
@@ -129,7 +140,9 @@ export default function LogIn() {
           <View style={tw`w-full pb-12 px-8 bg-transparent items-center`}>
             <SubmitButton
               iconName={
-                isProductionEnvironment && !withPassword
+                isLoading
+                  ? "spinner"
+                  : isProductionEnvironment && !withPassword
                   ? "arrow-right"
                   : isDirty
                   ? "lock-open"

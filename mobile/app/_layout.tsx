@@ -1,4 +1,9 @@
-import { ErrorBoundaryProps, SplashScreen, Stack } from "expo-router";
+import {
+  ErrorBoundaryProps,
+  SplashScreen,
+  Stack,
+  useRootNavigationState,
+} from "expo-router";
 import { useEffect } from "react";
 import { updateUserAuth } from "services/Auth";
 import { onAuthStateChanged } from "firebase/auth";
@@ -10,6 +15,7 @@ import tw from "tailwind";
 import { ErrorLayout } from "components/themed";
 import { FontAwesome } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
+import { AuthStore } from "stores/AuthStore";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,6 +32,8 @@ export function ErrorBoundary(props: ErrorBoundaryProps) {
 
 const Layout = () => {
   useDeviceContext(tw);
+  const navigationState = useRootNavigationState();
+  const { initialized, isLoggedIn } = AuthStore.useState();
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user: any) =>
       updateUserAuth(user),
@@ -54,6 +62,11 @@ const Layout = () => {
       subscription.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (!navigationState?.key || !initialized) return;
+    else if (!isLoggedIn) router.replace("/(auth)/sign-in");
+  }, [navigationState?.key, initialized, isLoggedIn, router]);
 
   const [loaded, error] = useFonts({
     Abside: require("../assets/fonts/Abside-Regular.ttf"),

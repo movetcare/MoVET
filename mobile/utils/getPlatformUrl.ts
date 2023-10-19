@@ -13,7 +13,7 @@ export const getPlatformUrl = (
         ? "https://app.movetcare.com"
         : "http://localhost:3001";
     case "mobile":
-      return isProductionEnvironment ? "movet://" : "exp://192.168.0.115:8081";
+      return isProductionEnvironment ? "movet://" : "exp://127.0.0.1:8081/--/";
     default:
       return isProductionEnvironment
         ? "https://app.movetcare.com"

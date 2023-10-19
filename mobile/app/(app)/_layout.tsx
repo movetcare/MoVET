@@ -14,12 +14,23 @@ const TabsLayout = () => {
         <Tabs.Screen
           name="home"
           options={{
-            title: "My MoVET",
+            title: "Home",
             tabBarActiveTintColor: tw.color("movet-black"),
             tabBarActiveBackgroundColor: tw.color("movet-white"),
             tabBarInactiveBackgroundColor: tw.color("white"),
             tabBarInactiveTintColor: tw.color("movet-black"),
             tabBarIcon: () => <Text>🏠</Text>,
+          }}
+        />
+        <Tabs.Screen
+          name="pets"
+          options={{
+            title: "Pets",
+            tabBarActiveTintColor: tw.color("movet-black"),
+            tabBarActiveBackgroundColor: tw.color("movet-white"),
+            tabBarInactiveBackgroundColor: tw.color("white"),
+            tabBarInactiveTintColor: tw.color("movet-black"),
+            tabBarIcon: () => <Text>🏷️</Text>,
           }}
         />
         <Tabs.Screen
