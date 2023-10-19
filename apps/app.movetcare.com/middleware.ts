@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-const DEBUG = true;
+const DEBUG = false;
 export function middleware(request: NextRequest) {
   if (request.nextUrl.pathname === "/") {
     if (DEBUG) console.log("request.nextUrl", request.nextUrl);
