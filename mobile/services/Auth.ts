@@ -9,6 +9,9 @@ import { AuthStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 
 export const signIn = async (email: string, password: string) => {
+  AuthStore.update((store) => {
+    store.user = { email };
+  });
   try {
     await sendSignInLinkToEmail(auth, email, {
       url: getPlatformUrl() + "/home",

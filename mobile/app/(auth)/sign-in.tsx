@@ -16,8 +16,8 @@ import {
   SubmitButton,
 } from "components/themed";
 import { router, useLocalSearchParams } from "expo-router";
-// import { AuthStore } from "stores/AuthStore";
-// import { getPlatformUrl } from "utils/getPlatformUrl";
+import { AuthStore } from "stores/AuthStore";
+import { getPlatformUrl } from "utils/getPlatformUrl";
 
 const backgroundLight = require("assets/images/backgrounds/sign-in-background.png");
 const backgroundDark = require("assets/images/backgrounds/sign-in-background.png");
@@ -32,30 +32,47 @@ export default function LogIn() {
     mode: "onSubmit",
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [showVerificationButton, setShowVerificationButton] =
-  //   useState<boolean>(false);
+  const [showVerificationButton, setShowVerificationButton] =
+    useState<boolean>(false);
 
-  //const { user } = AuthStore.useState();
+  const { user } = AuthStore.useState();
 
-  const { email, link, success } = useLocalSearchParams();
-  const params = useLocalSearchParams();
+  const { mode, oobCode, continueUrl, lang, apiKey } = useLocalSearchParams();
 
   useEffect(() => {
-    alert("useLocalSearchParams() = " + JSON.stringify(params));
-    const signInUserWithLink = async (email: string, link: string) =>
-      await signInWithLink(email, link).then((user: any) => {
+    alert(
+      "useLocalSearchParams() = " +
+        JSON.stringify({ mode, oobCode, continueUrl, lang, apiKey }),
+    );
+    alert("user: " + user?.email);
+    alert(
+      "LINK: " +
+        getPlatformUrl() +
+        `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
+    );
+
+    if (mode && oobCode && continueUrl && lang && apiKey && user?.email)
+      signInUserWithLink(
+        user.email,
+        getPlatformUrl() +
+          `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
+      );
+    console.log({ mode, oobCode, continueUrl, lang, apiKey });
+  }, [mode, oobCode, continueUrl, lang, apiKey, user?.email]);
+
+  const signInUserWithLink = async (email: string, link: string) =>
+    await signInWithLink(email, link)
+      .then((user: any) => {
         alert("SIGN IN SUCCESS! " + JSON.stringify(user));
-      });
-    if (email && link && success)
-      signInUserWithLink(email as string, link as string);
-    console.log({ email, link, success });
-  }, [email, link, success, params]);
+      })
+      .catch((error: any) => alert(JSON.stringify(error)));
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    await signIn(data?.email, data?.password).finally(() =>
-      setIsLoading(false),
-    );
+    await signIn(data?.email, data?.password).finally(() => {
+      setIsLoading(false);
+      setShowVerificationButton(true);
+    });
   };
 
   return (
@@ -102,58 +119,18 @@ export default function LogIn() {
               textContentType="password"
               editable={!isLoading}
             />
-            <View
-              style={tw`flex-row bg-movet-white dark:bg-movet-black rounded-xl mt-2 p-2 opacity-75`}
-            >
-              {/* {showVerificationButton ? (
+
+            {showVerificationButton && (
+              <View
+                style={tw`flex-row bg-movet-white dark:bg-movet-black rounded-xl mt-2 p-2 opacity-75`}
+              >
                 <TextButton
                   title="RESEND ACCOUNT VERIFICATION EMAIL"
                   style={tw`text-xs text-center`}
-                  onPress={() =>
-                    sendEmailVerification(user, {
-                      url:
-                        getPlatformUrl() +
-                        "/sign-in?success=true&email=" +
-                        user?.email,
-                      iOS: {
-                        bundleId: "com.movet.inc",
-                      },
-                      android: {
-                        packageName: "com.movet",
-                        installApp: true,
-                        minimumVersion: "12",
-                      },
-                      handleCodeInApp: true,
-                    })
-                  }
+                  onPress={() => onSubmit({ email: user?.email })}
                 />
-              ) : (
-                <TextButton
-                  title="Forgot Password?"
-                  style={tw`text-xs`}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/forgot-password",
-                      params: {
-                        email: getValues("email" as any)?.toLowerCase(),
-                      },
-                    })
-                  }
-                />
-              )} */}
-              <TextButton
-                title="Forgot Password?"
-                style={tw`text-xs`}
-                onPress={() =>
-                  router.push({
-                    pathname: "/forgot-password",
-                    params: {
-                      email: getValues("email" as any)?.toLowerCase(),
-                    },
-                  })
-                }
-              />
-            </View>
+              </View>
+            )}
           </View>
           <View style={tw`w-full pb-12 px-8 bg-transparent items-center`}>
             <SubmitButton

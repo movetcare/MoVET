@@ -6,30 +6,19 @@ import { useEffect } from "react";
 
 export default function Account() {
   const router = useRouter();
-  const { mode } = router.query;
+  const { mode, oobCode, continueUrl, lang, apiKey } = router.query;
   const signInText = "Signing Into Your Account...";
   useEffect(() => {
-    if (router && mode) {
+    if (router && mode && oobCode && continueUrl && lang && apiKey) {
       alert("mode:" + mode);
       alert("query:" + JSON.stringify(router.query));
       alert(
         "REDIRECTING TO: " +
-          "movet://sign-in?email=" +
-          router.query.email +
-          "&link=" +
-          `?mode=${router.query?.mode}&oobCode=${router.query?.oobCode}&continueUrl=${router.query?.continueUrl}&lang=${router.query?.lang}&apiKey=${router.query?.apiKey}` +
-          "&success=" +
-          router.query.success,
+          `movet://sign-in?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
       );
-      window.location.href =
-        "movet://sign-in?email=" +
-        router.query.email +
-        "&link=" +
-        `https://app.movetcare.com/account?mode=${router.query?.mode}&oobCode=${router.query?.oobCode}&continueUrl=${router.query?.continueUrl}&lang=${router.query?.lang}&apiKey=${router.query?.apiKey}` +
-        "&success=" +
-        router.query.success;
+      window.location.href = `movet://sign-in?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`;
     }
-  }, [router, mode]);
+  }, [router, mode, oobCode, continueUrl, lang, apiKey]);
 
   return (
     <div className="h-screen flex flex-grow items-center justify-center max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden">
