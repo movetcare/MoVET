@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { AppLinks } from "ui";
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -14,6 +13,7 @@ export default function RequestSuccess() {
     localStorage.removeItem("email");
     localStorage.removeItem("bookingSession");
     setSubmissionSuccess(true);
+    console.log(submissionSuccess);
   }, []);
 
   return (

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { AppLinks, Button, Loader } from "ui";
+import { Button, Loader } from "ui";
 import { Error } from "components/Error";
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
