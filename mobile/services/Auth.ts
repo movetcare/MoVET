@@ -11,7 +11,7 @@ import { getPlatformUrl } from "utils/getPlatformUrl";
 export const signIn = async (email: string, password: string) => {
   try {
     await sendSignInLinkToEmail(auth, email, {
-      url: getPlatformUrl() + "/sign-in?success=true&email=" + email,
+      url: getPlatformUrl() + "/home",
       iOS: {
         bundleId: "com.movet.inc",
       },
@@ -20,7 +20,7 @@ export const signIn = async (email: string, password: string) => {
         installApp: true,
         minimumVersion: "12",
       },
-      // handleCodeInApp: true,
+      handleCodeInApp: true,
     });
     return true;
   } catch (error: any) {
