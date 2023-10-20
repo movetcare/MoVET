@@ -81,15 +81,24 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         "expo-camera",
         {
-          cameraPermission: "Allow $(PRODUCT_NAME) to access your camera.",
+          cameraPermission:
+            "(camera) Allow $(PRODUCT_NAME) to access your camera. Sharing photos with MoVET is not required, but it can help us expedite care for your pets.",
         },
       ],
+      // [
+      //   "expo-media-library",
+      //   {
+      //     photosPermission:
+      //       "(media-library) Allow $(PRODUCT_NAME) to access your photos. Sharing photos with MoVET is not required, but it can help us expedite care for your pets.",
+      //   },
+      // ],
       [
-        "expo-media-library",
+        "expo-image-picker",
         {
-          photosPermission: "Allow $(PRODUCT_NAME) to access your photos.",
-          savePhotosPermission: "Allow $(PRODUCT_NAME) to save photos.",
-          isAccessMediaLocationEnabled: true,
+          photosPermission:
+            "(image-picker) Allow $(PRODUCT_NAME) to access your photos. Sharing photos with MoVET is not required, but it can help us expedite care for your pets.",
+          cameraPermission:
+            "(image-picker) Allow $(PRODUCT_NAME) to access your camera. Sharing photos with MoVET is not required, but it can help us expedite care for your pets.",
         },
       ],
       [
@@ -103,7 +112,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ],
     extra: {
       environment: process.env.APP_ENVIRONMENT || "development",
-      apiKey: "L9At3HGmvRDuyi7TTX",
       eas: {
         projectId:
           process.env.EXPO_PROJECT_ID || "e338e0ce-a592-44f3-b700-e69d46390080",

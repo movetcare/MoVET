@@ -182,6 +182,7 @@ const ChatIndex = () => {
   }, []);
 
   useEffect(() => {
+    alert("user = " + JSON.stringify(user));
     if (user?.uid) {
       const unsubscribeChatLogDocuments = onSnapshot(
         query(
@@ -236,10 +237,10 @@ const ChatIndex = () => {
   );
 
   const uploadImageAsync = async (uri: any) => {
+    alert("URI:" + uri);
     const blob: any = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = () => resolve(xhr.response);
-
       xhr.onerror = (error: any) => {
         console.error(error);
         alert(error);
@@ -249,6 +250,7 @@ const ChatIndex = () => {
       xhr.open("GET", uri, true);
       xhr.send(null);
     });
+    alert("user?.uid = " + user?.uid);
     const fileRef = ref(storage, `clients/${user?.uid}/` + uuid());
     await uploadBytes(fileRef, blob).catch((error) => {
       console.error(error);
@@ -262,6 +264,7 @@ const ChatIndex = () => {
   };
 
   const onSendFromUser = useCallback(async (messages: IMessage[] = []) => {
+    alert("MESSAGES = " + JSON.stringify(messages));
     setMessages([
       ...messages,
       {
@@ -275,6 +278,7 @@ const ChatIndex = () => {
         },
       },
     ]);
+    alert("user: " + JSON.stringify(user));
     const messagesToUpload: any = messages.map((message) => ({
       ...message,
       user: {
