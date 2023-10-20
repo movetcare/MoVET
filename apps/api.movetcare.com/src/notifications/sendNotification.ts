@@ -384,7 +384,7 @@ export const sendNotification = async ({
       }
       break;
     case "push":
-      if (payload?.category === "admin-telehealth") {
+      if (payload?.category === "admin") {
         let adminFcmTokens: Array<string> | null = null;
         const allAdminTokenData: Array<any> = [];
         adminFcmTokens = await admin

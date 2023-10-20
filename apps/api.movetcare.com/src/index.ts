@@ -24,7 +24,7 @@ export { handleCompletedTask } from "./triggers/handleCompletedTask";
 // export { sendgridWebhook } from "./endpoints/webhooks/sendgridWebhook";
 export { incomingWebhook } from "./endpoints/webhooks/incomingWebhook";
 
-export { verifyClient } from "./endpoints/mobile/client/verifyClient";
+export { verifyClient } from "./endpoints/new/verifyClient";
 export { createClient } from "./endpoints/mobile/client/createClient";
 export { createPatient } from "./endpoints/mobile/patient/createPatient";
 export { getBreeds } from "./endpoints/mobile/patient/getBreeds";

@@ -31,8 +31,9 @@ import "react-native-get-random-values";
 import { v4 as uuid } from "uuid";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
-import { View, Platform } from "react-native";
+import { Platform } from "react-native";
 import * as Notifications from "expo-notifications";
+import { View } from "components/themed";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -182,7 +183,6 @@ const ChatIndex = () => {
   }, []);
 
   useEffect(() => {
-    alert("user = " + JSON.stringify(user));
     if (user?.uid) {
       const unsubscribeChatLogDocuments = onSnapshot(
         query(

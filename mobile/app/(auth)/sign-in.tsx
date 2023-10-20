@@ -21,7 +21,7 @@ import { getPlatformUrl } from "utils/getPlatformUrl";
 import { isProductionEnvironment } from "utils/isProductionEnvironment";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 
-export default function LogIn() {
+export default function SignIn() {
   const {
     control,
     handleSubmit,
@@ -53,27 +53,27 @@ export default function LogIn() {
       );
   }, [mode, oobCode, continueUrl, lang, apiKey, user?.email]);
 
-useEffect(() => {
-  if (isLoggedIn) router.replace((redirectPath as string) || "/(app)/home");
-}, [isLoggedIn]);
+  useEffect(() => {
+    if (isLoggedIn) router.replace((redirectPath as string) || "/(app)/home");
+  }, [isLoggedIn, redirectPath]);
 
-const signInUserWithLink = async (email: string, link: string) => {
-  setIsLoading(true);
-  await signInWithLink(email, link)
-    .then((user: any) => (user ? router.replace("/(app)/home") : null))
-    .catch((error: any) => alert(JSON.stringify(error)))
-    .finally(() => {
-      setIsLoading(false);
-      setShowVerificationButton(true);
-    });
-};
+  const signInUserWithLink = async (email: string, link: string) => {
+    setIsLoading(true);
+    await signInWithLink(email, link)
+      .then((user: any) => (user ? router.replace("/(app)/home") : null))
+      .catch((error: any) => alert(JSON.stringify(error)))
+      .finally(() => {
+        setIsLoading(false);
+        setShowVerificationButton(true);
+      });
+  };
   const onSubmit = async (data: { email: string; password?: string }) => {
     setIsLoading(true);
     await signIn(data?.email, data?.password)
       .then(
         () =>
           !data?.password &&
-          alert(`Check your email - ${data?.email} for a login link.`),
+          alert(`Check your email - ${data?.email} for a sign in link.`),
       )
       .catch((error: any) => alert(JSON.stringify(error)))
       .finally(() => {
@@ -135,7 +135,7 @@ const signInUserWithLink = async (email: string, link: string) => {
                   style={tw`flex-row bg-movet-white dark:bg-movet-black rounded-xl mt-2 p-2 opacity-75`}
                 >
                   <TextButton
-                    title="RESEND LOGIN LINK"
+                    title="RESEND SIGN IN LINK"
                     style={tw`text-xs text-center`}
                     onPress={() => onSubmit({ email: user?.email })}
                   />

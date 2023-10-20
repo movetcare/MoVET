@@ -3,6 +3,10 @@ import { ExpoConfig, ConfigContext } from "@expo/config";
 
 const versions = require("./version.json");
 const isProduction = process.env.APP_ENVIRONMENT === "production";
+const themeColor = {
+  red: "#E76159",
+  white: "#f6f2f0",
+};
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   const sharedConfig: any = {
@@ -14,16 +18,16 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     scheme: "movet",
     userInterfaceStyle: "automatic",
     privacy: "hidden",
-    backgroundColor: "#f6f2f0",
-    primaryColor: "#E76159",
+    backgroundColor: themeColor.white,
+    primaryColor: themeColor.red,
     notification: {
       icon: "./assets/images/icons/app-icon.png",
-      color: "#E76159",
+      color: themeColor.red,
     },
     splash: {
       image: "./assets/images/splash.png",
       resizeMode: "cover",
-      backgroundColor: "#f6f2f0",
+      backgroundColor: themeColor.white,
     },
     updates: {
       fallbackToCacheTimeout: 0,
@@ -34,22 +38,22 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       supportsTablet: true,
       bundleIdentifier: "com.movet.inc",
       buildNumber: JSON.stringify(versions.buildVersion),
-      backgroundColor: "#f6f2f0",
+      backgroundColor: themeColor.white,
       config: {
         usesNonExemptEncryption: false,
       },
       infoPlist: {
-        NSCameraUsageDescription:
-          "Used for sharing photos of your pets with MoVET.",
-        NSPhotoLibraryUsageDescription:
-          "Used for uploading photos/videos to MoVET.",
-        NSMicrophoneUsageDescription:
-          "Used for uploading audio and videos to MoVET.",
+        // NSCameraUsageDescription:
+        //   "Used for sharing photos of your pets with MoVET.",
+        // NSPhotoLibraryUsageDescription:
+        //   "Used for uploading photos/videos to MoVET.",
+        // NSMicrophoneUsageDescription:
+        //   "Used for uploading audio and videos to MoVET.",
         UIBackgroundModes: ["remote-notification"],
-        NSRemindersUsageDescription:
-          "Used for adding MoVET appointments to your calendar.",
-        NSLocationWhenInUseUsageDescription:
-          "Used for making address recommendations while booking services with MoVET.",
+        // NSRemindersUsageDescription:
+        //   "Used for adding MoVET appointments to your calendar.",
+        // NSLocationWhenInUseUsageDescription:
+        //   "Used for making address recommendations while booking services with MoVET.",
       },
     },
     android: {
@@ -69,7 +73,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ],
       adaptiveIcon: {
         foregroundImage: "./assets/images/icons/app-icon.png",
-        backgroundColor: "#E76159",
+        backgroundColor: themeColor.red,
       },
       package: "com.movet",
       versionCode: versions.buildVersion,
@@ -105,7 +109,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         "expo-notifications",
         {
           icon: "./assets/images/icons/app-icon.png",
-          color: "#E76159",
+          color: themeColor.red,
           mode: isProduction ? "production" : "development",
         },
       ],

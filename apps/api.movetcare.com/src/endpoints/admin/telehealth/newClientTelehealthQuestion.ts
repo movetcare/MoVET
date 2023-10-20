@@ -37,7 +37,7 @@ export const newClientTelehealthMessage = functions.firestore
       sendNotification({
         type: "push",
         payload: {
-          category: "admin-telehealth",
+          category: "admin",
           title: "New Telehealth Message",
           message: `${displayName} has sent a new message!`,
           path: `/telehealth/chat/?id=${context.params.clientId}`,
