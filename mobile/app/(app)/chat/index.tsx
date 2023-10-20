@@ -295,16 +295,16 @@ const ChatIndex = () => {
       _id: `${Math.round(Math.random() * 1000000)}`,
     }));
     alert("messagesToUpload =>" + JSON.stringify(messagesToUpload));
-    //const messagesUploaded: IMessage[] = [];
-    // await Promise.all(
-    //   messagesToUpload.map(async (message: IMessage) =>
-    //     messagesUploaded.push({
-    //       ...message,
-    //       image: (await uploadImageAsync(message?.image)) as string,
-    //     }),
-    //   ),
-    // );
-    // onSend(messagesUploaded);
+    const messagesUploaded: IMessage[] = [];
+    await Promise.all(
+      messagesToUpload.map(async (message: IMessage) => {
+        messagesUploaded.push({
+          ...message,
+          image: (await uploadImageAsync(message?.image)) as string,
+        });
+      }),
+    ).then(() => onSend(messagesUploaded));
+    
   }, []);
 
   const renderCustomActions = useCallback(

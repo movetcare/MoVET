@@ -10,12 +10,10 @@ import {
   EmailInput,
   View,
   PasswordInput,
-  TextButton,
   SubmitButton,
   ItalicText,
   LinkText,
   ActionButton,
-  SubHeadingText,
 } from "components/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import { AuthStore } from "stores/AuthStore";

@@ -66,9 +66,9 @@ const Layout = () => {
   useEffect(() => {
     if (!navigationState?.key || !initialized) return;
     else if (!isLoggedIn) router.replace("/(auth)/sign-in");
-  }, [navigationState?.key, initialized, isLoggedIn, router]);
+  }, [navigationState?.key, initialized, isLoggedIn]);
 
-  const [loaded, error] = useFonts({
+  const [fontsLoaded, fontsError] = useFonts({
     Abside: require("../assets/fonts/Abside-Regular.ttf"),
     Parkinson: require("../assets/fonts/Parkinson-Bold.ttf"),
     "Abside Smooth": require("../assets/fonts/Abside-Smooth.ttf"),
@@ -78,10 +78,13 @@ const Layout = () => {
   });
 
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+    if (fontsError) throw fontsError;
+    else if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontsError]);
 
-  if (!loaded) SplashScreen.hideAsync();
+  if (!fontsLoaded) return null;
 
   return (
     <Stack
