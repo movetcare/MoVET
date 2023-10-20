@@ -1,7 +1,5 @@
 import * as Linking from "expo-linking";
-import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
-
 import { Alert } from "react-native";
 
 export default async function getPermissionAsync(
@@ -10,7 +8,7 @@ export default async function getPermissionAsync(
   const { status } =
     permission === "mediaLibrary"
       ? await ImagePicker.requestMediaLibraryPermissionsAsync()
-      : await Camera.requestCameraPermissionsAsync();
+      : await ImagePicker.requestCameraPermissionsAsync();
   alert("STATUS = " + status);
   if (status === "denied") {
     const permissionName = permission.toLowerCase().replace("_", " ");
@@ -88,7 +86,7 @@ export async function takePictureAsync(
     }[],
   ) => void,
 ) {
-  const cameraPermission = await Camera.requestCameraPermissionsAsync();
+  const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
   alert("cameraPermission = " + JSON.stringify(cameraPermission));
   if (cameraPermission.status !== "denied") {
     const result = await ImagePicker.launchCameraAsync({

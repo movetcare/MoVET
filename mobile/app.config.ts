@@ -83,20 +83,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     plugins: [
       "expo-router",
       [
-        "expo-camera",
-        {
-          cameraPermission:
-            "(camera) Allow $(PRODUCT_NAME) to access your camera. Sharing photos with MoVET is not required, but it can help us expedite care for your pets.",
-        },
-      ],
-      // [
-      //   "expo-media-library",
-      //   {
-      //     photosPermission:
-      //       "(media-library) Allow $(PRODUCT_NAME) to access your photos. Sharing photos with MoVET is not required, but it can help us expedite care for your pets.",
-      //   },
-      // ],
-      [
         "expo-image-picker",
         {
           photosPermission:

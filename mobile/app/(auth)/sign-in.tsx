@@ -14,6 +14,8 @@ import {
   SubmitButton,
   ItalicText,
   LinkText,
+  ActionButton,
+  SubHeadingText,
 } from "components/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import { AuthStore } from "stores/AuthStore";
@@ -47,7 +49,7 @@ export default function SignIn() {
   useEffect(() => {
     if (mode && oobCode && continueUrl && lang && apiKey && user?.email)
       signInUserWithLink(
-        user.email,
+        user?.email,
         getPlatformUrl() +
           `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
       );
@@ -128,45 +130,19 @@ export default function SignIn() {
                 editable={!isLoading}
               />
             )}
-            {showVerificationButton &&
-              isProductionEnvironment &&
-              !withPassword && (
-                <View
-                  style={tw`flex-row bg-movet-white dark:bg-movet-black rounded-xl mt-2 p-2 opacity-75`}
-                >
-                  <TextButton
-                    title="RESEND SIGN IN LINK"
-                    style={tw`text-xs text-center`}
-                    onPress={() => onSubmit({ email: user?.email })}
-                  />
-                </View>
-              )}
+            {!showVerificationButton && isProductionEnvironment && (
+              <View
+                style={tw`flex-row bg-movet-white/80 dark:bg-movet-black/75 rounded-xl p-2`}
+              >
+                <ItalicText style={tw`text-sm normal-case text-center`}>
+                  Please provide your email address to sign in or create a new
+                  account.
+                </ItalicText>
+              </View>
+            )}
           </View>
           <View style={tw`w-full pb-12 px-8 bg-transparent items-center`}>
-            <SubmitButton
-              iconName={
-                isLoading
-                  ? "spinner"
-                  : isProductionEnvironment && !withPassword
-                  ? "arrow-right"
-                  : isDirty
-                  ? "lock-open"
-                  : "lock"
-              }
-              color="red"
-              handleSubmit={handleSubmit}
-              onSubmit={onSubmit}
-              disabled={!isDirty}
-              loading={false}
-              title={
-                isLoading
-                  ? "Processing..."
-                  : isProductionEnvironment && !withPassword
-                  ? "Continue"
-                  : "Sign In"
-              }
-            />
-            {isDirty && (
+            {isDirty && !showVerificationButton && (
               <View
                 style={tw`flex-row bg-movet-white dark:bg-movet-black rounded-xl mt-4 p-2 opacity-75`}
               >
@@ -211,6 +187,39 @@ export default function SignIn() {
                   }
                 />
               </View>
+            )}
+            {showVerificationButton &&
+            !withPassword &&
+            isProductionEnvironment ? (
+              <ActionButton
+                title="Resend Sign In Link"
+                iconName="envelope"
+                onPress={() => onSubmit({ email: user?.email })}
+              />
+            ) : (
+              <SubmitButton
+                iconName={
+                  isLoading
+                    ? "spinner"
+                    : isProductionEnvironment && !withPassword
+                    ? "arrow-right"
+                    : isDirty
+                    ? "lock-open"
+                    : "lock"
+                }
+                color="red"
+                handleSubmit={handleSubmit}
+                onSubmit={onSubmit}
+                disabled={!isDirty}
+                loading={false}
+                title={
+                  isLoading
+                    ? "Processing..."
+                    : isProductionEnvironment && !withPassword
+                    ? "Continue"
+                    : "Sign In"
+                }
+              />
             )}
           </View>
         </View>
