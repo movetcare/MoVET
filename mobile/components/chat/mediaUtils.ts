@@ -11,11 +11,10 @@ export default async function getPermissionAsync(
       : await ImagePicker.requestCameraPermissionsAsync();
   alert("STATUS = " + status);
   if (status === "denied") {
-    const permissionName = permission.toLowerCase().replace("_", " ");
     Alert.alert(
       "Cannot be done 😞",
       `If you would like to use this feature, you'll need to enable the ${
-        permissionName === "mediaLibrary" ? "Photo Library" : "Camera"
+        permission === "mediaLibrary" ? "Photo Library" : "Camera"
       } permission in your phone settings.`,
       [
         {

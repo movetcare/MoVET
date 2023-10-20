@@ -41,10 +41,10 @@ const CustomActions = ({
       async (buttonIndex) => {
         switch (buttonIndex) {
           case 0:
-            pickImageAsync(onSend);
+            await pickImageAsync(onSend);
             return;
           case 1:
-            takePictureAsync(onSend);
+            await takePictureAsync(onSend);
             return;
         }
       },

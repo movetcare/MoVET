@@ -86,6 +86,11 @@ const ChatIndex = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
+    console.log(user);
+    alert("USER -> " + JSON.stringify(user));
+  }, [user]);
+
+  useEffect(() => {
     registerForPushNotificationsAsync().then(async (token: any) => {
       const deviceInfo = JSON.parse(
         JSON.stringify(Device, (key: any, value: any) =>
@@ -289,16 +294,17 @@ const ChatIndex = () => {
       createdAt: new Date(),
       _id: `${Math.round(Math.random() * 1000000)}`,
     }));
-    const messagesUploaded: IMessage[] = [];
-    await Promise.all(
-      messagesToUpload.map(async (message: IMessage) =>
-        messagesUploaded.push({
-          ...message,
-          image: (await uploadImageAsync(message?.image)) as string,
-        }),
-      ),
-    );
-    onSend(messagesUploaded);
+    alert("messagesToUpload =>" + JSON.stringify(messagesToUpload));
+    //const messagesUploaded: IMessage[] = [];
+    // await Promise.all(
+    //   messagesToUpload.map(async (message: IMessage) =>
+    //     messagesUploaded.push({
+    //       ...message,
+    //       image: (await uploadImageAsync(message?.image)) as string,
+    //     }),
+    //   ),
+    // );
+    // onSend(messagesUploaded);
   }, []);
 
   const renderCustomActions = useCallback(

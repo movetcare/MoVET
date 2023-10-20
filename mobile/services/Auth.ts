@@ -18,6 +18,7 @@ export const signIn = async (email: string, password?: string | undefined) => {
   if (password) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      alert("auth.currentUser => " + JSON.stringify(auth.currentUser));
       AuthStore.update((store) => {
         store.user = auth.currentUser;
         store.isLoggedIn = true;
@@ -65,8 +66,10 @@ export const signIn = async (email: string, password?: string | undefined) => {
 export const signInWithLink = async (email: string, link: string) =>
   await signInWithEmailLink(auth, email, link)
     .then((result) => {
+      alert("signInWithEmailLink => " + JSON.stringify(result));
+      alert("auth.currentUser => " + JSON.stringify(auth.currentUser));
       AuthStore.update((store) => {
-        store.user = result.user;
+        store.user = auth.currentUser;
         store.isLoggedIn = true;
       });
       return { user: auth.currentUser };
