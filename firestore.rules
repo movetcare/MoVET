@@ -22,6 +22,9 @@ service cloud.firestore {
     match /push_tokens/{uid} {
       allow read, write: if clientOwnsDocuments(uid) || isMoVETStaff();
     }
+    match /howloween/{uid} {
+      allow read, list: if isMoVETStaff();
+    }
     match /alerts/{sid} {
       allow read: if true;
       allow write: if isMoVETStaff();
