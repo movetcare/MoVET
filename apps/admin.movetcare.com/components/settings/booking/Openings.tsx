@@ -23,7 +23,7 @@ import Error from "components/Error";
 interface Opening {
   type:
     | "Clinic @ Belleview Station"
-    | "Boutique @ Belleview Station"
+    | "Boutique/Dog Wash @ Belleview Station"
     | "Clinic Walk-In Hours"
     | "Housecalls";
   days: string;
@@ -267,8 +267,8 @@ export const Openings = () => {
                                   name: "Clinic @ Belleview Station",
                                 },
                                 {
-                                  id: "Boutique @ Belleview Station",
-                                  name: "Boutique @ Belleview Station",
+                                  id: "Boutique/Dog Wash @ Belleview Station",
+                                  name: "Boutique/Dog Wash @ Belleview Station",
                                 },
                                 {
                                   id: "Clinic Walk-In Hours",

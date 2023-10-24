@@ -9,7 +9,6 @@ export default async function getPermissionAsync(
     permission === "mediaLibrary"
       ? await ImagePicker.requestMediaLibraryPermissionsAsync()
       : await ImagePicker.requestCameraPermissionsAsync();
-  alert("STATUS = " + status);
   if (status === "denied") {
     Alert.alert(
       "Cannot be done 😞",
@@ -44,32 +43,34 @@ export async function pickImageAsync(
     }[],
   ) => void,
 ) {
-  const mediaLibraryPermission =
-    await ImagePicker.requestMediaLibraryPermissionsAsync();
-  alert("mediaLibraryPermission: " + JSON.stringify(mediaLibraryPermission));
-  if (mediaLibraryPermission.status !== "denied") {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
-    delete (result as any).cancelled;
-    alert("launchImageLibraryAsync RESULT: " + JSON.stringify(result));
-    if (!result.canceled) {
-      onSend([
-        {
-          image: result.assets[0]?.uri,
-          _id: `${Math.round(Math.random() * 1000000)}`,
-          user: {
-            _id: `0`,
-            name: "",
-            avatar: "",
+  try {
+    const mediaLibraryPermission =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (mediaLibraryPermission.status !== "denied") {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
+      delete (result as any).cancelled;
+      if (!result.canceled) {
+        onSend([
+          {
+            image: result.assets[0]?.uri,
+            _id: `${Math.round(Math.random() * 1000000)}`,
+            user: {
+              _id: `0`,
+              name: "",
+              avatar: "",
+            },
           },
-        },
-      ]);
-      return result.assets[0]?.uri;
-    }
-  } else if (mediaLibraryPermission.status === "denied")
-    await getPermissionAsync("mediaLibrary");
+        ]);
+        return result.assets[0]?.uri;
+      }
+    } else if (mediaLibraryPermission.status === "denied")
+      await getPermissionAsync("mediaLibrary");
+  } catch (error) {
+    alert("ERROR => " + JSON.stringify(error));
+  }
 }
 
 export async function takePictureAsync(
@@ -85,28 +86,30 @@ export async function takePictureAsync(
     }[],
   ) => void,
 ) {
-  const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
-  alert("cameraPermission = " + JSON.stringify(cameraPermission));
-  if (cameraPermission.status !== "denied") {
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
-    alert("launchCameraAsync RESULT: " + JSON.stringify(result));
-    if (!result.canceled) {
-      onSend([
-        {
-          image: result.assets[0]?.uri,
-          _id: `${Math.round(Math.random() * 1000000)}`,
-          user: {
-            _id: `0`,
-            name: "",
-            avatar: "",
+  try {
+    const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+    if (cameraPermission.status !== "denied") {
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
+      if (!result.canceled) {
+        onSend([
+          {
+            image: result.assets[0]?.uri,
+            _id: `${Math.round(Math.random() * 1000000)}`,
+            user: {
+              _id: `0`,
+              name: "",
+              avatar: "",
+            },
           },
-        },
-      ]);
-      return result.assets[0]?.uri;
-    }
-  } else if (cameraPermission.status === "denied")
-    await getPermissionAsync("camera");
+        ]);
+        return result.assets[0]?.uri;
+      }
+    } else if (cameraPermission.status === "denied")
+      await getPermissionAsync("camera");
+  } catch (error) {
+    alert("ERROR => " + JSON.stringify(error));
+  }
 }

@@ -31,7 +31,7 @@ export const Hours = ({
   const boutiqueHours: Array<{ days: string; times: string }> = [];
   if (hours && hours.length)
     hours.map((hours: { type: string; days: string; times: string }) => {
-      if (hours.type === "Boutique @ Belleview Station")
+      if (hours.type === "Boutique/Dog Wash @ Belleview Station")
         boutiqueHours.push({ days: hours.days, times: hours.times });
     });
   const clinicWalkInHours: Array<{ days: string; times: string }> = [];
@@ -134,7 +134,7 @@ export const Hours = ({
                 </div>
               </div>
               <h3 className="text-xl text-center font-bold">
-                Boutique @ Belleview Station
+                Boutique/Dog Wash @ Belleview Station
               </h3>
               <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap">
                 <div className="w-full">
@@ -345,7 +345,7 @@ export const Hours = ({
             </div>{" "}
             <div className="w-full max-w-lg  whitespace-nowrap mt-8">
               <h3 className="text-xl text-center font-bold">
-                Boutique @ Belleview Station
+                Boutique/Dog Wash @ Belleview Station
               </h3>
               <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
                 <div className="w-full">
@@ -615,7 +615,7 @@ export const Hours = ({
                   </div>
                 </div>
                 <h3 className="text-xl text-center font-bold">
-                  Boutique @ Belleview Station
+                  Boutique/Dog Wash @ Belleview Station
                 </h3>
                 <p className="text-center -mb-1 italic">
                   CURRENTLY -{" "}
@@ -908,7 +908,7 @@ export const Hours = ({
                 </div>
               </div>
               <h3 className="text-xl text-center font-bold">
-                Boutique @ Belleview Station
+                Boutique/Dog Wash @ Belleview Station
               </h3>
               <p className="text-center -mb-1 italic">
                 CURRENTLY -{" "}

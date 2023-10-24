@@ -3,7 +3,7 @@ import { ImageBackground } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import tw from "tailwind";
 import DeviceDimensions from "utils/DeviceDimensions";
-import { HeadingText, SubHeadingText } from "./Text";
+import { BodyText, HeadingText, SubHeadingText } from "./Text";
 import { ActionButton } from "./buttons/ActionButton";
 import { View } from "./View";
 import { router } from "expo-router";
@@ -13,11 +13,13 @@ export const ErrorLayout = ({
   actionTitle = "Go Home",
   actionIconName = "home",
   action = () => router.replace("/(auth)/sign-in"),
+  details,
 }: {
   message: string;
   actionTitle?: string;
   actionIconName?: string;
   action?: any;
+  details?: string;
 }) => {
   return (
     <KeyboardAwareScrollView
@@ -61,6 +63,11 @@ export const ErrorLayout = ({
             >
               {message}
             </SubHeadingText>
+            {details && (
+              <View style={tw`mt-8 bg-movet-white p-4 rounded-xl`}>
+                <BodyText style={tw`text-xs`}>{details}</BodyText>
+              </View>
+            )}
           </View>
           <View style={tw`w-full pb-12 px-8 bg-transparent items-center`}>
             <ActionButton

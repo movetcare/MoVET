@@ -3,7 +3,7 @@ const DEBUG = false;
 interface Hours {
   type:
     | "Clinic @ Belleview Station"
-    | "Boutique @ Belleview Station"
+    | "Boutique/Dog Wash @ Belleview Station"
     | "Clinic Walk-In Hours"
     | "Housecalls";
   days: string;

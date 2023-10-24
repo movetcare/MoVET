@@ -86,11 +86,6 @@ const ChatIndex = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
-    console.log(user);
-    alert("USER -> " + JSON.stringify(user));
-  }, [user]);
-
-  useEffect(() => {
     registerForPushNotificationsAsync().then(async (token: any) => {
       const deviceInfo = JSON.parse(
         JSON.stringify(Device, (key: any, value: any) =>
@@ -242,7 +237,6 @@ const ChatIndex = () => {
   );
 
   const uploadImageAsync = async (uri: any) => {
-    alert("URI:" + uri);
     const blob: any = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = () => resolve(xhr.response);
@@ -255,7 +249,6 @@ const ChatIndex = () => {
       xhr.open("GET", uri, true);
       xhr.send(null);
     });
-    alert("user?.uid = " + user?.uid);
     const fileRef = ref(storage, `clients/${user?.uid}/` + uuid());
     await uploadBytes(fileRef, blob).catch((error) => {
       console.error(error);
@@ -269,7 +262,6 @@ const ChatIndex = () => {
   };
 
   const onSendFromUser = useCallback(async (messages: IMessage[] = []) => {
-    alert("MESSAGES = " + JSON.stringify(messages));
     setMessages([
       ...messages,
       {
@@ -283,7 +275,6 @@ const ChatIndex = () => {
         },
       },
     ]);
-    alert("user: " + JSON.stringify(user));
     const messagesToUpload: any = messages.map((message) => ({
       ...message,
       user: {
@@ -294,7 +285,6 @@ const ChatIndex = () => {
       createdAt: new Date(),
       _id: `${Math.round(Math.random() * 1000000)}`,
     }));
-    alert("messagesToUpload =>" + JSON.stringify(messagesToUpload));
     const messagesUploaded: IMessage[] = [];
     await Promise.all(
       messagesToUpload.map(async (message: IMessage) => {
@@ -303,8 +293,9 @@ const ChatIndex = () => {
           image: (await uploadImageAsync(message?.image)) as string,
         });
       }),
-    ).then(() => onSend(messagesUploaded));
-    
+    )
+      .then(() => onSend(messagesUploaded))
+      .catch((error) => alert("onSendFromUser ERROR => " + error));
   }, []);
 
   const renderCustomActions = useCallback(

@@ -79,9 +79,7 @@ const Layout = () => {
 
   useEffect(() => {
     if (fontsError) throw fontsError;
-    else if (fontsLoaded) {
-      SplashScreen.hideAsync();
-    }
+    else if (fontsLoaded) SplashScreen.hideAsync();
   }, [fontsLoaded, fontsError]);
 
   if (!fontsLoaded) return null;

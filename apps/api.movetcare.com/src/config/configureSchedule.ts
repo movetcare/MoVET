@@ -129,12 +129,12 @@ export const configureSchedule = async (): Promise<boolean> => {
       {
         days: "Mon - FRI",
         times: "9am TO 5PM",
-        type: "Boutique @ Belleview Station",
+        type: "Boutique/Dog Wash @ Belleview Station",
       },
       {
         days: "Sat & SUN",
         times: "CLOSed",
-        type: "Boutique @ Belleview Station",
+        type: "Boutique/Dog Wash @ Belleview Station",
       },
       {
         days: "TUE",
