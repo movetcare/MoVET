@@ -13,10 +13,14 @@ import Calendar from "react-calendar";
 import {
   faCalendarCheck,
   faExclamationTriangle,
+  faQuestion,
+  faQuestionCircle,
+  faUserDoctor,
 } from "@fortawesome/free-solid-svg-icons";
 import { Transition } from "@headlessui/react";
 import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 import { environment } from "utilities";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const formatTime = (time: string): string => {
   const hours =
@@ -47,6 +51,7 @@ const formatTime = (time: string): string => {
 };
 
 export default function DateTime() {
+  const bottomRef = useRef();
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -75,7 +80,8 @@ export default function DateTime() {
     else router.push("/schedule-an-appointment");
   }, [router]);
   useEffect(() => {
-    const fetchAppointmentAvailability = async () => {
+    const fetchAppointmentAvailability = async (): Promise<void> => {
+      setSelectedTime(null);
       const { data: result }: any = await httpsCallable(
         functions,
         "getAppointmentAvailability",
@@ -93,20 +99,21 @@ export default function DateTime() {
         setAppointmentAvailability(result);
         setClosedReason(null);
       } else if (typeof result === "string") {
+        setSelectedTime(null);
         setAppointmentAvailability(null);
         setClosedReason(result);
       } else setError(result);
       setIsLoading(false);
     };
-    fetchAppointmentAvailability();
+    if (selectedDate) fetchAppointmentAvailability();
   }, [selectedDate, session]);
-  useEffect(() => {
-    if (selectedDate) setSelectedTime(null);
-  }, [selectedDate]);
+
   const handleError = (error: any) => {
     console.error(error);
     setError(error);
+    setSelectedTime(null);
     setIsLoading(false);
+    setAppointmentAvailability(null);
   };
   const onSubmit = async () => {
     setIsLoadingFull(true);
@@ -166,6 +173,11 @@ export default function DateTime() {
       }
     } else handleError({ message: "FAILED CAPTCHA" });
   };
+  const scrollToBottom = () =>
+    setTimeout(() => {
+      if (bottomRef?.current)
+        (bottomRef.current as any).scrollIntoView({ behavior: "smooth" });
+    }, 300);
   return (
     <section className="w-full flex-1">
       <AppHeader />
@@ -269,6 +281,7 @@ export default function DateTime() {
                                       setSelectedResource(
                                         appointmentSlot?.resource,
                                       );
+                                      scrollToBottom();
                                     }}
                                   >
                                     {environment === "production" ? (
@@ -320,6 +333,7 @@ export default function DateTime() {
                                           setSelectedResource(
                                             appointmentSlot?.resource,
                                           );
+                                          scrollToBottom();
                                         }}
                                       >
                                         {environment === "production" ? (
@@ -371,6 +385,7 @@ export default function DateTime() {
                                           setSelectedResource(
                                             appointmentSlot?.resource,
                                           );
+                                          scrollToBottom();
                                         }}
                                       >
                                         {environment === "production" ? (
@@ -391,7 +406,7 @@ export default function DateTime() {
                           )}
                         </div>
                         <Transition
-                          show={selectedTime === null ? false : true}
+                          show={selectedTime !== null}
                           enter="transition ease-in duration-500"
                           leave="transition ease-out duration-500"
                           leaveTo="opacity-10"
@@ -402,6 +417,11 @@ export default function DateTime() {
                           <>
                             <hr className="mt-8 mb-8 text-movet-gray" />
                             <div className="w-full flex flex-col mt-4 items-center text-center">
+                              <FontAwesomeIcon
+                                icon={faUserDoctor}
+                                className="text-movet-red mb-2"
+                                size="3x"
+                              />
                               <h3 className="mt-2 text-lg">
                                 Ready to Schedule Your Appointment?
                               </h3>
@@ -455,7 +475,8 @@ export default function DateTime() {
                                   : session?.reason?.label}
                               </p>
                               <h5 className="font-bold -mb-2">
-                                Pet{session?.selectedPatients.length > 1 && "s"}
+                                Pet
+                                {session?.selectedPatients.length > 1 && "s"}
                               </h5>
                               {session?.selectedPatients?.map(
                                 (patientId: string) =>
@@ -493,6 +514,10 @@ export default function DateTime() {
                             </div>
                           </>
                         </Transition>
+                        <div
+                          className="bottomContainerElement"
+                          ref={bottomRef}
+                        />
                       </div>
                       <Button
                         text="Schedule My Appointment"

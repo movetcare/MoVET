@@ -10,14 +10,80 @@ import {
 import { httpsCallable } from "firebase/functions";
 import { AuthStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
+import * as Device from "expo-device";
 
 export const signIn = async (email: string, password?: string | undefined) => {
   AuthStore.update((store) => {
     store.user = { email };
   });
+  const device = Device?.isDevice
+    ? Device?.brand === "Apple"
+      ? {
+          brand: Device?.brand || "UNKNOWN",
+          deviceName: Device?.deviceName || "UNKNOWN",
+          deviceType: Device?.deviceType || "UNKNOWN",
+          deviceYearClass: Device?.deviceYearClass || "UNKNOWN",
+          isDevice: Device?.isDevice || "UNKNOWN",
+          manufacturer: Device?.manufacturer || "UNKNOWN",
+          modelId: Device?.modelId || "UNKNOWN",
+          modelName: Device?.modelName || "UNKNOWN",
+          osBuildId: Device?.osBuildId || "UNKNOWN",
+          osInternalBuildId: Device?.osInternalBuildId || "UNKNOWN",
+          osName: Device?.osName || "UNKNOWN",
+          osVersion: Device?.osVersion || "UNKNOWN",
+          supportedCpuArchitectures:
+            Device?.supportedCpuArchitectures || "UNKNOWN",
+          totalMemory: Device?.totalMemory || "UNKNOWN",
+        }
+      : {
+          brand: Device?.brand || "UNKNOWN",
+          designName: Device?.designName || "UNKNOWN",
+          deviceName: Device?.deviceName || "UNKNOWN",
+          deviceType: Device?.deviceType || "UNKNOWN",
+          deviceYearClass: Device?.deviceYearClass || "UNKNOWN",
+          isDevice: Device?.isDevice || "UNKNOWN",
+          manufacturer: Device?.manufacturer || "UNKNOWN",
+          modelName: Device?.modelName || "UNKNOWN",
+          osBuildFingerprint: Device?.osBuildFingerprint || "UNKNOWN",
+          osBuildId: Device?.osBuildId || "UNKNOWN",
+          osInternalBuildId: Device?.osInternalBuildId || "UNKNOWN",
+          osName: Device?.osName || "UNKNOWN",
+          osVersion: Device?.osVersion || "UNKNOWN",
+          platformApiLevel: Device?.platformApiLevel || "UNKNOWN",
+          productName: Device?.productName || "UNKNOWN",
+          supportedCpuArchitectures:
+            Device?.supportedCpuArchitectures || "UNKNOWN",
+          totalMemory: Device?.totalMemory || "UNKNOWN",
+        }
+    : {
+        brand: Device?.brand || "UNKNOWN",
+        designName: Device?.designName || "UNKNOWN",
+        deviceName: Device?.deviceName || "UNKNOWN",
+        deviceType: Device?.deviceType || "UNKNOWN",
+        deviceYearClass: Device?.deviceYearClass || "UNKNOWN",
+        isDevice: Device?.isDevice || "UNKNOWN",
+        manufacturer: Device?.manufacturer || "UNKNOWN",
+        modelId: Device?.modelId || "UNKNOWN",
+        modelName: Device?.modelName || "UNKNOWN",
+        osBuildFingerprint: Device?.osBuildFingerprint || "UNKNOWN",
+        osBuildId: Device?.osBuildId || "UNKNOWN",
+        osInternalBuildId: Device?.osInternalBuildId || "UNKNOWN",
+        osName: Device?.osName || "UNKNOWN",
+        osVersion: Device?.osVersion || "UNKNOWN",
+        platformApiLevel: Device?.platformApiLevel || "UNKNOWN",
+        productName: Device?.productName || "UNKNOWN",
+        supportedCpuArchitectures:
+          Device?.supportedCpuArchitectures || "UNKNOWN",
+        totalMemory: Device?.totalMemory || "UNKNOWN",
+      };
   if (password) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      const verifyClient = httpsCallable(functions, "verifyClient");
+      verifyClient({
+        email,
+        device,
+      });
       AuthStore.update((store) => {
         store.user = auth.currentUser;
         store.isLoggedIn = true;
@@ -31,7 +97,7 @@ export const signIn = async (email: string, password?: string | undefined) => {
   } else
     try {
       const verifyClient = httpsCallable(functions, "verifyClient");
-      verifyClient({ email })
+      verifyClient({ email, device })
         .then(async (result) => {
           if (result.data) {
             await sendSignInLinkToEmail(auth, email, {
@@ -64,7 +130,7 @@ export const signIn = async (email: string, password?: string | undefined) => {
 
 export const signInWithLink = async (email: string, link: string) =>
   await signInWithEmailLink(auth, email, link)
-    .then((result) => {
+    .then(() => {
       AuthStore.update((store) => {
         store.user = auth.currentUser;
         store.isLoggedIn = true;

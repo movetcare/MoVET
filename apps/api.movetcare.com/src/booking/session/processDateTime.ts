@@ -13,6 +13,19 @@ export const processDateTime = async (
   if (DEBUG) console.log("DATE TIME DATA", requestedDateTime);
   if (requestedDateTime && id) {
     const bookingRef = admin.firestore().collection("bookings").doc(id);
+    await bookingRef
+      .set(
+        {
+          requestedDateTime,
+          step: "datetime-selection",
+          updatedOn: new Date(),
+        },
+        { merge: true },
+      )
+      .catch(async (error: any) => {
+        throwError(error);
+        return await handleFailedBooking(error, "UPDATE BOOKING DATA FAILED");
+      });
     const session = await bookingRef
       .get()
       .then((doc: any) => doc.data())
@@ -71,66 +84,6 @@ export const processDateTime = async (
       if (DEBUG) console.log("STRIPE CHECKOUT SESSION", checkoutSession);
     }
     if (session && customer) {
-      sendNotification({
-        type: "slack",
-        payload: {
-          message: [
-            {
-              type: "section",
-              text: {
-                text: `:book: _Appointment Booking_ *UPDATED* (${id})`,
-                type: "mrkdwn",
-              },
-              fields: [
-                {
-                  type: "mrkdwn",
-                  text: "*STEP*",
-                },
-                {
-                  type: "plain_text",
-                  text: "DATE / TIME SELECTION",
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*DATE*",
-                },
-                {
-                  type: "plain_text",
-                  text: requestedDateTime?.date,
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*TIME*",
-                },
-                {
-                  type: "plain_text",
-                  text: requestedDateTime?.time,
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*CUSTOMER ID*",
-                },
-                {
-                  type: "plain_text",
-                  text: customer,
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*CHECKOUT STATUS*",
-                },
-                {
-                  type: "plain_text",
-                  text: checkoutSession
-                    ? "ACTIVE"
-                    : `SKIPPED - Customer has ${
-                        (validFormOfPayment as Array<any>)?.length || "0"
-                      } Valid Payment Sources`,
-                },
-              ],
-            },
-          ],
-        },
-      });
       const scheduleAppointment = async () => {
         if (DEBUG)
           console.log("Appointment Data to Format", {
@@ -190,11 +143,84 @@ export const processDateTime = async (
             ? "datetime-selection"
             : "success",
         })
-        .then(() => DEBUG && console.log("DID UPDATE BOOKING"))
+        .then(() => DEBUG && console.log("DID UPDATE BOOKING"), {
+          needsRetry:
+            appointmentIsScheduled === false ||
+            appointmentIsScheduled === "ALREADY_BOOKED"
+              ? true
+              : false,
+          step: checkoutSession
+            ? ("datetime-selection" as Booking["step"])
+            : appointmentIsScheduled === false ||
+              appointmentIsScheduled === "ALREADY_BOOKED"
+            ? "datetime-selection"
+            : "success",
+        })
         .catch(async (error: any) => {
           throwError(error);
           return await handleFailedBooking(error, "UPDATE BOOKING DATA FAILED");
         });
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: [
+            {
+              type: "section",
+              text: {
+                text: `:book: _Appointment Booking_ *UPDATED* (${id})`,
+                type: "mrkdwn",
+              },
+              fields: [
+                {
+                  type: "mrkdwn",
+                  text: "*STEP*",
+                },
+                {
+                  type: "plain_text",
+                  text: "DATE / TIME SELECTION",
+                },
+                {
+                  type: "mrkdwn",
+                  text: "*DATE & TIME*",
+                },
+                {
+                  type: "plain_text",
+                  text:
+                    requestedDateTime?.date + " @ " + requestedDateTime?.time,
+                },
+                {
+                  type: "mrkdwn",
+                  text: "*PROVET APPOINTMENT STATUS*",
+                },
+                {
+                  type: "plain_text",
+                  text: appointmentIsScheduled?.toString(),
+                },
+                {
+                  type: "mrkdwn",
+                  text: "*CUSTOMER ID*",
+                },
+                {
+                  type: "plain_text",
+                  text: customer,
+                },
+                {
+                  type: "mrkdwn",
+                  text: "*CHECKOUT STATUS*",
+                },
+                {
+                  type: "plain_text",
+                  text: checkoutSession
+                    ? "ACTIVE"
+                    : `SKIPPED - Customer has ${
+                        (validFormOfPayment as Array<any>)?.length || "0"
+                      } Valid Payment Sources`,
+                },
+              ],
+            },
+          ],
+        },
+      });
       return {
         ...session,
         requestedDateTime,

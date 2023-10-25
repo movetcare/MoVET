@@ -1,7 +1,7 @@
 import { admin } from "../../config/config";
 
 export const verifyExistingClient = async (
-  email: string
+  email: string,
 ): Promise<boolean | null> =>
   admin
     .auth()

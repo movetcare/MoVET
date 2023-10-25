@@ -24,6 +24,8 @@ import {
   faCalendarPlus,
   faBan,
   faCircleCheck,
+  faMobileAndroid,
+  faComments,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GOTO_PHONE_URL } from "constants/urls";
@@ -95,6 +97,7 @@ const Client = () => {
           } else setErrors(null);
           setClient({
             ...result.data,
+            lastLogin: clientData.data()?.device?.lastLogin,
             createdOn: clientData.data()?.createdOn,
             updatedOn: clientData.data()?.updatedOn,
           });
@@ -955,6 +958,78 @@ const Client = () => {
                         UNKNOWN
                       </span>
                     ) : client?.sendEmail ? (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        ACTIVE
+                      </span>
+                    ) : (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        DISABLED
+                      </span>
+                    )}
+                  </div>
+                  <Divider />
+                  <div className="flex flex-row items-center w-full mt-2 ml-2">
+                    <h3 className="text-lg m-0 font-extrabold">
+                      <FontAwesomeIcon
+                        icon={
+                          client?.device?.brand === "Apple"
+                            ? faAppleAlt
+                            : faMobileAndroid
+                        }
+                        className="mr-4"
+                      />
+                      MOBILE APP:
+                    </h3>
+                    {isLoadingAccount ? (
+                      <FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size="lg"
+                        className="text-movet-brown ml-4"
+                      />
+                    ) : client?.device === undefined ? (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        NO APP INSTALLED
+                      </span>
+                    ) : client?.device ? (
+                      <span>
+                        <p className="group italic flex flex-row ml-2 items-center">
+                          &quot;{client?.device?.deviceName}&quot; |{" "}
+                          {client?.device?.brand}: {client?.device?.osName} -{" "}
+                          {client?.device?.osVersion} (
+                          {client?.device?.modelName})
+                        </p>
+                        <p className="group italic flex flex-row ml-2 items-center">
+                          Last Login: {timeSince(client?.lastLogin?.toDate())}
+                          <span className="text-xs ml-2">
+                            {client?.lastLogin?.toDate().toLocaleString()}
+                          </span>
+                        </p>
+                      </span>
+                    ) : (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        NO APP INSTALLED
+                      </span>
+                    )}
+                  </div>
+                  <Divider />
+                  <div className="flex flex-row items-center w-full mt-2 ml-2">
+                    <h3 className="text-lg m-0 font-extrabold">
+                      <FontAwesomeIcon icon={faComments} className="mr-4" />
+                      PUSH NOTIFICATIONS:
+                    </h3>
+                    {isLoadingAccount ? (
+                      <FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        size="lg"
+                        className="text-movet-brown ml-4"
+                      />
+                    ) : client?.sendPush === undefined ? (
+                      <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                        UNKNOWN
+                      </span>
+                    ) : client?.sendPush ? (
                       <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
                         ACTIVE
                       </span>

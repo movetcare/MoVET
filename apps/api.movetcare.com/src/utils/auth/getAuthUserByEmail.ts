@@ -2,7 +2,7 @@ import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { admin, DEBUG } from "../../config/config";
 
 export const getAuthUserByEmail = async (
-  email: string
+  email: string,
 ): Promise<UserRecord | null> =>
   await admin
     .auth()

@@ -92,6 +92,14 @@ const ChatIndex = () => {
           value === undefined ? null : value,
         ),
       );
+      await setDoc(
+        doc(firestore, "clients", user?.uid),
+        {
+          sendPush: true,
+          updatedOn: serverTimestamp(),
+        },
+        { merge: true },
+      );
       let existingTokens: any[] = [];
       const tokenAlreadyExists = await getDoc(
         doc(firestore, "push_tokens", user?.uid),

@@ -1,6 +1,6 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { handleFailedBooking } from "../session/handleFailedBooking";
-import { getAuthUserByEmail } from "./../../utils/auth/getAuthUserByEmail";
+import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
 import { admin, DEBUG } from "../../config/config";
 import { getActiveBookingSession } from "./getActiveBookingSession";
 import { createAuthClient } from "../../integrations/provet/entities/client/createAuthClient";
@@ -9,12 +9,12 @@ import type { Booking, BookingError } from "../../types/booking";
 
 export const handleUnauthenticatedBookingVerification = async (
   email: string,
-  device: string
+  device: string,
 ): Promise<Booking | Booking | BookingError | false> => {
   if (DEBUG)
     console.log(
       "handleUnauthenticatedBookingVerification => FETCHING USER DETAILS FOR: ",
-      email
+      email,
     );
   const isNewClient = await admin
     .auth()
@@ -31,7 +31,7 @@ export const handleUnauthenticatedBookingVerification = async (
   if (DEBUG)
     console.log(
       "handleUnauthenticatedBookingVerification => isNewClient",
-      isNewClient
+      isNewClient,
     );
   if (isNewClient) {
     const proVetClientData: any = await createProVetClient({
@@ -43,19 +43,19 @@ export const handleUnauthenticatedBookingVerification = async (
     if (DEBUG)
       console.log(
         "handleUnauthenticatedBookingVerification => proVetClientData",
-        proVetClientData
+        proVetClientData,
       );
     if (proVetClientData) {
       const didCreateNewClient = await createAuthClient(
         proVetClientData,
         null,
-        false
+        false,
       );
       if (didCreateNewClient)
         return {
           ...((await getActiveBookingSession(
             (await getAuthUserByEmail(email)) as UserRecord,
-            device
+            device,
           )) as Booking),
         };
     }
@@ -63,7 +63,7 @@ export const handleUnauthenticatedBookingVerification = async (
       {
         email,
       },
-      "BOOKING FAILED: COULD NOT CREATE NEW CLIENT"
+      "BOOKING FAILED: COULD NOT CREATE NEW CLIENT",
     );
   } else {
     const authUser = await getAuthUserByEmail(email);
@@ -73,7 +73,7 @@ export const handleUnauthenticatedBookingVerification = async (
         {
           email,
         },
-        "BOOKING FAILED: CLIENT DISABLED"
+        "BOOKING FAILED: CLIENT DISABLED",
       );
     }
     return await getActiveBookingSession(authUser as UserRecord, device);
