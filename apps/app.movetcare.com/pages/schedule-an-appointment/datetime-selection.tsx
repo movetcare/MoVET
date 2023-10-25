@@ -13,8 +13,6 @@ import Calendar from "react-calendar";
 import {
   faCalendarCheck,
   faExclamationTriangle,
-  faQuestion,
-  faQuestionCircle,
   faUserDoctor,
 } from "@fortawesome/free-solid-svg-icons";
 import { Transition } from "@headlessui/react";
@@ -516,7 +514,7 @@ export default function DateTime() {
                         </Transition>
                         <div
                           className="bottomContainerElement"
-                          ref={bottomRef}
+                          ref={bottomRef as any}
                         />
                       </div>
                       <Button

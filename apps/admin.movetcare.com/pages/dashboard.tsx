@@ -4,7 +4,7 @@ import { ClientSearch } from "components/ClientSearch";
 import { HoursStatus } from "components/HoursStatus";
 import { PushNotificationWarning } from "components/PushNotificationWarning";
 import TelehealthChatSummary from "components/TelehealthChatSummary";
-import { query, collection, where, orderBy } from "firebase/firestore";
+import { query, collection, orderBy } from "firebase/firestore";
 import Head from "next/head";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { firestore } from "services/firebase";
