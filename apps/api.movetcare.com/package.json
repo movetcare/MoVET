@@ -41,7 +41,7 @@
     "@sendgrid/client": "^7.7.0",
     "@sendgrid/mail": "^7.7.0",
     "@slack/web-api": "^6.9.0",
-    "axios": "0.27.2",
+    "axios": "1.5.1",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "expo-server-sdk": "^3.7.0",
