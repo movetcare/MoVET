@@ -26,7 +26,6 @@ import Error from "components/Error";
 import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 import { formatPhoneNumber } from "utilities";
-import client from "./client";
 import { useRef, useState } from "react";
 
 export default function Dashboard() {
@@ -51,23 +50,27 @@ export default function Dashboard() {
     id: string,
     status: "submitted" | "waiting" | "complete",
   ) => {
+    setIsLoading(true);
     await updateDoc(doc(firestore, `howloween/${id}`), {
       updatedOn: serverTimestamp(),
       status,
-    }).catch((error: any) =>
-      toast(error?.message, {
-        icon: (
-          <FontAwesomeIcon
-            icon={faCircleExclamation}
-            size="sm"
-            className="text-movet-red"
-          />
-        ),
-      }),
-    );
+    })
+      .catch((error: any) =>
+        toast(error?.message, {
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              size="sm"
+              className="text-movet-red"
+            />
+          ),
+        }),
+      )
+      .finally(() => setIsLoading(false));
   };
 
   const sendClientSMS = () => {
+    setIsLoading(true);
     const sendSmsToClient = httpsCallable(functions, "sendSmsToClient");
     sendSmsToClient({
       id: null,
@@ -101,7 +104,8 @@ export default function Dashboard() {
             />
           ),
         }),
-      );
+      )
+      .finally(() => setIsLoading(false));
   };
 
   return (
