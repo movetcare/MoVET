@@ -5,7 +5,7 @@ import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 
 interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   className?: string;
-  ref?: any;
+  buttonRef?: any;
   text?: string;
   icon?: any;
   disabled?: boolean;
@@ -24,7 +24,7 @@ interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
 
 export const Button = ({
   className,
-  ref,
+  buttonRef,
   text,
   icon,
   screenReaderText,
@@ -104,7 +104,7 @@ export const Button = ({
       title={title}
       onClick={onClick}
       type={type}
-      ref={ref}
+      ref={buttonRef}
       disabled={disabled}
       className={classNames(
         padding(),
@@ -120,7 +120,7 @@ export const Button = ({
         disabled
           ? "group-hover:bg-movet-gray group-hover:bg-opacity-50 hover:bg-opacity-50 hover:bg-movet-black bg-movet-black bg-opacity-50 cursor-not-allowed"
           : "",
-        className ? className : ""
+        className ? className : "",
       )}
       {...rest}
     >

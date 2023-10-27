@@ -88,7 +88,7 @@ export const Modal = ({
                       color="red"
                       className="w-full sm:mr-2"
                       onClick={() => setShowModal(false)}
-                      ref={cancelButtonRef}
+                      buttonRef={cancelButtonRef}
                     >
                       {noButtonText}
                     </Button>

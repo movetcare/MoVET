@@ -198,7 +198,7 @@ export default function Dashboard() {
                         <p>{entry.data()?.funFact}</p>
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm">
-                        <div className="group cursor-pointer">
+                        <span className="group cursor-pointer">
                           {entry.data()?.status === "submitted" ? (
                             <span className="inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
                               NEEDS CHECK IN
@@ -267,40 +267,8 @@ export default function Dashboard() {
                             />
                             Photo Shoot Complete
                           </p>
-                        </div>
+                        </span>
                       </td>
-                      <Modal
-                        showModal={showSmsModal}
-                        setShowModal={setShowSmsModal}
-                        cancelButtonRef={cancelButtonRef}
-                        isLoading={isLoading}
-                        loadingMessage="Sending SMS to Client, Please Wait..."
-                        content={
-                          <>
-                            <h2>
-                              Send SMS to {smsMessage.name} at{" "}
-                              {formatPhoneNumber(smsMessage?.phone as string)}
-                            </h2>
-                            <textarea
-                              className={
-                                "focus:ring-movet-brown focus:border-movet-brown text-movet-black py-3 px-4 block w-full rounded-lg font-abside-smooth"
-                              }
-                              value={smsMessage.message}
-                              onChange={(e) =>
-                                setSmsMessage({
-                                  name: smsMessage.name,
-                                  phone: smsMessage.phone,
-                                  message: e.target.value,
-                                })
-                              }
-                            />
-                          </>
-                        }
-                        icon={faSms}
-                        action={sendClientSMS}
-                        yesButtonText="SEND"
-                        noButtonText="CANCEL"
-                      />
                     </tr>
                   ))}
               </tbody>
@@ -308,6 +276,38 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+      <Modal
+        showModal={showSmsModal}
+        setShowModal={setShowSmsModal}
+        cancelButtonRef={cancelButtonRef}
+        isLoading={isLoading}
+        loadingMessage="Sending SMS to Client, Please Wait..."
+        content={
+          <>
+            <h2>
+              Send SMS to {smsMessage.name} at{" "}
+              {formatPhoneNumber(smsMessage?.phone as string)}
+            </h2>
+            <textarea
+              className={
+                "focus:ring-movet-brown focus:border-movet-brown text-movet-black py-3 px-4 block w-full rounded-lg font-abside-smooth"
+              }
+              value={smsMessage.message}
+              onChange={(e) =>
+                setSmsMessage({
+                  name: smsMessage.name,
+                  phone: smsMessage.phone,
+                  message: e.target.value,
+                })
+              }
+            />
+          </>
+        }
+        icon={faSms}
+        action={sendClientSMS}
+        yesButtonText="SEND"
+        noButtonText="CANCEL"
+      />
     </section>
   );
 }
