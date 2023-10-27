@@ -39,7 +39,7 @@ export default function Dashboard() {
     name: null,
     phone: null,
     message:
-      "Hey there! It's MoVET letting you know it's time for your Howl-O-Ween photo. Please meet us in the front of the Belleview Station Clinic within the next 5 minutes.",
+      "Hey there! It's MoVET letting you know it's time for your Howl-O-Ween photo. Please meet us in the front of the Belleview Station Beer Garden within the next 5 minutes.",
   });
   const [showSmsModal, setShowSmsModal] = useState<boolean>(false);
 
@@ -85,7 +85,7 @@ export default function Dashboard() {
           name: null,
           phone: null,
           message:
-            "Hey there! It's MoVET letting you know it's time for your Howl-O-Ween photo. Please meet us in the front of the Belleview Station Clinic within the next 5 minutes.",
+            "Hey there! It's MoVET letting you know it's time for your Howl-O-Ween photo. Please meet us in the front of the Belleview Station Beer Garden within the next 5 minutes.",
         });
         toast(`SENT SMS Message to ${smsMessage.name} @ ${smsMessage.phone}`, {
           icon: (
