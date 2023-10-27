@@ -17,6 +17,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/router";
 
 addMethod(string as any, "isBeforeToday", function (errorMessage: string) {
   return (this as any).test(
@@ -69,6 +70,7 @@ addMethod(string as any, "isValidMonth", function (errorMessage: string) {
 });
 
 export const HowloweenForm = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [hideFormSection, setHideFormSection] = useState<boolean>(true);
@@ -201,6 +203,16 @@ export const HowloweenForm = () => {
                   Instagram
                 </a>
                 !
+              </p>
+              <p className="text-center sm:px-8 font-bold -mb-2 mt-4 text-sm">
+                Have another pet?
+              </p>
+              <p
+                className="text-center sm:px-8 italic text-xs cursor-pointer"
+                onClick={() => router.reload()}
+              >
+                Click here to submit the entry form again and enter them into
+                the contest!
               </p>
             </section>
           ) : (

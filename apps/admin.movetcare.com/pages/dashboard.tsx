@@ -32,9 +32,11 @@ export default function Dashboard() {
   const cancelButtonRef = useRef(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [smsMessage, setSmsMessage] = useState<{
+    name: string | null;
     phone: string | null;
     message: string;
   }>({
+    name: null,
     phone: null,
     message:
       "Hey there! It's MoVET letting you know it's time for your Howl-O-Ween photo. Please meet us in the front of the Belleview Station Clinic within the next 5 minutes.",
@@ -80,11 +82,12 @@ export default function Dashboard() {
       .then(() => {
         setShowSmsModal(false);
         setSmsMessage({
+          name: null,
           phone: null,
           message:
             "Hey there! It's MoVET letting you know it's time for your Howl-O-Ween photo. Please meet us in the front of the Belleview Station Clinic within the next 5 minutes.",
         });
-        toast(`SENT SMS Message!`, {
+        toast(`SENT SMS Message to ${smsMessage.name} @ ${smsMessage.phone}`, {
           icon: (
             <FontAwesomeIcon
               icon={faCircleCheck}
@@ -207,7 +210,17 @@ export default function Dashboard() {
                               </span>
                               <p
                                 className="mt-4 hover:text-movet-green"
-                                onClick={() => setShowSmsModal(true)}
+                                onClick={() => {
+                                  setShowSmsModal(true);
+                                  setSmsMessage({
+                                    name:
+                                      entry.data()?.firstName +
+                                      " " +
+                                      entry.data()?.lastName,
+                                    phone: entry.data()?.phone,
+                                    message: smsMessage.message,
+                                  });
+                                }}
                               >
                                 Send SMS
                                 <FontAwesomeIcon
@@ -265,9 +278,8 @@ export default function Dashboard() {
                         content={
                           <>
                             <h2>
-                              Send SMS to {entry.data()?.firstName}{" "}
-                              {entry.data()?.lastName} -{" "}
-                              {formatPhoneNumber(entry.data()?.phone)}
+                              Send SMS to {smsMessage.name} at{" "}
+                              {formatPhoneNumber(smsMessage?.phone as string)}
                             </h2>
                             <textarea
                               className={
@@ -276,7 +288,8 @@ export default function Dashboard() {
                               value={smsMessage.message}
                               onChange={(e) =>
                                 setSmsMessage({
-                                  phone: entry.date()?.phone,
+                                  name: smsMessage.name,
+                                  phone: smsMessage.phone,
                                   message: e.target.value,
                                 })
                               }
