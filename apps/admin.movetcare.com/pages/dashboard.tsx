@@ -1,21 +1,109 @@
-import { faGhost } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckCircle,
+  faCircleCheck,
+  faCircleExclamation,
+  faGhost,
+  faSms,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ClientSearch } from "components/ClientSearch";
 import { HoursStatus } from "components/HoursStatus";
 import { PushNotificationWarning } from "components/PushNotificationWarning";
 import TelehealthChatSummary from "components/TelehealthChatSummary";
-import { query, collection, orderBy } from "firebase/firestore";
+import {
+  query,
+  collection,
+  orderBy,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import Head from "next/head";
 import { useCollection } from "react-firebase-hooks/firestore";
-import { firestore } from "services/firebase";
-import { Loader } from "ui";
+import { firestore, functions } from "services/firebase";
+import { Loader, Modal } from "ui";
 import Error from "components/Error";
+import toast from "react-hot-toast";
+import { httpsCallable } from "firebase/functions";
+import { formatPhoneNumber } from "utilities";
+import client from "./client";
+import { useRef, useState } from "react";
 
 export default function Dashboard() {
+  const cancelButtonRef = useRef(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [smsMessage, setSmsMessage] = useState<{
+    phone: string | null;
+    message: string;
+  }>({
+    phone: null,
+    message:
+      "Hey there! It's MoVET letting you know it's time for your Howl-O-Ween photo. Please meet us in the front of the Belleview Station Clinic within the next 5 minutes.",
+  });
+  const [showSmsModal, setShowSmsModal] = useState<boolean>(false);
+
   const [contestEntries, loadingContestEntries, errorContestEntries] =
     useCollection(
       query(collection(firestore, "howloween"), orderBy("createdOn", "desc")),
     );
+
+  const updateStatus = async (
+    id: string,
+    status: "submitted" | "waiting" | "complete",
+  ) => {
+    await updateDoc(doc(firestore, `howloween/${id}`), {
+      updatedOn: serverTimestamp(),
+      status,
+    }).catch((error: any) =>
+      toast(error?.message, {
+        icon: (
+          <FontAwesomeIcon
+            icon={faCircleExclamation}
+            size="sm"
+            className="text-movet-red"
+          />
+        ),
+      }),
+    );
+  };
+
+  const sendClientSMS = () => {
+    const sendSmsToClient = httpsCallable(functions, "sendSmsToClient");
+    sendSmsToClient({
+      id: null,
+      phone: smsMessage.phone,
+      message: smsMessage.message,
+    })
+      .then(() => {
+        setShowSmsModal(false);
+        setSmsMessage({
+          phone: null,
+          message:
+            "Hey there! It's MoVET letting you know it's time for your Howl-O-Ween photo. Please meet us in the front of the Belleview Station Clinic within the next 5 minutes.",
+        });
+        toast(`SENT SMS Message!`, {
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleCheck}
+              size="sm"
+              className="text-movet-green"
+            />
+          ),
+        });
+      })
+      .catch((error: any) =>
+        toast(error?.message, {
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              size="sm"
+              className="text-movet-red"
+            />
+          ),
+        }),
+      );
+  };
+
   return (
     <section>
       <Head>
@@ -57,25 +145,7 @@ export default function Dashboard() {
                     scope="col"
                     className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold"
                   >
-                    Name
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold"
-                  >
-                    Email
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold"
-                  >
-                    Phone
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold"
-                  >
-                    Social
+                    Client Name
                   </th>
                   <th
                     scope="col"
@@ -89,6 +159,12 @@ export default function Dashboard() {
                   >
                     Costume / Fun Fact
                   </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold"
+                  >
+                    Status
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -96,16 +172,12 @@ export default function Dashboard() {
                   contestEntries.docs.map((entry: any, index: number) => (
                     <tr key={index}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm">
-                        {entry.data()?.firstName} {entry.data()?.lastName}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm">
-                        {entry.data()?.email}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm">
-                        {entry.data()?.phone}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm">
-                        {entry.data()?.handle || "Not Provided"}
+                        <p>
+                          {entry.data()?.firstName} {entry.data()?.lastName}
+                        </p>
+                        <p>{entry.data()?.email}</p>
+                        <p> {entry.data()?.phone}</p>
+                        <p>{entry.data()?.handle}</p>
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm">
                         <p>{entry.data()?.petName}</p>
@@ -118,6 +190,100 @@ export default function Dashboard() {
                         <p>{entry.data()?.description}</p>
                         <p>{entry.data()?.funFact}</p>
                       </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm">
+                        <div className="group cursor-pointer">
+                          {entry.data()?.status === "submitted" ? (
+                            <span className="inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                              NEEDS CHECK IN
+                            </span>
+                          ) : entry.data()?.status === "waiting" ? (
+                            <>
+                              <span className="inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                                WAITING...
+                              </span>
+                              <p
+                                className="mt-4 hover:text-movet-green"
+                                onClick={() => setShowSmsModal(true)}
+                              >
+                                Send SMS
+                                <FontAwesomeIcon
+                                  icon={faSms}
+                                  className="ml-2"
+                                />
+                              </p>
+                            </>
+                          ) : (
+                            <span className="inline-flex items-center rounded-full bg-movet-red px-3 py-0.5 text-sm font-extrabold text-white text-center">
+                              COMPLETE
+                            </span>
+                          )}
+                          <p className="hidden group-hover:flex text-xs italic mt-4">
+                            Change Status:
+                          </p>
+                          <p
+                            className="hidden group-hover:flex my-2 hover:text-movet-yellow"
+                            onClick={() => updateStatus(entry.id, "submitted")}
+                          >
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              className="mr-2 mt-0.5"
+                            />
+                            Needs Check In
+                          </p>
+                          <p
+                            className="hidden group-hover:flex my-2 hover:text-movet-green"
+                            onClick={() => updateStatus(entry.id, "waiting")}
+                          >
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              className="mr-2 mt-0.5"
+                            />
+                            Checked In - Waiting
+                          </p>
+                          <p
+                            className="hidden group-hover:flex my-2 hover:text-movet-red"
+                            onClick={() => updateStatus(entry.id, "complete")}
+                          >
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              className="mr-2 mt-0.5"
+                            />
+                            Photo Shoot Complete
+                          </p>
+                        </div>
+                      </td>
+                      <Modal
+                        showModal={showSmsModal}
+                        setShowModal={setShowSmsModal}
+                        cancelButtonRef={cancelButtonRef}
+                        isLoading={isLoading}
+                        loadingMessage="Sending SMS to Client, Please Wait..."
+                        content={
+                          <>
+                            <h2>
+                              Send SMS to {entry.data()?.firstName}{" "}
+                              {entry.data()?.lastName} -{" "}
+                              {formatPhoneNumber(entry.data()?.phone)}
+                            </h2>
+                            <textarea
+                              className={
+                                "focus:ring-movet-brown focus:border-movet-brown text-movet-black py-3 px-4 block w-full rounded-lg font-abside-smooth"
+                              }
+                              value={smsMessage.message}
+                              onChange={(e) =>
+                                setSmsMessage({
+                                  phone: entry.date()?.phone,
+                                  message: e.target.value,
+                                })
+                              }
+                            />
+                          </>
+                        }
+                        icon={faSms}
+                        action={sendClientSMS}
+                        yesButtonText="SEND"
+                        noButtonText="CANCEL"
+                      />
                     </tr>
                   ))}
               </tbody>

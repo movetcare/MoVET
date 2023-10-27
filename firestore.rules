@@ -23,7 +23,7 @@ service cloud.firestore {
       allow read, write: if clientOwnsDocuments(uid) || isMoVETStaff();
     }
     match /howloween/{uid} {
-      allow read, list: if isMoVETStaff();
+      allow read, list, write: if isMoVETStaff();
     }
     match /alerts/{sid} {
       allow read: if true;
