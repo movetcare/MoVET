@@ -16,7 +16,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.17",
-    "firebase": "^10.5.1",
+    "firebase": "^10.5.2",
     "gray-matter": "^4.0.3",
     "lodash.kebabcase": "^4.1.1",
     "lottie-web": "^5.12.2",
@@ -33,7 +33,7 @@
     "react-tooltip": "^5.21.6",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
-    "ua-parser-js": "^1.0.36",
+    "ua-parser-js": "^1.0.37",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

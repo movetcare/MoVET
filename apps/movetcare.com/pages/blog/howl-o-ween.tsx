@@ -49,27 +49,84 @@ export default function HowlOWeen() {
       <section className="flex flex-col items-center justify-center sm:max-w-screen-lg mx-4 sm:mx-auto mt-8 mb-20 px-8 lg:px-20 bg-white rounded-xl p-4 sm:p-8">
         <Image
           className="rounded-xl"
-          src="/images/blog/howl-o-ween-clip.png"
+          src="/images/blog/howl-o-ween-banner.png"
           alt="MoVET's 2nd Annual Howl-O-Ween"
-          height={820}
-          width={484}
+          height={480}
+          width={820}
         />
+        <h2 className="text-2xl mt-8 text-center">
+          The Pet Costume Contest is still ON!
+        </h2>
+        <h3 className="italic test-xl mb-4">Photography starts at 1:15 PM</h3>
+        <p className="text-lg">
+          The Annual MoVET HOWL-O-WEEN Pet Costume is still on for today to show
+          off your Halloween Best! The snow won&apos;t hold us back!
+        </p>
+        <p className="text-lg">
+          Join us, TODAY! We&apos;ve made a few adjustments for the weather.
+          Please meet us in the{" "}
+          <a href="https://maps.app.goo.gl/1c3M14kKduH539wv9" target="_blank">
+            Belleview Station Beer Garden Ski Chalet
+          </a>
+          .
+          <span className="font-extrabold">
+            {" "}
+            Don&apos;t worry, it&apos;s covered and heated, but still dress
+            warmly!
+          </span>
+        </p>
+
+        <p className="italic text-lg my-4">
+          We&apos;ll keep in touch with you via Text/SMS so you know when to
+          show up for your photo, so keep your phone handy!
+        </p>
+        <Image
+          className="rounded-xl my-4"
+          src="/images/blog/howl-o-ween-ad.png"
+          alt="MoVET's 2nd Annual Howl-O-Ween"
+          height={300}
+          width={600}
+        />
+        <a
+          href="https://denverpetpics.com/"
+          target="_blank"
+          className="text-lg my-4"
+        >
+          Professional photographer, DenverPetPics, will capture this
+          once-a-year attire!
+        </a>
+        <a
+          href="https://veterinaryemergencygroup.com/locations/denver-tech-center-co/"
+          target="_blank"
+          className="text-lg"
+        >
+          VEG (our emergency vet partner) will also be there if you have any
+          questions.
+        </a>
         <p className="text-lg mt-8">
-          Come one come all! Join us, October 29th at 1pm in the Belleview
-          Station Dog Park to show off your Halloween Best!
+          FREE Admission! Free treats and belly rubs included for all who come.
+          Event is free to attend, for all ages, and is dog friendly, of course!
         </p>
-        <p className="text-lg">
-          We&apos;ll have a fall themed photo booth to capture this once-a-year
-          attire! Come as a couple, or just in an awesome-sauce costume! We hope
-          to see you there! Free treats and belly rubs included for all who
-          come.
-        </p>
-        <p className="text-lg">
-          Best of all, all entry photos will be posted on Instagram and Facebook
-          -- make sure to campaign your friends to vote by &quot;LIKING&quot;
-          your picture. Winning photo (the one with the most likes) will be
-          announced on Halloween and be featured as MoVET&apos;s November PET OF
-          THE MONTH!
+        <h4 className="text-lg mb-0 mt-8">KEEP IN TOUCH & BE SOCIAL:</h4>
+        <a
+          href="https://www.instagram.com/nessie_themovetpup/"
+          target="_blank"
+          className="text-lg my-2"
+        >
+          IG @nessie_themovetpup / @movetcare
+        </a>
+        <a
+          href="https://www.facebook.com/MOVETCARE"
+          target="_blank"
+          className="text-lg"
+        >
+          FB @movetcare
+        </a>
+        <p className="text-lg mt-8">
+          All entry photos will be posted on Instagram and Facebook -- make sure
+          to campaign your friends to vote by &quot;LIKING&quot; your picture.
+          Winning photo (the one with the most likes) will be announced on
+          Halloween and be featured as MoVET&apos;s November PET OF THE MONTH!
         </p>
         <HowloweenForm />
       </section>

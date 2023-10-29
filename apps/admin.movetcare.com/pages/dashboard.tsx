@@ -156,13 +156,13 @@ export default function Dashboard() {
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold"
+                    className="hidden px-3 py-3.5 text-left text-sm font-semibold lg:table-cell"
                   >
                     Pet
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold"
+                    className="hidden px-3 py-3.5 text-left text-sm font-semibold lg:table-cell"
                   >
                     Costume / Fun Fact
                   </th>
@@ -185,20 +185,27 @@ export default function Dashboard() {
                         <p>{entry.data()?.email}</p>
                         <p> {entry.data()?.phone}</p>
                         <p>{entry.data()?.handle}</p>
+                        <p className="sm:hidden">{entry.data()?.petName}</p>
+                        <p className="sm:hidden">{entry.data()?.petBreed}</p>
+                        <p className="sm:hidden">{entry.data()?.petGender}</p>
+                        <p className="sm:hidden">{entry.data()?.petAge}</p>
+                        <p className="sm:hidden">{entry.data()?.petHandle}</p>
+                        <p className="sm:hidden">{entry.data()?.description}</p>
+                        <p className="sm:hidden">{entry.data()?.funFact}</p>
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm">
+                      <td className="hidden lg:table-cell whitespace-nowrap px-3 py-4 text-sm">
                         <p>{entry.data()?.petName}</p>
                         <p>{entry.data()?.petBreed}</p>
                         <p>{entry.data()?.petGender}</p>
                         <p>{entry.data()?.petAge}</p>
                         <p>{entry.data()?.petHandle}</p>
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm">
+                      <td className="hidden lg:table-cell whitespace-nowrap px-3 py-4 text-sm">
                         <p>{entry.data()?.description}</p>
                         <p>{entry.data()?.funFact}</p>
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm">
-                        <span className="group cursor-pointer">
+                        <span className="cursor-pointer">
                           {entry.data()?.status === "submitted" ? (
                             <span className="inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
                               NEEDS CHECK IN
@@ -234,11 +241,9 @@ export default function Dashboard() {
                               COMPLETE
                             </span>
                           )}
-                          <p className="hidden group-hover:flex text-xs italic mt-4">
-                            Change Status:
-                          </p>
+                          <p className="text-xs italic mt-4">Change Status:</p>
                           <p
-                            className="hidden group-hover:flex my-2 hover:text-movet-yellow"
+                            className="my-2 hover:text-movet-yellow"
                             onClick={() => updateStatus(entry.id, "submitted")}
                           >
                             <FontAwesomeIcon
@@ -248,7 +253,7 @@ export default function Dashboard() {
                             Needs Check In
                           </p>
                           <p
-                            className="hidden group-hover:flex my-2 hover:text-movet-green"
+                            className="my-2 hover:text-movet-green"
                             onClick={() => updateStatus(entry.id, "waiting")}
                           >
                             <FontAwesomeIcon
@@ -258,7 +263,7 @@ export default function Dashboard() {
                             Checked In - Waiting
                           </p>
                           <p
-                            className="hidden group-hover:flex my-2 hover:text-movet-red"
+                            className="my-2 hover:text-movet-red"
                             onClick={() => updateStatus(entry.id, "complete")}
                           >
                             <FontAwesomeIcon
