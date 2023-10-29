@@ -91,7 +91,7 @@ export default function HowlOWeen() {
         <a
           href="https://denverpetpics.com/"
           target="_blank"
-          className="text-lg my-4"
+          className="text-lg my-4 text-center"
         >
           Professional photographer, DenverPetPics, will capture this
           once-a-year attire!
@@ -99,7 +99,7 @@ export default function HowlOWeen() {
         <a
           href="https://veterinaryemergencygroup.com/locations/denver-tech-center-co/"
           target="_blank"
-          className="text-lg"
+          className="text-lg text-center"
         >
           VEG (our emergency vet partner) will also be there if you have any
           questions.
@@ -108,18 +108,20 @@ export default function HowlOWeen() {
           FREE Admission! Free treats and belly rubs included for all who come.
           Event is free to attend, for all ages, and is dog friendly, of course!
         </p>
-        <h4 className="text-lg mb-0 mt-8">KEEP IN TOUCH & BE SOCIAL:</h4>
+        <h4 className="text-lg mb-0 mt-8 text-center">
+          KEEP IN TOUCH & BE SOCIAL:
+        </h4>
         <a
           href="https://www.instagram.com/nessie_themovetpup/"
           target="_blank"
-          className="text-lg my-2"
+          className="text-lg my-2 text-center"
         >
           IG @nessie_themovetpup / @movetcare
         </a>
         <a
           href="https://www.facebook.com/MOVETCARE"
           target="_blank"
-          className="text-lg"
+          className="text-lg text-center"
         >
           FB @movetcare
         </a>
