@@ -57,6 +57,7 @@ export default function HowlOWeen() {
         <h2 className="text-2xl mt-8 text-center">
           The Pet Costume Contest is still ON!
         </h2>
+        <h3 className="italic test-xl">Sunday, October 29th 1 PM - 3 PM</h3>
         <h3 className="italic test-xl mb-4">Photography starts at 1:15 PM</h3>
         <p className="text-lg">
           The Annual MoVET HOWL-O-WEEN Pet Costume is still on for today to show
@@ -65,7 +66,7 @@ export default function HowlOWeen() {
         <p className="text-lg">
           Join us, TODAY! We&apos;ve made a few adjustments for the weather.
           Please meet us in the{" "}
-          <a href="https://maps.app.goo.gl/1c3M14kKduH539wv9" target="_blank">
+          <a href="https://maps.app.goo.gl/1rQbAQogr3ZexD3F9" target="_blank">
             Belleview Station Beer Garden Ski Chalet
           </a>
           .
