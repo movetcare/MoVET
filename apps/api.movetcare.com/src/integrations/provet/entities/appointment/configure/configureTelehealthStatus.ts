@@ -61,7 +61,7 @@ export const configureTelehealthStatus = async (): Promise<boolean> => {
       .doc("telehealth")
       .set(
         {
-          isOnline: false,
+          isOnline: true,
           queueSize: 0,
           waitTime: 1,
           message:

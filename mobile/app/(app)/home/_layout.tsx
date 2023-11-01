@@ -20,7 +20,7 @@ export default function Layout() {
     if (segments && segments.includes("web-view")) {
       //setTimeout(() => {
       setNavigationDetails({
-        title: "Latest Announcement",
+        title: "Announcement",
         icon: "bullhorn",
         canGoBack: true,
       });

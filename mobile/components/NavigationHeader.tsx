@@ -21,7 +21,9 @@ export const NavigationHeader = ({
         size={20}
         color={tw.color("movet-white")}
         style={tw`-mb-8 mt-3 z-100 max-w-8 ml-4`}
-        onPress={() => router.canGoBack() && router.back()}
+        onPress={() =>
+          (router.canGoBack() && router.back()) || router.push("/home")
+        }
       />
       <View
         style={tw`flex flex-row justify-center items-center bg-movet-red h-11 w-full`}

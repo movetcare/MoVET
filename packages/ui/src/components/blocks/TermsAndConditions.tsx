@@ -5,22 +5,19 @@ import { useRouter } from "next/router";
 
 export const TermsAndConditions = () => {
   const router = useRouter();
-  const { mode } = router.query;
   return (
     <>
       <Head>
         <title>Terms & Conditions</title>
       </Head>
       <section className="max-w-screen-lg bg-white rounded-xl p-4 sm:p-8 mx-4 sm:mx-auto my-4 sm:m-8">
-        {mode !== "app" && (
-          <div
-            className="flex flex-row justify-center items-center my-4 cursor-pointer"
-            onClick={() => router.back()}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} />
-            <p className="ml-2">Go Back</p>
-          </div>
-        )}
+        <div
+          className="flex flex-row justify-center items-center my-4 cursor-pointer"
+          onClick={() => router.back()}
+        >
+          <FontAwesomeIcon icon={faArrowLeft} />
+          <p className="ml-2">Go Back</p>
+        </div>
         <h1>Terms of Service</h1>
         <p>
           Please read these Terms of Service (the &quot;Agreement&quot;)
@@ -399,15 +396,13 @@ export const TermsAndConditions = () => {
           the validity or enforceability of any other provision of this
           Agreement shall not be affected.
         </p>
-        {mode !== "app" && (
-          <div
-            className="flex flex-row justify-center items-center my-4 cursor-pointer"
-            onClick={() => router.back()}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} />
-            <p className="ml-2">Go Back</p>
-          </div>
-        )}
+        <div
+          className="flex flex-row justify-center items-center my-4 cursor-pointer"
+          onClick={() => router.back()}
+        >
+          <FontAwesomeIcon icon={faArrowLeft} />
+          <p className="ml-2">Go Back</p>
+        </div>
       </section>
     </>
   );
