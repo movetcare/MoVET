@@ -1,11 +1,6 @@
 import { sendAppointmentConfirmationEmail } from "../../../../notifications/templates/sendAppointmentConfirmationEmail";
 import { fetchEntity } from "./../fetchEntity";
-import {
-  admin,
-  throwError,
-  environment,
-  DEBUG,
-} from "../../../../config/config";
+import { admin, throwError, environment } from "../../../../config/config";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { deleteAppointmentNotifications } from "./notifications/deleteAppointmentNotifications";
 import { generateNewAppointmentNotifications } from "./notifications/generateNewAppointmentNotifications";
@@ -13,9 +8,10 @@ import type { Appointment } from "../../../../types/appointment";
 // import {getAuthUserById} from '../../../../utils/auth/getAuthUserById';
 // import {getDateStringFromDate} from '../../../../utils/getDateStringFromDate';
 
+const DEBUG = true;
 export const saveAppointment = async (
   proVetAppointmentData: Appointment,
-  movetAppointmentData?: any
+  movetAppointmentData?: any,
 ): Promise<boolean> => {
   const data: any = {};
 
@@ -55,7 +51,7 @@ export const saveAppointment = async (
       data.location = movetAppointmentData?.location;
     if (proVetAppointmentData?.resources)
       data.resources = proVetAppointmentData?.resources.map((resource) =>
-        getProVetIdFromUrl(resource)
+        getProVetIdFromUrl(resource),
       );
     if (proVetAppointmentData?.ward)
       data.ward = getProVetIdFromUrl(proVetAppointmentData?.ward);
@@ -71,35 +67,35 @@ export const saveAppointment = async (
           let minorIllness = null;
 
           if (typeof proVetAppointmentData?.complaint === "string") {
-            if (DEBUG)
-              console.log(
-                "parse => ",
-                JSON.parse(JSON.stringify(proVetAppointmentData?.complaint))
-              );
+            // if (DEBUG)
+            //   console.log(
+            //     "parse => ",
+            //     JSON.parse(JSON.stringify(proVetAppointmentData?.complaint))
+            //   );
 
             complaintsJson = JSON.parse(
-              JSON.stringify(proVetAppointmentData?.complaint)
+              JSON.stringify(proVetAppointmentData?.complaint),
             );
             if (complaintsJson) {
-              if (DEBUG) {
-                console.log("complaintsJson =>", complaintsJson);
-                console.log("complaintsJson.length", complaintsJson.length);
-              }
+              // if (DEBUG) {
+              //   console.log("complaintsJson =>", complaintsJson);
+              //   console.log("complaintsJson.length", complaintsJson.length);
+              // }
               try {
                 complaintsJson.map((patient: any) => {
-                  if (DEBUG) {
-                    console.log("patient", patient);
-                    console.log(
-                      "id === parseInt(patient.id)",
-                      id === parseInt(patient.id)
-                    );
-                  }
+                  // if (DEBUG) {
+                  //   console.log("patient", patient);
+                  //   console.log(
+                  //     "id === parseInt(patient.id)",
+                  //     id === parseInt(patient.id)
+                  //   );
+                  // }
                   if (id === parseInt(patient.id)) {
                     minorIllness = patient.minorIllness;
                   }
                 });
               } catch {
-                if (DEBUG) console.log("Failed Parse");
+                //if (DEBUG) console.log("Failed Parse");
                 minorIllness = proVetAppointmentData?.complaint;
               }
             } else minorIllness = proVetAppointmentData?.complaint;
@@ -112,7 +108,7 @@ export const saveAppointment = async (
             gender,
             minorIllness,
           };
-        })
+        }),
       ).catch((error: any) => throwError(error));
       data.patients = proVetPatientData;
     }
@@ -153,7 +149,7 @@ export const saveAppointment = async (
       });
     } else if (DEBUG)
       console.log(
-        "SKIPPING APPOINTMENT NOTIFICATION GENERATION - APPOINTMENT DOES NOT HAVE A CLIENT!"
+        "SKIPPING APPOINTMENT NOTIFICATION GENERATION - APPOINTMENT DOES NOT HAVE A CLIENT!",
       );
 
     return await appointmentDocument
@@ -162,7 +158,7 @@ export const saveAppointment = async (
         if (document.exists) {
           if (DEBUG)
             console.log(
-              `Existing Appointment Found: #${proVetAppointmentData.id}`
+              `Existing Appointment Found: #${proVetAppointmentData.id}`,
             );
           return await appointmentDocument
             .update({
@@ -172,12 +168,12 @@ export const saveAppointment = async (
             .then(async () => {
               if (DEBUG)
                 console.log(
-                  `Successfully Synchronized PROVET Cloud Data w/ Firestore for Appointment #${proVetAppointmentData.id}`
+                  `Successfully Synchronized PROVET Cloud Data w/ Firestore for Appointment #${proVetAppointmentData.id}`,
                 );
               if (movetAppointmentData)
                 sendAppointmentConfirmationEmail(
                   `${data?.client}`,
-                  `${proVetAppointmentData.id}`
+                  `${proVetAppointmentData.id}`,
                 );
               return true;
             })
@@ -185,7 +181,7 @@ export const saveAppointment = async (
         } else {
           if (DEBUG)
             console.log(
-              `Unable to find Appointment #${proVetAppointmentData.id} in Firestore`
+              `Unable to find Appointment #${proVetAppointmentData.id} in Firestore`,
             );
           return await admin
             .firestore()
@@ -198,12 +194,12 @@ export const saveAppointment = async (
             .then(async () => {
               if (DEBUG) {
                 console.log(
-                  `Successfully Generated Firestore Document for Appointment #${proVetAppointmentData.id}`
+                  `Successfully Generated Firestore Document for Appointment #${proVetAppointmentData.id}`,
                 );
                 console.log(
                   // eslint-disable-next-line quotes
                   'Setting "onboardingComplete" to "true" for Client #',
-                  String(data?.client)
+                  String(data?.client),
                 );
               }
               admin
@@ -228,22 +224,22 @@ export const saveAppointment = async (
                             performAt: new Date(),
                             createdOn: new Date(),
                           },
-                          { merge: true }
+                          { merge: true },
                         )
                         .then(
                           async () =>
                             DEBUG &&
                             console.log(
                               "CREATE NEW CLIENT TASK ADDED TO QUEUE => ",
-                              `create_new_client_${data?.client}`
-                            )
+                              `create_new_client_${data?.client}`,
+                            ),
                         )
                         .catch((error: any) => throwError(error));
                   } else throwError(error);
                 });
               sendAppointmentConfirmationEmail(
                 `${data?.client}`,
-                `${proVetAppointmentData.id}`
+                `${proVetAppointmentData.id}`,
               );
               return true;
             })

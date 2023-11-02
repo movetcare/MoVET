@@ -13,7 +13,9 @@ export const processInvoicePaymentWebhook = async (
     !(typeof invoicepayment_id === "string") ||
     invoicepayment_id.length === 0
   )
-    throwError({ message: "INVALID_PAYLOAD" });
+    throwError({
+      message: "INVALID_PAYLOAD => " + JSON.stringify(request.body),
+    });
   try {
     if (DEBUG)
       console.log(`processInvoicePaymentWebhook ID: ${invoicepayment_id}`);

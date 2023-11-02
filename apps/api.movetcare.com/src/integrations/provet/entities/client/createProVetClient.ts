@@ -11,7 +11,9 @@ export const createProVetClient = async (data: {
 }): Promise<any> => {
   const { email, zip_code, firstname, lastname } = data || {};
   if (!(typeof email === "string") || email.length === 0)
-    throwError({ message: "INVALID_PAYLOAD" });
+    throwError({
+      message: "INVALID_PAYLOAD => " + JSON.stringify(data),
+    });
   if ((await verifyExistingClient(email)) === false) {
     const requestBody: any = {
       email: email?.toLowerCase(),

@@ -6,26 +6,28 @@ import { Request, Response } from "express";
 
 export const processConsultationWebhook = async (
   request: Request,
-  response: Response
+  response: Response,
 ): Promise<Response> => {
   if (
     !(typeof request.body.consultation_id === "string") ||
     request.body.consultation_id.length === 0
   )
-    throwError({ message: "INVALID_PAYLOAD" });
+    throwError({
+      message: "INVALID_PAYLOAD => " + JSON.stringify(request.body),
+    });
   try {
     const proVetConsultationData = await fetchEntity(
       "consultation",
-      request.body?.consultation_id
+      request.body?.consultation_id,
     );
     if (DEBUG)
       console.log(
         "processConsultationWebhook => proVetConsultationData",
-        proVetConsultationData
+        proVetConsultationData,
       );
     if (proVetConsultationData?.status === 9) {
       proVetConsultationData.patients.map((patient: string) =>
-        updateCustomField(`${getProVetIdFromUrl(patient)}`, 2, "False")
+        updateCustomField(`${getProVetIdFromUrl(patient)}`, 2, "False"),
       );
     }
     return response.status(200).send({ received: true });

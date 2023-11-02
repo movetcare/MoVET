@@ -24,7 +24,7 @@ export const fetchEntity = async (
     | "user"
     | "resource",
   entityId: number | null = null,
-  filter: string | null = null
+  filter: string | null = null,
 ): Promise<any> => {
   let queryUrl = entityId ? `/${entity}/${entityId}` : `/${entity}/`;
   if (entity === "email") queryUrl = `/logs/email/${entityId}`;
@@ -56,7 +56,7 @@ export const fetchEntity = async (
       queryUrls.push(
         filter
           ? `/${entity}/?page=${i}${filter.replace("?", "&")}`
-          : `/${entity}/?page=${i}`
+          : `/${entity}/?page=${i}`,
       );
     }
 
@@ -70,13 +70,20 @@ export const fetchEntity = async (
               resultsAdded++;
             }
           })
-          .catch((error: any) => throwError(error))
+          .catch((error: any) => throwError(error)),
     );
 
     return Promise.all(requests)
       .then(() => {
         if (resultsCount === resultsAdded) return allResults;
-        else return throwError("Failed to Complete Paginated Query") as any;
+        else
+          return throwError({
+            message:
+              "Failed to Complete Paginated Query => " +
+              JSON.stringify(initialQuery) +
+              " PAYLOAD => " +
+              JSON.stringify({ entity, entityId, filter }),
+          }) as any;
       })
       .catch((error: any) => throwError(error));
   }

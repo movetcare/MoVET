@@ -6,17 +6,19 @@ import { saveAppointment } from "./saveAppointment";
 
 export const processAppointmentWebhook = async (
   request: Request,
-  response: Response
+  response: Response,
 ): Promise<Response> => {
   if (
     !(typeof request.body.appointment_id === "string") ||
     request.body.appointment_id.length === 0
   )
-    throwError({ message: "INVALID_PAYLOAD" });
+    throwError({
+      message: "INVALID_PAYLOAD => " + JSON.stringify(request.body),
+    });
   try {
     const proVetAppointmentData = await fetchEntity(
       "appointment",
-      request.body?.appointment_id
+      request.body?.appointment_id,
     );
     await saveAppointment(proVetAppointmentData);
     //await configureReminders('appointments');

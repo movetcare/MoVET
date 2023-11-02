@@ -4,18 +4,22 @@ import { processPatientWebhook } from "./entities/patient/processPatientWebhook"
 import { processAppointmentWebhook } from "./entities/appointment/processAppointmentWebhook";
 import { processInvoiceWebhook } from "./entities/invoice/processInvoiceWebhook";
 import { Request, Response } from "express";
-import { DEBUG, proVetAppUrl, throwError } from "../../config/config";
+import { proVetAppUrl, throwError } from "../../config/config";
 import { processInvoicePaymentWebhook } from "./entities/invoice/processInvoicePaymentWebhook";
 import { processUserWebhook } from "./entities/user/processUserWebhook";
 import { processConsultationWebhook } from "./entities/consultation/processConsultationWebhook";
 import { sendNotification } from "../../notifications/sendNotification";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
-
+const DEBUG = true;
 export const processProVetWebhook = async (
   request: Request,
-  response: Response
+  response: Response,
 ): Promise<Response> => {
-  if (DEBUG) console.log("INCOMING REQUEST PAYLOAD => ", request.body);
+  if (DEBUG)
+    console.log(
+      "processProVetWebhook INCOMING REQUEST PAYLOAD => ",
+      request.body,
+    );
   const message = `${
     request.body?.client_id
       ? `:bust_in_silhouette: Client Update - ${
@@ -105,13 +109,11 @@ export const processProVetWebhook = async (
           sendNotification({
             type: "slack",
             payload: {
-              message: `:e-mail: Email w/ subject "${
-                response?.subject
-              }" sent to ${response?.email_address} - ${
+              message: `:e-mail: Email w/ subject "${response?.subject}" sent to ${response?.email_address} - ${
                 proVetAppUrl + "/client/" + getProVetIdFromUrl(response?.client)
               }/tabs/?tab=communication`,
             },
-          })
+          }),
         )
         .catch((error: any) => console.log("ERROR: ", error));
     else if (request.body.reminder_id)

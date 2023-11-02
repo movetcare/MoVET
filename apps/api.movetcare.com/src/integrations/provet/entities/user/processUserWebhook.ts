@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 
 export const processUserWebhook = async (
   request: Request,
-  response: Response
+  response: Response,
 ): Promise<Response> => {
   const user = await fetchEntity("user", request.body.user_id);
   const userDetails = await fetchEntity("userdetails", request.body.user_id);
@@ -45,13 +45,13 @@ export const processUserWebhook = async (
           vdsNumber: userDetails.vdsNumber,
           allDepartmentsActive: userDetails.all_departments_active,
           activeDepartments: userDetails.active_departments.map(
-            (department: any) => getProVetIdFromUrl(department)
+            (department: any) => getProVetIdFromUrl(department),
           ),
           homeDepartment: getProVetIdFromUrl(userDetails.home_department),
           isCabinetUser: userDetails.is_cabinet_user,
           updatedOn: new Date(),
         },
-        { merge: true }
+        { merge: true },
       )
       .then(() => response.status(200).send({ received: true }))
       .catch((error: any) => {
@@ -59,7 +59,9 @@ export const processUserWebhook = async (
         return response.status(500).send({ received: false });
       });
   else {
-    throwError({ message: "INVALID PAYLOAD" });
+    throwError({
+      message: "INVALID PAYLOAD => " + JSON.stringify(request.body),
+    });
     return response.status(500).send({ received: false });
   }
 };

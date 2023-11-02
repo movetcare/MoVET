@@ -50,7 +50,9 @@ export const createProVetPatient = async (data: {
     !(typeof gender === "string") ||
     gender.length === 0
   )
-    return throwError({ message: "INVALID_PAYLOAD" });
+    return throwError({
+      message: "INVALID_PAYLOAD => " + JSON.stringify(data),
+    });
 
   if (DEBUG)
     console.log("REQUEST PAYLOAD =>", {
@@ -119,7 +121,7 @@ const updatePatientWeight = async (data: any, weight: string) => {
         if (DEBUG)
           console.log(
             `API Response: POST /patient/${data?.id}/weight/ => `,
-            data
+            data,
           );
         return data;
       })

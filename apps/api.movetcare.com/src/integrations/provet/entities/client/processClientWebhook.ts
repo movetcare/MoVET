@@ -7,11 +7,13 @@ import { deleteAllAccountData } from "../../../../utils/deleteAllAccountData";
 
 export const processClientWebhook = async (
   request: Request,
-  response: Response
+  response: Response,
 ): Promise<Response> => {
   const id = request.body.client_id;
   if (!(typeof id === "string") || id.length === 0)
-    throwError({ message: "INVALID_PAYLOAD" });
+    throwError({
+      message: "INVALID_PAYLOAD => " + JSON.stringify(request.body),
+    });
   try {
     const proVetClientData = await fetchEntity("client", id);
     if (DEBUG) console.log("LATEST proVetClientData", proVetClientData);
