@@ -35,7 +35,7 @@ export { createAppointment } from "./endpoints/mobile/appointment/createAppointm
 export { getEstimates } from "./endpoints/mobile/appointment/getEstimates";
 export { getAppointmentOptions } from "./endpoints/mobile/appointment/getAppointmentOptions";
 export { getCancellationReasons } from "./endpoints/mobile/appointment/getCancellationReasons";
-export { updateAppointment } from "./endpoints/mobile/appointment/updateAppointment";
+//export { updateAppointment } from "./endpoints/mobile/appointment/updateAppointment";
 export { updateOnboardingStatus } from "./endpoints/mobile/client/updateOnboardingStatus";
 export { refreshCustomerToken } from "./endpoints/mobile/client/refreshCustomerToken";
 export { getBookingToken } from "./endpoints/mobile/booking/getBookingToken";
