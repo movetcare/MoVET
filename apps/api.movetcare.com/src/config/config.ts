@@ -21,16 +21,26 @@ if (environment.type !== "development") {
 //   process.env.FUNCTIONS_EMULATOR_TIMEOUT_SECONDS = "540s";
 
 export const throwError = (error: any): false => {
-  if (error && error !== undefined && error !== null)
+  if (error && error !== undefined && error !== null) {
     sendNotification({
       type: "slack",
       payload: {
         message: `:interrobang: NEW ERROR:\`\`\`${JSON.stringify(
-          error || error?.message,
+          error?.message || error,
         )}\`\`\``,
       },
     });
-  else console.error("UNKNOWN ERROR", error);
+    sendNotification({
+      type: "email",
+      payload: {
+        to: "alex.rodriguez@movetcare.com",
+        subject: error?.message
+          ? "NEW ERROR => " + JSON.stringify(error?.message)
+          : "NEW ERROR",
+        message: JSON.stringify(error),
+      },
+    });
+  } else console.error("UNKNOWN ERROR", error);
   console.error("FULL ERROR", JSON.stringify(error));
   if (error?.response) {
     console.error("ERROR HEADERS", JSON.stringify(error.response?.headers));
