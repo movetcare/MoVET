@@ -5,7 +5,7 @@ import { BookAnAppointmentForm } from "../forms";
 
 export const CallToAction = () => {
   const router = useRouter();
-  return (
+  return router?.query?.mode !== "app" ? (
     <section className="relative bg-center bg-cover w-full bg-movet-black py-16 bg-[url('/images/backgrounds/pets-background.png')]">
       <div className="h-28 -top-1 overflow-hidden absolute w-full">
         <svg
@@ -34,32 +34,33 @@ export const CallToAction = () => {
           </div>
           <div className="w-80 relative z-10 md:w-1/2 text-center mt-8 sm:mt-0 -mb-16 md:mb-0">
             <h3 className="first-letter:tracking-wide text-2xl sm:text-3xl whitespace-nowrap mb-1.5 text-movet-white">
-              Your neighborhood vet,
+              Your neighborhood vet,!!!
             </h3>
             <h3 className="text-4xl sm:text-5xl text-movet-red">Delivered</h3>
             <p className="text-base sm:text-lg font-abside leading-6 my-4 text-movet-white">
               A stress-free way to take care
               <br /> of your vet appointments.
             </p>
-            {router?.query?.mode !== "app" && (
-              <div className="flex flex-col justify-center items-center">
-                <p className="mb-3 font-abside text-sm text-movet-white">
-                  SCHEDULE AN APPOINTMENT
-                </p>
-                <BookAnAppointmentForm />
-                {/* <div className="flex justify-center">
+
+            <div className="flex flex-col justify-center items-center">
+              <p className="mb-3 font-abside text-sm text-movet-white">
+                SCHEDULE AN APPOINTMENT
+              </p>
+              <BookAnAppointmentForm />
+              {/* <div className="flex justify-center">
                   <p className="text-sm font-abside my-3 text-movet-white">
                     OR
                   </p>
                 </div> */}
-                <div className="flex justify-center">
-                  <AppLinks />
-                </div>
+              <div className="flex justify-center">
+                <AppLinks />
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
     </section>
+  ) : (
+    <></>
   );
 };

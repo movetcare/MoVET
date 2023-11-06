@@ -6,3 +6,4 @@ export * from "./inputs/PasswordInput";
 export * from "./buttons/TextButton";
 export * from "./View";
 export * from "./Text";
+export * from "./Icons";

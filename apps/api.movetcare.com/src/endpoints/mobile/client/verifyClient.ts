@@ -17,6 +17,7 @@ export const verifyClient = functions
     async (data: {
       email: string;
       device: {
+        ip: string;
         brand: string;
         designName?: string;
         deviceName: string;

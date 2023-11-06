@@ -1,7 +1,6 @@
 import { FontAwesome5 } from "@expo/vector-icons";
-
 import tw from "tailwind";
-import { HeadingText, View } from "./themed";
+import { HeadingText, View } from ".";
 import { useRouter } from "expo-router";
 
 export const NavigationHeader = ({
@@ -26,20 +25,18 @@ export const NavigationHeader = ({
         }
       />
       <View
-        style={tw`flex flex-row justify-center items-center bg-movet-red h-11 w-full`}
+        style={tw`flex flex-row justify-center items-center h-12 border-b-2 border-movet-white bg-movet-red`}
+        noDarkMode
       >
         <View
-          style={tw`flex flex-row justify-center items-center bg-movet-red`}
+          style={tw`flex flex-row justify-center items-center bg-transparent`}
+          noDarkMode
         >
-          {icon && (
-            <FontAwesome5
-              name={icon}
-              size={20}
-              color={tw.color("movet-white")}
-              style={tw`mr-2`}
-            />
-          )}
-          <HeadingText style={tw`text-movet-white text-lg normal-case`}>
+          {icon}
+          <HeadingText
+            style={tw`text-movet-white text-lg normal-case`}
+            noDarkMode
+          >
             {title}
           </HeadingText>
         </View>
@@ -47,17 +44,11 @@ export const NavigationHeader = ({
     </>
   ) : (
     <View
-      style={tw`flex flex-row justify-center items-center bg-movet-red h-11`}
+      style={tw`flex flex-row justify-center items-center bg-movet-red h-12 border-b-2 border-movet-white`}
+      noDarkMode
     >
-      {icon && (
-        <FontAwesome5
-          name={icon}
-          size={20}
-          color={tw.color("movet-white")}
-          style={tw`mr-2`}
-        />
-      )}
-      <HeadingText style={tw`text-movet-white text-lg normal-case`}>
+      {icon}
+      <HeadingText style={tw`text-movet-white text-xl normal-case`} noDarkMode>
         {title}
       </HeadingText>
     </View>

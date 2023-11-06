@@ -62,10 +62,9 @@ export const configureTelehealthStatus = async (): Promise<boolean> => {
       .set(
         {
           isOnline: true,
-          queueSize: 0,
-          waitTime: 1,
-          message:
-            "We are currently unavailable, but promise to reply to your question(s) ASAP",
+          queueSize: 2,
+          waitTime: 5,
+          message: "Mon - Fri: 9 AM - 5PM",
           onlineAutoReply:
             "(AUTO REPLY) Thanks for reaching out! A MoVET Expert will be with you shortly.",
           offlineAutoReply:

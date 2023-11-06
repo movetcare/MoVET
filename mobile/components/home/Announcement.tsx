@@ -45,16 +45,16 @@ export const Announcement = ({
       style={tw`mx-4 mt-4`}
     >
       <View
-        style={tw`p-4 ${backgroundColor} text-movet-white rounded-xl flex-row items-center`}
+        style={tw`p-4 text-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white ${backgroundColor}`}
       >
         <Container>
           <FontAwesome5 name={icon} size={30} color={tw.color("movet-white")} />
         </Container>
         <Container style={tw`pl-4 mr-6`}>
-          <HeadingText style={tw`text-movet-white text-lg`}>
+          <HeadingText style={tw`text-movet-white text-lg`} noDarkMode>
             {title}
           </HeadingText>
-          <SubHeadingText style={tw`text-movet-white text-xs mb-2`}>
+          <SubHeadingText style={tw`text-movet-white text-xs mb-2`} noDarkMode>
             {message}
           </SubHeadingText>
         </Container>

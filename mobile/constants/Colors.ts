@@ -3,17 +3,19 @@ import tw from "tailwind";
 
 export default {
   light: {
-    text: tw.color("movet-black"),
-    background: tw.color("movet-white"),
-    tint: tw.color("movet-red"),
-    tabIconDefault: "#ccc",
-    tabIconSelected: tw.color("movet-red"),
+    text: tw.color("movet-black") as string,
+    background: tw.color("movet-white") as string,
+    tabBarActiveTintColor: tw.color("movet-black") as string,
+    tabBarActiveBackgroundColor: tw.color("movet-white") as string,
+    tabBarInactiveBackgroundColor: tw.color("white") as string,
+    tabBarInactiveTintColor: tw.color("movet-black") as string,
   },
   dark: {
-    text: tw.color("movet-white"),
-    background: tw.color("movet-black"),
-    tint: tw.color("movet-white"),
-    tabIconDefault: "#ccc",
-    tabIconSelected: tw.color("movet-white"),
+    text: tw.color("movet-white") as string,
+    background: tw.color("movet-black") as string,
+    tabBarActiveTintColor: tw.color("movet-black") as string,
+    tabBarActiveBackgroundColor: tw.color("movet-white") as string,
+    tabBarInactiveBackgroundColor: tw.color("movet-black") as string,
+    tabBarInactiveTintColor: tw.color("movet-white") as string,
   },
 };

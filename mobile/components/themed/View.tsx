@@ -11,6 +11,7 @@ type ThemeProps = {
 export type ViewProps = ThemeProps & DefaultView["props"];
 interface ExtendedViewProps extends ViewProps {
   withBackground?: "pets";
+  noDarkMode?: boolean;
 }
 
 export const Screen = (props: ExtendedViewProps) => {
@@ -22,14 +23,14 @@ export const Screen = (props: ExtendedViewProps) => {
   return (
     <KeyboardAwareScrollView
       showsVerticalScrollIndicator={false}
-      style={tw`flex-1`}
-      contentContainerStyle={tw`flex-grow`}
+      style={tw`flex-1 bg-transparent`}
+      contentContainerStyle={tw`flex-grow bg-transparent`}
     >
       {withBackground === "pets" ? (
         <ImageBackground
           source={require("assets/images/backgrounds/pets-background.png")}
           resizeMode="cover"
-          style={tw`flex-1`}
+          style={[{ backgroundColor }, tw`flex-1`]}
         >
           <DefaultView
             style={[
@@ -41,14 +42,21 @@ export const Screen = (props: ExtendedViewProps) => {
           />
         </ImageBackground>
       ) : (
-        <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />
+        <DefaultView style={[style, { backgroundColor }]} {...otherProps} />
       )}
     </KeyboardAwareScrollView>
   );
 };
 
 export const View = (props: ExtendedViewProps) => {
-  const { style, lightColor, darkColor, withBackground, ...otherProps } = props;
+  const {
+    style,
+    lightColor,
+    darkColor,
+    withBackground,
+    noDarkMode,
+    ...otherProps
+  } = props;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     "background",
@@ -68,8 +76,10 @@ export const View = (props: ExtendedViewProps) => {
         {...otherProps}
       />
     </ImageBackground>
-  ) : (
+  ) : noDarkMode ? (
     <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />
+  ) : (
+    <DefaultView style={[style, { backgroundColor }]} {...otherProps} />
   );
 };
 

@@ -30,7 +30,7 @@ export const Ad = ({ content }: { content: Ad }): ReactNode => {
       >
         <Pressable>
           <Image
-            style={tw`flex-1 bg-movet-black/10 w-full rounded-xl ${
+            style={tw`flex-1 bg-movet-black/10 w-full rounded-xl border-2 dark:border-movet-white ${
               LayoutDimensions.window.width > 600 ? "h-180" : "h-80"
             }`}
             source={{ uri: "https://movetcare.com/" + imagePath }}

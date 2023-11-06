@@ -1,4 +1,4 @@
-import { ImageBackground, useColorScheme } from "react-native";
+import { ImageBackground, Pressable, useColorScheme } from "react-native";
 import React, { useEffect, useState } from "react";
 import { signIn, signInWithLink } from "services/Auth";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -18,7 +18,7 @@ import {
 import { router, useLocalSearchParams } from "expo-router";
 import { AuthStore } from "stores/AuthStore";
 import { getPlatformUrl } from "utils/getPlatformUrl";
-import { isProductionEnvironment } from "utils/isProductionEnvironment";
+// import { isProductionEnvironment } from "utils/isProductionEnvironment";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 
 export default function SignIn() {
@@ -43,6 +43,12 @@ export default function SignIn() {
     redirectPath,
   } = useLocalSearchParams();
   const isDarkMode = useColorScheme() !== "light";
+  const [tapCount, setTapCount] = useState<number>(0);
+  const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false);
+  useEffect(() => {
+    if (tapCount === 15) setShowPasswordInput(true);
+    else if (tapCount > 15) setShowPasswordInput(false);
+  }, [tapCount]);
 
   useEffect(() => {
     if (mode && oobCode && continueUrl && lang && apiKey && user?.email)
@@ -101,12 +107,14 @@ export default function SignIn() {
               w-full rounded-t-xl flex justify-center items-center bg-transparent
             `}
           >
-            <MoVETLogo
-              type="default"
-              override="default"
-              height={160}
-              width={260}
-            />
+            <Pressable onPress={() => setTapCount(tapCount + 1)}>
+              <MoVETLogo
+                type="default"
+                override="default"
+                height={160}
+                width={260}
+              />
+            </Pressable>
           </View>
           <View
             style={[
@@ -120,7 +128,7 @@ export default function SignIn() {
               textContentType="username"
               editable={!isLoading}
             />
-            {(!isProductionEnvironment || withPassword) && (
+            {(withPassword || showPasswordInput) && (
               <PasswordInput
                 control={control}
                 error={((errors as any)["password"] as any)?.message as string}
@@ -128,7 +136,7 @@ export default function SignIn() {
                 editable={!isLoading}
               />
             )}
-            {!showVerificationButton && isProductionEnvironment && (
+            {!showVerificationButton && !withPassword && !showPasswordInput && (
               <View
                 style={tw`flex-row bg-movet-white/80 dark:bg-movet-black/75 rounded-xl p-2`}
               >
@@ -186,9 +194,7 @@ export default function SignIn() {
                 />
               </View>
             )}
-            {showVerificationButton &&
-            !withPassword &&
-            isProductionEnvironment ? (
+            {showVerificationButton && !withPassword && !showPasswordInput ? (
               <ActionButton
                 title="Resend Sign In Link"
                 iconName="envelope"
@@ -199,7 +205,7 @@ export default function SignIn() {
                 iconName={
                   isLoading
                     ? "spinner"
-                    : isProductionEnvironment && !withPassword
+                    : !withPassword && !showPasswordInput
                     ? "arrow-right"
                     : isDirty
                     ? "lock-open"
@@ -213,7 +219,7 @@ export default function SignIn() {
                 title={
                   isLoading
                     ? "Processing..."
-                    : isProductionEnvironment && !withPassword
+                    : !withPassword && !showPasswordInput
                     ? "Continue"
                     : "Sign In"
                 }

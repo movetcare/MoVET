@@ -1,4 +1,4 @@
-import { NavigationHeader } from "components/NavigationHeader";
+import { NavigationHeader } from "components/themed/NavigationHeader";
 import { Stack } from "expo-router";
 import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions";
 

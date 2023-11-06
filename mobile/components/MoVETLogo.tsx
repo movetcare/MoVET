@@ -40,6 +40,7 @@ export const MoVETLogo = ({
   }
   return (
     <Image
+      alt="MoVET Care Logo"
       style={[{ width: width || 140, height: height || 30 }, style]}
       source={
         override && source !== null

@@ -11,6 +11,7 @@ import { httpsCallable } from "firebase/functions";
 import { AuthStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import * as Device from "expo-device";
+import * as Network from "expo-network";
 
 export const signIn = async (email: string, password?: string | undefined) => {
   AuthStore.update((store) => {
@@ -19,6 +20,7 @@ export const signIn = async (email: string, password?: string | undefined) => {
   const device = Device?.isDevice
     ? Device?.brand === "Apple"
       ? {
+          ip: await Network.getIpAddressAsync(),
           brand: Device?.brand || "UNKNOWN",
           deviceName: Device?.deviceName || "UNKNOWN",
           deviceType: Device?.deviceType || "UNKNOWN",
@@ -36,6 +38,7 @@ export const signIn = async (email: string, password?: string | undefined) => {
           totalMemory: Device?.totalMemory || "UNKNOWN",
         }
       : {
+          ip: await Network.getIpAddressAsync(),
           brand: Device?.brand || "UNKNOWN",
           designName: Device?.designName || "UNKNOWN",
           deviceName: Device?.deviceName || "UNKNOWN",
@@ -56,6 +59,7 @@ export const signIn = async (email: string, password?: string | undefined) => {
           totalMemory: Device?.totalMemory || "UNKNOWN",
         }
     : {
+        ip: await Network.getIpAddressAsync(),
         brand: Device?.brand || "UNKNOWN",
         designName: Device?.designName || "UNKNOWN",
         deviceName: Device?.deviceName || "UNKNOWN",
