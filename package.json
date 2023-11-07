@@ -56,7 +56,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^15.0.2",
     "prettier": "^3.0.3",
-    "start-server-and-test": "^2.0.1",
+    "start-server-and-test": "^2.0.2",
     "turbo": "^1.10.16",
     "typescript": "^5.2.2",
     "typescript-coverage-report": "^0.8.0",
