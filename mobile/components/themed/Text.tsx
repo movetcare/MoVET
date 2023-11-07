@@ -48,7 +48,7 @@ export const ItalicText = (props: TextProps) => (
 export const ButtonText = (props: TextProps) => (
   <Text
     {...props}
-    style={[tw`uppercase font-abside-smooth font-bold`, props.style]}
+    style={[tw`text-sm font-abside-smooth font-thin`, props.style]}
   />
 );
 

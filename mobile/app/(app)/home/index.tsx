@@ -1,8 +1,9 @@
 import { Loader } from "components/Loader";
+import { SectionHeading } from "components/SectionHeading";
 import { Ad } from "components/home/Ad";
 import { Announcement } from "components/home/Announcement";
 import { TelehealthStatus } from "components/home/TelehealthStatus";
-import { Container, HeadingText, Icon, Screen } from "components/themed";
+import { Screen } from "components/themed";
 import { firestore } from "firebase-config";
 import {
   collection,
@@ -12,7 +13,6 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import tw from "tailwind";
 
 const DEBUG = false;
 
@@ -27,7 +27,10 @@ const Home = () => {
     const unsubscribe = onSnapshot(
       query(collection(firestore, "alerts")),
       (querySnapshot: QuerySnapshot) => {
-        if (querySnapshot.empty) return;
+        if (querySnapshot.empty) {
+          setIsLoadingAlerts(false);
+          return;
+        }
         querySnapshot.forEach((doc: DocumentData) => {
           switch (doc.id) {
             case "banner":
@@ -57,12 +60,7 @@ const Home = () => {
   ) : (
     <Screen withBackground="pets">
       {(announcement?.isActiveMobile || ad?.isActive) && (
-        <Container style={tw`flex-row justify-center items-center`}>
-          <Icon name="mobile" size="xs" style={tw`mt-4`} />
-          <HeadingText style={tw`mt-4 text-lg`}>
-            Latest Announcements
-          </HeadingText>
-        </Container>
+        <SectionHeading iconName={"poo"} text={"Latest Announcements"} />
       )}
       {announcement?.isActiveMobile && (
         <Announcement announcement={announcement} />

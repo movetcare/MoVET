@@ -5,6 +5,7 @@ import { BodyText, HeadingText, SubHeadingText } from "./Text";
 import { ActionButton } from "./buttons/ActionButton";
 import { View, Screen } from "./View";
 import { router } from "expo-router";
+import {  useColorScheme } from "react-native";
 
 export const ErrorLayout = ({
   message = "Something went wrong",
@@ -19,6 +20,7 @@ export const ErrorLayout = ({
   action?: any;
   details?: string;
 }) => {
+  const isDarkMode = useColorScheme() !== "light";
   return (
     // <ImageBackground
     //   source={require("assets/images/backgrounds/pets-background.png")}
@@ -33,10 +35,11 @@ export const ErrorLayout = ({
         style={tw`
               w-full rounded-t-xl flex justify-center items-center bg-transparent
             `}
+            noDarkMode
       >
         <MoVETLogo
-          type="default"
-          override="default"
+          type={isDarkMode ? "white" : "default"}
+          override={isDarkMode ? "white" : "default"}
           height={160}
           width={260}
           style={tw`bg-transparent`}
@@ -47,6 +50,7 @@ export const ErrorLayout = ({
           tw`w-full pb-12 px-8 bg-transparent items-center rounded-b-xl`,
           DeviceDimensions.window.height > 640 ? tw`mt-12` : tw`mt-4`,
         ]}
+        noDarkMode
       >
         <HeadingText
           style={tw`text-movet-black font-extrabold text-center normal-case text-3xl italic`}
@@ -64,7 +68,7 @@ export const ErrorLayout = ({
           </View>
         )}
       </View>
-      <View style={tw`w-full px-8 bg-transparent items-center`}>
+      <View style={tw`w-full px-8 bg-transparent items-center`} noDarkMode>
         <ActionButton
           title={actionTitle}
           iconName={actionIconName}

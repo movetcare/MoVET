@@ -96,7 +96,7 @@ const TabsLayout = (props: any) => {
           name="settings"
           options={{
             title: "Settings",
-            tabBarIcon: () => <Icon name="clinic-alt" size="xs" />,
+            tabBarIcon: () => <Icon name="clinic-alt" height={iconHeight} width={iconWidth} />,
             ...tabBarStyle,
           }}
         />

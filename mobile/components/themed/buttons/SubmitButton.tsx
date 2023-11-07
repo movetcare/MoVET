@@ -5,9 +5,9 @@ import {
   View,
   useColorScheme,
 } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
 import tw from "tailwind";
 import { ButtonText } from "../Text";
+import { Icon, SupportedIcons } from "../Icons";
 
 export const SubmitButton = ({
   handleSubmit,
@@ -26,7 +26,7 @@ export const SubmitButton = ({
   title: string;
   color?: "red" | "black";
   style?: any;
-  iconName?: string;
+  iconName?: SupportedIcons;
 }) => {
   const isDarkMode = useColorScheme() !== "light";
   return (
@@ -43,15 +43,13 @@ export const SubmitButton = ({
       disabled={disabled}
     >
       {iconName && !loading && (
-        <FontAwesome5
+        <Icon
           name={iconName}
-          size={16}
-          color={
-            isDarkMode && color === "black"
-              ? tw.color("movet-black")
-              : tw.color("movet-white")
-          }
+          height={18}
+          width={18}
+          color="white"
           style={tw`mr-2`}
+          noDarkMode
         />
       )}
       {loading ? (
@@ -66,6 +64,7 @@ export const SubmitButton = ({
             }
           />
           <ButtonText
+            noDarkMode
             style={
               isDarkMode && color === "black"
                 ? tw`text-movet-black`
@@ -78,7 +77,9 @@ export const SubmitButton = ({
       ) : isDarkMode && color === "black" ? (
         <ButtonText style={tw`text-movet-black`}>{title}</ButtonText>
       ) : (
-        <ButtonText style={tw`text-movet-white`}>{title}</ButtonText>
+        <ButtonText style={tw`text-movet-white`} noDarkMode>
+          {title}
+        </ButtonText>
       )}
     </TouchableOpacity>
   );

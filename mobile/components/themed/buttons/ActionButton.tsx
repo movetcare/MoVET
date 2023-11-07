@@ -3,6 +3,7 @@ import { TouchableOpacity, useColorScheme } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import tw from "tailwind";
 import { ButtonText, SubHeadingText } from "../Text";
+import { Icon, SupportedIcons } from "../Icons";
 
 export const ActionButton = ({
   title,
@@ -13,17 +14,15 @@ export const ActionButton = ({
   disabled,
   type = "button",
   textStyle,
-  iconSize,
 }: {
   title: string;
   onPress: any;
   color?: "red" | "black" | "brown";
   style?: any;
-  iconName?: string;
+  iconName?: SupportedIcons;
   disabled?: boolean;
   type?: "button" | "text";
   textStyle?: any;
-  iconSize?: number;
 }) => {
   const isDarkMode = useColorScheme() !== "light";
   return (
@@ -43,19 +42,13 @@ export const ActionButton = ({
       ]}
     >
       {iconName && (
-        <FontAwesome5
+        <Icon
           name={iconName}
-          size={iconSize || 16}
-          color={
-            type === "button"
-              ? isDarkMode && color === "black"
-                ? tw.color("movet-black")
-                : tw.color("movet-white")
-              : isDarkMode
-              ? tw.color("movet-white")
-              : tw.color("movet-black")
-          }
-          style={[style, tw`mr-2`]}
+          height={18}
+          width={18}
+          color="white"
+          style={tw`mr-2`}
+          noDarkMode
         />
       )}
       {type === "button" ? (
@@ -66,11 +59,14 @@ export const ActionButton = ({
               ? tw`text-movet-black text-center`
               : tw`text-movet-white text-center`,
           ]}
+          noDarkMode
         >
           {title}
         </ButtonText>
       ) : (
-        <SubHeadingText style={textStyle}>{title}</SubHeadingText>
+        <SubHeadingText style={textStyle} noDarkMode>
+          {title}
+        </SubHeadingText>
       )}
     </TouchableOpacity>
   );

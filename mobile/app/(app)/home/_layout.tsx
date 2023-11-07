@@ -5,18 +5,18 @@ import { useEffect, useState } from "react";
 import { Icon } from "components/themed";
 import tw from "tailwind";
 
-const defaultNavigationDetails = {
-  title: "My MoVET",
-  icon: <Icon name="clinic-alt" size="xs" style={tw`mr-1`} />,
-  canGoBack: false,
-};
+// const defaultNavigationDetails = {
+//   title: "My MoVET",
+//   icon: <Icon name="clinic-alt" size="xs" style={tw`mr-1`} />,
+//   canGoBack: false,
+// };
 export default function Layout() {
   const segments = useSegments();
   const [navigationDetails, setNavigationDetails] = useState<{
     title: string;
     icon: any;
     canGoBack: boolean;
-  }>(defaultNavigationDetails);
+  } | null>(null);
 
   useEffect(() => {
     if (segments && segments.includes("web-view")) {
@@ -27,20 +27,21 @@ export default function Layout() {
         canGoBack: true,
       });
       //}, 180);
-    } else setNavigationDetails(defaultNavigationDetails);
+    }
+     else setNavigationDetails(null);
   }, [segments]);
 
   return (
     <Stack
       screenOptions={{
         ...navigationStackScreenOptions,
-        header: () => (
+        header: () => navigationDetails ? (
           <NavigationHeader
             title={navigationDetails.title}
             icon={navigationDetails.icon}
             canGoBack={navigationDetails.canGoBack}
           />
-        ),
+        ) : undefined,
       }}
     />
   );

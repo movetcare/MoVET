@@ -18,7 +18,6 @@ import {
 import { router, useLocalSearchParams } from "expo-router";
 import { AuthStore } from "stores/AuthStore";
 import { getPlatformUrl } from "utils/getPlatformUrl";
-// import { isProductionEnvironment } from "utils/isProductionEnvironment";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 
 export default function SignIn() {
@@ -97,15 +96,18 @@ export default function SignIn() {
       <ImageBackground
         source={require("assets/images/backgrounds/sign-in-background.png")}
         resizeMode="cover"
-        style={tw`flex-1 px-6`}
+        style={tw`flex-1`}
       >
         <View
           style={tw`w-full bg-transparent flex-1 justify-center items-center`}
+          noDarkMode
         >
           <View
             style={tw`
               w-full rounded-t-xl flex justify-center items-center bg-transparent
+              
             `}
+            noDarkMode
           >
             <Pressable onPress={() => setTapCount(tapCount + 1)}>
               <MoVETLogo
@@ -121,6 +123,7 @@ export default function SignIn() {
               tw`w-full pb-12 px-8 bg-transparent items-center rounded-b-xl`,
               DeviceDimensions.window.height > 640 ? tw`mt-12` : tw`mt-4`,
             ]}
+            noDarkMode
           >
             <EmailInput
               control={control}
@@ -139,6 +142,7 @@ export default function SignIn() {
             {!showVerificationButton && !withPassword && !showPasswordInput && (
               <View
                 style={tw`flex-row bg-movet-white/80 dark:bg-movet-black/75 rounded-xl p-2`}
+                noDarkMode
               >
                 <ItalicText style={tw`text-sm normal-case text-center`}>
                   Please provide your email address to sign in or create a new
@@ -147,7 +151,10 @@ export default function SignIn() {
               </View>
             )}
           </View>
-          <View style={tw`w-full pb-12 px-8 bg-transparent items-center`}>
+          <View
+            style={tw`w-full pb-12 px-8 bg-transparent items-center`}
+            noDarkMode
+          >
             {isDirty && !showVerificationButton && (
               <View
                 style={tw`flex-row bg-movet-white dark:bg-movet-black rounded-xl mt-4 p-2 opacity-75`}
@@ -196,16 +203,14 @@ export default function SignIn() {
             )}
             {showVerificationButton && !withPassword && !showPasswordInput ? (
               <ActionButton
-                title="Resend Sign In Link"
-                iconName="envelope"
+                title="Resend Sign-In Link"
+                iconName="plane"
                 onPress={() => onSubmit({ email: user?.email })}
               />
             ) : (
               <SubmitButton
                 iconName={
-                  isLoading
-                    ? "spinner"
-                    : !withPassword && !showPasswordInput
+                  !withPassword && !showPasswordInput
                     ? "arrow-right"
                     : isDirty
                     ? "lock-open"
@@ -215,7 +220,7 @@ export default function SignIn() {
                 handleSubmit={handleSubmit}
                 onSubmit={onSubmit}
                 disabled={!isDirty}
-                loading={false}
+                loading={isLoading}
                 title={
                   isLoading
                     ? "Processing..."

@@ -9,7 +9,7 @@ export const NavigationHeader = ({
   canGoBack = false,
 }: {
   title: string;
-  icon: string | null;
+  icon: any | null;
   canGoBack?: boolean;
 }) => {
   const router = useRouter();

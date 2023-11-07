@@ -1,9 +1,9 @@
 import { FontAwesome5 } from "@expo/vector-icons";
-import { HeadingText, SubHeadingText } from "components/themed";
+import { BodyText, HeadingText, View } from "components/themed";
 import { Container } from "components/themed/View";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
+import { Pressable } from "react-native";
 import { ReactNode } from "react";
-import { View } from "react-native";
 import tw from "tailwind";
 
 export interface Announcement {
@@ -20,6 +20,7 @@ export const Announcement = ({
 }: {
   announcement: Announcement;
 }): ReactNode => {
+  const router = useRouter();
   const { icon, title, message, link } = announcement;
   const backgroundColor =
     announcement?.color === "#DAAA00"
@@ -37,28 +38,38 @@ export const Announcement = ({
       : "bg-movet-dark-blue";
 
   return (
-    <Link
-      href={{
-        pathname: "/(app)/home/web-view",
-        params: { path: link },
-      }}
-      style={tw`mx-4 mt-4`}
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: "/(app)/home/web-view",
+          params: { path: link },
+        })
+      }
     >
       <View
-        style={tw`p-4 text-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white ${backgroundColor}`}
+        style={tw`flex-row mx-4 my-4 shadow-lg dark:shadow-white rounded-xl bg-transparent`}
       >
-        <Container>
-          <FontAwesome5 name={icon} size={30} color={tw.color("movet-white")} />
-        </Container>
-        <Container style={tw`pl-4 mr-6`}>
-          <HeadingText style={tw`text-movet-white text-lg`} noDarkMode>
-            {title}
-          </HeadingText>
-          <SubHeadingText style={tw`text-movet-white text-xs mb-2`} noDarkMode>
-            {message}
-          </SubHeadingText>
-        </Container>
+        <View
+          style={tw`p-4 text-movet-white rounded-xl flex-row items-center w-full ${backgroundColor}`}
+          noDarkMode
+        >
+          <Container>
+            <FontAwesome5
+              name={icon}
+              size={30}
+              color={tw.color("movet-white")}
+            />
+          </Container>
+          <Container style={tw`pl-4 mr-6`}>
+            <HeadingText style={tw`text-movet-white text-lg`} noDarkMode>
+              {title}
+            </HeadingText>
+            <BodyText style={tw`text-movet-white mb-2`} noDarkMode>
+              {message}
+            </BodyText>
+          </Container>
+        </View>
       </View>
-    </Link>
+    </Pressable>
   );
 };

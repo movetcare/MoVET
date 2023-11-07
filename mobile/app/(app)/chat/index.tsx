@@ -31,7 +31,7 @@ import "react-native-get-random-values";
 import { v4 as uuid } from "uuid";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
-import { Platform } from "react-native";
+import { Platform, useColorScheme } from "react-native";
 import * as Notifications from "expo-notifications";
 import { View } from "components/themed";
 
@@ -84,7 +84,7 @@ const ChatIndex = () => {
   const { user } = AuthStore.useState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<IMessage[]>([]);
-
+ const isDarkMode = useColorScheme() !== "light";
   useEffect(() => {
     registerForPushNotificationsAsync().then(async (token: any) => {
       const deviceInfo = JSON.parse(
@@ -331,12 +331,12 @@ const ChatIndex = () => {
 
   const renderSend = useCallback((props: SendProps<IMessage>) => {
     return (
-      <Send {...props} containerStyle={{ justifyContent: "center" }}>
+      <Send {...props} containerStyle={{ justifyContent: "center"}}>
         <MaterialIcons
-          size={30}
+          size={26}
           color={"tomato"}
           name={"send"}
-          style={tw`mr-2`}
+          style={tw`mr-2 -mt-1`}
         />
       </Send>
     );
@@ -351,12 +351,12 @@ const ChatIndex = () => {
             color: tw.color("movet-black"),
           },
           left: {
-            color: tw.color("movet-black"),
+            color: isDarkMode ? tw.color("movet-white") : tw.color("movet-black"),
           },
         }}
         wrapperStyle={{
           right: {
-            backgroundColor: tw.color(`movet-white`),
+            backgroundColor: isDarkMode ? tw.color("movet-white") : tw.color(`white`),
           },
           left: {
             backgroundColor: tw.color(`movet-red/20`),
@@ -366,7 +366,7 @@ const ChatIndex = () => {
     );
   };
   return (
-    <View style={tw`flex-1 bg-white`}>
+    <View style={tw`flex-1 bg-white -mb-1.5`}>
       <GiftedChat
         infiniteScroll
         scrollToBottom
