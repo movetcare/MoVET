@@ -21,7 +21,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     backgroundColor: themeColor.white,
     primaryColor: themeColor.red,
     notification: {
-      icon: "./assets/images/icons/app-icon.png",
+      icon: "./assets/icons/app-icon.png",
       color: themeColor.red,
     },
     splash: {
@@ -72,7 +72,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         },
       ],
       adaptiveIcon: {
-        foregroundImage: "./assets/images/icons/app-icon.png",
+        foregroundImage: "./assets/icons/app-icon.png",
         backgroundColor: themeColor.red,
       },
       package: "com.movet",
@@ -94,7 +94,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         "expo-notifications",
         {
-          icon: "./assets/images/icons/app-icon.png",
+          icon: "./assets/icons/app-icon.png",
           color: themeColor.red,
           mode: isProduction ? "production" : "development",
         },
@@ -113,7 +113,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         ...config,
         ...sharedConfig,
         description: "Production Build of MoVET Mobile Application",
-        icon: "./assets/images/icons/app-icon.png",
+        icon: "./assets/icons/app-icon.png",
         splash: {
           image: "./assets/images/backgrounds/splash-screen.png",
         },
@@ -122,7 +122,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         ...config,
         ...sharedConfig,
         description: "BETA build of MoVET Mobile Application",
-        icon: "./assets/images/icons/app-icon-beta.png",
+        icon: "./assets/icons/app-icon-beta.png",
         splash: {
           image: "./assets/images/backgrounds/splash-screen-beta.png",
         },

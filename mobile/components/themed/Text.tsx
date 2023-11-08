@@ -28,7 +28,7 @@ export const HeadingText = (props: TextProps) => (
 );
 
 export const SubHeadingText = (props: TextProps) => (
-  <Text {...props} style={[tw`uppercase leading-6 font-abside`, props.style]} />
+  <Text {...props} style={[tw`leading-6 font-abside`, props.style]} />
 );
 
 export const BodyText = (props: TextProps) => (
@@ -46,10 +46,7 @@ export const ItalicText = (props: TextProps) => (
 );
 
 export const ButtonText = (props: TextProps) => (
-  <Text
-    {...props}
-    style={[tw`text-sm font-abside-smooth font-thin`, props.style]}
-  />
+  <Text {...props} style={[tw`text-sm font-abside-smooth`, props.style]} />
 );
 
 export const LinkText = ({

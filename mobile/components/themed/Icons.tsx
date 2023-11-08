@@ -1,24 +1,40 @@
-import TelehealthIcon from "assets/images/svgs/telehealth.svg";
-import BoutiqueIcon from "assets/images/svgs/boutique.svg";
-import PharmacyIcon from "assets/images/svgs/pharmacy.svg";
-import MobileIcon from "assets/images/svgs/mobile.svg";
-import DogWashIcon from "assets/images/svgs/dog-wash.svg";
-import ClinicIcon from "assets/images/svgs/clinic.svg";
-import ClinicAltIcon from "assets/images/svgs/clinic-alt.svg";
-import PooIcon from "assets/images/svgs/poo.svg";
-import PooIconDark from "assets/images/svgs/poo-dark.svg";
-import BullhornIcon from "assets/images/svgs/bullhorn.svg";
-import BullhornIconDark from "assets/images/svgs/bullhorn-dark.svg";
-import SpinnerIcon from "assets/images/svgs/spinner.svg";
-import SpinnerIconDark from "assets/images/svgs/spinner-dark.svg";
-import ArrowRightIcon from "assets/images/svgs/arrow-right.svg";
-import ArrowRightIconDark from "assets/images/svgs/arrow-right-dark.svg";
-import LockIcon from "assets/images/svgs/lock.svg";
-import LockIconDark from "assets/images/svgs/lock-dark.svg";
-import LockOpenIcon from "assets/images/svgs/lock-open.svg";
-import LockOpenIconDark from "assets/images/svgs/lock-open-dark.svg";
-import PlaneIcon from "assets/images/svgs/plane.svg";
-import PlaneIconDark from "assets/images/svgs/plane-dark.svg";
+import TelehealthIcon from "assets/icons/svgs/custom/telehealth.svg";
+import BoutiqueIcon from "assets/icons/svgs/custom/boutique.svg";
+import PharmacyIcon from "assets/icons/svgs/custom/pharmacy.svg";
+import MobileIcon from "assets/icons/svgs/custom/mobile.svg";
+import DogWashIcon from "assets/icons/svgs/custom/dog-wash.svg";
+import ClinicIcon from "assets/icons/svgs/custom/clinic.svg";
+import ClinicAltIcon from "assets/icons/svgs/custom/clinic-alt.svg";
+import PooIcon from "assets/icons/svgs/font-awesome/poo.svg";
+import PooIconDark from "assets/icons/svgs/font-awesome/poo-dark.svg";
+import BullhornIcon from "assets/icons/svgs/font-awesome/bullhorn.svg";
+import BullhornIconDark from "assets/icons/svgs/font-awesome/bullhorn-dark.svg";
+import SpinnerIcon from "assets/icons/svgs/font-awesome/spinner.svg";
+import SpinnerIconDark from "assets/icons/svgs/font-awesome/spinner-dark.svg";
+import ArrowRightIcon from "assets/icons/svgs/font-awesome/arrow-right.svg";
+import ArrowRightIconDark from "assets/icons/svgs/font-awesome/arrow-right-dark.svg";
+import LockIcon from "assets/icons/svgs/font-awesome/lock.svg";
+import LockIconDark from "assets/icons/svgs/font-awesome/lock-dark.svg";
+import LockOpenIcon from "assets/icons/svgs/font-awesome/lock-open.svg";
+import LockOpenIconDark from "assets/icons/svgs/font-awesome/lock-open-dark.svg";
+import PlaneIcon from "assets/icons/svgs/font-awesome/plane.svg";
+import PlaneIconDark from "assets/icons/svgs/font-awesome/plane-dark.svg";
+import CloseIcon from "assets/icons/svgs/font-awesome/close.svg";
+import CloseIconDark from "assets/icons/svgs/font-awesome/close-dark.svg";
+import RedoIcon from "assets/icons/svgs/font-awesome/redo.svg";
+import RedoIconDark from "assets/icons/svgs/font-awesome/redo-dark.svg";
+import HospitalIcon from "assets/icons/svgs/font-awesome/hospital.svg";
+import HospitalIconDark from "assets/icons/svgs/font-awesome/hospital-dark.svg";
+import GearIcon from "assets/icons/svgs/font-awesome/gear.svg";
+import GearIconDark from "assets/icons/svgs/font-awesome/gear-dark.svg";
+import HouseMedicalIcon from "assets/icons/svgs/font-awesome/house-medical.svg";
+import HouseMedicalIconDark from "assets/icons/svgs/font-awesome/house-medical-dark.svg";
+import ClipboardMedicalIcon from "assets/icons/svgs/font-awesome/clipboard-medical.svg";
+import ClipboardMedicalIconDark from "assets/icons/svgs/font-awesome/clipboard-medical-dark.svg";
+import UserMedicalMessageIcon from "assets/icons/svgs/font-awesome/user-doctor-message.svg";
+import UserMedicalMessageIconDark from "assets/icons/svgs/font-awesome/user-doctor-message-dark.svg";
+import PawIcon from "assets/icons/svgs/font-awesome/paw.svg";
+import PawIconDark from "assets/icons/svgs/font-awesome/paw-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -36,7 +52,15 @@ export type SupportedIcons =
   | "arrow-right"
   | "lock"
   | "lock-open"
-  | "plane";
+  | "plane"
+  | "close"
+  | "redo"
+  | "house-medical"
+  | "clipboard-medical"
+  | "paw"
+  | "user-medical-message"
+  | "hospital"
+  | "gear";
 
 export const Icon = ({
   name = "poo",
@@ -55,6 +79,7 @@ export const Icon = ({
   noDarkMode?: boolean;
   color?: null | "black" | "white";
 }): ReactNode => {
+  console.log({ name, color });
   const showWhiteIcon =
     (useColorScheme() !== "light" && !noDarkMode) || color === "white";
   let iconHeight, iconWidth;
@@ -153,6 +178,74 @@ export const Icon = ({
         <PlaneIconDark height={iconHeight} width={iconWidth} style={style} />
       ) : (
         <PlaneIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "close":
+      return showWhiteIcon ? (
+        <CloseIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <CloseIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "redo":
+      return showWhiteIcon ? (
+        <RedoIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <RedoIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "house-medical":
+      return showWhiteIcon ? (
+        <HouseMedicalIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <HouseMedicalIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "clipboard-medical":
+      return showWhiteIcon ? (
+        <ClipboardMedicalIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <ClipboardMedicalIcon
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      );
+    case "paw":
+      return showWhiteIcon ? (
+        <PawIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <PawIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "user-medical-message":
+      return showWhiteIcon ? (
+        <UserMedicalMessageIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <UserMedicalMessageIcon
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      );
+    case "hospital":
+      return showWhiteIcon ? (
+        <HospitalIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <HospitalIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "gear":
+      return showWhiteIcon ? (
+        <GearIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <GearIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (

@@ -1,7 +1,6 @@
 import { router } from "expo-router";
 import { auth, functions } from "firebase-config";
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   sendSignInLinkToEmail,
@@ -95,40 +94,30 @@ export const signIn = async (email: string, password?: string | undefined) => {
       router.replace("/(app)/home");
     } catch (error: any) {
       console.error(error);
-      alert(error?.code + '\n\n"' + error?.customData?.message + '"');
-      return false;
+      return error?.code || "Unknown Error...";
     }
   } else
     try {
       const verifyClient = httpsCallable(functions, "verifyClient");
-      verifyClient({ email, device })
-        .then(async (result) => {
-          if (result.data) {
-            await sendSignInLinkToEmail(auth, email, {
-              url: getPlatformUrl() + "/home",
-              iOS: {
-                bundleId: "com.movet.inc",
-              },
-              android: {
-                packageName: "com.movet",
-                installApp: true,
-                minimumVersion: "12",
-              },
-              handleCodeInApp: true,
-            });
-            return true;
-          } else alert("Client Verification FAILED: " + JSON.stringify(result));
-          return false;
-        })
-        .catch((error) => {
-          alert(JSON.stringify(error));
-        });
-
-      return true;
+      verifyClient({ email, device }).then(async (result) => {
+        if (result.data) {
+          await sendSignInLinkToEmail(auth, email, {
+            url: getPlatformUrl() + "/home",
+            iOS: {
+              bundleId: "com.movet.inc",
+            },
+            android: {
+              packageName: "com.movet",
+              installApp: true,
+              minimumVersion: "12",
+            },
+            handleCodeInApp: true,
+          });
+        } else return "Client Verification FAILED: " + JSON.stringify(result);
+      });
     } catch (error: any) {
       console.error(error);
-      alert(error?.code + '\n\n"' + error?.customData?.message + '"');
-      return false;
+      return error?.code || "Unknown Error...";
     }
 };
 
@@ -139,12 +128,10 @@ export const signInWithLink = async (email: string, link: string) =>
         store.user = auth.currentUser;
         store.isLoggedIn = true;
       });
-      return { user: auth.currentUser };
     })
     .catch((error) => {
       console.error(error);
-      alert(error?.code + '\n\n"' + error?.customData?.message + '"');
-      return false;
+      return error?.code || "Unknown Error...";
     });
 
 export const signOff = async () =>
@@ -154,28 +141,25 @@ export const signOff = async () =>
         store.user = null;
         store.isLoggedIn = false;
       });
-      return true;
     })
     .catch((error: any) => {
       console.error(error);
-      alert(error?.code + '\n\n"' + error?.customData?.message + '"');
-      return false;
+      return error?.code || "Unknown Error...";
     });
 
-export const signUp = async (email: string, password: string) => {
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    AuthStore.update((store) => {
-      store.user = auth.currentUser;
-      store.isLoggedIn = true;
-    });
-    return { user: auth.currentUser };
-  } catch (error: any) {
-    console.error(error);
-    alert(error?.code + '\n\n"' + error?.customData?.message + '"');
-    return false;
-  }
-};
+// export const signUp = async (email: string, password: string) => {
+//   try {
+//     await createUserWithEmailAndPassword(auth, email, password);
+//     AuthStore.update((store) => {
+//       store.user = auth.currentUser;
+//       store.isLoggedIn = true;
+//     });
+//     return { user: auth.currentUser };
+//   } catch (error: any) {
+//     console.error(error);
+//     return error?.code || "Unknown Error...";
+//   }
+// };
 
 export const updateUserAuth = async (user: any) =>
   AuthStore.update((store) => {

@@ -35,8 +35,8 @@ export const Screen = (props: ExtendedViewProps) => {
           <DefaultView
             style={[
               { backgroundColor },
-              tw`flex-1 items-center bg-transparent`,
               style,
+              tw`flex-1 items-center bg-transparent`,
             ]}
             {...otherProps}
           />
@@ -70,8 +70,8 @@ export const View = (props: ExtendedViewProps) => {
       <DefaultView
         style={[
           { backgroundColor },
-          tw`flex-1 items-center bg-transparent`,
           style,
+          tw`flex-1 items-center bg-transparent`,
         ]}
         {...otherProps}
       />

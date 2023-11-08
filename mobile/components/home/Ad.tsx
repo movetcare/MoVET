@@ -20,7 +20,7 @@ export interface Ad {
 export const Ad = ({ content }: { content: Ad }): ReactNode => {
   const { imagePath, urlRedirect, title } = content;
   return (
-    <View style={tw`w-full px-4 mt-3 shadow-xl dark:shadow-white`}>
+    <View style={tw`w-full px-4 mt-3 shadow-lg dark:shadow-white`}>
       <Link
         href={{
           pathname: "/(app)/home/web-view",

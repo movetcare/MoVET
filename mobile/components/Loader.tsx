@@ -3,7 +3,7 @@ import { ImageBackground, Platform } from "react-native";
 import LottieView from "lottie-react-native";
 import { MoVETLogo } from "components/MoVETLogo";
 import tw from "tailwind";
-import { HeadingText, View } from "./themed";
+import { HeadingText, View, Screen } from "./themed";
 
 export const Loader = ({
   description = "Loading, Please Wait...",
@@ -51,7 +51,8 @@ export const Loader = ({
 
   const Loading = () => {
     return (
-      <View
+      <Screen
+        withBackground="pets"
         style={tw`flex-grow justify-center items-center bg-movet-white dark:bg-movet-black bg-transparent -mt-36 pt-12`}
       >
         <LottieView
@@ -63,15 +64,20 @@ export const Loader = ({
           autoPlay
           loop
         />
-        <View style={tw`-mt-64 bg-transparent`}>
-          <MoVETLogo type="default" height={86} width={206} />
+        <View style={tw`-mt-64 bg-transparent`} noDarkMode>
+          <MoVETLogo
+            type="default"
+            height={86}
+            width={206}
+            style={tw`bg-transparent`}
+          />
         </View>
         <HeadingText
           style={tw`pt-36 text-center my-6 text-lg normal-case bg-transparent`}
         >
           {description}
         </HeadingText>
-      </View>
+      </Screen>
     );
   };
   return noBackground ? (

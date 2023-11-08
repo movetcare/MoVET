@@ -6,8 +6,8 @@ import { Icon } from "components/themed";
 import { isTablet } from "utils/isTablet";
 
 const TabsLayout = (props: any) => {
-  const iconHeight = isTablet ? 40 : 30;
-  const iconWidth = isTablet ? 40 : 30;
+  const iconHeight = isTablet ? 26 : 20;
+  const iconWidth = isTablet ? 26 : 20;
   const { lightColor, darkColor } = props;
   const tabBarActiveTintColor = useThemeColor(
     { light: lightColor, dark: darkColor },
@@ -26,7 +26,6 @@ const TabsLayout = (props: any) => {
     "tabBarInactiveTintColor",
   );
   const tabBarStyle = {
-    //tabBarShowLabel: false,
     tabBarActiveTintColor,
     tabBarActiveBackgroundColor,
     tabBarInactiveBackgroundColor,
@@ -56,7 +55,13 @@ const TabsLayout = (props: any) => {
           options={{
             title: "Home",
             tabBarIcon: () => (
-              <Icon name="mobile" height={iconHeight} width={iconWidth} />
+              <Icon
+                color="black"
+                noDarkMode
+                name="hospital"
+                height={iconHeight}
+                width={iconWidth}
+              />
             ),
             ...tabBarStyle,
           }}
@@ -66,7 +71,13 @@ const TabsLayout = (props: any) => {
           options={{
             title: "Appointments",
             tabBarIcon: () => (
-              <Icon name="clinic" height={iconHeight} width={iconWidth} />
+              <Icon
+                color="black"
+                noDarkMode
+                name="clipboard-medical"
+                height={iconHeight}
+                width={iconWidth}
+              />
             ),
             ...tabBarStyle,
           }}
@@ -76,7 +87,13 @@ const TabsLayout = (props: any) => {
           options={{
             title: "Pets",
             tabBarIcon: () => (
-              <Icon name="dog-wash" height={iconHeight} width={iconWidth} />
+              <Icon
+                color="black"
+                noDarkMode
+                name="paw"
+                height={iconHeight}
+                width={iconWidth}
+              />
             ),
             ...tabBarStyle,
           }}
@@ -87,7 +104,13 @@ const TabsLayout = (props: any) => {
             title: "Chat",
             headerShown: false,
             tabBarIcon: () => (
-              <Icon name="telehealth" height={iconHeight} width={iconWidth} />
+              <Icon
+                color="black"
+                noDarkMode
+                name="user-medical-message"
+                height={iconHeight}
+                width={iconWidth}
+              />
             ),
             ...tabBarStyle,
           }}
@@ -96,7 +119,15 @@ const TabsLayout = (props: any) => {
           name="settings"
           options={{
             title: "Settings",
-            tabBarIcon: () => <Icon name="clinic-alt" height={iconHeight} width={iconWidth} />,
+            tabBarIcon: () => (
+              <Icon
+                color="black"
+                noDarkMode
+                name="gear"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ),
             ...tabBarStyle,
           }}
         />

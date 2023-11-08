@@ -14,21 +14,27 @@ import {
   ItalicText,
   LinkText,
   ActionButton,
+  SubHeadingText,
 } from "components/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import { AuthStore } from "stores/AuthStore";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
+import { Modal, ErrorModal } from "components/Modal";
 
 export default function SignIn() {
   const {
     control,
     handleSubmit,
+    watch,
+    reset,
     formState: { isDirty, errors },
   } = useForm<FormData>({
     mode: "onSubmit",
   });
+  const email = watch("email" as any);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [signInError, setSignInError] = useState<null | string>(null);
   const [showVerificationButton, setShowVerificationButton] =
     useState<boolean>(false);
   const { user, isLoggedIn } = AuthStore.useState();
@@ -44,6 +50,8 @@ export default function SignIn() {
   const isDarkMode = useColorScheme() !== "light";
   const [tapCount, setTapCount] = useState<number>(0);
   const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false);
+  const [signInLinkSent, setSignInLinkSent] = useState<boolean>(false);
+  const [disableEmailInput, setDisableEmailInput] = useState<boolean>(false);
   useEffect(() => {
     if (tapCount === 15) setShowPasswordInput(true);
     else if (tapCount > 15) setShowPasswordInput(false);
@@ -65,8 +73,11 @@ export default function SignIn() {
   const signInUserWithLink = async (email: string, link: string) => {
     setIsLoading(true);
     await signInWithLink(email, link)
-      .then((user: any) => (user ? router.replace("/(app)/home") : null))
-      .catch((error: any) => alert(JSON.stringify(error)))
+      .then((signInError: string) => {
+        if (signInError) setSignInError(signInError);
+        else router.replace("/(app)/home");
+      })
+      .catch((error: any) => setSignInError(JSON.stringify(error)))
       .finally(() => {
         setIsLoading(false);
         setShowVerificationButton(true);
@@ -75,12 +86,11 @@ export default function SignIn() {
   const onSubmit = async (data: { email: string; password?: string }) => {
     setIsLoading(true);
     await signIn(data?.email, data?.password)
-      .then(
-        () =>
-          !data?.password &&
-          alert(`Check your email - ${data?.email} for a sign in link.`),
-      )
-      .catch((error: any) => alert(JSON.stringify(error)))
+      .then((signInError: string) => {
+        if (signInError) setSignInError(signInError);
+        else if (!data?.password) setSignInLinkSent(true);
+      })
+      .catch((error: any) => setSignInError(JSON.stringify(error)))
       .finally(() => {
         setIsLoading(false);
         setShowVerificationButton(true);
@@ -129,7 +139,7 @@ export default function SignIn() {
               control={control}
               error={((errors as any)["email"] as any)?.message as string}
               textContentType="username"
-              editable={!isLoading}
+              editable={!isLoading && !disableEmailInput}
             />
             {(withPassword || showPasswordInput) && (
               <PasswordInput
@@ -202,11 +212,24 @@ export default function SignIn() {
               </View>
             )}
             {showVerificationButton && !withPassword && !showPasswordInput ? (
-              <ActionButton
-                title="Resend Sign-In Link"
-                iconName="plane"
-                onPress={() => onSubmit({ email: user?.email })}
-              />
+              <>
+                <ActionButton
+                  title="Resend Sign-In Link"
+                  iconName="plane"
+                  onPress={() => onSubmit({ email: user?.email })}
+                />
+                <ActionButton
+                  title="Use a Different Email"
+                  iconName="redo"
+                  color="black"
+                  onPress={() => {
+                    reset();
+                    setShowVerificationButton(false);
+                    setDisableEmailInput(false);
+                    setIsLoading(false);
+                  }}
+                />
+              </>
             ) : (
               <SubmitButton
                 iconName={
@@ -233,6 +256,20 @@ export default function SignIn() {
           </View>
         </View>
       </ImageBackground>
+      <Modal
+        isVisible={signInLinkSent}
+        onClose={() => {
+          setSignInLinkSent(false);
+          setDisableEmailInput(true);
+        }}
+        message={`Check your email - ${email} for a sign in link.`}
+        title="One More Step..."
+      />
+      <ErrorModal
+        isVisible={signInError !== null}
+        onClose={() => setSignInError(null)}
+        message={signInError}
+      />
     </KeyboardAwareScrollView>
   );
 }

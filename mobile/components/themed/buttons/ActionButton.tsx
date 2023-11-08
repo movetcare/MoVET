@@ -1,6 +1,5 @@
 import React from "react";
 import { TouchableOpacity, useColorScheme } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
 import tw from "tailwind";
 import { ButtonText, SubHeadingText } from "../Text";
 import { Icon, SupportedIcons } from "../Icons";
@@ -31,7 +30,7 @@ export const ActionButton = ({
       disabled={disabled}
       style={[
         style,
-        tw`w-full flex-row justify-center items-center border-2 mt-4 py-4 rounded-xl`,
+        tw`w-full flex-row justify-center items-center border-2 mt-4 py-4 rounded-xl shadow-lg dark:shadow-white`,
         color === "red"
           ? tw`bg-movet-red border-movet-red`
           : color === "brown"
@@ -56,15 +55,24 @@ export const ActionButton = ({
           style={[
             textStyle,
             color === "black" && isDarkMode
-              ? tw`text-movet-black text-center`
-              : tw`text-movet-white text-center`,
+              ? tw`text-black text-center`
+              : tw`text-white text-center`,
           ]}
           noDarkMode
         >
           {title}
         </ButtonText>
       ) : (
-        <SubHeadingText style={textStyle} noDarkMode>
+        <SubHeadingText
+          style={[
+            textStyle,
+            tw`shadow-lg dark:shadow-white`,
+            color === "black" && isDarkMode
+              ? tw`text-black text-center`
+              : tw`text-white text-center`,
+          ]}
+          noDarkMode
+        >
           {title}
         </SubHeadingText>
       )}
