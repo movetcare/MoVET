@@ -74,7 +74,7 @@ service cloud.firestore {
       allow read, write: if clientIsAuthed() && request.auth.uid  == string(resource.data.client);
     }
     match /appointments/{aid} {
-      allow read, write: if clientIsAuthed();
+      allow read, write: if clientIsAuthed() && request.auth.uid  == string(resource.data.client);
     }
     match /shifts/{sid} {
       allow read, write: if clientIsAuthed();

@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import { useThemeColor } from "hooks/useThemeColor";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, useColorScheme } from "react-native";
 import tw from "tailwind";
 import { Icon } from "components/themed";
 import { isTablet } from "utils/isTablet";
@@ -8,6 +8,7 @@ import { isTablet } from "utils/isTablet";
 const TabsLayout = (props: any) => {
   const iconHeight = isTablet ? 26 : 20;
   const iconWidth = isTablet ? 26 : 20;
+  const isDarkMode = useColorScheme() !== "light";
   const { lightColor, darkColor } = props;
   const tabBarActiveTintColor = useThemeColor(
     { light: lightColor, dark: darkColor },
@@ -32,6 +33,7 @@ const TabsLayout = (props: any) => {
     tabBarInactiveTintColor,
     tabBarLabelPosition: (isTablet ? "beside-icon" : "below-icon") as any,
     tabBarLabelStyle: {
+      fontFamily: "Abside",
       fontSize: isTablet ? 16 : 8,
       marginBottom: isTablet ? 0 : 4,
       marginTop: isTablet ? 0 : 4,
@@ -54,15 +56,32 @@ const TabsLayout = (props: any) => {
           name="home"
           options={{
             title: "Home",
-            tabBarIcon: () => (
-              <Icon
-                color="black"
-                noDarkMode
-                name="hospital"
-                height={iconHeight}
-                width={iconWidth}
-              />
-            ),
+            tabBarIcon: (navigationOptions: any) =>
+              navigationOptions.focused ? (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="hospital"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : isDarkMode ? (
+                <Icon
+                  color="white"
+                  noDarkMode
+                  name="hospital"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="hospital"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ),
             ...tabBarStyle,
           }}
         />
@@ -70,15 +89,32 @@ const TabsLayout = (props: any) => {
           name="appointments"
           options={{
             title: "Appointments",
-            tabBarIcon: () => (
-              <Icon
-                color="black"
-                noDarkMode
-                name="clipboard-medical"
-                height={iconHeight}
-                width={iconWidth}
-              />
-            ),
+            tabBarIcon: (navigationOptions: any) =>
+              navigationOptions.focused ? (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="clipboard-medical"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : isDarkMode ? (
+                <Icon
+                  color="white"
+                  noDarkMode
+                  name="clipboard-medical"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="clipboard-medical"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ),
             ...tabBarStyle,
           }}
         />
@@ -86,15 +122,32 @@ const TabsLayout = (props: any) => {
           name="pets"
           options={{
             title: "Pets",
-            tabBarIcon: () => (
-              <Icon
-                color="black"
-                noDarkMode
-                name="paw"
-                height={iconHeight}
-                width={iconWidth}
-              />
-            ),
+            tabBarIcon: (navigationOptions: any) =>
+              navigationOptions.focused ? (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="paw"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : isDarkMode ? (
+                <Icon
+                  color="white"
+                  noDarkMode
+                  name="paw"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="paw"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ),
             ...tabBarStyle,
           }}
         />
@@ -103,15 +156,32 @@ const TabsLayout = (props: any) => {
           options={{
             title: "Chat",
             headerShown: false,
-            tabBarIcon: () => (
-              <Icon
-                color="black"
-                noDarkMode
-                name="user-medical-message"
-                height={iconHeight}
-                width={iconWidth}
-              />
-            ),
+            tabBarIcon: (navigationOptions: any) =>
+              navigationOptions.focused ? (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="user-medical-message"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : isDarkMode ? (
+                <Icon
+                  color="white"
+                  noDarkMode
+                  name="user-medical-message"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="user-medical-message"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ),
             ...tabBarStyle,
           }}
         />
@@ -119,15 +189,32 @@ const TabsLayout = (props: any) => {
           name="settings"
           options={{
             title: "Settings",
-            tabBarIcon: () => (
-              <Icon
-                color="black"
-                noDarkMode
-                name="gear"
-                height={iconHeight}
-                width={iconWidth}
-              />
-            ),
+            tabBarIcon: (navigationOptions: any) =>
+              navigationOptions.focused ? (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="gear"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : isDarkMode ? (
+                <Icon
+                  color="white"
+                  noDarkMode
+                  name="gear"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="gear"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ),
             ...tabBarStyle,
           }}
         />

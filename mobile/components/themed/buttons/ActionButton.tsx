@@ -29,8 +29,7 @@ export const ActionButton = ({
       onPress={() => onPress()}
       disabled={disabled}
       style={[
-        style,
-        tw`w-full flex-row justify-center items-center border-2 mt-4 py-4 rounded-xl shadow-lg dark:shadow-white`,
+        tw`w-full flex-row justify-center items-center border-2 mt-4 py-4 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white`,
         color === "red"
           ? tw`bg-movet-red border-movet-red`
           : color === "brown"
@@ -38,6 +37,7 @@ export const ActionButton = ({
           : tw`bg-movet-black border-movet-black dark:bg-movet-white dark:border-movet-white`,
         disabled && tw`opacity-50`,
         type === "text" && tw`bg-transparent border-0`,
+        style,
       ]}
     >
       {iconName && (
@@ -45,7 +45,7 @@ export const ActionButton = ({
           name={iconName}
           height={18}
           width={18}
-          color="white"
+          color={color === "black" && isDarkMode ? "black" : "white"}
           style={tw`mr-2`}
           noDarkMode
         />
@@ -66,7 +66,7 @@ export const ActionButton = ({
         <SubHeadingText
           style={[
             textStyle,
-            tw`shadow-lg dark:shadow-white`,
+            tw`shadow-lg shadow-movet-black dark:shadow-movet-white`,
             color === "black" && isDarkMode
               ? tw`text-black text-center`
               : tw`text-white text-center`,

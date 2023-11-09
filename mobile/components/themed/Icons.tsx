@@ -33,8 +33,24 @@ import ClipboardMedicalIcon from "assets/icons/svgs/font-awesome/clipboard-medic
 import ClipboardMedicalIconDark from "assets/icons/svgs/font-awesome/clipboard-medical-dark.svg";
 import UserMedicalMessageIcon from "assets/icons/svgs/font-awesome/user-doctor-message.svg";
 import UserMedicalMessageIconDark from "assets/icons/svgs/font-awesome/user-doctor-message-dark.svg";
+import ExclamationCircleIcon from "assets/icons/svgs/font-awesome/circle-exclamation.svg";
+import ExclamationCircleIconDark from "assets/icons/svgs/font-awesome/circle-exclamation-dark.svg";
+import BellIcon from "assets/icons/svgs/font-awesome/bell.svg";
+import BellIconDark from "assets/icons/svgs/font-awesome/bell-dark.svg";
+import StarIcon from "assets/icons/svgs/font-awesome/star.svg";
+import StarIconDark from "assets/icons/svgs/font-awesome/star-dark.svg";
+import InfoCircleIcon from "assets/icons/svgs/font-awesome/circle-info.svg";
+import InfoCircleIconDark from "assets/icons/svgs/font-awesome/circle-info-dark.svg";
 import PawIcon from "assets/icons/svgs/font-awesome/paw.svg";
 import PawIconDark from "assets/icons/svgs/font-awesome/paw-dark.svg";
+import CalendarPlusIcon from "assets/icons/svgs/font-awesome/calendar-plus.svg";
+import CalendarPlusIconDark from "assets/icons/svgs/font-awesome/calendar-plus-dark.svg";
+import CatIcon from "assets/icons/svgs/font-awesome/cat.svg";
+import CatIconDark from "assets/icons/svgs/font-awesome/cat-dark.svg";
+import DogIcon from "assets/icons/svgs/font-awesome/dog.svg";
+import DogIconDark from "assets/icons/svgs/font-awesome/dog-dark.svg";
+import QuestionIcon from "assets/icons/svgs/font-awesome/question.svg";
+import QuestionIconDark from "assets/icons/svgs/font-awesome/question-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -60,7 +76,15 @@ export type SupportedIcons =
   | "paw"
   | "user-medical-message"
   | "hospital"
-  | "gear";
+  | "gear"
+  | "calendar-plus"
+  | "info-circle"
+  | "exclamation-circle"
+  | "bell"
+  | "star"
+  | "cat"
+  | "dog"
+  | "question";
 
 export const Icon = ({
   name = "poo",
@@ -79,7 +103,6 @@ export const Icon = ({
   noDarkMode?: boolean;
   color?: null | "black" | "white";
 }): ReactNode => {
-  console.log({ name, color });
   const showWhiteIcon =
     (useColorScheme() !== "light" && !noDarkMode) || color === "white";
   let iconHeight, iconWidth;
@@ -109,8 +132,8 @@ export const Icon = ({
         iconWidth = 70;
         break;
       default:
-        iconHeight = 80;
-        iconWidth = 80;
+        iconHeight = 20;
+        iconWidth = 20;
         break;
     }
 
@@ -247,11 +270,75 @@ export const Icon = ({
       ) : (
         <GearIcon height={iconHeight} width={iconWidth} style={style} />
       );
+    case "calendar-plus":
+      return showWhiteIcon ? (
+        <CalendarPlusIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <CalendarPlusIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "info-circle":
+      return showWhiteIcon ? (
+        <InfoCircleIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <InfoCircleIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "exclamation-circle":
+      return showWhiteIcon ? (
+        <ExclamationCircleIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <ExclamationCircleIcon
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      );
+    case "bell":
+      return showWhiteIcon ? (
+        <BellIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <BellIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "star":
+      return showWhiteIcon ? (
+        <StarIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <StarIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "cat":
+      return showWhiteIcon ? (
+        <CatIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <CatIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "dog":
+      return showWhiteIcon ? (
+        <DogIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <DogIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "question":
+      return showWhiteIcon ? (
+        <QuestionIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <QuestionIcon height={iconHeight} width={iconWidth} style={style} />
+      );
     default:
       return showWhiteIcon ? (
-        <PooIconDark height={iconHeight} width={iconWidth} style={style} />
+        <PooIconDark height={20} width={20} style={style} />
       ) : (
-        <PooIcon height={iconHeight} width={iconWidth} style={style} />
+        <PooIcon height={20} width={20} style={style} />
       );
   }
 };

@@ -26,10 +26,10 @@ export const TelehealthStatus = ({
       style={tw`rounded-xl`}
     >
       <View
-        style={tw`flex-row mx-4 my-4 rounded-xl shadow-lg dark:shadow-white`}
+        style={tw`flex-row mx-4 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white`}
       >
         <View
-          style={tw`pr-4 py-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+          style={tw`pr-4 pt-2 pb-3 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
         >
           <Container>
             <Icon name="telehealth" size="xl" />

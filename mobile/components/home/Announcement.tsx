@@ -1,6 +1,10 @@
-import { FontAwesome5 } from "@expo/vector-icons";
-import { BodyText, HeadingText, View } from "components/themed";
-import { Container } from "components/themed/View";
+import {
+  BodyText,
+  HeadingText,
+  Icon,
+  View,
+  Container,
+} from "components/themed";
 import { useRouter } from "expo-router";
 import { Pressable } from "react-native";
 import { ReactNode } from "react";
@@ -8,7 +12,7 @@ import tw from "tailwind";
 
 export interface Announcement {
   color: string;
-  icon: "info-circle";
+  icon: "info-circle" | "exclamation-circle" | "star" | "bullhorn" | "bell";
   isActiveMobile: boolean;
   link: string;
   message: string;
@@ -36,7 +40,6 @@ export const Announcement = ({
       : announcement?.color === "#A15643"
       ? "bg-movet-brown"
       : "bg-movet-dark-blue";
-
   return (
     <Pressable
       onPress={() =>
@@ -47,20 +50,16 @@ export const Announcement = ({
       }
     >
       <View
-        style={tw`flex-row mx-4 my-4 shadow-lg dark:shadow-white rounded-xl bg-transparent`}
+        style={tw`flex-row mx-4 mb-4 shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`}
       >
         <View
-          style={tw`p-4 text-movet-white rounded-xl flex-row items-center w-full ${backgroundColor}`}
+          style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full ${backgroundColor}`}
           noDarkMode
         >
           <Container>
-            <FontAwesome5
-              name={icon}
-              size={30}
-              color={tw.color("movet-white")}
-            />
+            <Icon name={icon} height={30} width={30} color="white" />
           </Container>
-          <Container style={tw`pl-4 mr-6`}>
+          <Container style={tw`pl-3 mr-6`}>
             <HeadingText style={tw`text-movet-white text-lg`} noDarkMode>
               {title}
             </HeadingText>

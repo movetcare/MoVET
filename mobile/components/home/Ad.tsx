@@ -1,9 +1,9 @@
-//import { View } from "components/themed";
-import { Link } from "expo-router";
+import { router } from "expo-router";
 import { ReactNode } from "react";
-import { Image, Pressable, View } from "react-native";
+import { Image, Pressable } from "react-native";
 import LayoutDimensions from "constants/Layout";
 import tw from "tailwind";
+import { View } from "components/themed";
 
 export interface Ad {
   autoOpen?: boolean;
@@ -20,15 +20,22 @@ export interface Ad {
 export const Ad = ({ content }: { content: Ad }): ReactNode => {
   const { imagePath, urlRedirect, title } = content;
   return (
-    <View style={tw`w-full px-4 mt-3 shadow-lg dark:shadow-white`}>
-      <Link
-        href={{
+    <Pressable
+      onPress={() =>
+        router.push({
           pathname: "/(app)/home/web-view",
           params: { path: urlRedirect },
-        }}
-        asChild
+        })
+      }
+    >
+      <View
+        style={tw`flex-row mb-4 shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`}
+        noDarkMode
       >
-        <Pressable>
+        <View
+          style={tw`px-4 bg-transparent rounded-xl flex-row items-center w-full`}
+          noDarkMode
+        >
           <Image
             style={tw`flex-1 bg-movet-black/10 w-full rounded-xl ${
               LayoutDimensions.window.width > 600 ? "h-180" : "h-80"
@@ -37,8 +44,8 @@ export const Ad = ({ content }: { content: Ad }): ReactNode => {
             resizeMode="cover"
             alt={title}
           />
-        </Pressable>
-      </Link>
-    </View>
+        </View>
+      </View>
+    </Pressable>
   );
 };

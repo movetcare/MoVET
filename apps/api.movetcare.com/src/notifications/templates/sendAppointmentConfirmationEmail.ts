@@ -400,7 +400,7 @@ ${
   });
   const emailConfigAdmin: EmailConfiguration = {
     to: "info@movetcare.com",
-    subject: `NEW CLIENT APPOINTMENT SCHEDULED - ${
+    subject: `NEW APPOINTMENT SCHEDULED - ${
       appointment?.start
         ? getDateStringFromDate(appointment?.start?.toDate())
         : ""
