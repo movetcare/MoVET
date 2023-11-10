@@ -16,6 +16,7 @@ export const archiveBooking = async (id: string) => {
     lastName,
     email,
     phone,
+    trackingCode,
     createdAt,
   }: any = await admin
     .firestore()
@@ -42,6 +43,7 @@ export const archiveBooking = async (id: string) => {
       email,
       phone,
       createdAt,
+      trackingCode,
     });
     await sendBookingRequestClientNotification({
       id,
