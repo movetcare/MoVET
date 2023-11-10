@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd mobile && npx expo-optimize && npm run update:version && cd .. && git add . && pnpm run lint && npx lint-staged && git add . && git status
+cd mobile && npx expo-optimize && npm run update:version && cd .. && git add . && pnpm run lint && npx lint-staged && git add . && cd apps/api.movetcare.com && npm run build && cd .. && git status
