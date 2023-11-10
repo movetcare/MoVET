@@ -161,7 +161,13 @@ const Home = () => {
         <Announcement announcement={announcement} />
       )}
       {ad?.isActive && <Ad content={ad} />}
+      {!announcement?.isActiveMobile && !ad?.isActive && (
+        <View style={tw`h-4`} />
+      )}
       {showVcprAlert && <VcprAlert patients={vcprPatients} />}
+      {(announcement?.isActiveMobile || ad?.isActive) && (
+        <View style={tw`h-4`} />
+      )}
       {telehealthStatus?.isOnline && (
         <>
           {!announcement?.isActiveMobile && !ad?.isActive && (

@@ -21,10 +21,7 @@ export const Text = (props: TextProps) => {
 };
 
 export const HeadingText = (props: TextProps) => (
-  <Text
-    {...props}
-    style={[tw`capitalize font-parkinson text-2xl`, props.style]}
-  />
+  <Text {...props} style={[tw`font-parkinson text-2xl`, props.style]} />
 );
 
 export const SubHeadingText = (props: TextProps) => (

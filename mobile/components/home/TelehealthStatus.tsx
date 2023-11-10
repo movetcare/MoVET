@@ -1,6 +1,6 @@
 import { BodyText, HeadingText, SubHeadingText } from "components/themed";
 import { Container, View, Icon } from "components/themed";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { ReactNode } from "react";
 import { Pressable } from "react-native";
 import tw from "tailwind";
@@ -17,7 +17,6 @@ export const TelehealthStatus = ({
 }: {
   status: TelehealthStatus;
 }): ReactNode => {
-  const router = useRouter();
   const { queueSize, waitTime, message } = status;
 
   return (

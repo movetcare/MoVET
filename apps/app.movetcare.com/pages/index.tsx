@@ -107,7 +107,10 @@ export default function Home() {
                   "/schedule-an-appointment/pet-selection" +
                     (queryString ? queryString : ""),
                 );
-            } else router.push("/request-an-appointment");
+            } else
+              router.push(
+                "/request-an-appointment" + (queryString ? queryString : ""),
+              );
           } else handleError(result);
         } catch (error) {
           handleError(error);

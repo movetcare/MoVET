@@ -5,7 +5,7 @@ import {
   View,
   Container,
 } from "components/themed";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { Pressable } from "react-native";
 import { ReactNode } from "react";
 import tw from "tailwind";
@@ -24,7 +24,6 @@ export const Announcement = ({
 }: {
   announcement: Announcement;
 }): ReactNode => {
-  const router = useRouter();
   const { icon, title, message, link } = announcement;
   const backgroundColor =
     announcement?.color === "#DAAA00"

@@ -6,44 +6,49 @@ export const Modal = ({
   isVisible,
   onClose,
   title = "Missing Title...",
-  message = "Missing Message...",
+  message,
+  children,
 }: {
   isVisible: boolean;
   onClose: () => void;
   title: string;
-  message: string | null;
-}) => {
-  return (
-    <DefaultModal animationType="fade" transparent={true} visible={isVisible}>
+  message?: string | undefined;
+  children?: React.ReactNode;
+}) => (
+  <DefaultModal animationType="fade" transparent={true} visible={isVisible}>
+    <View
+      style={tw`flex-grow px-[6%] py-[6%] items-center justify-center bg-movet-black/50`}
+      noDarkMode
+    >
       <View
-        style={tw`flex-grow px-[6%] py-[70%] items-center justify-center bg-movet-black/50`}
+        style={tw`rounded-t-xl px-6 py-2 flex-row items-center justify-between w-full border-2 border-movet-white bg-movet-black`}
         noDarkMode
       >
-        <View
-          style={tw`rounded-t-xl px-6 py-2 flex-row items-center justify-between w-full border-2 border-movet-white bg-movet-black`}
-          noDarkMode
-        >
-          <HeadingText style={tw`text-base text-movet-white`} noDarkMode>
-            {title}
-          </HeadingText>
-          <Pressable onPress={onClose}>
-            <Icon name="close" height={22} width={22} color="white" />
-          </Pressable>
-        </View>
-        <View
-          style={tw`w-full border-2 border-movet-white border-t-0 rounded-b-xl h-full flex-1 items-center justify-center`}
-        >
+        <HeadingText style={tw`text-base text-movet-white`} noDarkMode>
+          {title}
+        </HeadingText>
+        <Pressable onPress={onClose}>
+          <Icon name="close" height={22} width={22} color="white" />
+        </Pressable>
+      </View>
+      <View
+        style={tw`w-full border-2 border-movet-white border-t-0 rounded-b-xl flex-col items-center justify-center`}
+      >
+        {children ? (
+          <View style={tw`p-4`}>{children}</View>
+        ) : (
           <BodyText
             style={tw`text-movet-black dark:text-movet-white px-4 text-center`}
             noDarkMode
           >
             {message}
           </BodyText>
-        </View>
+        )}
       </View>
-    </DefaultModal>
-  );
-};
+    </View>
+  </DefaultModal>
+);
+
 
 export const ErrorModal = ({
   isVisible,

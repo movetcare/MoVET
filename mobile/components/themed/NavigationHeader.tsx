@@ -1,19 +1,20 @@
 import { FontAwesome5 } from "@expo/vector-icons";
 import tw from "tailwind";
 import { HeadingText, View } from ".";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 
 export const NavigationHeader = ({
   title = "Untitled Screen",
   icon = null,
   canGoBack = false,
+  goBackRoot = "/(app)/home/",
 }: {
   title: string;
   icon: any | null;
   canGoBack?: boolean;
-}) => {
-  const router = useRouter();
-  return canGoBack ? (
+  goBackRoot?: string;
+}) =>
+  canGoBack ? (
     <>
       <FontAwesome5
         name="arrow-left"
@@ -21,7 +22,7 @@ export const NavigationHeader = ({
         color={tw.color("movet-white")}
         style={tw`-mb-8 mt-3 z-100 max-w-8 ml-4`}
         onPress={() =>
-          (router.canGoBack() && router.back()) || router.push("/home")
+          (router.canGoBack() && router.back()) || router.push(goBackRoot)
         }
       />
       <View
@@ -53,4 +54,3 @@ export const NavigationHeader = ({
       </HeadingText>
     </View>
   );
-};

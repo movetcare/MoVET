@@ -6,17 +6,18 @@ import { ActionButton } from "./buttons/ActionButton";
 import { View, Screen } from "./View";
 import { router } from "expo-router";
 import {  useColorScheme } from "react-native";
+import { SupportedIcons } from "./Icons";
 
 export const ErrorLayout = ({
   message = "Something went wrong",
   actionTitle = "Go Home",
-  actionIconName = "home",
+  actionIconName = "house-medical",
   action = () => router.replace("/(auth)/sign-in"),
   details,
 }: {
   message: string;
   actionTitle?: string;
-  actionIconName?: string;
+  actionIconName?: SupportedIcons;
   action?: any;
   details?: string;
 }) => {
@@ -35,7 +36,7 @@ export const ErrorLayout = ({
         style={tw`
               w-full rounded-t-xl flex justify-center items-center bg-transparent
             `}
-            noDarkMode
+        noDarkMode
       >
         <MoVETLogo
           type={isDarkMode ? "white" : "default"}

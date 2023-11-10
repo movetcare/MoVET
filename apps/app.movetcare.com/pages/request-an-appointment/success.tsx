@@ -1,11 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { AppHeader } from "components/AppHeader";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { Button } from "ui";
 
 export default function RequestSuccess() {
+  const router = useRouter();
+  const { email, mode }: any = router.query || {};
+  const isAppMode = mode === "app";
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
     null,
   );
@@ -17,35 +22,48 @@ export default function RequestSuccess() {
   }, []);
 
   return (
-    <section className="w-full flex-1">
+    <section
+      className={
+        isAppMode
+          ? "h-screen flex items-center justify-center"
+          : "w-full flex-1"
+      }
+    >
       <AppHeader />
       <div
-        className={`flex items-center justify-center bg-white rounded-xl max-w-lg mx-auto mb-4`}
+        className={`flex-col items-center justify-center bg-white rounded-xl max-w-lg mx-auto mb-4`}
       >
         <div className={"p-4"}>
           <section className="relative mx-auto">
-            <div>
-              <div>
-                <FontAwesomeIcon
-                  icon={faCheckCircle}
-                  size="4x"
-                  className="text-movet-green mx-auto w-full mb-4"
-                />
-                <BookingHeader
-                  isAppMode={false}
-                  title="Appointment Request Successful"
-                  description={
-                    "We will get contact to you as soon as we can to confirm the exact day and time of your appointment!"
-                  }
-                />
-                <p className="text-xs italic text-center mt-4 sm:px-8">
-                  Please allow 1 business day for a response. All appointment
-                  requests are responded to in the order they are received.
-                </p>
-              </div>
-            </div>
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              size="4x"
+              className="text-movet-green mx-auto w-full mb-4"
+            />
+            <BookingHeader
+              isAppMode={false}
+              title="Appointment Request Successful"
+              description={
+                "We will get contact to you as soon as we can to confirm the exact day and time of your appointment!"
+              }
+            />
+            <p className="text-xs italic text-center mt-4 sm:px-8 mb-8">
+              Please allow 1 business day for a response. All appointment
+              requests are responded to in the order they are received.
+            </p>
+            <Button
+              icon={faPlusCircle}
+              iconSize={"sm"}
+              color="black"
+              text="Schedule Another Appointment"
+              onClick={() =>
+                router.replace(
+                  "/?mode=" + mode + "&email=" + email.replaceAll(" ", "+"),
+                )
+              }
+            />
           </section>
-          {/* {submissionSuccess && (
+          {/* {!isAppMode && submissionSuccess && (
             <section>
               <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mt-8" />
               <h2 className="text-center mb-0">Download The App!</h2>

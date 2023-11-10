@@ -16,6 +16,7 @@ export const sendBookingRequestAdminNotification = async ({
   email,
   phone,
   createdAt,
+  trackingCode,
 }: {
   id: string;
   locationType: "Home" | "Virtual" | "Clinic";
@@ -30,6 +31,7 @@ export const sendBookingRequestAdminNotification = async ({
   email: string;
   phone: string;
   createdAt: any;
+  trackingCode: string;
 }) => {
   if (DEBUG)
     console.log("NOT isExistingClient bookingRef vars: ", {
@@ -46,6 +48,7 @@ export const sendBookingRequestAdminNotification = async ({
       email,
       phone,
       createdAt,
+      trackingCode,
     });
   const { client }: any = await admin
     .firestore()
@@ -65,6 +68,8 @@ export const sendBookingRequestAdminNotification = async ({
       minute: "numeric",
       hour12: true,
     })}</p>${
+    trackingCode ? `<p><b>Tracking Code:</b> ${trackingCode}</p>` : ""
+  }${
     firstName ? `<p><b>Client Name:</b> ${firstName} ${lastName}</p>` : ""
   }<p><b>Client Email:</b> ${email}</p>${
     phone

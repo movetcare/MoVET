@@ -90,7 +90,7 @@ export default function RequestAnAppointment({
   const { email, mode }: any = router.query || {};
   const isAppMode = mode === "app";
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hideFormSection, setHideFormSection] = useState<boolean>(true);
+  const [hideFormSection, setHideFormSection] = useState<boolean>(!isAppMode);
   const [error, setError] = useState<any>(null);
   const [loadingMessage, setLoadingMessage] = useState<string | null>(null);
   const [showExplainer, setShowExplainer] = useState<boolean>(false);
@@ -135,6 +135,7 @@ export default function RequestAnAppointment({
           .required("A minor illness pet count is required"),
         locationType: string().required("A location type is required"),
         specificTime: string(),
+        trackingCode: string(),
       }),
     ),
     defaultValues: {
@@ -147,6 +148,7 @@ export default function RequestAnAppointment({
       locationType: "Clinic",
       notes: "",
       specificTime: "",
+      trackingCode: "",
     } as any,
   });
   const locationSelection = watch("locationType");
@@ -182,7 +184,9 @@ export default function RequestAnAppointment({
   useEffect(() => {
     setValue(
       "email",
-      (email as string) || window.localStorage.getItem("email") || "",
+      (email.replaceAll(" ", "+") as string) ||
+        window.localStorage.getItem("email") ||
+        "",
     );
   }, [email, setValue]);
 
@@ -259,7 +263,13 @@ export default function RequestAnAppointment({
             ),
             token,
           });
-          if (result) router.push("/request-an-appointment/success");
+          if (result)
+            router.push(
+              isAppMode
+                ? "/request-an-appointment/success?mode=app&email=" +
+                    email.replaceAll(" ", "+")
+                : "/request-an-appointment/success",
+            );
           else
             handleError({
               message:
@@ -334,7 +344,6 @@ export default function RequestAnAppointment({
             required
           />
         </div>
-
         <NumberInput
           label="Pets with Minor Illness"
           name="numberOfPetsWithMinorIllness"
@@ -342,7 +351,6 @@ export default function RequestAnAppointment({
           control={control}
           required
         />
-
         <p
           className={`-mb-2 text-center text-gray flex justify-center items-center text-xs cursor-pointer italic hover:text-movet-brown ease-in-out duration-500${
             errors && errors["numberOfPetsWithMinorIllness"]?.message
@@ -407,7 +415,7 @@ export default function RequestAnAppointment({
             />
           )}
         </div>
-        <label className="block text-sm font-medium text-movet-black font-abside mb-4 mt-10 sm:text-center">
+        <label className="block text-sm font-medium text-movet-black font-abside mb-4 mt-10 text-center">
           What day and time would you like to have your appointment?{" "}
           <span className="text-movet-red">*</span>
         </label>
@@ -447,16 +455,28 @@ export default function RequestAnAppointment({
               errors={errors}
               control={control}
             />
-            <a
-              href="https://movetcare.com/hours"
-              target="_blank"
-              className="text-xs hover:underline text-movet-brown mt-4"
-            >
-              Our Hours of Operation{" "}
-              <FontAwesomeIcon icon={faLink} size="sm" className="ml-1" />
-            </a>
+            {!isAppMode && (
+              <a
+                href="https://movetcare.com/hours"
+                target="_blank"
+                className="text-xs hover:underline text-movet-brown mt-4"
+              >
+                Our Hours of Operation{" "}
+                <FontAwesomeIcon icon={faLink} size="sm" className="ml-1" />
+              </a>
+            )}
           </div>
         )}
+        <label className="block text-sm font-medium text-movet-black font-abside mb-4 mt-10 text-center">
+          Promo Code
+        </label>
+        <TextInput
+          label=""
+          name="trackingCode"
+          control={control}
+          errors={errors}
+          placeholder="Enter Code Here (If Applicable)"
+        />
         <div className="group flex flex-col justify-center items-center sm:col-span-2 mb-4 mt-10">
           <Button
             type="submit"
@@ -477,7 +497,13 @@ export default function RequestAnAppointment({
     );
   });
   return (
-    <section className="w-full flex-1">
+    <section
+      className={
+        isLoading
+          ? "h-screen flex items-center justify-center"
+          : "w-full flex-1"
+      }
+    >
       <AppHeader />
       <div
         className={`flex items-center justify-center bg-white rounded-xl max-w-xl mx-auto${

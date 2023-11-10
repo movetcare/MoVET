@@ -1,10 +1,9 @@
-import { Stack, useRouter } from "expo-router";
+import { Stack, router } from "expo-router";
 import { Button, Text, View } from "react-native";
 import { signOff } from "services/Auth";
 import { AuthStore } from "stores";
 
 const Settings = () => {
-  const router = useRouter();
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Stack.Screen options={{ headerShown: true, title: "Settings" }} />

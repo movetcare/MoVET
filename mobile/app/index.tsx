@@ -1,10 +1,9 @@
-import { useRouter, useSegments, useRootNavigationState } from "expo-router";
+import { router, useSegments, useRootNavigationState } from "expo-router";
 import { AuthStore } from "stores";
 import { useEffect } from "react";
 
 const Index = () => {
   const segments = useSegments();
-  const router = useRouter();
   const navigationState = useRootNavigationState();
   const { initialized, isLoggedIn } = AuthStore.useState();
 
@@ -15,7 +14,7 @@ const Index = () => {
         router.replace("/(auth)/sign-in");
       else if (isLoggedIn) router.replace("/(app)/home");
     }
-  }, [segments, navigationState?.key, initialized, isLoggedIn, router]);
+  }, [segments, navigationState?.key, initialized, isLoggedIn]);
 
   return null;
 };
