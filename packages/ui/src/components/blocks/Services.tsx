@@ -95,8 +95,10 @@ export const minorIllnessCare = [
 
 export const Services = ({
   backgroundColor = null,
+  withTitle = true,
 }: {
   backgroundColor?: null | "white";
+  withTitle?: boolean;
 }) => {
   const router = useRouter();
   const [activeService, setActiveService] = useState(0);
@@ -177,12 +179,14 @@ export const Services = ({
   };
   return (
     <section className="relative mb-20">
-      {router.route === "/services" ? (
+      {router.route === "/services" && withTitle ? (
         <h2 className="text-4xl text-center my-8">Services</h2>
-      ) : (
+      ) : withTitle ? (
         <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-black mt-8">
           Our Services
         </h2>
+      ) : (
+        <div className="mt-8"></div>
       )}
       <div
         className={`flex flex-col sm:flex-row sm:max-w-screen-lg py-8 lg:px-8 relative z-20 text-lg mx-auto${

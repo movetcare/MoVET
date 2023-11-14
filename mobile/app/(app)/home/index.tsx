@@ -1,11 +1,20 @@
-import { Appointment, AppointmentList } from "components/AppointmentList";
+import { Appointment } from "components/AppointmentList";
 import { Loader } from "components/Loader";
+import { MoVETLogo } from "components/MoVETLogo";
 import { SectionHeading } from "components/SectionHeading";
 import { Ad } from "components/home/Ad";
 import { Announcement } from "components/home/Announcement";
+import { AppointmentsList } from "components/home/AppointmentsList";
 import { TelehealthStatus } from "components/home/TelehealthStatus";
 import { VcprAlert } from "components/home/VcprAlert";
-import { ActionButton, Container, Screen, View } from "components/themed";
+import {
+  ActionButton,
+  BodyText,
+  Container,
+  Icon,
+  Screen,
+  View,
+} from "components/themed";
 import { router } from "expo-router";
 import { firestore } from "firebase-config";
 import {
@@ -19,8 +28,11 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useColorScheme } from "react-native";
 import { AuthStore } from "stores/AuthStore";
+import { PatientsStore } from "stores/PatientsStore";
 import tw from "tailwind";
+import { isTablet } from "utils/isTablet";
 
 export interface Patient {
   archived: boolean;
@@ -46,6 +58,7 @@ export interface Patient {
 
 const DEBUG_DATA = false;
 const Home = () => {
+  const isDarkMode = useColorScheme() !== "light";
   const [isLoadingAlerts, setIsLoadingAlerts] = useState<boolean>(true);
   const [announcement, setAnnouncement] = useState<null | Announcement>(null);
   const [ad, setAd] = useState<null | Ad>(null);
@@ -54,6 +67,7 @@ const Home = () => {
   const [appointments, setAppointments] = useState<null | Appointment[]>(null);
   const [showVcprAlert, setShowVcprAlert] = useState<boolean>(false);
   const [vcprPatients, setVcprPatients] = useState<Patient[] | null>(null);
+  const [patients, setPatients] = useState<Patient[] | null>(null);
   const { user } = AuthStore.useState();
 
   useEffect(() => {
@@ -131,8 +145,12 @@ const Home = () => {
           if (DEBUG_DATA) console.log("PATIENT DATA => ", doc.data());
           patients.push(doc.data());
         });
+        PatientsStore.update((store: any) => {
+          store.patients = patients;
+        });
         const vcprPatients: Array<Patient> = [];
         patients.forEach((patient: Patient) => {
+          setPatients(patients);
           if (patient.vcprRequired) {
             vcprPatients.push(patient);
             setShowVcprAlert(true);
@@ -154,67 +172,103 @@ const Home = () => {
     <Loader />
   ) : (
     <Screen withBackground="pets">
-      {(announcement?.isActiveMobile || ad?.isActive) && (
-        <SectionHeading iconName={"bullhorn"} text={"Latest Announcements"} />
-      )}
-      {announcement?.isActiveMobile && (
-        <Announcement announcement={announcement} />
-      )}
-      {ad?.isActive && <Ad content={ad} />}
-      {!announcement?.isActiveMobile && !ad?.isActive && (
-        <View style={tw`h-4`} />
-      )}
-      {showVcprAlert && <VcprAlert patients={vcprPatients} />}
-      {(announcement?.isActiveMobile || ad?.isActive) && (
-        <View style={tw`h-4`} />
-      )}
-      {telehealthStatus?.isOnline && (
+      <View
+        style={tw`
+              w-full rounded-t-xl flex justify-center items-center bg-transparent
+            `}
+        noDarkMode
+      >
+        <MoVETLogo
+          type={isDarkMode ? "white" : "default"}
+          override={isDarkMode ? "white" : "default"}
+          height={isTablet ? 160 : 100}
+          width={isTablet ? 260 : 200}
+          style={tw`bg-transparent -mb-8`}
+        />
+      </View>
+      {patients && patients.length ? (
         <>
+          {(announcement?.isActiveMobile || ad?.isActive) && (
+            <SectionHeading
+              iconName={"bullhorn"}
+              text={"Latest Announcements"}
+              containerStyle={tw`my-4`}
+            />
+          )}
+          {announcement?.isActiveMobile && (
+            <Announcement announcement={announcement} />
+          )}
+          {ad?.isActive && <Ad content={ad} />}
           {!announcement?.isActiveMobile && !ad?.isActive && (
             <View style={tw`h-4`} />
           )}
-          <TelehealthStatus status={telehealthStatus} />
+          {showVcprAlert && <VcprAlert patients={vcprPatients} />}
+          {(announcement?.isActiveMobile || ad?.isActive) && (
+            <View style={tw`h-4`} />
+          )}
+          {patients && patients.length && telehealthStatus?.isOnline && (
+            <>
+              {!announcement?.isActiveMobile && !ad?.isActive && (
+                <View style={tw`h-4`} />
+              )}
+              <TelehealthStatus status={telehealthStatus} />
+            </>
+          )}
+          <AppointmentsList appointments={appointments} />
         </>
-      )}
-      {appointments && appointments.length ? (
-        <>
-          <SectionHeading
-            iconName={"clipboard-medical"}
-            text={"Upcoming Appointments"}
+      ) : (
+        <View
+          style={tw`flex-grow w-full justify-center items-center bg-transparent${
+            isTablet ? " -mt-28" : " -mt-8"
+          }`}
+          noDarkMode
+        >
+          <Icon
+            name="clinic"
+            height={isTablet ? 150 : 100}
+            width={isTablet ? 150 : 100}
+            style={tw`-mb-4`}
           />
-          <AppointmentList appointments={appointments} />
+          <SectionHeading text={"Setup Your Pet's Profile"} />
+          <BodyText style={tw`text-center px-8 mb-2 mt-2`}>
+            Welcome to MoVET! Please add your pets to start booking your first
+            appointment.
+          </BodyText>
           <Container
-            style={tw`flex-col sm:flex-row justify-around w-full px-4`}
+            style={tw`w-full flex-col sm:flex-row justify-around items-center px-4`}
           >
             <ActionButton
-              title="Schedule an Appointment"
-              iconName="calendar-plus"
-              onPress={() => router.push("/(app)/appointments/new")}
-              style={tw`sm:w-2.75/6`}
+              title="Add My Pet"
+              iconName="plus"
+              onPress={() => router.push("/(app)/pets/new")}
+              style={tw`sm:w-0.9/3`}
+            />
+            <ActionButton
+              title="View Our Services"
+              iconName="list"
+              color="brown"
+              style={tw`sm:w-0.9/3`}
+              onPress={() =>
+                router.push({
+                  pathname: "/(app)/home/web-view",
+                  params: {
+                    path: "/services",
+                    applicationSource: "website",
+                    screenTitle: "Our Services",
+                    screenTitleIcon: "list",
+                  },
+                })
+              }
             />
             <ActionButton
               color="black"
-              title="Chat with Us"
+              title="Chat w/ Us"
               iconName="user-medical-message"
-              onPress={() => router.push("/(app)/appointments/new")}
-              style={tw`sm:w-2.75/6`}
+              onPress={() => router.push("/(app)/chat")}
+              style={tw`sm:w-0.9/3`}
             />
           </Container>
-        </>
-      ) : (
-        <>
-          <SectionHeading
-            iconName={"clipboard-medical"}
-            text={"Ready to See Us?"}
-          />
-          <Container style={tw`flex-row mx-4`}>
-            <ActionButton
-              title="Schedule an Appointment"
-              iconName="calendar-plus"
-              onPress={() => router.push("/(app)/appointments/new")}
-            />
-          </Container>
-        </>
+        </View>
       )}
       <View style={tw`h-8`} />
     </Screen>

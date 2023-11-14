@@ -10,13 +10,13 @@ import { isTablet } from "utils/isTablet";
 export const SectionHeading = ({
   containerStyle,
   iconStyle,
-  iconName,
+  iconName = null,
   text,
   textStyle,
 }: {
   containerStyle?: any;
   iconStyle?: any;
-  iconName: SupportedIcons;
+  iconName?: SupportedIcons | null;
   text: string;
   textStyle?: any;
 }) => {
@@ -24,15 +24,17 @@ export const SectionHeading = ({
     <Container
       style={[
         tw`flex-row justify-center items-center`,
-        isTablet ? tw`mt-2 mb-4` : tw`mt-0.5 mb-3`,
+        isTablet ? tw`mt-2` : tw`mt-0.5`,
         containerStyle,
       ]}
     >
-      <Icon
-        name={iconName}
-        size={isTablet ? "sm" : "xs"}
-        style={[tw`mt-4 mr-2`, iconStyle]}
-      />
+      {iconName && (
+        <Icon
+          name={iconName}
+          size={isTablet ? "sm" : "xs"}
+          style={[tw`mt-4 mr-2`, iconStyle]}
+        />
+      )}
       <HeadingText
         style={[tw`mt-4`, isTablet ? tw`text-2xl` : tw`text-xl`, textStyle]}
       >

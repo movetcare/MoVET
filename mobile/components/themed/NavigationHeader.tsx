@@ -7,7 +7,7 @@ export const NavigationHeader = ({
   title = "Untitled Screen",
   icon = null,
   canGoBack = false,
-  goBackRoot = "/(app)/home/",
+  goBackRoot = "/(app)/home",
 }: {
   title: string;
   icon: any | null;

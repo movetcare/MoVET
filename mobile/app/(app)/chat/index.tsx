@@ -322,7 +322,7 @@ const ChatIndex = () => {
         textStyle={{
           textAlign: "center",
           fontSize: 14,
-          color: tw.color("movet-black"),
+          color: isDarkMode ?tw.color("movet-white") : tw.color("movet-black"),
           fontStyle: "italic",
         }}
       />

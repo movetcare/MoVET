@@ -1,11 +1,19 @@
-import { Tabs } from "expo-router";
+import { Tabs, usePathname } from "expo-router";
 import { useThemeColor } from "hooks/useThemeColor";
 import { SafeAreaView, useColorScheme } from "react-native";
 import tw from "tailwind";
 import { Icon } from "components/themed";
 import { isTablet } from "utils/isTablet";
+import { AuthStore } from "stores";
+import { firestore } from "firebase-config";
+import { onSnapshot, query, collection, where, QuerySnapshot, } from "firebase/firestore";
+import { useEffect, useState } from "react";
+
 
 const TabsLayout = (props: any) => {
+    const { user } = AuthStore.useState();
+    const [patientsCount, setPatientsCount] = useState<number | null>(null);
+    const pathName = usePathname() 
   const iconHeight = isTablet ? 26 : 20;
   const iconWidth = isTablet ? 26 : 20;
   const isDarkMode = useColorScheme() !== "light";
@@ -42,6 +50,23 @@ const TabsLayout = (props: any) => {
       marginTop: isTablet ? 0 : 8,
     },
   };
+
+    useEffect(() => {
+    const unsubscribePatients = onSnapshot(
+      query(
+        collection(firestore, "patients"),
+        where("client", "==", Number(user.uid)),
+        where("archived", "==", false),
+      ),
+      (querySnapshot: QuerySnapshot) => {
+        if (querySnapshot.empty) return;
+         else setPatientsCount(querySnapshot.size)
+      },
+      (error: any) => console.error("ERROR => ", error),
+    );
+    return () => 
+      unsubscribePatients();
+  }, [user?.uid]);
   return (
     <SafeAreaView style={tw`flex-1 bg-movet-red dark:bg-movet-black`}>
       <Tabs
@@ -49,6 +74,7 @@ const TabsLayout = (props: any) => {
           headerShown: false,
           tabBarStyle: {
             backgroundColor: "transparent",
+            display: (( pathName === "appointments"  || pathName === "pets" ) && patientsCount) ? "none" : "flex",
           },
         }}
       >
@@ -87,7 +113,7 @@ const TabsLayout = (props: any) => {
         />
         <Tabs.Screen
           name="appointments"
-          options={{
+          options={patientsCount ? {
             title: "Appointments",
             tabBarIcon: (navigationOptions: any) =>
               navigationOptions.focused ? (
@@ -116,11 +142,11 @@ const TabsLayout = (props: any) => {
                 />
               ),
             ...tabBarStyle,
-          }}
+          }: {href: null}}
         />
         <Tabs.Screen
           name="pets"
-          options={{
+          options={patientsCount ? {
             title: "Pets",
             tabBarIcon: (navigationOptions: any) =>
               navigationOptions.focused ? (
@@ -149,7 +175,7 @@ const TabsLayout = (props: any) => {
                 />
               ),
             ...tabBarStyle,
-          }}
+          } : {href: null}}
         />
         <Tabs.Screen
           name="chat"

@@ -58,7 +58,7 @@ export default function RequestSuccess() {
               text="Schedule Another Appointment"
               onClick={() =>
                 router.replace(
-                  "/?mode=" + mode + "&email=" + email.replaceAll(" ", "+"),
+                  "/?mode=" + mode + "&email=" + email?.replaceAll(" ", "+"),
                 )
               }
             />

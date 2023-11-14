@@ -5,6 +5,13 @@ import MobileIcon from "assets/icons/svgs/custom/mobile.svg";
 import DogWashIcon from "assets/icons/svgs/custom/dog-wash.svg";
 import ClinicIcon from "assets/icons/svgs/custom/clinic.svg";
 import ClinicAltIcon from "assets/icons/svgs/custom/clinic-alt.svg";
+import TelehealthIconDark from "assets/icons/svgs/custom/telehealth.svg";
+import BoutiqueIconDark from "assets/icons/svgs/custom/boutique-dark.svg";
+import PharmacyIconDark from "assets/icons/svgs/custom/pharmacy-dark.svg";
+import MobileIconDark from "assets/icons/svgs/custom/mobile-dark.svg";
+import DogWashIconDark from "assets/icons/svgs/custom/dog-wash-dark.svg";
+import ClinicIconDark from "assets/icons/svgs/custom/clinic-dark.svg";
+import ClinicAltIconDark from "assets/icons/svgs/custom/clinic-alt-dark.svg";
 import PooIcon from "assets/icons/svgs/font-awesome/poo.svg";
 import PooIconDark from "assets/icons/svgs/font-awesome/poo-dark.svg";
 import BullhornIcon from "assets/icons/svgs/font-awesome/bullhorn.svg";
@@ -49,8 +56,18 @@ import CatIcon from "assets/icons/svgs/font-awesome/cat.svg";
 import CatIconDark from "assets/icons/svgs/font-awesome/cat-dark.svg";
 import DogIcon from "assets/icons/svgs/font-awesome/dog.svg";
 import DogIconDark from "assets/icons/svgs/font-awesome/dog-dark.svg";
+import PlusIcon from "assets/icons/svgs/font-awesome/plus.svg";
+import PlusIconDark from "assets/icons/svgs/font-awesome/plus-dark.svg";
+import ListIcon from "assets/icons/svgs/font-awesome/list.svg";
+import ListIconDark from "assets/icons/svgs/font-awesome/list-dark.svg";
 import QuestionIcon from "assets/icons/svgs/font-awesome/question.svg";
 import QuestionIconDark from "assets/icons/svgs/font-awesome/question-dark.svg";
+import RightFromBracketIcon from "assets/icons/svgs/font-awesome/right-from-bracket.svg";
+import RightFromBracketIconDark from "assets/icons/svgs/font-awesome/right-from-bracket-dark.svg";
+import UserEditIcon from "assets/icons/svgs/font-awesome/user-edit.svg";
+import UserEditIconDark from "assets/icons/svgs/font-awesome/user-edit-dark.svg";
+import CreditCardIcon from "assets/icons/svgs/font-awesome/credit-card.svg";
+import CreditCardIconDark from "assets/icons/svgs/font-awesome/credit-card-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -84,7 +101,12 @@ export type SupportedIcons =
   | "star"
   | "cat"
   | "dog"
-  | "question";
+  | "question"
+  | "plus"
+  | "list"
+  | "right-from-bracket"
+  | "user-edit"
+  | "credit-card";
 
 export const Icon = ({
   name = "poo",
@@ -139,27 +161,53 @@ export const Icon = ({
 
   switch (name) {
     case "telehealth":
-      return (
+      return showWhiteIcon ? (
+        <TelehealthIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
         <TelehealthIcon height={iconHeight} width={iconWidth} style={style} />
       );
     case "boutique":
-      return (
+      return showWhiteIcon ? (
+        <BoutiqueIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
         <BoutiqueIcon height={iconHeight} width={iconWidth} style={style} />
       );
     case "pharmacy":
-      return (
+      return showWhiteIcon ? (
+        <PharmacyIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
         <PharmacyIcon height={iconHeight} width={iconWidth} style={style} />
       );
     case "mobile":
-      return <MobileIcon height={iconHeight} width={iconWidth} style={style} />;
+      return showWhiteIcon ? (
+        <MobileIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <MobileIcon height={iconHeight} width={iconWidth} style={style} />
+      );
     case "dog-wash":
-      return (
+      return showWhiteIcon ? (
+        <DogWashIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
         <DogWashIcon height={iconHeight} width={iconWidth} style={style} />
       );
     case "clinic":
-      return <ClinicIcon height={iconHeight} width={iconWidth} style={style} />;
+      return showWhiteIcon ? (
+        <ClinicIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <ClinicIcon height={iconHeight} width={iconWidth} style={style} />
+      );
     case "clinic-alt":
-      return (
+      return showWhiteIcon ? (
+        <ClinicAltIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
         <ClinicAltIcon height={iconHeight} width={iconWidth} style={style} />
       );
     case "bullhorn":
@@ -333,6 +381,48 @@ export const Icon = ({
         <QuestionIconDark height={iconHeight} width={iconWidth} style={style} />
       ) : (
         <QuestionIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "plus":
+      return showWhiteIcon ? (
+        <PlusIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <PlusIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "user-edit":
+      return showWhiteIcon ? (
+        <UserEditIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <UserEditIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "list":
+      return showWhiteIcon ? (
+        <ListIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <ListIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "right-from-bracket":
+      return showWhiteIcon ? (
+        <RightFromBracketIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <RightFromBracketIcon
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      );
+    case "credit-card":
+      return showWhiteIcon ? (
+        <CreditCardIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <CreditCardIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (

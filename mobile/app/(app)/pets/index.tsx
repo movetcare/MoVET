@@ -1,20 +1,13 @@
-import { Stack, router } from "expo-router";
-import { Button, Text, View } from "react-native";
-import { signOff } from "services/Auth";
-import { AuthStore } from "stores";
+import { Stack } from "expo-router";
+import { Text, View } from "react-native";
+import { PatientsStore } from "stores/PatientsStore";
 
-const Settings = () => {
+const MyPets = () => {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Stack.Screen options={{ headerShown: true, title: "Settings" }} />
-      <Text>{JSON.stringify(AuthStore.getRawState()?.user)}</Text>
-      <Button
-        onPress={async () => {
-          if (await signOff()) router.replace("/(auth)/sign-in");
-        }}
-        title="LOGOUT"
-      />
+      <Stack.Screen options={{ headerShown: true, title: "MyPets" }} />
+      <Text>{JSON.stringify(PatientsStore.useState())}</Text>
     </View>
   );
 };
-export default Settings;
+export default MyPets;

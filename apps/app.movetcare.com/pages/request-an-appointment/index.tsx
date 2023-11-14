@@ -184,7 +184,7 @@ export default function RequestAnAppointment({
   useEffect(() => {
     setValue(
       "email",
-      (email.replaceAll(" ", "+") as string) ||
+      (email?.replaceAll(" ", "+") as string) ||
         window.localStorage.getItem("email") ||
         "",
     );

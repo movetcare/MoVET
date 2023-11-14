@@ -1,4 +1,3 @@
-import { NavigationHeader } from "components/themed/NavigationHeader";
 import { Stack } from "expo-router";
 import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions";
 
@@ -7,7 +6,6 @@ export default function Layout() {
     <Stack
       screenOptions={{
         ...navigationStackScreenOptions,
-        header: () => <NavigationHeader title="Settings" icon="⚙️" />,
       }}
     />
   );

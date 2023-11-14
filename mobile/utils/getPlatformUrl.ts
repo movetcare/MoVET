@@ -1,8 +1,6 @@
 import { isProductionEnvironment } from "./isProductionEnvironment";
-
-export const getPlatformUrl = (
-  application: "website" | "app" | "mobile" = "app",
-) => {
+export type ApplicationTypes = "website" | "app" | "mobile";
+export const getPlatformUrl = (application: ApplicationTypes = "app") => {
   switch (application) {
     case "website":
       return isProductionEnvironment

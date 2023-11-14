@@ -1,8 +1,8 @@
-import { Stack, useSegments } from "expo-router";
+import { Stack, useLocalSearchParams, useSegments } from "expo-router";
 import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions";
 import { NavigationHeader } from "components/themed/NavigationHeader";
 import { useEffect, useState } from "react";
-import { Icon } from "components/themed";
+import { Icon, SupportedIcons } from "components/themed";
 import tw from "tailwind";
 
 // const defaultNavigationDetails = {
@@ -12,6 +12,8 @@ import tw from "tailwind";
 // };
 export default function Layout() {
   const segments = useSegments();
+  const router = useLocalSearchParams();
+  const { screenTitle, screenTitleIcon }: any = router?.params || {};
   const [navigationDetails, setNavigationDetails] = useState<{
     title: string;
     icon: any;
@@ -19,29 +21,44 @@ export default function Layout() {
   } | null>(null);
 
   useEffect(() => {
-    if (segments && segments.includes("web-view")) {
+    if (screenTitle)
+      setNavigationDetails({
+        title: screenTitle as string,
+        icon: screenTitleIcon ? (
+          <Icon
+            name={screenTitleIcon as SupportedIcons}
+            size="xs"
+            style={tw`mr-2`}
+            color="white"
+          />
+        ) : (
+          <Icon name="bullhorn" size="xs" style={tw`mr-2`} color="white"  />
+        ),
+        canGoBack: true,
+      });
+    else if (segments && segments.includes("web-view")) {
       //setTimeout(() => {
       setNavigationDetails({
         title: "Announcement",
-        icon: <Icon name="boutique" size="xs" style={tw`mr-1`} />,
+        icon:   <Icon name="bullhorn" size="xs" style={tw`mr-2`} color="white" />,
         canGoBack: true,
       });
       //}, 180);
-    }
-     else setNavigationDetails(null);
-  }, [segments]);
+    } else setNavigationDetails(null);
+  }, [screenTitle, screenTitleIcon, segments]);
 
   return (
     <Stack
       screenOptions={{
         ...navigationStackScreenOptions,
-        header: () => navigationDetails ? (
-          <NavigationHeader
-            title={navigationDetails.title}
-            icon={navigationDetails.icon}
-            canGoBack={navigationDetails.canGoBack}
-          />
-        ) : undefined,
+        header: () =>
+          navigationDetails ? (
+            <NavigationHeader
+              title={navigationDetails.title}
+              icon={navigationDetails.icon}
+              canGoBack={navigationDetails.canGoBack}
+            />
+          ) : undefined,
       }}
     />
   );

@@ -15,11 +15,25 @@ module.exports = withTM({
     defaultLocale: "en",
   },
   images: {
-    domains: ["localhost", "storage-us.provetcloud.com"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "**.googleapis.com",
+      },
+      {
+        protocol: "https",
+        hostname: "storage-us.provetcloud.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "movetcare.com",
+        pathname: "**",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        pathname: "**",
       },
     ],
   },

@@ -5,21 +5,27 @@ import { useState } from "react";
 import { Platform, Linking } from "react-native";
 import { WebView as DefaultWebView } from "react-native-webview";
 import tw from "tailwind";
+import { ApplicationTypes, getPlatformUrl } from "utils/getPlatformUrl";
 
 const WebView = () => {
-  const { path } = useLocalSearchParams();
+  const { path, applicationSource } = useLocalSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   return (
     <>
       {isLoading && (
-        <View style={tw`h-screen -mt-24`}>
+        <View style={tw`h-screen -mt-12`}>
           <Loader />
         </View>
       )}
       <DefaultWebView
-        source={{ uri: "https://movetcare.com" + path + "?mode=app" }}
+        source={{
+          uri:
+            getPlatformUrl(applicationSource as ApplicationTypes || "website") +
+            path +
+            "?mode=app",
+        }}
         startInLoadingState
-        onLoad={() => setIsLoading(false)}
+        onLoad={() => setTimeout(() => setIsLoading(false), 1500)}
         style={tw`${isLoading ? "hidden" : "flex-1"}`}
         onShouldStartLoadWithRequest={(event) => {
           if (

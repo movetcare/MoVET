@@ -9,7 +9,19 @@ export default function Layout() {
     <Stack
       screenOptions={{
         ...navigationStackScreenOptions,
-        header: () => <NavigationHeader title="Telehealth Chat" icon={<Icon name="clinic-alt" size="xs" style={tw`mr-1`} />} />,
+        header: () => (
+          <NavigationHeader
+            title="Telehealth Chat"
+            icon={
+              <Icon
+                name="user-medical-message"
+                size="xs"
+                style={tw`mr-2`}
+                color="white"
+              />
+            }
+          />
+        ),
       }}
     />
   );

@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import { ReactNode } from "react";
 import { Pressable } from "react-native";
 import tw from "tailwind";
+import { isTablet } from "utils/isTablet";
 
 export interface TelehealthStatus {
   isOnline: boolean;
@@ -31,7 +32,11 @@ export const TelehealthStatus = ({
           style={tw`pr-4 pt-2 pb-3 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
         >
           <Container>
-            <Icon name="telehealth" size="xl" />
+            <Icon
+              name="telehealth"
+              height={isTablet ? 90 : 70}
+              width={isTablet ? 90 : 70}
+            />
           </Container>
           <Container style={tw`flex-shrink`}>
             <HeadingText style={tw`text-black text-lg`}>
