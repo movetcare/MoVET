@@ -1,7 +1,7 @@
-import { FontAwesome5 } from "@expo/vector-icons";
 import tw from "tailwind";
 import { HeadingText, Icon, SupportedIcons, View } from ".";
 import { router } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
 export const NavigationHeader = ({
   title = "Untitled Screen",
@@ -16,15 +16,18 @@ export const NavigationHeader = ({
 }) =>
   canGoBack ? (
     <>
-      <FontAwesome5
-        name="arrow-left"
-        size={20}
-        color={tw.color("movet-white")}
-        style={tw`-mb-8 mt-3 z-100 max-w-8 ml-4`}
+      <TouchableOpacity
+        style={tw`absolute z-100 h-12 w-12`}
         onPress={() =>
           (router.canGoBack() && router.back()) || router.push(goBackRoot)
         }
-      />
+      >
+        <Icon
+          name="arrow-left"
+          color={"white"}
+          style={tw`-mb-8 mt-3 z-10 max-w-8 ml-4`}
+        />
+      </TouchableOpacity>
       <View
         style={tw`flex flex-row justify-center items-center h-12 border-b-2 border-movet-white bg-movet-red`}
         noDarkMode

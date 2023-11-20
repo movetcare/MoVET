@@ -4,6 +4,7 @@ import LottieView from "lottie-react-native";
 import { MoVETLogo } from "components/MoVETLogo";
 import tw from "tailwind";
 import { HeadingText, View, Screen } from "./themed";
+import { getRandomInt } from "utils/getRandomInt";
 
 export const Loader = ({
   description = "Loading, Please Wait...",
@@ -23,12 +24,6 @@ export const Loader = ({
   // https://lottiefiles.com/52831-rotation-cats
   // https://lottiefiles.com/40674-animation-for-veterinarian
   // https://lottiefiles.com/14592-loader-cat
-
-  const getRandomInt = (min: number, max: number) => {
-    const minRange = Math.ceil(min);
-    const maxRange = Math.floor(max);
-    return Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
-  };
 
   const randomLoadingAnimation = () => {
     const randomNumber = getRandomInt(1, 3);

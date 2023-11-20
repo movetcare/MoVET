@@ -13,7 +13,6 @@ import { router } from "expo-router";
 import { useDeviceContext } from "twrnc";
 import tw from "tailwind";
 import { ErrorLayout } from "components/themed";
-import { FontAwesome } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { AuthStore } from "stores";
 
@@ -74,7 +73,6 @@ const Layout = () => {
     "Abside Smooth": require("../assets/fonts/Abside-Smooth.ttf"),
     "Source Sans Pro": require("../assets/fonts/SourceSansPro-Regular.ttf"),
     "Source Sans Pro Italic": require("../assets/fonts/SourceSansPro-Italic.ttf"),
-    ...FontAwesome.font,
   });
 
   useEffect(() => {

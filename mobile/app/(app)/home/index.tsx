@@ -29,6 +29,12 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { AuthStore } from "stores";
 import { PatientsStore } from "stores/PatientsStore";
 import tw from "tailwind";
@@ -69,6 +75,24 @@ const Home = () => {
   const [vcprPatients, setVcprPatients] = useState<Patient[] | null>(null);
   const [patients, setPatients] = useState<Patient[] | null>(null);
   const { user } = AuthStore.useState();
+  const fadeInOpacity = useSharedValue(0);
+
+  const fadeIn = () => {
+    fadeInOpacity.value = withTiming(1, {
+      duration: 1500,
+      easing: Easing.linear,
+    });
+  };
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: fadeInOpacity.value,
+    };
+  });
+
+  useEffect(() => {
+    fadeIn();
+  });
 
   useEffect(() => {
     const unsubscribeAlerts = onSnapshot(
@@ -172,105 +196,108 @@ const Home = () => {
     <Loader />
   ) : (
     <Screen withBackground="pets">
-      <View
-        style={tw`
+      <Animated.View style={[tw`w-full`, animatedStyle]}>
+        <View
+          style={tw`
               w-full rounded-t-xl flex justify-center items-center bg-transparent
             `}
-        noDarkMode
-      >
-        <MoVETLogo
-          type={isDarkMode ? "white" : "default"}
-          override={isDarkMode ? "white" : "default"}
-          height={isTablet ? 160 : 100}
-          width={isTablet ? 260 : 200}
-          style={tw`bg-transparent -mb-8`}
-        />
-      </View>
-      {patients && patients.length ? (
-        <>
-          {(announcement?.isActiveMobile || ad?.isActive) && (
-            <SectionHeading
-              iconName={"bullhorn"}
-              text={"Latest Announcements"}
-              containerStyle={tw`my-4`}
-              textStyle={tw`text-lg sm:text-2xl`}
-            />
-          )}
-          {announcement?.isActiveMobile && (
-            <Announcement announcement={announcement} />
-          )}
-          {ad?.isActive && <Ad content={ad} />}
-          {!announcement?.isActiveMobile && !ad?.isActive && (
-            <View style={tw`h-4`} />
-          )}
-          {showVcprAlert && <VcprAlert patients={vcprPatients} />}
-          {(announcement?.isActiveMobile || ad?.isActive) && (
-            <View style={tw`h-4`} />
-          )}
-          {patients && patients.length && telehealthStatus?.isOnline && (
-            <>
-              {!announcement?.isActiveMobile && !ad?.isActive && (
-                <View style={tw`h-4`} />
-              )}
-              <TelehealthStatus status={telehealthStatus} />
-            </>
-          )}
-          <AppointmentsList appointments={appointments} />
-        </>
-      ) : (
-        <View
-          style={tw`flex-grow w-full justify-center items-center bg-transparent${
-            isTablet ? " -mt-28" : " -mt-8"
-          }`}
           noDarkMode
         >
-          <Icon
-            name="clinic"
-            height={isTablet ? 150 : 100}
-            width={isTablet ? 150 : 100}
-            style={tw`-mb-4`}
+          <MoVETLogo
+            type={isDarkMode ? "white" : "default"}
+            override={isDarkMode ? "white" : "default"}
+            height={isTablet ? 160 : 100}
+            width={isTablet ? 260 : 200}
+            style={tw`bg-transparent -mb-8`}
           />
-          <SectionHeading text={"Setup Your Pet's Profile"} />
-          <BodyText style={tw`text-center px-8 mb-2 mt-2`}>
-            Welcome to MoVET! Please add your pets to start booking your first
-            appointment.
-          </BodyText>
-          <Container
-            style={tw`w-full flex-col sm:flex-row justify-around items-center px-4`}
-          >
-            <ActionButton
-              title="Add My Pet"
-              iconName="plus"
-              onPress={() => router.push("/(app)/pets/new")}
-              style={tw`sm:w-0.9/3`}
-            />
-            <ActionButton
-              title="View Our Services"
-              iconName="list"
-              color="brown"
-              style={tw`sm:w-0.9/3`}
-              onPress={() =>
-                router.push({
-                  pathname: "/(app)/home/web-view",
-                  params: {
-                    path: "/services",
-                    applicationSource: "website",
-                    screenTitle: "Our Services",
-                    screenTitleIcon: "list",
-                  },
-                })
-              }
-            />
-            <ActionButton
-              color="black"
-              title="Chat w/ Us"
-              iconName="user-medical-message"
-              onPress={() => router.push("/(app)/chat")}
-              style={tw`sm:w-0.9/3`}
-            />
-          </Container>
         </View>
-      )}
+
+        {patients && patients.length ? (
+          <>
+            {(announcement?.isActiveMobile || ad?.isActive) && (
+              <SectionHeading
+                iconName={"bullhorn"}
+                text={"Latest Announcements"}
+                containerStyle={tw`my-4`}
+                textStyle={tw`text-lg sm:text-2xl`}
+              />
+            )}
+            {announcement?.isActiveMobile && (
+              <Announcement announcement={announcement} />
+            )}
+            {ad?.isActive && <Ad content={ad} />}
+            {!announcement?.isActiveMobile && !ad?.isActive && (
+              <View style={tw`h-4`} />
+            )}
+            {showVcprAlert && <VcprAlert patients={vcprPatients} />}
+            {(announcement?.isActiveMobile || ad?.isActive) && (
+              <View style={tw`h-4`} />
+            )}
+            {patients && patients.length && telehealthStatus?.isOnline && (
+              <>
+                {!announcement?.isActiveMobile && !ad?.isActive && (
+                  <View style={tw`h-4`} />
+                )}
+                <TelehealthStatus status={telehealthStatus} />
+              </>
+            )}
+            <AppointmentsList appointments={appointments} />
+          </>
+        ) : (
+          <View
+            style={tw`flex-grow w-full justify-center items-center bg-transparent${
+              isTablet ? " -mt-28" : " -mt-8"
+            }`}
+            noDarkMode
+          >
+            <Icon
+              name="clinic"
+              height={isTablet ? 150 : 100}
+              width={isTablet ? 150 : 100}
+              style={tw`-mb-4`}
+            />
+            <SectionHeading text={"Setup Your Pet's Profile"} />
+            <BodyText style={tw`text-center px-8 mb-2 mt-2`}>
+              Welcome to MoVET! Please add your pets to start booking your first
+              appointment.
+            </BodyText>
+            <Container
+              style={tw`w-full flex-col sm:flex-row justify-around items-center px-4`}
+            >
+              <ActionButton
+                title="Add My Pet"
+                iconName="plus"
+                onPress={() => router.push("/(app)/pets/new")}
+                style={tw`sm:w-0.9/3`}
+              />
+              <ActionButton
+                title="View Our Services"
+                iconName="list"
+                color="brown"
+                style={tw`sm:w-0.9/3`}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(app)/home/web-view",
+                    params: {
+                      path: "/services",
+                      applicationSource: "website",
+                      screenTitle: "Our Services",
+                      screenTitleIcon: "list",
+                    },
+                  })
+                }
+              />
+              <ActionButton
+                color="black"
+                title="Chat w/ Us"
+                iconName="user-medical-message"
+                onPress={() => router.push("/(app)/chat")}
+                style={tw`sm:w-0.9/3`}
+              />
+            </Container>
+          </View>
+        )}
+      </Animated.View>
       <View style={tw`h-8`} />
     </Screen>
   );

@@ -72,6 +72,10 @@ import EnvelopeIcon from "assets/icons/svgs/font-awesome/envelope.svg";
 import EnvelopeIconDark from "assets/icons/svgs/font-awesome/envelope-dark.svg";
 import SmsIcon from "assets/icons/svgs/font-awesome/sms.svg";
 import SmsIconDark from "assets/icons/svgs/font-awesome/sms-dark.svg";
+import CheckIcon from "assets/icons/svgs/font-awesome/check.svg";
+import CheckIconDark from "assets/icons/svgs/font-awesome/check-dark.svg";
+import ArrowLeftIcon from "assets/icons/svgs/font-awesome/arrow-left.svg";
+import ArrowLeftIconDark from "assets/icons/svgs/font-awesome/arrow-left-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -87,6 +91,7 @@ export type SupportedIcons =
   | "poo"
   | "spinner"
   | "arrow-right"
+  | "arrow-left"
   | "lock"
   | "lock-open"
   | "plane"
@@ -112,7 +117,8 @@ export type SupportedIcons =
   | "user-edit"
   | "credit-card"
   | "envelope"
-  | "sms";
+  | "sms"
+  | "check";
 
 export const Icon = ({
   name = "poo",
@@ -148,16 +154,16 @@ export const Icon = ({
         iconWidth = 30;
         break;
       case "md":
-        iconHeight = 50;
-        iconWidth = 50;
+        iconHeight = 35;
+        iconWidth = 35;
         break;
       case "lg":
-        iconHeight = 60;
-        iconWidth = 60;
+        iconHeight = 40;
+        iconWidth = 40;
         break;
       case "xl":
-        iconHeight = 70;
-        iconWidth = 70;
+        iconHeight = 50;
+        iconWidth = 50;
         break;
       default:
         iconHeight = 20;
@@ -441,6 +447,22 @@ export const Icon = ({
         <SmsIconDark height={iconHeight} width={iconWidth} style={style} />
       ) : (
         <SmsIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "check":
+      return showWhiteIcon ? (
+        <CheckIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <CheckIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "arrow-left":
+      return showWhiteIcon ? (
+        <ArrowLeftIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <ArrowLeftIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (

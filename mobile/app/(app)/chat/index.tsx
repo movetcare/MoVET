@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { MaterialIcons } from "@expo/vector-icons";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Bubble,
@@ -33,7 +32,7 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import { Platform, useColorScheme } from "react-native";
 import * as Notifications from "expo-notifications";
-import { View } from "components/themed";
+import { Icon, View } from "components/themed";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -84,7 +83,7 @@ const ChatIndex = () => {
   const { user } = AuthStore.useState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<IMessage[]>([]);
- const isDarkMode = useColorScheme() !== "light";
+  const isDarkMode = useColorScheme() !== "light";
   useEffect(() => {
     registerForPushNotificationsAsync().then(async (token: any) => {
       const deviceInfo = JSON.parse(
@@ -322,7 +321,7 @@ const ChatIndex = () => {
         textStyle={{
           textAlign: "center",
           fontSize: 14,
-          color: isDarkMode ?tw.color("movet-white") : tw.color("movet-black"),
+          color: isDarkMode ? tw.color("movet-white") : tw.color("movet-black"),
           fontStyle: "italic",
         }}
       />
@@ -331,13 +330,8 @@ const ChatIndex = () => {
 
   const renderSend = useCallback((props: SendProps<IMessage>) => {
     return (
-      <Send {...props} containerStyle={{ justifyContent: "center"}}>
-        <MaterialIcons
-          size={26}
-          color={"tomato"}
-          name={"send"}
-          style={tw`mr-2 -mt-1`}
-        />
+      <Send {...props} containerStyle={{ justifyContent: "center" }}>
+        <Icon name="plane" style={tw`mr-4 -mt-1`} />
       </Send>
     );
   }, []);
@@ -351,12 +345,16 @@ const ChatIndex = () => {
             color: tw.color("movet-black"),
           },
           left: {
-            color: isDarkMode ? tw.color("movet-white") : tw.color("movet-black"),
+            color: isDarkMode
+              ? tw.color("movet-white")
+              : tw.color("movet-black"),
           },
         }}
         wrapperStyle={{
           right: {
-            backgroundColor: isDarkMode ? tw.color("movet-white") : tw.color(`white`),
+            backgroundColor: isDarkMode
+              ? tw.color("movet-white")
+              : tw.color(`white`),
           },
           left: {
             backgroundColor: tw.color(`movet-red/20`),

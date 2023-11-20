@@ -20,6 +20,40 @@ import { AuthStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 import { Modal, ErrorModal } from "components/Modal";
+import { getRandomInt } from "utils/getRandomInt";
+import Animated, {
+  useSharedValue,
+  withTiming,
+  Easing,
+  useAnimatedStyle,
+} from "react-native-reanimated";
+
+const getRandomBackgroundImage = () => {
+  const randomNumber = getRandomInt(1, 5);
+  let backgroundImage = null;
+  switch (randomNumber) {
+    case 1:
+      backgroundImage = require("assets/images/backgrounds/sign-in-background-0.jpg");
+      break;
+    case 2:
+      backgroundImage = require("assets/images/backgrounds/sign-in-background-1.jpg");
+      break;
+    case 3:
+      backgroundImage = require("assets/images/backgrounds/sign-in-background-2.jpg");
+      break;
+    case 4:
+      backgroundImage = require("assets/images/backgrounds/sign-in-background-3.jpg");
+      break;
+    case 5:
+      backgroundImage = require("assets/images/backgrounds/sign-in-background-4.jpg");
+      break;
+    default:
+      backgroundImage = require("assets/images/backgrounds/sign-in-background-3.jpg");
+  }
+  return backgroundImage;
+};
+
+const backgroundImage = getRandomBackgroundImage();
 
 export default function SignIn() {
   const {
@@ -51,6 +85,25 @@ export default function SignIn() {
   const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false);
   const [signInLinkSent, setSignInLinkSent] = useState<boolean>(false);
   const [disableEmailInput, setDisableEmailInput] = useState<boolean>(false);
+  const fadeInOpacity = useSharedValue(0);
+
+  const fadeIn = () => {
+    fadeInOpacity.value = withTiming(1, {
+      duration: 2000,
+      easing: Easing.linear,
+    });
+  };
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: fadeInOpacity.value,
+    };
+  });
+
+  useEffect(() => {
+    fadeIn();
+  });
+
   useEffect(() => {
     if (tapCount === 15) setShowPasswordInput(true);
     else if (tapCount > 15) setShowPasswordInput(false);
@@ -103,157 +156,163 @@ export default function SignIn() {
       contentContainerStyle={tw`flex-grow`}
     >
       <ImageBackground
-        source={require("assets/images/backgrounds/sign-in-background.png")}
+        source={backgroundImage}
         resizeMode="cover"
         style={tw`flex-1`}
       >
-        <View
-          style={tw`w-full bg-transparent flex-1 justify-center items-center`}
-          noDarkMode
-        >
+        <Animated.View style={[tw`flex-grow`, animatedStyle]}>
           <View
-            style={tw`
+            style={tw`w-full bg-transparent flex-1 justify-center items-center`}
+            noDarkMode
+          >
+            <View
+              style={tw`
               w-full rounded-t-xl flex justify-center items-center bg-transparent
               
             `}
-            noDarkMode
-          >
-            <Pressable onPress={() => setTapCount(tapCount + 1)}>
-              <MoVETLogo
-                type="default"
-                override="default"
-                height={160}
-                width={260}
-              />
-            </Pressable>
-          </View>
-          <View
-            style={[
-              tw`w-full pb-12 px-8 bg-transparent items-center rounded-b-xl`,
-              DeviceDimensions.window.height > 640 ? tw`mt-12` : tw`mt-4`,
-            ]}
-            noDarkMode
-          >
-            <EmailInput
-              control={control}
-              error={((errors as any)["email"] as any)?.message as string}
-              textContentType="username"
-              editable={!isLoading && !disableEmailInput}
-            />
-            {(withPassword || showPasswordInput) && (
-              <PasswordInput
+              noDarkMode
+            >
+              <Pressable onPress={() => setTapCount(tapCount + 1)}>
+                <MoVETLogo
+                  type="default"
+                  override="default"
+                  height={160}
+                  width={260}
+                />
+              </Pressable>
+            </View>
+            <View
+              style={[
+                tw`w-full pb-12 px-8 bg-transparent items-center rounded-b-xl`,
+                DeviceDimensions.window.height > 640 ? tw`mt-12` : tw`mt-4`,
+              ]}
+              noDarkMode
+            >
+              <EmailInput
                 control={control}
-                error={((errors as any)["password"] as any)?.message as string}
-                textContentType="password"
-                editable={!isLoading}
+                error={((errors as any)["email"] as any)?.message as string}
+                textContentType="username"
+                editable={!isLoading && !disableEmailInput}
               />
-            )}
-            {!showVerificationButton && !withPassword && !showPasswordInput && (
-              <View
-                style={tw`flex-row bg-movet-white/80 dark:bg-movet-black/75 rounded-xl p-2`}
-                noDarkMode
-              >
-                <ItalicText style={tw`text-sm normal-case text-center`}>
-                  Please provide your email address to sign in or create a new
-                  account.
-                </ItalicText>
-              </View>
-            )}
-          </View>
-          <View
-            style={tw`w-full pb-12 px-8 bg-transparent items-center`}
-            noDarkMode
-          >
-            {isDirty && !showVerificationButton && (
-              <View
-                style={tw`flex-row bg-movet-white dark:bg-movet-black rounded-xl mt-4 p-2 opacity-75`}
-              >
-                <ItalicText style={tw`flex flex-wrap text-center text-xs`}>
-                  By continuing you agree to our&nbsp;
-                </ItalicText>
-                <LinkText
-                  style={tw`flex flex-wrap text-xs`}
-                  text="terms of use"
-                  onPress={() =>
-                    openUrlInWebBrowser(
-                      "https://movetcare.com/terms-and-conditions/?mode=app",
-                      isDarkMode,
-                      {
-                        dismissButtonStyle: "close",
-                        enableBarCollapsing: true,
-                        enableDefaultShareMenuItem: false,
-                        readerMode: true,
-                        showTitle: false,
-                      },
-                    )
+              {(withPassword || showPasswordInput) && (
+                <PasswordInput
+                  control={control}
+                  error={
+                    ((errors as any)["password"] as any)?.message as string
+                  }
+                  textContentType="password"
+                  editable={!isLoading}
+                />
+              )}
+              {!showVerificationButton &&
+                !withPassword &&
+                !showPasswordInput && (
+                  <View
+                    style={tw`flex-row bg-movet-white/80 dark:bg-movet-black/75 rounded-xl p-2`}
+                    noDarkMode
+                  >
+                    <ItalicText style={tw`text-sm normal-case text-center`}>
+                      Please provide your email address to sign in or create a
+                      new account.
+                    </ItalicText>
+                  </View>
+                )}
+            </View>
+            <View
+              style={tw`w-full pb-12 px-8 bg-transparent items-center`}
+              noDarkMode
+            >
+              {isDirty && !showVerificationButton && (
+                <View
+                  style={tw`flex-row bg-movet-white dark:bg-movet-black rounded-xl mt-4 p-2 opacity-75`}
+                >
+                  <ItalicText style={tw`flex flex-wrap text-center text-xs`}>
+                    By continuing you agree to our&nbsp;
+                  </ItalicText>
+                  <LinkText
+                    style={tw`flex flex-wrap text-xs`}
+                    text="terms of use"
+                    onPress={() =>
+                      openUrlInWebBrowser(
+                        "https://movetcare.com/terms-and-conditions/?mode=app",
+                        isDarkMode,
+                        {
+                          dismissButtonStyle: "close",
+                          enableBarCollapsing: true,
+                          enableDefaultShareMenuItem: false,
+                          readerMode: true,
+                          showTitle: false,
+                        },
+                      )
+                    }
+                  />
+                  <ItalicText style={tw`flex flex-wrap text-center text-xs`}>
+                    &nbsp;and&nbsp;
+                  </ItalicText>
+                  <LinkText
+                    style={tw`flex flex-wrap text-xs`}
+                    text="privacy policy"
+                    onPress={() =>
+                      openUrlInWebBrowser(
+                        "https://movetcare.com/privacy-policy/?mode=app",
+                        isDarkMode,
+                        {
+                          dismissButtonStyle: "close",
+                          enableBarCollapsing: true,
+                          enableDefaultShareMenuItem: false,
+                          readerMode: true,
+                          showTitle: false,
+                        },
+                      )
+                    }
+                  />
+                </View>
+              )}
+              {showVerificationButton && !withPassword && !showPasswordInput ? (
+                <>
+                  <ActionButton
+                    title="Resend Sign-In Link"
+                    iconName="plane"
+                    onPress={() => onSubmit({ email: user?.email })}
+                  />
+                  <ActionButton
+                    title="Use a Different Email"
+                    iconName="redo"
+                    color="black"
+                    onPress={() => {
+                      reset();
+                      setShowVerificationButton(false);
+                      setDisableEmailInput(false);
+                      setIsLoading(false);
+                    }}
+                  />
+                </>
+              ) : (
+                <SubmitButton
+                  iconName={
+                    !withPassword && !showPasswordInput
+                      ? "arrow-right"
+                      : isDirty
+                        ? "lock-open"
+                        : "lock"
+                  }
+                  color="red"
+                  handleSubmit={handleSubmit}
+                  onSubmit={onSubmit}
+                  disabled={!isDirty}
+                  loading={isLoading}
+                  title={
+                    isLoading
+                      ? "Processing..."
+                      : !withPassword && !showPasswordInput
+                        ? "Continue"
+                        : "Sign In"
                   }
                 />
-                <ItalicText style={tw`flex flex-wrap text-center text-xs`}>
-                  &nbsp;and&nbsp;
-                </ItalicText>
-                <LinkText
-                  style={tw`flex flex-wrap text-xs`}
-                  text="privacy policy"
-                  onPress={() =>
-                    openUrlInWebBrowser(
-                      "https://movetcare.com/privacy-policy/?mode=app",
-                      isDarkMode,
-                      {
-                        dismissButtonStyle: "close",
-                        enableBarCollapsing: true,
-                        enableDefaultShareMenuItem: false,
-                        readerMode: true,
-                        showTitle: false,
-                      },
-                    )
-                  }
-                />
-              </View>
-            )}
-            {showVerificationButton && !withPassword && !showPasswordInput ? (
-              <>
-                <ActionButton
-                  title="Resend Sign-In Link"
-                  iconName="plane"
-                  onPress={() => onSubmit({ email: user?.email })}
-                />
-                <ActionButton
-                  title="Use a Different Email"
-                  iconName="redo"
-                  color="black"
-                  onPress={() => {
-                    reset();
-                    setShowVerificationButton(false);
-                    setDisableEmailInput(false);
-                    setIsLoading(false);
-                  }}
-                />
-              </>
-            ) : (
-              <SubmitButton
-                iconName={
-                  !withPassword && !showPasswordInput
-                    ? "arrow-right"
-                    : isDirty
-                    ? "lock-open"
-                    : "lock"
-                }
-                color="red"
-                handleSubmit={handleSubmit}
-                onSubmit={onSubmit}
-                disabled={!isDirty}
-                loading={isLoading}
-                title={
-                  isLoading
-                    ? "Processing..."
-                    : !withPassword && !showPasswordInput
-                    ? "Continue"
-                    : "Sign In"
-                }
-              />
-            )}
+              )}
+            </View>
           </View>
-        </View>
+        </Animated.View>
       </ImageBackground>
       <Modal
         isVisible={signInLinkSent}

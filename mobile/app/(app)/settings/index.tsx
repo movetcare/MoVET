@@ -14,6 +14,13 @@ import { TouchableOpacity } from "react-native";
 import { isTablet } from "utils/isTablet";
 import Constants from "expo-constants";
 import { isProductionEnvironment } from "utils/isProductionEnvironment";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { useEffect } from "react";
 const versions = require("../../../version.json");
 
 interface Option {
@@ -45,10 +52,33 @@ const settingsOptions: Array<Option> = [
   },
 ];
 const Settings = () => {
+  const fadeInOpacity = useSharedValue(0);
+
+  const fadeIn = () => {
+    fadeInOpacity.value = withTiming(1, {
+      duration: 1500,
+      easing: Easing.linear,
+    });
+  };
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: fadeInOpacity.value,
+    };
+  });
+
+  useEffect(() => {
+    fadeIn();
+  });
   return (
     <Screen withBackground="pets">
       <Stack.Screen options={{ headerShown: false }} />
-      <Container style={tw`flex-grow w-full items-center justify-center px-4`}>
+      <Animated.View
+        style={[
+          tw`flex-grow items-center justify-center w-full`,
+          animatedStyle,
+        ]}
+      >
         <View
           style={tw`flex-col mx-4 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent w-full px-4`}
           noDarkMode
@@ -102,10 +132,11 @@ const Settings = () => {
         </ItalicText>
         {!isProductionEnvironment && (
           <ItalicText style={tw`text-xs`}>
-            Environment: &quot;{Constants?.expoConfig?.extra?.environment}&quot;
+            Environment: &quot;{Constants?.expoConfig?.extra?.environment}
+            &quot;
           </ItalicText>
         )}
-      </Container>
+      </Animated.View>
     </Screen>
   );
 };

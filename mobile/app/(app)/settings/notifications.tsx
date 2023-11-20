@@ -1,27 +1,45 @@
 import { useEffect, useState } from "react";
 import { Loader } from "components/Loader";
-import { doc, onSnapshot } from "firebase/firestore";
-import { AuthStore } from "stores";
-import { firestore } from "firebase-config";
-import { ErrorModal } from "components/Modal";
-import { router } from "expo-router";
 import {
-  BodyText,
+  arrayUnion,
+  doc,
+  getDoc,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
+import { AuthStore } from "stores";
+import { firestore, functions } from "firebase-config";
+import { ErrorModal } from "components/Modal";
+import {
+  ActionButton,
   Container,
-  HeadingText,
   Icon,
   Screen,
   SubHeadingText,
+  SubmitButton,
   SwitchInput,
   View,
 } from "components/themed";
 import { useForm } from "react-hook-form";
 import tw from "tailwind";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+import {
+  ActivityIndicator,
+  Linking,
+  Platform,
+  useColorScheme,
+} from "react-native";
+import { isTablet } from "utils/isTablet";
+import { httpsCallable } from "firebase/functions";
 
-const Notifications = () => {
+const NotificationSettings = () => {
   const { user } = AuthStore.useState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
+  const isDarkMode = useColorScheme() !== "light";
   const [notificationSettings, setNotificationSettings] = useState<{
     sendSms: boolean;
     sendEmail: boolean;
@@ -47,105 +65,299 @@ const Notifications = () => {
   const smsStatus = watch("sendSms");
   const pushStatus = watch("sendPush");
 
-  useEffect(() => {
-    const unsubscribeNotificationSettings = onSnapshot(
-      doc(firestore, "clients", user?.uid),
-      (doc) => {
-        if (doc.exists()) {
-          reset({
-            sendSms: doc.data()?.sendSms,
-            sendEmail: doc.data()?.sendEmail,
-            sendPush: doc.data()?.sendPush,
-          });
-          setIsLoading(false);
-        } else {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: true,
+    }),
+  });
+
+  const registerForPushNotificationsAsync = async () => {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") return { data: "MISSING_PERMISSION" };
+      token = await Notifications.getExpoPushTokenAsync({
+        projectId: Constants?.expoConfig?.extra?.eas?.projectId,
+      });
+    } else return { data: "SIMULATOR_TOKEN" };
+    if (Platform.OS === "android")
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: tw.color("movet-red"),
+      });
+    return token;
+  };
+
+    useEffect(() => {
+      const unsubscribeNotificationSettings = onSnapshot(
+        doc(firestore, "clients", user?.uid),
+        (doc) => {
+          if (doc.exists()) {
+            console.log({
+              sendSms: doc.data()?.sendSms || false,
+              sendEmail: doc.data()?.sendEmail || false,
+              sendPush: doc.data()?.sendPush || false,
+            });
+            setIsLoading(false);
+            setNotificationSettings({
+              sendSms: doc.data()?.sendSms || false,
+              sendEmail: doc.data()?.sendEmail || false,
+              sendPush: doc.data()?.sendPush || false,
+            });
+          } else {
+            setNotificationSettings(null);
+            setIsLoading(false);
+            setError({ message: "MISSING CLIENT DATA" });
+          }
+        },
+        (error: any) => {
           setNotificationSettings(null);
           setIsLoading(false);
-          setError({ message: "MISSING CLIENT DATA" });
+          setError(error);
+        },
+      );
+      return () => unsubscribeNotificationSettings();
+    }, [user, reset]);
+
+  useEffect(() => {
+    if (notificationSettings) reset(notificationSettings);
+  }, [notificationSettings, reset]);
+
+  useEffect(() => {
+    if (pushStatus)
+      registerForPushNotificationsAsync().then(async (token: any) => {
+        setPushToken(token?.data);
+        const deviceInfo = JSON.parse(
+          JSON.stringify(Device, (key: any, value: any) =>
+            value === undefined ? null : value,
+          ),
+        );
+        // await setDoc(
+        //   doc(firestore, "clients", user?.uid),
+        //   {
+        //     sendPush: true,
+        //     updatedOn: serverTimestamp(),
+        //   },
+        //   { merge: true },
+        // );
+        let existingTokens: any[] = [];
+        const tokenAlreadyExists = await getDoc(
+          doc(firestore, "push_tokens", user?.uid),
+        ).then((doc: any) => {
+          if (doc.exists()) {
+            existingTokens = doc.data().tokens;
+            if (
+              doc
+                .data()
+                .tokens.find(
+                  (existingToken: any) => existingToken.token === token?.data,
+                )
+            )
+              return true;
+          } else return false;
+        });
+        if (tokenAlreadyExists === false)
+          await setDoc(doc(firestore, "push_tokens", user?.uid), {
+            tokens: [
+              {
+                token: token?.data,
+                isActive: true,
+                device: deviceInfo,
+                createdOn: new Date(),
+              },
+            ],
+            user: {
+              displayName: user?.displayName,
+              email: user?.email,
+              emailVerified: user?.emailVerified,
+              photoURL: user?.photoURL,
+              uid: user?.uid,
+              phoneNumber: user?.phoneNumber,
+            },
+            createdOn: serverTimestamp(),
+          });
+        else if (tokenAlreadyExists === undefined)
+          await setDoc(
+            doc(firestore, "push_tokens", user?.uid),
+            {
+              tokens: arrayUnion({
+                token: token?.data,
+                isActive: true,
+                device: deviceInfo,
+                createdOn: new Date(),
+              }),
+              user: {
+                displayName: user?.displayName,
+                email: user?.email,
+                emailVerified: user?.emailVerified,
+                photoURL: user?.photoURL,
+                uid: user?.uid,
+                phoneNumber: user?.phoneNumber,
+              },
+              updatedOn: serverTimestamp(),
+            },
+            { merge: true },
+          );
+        else if (tokenAlreadyExists) {
+          const newTokenData = existingTokens.map((existingToken: any) => {
+            if (existingToken?.token === token?.data) {
+              return {
+                token: token?.data,
+                isActive: true,
+                device: deviceInfo,
+                updatedOn: new Date(),
+                createdOn: existingToken?.createdOn,
+              };
+            } else return existingToken;
+          });
+          await setDoc(
+            doc(firestore, "push_tokens", user?.uid),
+            {
+              tokens: newTokenData,
+              user: {
+                displayName: user?.displayName,
+                email: user?.email,
+                emailVerified: user?.emailVerified,
+                photoURL: user?.photoURL,
+                uid: user?.uid,
+                phoneNumber: user?.phoneNumber,
+              },
+              updatedOn: serverTimestamp(),
+            },
+            { merge: true },
+          );
         }
-      },
-      (error: any) => {
-        setIsLoading(false);
-        setError(error);
-      },
-    );
-    return () => unsubscribeNotificationSettings();
-  }, [user?.uid, reset]);
+      });
+  }, [pushStatus, user]);
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    const clientData: any = {
+    const updateClient = httpsCallable(functions, "updateClient");
+    await updateClient({
       sendEmail: data.sendEmail,
       sendSms: data.sendSms,
       sendPush: data.sendPush,
-    };
-    // if (clientData.sendPush === true) {
-    //   const pushToken = await getPushToken();
-    //   if (!pushToken)
-    //     await configurePushNotifications().then((token: any) => {
-    //       if (token) {
-    //         savePushToken(token);
-    //         clientData.pushToken = token;
-    //       } else clientData.pushToken = null;
-    //     });
-    // }
-
-    // const { data: didUpdateClient } = await firebase
-    //   .callFunction("updateClient", clientData)
-    //   .catch((error: any) => setError(firebase, error?.message));
-
-    // if (didUpdateClient) {
-    //   navigation.navigate("Settings");
-    // } else {
-    //   setError(firebase, "Failed to Save Notification Settings");
-    // }
-    setIsLoading(false);
+    })
+      .then((result) => {
+        if (!result.data) setError({ message: "Failed to Save Updates" });
+      })
+      .catch((error: any) => setError(error))
+      .finally(() => setIsLoading(false));
   };
 
   return (
     <Screen>
-      {isLoading ? (
+      {notificationSettings === null ? (
         <Loader description={"Loading Notification Settings..."} />
       ) : (
         <>
-          {error ? (
-            <Loader description="Something Went Wrong..." />
-          ) : (
-            <Container
-              style={tw`flex-grow w-full items-center justify-center px-4`}
+          <Container
+            style={tw`flex-grow w-full items-center justify-center px-4`}
+          >
+            <View
+              style={tw`w-full bg-transparent flex flex-row justify-between items-center mt-6`}
             >
-              <View
-                style={tw`w-full bg-transparent flex flex-row justify-between items-center mt-8`}
-              >
-                <Icon name="envelope" />
-                <SubHeadingText>
-                  Email Notifications: {emailStatus ? "ON" : "OFF"}
-                </SubHeadingText>
+              <Icon name="envelope" size={isTablet ? "md" : "sm"} />
+              <SubHeadingText style={isTablet ? tw`text-lg` : tw`text-base`}>
+                Email Notifications: {emailStatus ? "ON" : "OFF"}
+              </SubHeadingText>
+              {isLoading ? (
+                <ActivityIndicator
+                  style={tw`mr-2`}
+                  size="small"
+                  color={
+                    isDarkMode
+                      ? tw.color("movet-white")
+                      : tw.color("movet-black")
+                  }
+                />
+              ) : (
                 <SwitchInput control={control} name="sendEmail" />
-              </View>
-              <View
-                style={tw`w-full bg-transparent flex flex-row justify-between items-center mt-8`}
-              >
-                <Icon name="sms" />
-                <SubHeadingText>
-                  SMS Notifications: {smsStatus ? "ON" : "OFF"}
-                </SubHeadingText>
+              )}
+            </View>
+            <View
+              style={tw`w-full bg-transparent flex flex-row justify-between items-center mt-6`}
+            >
+              <Icon name="sms" size={isTablet ? "md" : "sm"} />
+              <SubHeadingText style={isTablet ? tw`text-lg` : tw`text-base`}>
+                SMS Notifications: {smsStatus ? "ON" : "OFF"}
+              </SubHeadingText>
+              {isLoading ? (
+                <ActivityIndicator
+                  style={tw`mr-2`}
+                  size="small"
+                  color={
+                    isDarkMode
+                      ? tw.color("movet-white")
+                      : tw.color("movet-black")
+                  }
+                />
+              ) : (
                 <SwitchInput control={control} name="sendSms" />
-              </View>
-              <View
-                style={tw`w-full bg-transparent flex flex-row justify-between items-center mt-8`}
-              >
-                <Icon name="bell" />
-                <SubHeadingText>
-                  Push Notifications: {pushStatus ? "ON" : "OFF"}
-                </SubHeadingText>
+              )}
+            </View>
+            <View
+              style={tw`w-full bg-transparent flex flex-row justify-between items-center mt-6 mb-28`}
+            >
+              <Icon name="bell" size={isTablet ? "md" : "sm"} />
+              <SubHeadingText style={isTablet ? tw`text-lg` : tw`text-base`}>
+                Push Notifications: {pushStatus ? "ON" : "OFF"}
+              </SubHeadingText>
+              {isLoading ? (
+                <ActivityIndicator
+                  style={tw`mr-2`}
+                  size="small"
+                  color={
+                    isDarkMode
+                      ? tw.color("movet-white")
+                      : tw.color("movet-black")
+                  }
+                />
+              ) : (
                 <SwitchInput control={control} name="sendPush" />
+              )}
+            </View>
+            {__DEV__ && (
+              <View
+                style={tw`w-full bg-transparent flex-col justify-center items-center`}
+              >
+                <SubHeadingText>Push Token: {pushToken}</SubHeadingText>
               </View>
-            </Container>
-          )}
+            )}
+            <SubmitButton
+              handleSubmit={handleSubmit}
+              onSubmit={onSubmit}
+              disabled={!isDirty || isLoading}
+              loading={isLoading}
+              title={isLoading ? "Saving Changes" : "SAVE CHANGES"}
+              color="red"
+              iconName="check"
+            />
+            {pushToken === null && (
+              <ActionButton
+                color="black"
+                iconName="arrow-right"
+                title="Open App Setting"
+                onPress={() => Linking.openSettings()}
+              />
+            )}
+          </Container>
           <ErrorModal
             isVisible={error !== null}
-            onClose={() => router.back()}
+            onClose={() => {
+              setError(null);
+              reset(notificationSettings);
+            }}
             message={error?.code || error?.message || JSON.stringify(error)}
           />
         </>
@@ -153,4 +365,4 @@ const Notifications = () => {
     </Screen>
   );
 };
-export default Notifications;
+export default NotificationSettings;

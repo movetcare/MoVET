@@ -56,7 +56,7 @@ export const ErrorModal = ({
   message = "Something went wrong...",
 }: {
   isVisible: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   message: string | null;
 }) => {
   let parsedMessage = message;
