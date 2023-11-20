@@ -24,7 +24,7 @@ export const SectionHeading = ({
     <Container
       style={[
         tw`flex-row justify-center items-center`,
-        isTablet ? tw`mt-2` : tw`mt-0.5`,
+        isTablet ? tw`my-3` : tw`my-1.5`,
         containerStyle,
       ]}
     >

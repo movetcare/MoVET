@@ -24,12 +24,16 @@ export function middleware(request: NextRequest) {
         (request.nextUrl.hostname === "localhost"
           ? "http://localhost:3001"
           : request.nextUrl.hostname.includes("stage.")
-          ? "https://stage.app.mocetcare.com"
-          : "https://app.movetcare.com") +
+            ? "https://stage.app.mocetcare.com"
+            : "https://app.movetcare.com") +
           `/account/?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`,
       );
   }
-  if (request.nextUrl.pathname === "/pharmacy/")
+  if (
+    request.nextUrl.pathname === "/pharmacy/" ||
+    request.nextUrl.pathname === "/onlinepharmacy/" ||
+    request.nextUrl.pathname === "/online-pharmacy/"
+  )
     return NextResponse.redirect("https://movetcare.vetsfirstchoice.com/");
   if (
     request.nextUrl.pathname === "/k9-smiles/" ||
@@ -65,8 +69,8 @@ export function middleware(request: NextRequest) {
       (request.nextUrl.hostname === "localhost"
         ? "http://localhost:3001/appointment-check-in"
         : request.nextUrl.hostname.includes("stage.")
-        ? "https://stage.app.mocetcare.com/appointment-check-in"
-        : "https://app.movetcare.com/appointment-check-in") +
+          ? "https://stage.app.mocetcare.com/appointment-check-in"
+          : "https://app.movetcare.com/appointment-check-in") +
         "?email=" +
         getEmailAddressFromUrl(request),
     );
@@ -79,8 +83,8 @@ export function middleware(request: NextRequest) {
       (request.nextUrl.hostname === "localhost"
         ? "http://localhost:3001/update-payment-method"
         : request.nextUrl.hostname.includes("stage.")
-        ? "https://stage.app.movetcare.com/update-payment-method"
-        : "https://app.movetcare.com/update-payment-method") +
+          ? "https://stage.app.movetcare.com/update-payment-method"
+          : "https://app.movetcare.com/update-payment-method") +
         "?email=" +
         getEmailAddressFromUrl(request),
     );
@@ -95,8 +99,8 @@ export function middleware(request: NextRequest) {
       (request.nextUrl.hostname === "localhost"
         ? "http://localhost:3001/schedule-an-appointment"
         : request.nextUrl.hostname.includes("stage.")
-        ? "https://stage.app.movetcare.com/schedule-an-appointment"
-        : "https://app.movetcare.com/schedule-an-appointment") +
+          ? "https://stage.app.movetcare.com/schedule-an-appointment"
+          : "https://app.movetcare.com/schedule-an-appointment") +
         "?email=" +
         getEmailAddressFromUrl(request),
     );

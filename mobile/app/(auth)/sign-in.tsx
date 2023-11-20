@@ -16,7 +16,7 @@ import {
   ActionButton,
 } from "components/themed";
 import { router, useLocalSearchParams } from "expo-router";
-import { AuthStore } from "stores/AuthStore";
+import { AuthStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 import { Modal, ErrorModal } from "components/Modal";

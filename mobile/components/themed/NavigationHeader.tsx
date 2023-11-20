@@ -1,16 +1,16 @@
 import { FontAwesome5 } from "@expo/vector-icons";
 import tw from "tailwind";
-import { HeadingText, View } from ".";
+import { HeadingText, Icon, SupportedIcons, View } from ".";
 import { router } from "expo-router";
 
 export const NavigationHeader = ({
   title = "Untitled Screen",
-  icon = null,
+  iconName = null,
   canGoBack = false,
   goBackRoot = "/(app)/home",
 }: {
   title: string;
-  icon: any | null;
+  iconName: SupportedIcons | null;
   canGoBack?: boolean;
   goBackRoot?: string;
 }) =>
@@ -33,7 +33,9 @@ export const NavigationHeader = ({
           style={tw`flex flex-row justify-center items-center bg-transparent`}
           noDarkMode
         >
-          {icon}
+          {iconName && (
+            <Icon name={iconName} size="xs" style={tw`mr-2`} color="white" />
+          )}
           <HeadingText
             style={tw`text-movet-white text-lg normal-case`}
             noDarkMode
@@ -48,7 +50,9 @@ export const NavigationHeader = ({
       style={tw`flex flex-row justify-center items-center bg-movet-red h-12 border-b-2 border-movet-white`}
       noDarkMode
     >
-      {icon}
+      {iconName && (
+        <Icon name={iconName} size="xs" style={tw`mr-2`} color="white" />
+      )}
       <HeadingText style={tw`text-movet-white text-xl normal-case`} noDarkMode>
         {title}
       </HeadingText>

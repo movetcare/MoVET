@@ -1,5 +1,5 @@
 import { Redirect } from "expo-router";
-import { AuthStore } from "stores/AuthStore";
+import { AuthStore } from "stores";
 
 const RequestAnAppointment = () => {
   const { isLoggedIn } = AuthStore.useState();

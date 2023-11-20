@@ -68,6 +68,10 @@ import UserEditIcon from "assets/icons/svgs/font-awesome/user-edit.svg";
 import UserEditIconDark from "assets/icons/svgs/font-awesome/user-edit-dark.svg";
 import CreditCardIcon from "assets/icons/svgs/font-awesome/credit-card.svg";
 import CreditCardIconDark from "assets/icons/svgs/font-awesome/credit-card-dark.svg";
+import EnvelopeIcon from "assets/icons/svgs/font-awesome/envelope.svg";
+import EnvelopeIconDark from "assets/icons/svgs/font-awesome/envelope-dark.svg";
+import SmsIcon from "assets/icons/svgs/font-awesome/sms.svg";
+import SmsIconDark from "assets/icons/svgs/font-awesome/sms-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -106,7 +110,9 @@ export type SupportedIcons =
   | "list"
   | "right-from-bracket"
   | "user-edit"
-  | "credit-card";
+  | "credit-card"
+  | "envelope"
+  | "sms";
 
 export const Icon = ({
   name = "poo",
@@ -138,8 +144,8 @@ export const Icon = ({
         iconWidth = 20;
         break;
       case "sm":
-        iconHeight = 40;
-        iconWidth = 40;
+        iconHeight = 30;
+        iconWidth = 30;
         break;
       case "md":
         iconHeight = 50;
@@ -423,6 +429,18 @@ export const Icon = ({
         />
       ) : (
         <CreditCardIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "envelope":
+      return showWhiteIcon ? (
+        <EnvelopeIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <EnvelopeIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "sms":
+      return showWhiteIcon ? (
+        <SmsIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <SmsIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (

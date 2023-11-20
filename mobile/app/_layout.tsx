@@ -15,7 +15,7 @@ import tw from "tailwind";
 import { ErrorLayout } from "components/themed";
 import { FontAwesome } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-import { AuthStore } from "stores/AuthStore";
+import { AuthStore } from "stores";
 
 SplashScreen.preventAutoHideAsync();
 

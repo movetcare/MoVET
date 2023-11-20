@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { auth, functions } from "firebase-config";
 import {
   signInWithEmailAndPassword,
-  signOut,
+  signOut as signOff,
   sendSignInLinkToEmail,
   signInWithEmailLink,
 } from "firebase/auth";
@@ -134,8 +134,8 @@ export const signInWithLink = async (email: string, link: string) =>
       return error?.code || "Unknown Error...";
     });
 
-export const signOff = async () =>
-  await signOut(auth)
+export const signOut = async () =>
+  await signOff(auth)
     .then(() => {
       AuthStore.update((store) => {
         store.user = null;

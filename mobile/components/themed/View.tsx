@@ -42,7 +42,10 @@ export const Screen = (props: ExtendedViewProps) => {
           />
         </ImageBackground>
       ) : (
-        <DefaultView style={[style, { backgroundColor }]} {...otherProps} />
+        <DefaultView
+          style={[{ backgroundColor }, style, tw`flex-1 items-center`]}
+          {...otherProps}
+        />
       )}
     </KeyboardAwareScrollView>
   );

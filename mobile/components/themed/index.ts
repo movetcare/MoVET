@@ -3,6 +3,7 @@ export * from "./buttons/ActionButton";
 export * from "./buttons/SubmitButton";
 export * from "./inputs/EmailInput";
 export * from "./inputs/PasswordInput";
+export * from "./inputs/SwitchInput";
 export * from "./buttons/TextButton";
 export * from "./View";
 export * from "./Text";

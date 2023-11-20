@@ -29,7 +29,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
-import { AuthStore } from "stores/AuthStore";
+import { AuthStore } from "stores";
 import { PatientsStore } from "stores/PatientsStore";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
@@ -193,6 +193,7 @@ const Home = () => {
               iconName={"bullhorn"}
               text={"Latest Announcements"}
               containerStyle={tw`my-4`}
+              textStyle={tw`text-lg sm:text-2xl`}
             />
           )}
           {announcement?.isActiveMobile && (

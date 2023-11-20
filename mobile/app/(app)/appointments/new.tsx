@@ -2,7 +2,7 @@ import { Loader } from "components/Loader";
 import { View } from "components/themed";
 import { useState } from "react";
 import { WebView as DefaultWebView } from "react-native-webview";
-import { AuthStore } from "stores/AuthStore";
+import { AuthStore } from "stores";
 import tw from "tailwind";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 

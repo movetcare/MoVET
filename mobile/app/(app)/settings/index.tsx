@@ -1,7 +1,6 @@
 import {
   View,
   Screen,
-  ActionButton,
   Icon,
   Container,
   HeadingText,
@@ -9,8 +8,7 @@ import {
   SupportedIcons,
   ItalicText,
 } from "components/themed";
-import { router } from "expo-router";
-import { signOff } from "services/Auth";
+import { Stack, router } from "expo-router";
 import tw from "tailwind";
 import { TouchableOpacity } from "react-native";
 import { isTablet } from "utils/isTablet";
@@ -40,10 +38,16 @@ const settingsOptions: Array<Option> = [
     icon: "bell",
     link: "/(app)/settings/notifications",
   },
+  {
+    name: "Logout",
+    icon: "right-from-bracket",
+    link: "/(app)/settings/sign-out",
+  },
 ];
 const Settings = () => {
   return (
     <Screen withBackground="pets">
+      <Stack.Screen options={{ headerShown: false }} />
       <Container style={tw`flex-grow w-full items-center justify-center px-4`}>
         <View
           style={tw`flex-col mx-4 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent w-full px-4`}
@@ -93,16 +97,6 @@ const Settings = () => {
             </TouchableOpacity>
           ))}
         </View>
-        <ActionButton
-          color="brown"
-          onPress={async () => {
-            if (await signOff()) router.replace("/(auth)/sign-in");
-          }}
-          title="LOGOUT"
-          iconName="right-from-bracket"
-          style={tw`w-1/3 mt-6 p-2`}
-          textStyle={tw`text-xs`}
-        />
         <ItalicText style={tw`text-xs mt-4`}>
           Version: {versions.appVersion.toString()}
         </ItalicText>

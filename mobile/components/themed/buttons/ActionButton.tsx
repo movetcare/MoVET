@@ -33,8 +33,8 @@ export const ActionButton = ({
         color === "red"
           ? tw`bg-movet-red border-movet-red`
           : color === "brown"
-          ? tw`bg-movet-brown border-movet-brown`
-          : tw`bg-movet-black border-movet-black dark:bg-movet-white dark:border-movet-white`,
+            ? tw`bg-movet-brown border-movet-brown`
+            : tw`bg-movet-black border-movet-black dark:bg-movet-white dark:border-movet-white`,
         disabled && tw`opacity-50`,
         type === "text" && tw`bg-transparent border-0`,
         style,
@@ -53,10 +53,10 @@ export const ActionButton = ({
       {type === "button" ? (
         <ButtonText
           style={[
-            textStyle,
             color === "black" && isDarkMode
               ? tw`text-black text-center`
               : tw`text-white text-center`,
+            textStyle,
           ]}
           noDarkMode
         >
@@ -65,11 +65,11 @@ export const ActionButton = ({
       ) : (
         <SubHeadingText
           style={[
-            textStyle,
             tw`shadow-lg shadow-movet-black dark:shadow-movet-white`,
             color === "black" && isDarkMode
               ? tw`text-black text-center`
               : tw`text-white text-center`,
+            textStyle,
           ]}
           noDarkMode
         >
