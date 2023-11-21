@@ -70,6 +70,7 @@ const Settings = () => {
   useEffect(() => {
     fadeIn();
   });
+
   return (
     <Screen withBackground="pets">
       <Stack.Screen options={{ headerShown: false }} />

@@ -83,6 +83,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     plugins: [
       "expo-router",
       [
+        "@stripe/stripe-react-native",
+        {
+          merchantIdentifier: "merchant.com.movetcare",
+          enableGooglePay: true,
+        },
+      ],
+      [
         "expo-image-picker",
         {
           photosPermission:
@@ -102,6 +109,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ],
     extra: {
       environment: process.env.APP_ENVIRONMENT || "development",
+      stripe_key: isProduction
+        ? "pk_live_P2YpuunHUCX6H5MjPeRqCpx000aR6LtxYx"
+        : "pk_test_3YbvVOYsPgHL64OaKSbnfr4700WtRqlmpJ",
       eas: {
         projectId:
           process.env.EXPO_PROJECT_ID || "e338e0ce-a592-44f3-b700-e69d46390080",

@@ -5,7 +5,7 @@ import {
   throwError,
   admin,
   stripe,
-  mobileClientApiKey,
+  //mobileClientApiKey,
   stripeApiVersion,
 } from "../../../config/config";
 
@@ -14,7 +14,7 @@ export const refreshCustomerToken = functions
   .https.onCall(
     async (
       data: any,
-      context: any
+      context: any,
     ): Promise<
       | {
           setupIntent: string;
@@ -23,7 +23,8 @@ export const refreshCustomerToken = functions
         }
       | false
     > => {
-      if (!context.auth || data?.apiKey !== mobileClientApiKey)
+      if (!context.auth)
+        // || data?.apiKey !== mobileClientApiKey)
         return throwError({ message: "MISSING AUTHENTICATION" });
       else {
         if (DEBUG)
@@ -41,7 +42,7 @@ export const refreshCustomerToken = functions
         if (customerId) {
           const ephemeralKey = await stripe.ephemeralKeys.create(
             { customer: customerId },
-            { apiVersion: stripeApiVersion }
+            { apiVersion: stripeApiVersion },
           );
 
           if (DEBUG) console.log("Ephemeral Key Generated:", ephemeralKey);
@@ -60,5 +61,5 @@ export const refreshCustomerToken = functions
           };
         } else return false;
       }
-    }
+    },
   );

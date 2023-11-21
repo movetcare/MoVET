@@ -26,6 +26,14 @@ export default function Layout() {
         canGoBack: true,
       });
       //}, 180);
+    } else if (segments && segments.includes("payment-methods")) {
+      //setTimeout(() => {
+      setNavigationDetails({
+        title: "Payment Settings",
+        iconName: "credit-card",
+        canGoBack: true,
+      });
+      //}, 180);
     } else
       setNavigationDetails({
         title: "Settings",

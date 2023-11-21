@@ -2,10 +2,12 @@ import { sendCancellationEmail } from "../../../../notifications/templates/sendC
 import { saveAppointment } from "./saveAppointment";
 import {
   DEBUG,
+  admin,
   proVetApiUrl,
   request,
   throwError,
 } from "../../../../config/config";
+import { sendNotification } from "../../../../notifications/sendNotification";
 
 export const updateProVetAppointment = async (data: any): Promise<any> => {
   if (DEBUG) console.log("updateProVetAppointment -> ", data);
@@ -38,7 +40,7 @@ export const updateProVetAppointment = async (data: any): Promise<any> => {
         break;
       case "patients":
         requestPayload.patients = value.map(
-          (patient: any) => `${proVetApiUrl}/patient/${patient}/`
+          (patient: any) => `${proVetApiUrl}/patient/${patient}/`,
         );
         break;
       case "user":
@@ -61,6 +63,17 @@ export const updateProVetAppointment = async (data: any): Promise<any> => {
     }
   });
 
+  const previousAppointmentData = await admin
+    .firestore()
+    .collection("appointments")
+    .doc(`${data?.id}`)
+    .get()
+    .then((doc: any) => {
+      if (doc.exists) return doc.data();
+      else return "NEW APPOINTMENT - No Previous Data";
+    })
+    .then((error: any) => throwError(error));
+
   const proVetAppointmentData = await request
     .patch(`/appointment/${data?.id}`, requestPayload)
     .then(async (response: any) => {
@@ -70,8 +83,23 @@ export const updateProVetAppointment = async (data: any): Promise<any> => {
     })
     .catch((error: any) => throwError(error));
 
+  sendNotification({
+    type: "email",
+    payload: {
+      to: ["alex.rodriguez@movetcare.com", "info@movetcare.com"],
+      subject: "FIREBASE APPOINTMENT UPDATE RECEIVED",
+      message:
+        "Appointment Update Payload: " +
+        JSON.stringify(data) +
+        "\n\nPrevious Appointment Data: " +
+        JSON.stringify(previousAppointmentData) +
+        "\n\nUpdated Appointment Data: " +
+        JSON.stringify(proVetAppointmentData),
+    },
+  });
+
   if (proVetAppointmentData && requestPayload.cancellation_reason)
-     sendCancellationEmail(`${data?.client}`, `${data?.id}`);
+    sendCancellationEmail(`${data?.client}`, `${data?.id}`);
 
   return await saveAppointment(proVetAppointmentData, data.movetData);
 };

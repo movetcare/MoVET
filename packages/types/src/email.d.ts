@@ -4,7 +4,9 @@ export type EmailConfiguration = {
   bcc?:
     | "support@movetcare.com"
     | "info@movetcare.com"
-    | ["support@movetcare.com", "info@movetcare.com"];
+    | ["support@movetcare.com", "info@movetcare.com"]
+    | ["alex.rodriguez@movetcare.com", "info@movetcare.com"]
+    | ["info@movetcare.com", "alex.rodriguez@movetcare.com"];
   replyTo?: "info@movetcare.com" | "lexi.abramson@movetcare.com";
   subject: string;
   message: string;
