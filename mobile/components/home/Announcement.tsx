@@ -6,7 +6,7 @@ import {
   Container,
 } from "components/themed";
 import { router } from "expo-router";
-import { Pressable } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { ReactNode } from "react";
 import tw from "tailwind";
 
@@ -29,18 +29,18 @@ export const Announcement = ({
     announcement?.color === "#DAAA00"
       ? "bg-movet-yellow"
       : announcement?.color === "#2C3C72"
-      ? "bg-movet-dark-blue"
-      : announcement?.color === "#E76159"
-      ? "bg-movet-red"
-      : announcement?.color === "#232127"
-      ? "bg-movet-black"
-      : announcement?.color === "#00A36C"
-      ? "bg-movet-green"
-      : announcement?.color === "#A15643"
-      ? "bg-movet-brown"
-      : "bg-movet-dark-blue";
+        ? "bg-movet-dark-blue"
+        : announcement?.color === "#E76159"
+          ? "bg-movet-red"
+          : announcement?.color === "#232127"
+            ? "bg-movet-black"
+            : announcement?.color === "#00A36C"
+              ? "bg-movet-green"
+              : announcement?.color === "#A15643"
+                ? "bg-movet-brown"
+                : "bg-movet-dark-blue";
   return (
-    <Pressable
+    <TouchableOpacity
       onPress={() =>
         router.push({
           pathname: "/(app)/home/web-view",
@@ -68,6 +68,6 @@ export const Announcement = ({
           </Container>
         </View>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };

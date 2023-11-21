@@ -1,4 +1,4 @@
-import { Modal as DefaultModal, Pressable } from "react-native";
+import { Modal as DefaultModal, TouchableOpacity } from "react-native";
 import { BodyText, HeadingText, Icon, ItalicText, View } from "./themed";
 import tw from "tailwind";
 
@@ -27,9 +27,9 @@ export const Modal = ({
         <HeadingText style={tw`text-base text-movet-white`} noDarkMode>
           {title}
         </HeadingText>
-        <Pressable onPress={onClose}>
+        <TouchableOpacity onPress={onClose}>
           <Icon name="close" height={22} width={22} color="white" />
-        </Pressable>
+        </TouchableOpacity>
       </View>
       <View
         style={tw`w-full border-2 border-movet-white border-t-0 rounded-b-xl flex-col items-center justify-center`}
@@ -48,7 +48,6 @@ export const Modal = ({
     </View>
   </DefaultModal>
 );
-
 
 export const ErrorModal = ({
   isVisible,
@@ -71,7 +70,7 @@ export const ErrorModal = ({
       presentationStyle="overFullScreen"
     >
       <View style={tw`h-[15%] w-full rounded-t-xl absolute bottom-0`}>
-        <Pressable onPress={onClose} style={tw`flex-1`}>
+        <TouchableOpacity onPress={onClose} style={tw`flex-1`}>
           <View
             style={tw`h-[46%] rounded-t-xl px-6 flex-row items-center justify-between w-full border-2 border-movet-white bg-movet-red`}
             noDarkMode
@@ -79,9 +78,9 @@ export const ErrorModal = ({
             <ItalicText style={tw`text-xl text-movet-white`} noDarkMode>
               Something Went Wrong...
             </ItalicText>
-            <Pressable onPress={onClose}>
+            <TouchableOpacity onPress={onClose}>
               <Icon name="close" height={30} width={30} color="white" />
-            </Pressable>
+            </TouchableOpacity>
           </View>
           <View
             style={tw`w-full border-2 border-movet-white border-t-0 h-full flex-1 items-center justify-center`}
@@ -90,7 +89,7 @@ export const ErrorModal = ({
               {parsedMessage}
             </ItalicText>
           </View>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </DefaultModal>
   );

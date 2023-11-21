@@ -8,13 +8,12 @@ import {
   SubHeadingText,
   ItalicText,
 } from "components/themed";
-import { Pressable } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { ReactNode, useState } from "react";
 import tw from "tailwind";
 import { Patient } from "app/(app)/home";
 import { Modal } from "components/Modal";
 import { router } from "expo-router";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { isTablet } from "utils/isTablet";
 
 export interface Announcement {
@@ -35,7 +34,7 @@ export const VcprAlert = ({
   const textStyles = [isTablet ? tw`text-lg` : tw`text-sm`, tw`mb-2`];
   return (
     <>
-      <Pressable onPress={() => setShowVcprModal(true)}>
+      <TouchableOpacity onPress={() => setShowVcprModal(true)}>
         <View
           style={tw`flex-row mx-4 shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`}
         >
@@ -72,7 +71,7 @@ export const VcprAlert = ({
             </Container>
           </View>
         </View>
-      </Pressable>
+      </TouchableOpacity>
       <Modal
         isVisible={showVcprModal}
         onClose={() => {

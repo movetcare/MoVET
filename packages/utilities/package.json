@@ -11,7 +11,7 @@
   "private": true,
   "license": "NONE",
   "devDependencies": {
-    "@types/node": "^20.9.2",
-    "typescript": "^5.2.2"
+    "@types/node": "^20.9.3",
+    "typescript": "^5.3.2"
   }
 }

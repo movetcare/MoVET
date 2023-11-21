@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { ReactNode } from "react";
-import { Image, Pressable } from "react-native";
+import { Image, TouchableOpacity } from "react-native";
 import LayoutDimensions from "constants/Layout";
 import tw from "tailwind";
 import { View } from "components/themed";
@@ -20,7 +20,7 @@ export interface Ad {
 export const Ad = ({ content }: { content: Ad }): ReactNode => {
   const { imagePath, urlRedirect, title } = content;
   return (
-    <Pressable
+    <TouchableOpacity
       onPress={() =>
         router.push({
           pathname: "/(app)/home/web-view",
@@ -46,6 +46,6 @@ export const Ad = ({ content }: { content: Ad }): ReactNode => {
           />
         </View>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };

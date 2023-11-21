@@ -90,7 +90,8 @@ export const updateProVetAppointment = async (data: any): Promise<any> => {
 
   if (DEBUG)
     console.log("updateProVetAppointment sendNotification", {
-      to: ["alex.rodriguez@movetcare.com", "info@movetcare.com"],
+      to: "info@movetcare.com",
+      bcc: "alex.rodriguez@movetcare.com",
       subject: "FIREBASE APPOINTMENT UPDATE RECEIVED",
       message:
         "Appointment Update Payload: " +
@@ -104,7 +105,8 @@ export const updateProVetAppointment = async (data: any): Promise<any> => {
   sendNotification({
     type: "email",
     payload: {
-      to: ["alex.rodriguez@movetcare.com", "info@movetcare.com"],
+      to: "info@movetcare.com",
+      bcc: "alex.rodriguez@movetcare.com",
       subject: "FIREBASE APPOINTMENT UPDATE RECEIVED",
       message:
         "Appointment Update Payload: " +

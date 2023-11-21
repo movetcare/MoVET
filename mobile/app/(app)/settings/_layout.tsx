@@ -34,6 +34,14 @@ export default function Layout() {
         canGoBack: true,
       });
       //}, 180);
+    } else if (segments && segments.includes("account")) {
+      //setTimeout(() => {
+      setNavigationDetails({
+        title: "My Account",
+        iconName: "user-edit",
+        canGoBack: true,
+      });
+      //}, 180);
     } else
       setNavigationDetails({
         title: "Settings",

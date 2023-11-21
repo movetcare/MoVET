@@ -36,7 +36,7 @@ export const processProVetWebhook = async (
           : request.body?.appointment_id
             ? `:hospital: Appointment Update - ${
                 proVetAppUrl + "/appointment/" + request.body?.appointment_id
-              } {${JSON.stringify(request.body)}}`
+              }`
             : request.body?.patient_id
               ? `:paw_prints: Patient Update - ${
                   proVetAppUrl + "/patient/" + request.body?.patient_id

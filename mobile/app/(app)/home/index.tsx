@@ -65,7 +65,11 @@ export interface Patient {
 const DEBUG_DATA = false;
 const Home = () => {
   const isDarkMode = useColorScheme() !== "light";
-  const [isLoadingAlerts, setIsLoadingAlerts] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [didFetchAppointments, setDidFetchAppointments] =
+    useState<boolean>(false);
+  const [didFetchPatients, setDidFetchPatients] = useState<boolean>(false);
+  const [didFetchAlerts, setDidFetchAlerts] = useState<boolean>(false);
   const [announcement, setAnnouncement] = useState<null | Announcement>(null);
   const [ad, setAd] = useState<null | Ad>(null);
   const [telehealthStatus, setTelehealthStatus] =
@@ -76,6 +80,11 @@ const Home = () => {
   const [patients, setPatients] = useState<Patient[] | null>(null);
   const { user } = AuthStore.useState();
   const fadeInOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    if (didFetchAppointments && didFetchPatients && didFetchAlerts)
+      setIsLoading(false);
+  }, [didFetchAlerts, didFetchAppointments, didFetchPatients]);
 
   const fadeIn = () => {
     fadeInOpacity.value = withTiming(1, {
@@ -98,8 +107,8 @@ const Home = () => {
     const unsubscribeAlerts = onSnapshot(
       query(collection(firestore, "alerts")),
       (querySnapshot: QuerySnapshot) => {
+        setDidFetchAlerts(true);
         if (querySnapshot.empty) {
-          setIsLoadingAlerts(false);
           return;
         }
         querySnapshot.forEach((doc: DocumentData) => {
@@ -121,7 +130,6 @@ const Home = () => {
               break;
           }
         });
-        setIsLoadingAlerts(false);
       },
       (error: any) => console.error("ERROR => ", error),
     );
@@ -135,10 +143,11 @@ const Home = () => {
         limit(20),
       ),
       (querySnapshot: QuerySnapshot) => {
+        setDidFetchAppointments(true);
         if (querySnapshot.empty) {
           if (DEBUG_DATA)
             console.log("APPOINTMENT DATA => NO APPOINTMENTS FOUND");
-          setIsLoadingAlerts(false);
+
           return;
         }
         const appointments: Appointment[] = [];
@@ -147,7 +156,6 @@ const Home = () => {
           appointments.push({ id: doc.id, ...doc.data() });
         });
         setAppointments(appointments);
-        setIsLoadingAlerts(false);
       },
       (error: any) => console.error("ERROR => ", error),
     );
@@ -159,9 +167,9 @@ const Home = () => {
         orderBy("createdOn", "desc"),
       ),
       (querySnapshot: QuerySnapshot) => {
+        setDidFetchPatients(true);
         if (querySnapshot.empty) {
           if (DEBUG_DATA) console.log("PATIENT DATA => NO PATIENTS FOUND");
-          setIsLoadingAlerts(false);
           return;
         }
         const patients: Patient[] = [];
@@ -181,7 +189,6 @@ const Home = () => {
           }
         });
         setVcprPatients(vcprPatients);
-        setIsLoadingAlerts(false);
       },
       (error: any) => console.error("ERROR => ", error),
     );
@@ -192,7 +199,7 @@ const Home = () => {
     };
   }, [user?.uid]);
 
-  return isLoadingAlerts ? (
+  return isLoading ? (
     <Loader />
   ) : (
     <Screen withBackground="pets">

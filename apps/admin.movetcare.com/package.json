@@ -23,7 +23,7 @@
     "next": "^14.0.3",
     "react": "18.2.0",
     "react-calendar": "^4.6.1",
-    "react-datepicker": "^4.21.0",
+    "react-datepicker": "^4.23.0",
     "react-dom": "18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-hook-form": "^7.48.2",
@@ -38,8 +38,8 @@
   },
   "devDependencies": {
     "@types/lodash.kebabcase": "^4.1.9",
-    "@types/node": "^20.9.2",
-    "@types/react": "18.2.37",
+    "@types/node": "^20.9.3",
+    "@types/react": "18.2.38",
     "@types/react-datepicker": "^4.19.3",
     "@types/ua-parser-js": "^0.7.39",
     "@types/uuid": "^9.0.7",
@@ -55,7 +55,7 @@
     "tailwindcss": "^3.3.5",
     "tsconfig": "workspace:*",
     "types": "workspace:*",
-    "typescript": "^5.2.2",
+    "typescript": "^5.3.2",
     "ui": "workspace:*",
     "utilities": "workspace:*"
   }

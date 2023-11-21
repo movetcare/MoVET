@@ -96,6 +96,7 @@ const PaymentMethods = () => {
     const getCustomerDetails = httpsCallable(functions, "createCustomer");
     await getCustomerDetails()
       .then(async (result: any) => {
+        console.log(" prepPaymentSheet result.data", result.data);
         if (result.data) {
           const { error: paymentSheetError } = await initPaymentSheet({
             customerId: result.data?.customer,
@@ -124,6 +125,7 @@ const PaymentMethods = () => {
     await handleCustomerToken()
       .then(async (result: any) => {
         if (result) {
+          console.log(" loadPaymentOptions result.data", result.data);
           const { error: paymentSheetError } = await initPaymentSheet({
             customerId: result.data?.customer,
             customerEphemeralKeySecret: result.data?.ephemeralKey,

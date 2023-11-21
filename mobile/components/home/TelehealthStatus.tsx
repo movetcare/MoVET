@@ -2,7 +2,7 @@ import { BodyText, HeadingText, SubHeadingText } from "components/themed";
 import { Container, View, Icon } from "components/themed";
 import { router } from "expo-router";
 import { ReactNode } from "react";
-import { Pressable } from "react-native";
+import { TouchableOpacity } from "react-native";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 
@@ -21,7 +21,7 @@ export const TelehealthStatus = ({
   const { queueSize, waitTime, message } = status;
 
   return (
-    <Pressable
+    <TouchableOpacity
       onPress={() => router.replace("/(app)/chat/")}
       style={tw`rounded-xl`}
     >
@@ -72,6 +72,6 @@ export const TelehealthStatus = ({
           </Container>
         </View>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };

@@ -5,7 +5,6 @@ import { fetchEntity } from "../fetchEntity";
 import { saveAppointment } from "./saveAppointment";
 import { sendNotification } from "../../../../notifications/sendNotification";
 
-const DEBUG = true;
 export const processAppointmentWebhook = async (
   request: Request,
   response: Response,
@@ -36,44 +35,11 @@ export const processAppointmentWebhook = async (
 
     await saveAppointment(proVetAppointmentData);
 
-    if (DEBUG) {
-      console.log("processAppointmentWebhook request.body", request.body);
-      console.log(
-        "processAppointmentWebhook previousAppointmentData",
-        previousAppointmentData,
-      );
-      console.log(
-        "processAppointmentWebhook proVetAppointmentData",
-        proVetAppointmentData,
-      );
-      console.log(
-        "processAppointmentWebhook request.body STRING",
-        JSON.stringify(request.body),
-      );
-      console.log(
-        "processAppointmentWebhook previousAppointmentData STRING",
-        JSON.stringify(previousAppointmentData),
-      );
-      console.log(
-        "processAppointmentWebhook proVetAppointmentData STRING",
-        JSON.stringify(proVetAppointmentData),
-      );
-      console.log("processAppointmentWebhook sendNotification", {
-        to: ["alex.rodriguez@movetcare.com", "info@movetcare.com"],
-        subject: "PROVET APPOINTMENT WEBHOOK UPDATE RECEIVED",
-        message_content:
-          "Webhook Payload: " +
-          JSON.stringify(request.body) +
-          "\n\nPrevious Appointment Data: " +
-          JSON.stringify(previousAppointmentData) +
-          "\n\nUpdated Appointment Data: " +
-          JSON.stringify(proVetAppointmentData),
-      });
-    }
     sendNotification({
       type: "email",
       payload: {
-        to: ["alex.rodriguez@movetcare.com", "info@movetcare.com"],
+        to: "info@movetcare.com",
+        bcc: "alex.rodriguez@movetcare.com",
         subject: "PROVET APPOINTMENT WEBHOOK UPDATE RECEIVED",
         message:
           "Webhook Payload: " +
