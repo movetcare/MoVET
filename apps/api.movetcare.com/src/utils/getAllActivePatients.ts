@@ -3,7 +3,7 @@ import type { BookingError, PatientBookingData } from "../types/booking";
 import { handleFailedBooking } from "../booking/session/handleFailedBooking";
 
 export const getAllActivePatients = async (
-  uid: string
+  uid: string,
 ): Promise<BookingError | Array<PatientBookingData>> =>
   await admin
     .firestore()
@@ -25,32 +25,32 @@ export const getAllActivePatients = async (
                   patient.data().vcprRequired ||
                   (getCustomFieldValue(
                     "VCPR Required",
-                    patient.data()?.customFields || null
+                    patient.data()?.customFields || null,
                   ) as boolean),
                 aggressionStatus: getCustomFieldValue(
                   "Is Aggressive",
-                  patient.data()?.customFields || null
+                  patient.data()?.customFields || null,
                 ) as boolean,
                 previousVet: getCustomFieldValue(
                   "Previous Vet",
-                  patient.data()?.customFields || null
+                  patient.data()?.customFields || null,
                 ),
                 clientNote: getCustomFieldValue(
                   "Client Note",
-                  patient.data()?.customFields || null
+                  patient.data()?.customFields || null,
                 ),
                 photo: getCustomFieldValue(
                   "Patient Photo",
-                  patient.data()?.customFields || null
+                  patient.data()?.customFields || null,
                 ),
                 rabiesTag: getCustomFieldValue(
                   "Rabies Tag",
-                  patient.data()?.customFields || null
+                  patient.data()?.customFields || null,
                 ),
                 gender: patient.data().gender,
               } as PatientBookingData)
             : null;
-        }
+        },
       );
       if (DEBUG) console.log("patientsArray", patientsArray);
       return patientsArray;
@@ -67,31 +67,31 @@ const getCustomFieldValue = (
     id: number;
     label: string;
     value: string;
-  }> | null
+  }> | null,
 ): boolean | string | null => {
   let customFieldValue = null;
   if (customFieldValues)
     customFieldValues.forEach(
       ({ label, value }: { label: string; value: string }) => {
         if (
-          (label.toLowerCase().includes("aggressive") &&
-            customFieldLabel.toLowerCase().includes("aggressive")) ||
-          (label.toLowerCase().includes("vcpr") &&
-            customFieldLabel.toLowerCase().includes("vcpr"))
+          (label?.toLowerCase().includes("aggressive") &&
+            customFieldLabel?.toLowerCase().includes("aggressive")) ||
+          (label?.toLowerCase().includes("vcpr") &&
+            customFieldLabel?.toLowerCase().includes("vcpr"))
         )
           customFieldValue = getBooleanValue(value);
         else if (
-          (label.toLowerCase().includes("note") &&
-            customFieldLabel.toLowerCase().includes("note")) ||
-          (label.toLowerCase().includes("photo") &&
-            customFieldLabel.toLowerCase().includes("photo")) ||
-          (label.toLowerCase().includes("vet") &&
-            customFieldLabel.toLowerCase().includes("vet")) ||
-          (label.toLowerCase().includes("rabies") &&
-            customFieldLabel.toLowerCase().includes("rabies"))
+          (label?.toLowerCase().includes("note") &&
+            customFieldLabel?.toLowerCase().includes("note")) ||
+          (label?.toLowerCase().includes("photo") &&
+            customFieldLabel?.toLowerCase().includes("photo")) ||
+          (label?.toLowerCase().includes("vet") &&
+            customFieldLabel?.toLowerCase().includes("vet")) ||
+          (label?.toLowerCase().includes("rabies") &&
+            customFieldLabel?.toLowerCase().includes("rabies"))
         )
           customFieldValue = value;
-      }
+      },
     );
   return customFieldValue;
 };
@@ -100,5 +100,5 @@ const getBooleanValue = (value: string) =>
   value === "True" || value === "true"
     ? true
     : value === "False" || value === "false"
-    ? false
-    : value;
+      ? false
+      : value;

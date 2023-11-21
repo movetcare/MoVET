@@ -1,14 +1,14 @@
 import { sendCancellationEmail } from "../../../../notifications/templates/sendCancellationEmail";
 import { saveAppointment } from "./saveAppointment";
 import {
-  DEBUG,
+  //DEBUG,
   admin,
   proVetApiUrl,
   request,
   throwError,
 } from "../../../../config/config";
 import { sendNotification } from "../../../../notifications/sendNotification";
-
+const DEBUG = true;
 export const updateProVetAppointment = async (data: any): Promise<any> => {
   if (DEBUG) console.log("updateProVetAppointment -> ", data);
   const requestPayload: any = {
@@ -63,17 +63,22 @@ export const updateProVetAppointment = async (data: any): Promise<any> => {
     }
   });
 
-  const previousAppointmentData = await admin
-    .firestore()
-    .collection("appointments")
-    .doc(`${data?.id}`)
-    .get()
-    .then((doc: any) => {
-      if (doc.exists) return doc.data();
-      else return "NEW APPOINTMENT - No Previous Data";
-    });
+  const previousAppointmentData =
+    (await admin
+      .firestore()
+      .collection("appointments")
+      .doc(`${data?.id}`)
+      .get()
+      .then((doc: any) => {
+        if (doc.exists) return doc.data();
+        else return "NEW APPOINTMENT - No Previous Data";
+      })) || {};
   //.then((error: any) => throwError(error));
-
+  if (DEBUG)
+    console.log(
+      "updateProVetAppointment previousAppointmentData",
+      previousAppointmentData,
+    );
   const proVetAppointmentData = await request
     .patch(`/appointment/${data?.id}`, requestPayload)
     .then(async (response: any) => {
@@ -82,6 +87,19 @@ export const updateProVetAppointment = async (data: any): Promise<any> => {
       return data;
     })
     .catch((error: any) => throwError(error));
+
+  if (DEBUG)
+    console.log("updateProVetAppointment sendNotification", {
+      to: ["alex.rodriguez@movetcare.com", "info@movetcare.com"],
+      subject: "FIREBASE APPOINTMENT UPDATE RECEIVED",
+      message:
+        "Appointment Update Payload: " +
+        JSON.stringify(data) +
+        "\n\nPrevious Appointment Data: " +
+        JSON.stringify(previousAppointmentData) +
+        "\n\nUpdated Appointment Data: " +
+        JSON.stringify(proVetAppointmentData),
+    });
 
   sendNotification({
     type: "email",

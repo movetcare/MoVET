@@ -5,6 +5,7 @@ import { fetchEntity } from "../fetchEntity";
 import { saveAppointment } from "./saveAppointment";
 import { sendNotification } from "../../../../notifications/sendNotification";
 
+const DEBUG = true;
 export const processAppointmentWebhook = async (
   request: Request,
   response: Response,
@@ -22,22 +23,34 @@ export const processAppointmentWebhook = async (
       request.body?.appointment_id,
     );
 
-    const previousAppointmentData = await admin
-      .firestore()
-      .collection("appointments")
-      .doc(`${request.body?.appointment_id}`)
-      .get()
-      .then((doc: any) => {
-        if (doc.exists) return doc.data();
-        else return "NEW APPOINTMENT - No Previous Data";
-      });
+    if (DEBUG)
+      console.log(
+        "processAppointmentWebhook request.body?.appointment_id",
+        request.body?.appointment_id,
+      );
+
+    const previousAppointmentData =
+      (await admin
+        .firestore()
+        .collection("appointments")
+        .doc(`${request.body?.appointment_id}`)
+        .get()
+        .then((doc: any) => {
+          if (doc.exists) return doc.data();
+          else return "NEW APPOINTMENT - No Previous Data";
+        })) || {};
     //.then((error: any) => throwError(error));
+
+    if (DEBUG)
+      console.log(
+        "processAppointmentWebhook previousAppointmentData",
+        previousAppointmentData,
+      );
 
     await saveAppointment(proVetAppointmentData);
 
-    sendNotification({
-      type: "email",
-      payload: {
+    if (DEBUG)
+      console.log("processAppointmentWebhook sendNotification", {
         to: ["alex.rodriguez@movetcare.com", "info@movetcare.com"],
         subject: "PROVET APPOINTMENT WEBHOOK UPDATE RECEIVED",
         message:
@@ -47,6 +60,19 @@ export const processAppointmentWebhook = async (
           JSON.stringify(previousAppointmentData) +
           "\n\nUpdated Appointment Data: " +
           JSON.stringify(proVetAppointmentData),
+      });
+
+    sendNotification({
+      type: "email",
+      payload: {
+        to: ["alex.rodriguez@movetcare.com", "info@movetcare.com"],
+        subject: "PROVET APPOINTMENT WEBHOOK UPDATE RECEIVED",
+        message: "Webhook Payload: " + JSON.stringify(request.body),
+        // +
+        // "\n\nPrevious Appointment Data: " +
+        // JSON.stringify(previousAppointmentData) +
+        // "\n\nUpdated Appointment Data: " +
+        // JSON.stringify(proVetAppointmentData),
       },
     });
     //await configureReminders('appointments');

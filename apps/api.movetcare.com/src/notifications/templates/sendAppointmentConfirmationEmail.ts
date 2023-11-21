@@ -78,16 +78,16 @@ export const sendAppointmentConfirmationEmail = async (
                     patient?.minorIllness,
                   ).map((symptoms: any) => {
                     if (symptoms?.id === patient?.id)
-                      return `${symptoms?.minorIllness.toLowerCase()} - "${symptoms?.other}"`;
+                      return `${symptoms?.minorIllness?.toLowerCase()} - "${symptoms?.other}"`;
                     else return;
                   })}`
                 : " - " + patient?.minorIllness
             }`
           : (patient?.minorIllness &&
-              patient?.minorIllness === "No Symptoms of Illness") ||
-            patient?.minorIllness === undefined
-          ? " needs a general checkup"
-          : ` is showing symptoms of ${patient?.minorIllness.toLowerCase()} - "${patient?.other}"`
+                patient?.minorIllness === "No Symptoms of Illness") ||
+              patient?.minorIllness === undefined
+            ? " needs a general checkup"
+            : ` is showing symptoms of ${patient?.minorIllness?.toLowerCase()} - "${patient?.other}"`
       }</li>`.replace(",", ""),
     );
 
@@ -137,11 +137,11 @@ export const sendAppointmentConfirmationEmail = async (
     appointment?.locationType === "Home" && appointmentAddress
       ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
       : appointment?.locationType === "Virtually"
-      ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-      : appointment?.locationType === "Clinic"
-      ? // eslint-disable-next-line quotes
-        '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-      : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
+        ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+        : appointment?.locationType === "Clinic"
+          ? // eslint-disable-next-line quotes
+            '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+          : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
   }${
     appointment?.start
       ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
@@ -199,11 +199,11 @@ export const sendAppointmentConfirmationEmail = async (
     appointment?.locationType === "Home" && appointmentAddress
       ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
       : appointment?.locationType === "Virtually"
-      ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-      : appointment?.locationType === "Clinic"
-      ? // eslint-disable-next-line quotes
-        '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-      : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
+        ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+        : appointment?.locationType === "Clinic"
+          ? // eslint-disable-next-line quotes
+            '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+          : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
   }${
     appointment?.start
       ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
@@ -250,22 +250,22 @@ export const sendAppointmentConfirmationEmail = async (
           }`
         }</p>`
       : appointment?.locationType === "Virtually"
-      ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-      : appointment?.user === 8
-      ? `<p></p><p><b>Appointment Location</b>: ${
-          appointmentAddress ||
-          `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
-            clientProvetRecord?.city || "CITY UNKNOWN"
-          }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
-            clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
-          }`
-        }</p>`
-      : appointment?.user === 7
-      ? // eslint-disable-next-line quotes
-        '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-      : appointment?.user === 9
-      ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-      : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
+        ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+        : appointment?.user === 8
+          ? `<p></p><p><b>Appointment Location</b>: ${
+              appointmentAddress ||
+              `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
+                clientProvetRecord?.city || "CITY UNKNOWN"
+              }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
+                clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
+              }`
+            }</p>`
+          : appointment?.user === 7
+            ? // eslint-disable-next-line quotes
+              '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+            : appointment?.user === 9
+              ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+              : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
   }${
     appointment?.start
       ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
@@ -331,22 +331,22 @@ ${
         }`
       }</p>`
     : appointment?.locationType === "Virtually"
-    ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-    : appointment?.user === 8
-    ? `<p></p><p><b>Appointment Location</b>: ${
-        appointmentAddress ||
-        `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
-          clientProvetRecord?.city || "CITY UNKNOWN"
-        }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
-          clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
-        }`
-      }</p>`
-    : appointment?.user === 7
-    ? // eslint-disable-next-line quotes
-      '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-    : appointment?.user === 9
-    ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-    : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
+      ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+      : appointment?.user === 8
+        ? `<p></p><p><b>Appointment Location</b>: ${
+            appointmentAddress ||
+            `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
+              clientProvetRecord?.city || "CITY UNKNOWN"
+            }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
+              clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
+            }`
+          }</p>`
+        : appointment?.user === 7
+          ? // eslint-disable-next-line quotes
+            '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+          : appointment?.user === 9
+            ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+            : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
 }${
       appointment?.start
         ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(

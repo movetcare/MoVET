@@ -7,19 +7,19 @@ import { saveClient } from "../../integrations/provet/entities/client/saveClient
 import type { EventLogPayload } from "../../types/event";
 
 export const logAuthEvent = async (
-  payload: EventLogPayload
+  payload: EventLogPayload,
 ): Promise<boolean> => {
   if (payload?.data?.email) {
     const uid = await admin
       .auth()
-      .getUserByEmail(payload?.data?.email.toLowerCase())
+      .getUserByEmail(payload?.data?.email?.toLowerCase())
       .then((userRecord: any) => userRecord?.uid)
       .catch(() => false);
     if (uid) {
       if (DEBUG)
         console.log(
           "SYNCING PROVET CLIENT & PATIENT DATA FOR CLIENT ->",
-          payload?.data?.email.toLowerCase()
+          payload?.data?.email?.toLowerCase(),
         );
       const proVetClientData = await fetchEntity("client", parseInt(uid));
       saveClient(uid, proVetClientData);
@@ -27,7 +27,7 @@ export const logAuthEvent = async (
         proVetClientData?.patients.map(async (patient: any) => {
           const proVetPatientData = await fetchEntity(
             "patient",
-            getProVetIdFromUrl(patient)
+            getProVetIdFromUrl(patient),
           );
           savePatient(proVetPatientData);
         });
@@ -43,9 +43,9 @@ export const logAuthEvent = async (
             payload.success === true
               ? "success"
               : payload.success === false
-              ? "fail"
-              : "attempt"
-          }_${timestampString(new Date(), "_")}`
+                ? "fail"
+                : "attempt"
+          }_${timestampString(new Date(), "_")}`,
         )
         .set({
           ...payload,
