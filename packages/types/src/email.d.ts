@@ -2,6 +2,7 @@ export type EmailConfiguration = {
   to: string;
   from?: "info@movetcare.com";
   bcc?:
+    | "alex.rodriguez@movetcare.com"
     | "support@movetcare.com"
     | "info@movetcare.com"
     | ["support@movetcare.com", "info@movetcare.com"]

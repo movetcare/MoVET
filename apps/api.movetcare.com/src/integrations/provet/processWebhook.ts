@@ -26,40 +26,41 @@ export const processProVetWebhook = async (
           proVetAppUrl + "/client/" + request.body?.client_id
         }`
       : request.body?.consultation_id
-      ? `:speech_balloon: Consultation Update - ${
-          proVetAppUrl + "/consultation/" + request.body?.consultation_id
-        }`
-      : request.body?.invoice_id
-      ? `:credit_card: Invoice Update - ${
-          proVetAppUrl + "/billing/invoice/" + request.body?.invoice_id
-        }`
-      : request.body?.appointment_id
-      ? `:hospital: Appointment Update - ${
-          proVetAppUrl + "/appointment/" + request.body?.appointment_id
-        }`
-      : request.body?.patient_id
-      ? `:paw_prints: Patient Update - ${
-          proVetAppUrl + "/patient/" + request.body?.patient_id
-        }`
-      : request.body?.laboratory_referral_id
-      ? `:test_tube: Laboratory Referral Update - ${request.body?.laboratory_referral_id}`
-      : request.body?.consultationitem_id
-      ? `:pill: Consultation Item Update - ${request.body?.consultationitem_id}`
-      : request.body?.reminder_id
-      ? `:alarm_clock: Reminder Update - ${request.body?.reminder_id} - ${proVetAppUrl}/reminder/list/`
-      : request.body?.email_log_id
-      ? `:email: Email Update - ${request.body?.email_log_id} ${proVetAppUrl}/organization/administration/log/email_log/`
-      : request.body?.user_id
-      ? `:health_worker: User Update - ${request.body?.user_id} - ${proVetAppUrl}/organization/administration/users/`
-      : request.body?.invoicerow_id
-      ? `:money_with_wings: Invoice Row Update - ${request.body?.invoicerow_id}`
-      : request.body?.invoicepayment_id
-      ? `:moneybag: Invoice Payment Update - ${request.body?.invoicepayment_id}`
-      : request.body?.organizationitem_id
-      ? `:medical_symbol: Organization Item Update - ${request.body?.organizationitem_id} - ${proVetAppUrl}/organization/administration/items/`
-      : `:pencil: Update - ${
-          request.body?.message || `\`\`\`${JSON.stringify(request.body)}\`\`\``
-        }`
+        ? `:speech_balloon: Consultation Update - ${
+            proVetAppUrl + "/consultation/" + request.body?.consultation_id
+          }`
+        : request.body?.invoice_id
+          ? `:credit_card: Invoice Update - ${
+              proVetAppUrl + "/billing/invoice/" + request.body?.invoice_id
+            }`
+          : request.body?.appointment_id
+            ? `:hospital: Appointment Update - ${
+                proVetAppUrl + "/appointment/" + request.body?.appointment_id
+              } {${JSON.stringify(request.body)}}`
+            : request.body?.patient_id
+              ? `:paw_prints: Patient Update - ${
+                  proVetAppUrl + "/patient/" + request.body?.patient_id
+                }`
+              : request.body?.laboratory_referral_id
+                ? `:test_tube: Laboratory Referral Update - ${request.body?.laboratory_referral_id}`
+                : request.body?.consultationitem_id
+                  ? `:pill: Consultation Item Update - ${request.body?.consultationitem_id}`
+                  : request.body?.reminder_id
+                    ? `:alarm_clock: Reminder Update - ${request.body?.reminder_id} - ${proVetAppUrl}/reminder/list/`
+                    : request.body?.email_log_id
+                      ? `:email: Email Update - ${request.body?.email_log_id} ${proVetAppUrl}/organization/administration/log/email_log/`
+                      : request.body?.user_id
+                        ? `:health_worker: User Update - ${request.body?.user_id} - ${proVetAppUrl}/organization/administration/users/`
+                        : request.body?.invoicerow_id
+                          ? `:money_with_wings: Invoice Row Update - ${request.body?.invoicerow_id}`
+                          : request.body?.invoicepayment_id
+                            ? `:moneybag: Invoice Payment Update - ${request.body?.invoicepayment_id}`
+                            : request.body?.organizationitem_id
+                              ? `:medical_symbol: Organization Item Update - ${request.body?.organizationitem_id} - ${proVetAppUrl}/organization/administration/items/`
+                              : `:pencil: Update - ${
+                                  request.body?.message ||
+                                  `\`\`\`${JSON.stringify(request.body)}\`\`\``
+                                }`
   }`;
   sendNotification({
     type: "slack",

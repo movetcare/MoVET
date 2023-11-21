@@ -17,15 +17,16 @@ export const NavigationHeader = ({
   canGoBack ? (
     <>
       <TouchableOpacity
-        style={tw`absolute z-100 h-12 w-12`}
-        onPress={() =>
-          (router.canGoBack() && router.back()) || router.push(goBackRoot)
-        }
+        style={tw`absolute z-1 h-12 w-12`}
+        onPress={() => {
+          console.log("tapped");
+          (router.canGoBack() && router.back()) || router.push(goBackRoot);
+        }}
       >
         <Icon
           name="arrow-left"
           color={"white"}
-          style={tw`-mb-8 mt-3 z-10 max-w-8 ml-4`}
+          style={tw`-mb-8 mt-3 max-w-8 ml-4`}
         />
       </TouchableOpacity>
       <View

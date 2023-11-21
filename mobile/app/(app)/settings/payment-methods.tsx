@@ -2,24 +2,55 @@ import {
   initStripe,
   initPaymentSheet,
   presentPaymentSheet,
+  PaymentMethod,
 } from "@stripe/stripe-react-native";
-import { Loader } from "components/Loader";
 import { ErrorModal } from "components/Modal";
-import { View, Screen, Container, ActionButton } from "components/themed";
+import {
+  View,
+  Screen,
+  ActionButton,
+  BodyText,
+  SubHeadingText,
+  Icon,
+  ItalicText,
+  Container,
+} from "components/themed";
 import Constants from "expo-constants";
 import { router } from "expo-router";
-import { functions } from "firebase-config";
+import { firestore, functions } from "firebase-config";
+import {
+  onSnapshot,
+  query,
+  DocumentData,
+  QuerySnapshot,
+  collection,
+  where,
+  orderBy,
+} from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import { useState, useEffect } from "react";
+import { AuthStore } from "stores/AuthStore";
 import tw from "tailwind";
 import { isProductionEnvironment } from "utils/isProductionEnvironment";
 import { isTablet } from "utils/isTablet";
 
+interface PaymentMethod {
+  id: string;
+  brand: string;
+  last4: string;
+  expMonth: number;
+  expYear: number;
+  type: string;
+}
+
 const PaymentMethods = () => {
+  const { user } = AuthStore.useState();
   const [error, setError] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [paymentOptionsReady, setPaymentOptionsReady] =
     useState<boolean>(false);
+  const [paymentMethods, setPaymentMethods] =
+    useState<Array<PaymentMethod> | null>(null);
 
   useEffect(() => {
     initStripe({
@@ -28,6 +59,36 @@ const PaymentMethods = () => {
       merchantIdentifier: "merchant.com.movetcare",
     });
     prepPaymentSheet();
+    const unsubscribePaymentMethods = onSnapshot(
+      query(
+        collection(firestore, "clients", `${user?.uid}`, "payment_methods"),
+        where("active", "==", true),
+        orderBy("updatedOn", "desc"),
+      ),
+      (querySnapshot: QuerySnapshot) => {
+        if (querySnapshot.empty) return;
+        const paymentMethods: Array<PaymentMethod> = [];
+        querySnapshot.forEach((doc: DocumentData) => {
+          paymentMethods.push({
+            id: doc.id,
+            brand: doc.data()?.card?.brand,
+            last4: doc.data()?.card?.last4,
+            expMonth: doc.data()?.card?.exp_month,
+            expYear: doc.data()?.card?.exp_year,
+            type: doc.data()?.type,
+          });
+        });
+        if (paymentMethods.length > 0) setPaymentMethods(paymentMethods);
+        setIsLoading(false);
+      },
+      (error: any) => {
+        setPaymentMethods(null);
+        setIsLoading(false);
+        setError(error);
+      },
+    );
+    return () => unsubscribePaymentMethods();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const prepPaymentSheet = async () => {
@@ -83,7 +144,7 @@ const PaymentMethods = () => {
           const { error } = await presentPaymentSheet();
           if (error && error?.message !== "The payment has been canceled") {
             handleError(error);
-          }
+          } else router.replace("/settings/payment-methods");
         } else {
           const { error } = await presentPaymentSheet();
           if (error) handleError(error);
@@ -101,28 +162,82 @@ const PaymentMethods = () => {
 
   return (
     <Screen>
-      {isLoading ? (
-        <Container style={tw`w-full flex-grow`}>
-          <Loader description="Loading Payment Methods..." />
-        </Container>
-      ) : (
-        <View
-          style={[
-            tw`
+      <View
+        style={[
+          tw`
               w-full flex-grow justify-center items-center bg-transparent px-4
             `,
-            isTablet ? tw`mb-8` : tw`mb-4`,
-          ]}
-          noDarkMode
-        >
-          <ActionButton
-            title="Update Payment Method"
-            iconName="credit-card"
-            onPress={async () => await loadPaymentOptions()}
-            disabled={!paymentOptionsReady}
-          />
-        </View>
-      )}
+          isTablet ? tw`mb-8` : tw`mb-4`,
+        ]}
+        noDarkMode
+      >
+        {!paymentMethods ? (
+          <>
+            <Icon name="credit-card" size="xl" />
+            <SubHeadingText style={tw`mb-4 mt-2 text-lg`}>
+              No Payment Methods on File
+            </SubHeadingText>
+            <BodyText style={tw`mb-8`}>
+              Having a payment source on file allows you to receive expedited
+              service and skip the checkout lines when visiting our clinic and
+              boutique.
+            </BodyText>
+          </>
+        ) : (
+          <>
+            <SubHeadingText style={tw`text-lg mb-2`}>
+              Payment Methods on File
+            </SubHeadingText>
+            {paymentMethods.map(
+              (paymentMethod: PaymentMethod, index: number) => (
+                <View
+                  key={index}
+                  style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-col items-center border-2 dark:border-movet-white w-full`}
+                >
+                  <Container
+                    style={tw`flex-row items-center justify-center w-full`}
+                  >
+                    <Container style={tw`px-3`}>
+                      <Icon
+                        name={"credit-card"}
+                        size={isTablet ? "md" : "sm"}
+                      />
+                    </Container>
+                    <Container style={tw`flex-shrink flex-row items-center`}>
+                      <ItalicText
+                        style={[
+                          isTablet ? tw`text-2xl` : tw`text-xl`,
+                          tw`ml-2`,
+                        ]}
+                      >
+                        {paymentMethod.brand?.toUpperCase()} -{" "}
+                        {paymentMethod.last4}
+                      </ItalicText>
+                      <BodyText
+                        style={[
+                          tw`ml-2`,
+                          isTablet ? tw`text-base` : tw`text-xs`,
+                        ]}
+                      >
+                        {paymentMethod.expMonth}/{paymentMethod.expYear}
+                      </BodyText>
+                    </Container>
+                  </Container>
+                </View>
+              ),
+            )}
+            <View style={tw`h-16`} />
+          </>
+        )}
+        <ActionButton
+          title={
+            !paymentMethods ? "Add a Payment Method" : "Update Payment Methods"
+          }
+          iconName={!paymentMethods ? "plus" : "credit-card"}
+          onPress={async () => await loadPaymentOptions()}
+          disabled={!paymentOptionsReady || isLoading}
+        />
+      </View>
       <ErrorModal
         isVisible={error !== null}
         onClose={() => {
