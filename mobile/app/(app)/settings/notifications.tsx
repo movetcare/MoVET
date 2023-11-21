@@ -335,12 +335,12 @@ const NotificationSettings = () => {
                 disabled={!isDirty || isLoading}
                 loading={isLoading}
                 title={isLoading ? "Saving Changes..." : "Save Changes"}
-                color="red"
+                color="black"
                 iconName="check"
               />
               {pushToken === null && (
                 <ActionButton
-                  color="black"
+                  color="brown"
                   iconName="arrow-right"
                   title="Open App Setting"
                   onPress={() => Linking.openSettings()}

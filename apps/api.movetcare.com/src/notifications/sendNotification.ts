@@ -44,8 +44,8 @@ export const sendNotification = async ({
       environment.type === "production" && payload?.channel
         ? payload?.channel
         : environment.type === "production"
-        ? "production-logs"
-        : "development-feed",
+          ? "production-logs"
+          : "development-feed",
     );
     if (DEBUG) console.log("sendNotification => channelId", channelId);
     if (
@@ -93,7 +93,7 @@ export const sendNotification = async ({
             ? payload?.to || "info@movetcare.com"
             : "support+staging@movetcare.com",
         from: payload?.from || "info@movetcare.com",
-        // bcc: "alex.rodriguez@movetcare.com",
+        bcc: payload?.bcc || "alex.rodriguez@movetcare.com",
         replyTo: payload?.replyTo || "info@movetcare.com",
         subject:
           (environment.type === "staging" ? "(STAGING) " : "") +

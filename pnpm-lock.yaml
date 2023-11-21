@@ -15,11 +15,11 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2
       cypress:
-        specifier: ^13.5.1
-        version: 13.5.1
+        specifier: ^13.6.0
+        version: 13.6.0
       cypress-fail-fast:
-        specifier: ^7.0.3
-        version: 7.0.3(cypress@13.5.1)
+        specifier: ^7.1.0
+        version: 7.1.0(cypress@13.6.0)
       eslint-config-custom:
         specifier: workspace:*
         version: link:packages/eslint-config-custom
@@ -108,8 +108,8 @@ importers:
         specifier: ^5.3.1
         version: 5.3.1(react-dom@18.2.0)(react@18.2.0)
       react-tooltip:
-        specifier: ^5.23.0
-        version: 5.23.0(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^5.24.0
+        version: 5.24.0(react-dom@18.2.0)(react@18.2.0)
       remark:
         specifier: ^15.0.1
         version: 15.0.1
@@ -3062,7 +3062,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001563
-      electron-to-chromium: 1.4.589
+      electron-to-chromium: 1.4.590
       node-releases: 2.0.13
       update-browserslist-db: 1.0.13(browserslist@4.22.1)
 
@@ -3453,18 +3453,18 @@ packages:
       strip-bom: 2.0.0
     dev: false
 
-  /cypress-fail-fast@7.0.3(cypress@13.5.1):
-    resolution: {integrity: sha512-IYVDZ+ykfTd2DFBK3N6NnWXc2gix7VwSi9Vg4zv40jm6PLknZTD4cZoRmh7uvpoQAIKNIFbx5V81qQD5pLHLSQ==}
+  /cypress-fail-fast@7.1.0(cypress@13.6.0):
+    resolution: {integrity: sha512-OnN5WqSP49yHKoitq+FmMG/+nUvat6NdFLNUQgVJYbmDdgyiiS1aI33S8+AuRb4zRZR5+5/eq53p/oL+a/m2Tw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       cypress: '>=8.0.0'
     dependencies:
       chalk: 4.1.2
-      cypress: 13.5.1
+      cypress: 13.6.0
     dev: true
 
-  /cypress@13.5.1:
-    resolution: {integrity: sha512-yqLViT0D/lPI8Kkm7ciF/x/DCK/H/DnogdGyiTnQgX4OVR2aM30PtK+kvklTOD1u3TuItiD9wUQAF8EYWtyZug==}
+  /cypress@13.6.0:
+    resolution: {integrity: sha512-quIsnFmtj4dBUEJYU4OH0H12bABJpSujvWexC24Ju1gTlKMJbeT6tTO0vh7WNfiBPPjoIXLN+OUqVtiKFs6SGw==}
     engines: {node: ^16.0.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
     requiresBuild: true
@@ -3784,8 +3784,8 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: false
 
-  /electron-to-chromium@1.4.589:
-    resolution: {integrity: sha512-zF6y5v/YfoFIgwf2dDfAqVlPPsyQeWNpEWXbAlDUS8Ax4Z2VoiiZpAPC0Jm9hXEkJm2vIZpwB6rc4KnLTQffbQ==}
+  /electron-to-chromium@1.4.590:
+    resolution: {integrity: sha512-hohItzsQcG7/FBsviCYMtQwUSWvVF7NVqPOnJCErWsAshsP/CR2LAXdmq276RbESNdhxiAq5/vRo1g2pxGXVww==}
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -7713,8 +7713,8 @@ packages:
       - '@types/react-dom'
     dev: false
 
-  /react-tooltip@5.23.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-MYqn6n+Af8NHHDL3zrSqzVSoK2LLqTNFp30CuuHCYlBEf+q88FWfg+8pSO+0GnDvOa5ZaryNDq9sAVQeNhnsgw==}
+  /react-tooltip@5.24.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-HjstgpOrUwP4eN6mHU4EThpbxVuKO5SvqumRt1aAcPq0ya+pIVVxlwltndtdIIMBJ7w3jnN05vNfcfh2sxE2mQ==}
     peerDependencies:
       react: '>=16.14.0'
       react-dom: '>=16.14.0'

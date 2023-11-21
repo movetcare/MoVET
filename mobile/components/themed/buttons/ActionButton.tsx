@@ -1,5 +1,9 @@
 import React from "react";
-import { TouchableOpacity, useColorScheme } from "react-native";
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 import tw from "tailwind";
 import { ButtonText, SubHeadingText } from "../Text";
 import { Icon, SupportedIcons } from "../Icons";
@@ -13,6 +17,7 @@ export const ActionButton = ({
   disabled,
   type = "button",
   textStyle,
+  loading = false,
 }: {
   title: string;
   onPress: any;
@@ -22,6 +27,7 @@ export const ActionButton = ({
   disabled?: boolean;
   type?: "button" | "text";
   textStyle?: any;
+  loading?: boolean;
 }) => {
   const isDarkMode = useColorScheme() !== "light";
   return (
@@ -40,7 +46,7 @@ export const ActionButton = ({
         style,
       ]}
     >
-      {iconName && (
+      {iconName && !loading && (
         <Icon
           name={iconName}
           height={18}
@@ -48,6 +54,17 @@ export const ActionButton = ({
           color={color === "black" && isDarkMode ? "black" : "white"}
           style={tw`mr-2`}
           noDarkMode
+        />
+      )}
+      {loading && (
+        <ActivityIndicator
+          style={tw`mr-2`}
+          size="small"
+          color={
+            isDarkMode && color === "black"
+              ? tw.color("movet-black")
+              : tw.color("movet-white")
+          }
         />
       )}
       {type === "button" ? (

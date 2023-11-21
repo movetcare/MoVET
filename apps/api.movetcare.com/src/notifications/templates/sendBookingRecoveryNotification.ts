@@ -159,15 +159,14 @@ const sendAdminBookingRecoveryNotification = async (
         payload: {
           to: "info@movetcare.com",
           replyTo: email,
-          // bcc: "alex.rodriguez@movetcare.com",
           subject: `${
             displayName ? displayName : email ? email : ""
           } abandoned their appointment booking request on step "${step}" ${
             type === "24_HOUR"
               ? "yesterday"
               : type === "72_HOUR"
-              ? "three days ago"
-              : "one hour ago"
+                ? "three days ago"
+                : "one hour ago"
           }`,
           message,
         },
@@ -223,15 +222,14 @@ const sendAdminBookingRecoveryNotification = async (
         payload: {
           to: "info@movetcare.com",
           replyTo: email,
-          // bcc: "alex.rodriguez@movetcare.com",
           subject: `${
             displayName ? displayName : email ? email : ""
           } abandoned their appointment booking request" ${
             type === "24_HOUR"
               ? "yesterday"
               : type === "72_HOUR"
-              ? "three days ago"
-              : "one hour ago"
+                ? "three days ago"
+                : "one hour ago"
           }`,
           message,
         },
@@ -266,14 +264,16 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
       (environment.type === "production"
         ? "https://app.movetcare.com"
         : environment.type === "staging"
-        ? "https://stage.app.movetcare.com"
-        : "http://localhost:3000") + `/schedule-an-appointment/?email=${email}`
+          ? "https://stage.app.movetcare.com"
+          : "http://localhost:3000") +
+      `/schedule-an-appointment/?email=${email}`
     }' >Complete Booking</a></p><p>At MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!</p><p>We look forward to seeing you soon!</p><p>The MoVET Team</p><p></p><p><a href="${
       (environment.type === "production"
         ? "https://app.movetcare.com"
         : environment.type === "staging"
-        ? "https://stage.app.movetcare.com"
-        : "http://localhost:3000") + `/schedule-an-appointment/cancel?id=${id}`
+          ? "https://stage.app.movetcare.com"
+          : "http://localhost:3000") +
+      `/schedule-an-appointment/cancel?id=${id}`
     }">Cancel Booking</a></p>`;
     const emailConfig: EmailConfiguration = {
       to: email,
@@ -290,7 +290,6 @@ const sendOneHourBookingRecoveryNotification = async (booking: Booking) => {
           type: "email",
           payload: {
             ...emailConfig,
-            // bcc: "alex.rodriguez@movetcare.com",
             client: client.uid,
           },
         });
@@ -335,14 +334,16 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
       (environment.type === "production"
         ? "https://app.movetcare.com"
         : environment.type === "staging"
-        ? "https://stage.app.movetcare.com"
-        : "http://localhost:3000") + `/schedule-an-appointment/?email=${email}`
+          ? "https://stage.app.movetcare.com"
+          : "http://localhost:3000") +
+      `/schedule-an-appointment/?email=${email}`
     }' >Complete Booking</a></p><p>At MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!</p><p>We look forward to seeing you soon!</p><p>The MoVET Team</p><p></p><p><a href="${
       (environment.type === "production"
         ? "https://app.movetcare.com"
         : environment.type === "staging"
-        ? "https://stage.app.movetcare.com"
-        : "http://localhost:3000") + `/schedule-an-appointment/cancel?id=${id}`
+          ? "https://stage.app.movetcare.com"
+          : "http://localhost:3000") +
+      `/schedule-an-appointment/cancel?id=${id}`
     }">Cancel Booking</a></p>`;
     const emailConfig: EmailConfiguration = {
       to: email,
@@ -357,7 +358,6 @@ const sendTwentyFourHourBookingRecoveryNotification = async (
           type: "email",
           payload: {
             ...emailConfig,
-            // bcc: "alex.rodriguez@movetcare.com",
             client: client.uid,
           },
         });
@@ -401,14 +401,16 @@ const sendSeventyTwoHourBookingRecoveryNotification = async (
       (environment.type === "production"
         ? "https://app.movetcare.com"
         : environment.type === "staging"
-        ? "https://stage.app.movetcare.com"
-        : "http://localhost:3000") + `/schedule-an-appointment/?email=${email}`
+          ? "https://stage.app.movetcare.com"
+          : "http://localhost:3000") +
+      `/schedule-an-appointment/?email=${email}`
     }\n\nAt MoVET @ Belleview Station, we're changing the way that pet care services are handled. Our experienced veterinarian offers primary pet care and minor illness treatment through telehealth, in-clinic, and house appointments. Our goal is to make your vet appointments an easier, stress-free experience for you and your pet! So if your pet needs an annual wellness checkup, vaccines, or dental care, we're there!\nWe look forward to seeing you soon!\nThe MoVET Team\n\nCancel Booking: ${
       (environment.type === "production"
         ? "https://app.movetcare.com"
         : environment.type === "staging"
-        ? "https://stage.app.movetcare.com"
-        : "http://localhost:3000") + `/schedule-an-appointment/cancel?id=${id}`
+          ? "https://stage.app.movetcare.com"
+          : "http://localhost:3000") +
+      `/schedule-an-appointment/cancel?id=${id}`
     }`;
 
     sendNotification({

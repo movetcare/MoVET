@@ -74,6 +74,8 @@ import SmsIcon from "assets/icons/svgs/font-awesome/sms.svg";
 import SmsIconDark from "assets/icons/svgs/font-awesome/sms-dark.svg";
 import CheckIcon from "assets/icons/svgs/font-awesome/check.svg";
 import CheckIconDark from "assets/icons/svgs/font-awesome/check-dark.svg";
+import TrashIcon from "assets/icons/svgs/font-awesome/trash.svg";
+import TrashIconDark from "assets/icons/svgs/font-awesome/trash-dark.svg";
 import ArrowLeftIcon from "assets/icons/svgs/font-awesome/arrow-left.svg";
 import ArrowLeftIconDark from "assets/icons/svgs/font-awesome/arrow-left-dark.svg";
 import { ReactNode } from "react";
@@ -118,7 +120,8 @@ export type SupportedIcons =
   | "credit-card"
   | "envelope"
   | "sms"
-  | "check";
+  | "check"
+  | "trash";
 
 export const Icon = ({
   name = "poo",
@@ -463,6 +466,12 @@ export const Icon = ({
         />
       ) : (
         <ArrowLeftIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "trash":
+      return showWhiteIcon ? (
+        <TrashIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <TrashIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (

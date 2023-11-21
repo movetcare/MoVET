@@ -39,7 +39,6 @@ export const processAppointmentWebhook = async (
       type: "email",
       payload: {
         to: "info@movetcare.com",
-        bcc: "alex.rodriguez@movetcare.com",
         subject: "PROVET APPOINTMENT WEBHOOK UPDATE RECEIVED",
         message:
           "Webhook Payload: " +

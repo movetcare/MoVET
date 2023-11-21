@@ -86,7 +86,6 @@ export const updateBookingCancellation = async (
       type: "email",
       payload: {
         to: "info@movetcare.com",
-        bcc: "alex.rodriguez@movetcare.com",
         replyTo: client?.email,
         subject,
         message,

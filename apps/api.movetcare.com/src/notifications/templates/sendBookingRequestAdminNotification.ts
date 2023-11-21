@@ -111,7 +111,6 @@ export const sendBookingRequestAdminNotification = async ({
       type: "email",
       payload: {
         to: "info@movetcare.com",
-        // bcc: "alex.rodriguez@movetcare.com",
         replyTo: email,
         subject: `MoVET | Appointment Request from ${
           firstName && lastName ? firstName + " " + lastName : email

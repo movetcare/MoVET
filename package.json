@@ -49,8 +49,8 @@
   "devDependencies": {
     "@types/node": "^20.9.3",
     "concurrently": "^8.2.2",
-    "cypress": "^13.5.1",
-    "cypress-fail-fast": "^7.0.3",
+    "cypress": "^13.6.0",
+    "cypress-fail-fast": "^7.1.0",
     "eslint-config-custom": "workspace:*",
     "git-branch-is": "^4.0.0",
     "husky": "^8.0.3",

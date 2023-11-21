@@ -47,7 +47,7 @@ export const SubmitButton = ({
           name={iconName}
           height={18}
           width={18}
-          color="white"
+          color={color === "black" && isDarkMode ? "black" : "white"}
           style={tw`mr-2`}
           noDarkMode
         />
@@ -73,7 +73,9 @@ export const SubmitButton = ({
           </ButtonText>
         </View>
       ) : isDarkMode && color === "black" ? (
-        <ButtonText style={tw`text-black`}>{title}</ButtonText>
+        <ButtonText style={tw`text-black`} noDarkMode>
+          {title}
+        </ButtonText>
       ) : (
         <ButtonText style={tw`text-white`} noDarkMode>
           {title}
