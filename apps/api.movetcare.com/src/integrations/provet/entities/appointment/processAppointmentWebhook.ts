@@ -30,8 +30,8 @@ export const processAppointmentWebhook = async (
       .then((doc: any) => {
         if (doc.exists) return doc.data();
         else return "NEW APPOINTMENT - No Previous Data";
-      })
-      .then((error: any) => throwError(error));
+      });
+    //.then((error: any) => throwError(error));
 
     await saveAppointment(proVetAppointmentData);
 
