@@ -1,3 +1,4 @@
+import { SupportedIcons } from "components/themed";
 import { NavigationHeader } from "components/themed/NavigationHeader";
 import { Stack, useLocalSearchParams, useSegments } from "expo-router";
 import { useState, useEffect } from "react";
@@ -9,11 +10,11 @@ export default function Layout() {
   const { screenTitle, screenTitleIcon }: any = router?.params || {};
   const [navigationDetails, setNavigationDetails] = useState<{
     title: string;
-    iconName: any;
+    iconName: SupportedIcons;
     canGoBack: boolean;
   }>({
     title: "Settings",
-    iconName: "cog",
+    iconName: "gear",
     canGoBack: false,
   });
 
@@ -35,17 +36,27 @@ export default function Layout() {
       });
       //}, 180);
     } else if (segments && segments.includes("account")) {
+      if (segments && segments.includes("web-view")) {
+        //setTimeout(() => {
+        setNavigationDetails({
+          title: "Contact Us",
+          iconName: "user-medical-message",
+          canGoBack: true,
+        });
+        //}, 180);
+      }
       //setTimeout(() => {
-      setNavigationDetails({
-        title: "My Account",
-        iconName: "user-edit",
-        canGoBack: true,
-      });
+      else
+        setNavigationDetails({
+          title: "My Account",
+          iconName: "user-edit",
+          canGoBack: true,
+        });
       //}, 180);
     } else
       setNavigationDetails({
         title: "Settings",
-        iconName: "cog",
+        iconName: "gear",
         canGoBack: false,
       });
   }, [screenTitle, screenTitleIcon, segments]);
@@ -58,7 +69,11 @@ export default function Layout() {
             title={navigationDetails?.title}
             iconName={navigationDetails?.iconName}
             canGoBack={navigationDetails?.canGoBack}
-            goBackRoot="/(app)/settings"
+            goBackRoot={
+              segments && segments.includes("web-view")
+                ? "/(app)/settings/account"
+                : "/(app)/settings"
+            }
           />
         ),
       }}

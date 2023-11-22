@@ -208,9 +208,9 @@ const PaymentMethods = () => {
       <View
         style={[
           tw`
-              w-full flex-grow justify-center items-center bg-transparent px-4
+              w-full flex-grow justify-center items-center bg-transparent
             `,
-          isTablet ? tw`mb-8` : tw`mb-4`,
+          isTablet ? tw`mb-8 px-16` : tw`mb-4 px-4`,
         ]}
         noDarkMode
       >
@@ -377,6 +377,11 @@ const PaymentMethods = () => {
               </View>
             </View>
           </TouchableOpacity>
+        )}
+        {!user.emailVerified && (
+          <ItalicText noDarkMode style={tw`text-movet-red text-xs mt-4`}>
+            EMAIL ADDRESS VERIFICATION REQUIRED!
+          </ItalicText>
         )}
         <ActionButton
           color="black"

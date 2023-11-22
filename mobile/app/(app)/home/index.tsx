@@ -203,10 +203,10 @@ const Home = () => {
     <Loader />
   ) : (
     <Screen withBackground="pets">
-      <Animated.View style={[tw`w-full`, animatedStyle]}>
+      <Animated.View style={[tw`w-full flex-grow`, animatedStyle]}>
         <View
           style={tw`
-              w-full rounded-t-xl flex justify-center items-center bg-transparent
+              w-full justify-center items-center bg-transparent
             `}
           noDarkMode
         >
@@ -215,17 +215,16 @@ const Home = () => {
             override={isDarkMode ? "white" : "default"}
             height={isTablet ? 160 : 100}
             width={isTablet ? 260 : 200}
-            style={tw`bg-transparent -mb-8`}
+            style={tw`bg-transparent -mb-4`}
           />
         </View>
-
         {patients && patients.length ? (
           <>
             {(announcement?.isActiveMobile || ad?.isActive) && (
               <SectionHeading
                 iconName={"bullhorn"}
                 text={"Latest Announcements"}
-                containerStyle={tw`my-4`}
+                containerStyle={tw`mb-4 -mt-2`}
                 textStyle={tw`text-lg sm:text-2xl`}
               />
             )}
@@ -252,9 +251,7 @@ const Home = () => {
           </>
         ) : (
           <View
-            style={tw`flex-grow w-full justify-center items-center bg-transparent${
-              isTablet ? " -mt-28" : " -mt-8"
-            }`}
+            style={tw`flex-grow w-full justify-center items-center bg-transparent`}
             noDarkMode
           >
             <Icon

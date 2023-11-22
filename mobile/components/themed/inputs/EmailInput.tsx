@@ -46,9 +46,7 @@ export const EmailInput = ({
             style={[
               tw`w-full border-2 py-4 px-5 m-2 bg-movet-white dark:bg-movet-black dark:border-movet-white dark:text-movet-white rounded-xl
               `,
-              error
-                ? tw`border-movet-red`
-                : tw`border-movet-black dark:border-movet-white`,
+              error ? tw`border-movet-red` : tw` dark:border-movet-white`,
               !editable && tw`opacity-50`,
             ]}
             onBlur={onBlur}

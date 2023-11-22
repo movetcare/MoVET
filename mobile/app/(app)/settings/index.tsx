@@ -81,7 +81,10 @@ const Settings = () => {
         ]}
       >
         <View
-          style={tw`flex-col mx-4 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent w-full px-4`}
+          style={[
+            isTablet ? tw`px-16` : tw`px-4`,
+            tw`flex-col mx-4 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent w-full`,
+          ]}
           noDarkMode
         >
           <View

@@ -9,6 +9,7 @@ import { router } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import { ReactNode } from "react";
 import tw from "tailwind";
+import { isTablet } from "utils/isTablet";
 
 export interface Announcement {
   color: string;
@@ -49,7 +50,10 @@ export const Announcement = ({
       }
     >
       <View
-        style={tw`flex-row mx-4 mb-4 shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`}
+        style={[
+          isTablet ? tw`px-16` : tw`px-4`,
+          tw`flex-row mb-4 shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`,
+        ]}
       >
         <View
           style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full ${backgroundColor}`}

@@ -36,7 +36,10 @@ export const VcprAlert = ({
     <>
       <TouchableOpacity onPress={() => setShowVcprModal(true)}>
         <View
-          style={tw`flex-row mx-4 shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`}
+          style={[
+            isTablet ? tw`px-16` : tw`px-4`,
+            tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`,
+          ]}
         >
           <View
             style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full ${
@@ -127,7 +130,12 @@ export const VcprAlert = ({
               ...and {patients.length - 3} more
             </ItalicText>
           )}
-          <Container style={[isTablet ? tw`mt-4` : tw``, tw`flex-row`]}>
+          <Container
+            style={[
+              isTablet ? tw`mt-4` : tw``,
+              tw`flex-row justify-center sm:mb-2`,
+            ]}
+          >
             <ActionButton
               title="Schedule an Appointment"
               iconName="calendar-plus"

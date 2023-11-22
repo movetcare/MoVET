@@ -331,7 +331,7 @@ const ChatIndex = () => {
   const renderSend = useCallback((props: SendProps<IMessage>) => {
     return (
       <Send {...props} containerStyle={{ justifyContent: "center" }}>
-        <Icon name="plane" style={tw`mr-4 -mt-1`} />
+        <Icon name="plane" style={tw`mr-4 -mt-1`} noDarkMode />
       </Send>
     );
   }, []);

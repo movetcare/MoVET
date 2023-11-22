@@ -7,6 +7,7 @@ import {
   ItalicText,
   View,
 } from "./themed";
+import { isTablet } from "utils/isTablet";
 
 export interface Appointment {
   id: string;
@@ -39,7 +40,10 @@ export const AppointmentList = ({
 }) => {
   return (
     <View
-      style={tw`flex-col mx-4 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent w-full px-4`}
+      style={[
+        isTablet ? tw`px-16` : tw`px-4`,
+        tw`flex-col rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent w-full`,
+      ]}
       noDarkMode
     >
       {appointments &&
@@ -53,12 +57,12 @@ export const AppointmentList = ({
             appointment.resources.includes(16) // Exam Room 3
               ? "CLINIC"
               : appointment.resources.includes(3) || // Truck 1
-                appointment.resources.includes(9) // Truck 2
-              ? "HOUSECALL"
-              : appointment.resources.includes(11) || // Virtual Room 1
-                appointment.resources.includes(18) // Virtual Room 2
-              ? "TELEHEALTH"
-              : "UNKNOWN APPOINTMENT TYPE";
+                  appointment.resources.includes(9) // Truck 2
+                ? "HOUSECALL"
+                : appointment.resources.includes(11) || // Virtual Room 1
+                    appointment.resources.includes(18) // Virtual Room 2
+                  ? "TELEHEALTH"
+                  : "UNKNOWN APPOINTMENT TYPE";
           return (
             <View
               key={appointment.id}
@@ -70,16 +74,17 @@ export const AppointmentList = ({
                     location === "CLINIC"
                       ? "clinic-alt"
                       : location === "HOUSECALL"
-                      ? "mobile"
-                      : location === "TELEHEALTH"
-                      ? "telehealth"
-                      : "question"
+                        ? "mobile"
+                        : location === "TELEHEALTH"
+                          ? "telehealth"
+                          : "question"
                   }
                   size="md"
                 />
               </Container>
               <Container style={tw`flex-shrink`}>
                 <HeadingText style={tw`text-black text-lg`}>
+                  {JSON.stringify(appointment.patients)}
                   {appointment.patients.map((patient: Patient) => patient.name)}
                   {__DEV__ && ` - #${appointment.id}`}
                 </HeadingText>

@@ -257,7 +257,10 @@ const NotificationSettings = () => {
         ) : (
           <>
             <Container
-              style={tw`flex-grow w-full items-center justify-center px-4`}
+              style={[
+                isTablet ? tw`px-16` : tw`px-4`,
+                tw`flex-grow w-full items-center justify-center`,
+              ]}
             >
               <View
                 style={tw`w-full bg-transparent flex flex-row justify-between items-center mt-6`}

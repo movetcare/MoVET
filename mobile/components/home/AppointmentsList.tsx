@@ -3,6 +3,7 @@ import { SectionHeading } from "components/SectionHeading";
 import { Container, ActionButton } from "components/themed";
 import { router } from "expo-router";
 import tw from "tailwind";
+import { isTablet } from "utils/isTablet";
 
 export const AppointmentsList = ({
   appointments,
@@ -16,7 +17,12 @@ export const AppointmentsList = ({
         text={"Upcoming Appointments"}
       />
       <AppointmentList appointments={appointments} />
-      <Container style={tw`flex-col sm:flex-row justify-around w-full px-4`}>
+      <Container
+        style={[
+          isTablet ? tw`px-16` : tw`px-4`,
+          tw`flex-col sm:flex-row justify-around w-full`,
+        ]}
+      >
         <ActionButton
           title="Schedule an Appointment"
           iconName="calendar-plus"

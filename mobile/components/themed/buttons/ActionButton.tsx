@@ -7,6 +7,7 @@ import {
 import tw from "tailwind";
 import { ButtonText, SubHeadingText } from "../Text";
 import { Icon, SupportedIcons } from "../Icons";
+import { isTablet } from "utils/isTablet";
 
 export const ActionButton = ({
   title,
@@ -35,12 +36,13 @@ export const ActionButton = ({
       onPress={() => onPress()}
       disabled={disabled}
       style={[
-        tw`w-full flex-row justify-center items-center border-2 mt-4 py-4 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white`,
+        tw`flex-row justify-center items-center border-2 mt-4 py-4 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white`,
+        isTablet ? tw`w-1/2` : tw`w-full`,
         color === "red"
           ? tw`bg-movet-red border-movet-red`
           : color === "brown"
             ? tw`bg-movet-brown border-movet-brown`
-            : tw`bg-movet-black border-movet-black dark:bg-movet-white dark:border-movet-white`,
+            : tw`bg-movet-black dark:bg-movet-white dark:border-movet-white`,
         disabled && tw`opacity-50`,
         type === "text" && tw`bg-transparent border-0`,
         style,

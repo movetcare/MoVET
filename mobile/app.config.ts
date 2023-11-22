@@ -112,6 +112,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       stripe_key: isProduction
         ? "pk_live_P2YpuunHUCX6H5MjPeRqCpx000aR6LtxYx"
         : "pk_test_3YbvVOYsPgHL64OaKSbnfr4700WtRqlmpJ",
+      google_maps_geocode_key:
+        process.env.GOOGLE_MAPS_GEOCODE_API_KEY || isProduction
+          ? "AIzaSyAiepyL3_lhpvoTDywIXYXVJFpm2bLvSHg"
+          : "AIzaSyAU1t452bZsRNbT8YxN07UqbHy5NIvQt2k",
+      google_api_key:
+        process.env.GOOGLE_API_KEY || "AIzaSyAU1t452bZsRNbT8YxN07UqbHy5NIvQt2k",
       eas: {
         projectId:
           process.env.EXPO_PROJECT_ID || "e338e0ce-a592-44f3-b700-e69d46390080",

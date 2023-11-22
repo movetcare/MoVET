@@ -22,8 +22,15 @@ import Link from "next/link";
 
 export const ContactForm = () => {
   const router = useRouter();
-  const { mode, firstName, lastName, phone, email, appointmentRequest }: any =
-    router.query;
+  const {
+    mode,
+    firstName,
+    lastName,
+    phone,
+    email,
+    appointmentRequest,
+    message,
+  }: any = router.query;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
@@ -44,7 +51,7 @@ export const ContactForm = () => {
       lastName: lastName || "",
       email: email || "",
       phone: phone || "",
-      message: "",
+      message: message || "",
     } as any,
   });
   const reason = watch("reason");
@@ -56,7 +63,8 @@ export const ContactForm = () => {
       firstName ||
       lastName ||
       phone ||
-      appointmentRequest
+      appointmentRequest ||
+      message
     )
       reset({
         reason: appointmentRequest ? CONTACT_REASONS[1] : CONTACT_REASONS[0],
@@ -64,9 +72,18 @@ export const ContactForm = () => {
         lastName: lastName || "",
         email: email || "",
         phone: phone || "",
-        message: "",
+        message: message || "",
       });
-  }, [mode, firstName, lastName, phone, email, appointmentRequest, reset]);
+  }, [
+    mode,
+    firstName,
+    lastName,
+    phone,
+    email,
+    appointmentRequest,
+    message,
+    reset,
+  ]);
 
   const onSubmit = async (data: unknown) => {
     setIsLoading(true);
@@ -95,7 +112,7 @@ export const ContactForm = () => {
   };
 
   return (
-    <div className="w-full flex flex-col">
+    <>
       {isLoading ? (
         <Loader message="Processing submission, please wait..." />
       ) : (
@@ -129,9 +146,9 @@ export const ContactForm = () => {
                 July 4th, Labor Day, Thanksgiving, and between Christmas and New
                 Year&apos;s Day.
               </p>
-              <EmergencyWarning />
+              {mode !== "app" && <EmergencyWarning />}
             </div>
-          ) : (
+          ) : mode !== "app" ? (
             <div className="text-center -mt-4">
               <h2 className="text-3xl font-extrabold tracking-tight text-movet-black sm:text-4xl">
                 {submissionSuccess === null
@@ -146,76 +163,80 @@ export const ContactForm = () => {
                 </pre>
               )}
             </div>
+          ) : (
+            <></>
           )}
           {submissionSuccess === null && (
             <div className="mt-4 flex md:flex-row flex-col">
-              <section className="w-full md:w-1/2 p-6">
-                <h2 className="m-0 text-xl">MoVET @ Belleview Station</h2>
-                <iframe
-                  title="Google Map of MoVET @ Belleview Station"
-                  loading="lazy"
-                  allowFullScreen
-                  referrerPolicy="no-referrer-when-downgrade"
-                  src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0&zoom=10"
-                  className="w-full h-80 rounded-xl mb-8 mt-6"
-                />
-                <div className="flex flex-col justify-center items-center">
-                  <h3 className="text-lg">
-                    Wellness Clinic & Home Veterinary Services
-                  </h3>
-                  <a
-                    className="text-center mb-2 w-full mt-2 text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
-                    target="_blank"
-                    href={"https://goo.gl/maps/h8eUvU7nsZTDEwHW9"}
-                    rel="noopener noreferrer"
-                  >
-                    <FontAwesomeIcon
-                      icon={faHouseMedical}
-                      size="lg"
-                      className="mr-2 text-movet-red"
-                    />
-                    4912 S Newport St, Denver, CO 80237
-                  </a>
-                  <a
-                    className="text-center mb-2 w-full text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
-                    target="_blank"
-                    href={"mailto:info@movetcare.com"}
-                    rel="noopener noreferrer"
-                  >
-                    <FontAwesomeIcon
-                      icon={faEnvelopeSquare}
-                      size="lg"
-                      className="mr-2 text-movet-red"
-                    />
-                    info@movetcare.com
-                  </a>
-                  <a
-                    className="text-center mb-2 w-full text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
-                    target="_blank"
-                    href={"tel:+17205077387"}
-                    rel="noopener noreferrer"
-                  >
-                    <FontAwesomeIcon
-                      icon={faPhone}
-                      size="lg"
-                      className="mr-2 text-movet-red"
-                    />
-                    (720) 507-7387
-                  </a>
-                  <Link
-                    href="/get-the-app/"
-                    passHref
-                    className="text-center mb-2 w-full text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
-                  >
-                    <FontAwesomeIcon
-                      icon={faMessage}
-                      size="lg"
-                      className="mr-2 text-movet-red"
-                    />
-                    Chat with Us
-                  </Link>
-                </div>
-              </section>
+              {mode !== "app" && (
+                <section className="w-full md:w-1/2 p-6">
+                  <h2 className="m-0 text-xl">MoVET @ Belleview Station</h2>
+                  <iframe
+                    title="Google Map of MoVET @ Belleview Station"
+                    loading="lazy"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0&zoom=10"
+                    className="w-full h-80 rounded-xl mb-8 mt-6"
+                  />
+                  <div className="flex flex-col justify-center items-center">
+                    <h3 className="text-lg">
+                      Wellness Clinic & Home Veterinary Services
+                    </h3>
+                    <a
+                      className="text-center mb-2 w-full mt-2 text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                      target="_blank"
+                      href={"https://goo.gl/maps/h8eUvU7nsZTDEwHW9"}
+                      rel="noopener noreferrer"
+                    >
+                      <FontAwesomeIcon
+                        icon={faHouseMedical}
+                        size="lg"
+                        className="mr-2 text-movet-red"
+                      />
+                      4912 S Newport St, Denver, CO 80237
+                    </a>
+                    <a
+                      className="text-center mb-2 w-full text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                      target="_blank"
+                      href={"mailto:info@movetcare.com"}
+                      rel="noopener noreferrer"
+                    >
+                      <FontAwesomeIcon
+                        icon={faEnvelopeSquare}
+                        size="lg"
+                        className="mr-2 text-movet-red"
+                      />
+                      info@movetcare.com
+                    </a>
+                    <a
+                      className="text-center mb-2 w-full text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                      target="_blank"
+                      href={"tel:+17205077387"}
+                      rel="noopener noreferrer"
+                    >
+                      <FontAwesomeIcon
+                        icon={faPhone}
+                        size="lg"
+                        className="mr-2 text-movet-red"
+                      />
+                      (720) 507-7387
+                    </a>
+                    <Link
+                      href="/get-the-app/"
+                      passHref
+                      className="text-center mb-2 w-full text-sm text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                    >
+                      <FontAwesomeIcon
+                        icon={faMessage}
+                        size="lg"
+                        className="mr-2 text-movet-red"
+                      />
+                      Chat with Us
+                    </Link>
+                  </div>
+                </section>
+              )}
               <section className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 text-left w-full md:w-1/2 px-6 pb-6 pt-0 sm:p-6">
                 {isLoading ? (
                   "Processing your request, please wait..."
@@ -233,7 +254,6 @@ export const ContactForm = () => {
                     support@movetcare.com if you continue having trouble.
                   </p>
                 )}
-
                 <TextInput
                   autoFocus={!(mode !== "app")}
                   disabled={isLoading}
@@ -295,15 +315,15 @@ export const ContactForm = () => {
                       CONTACT_REASONS[2] === reason
                         ? "Tell us about the bug(s) you found"
                         : appointmentRequest
-                        ? "Appointment Request"
-                        : "Message"
+                          ? "Appointment Request"
+                          : "Message"
                     }
                     placeholder={
                       CONTACT_REASONS[1] === reason
                         ? "Please provide as much details as possible"
                         : appointmentRequest
-                        ? 'Please provide the 5 "W"\'s (Who, What, Where, When and Why)'
-                        : "Whats on your mind?"
+                          ? 'Please provide the 5 "W"\'s (Who, What, Where, When and Why)'
+                          : "Whats on your mind?"
                     }
                     required
                     multiline
@@ -331,6 +351,6 @@ export const ContactForm = () => {
           )}
         </div>
       )}
-    </div>
+    </>
   );
 };

@@ -4,6 +4,7 @@ import { Image, TouchableOpacity } from "react-native";
 import LayoutDimensions from "constants/Layout";
 import tw from "tailwind";
 import { View } from "components/themed";
+import { isTablet } from "utils/isTablet";
 
 export interface Ad {
   autoOpen?: boolean;
@@ -33,7 +34,10 @@ export const Ad = ({ content }: { content: Ad }): ReactNode => {
         noDarkMode
       >
         <View
-          style={tw`px-4 bg-transparent rounded-xl flex-row items-center w-full`}
+          style={[
+            //isTablet ? tw`px-16` : tw`px-4`,
+            tw`bg-transparent rounded-xl flex-row items-center w-full px-4`,
+          ]}
           noDarkMode
         >
           <Image

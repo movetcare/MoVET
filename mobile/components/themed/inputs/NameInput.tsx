@@ -1,76 +1,66 @@
-import React from "react";
 import { Controller } from "react-hook-form";
 import { TextInput, useColorScheme } from "react-native";
-import tw from "tailwind";
 import { FormFieldError } from "./InputFieldError";
-
-export const PasswordInput = ({
+import tw from "tailwind";
+export const NameInput = ({
   control,
   error,
+  name,
   placeholder,
+  textContentType,
   defaultValue = null,
-  textContentType = "password",
   autoFocus = false,
+  style,
   editable = true,
-  required = true,
 }: {
   control: any;
   error: any;
-  placeholder?: string;
+  name: string;
+  placeholder: string;
   defaultValue?: string | null;
-  textContentType?: "password" | "newPassword";
+  textContentType?: "name" | "givenName" | "familyName";
   autoFocus?: boolean;
+  style?: any;
   editable?: boolean;
-  required?: boolean;
 }) => {
   const isDarkMode = useColorScheme() !== "light";
   return (
     <>
       <Controller
         control={control}
-        rules={
-          required
-            ? {
-                required: "Password is required",
-                minLength: {
-                  message: "Password requires at least 6 characters",
-                  value: 6,
-                },
-              }
-            : {
-                minLength: {
-                  message: "Password requires at least 6 characters",
-                  value: 6,
-                },
-              }
-        }
+        rules={{
+          required: "Name is required",
+          minLength: {
+            message: "Names are usually more than 2 characters",
+            value: 2,
+          },
+        }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             editable={editable}
-            secureTextEntry={true}
-            autoCapitalize="none"
+            autoCapitalize="words"
             textContentType={textContentType}
             keyboardType="default"
             autoCorrect={false}
-            autoComplete="password"
+            autoComplete="name"
             autoFocus={autoFocus}
             style={[
-              tw`w-full border-2 py-4 px-5 m-2 bg-movet-white rounded-xl dark:bg-movet-black dark:border-movet-white dark:text-movet-white`,
-
-              error ? tw`border-movet-red` : tw` dark:border-movet-white`,
+              style,
+              tw`border-2 py-4 px-5 bg-movet-white dark:bg-movet-black dark:border-movet-white dark:text-movet-white rounded-xl`,
+              error ? tw`'border-movet-red` : tw`dark:border-movet-white`,
               !editable && tw`opacity-50`,
             ]}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            placeholder={placeholder || "Password"}
+            placeholder={placeholder}
             placeholderTextColor={
               isDarkMode ? tw.color("movet-white") : tw.color("movet-black")
             }
           />
         )}
-        name="password"
-        defaultValue={defaultValue || null}
+        name={name}
+        defaultValue={defaultValue}
       />
       {error && <FormFieldError>{error}</FormFieldError>}
     </>
