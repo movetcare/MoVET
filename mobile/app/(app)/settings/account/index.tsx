@@ -35,9 +35,6 @@ const AccountSettings = () => {
   const [client, setClient] = useState<any>(null);
   const [showAccountDeletionConfirmation, setShowAccountDeletionConfirmation] =
     useState<boolean>(false);
-  const [defaultAddress, setDefaultAddress] = useState<string | undefined>(
-    undefined,
-  );
   const [location, setLocation] = useState<{
     lat: number;
     lng: number;
@@ -72,34 +69,39 @@ const AccountSettings = () => {
             lastName: doc.data()?.lastName,
             email: doc.data()?.email,
             phone: doc.data()?.phone,
-            address: `${doc.data()?.street ? doc.data()?.street + "," : ""} ${
-              doc.data()?.city ? doc.data()?.city + "," : ""
-            } ${doc.data()?.state ? doc.data()?.state + "," : ""} ${
-              doc.data()?.zipCode ? doc.data().zipCode : ""
-            }`,
+            address:
+              doc.data()?.street && doc.data()?.city
+                ? `${doc.data()?.street ? doc.data()?.street + "," : ""} ${
+                    doc.data()?.city ? doc.data()?.city + "," : ""
+                  } ${doc.data()?.state ? doc.data()?.state : ""} ${
+                    doc.data()?.zipCode ? doc.data().zipCode : ""
+                  }`
+                : "",
           });
           reset({
             firstName: doc.data()?.firstName,
             lastName: doc.data()?.lastName,
             email: doc.data()?.email,
             phone: doc.data()?.phone,
-            address: `${doc.data()?.street ? doc.data()?.street + "," : ""} ${
-              doc.data()?.city ? doc.data()?.city + "," : ""
-            } ${doc.data()?.state ? doc.data()?.state + "," : ""} ${
-              doc.data()?.zipCode ? doc.data().zipCode : ""
-            }` as any,
+            address:
+              doc.data()?.street && doc.data()?.city
+                ? `${doc.data()?.street ? doc.data()?.street + "," : ""} ${
+                    doc.data()?.city ? doc.data()?.city + "," : ""
+                  } ${doc.data()?.state ? doc.data()?.state : ""} ${
+                    doc.data()?.zipCode ? doc.data().zipCode : ""
+                  }`
+                : "",
           });
         } else {
-          setClient(null);
+          setClient(false);
           setIsLoading(false);
-          setError({ message: "MISSING CLIENT DATA" });
         }
       },
-      // (error: any) => {
-      //   setClient(null);
-      //   setIsLoading(false);
-      //   setError(error);
-      // }
+      (error: any) => {
+        setClient(false);
+        setIsLoading(false);
+        setError(error);
+      },
     );
     return () => unsubscribeAccountSettings();
   }, [user, reset]);
@@ -110,12 +112,21 @@ const AccountSettings = () => {
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
+    const clientData: any = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: data.phone,
+      location,
+    };
+    if (data?.address) {
+      const address: Array<string> = data?.address.split(",").slice(0, 3);
+      clientData.street = address[0].trim();
+      clientData.city = address[1].trim();
+      clientData.zip = address[2].split(" ")[2];
+    }
+    console.log("clientData", clientData);
     const updateClient = httpsCallable(functions, "updateClient");
-    await updateClient({
-      sendEmail: data.sendEmail,
-      sendSms: data.sendSms,
-      sendPush: data.sendPush,
-    })
+    await updateClient(clientData)
       .then((result) => {
         if (!result.data) setError({ message: "Failed to Save Updates" });
       })
@@ -195,7 +206,7 @@ const AccountSettings = () => {
                 name="address"
                 setValue={setValue}
                 watch={watch}
-                defaultValue={defaultAddress || ""}
+                defaultValue={client.address || ""}
                 zip={zipcode}
                 setZip={setZipcode}
                 location={location}
@@ -208,9 +219,9 @@ const AccountSettings = () => {
               disabled={!isDirty || isLoading}
               loading={isLoading}
               title={isLoading ? "Saving Changes..." : "Save Changes"}
-              color="red"
+              color="black"
               iconName="check"
-              style={isDirty && tw`mt-16`}
+              style={tw`mt-16`}
             />
             <TouchableOpacity
               style={tw`w-full mt-16 flex-row items-center justify-center mb-8`}

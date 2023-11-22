@@ -37,7 +37,7 @@ export const PhoneInput = ({
       <Controller
         control={control}
         rules={{
-          required: "Phone number is required",
+          //required: "Phone number is required",
           pattern: {
             /* eslint-disable */
             value: /^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4}$/,

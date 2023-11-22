@@ -29,7 +29,7 @@ export const NameInput = ({
       <Controller
         control={control}
         rules={{
-          required: "Name is required",
+          //required: "Name is required",
           minLength: {
             message: "Names are usually more than 2 characters",
             value: 2,
@@ -47,7 +47,7 @@ export const NameInput = ({
             style={[
               style,
               tw`border-2 py-4 px-5 bg-movet-white dark:bg-movet-black dark:border-movet-white dark:text-movet-white rounded-xl`,
-              error ? tw`'border-movet-red` : tw`dark:border-movet-white`,
+              error ? tw`border-movet-red` : tw`dark:border-movet-white`,
               !editable && tw`opacity-50`,
             ]}
             onBlur={onBlur}

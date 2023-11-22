@@ -63,34 +63,36 @@ export const ErrorModal = ({
     parsedMessage = message.split("auth/")[1].replaceAll("-", " ");
   parsedMessage = (parsedMessage as any)?.toUpperCase();
   return (
-    <DefaultModal
-      animationType="slide"
-      transparent={true}
-      visible={isVisible}
-      presentationStyle="overFullScreen"
-    >
-      <View style={tw`h-[15%] w-full rounded-t-xl absolute bottom-0`}>
-        <TouchableOpacity onPress={onClose} style={tw`flex-1`}>
-          <View
-            style={tw`h-[46%] rounded-t-xl px-6 flex-row items-center justify-between w-full border-2 border-movet-white bg-movet-red`}
-            noDarkMode
-          >
-            <ItalicText style={tw`text-xl text-movet-white`} noDarkMode>
-              Something Went Wrong...
-            </ItalicText>
-            <TouchableOpacity onPress={onClose}>
-              <Icon name="close" height={30} width={30} color="white" />
-            </TouchableOpacity>
-          </View>
-          <View
-            style={tw`w-full border-2 border-movet-white border-t-0 h-full flex-1 items-center justify-center`}
-          >
-            <ItalicText style={tw`text-movet-red`} noDarkMode>
-              {parsedMessage}
-            </ItalicText>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </DefaultModal>
+    <View style={tw`bg-movet-black/50`} noDarkMode>
+      <DefaultModal
+        animationType="slide"
+        transparent={true}
+        visible={isVisible}
+        presentationStyle="overFullScreen"
+      >
+        <View style={tw`h-[15%] w-full rounded-t-xl absolute bottom-0`}>
+          <TouchableOpacity onPress={onClose} style={tw`flex-1`}>
+            <View
+              style={tw`h-[46%] rounded-t-xl px-6 flex-row items-center justify-between w-full border-2 border-movet-white bg-movet-red`}
+              noDarkMode
+            >
+              <ItalicText style={tw`text-xl text-movet-white`} noDarkMode>
+                Something Went Wrong...
+              </ItalicText>
+              <TouchableOpacity onPress={onClose}>
+                <Icon name="close" height={30} width={30} color="white" />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={tw`w-full border-2 border-movet-white border-t-0 h-full flex-1 items-center justify-center`}
+            >
+              <ItalicText style={tw`text-movet-red`} noDarkMode>
+                {parsedMessage}
+              </ItalicText>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </DefaultModal>
+    </View>
   );
 };

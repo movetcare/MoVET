@@ -1,16 +1,17 @@
 import {
   admin,
-  DEBUG,
+  //DEBUG,
   // stripe,
   throwError,
 } from "../../../../config/config";
 import { createAuthClient } from "./createAuthClient";
 import { getAuthUserById } from "../../../../utils/auth/getAuthUserById";
 // import { updateStripeCustomer } from "../../../stripe/updateStripeCustomer";
+const DEBUG = true;
 export const saveClient = async (
   clientId: number | string,
   proVetClientData: any,
-  movetClientData?: any
+  movetClientData?: any,
 ): Promise<boolean> => {
   const data: any = {};
   if (proVetClientData) {
@@ -101,14 +102,14 @@ export const saveClient = async (
     ) {
       if (DEBUG)
         console.log(
-          `saveClient => ATTEMPTING TO CREATE NEW AUTH USER FOR CLIENT #${clientId}`
+          `saveClient => ATTEMPTING TO CREATE NEW AUTH USER FOR CLIENT #${clientId}`,
         );
       createAuthClient(
         {
           id: `${clientId}`,
           ...proVetClientData,
         },
-        movetClientData
+        movetClientData,
       );
     } else if (
       (proVetClientData?.email === null ||
@@ -116,7 +117,7 @@ export const saveClient = async (
       DEBUG
     )
       console.log(
-        `saveClient => CLIENT #${clientId} DOES NOT HAVE AN EMAIL ADDRESS IN PROVET - SKIPPING AUTH USER CREATION`
+        `saveClient => CLIENT #${clientId} DOES NOT HAVE AN EMAIL ADDRESS IN PROVET - SKIPPING AUTH USER CREATION`,
       );
     else {
       const { firstName, lastName, phone, email, uid } = data;
@@ -139,7 +140,7 @@ export const saveClient = async (
           if (DEBUG)
             console.log(
               "saveClient => CLIENT FIRST NAME DETECTED => ",
-              firstName
+              firstName,
             );
         }
         if (lastName) {
@@ -147,7 +148,7 @@ export const saveClient = async (
           if (DEBUG)
             console.log(
               "saveClient => CLIENT LAST NAME DETECTED => ",
-              lastName
+              lastName,
             );
         }
         if (email) {
@@ -170,7 +171,7 @@ export const saveClient = async (
             if (DEBUG)
               console.log(
                 "saveClient => SUCCESSFULLY UPDATED AUTH USER ->",
-                userRecord.toJSON()
+                userRecord.toJSON(),
               );
           })
           .catch((error: any) => throwError(error));
@@ -178,7 +179,7 @@ export const saveClient = async (
     }
   } else if (DEBUG)
     console.log(
-      `saveClient => CLIENT #${clientId} IS ARCHIVED - SKIPPING AUTH USER UPDATES`
+      `saveClient => CLIENT #${clientId} IS ARCHIVED - SKIPPING AUTH USER UPDATES`,
     );
 
   const clientDocument = await admin
@@ -192,7 +193,7 @@ export const saveClient = async (
       if (document.exists) {
         if (DEBUG)
           console.log(
-            `saveClient => EXISTING CLIENT DOCUMENT FOUND: #${clientId}`
+            `saveClient => EXISTING CLIENT DOCUMENT FOUND: #${clientId}`,
           );
         return await clientDocument
           .set(
@@ -200,12 +201,12 @@ export const saveClient = async (
               ...data,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           )
           .then(async () => {
             if (DEBUG)
               console.log(
-                `saveClient => SYNCHRONIZED PROVET DATA W/ FIRESTORE FOR CLIENT #${clientId}`
+                `saveClient => SYNCHRONIZED PROVET DATA W/ FIRESTORE FOR CLIENT #${clientId}`,
               );
             return true;
           })
@@ -213,7 +214,7 @@ export const saveClient = async (
       } else if (proVetClientData.email) {
         if (DEBUG)
           console.log(
-            `saveClient => UNABLE TO LOCATE DOCUMENT FOR CLIENT #${clientId} IN FIRESTORE`
+            `saveClient => UNABLE TO LOCATE DOCUMENT FOR CLIENT #${clientId} IN FIRESTORE`,
           );
         return await admin
           .firestore()
@@ -224,7 +225,7 @@ export const saveClient = async (
               ...data,
               createdOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           )
           .then(() => true)
           .catch((error: any) => throwError(error));

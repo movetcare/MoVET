@@ -3,10 +3,10 @@ import {
   request,
   throwError,
   proVetApiUrl,
-  DEBUG,
+  //DEBUG,
 } from "../../../../config/config";
 import { capitalizeFirstLetter } from "../../../../utils/capitalizeFirstLetter";
-
+const DEBUG = true;
 export const updateProVetClient = async (payload: any): Promise<boolean> => {
   if (DEBUG) console.log("updateProVetClient -> ", payload);
 
@@ -96,10 +96,10 @@ export const updateProVetClient = async (payload: any): Promise<boolean> => {
               if (DEBUG)
                 console.log(
                   `API Response: DELETE /phonenumber/${phoneId} => `,
-                  data
+                  data,
                 );
             })
-            .catch((error: any) => throwError(error))
+            .catch((error: any) => throwError(error)),
       );
     await request
       .post("/phonenumber/", {
@@ -131,6 +131,6 @@ export const updateProVetClient = async (payload: any): Promise<boolean> => {
   return await saveClient(
     `${proVetClientData.id}`,
     proVetClientData,
-    movetClientData
+    movetClientData,
   );
 };
