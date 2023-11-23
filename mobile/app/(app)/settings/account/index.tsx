@@ -171,7 +171,10 @@ const AccountSettings = () => {
                 <BodyText style={tw`text-center`}>{user.email}</BodyText>
               </TouchableOpacity>
               {!user.emailVerified && (
-                <ItalicText noDarkMode style={tw`text-movet-red text-xs mt-1`}>
+                <ItalicText
+                  noDarkMode
+                  style={tw`text-movet-red text-xs mt-1 text-center`}
+                >
                   EMAIL ADDRESS VERIFICATION REQUIRED!
                 </ItalicText>
               )}

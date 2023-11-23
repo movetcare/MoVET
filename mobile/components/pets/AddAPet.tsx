@@ -225,8 +225,8 @@ export const AddAPet = () => {
       birthday: modifyDateStringMDY(data.birthday),
     };
     try {
-      const getBreeds = httpsCallable(functions, "getBreeds");
-      await getBreeds(patientData)
+      const createPatient = httpsCallable(functions, "createPatient");
+      await createPatient(patientData)
         .then(async (result: any) => {
           if (result.data) {
             console.log("patientId", result.data);
@@ -251,8 +251,11 @@ export const AddAPet = () => {
         tw`flex-grow items-center justify-center w-full`,
       ]}
     >
-      <View style={tw`w-40 h-40 bg-movet-gray/50 rounded-full mb-4`} noDarkMode>
-        <TouchableOpacity onPress={() => uploadMedia()}>
+      <TouchableOpacity onPress={() => uploadMedia()}>
+        <View
+          style={tw`w-40 h-40 bg-movet-gray/50 rounded-full mb-4 mt-8`}
+          noDarkMode
+        >
           {petImage ? (
             <Image
               source={{ uri: petImage }}
@@ -277,14 +280,11 @@ export const AddAPet = () => {
               )}
             </Container>
           )}
-        </TouchableOpacity>
-      </View>
-      <SubHeadingText>
-        {petImage ? "Pet Photo" : "Add a Photo"}
-        {JSON.stringify(felineBreeds)}
-      </SubHeadingText>
-      <View style={tw`w-full bg-transparent mb-8`}>
-        <SubHeadingText style={tw`mt-6`}>Name*</SubHeadingText>
+        </View>
+      </TouchableOpacity>
+      <SubHeadingText>{petImage ? "Pet Photo" : "Add a Photo"}</SubHeadingText>
+      <View style={tw`w-full mb-8`}>
+        <SubHeadingText style={tw`mt-3`}>Name*</SubHeadingText>
         <NameInput
           editable={!isLoading}
           control={control}
@@ -336,11 +336,11 @@ export const AddAPet = () => {
           data={[
             {
               value: "Female",
-              icon: "venus",
+              icon: "female",
             },
             {
               value: "Male",
-              icon: "mars",
+              icon: "male",
             },
           ]}
           error={(errors["gender"] as any)?.message as string}

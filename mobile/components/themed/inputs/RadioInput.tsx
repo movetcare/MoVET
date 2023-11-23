@@ -27,7 +27,7 @@ export const RadioInput = ({
   required?: boolean;
 }) => {
   return (
-    <View style={tw`w-full bg-transparent`}>
+    <View style={tw`w-full`}>
       <Controller
         name={name}
         rules={

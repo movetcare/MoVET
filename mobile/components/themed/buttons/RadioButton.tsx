@@ -36,17 +36,12 @@ export const RadioButton = ({
           buttonStyle.normal,
           isChecked && buttonStyle.selected,
           !editable && tw`opacity-50`,
+          tw`flex-row items-center justify-center`,
         ]}
         onPress={onRadioButtonPress}
         onBlur={onBlur}
       >
-        <ButtonText
-          style={[
-            buttonTextStyle.normal,
-            isChecked && buttonTextStyle.selected,
-            !editable && tw`opacity-50`,
-          ]}
-        >
+        <View style={tw`flex-row bg-transparent`} noDarkMode>
           {listItem.icon && (
             <>
               <Icon
@@ -55,8 +50,18 @@ export const RadioButton = ({
               />
             </>
           )}
-          {listItem.value}
-        </ButtonText>
+          <ButtonText
+            noDarkMode
+            style={[
+              buttonTextStyle.normal,
+              isChecked && buttonTextStyle.selected,
+              !editable && tw`opacity-50`,
+              tw`ml-2`,
+            ]}
+          >
+            {listItem.value}
+          </ButtonText>
+        </View>
       </TouchableOpacity>
       {currentIndex + 1 !== objectLength && <View style={tw`m-2`} />}
     </>

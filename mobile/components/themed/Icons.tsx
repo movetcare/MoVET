@@ -76,6 +76,10 @@ import CheckIcon from "assets/icons/svgs/font-awesome/check.svg";
 import CheckIconDark from "assets/icons/svgs/font-awesome/check-dark.svg";
 import TrashIcon from "assets/icons/svgs/font-awesome/trash.svg";
 import TrashIconDark from "assets/icons/svgs/font-awesome/trash-dark.svg";
+import MaleIcon from "assets/icons/svgs/font-awesome/male.svg";
+import MaleIconDark from "assets/icons/svgs/font-awesome/male-dark.svg";
+import FemaleIcon from "assets/icons/svgs/font-awesome/female.svg";
+import FemaleIconDark from "assets/icons/svgs/font-awesome/female-dark.svg";
 import ArrowLeftIcon from "assets/icons/svgs/font-awesome/arrow-left.svg";
 import ArrowLeftIconDark from "assets/icons/svgs/font-awesome/arrow-left-dark.svg";
 import { ReactNode } from "react";
@@ -121,7 +125,9 @@ export type SupportedIcons =
   | "envelope"
   | "sms"
   | "check"
-  | "trash";
+  | "trash"
+  | "male"
+  | "female";
 
 export const Icon = ({
   name = "poo",
@@ -472,6 +478,18 @@ export const Icon = ({
         <TrashIconDark height={iconHeight} width={iconWidth} style={style} />
       ) : (
         <TrashIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "male":
+      return showWhiteIcon ? (
+        <MaleIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <MaleIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "female":
+      return showWhiteIcon ? (
+        <FemaleIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <FemaleIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (

@@ -59,7 +59,7 @@ export const AutoCompleteInput = ({
 
   return (
     <>
-      <View style={tw`flex-row flex mt-4 mb-2 z-50`}>
+      <View style={tw`flex-grow mt-4 mb-2 z-1 w-full`}>
         <Controller
           name={name}
           rules={{
@@ -79,6 +79,7 @@ export const AutoCompleteInput = ({
                 autoCorrect: false,
                 autoCapitalize: "none",
                 style: {
+                  width: "100%",
                   borderRadius: 10,
                   borderWidth: 2,
                   borderColor: textColor,
@@ -88,29 +89,26 @@ export const AutoCompleteInput = ({
                 },
               }}
               rightButtonsContainerStyle={{
-                borderRadius: 25,
-                right: 8,
-                height: 30,
-                top: 10,
-                alignSelf: "center",
-                backgroundColor: backgroundColor,
+                //borderRadius: 25,
+                //right: 8,
+                //height: 30,
+                //top: 10,
+                backgroundColor: "transparent",
               }}
               inputContainerStyle={{
                 backgroundColor: backgroundColor,
               }}
-              suggestionsListContainerStyle={
-                {
-                  backgroundColor: backgroundColor,
-                  color: textColor,
-                } as any
-              }
+              suggestionsListContainerStyle={{
+                backgroundColor: backgroundColor,
+              }}
               containerStyle={{ flexGrow: 1, flexShrink: 1 }}
-              renderItem={(item: { id: string; title: string }) => (
+              renderItem={(item: { title: string }, text: string) => (
                 <BodyText
-                  style={tw`
-                    text-movet-black dark:text-movet-white text-lg py-4 ml-4`}
+                  noDarkMode
+                  style={tw`w-full text-movet-black dark:text-movet-white text-lg py-4 ml-4`}
                 >
                   {item.title}
+                  {text}
                 </BodyText>
               )}
               inputHeight={50}
