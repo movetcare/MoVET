@@ -260,18 +260,18 @@ const Home = () => {
               width={isTablet ? 150 : 100}
               style={tw`-mb-4`}
             />
-            <SectionHeading text={"Setup Your Pet's Profile"} />
+            <SectionHeading text={"Setup Your Account"} />
             <BodyText style={tw`text-center px-8 mb-2 mt-2`}>
-              Welcome to MoVET! Please add your pets to start booking your first
-              appointment.
+              Welcome to MoVET! Please add your pet(s) to start booking your
+              first appointment.
             </BodyText>
             <Container
               style={tw`w-full flex-col sm:flex-row justify-around items-center px-4`}
             >
               <ActionButton
-                title="Add My Pet"
+                title="Add a Pet"
                 iconName="plus"
-                onPress={() => router.push("/(app)/pets/new")}
+                onPress={() => router.push("/(app)/home/new-pet")}
                 style={tw`sm:w-0.9/3`}
               />
               <ActionButton

@@ -19,7 +19,8 @@ export const NavigationHeader = ({
       <TouchableOpacity
         style={tw`absolute z-1 h-12 w-12`}
         onPress={() =>
-          (router.canGoBack() && router.back()) || router.push(goBackRoot)
+          (router.push(goBackRoot) as any) ||
+          (router.canGoBack() && router.back())
         }
       >
         <Icon

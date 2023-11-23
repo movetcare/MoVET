@@ -82,7 +82,6 @@ const debouncedFetchData = debounce((callback: any) => {
 }, 500);
 
 useEffect(() => {
-  console.log("defaultValue", defaultValue);
   if (defaultValue) {
     setIsLoadingMap(true);
     setMapCoordinates(location);

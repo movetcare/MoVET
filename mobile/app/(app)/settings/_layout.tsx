@@ -6,8 +6,6 @@ import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions
 
 export default function Layout() {
   const segments = useSegments();
-  const router = useLocalSearchParams();
-  const { screenTitle, screenTitleIcon }: any = router?.params || {};
   const [navigationDetails, setNavigationDetails] = useState<{
     title: string;
     iconName: SupportedIcons;
@@ -59,7 +57,7 @@ export default function Layout() {
         iconName: "gear",
         canGoBack: false,
       });
-  }, [screenTitle, screenTitleIcon, segments]);
+  }, [segments]);
   return (
     <Stack
       screenOptions={{

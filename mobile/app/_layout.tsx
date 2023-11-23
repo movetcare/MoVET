@@ -15,6 +15,7 @@ import tw from "tailwind";
 import { ErrorLayout } from "components/themed";
 import { useFonts } from "expo-font";
 import { AuthStore } from "stores";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -83,11 +84,13 @@ const Layout = () => {
   if (!fontsLoaded) return null;
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
+    <ActionSheetProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
+    </ActionSheetProvider>
   );
 };
 

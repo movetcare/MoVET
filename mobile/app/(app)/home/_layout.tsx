@@ -28,6 +28,14 @@ export default function Layout() {
         canGoBack: true,
       });
       //}, 180);
+    } else if (segments && segments.includes("new-pet")) {
+      //setTimeout(() => {
+      setNavigationDetails({
+        title: "Add a Pet",
+        iconName: "paw",
+        canGoBack: true,
+      });
+      //}, 180);
     } else setNavigationDetails(null);
   }, [screenTitle, screenTitleIcon, segments]);
 

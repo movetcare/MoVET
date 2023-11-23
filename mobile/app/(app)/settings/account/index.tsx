@@ -124,7 +124,6 @@ const AccountSettings = () => {
       clientData.city = address[1].trim();
       clientData.zip = address[2].split(" ")[2];
     }
-    console.log("clientData", clientData);
     const updateClient = httpsCallable(functions, "updateClient");
     await updateClient(clientData)
       .then((result) => {
