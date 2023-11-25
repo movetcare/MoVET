@@ -33,7 +33,7 @@ export const throwError = (error: any): false => {
     sendNotification({
       type: "email",
       payload: {
-        to: "alex.rodriguez@movetcare.com",
+        to: "alex.rodriguez+error@movetcare.com",
         subject: error?.message
           ? "NEW ERROR => " + JSON.stringify(error?.message)
           : "NEW ERROR",
