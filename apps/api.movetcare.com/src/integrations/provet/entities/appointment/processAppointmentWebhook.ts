@@ -4,6 +4,7 @@ import { fetchEntity } from "../fetchEntity";
 // import {configureReminders} from '../reminder/configureReminders';
 import { saveAppointment } from "./saveAppointment";
 import { sendNotification } from "../../../../notifications/sendNotification";
+import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 
 export const processAppointmentWebhook = async (
   request: Request,
@@ -31,24 +32,44 @@ export const processAppointmentWebhook = async (
           if (doc.exists) return doc.data();
           else return "NEW APPOINTMENT - No Previous Data";
         })) || {};
-    //.then((error: any) => throwError(error));
+    //.catch((error: any) => throwError(error));
 
-    await saveAppointment(proVetAppointmentData);
+    if (proVetAppointmentData) await saveAppointment(proVetAppointmentData);
 
-    sendNotification({
-      type: "email",
-      payload: {
-        to: "info@movetcare.com",
-        subject: "PROVET APPOINTMENT WEBHOOK UPDATE RECEIVED",
-        message:
-          "Webhook Payload: " +
-          JSON.stringify(request.body) +
-          "\n\nPrevious Appointment Data: " +
-          JSON.stringify(previousAppointmentData) +
-          "\n\nUpdated Appointment Data: " +
-          JSON.stringify(proVetAppointmentData),
-      },
-    });
+    if (
+      previousAppointmentData &&
+      previousAppointmentData.active === 1 &&
+      proVetAppointmentData &&
+      proVetAppointmentData.active === 0
+    ) {
+      const userName = await admin
+        .firestore()
+        .collection("users")
+        .where(
+          "id",
+          "==",
+          getProVetIdFromUrl(proVetAppointmentData?.modified_user),
+        )
+        .get()
+        .then((doc: any) => doc.data()?.firstName + " " + doc.data()?.lastName)
+        .catch((error: any) => throwError(error));
+
+      sendNotification({
+        type: "email",
+        payload: {
+          to: "info@movetcare.com",
+          subject: "PROVET APPOINTMENT CANCELED!",
+          message:
+            `<p>Appointment #${proVetAppointmentData} has been canceled by '${userName}' + </p>` +
+            "<p></p><p>Updated Appointment Data: " +
+            JSON.stringify(proVetAppointmentData) +
+            "</p>" +
+            `<p></p><a href="https://us.provetcloud.com/4285/client/${getProVetIdFromUrl(
+              proVetAppointmentData?.client,
+            )}">VIEW APPOINTMENT</a>`,
+        },
+      });
+    }
     //await configureReminders('appointments');
     return response.status(200).send({ received: true });
   } catch (error: any) {

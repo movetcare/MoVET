@@ -29,8 +29,8 @@ const formatTime = (time: string): string => {
     time.toString().length === 3
       ? `0${time}`.slice(2)
       : `${time}`.slice(3)?.length === 1
-      ? "0" + `${time}`.slice(3)
-      : `${time}`.slice(3);
+        ? "0" + `${time}`.slice(3)
+        : `${time}`.slice(3);
   return new Date(
     new Date().toLocaleString("en-US", {
       timeZone: "America/Denver",
@@ -70,6 +70,7 @@ export default function DateTime() {
   const isAppMode = mode === "app";
   const [loadingMessage, setLoadingMessage] = useState<string | null>(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
+
   useEffect(() => {
     if (window.localStorage.getItem("bookingSession") !== null && router)
       setSession(
@@ -77,9 +78,12 @@ export default function DateTime() {
       );
     else router.push("/schedule-an-appointment");
   }, [router]);
+
   useEffect(() => {
     const fetchAppointmentAvailability = async (): Promise<void> => {
       setSelectedTime(null);
+      setAppointmentAvailability(null);
+      setClosedReason(null);
       const { data: result }: any = await httpsCallable(
         functions,
         "getAppointmentAvailability",
@@ -89,8 +93,8 @@ export default function DateTime() {
           session?.location === "Home"
             ? "housecall"
             : session?.location === "Clinic"
-            ? "clinic"
-            : "virtual",
+              ? "clinic"
+              : "virtual",
         patients: session?.selectedPatients,
       });
       if (Array.isArray(result)) {
@@ -241,9 +245,9 @@ export default function DateTime() {
                           {closedReason
                             ? closedReason
                             : appointmentAvailability &&
-                              appointmentAvailability?.length > 0
-                            ? "Available Appointment Times"
-                            : "No Appointments Available - Please Select a Different Day..."}
+                                appointmentAvailability?.length > 0
+                              ? "Available Appointment Times"
+                              : "No Appointments Available - Please Select a Different Day..."}
                         </p>
                         <div className="flex flex-row w-full mx-auto">
                           {appointmentAvailability &&
