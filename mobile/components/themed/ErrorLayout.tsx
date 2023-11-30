@@ -34,7 +34,7 @@ export const ErrorLayout = ({
     <Screen withBackground="pets">
       <View
         style={tw`
-              w-full rounded-t-xl flex justify-center items-center bg-transparent
+              w-full rounded-t-xl flex-1 justify-center items-center bg-transparent
             `}
         noDarkMode
       >
@@ -48,7 +48,7 @@ export const ErrorLayout = ({
       </View>
       <View
         style={[
-          tw`w-full pb-12 px-8 bg-transparent items-center rounded-b-xl`,
+          tw`flex-grow w-full px-8 bg-transparent items-center rounded-b-xl`,
           DeviceDimensions.window.height > 640 ? tw`mt-12` : tw`mt-4`,
         ]}
         noDarkMode
@@ -59,17 +59,20 @@ export const ErrorLayout = ({
           Whoops...
         </HeadingText>
         <SubHeadingText
-          style={tw`text-movet-black font-medium text-center normal-case italic mt-2 text-lg`}
+          style={tw`text-movet-black font-medium text-center normal-case italic mt-2 text-lg mb-8`}
         >
           {message}
         </SubHeadingText>
         {details && (
-          <View style={tw`mt-8 bg-movet-white p-4 rounded-xl `}>
+          <View style={tw`bg-movet-white p-4 rounded-xl `}>
             <BodyText style={tw`text-xs`}>{details}</BodyText>
           </View>
         )}
       </View>
-      <View style={tw`w-full px-8 bg-transparent items-center`} noDarkMode>
+      <View
+        style={tw`flex-grow w-full px-8 bg-transparent items-center`}
+        noDarkMode
+      >
         <ActionButton
           title={actionTitle}
           iconName={actionIconName}

@@ -23,7 +23,7 @@ export const BookingFooter = () => {
           method: "POST",
           body: JSON.stringify({
             id: JSON.parse(
-              window.localStorage.getItem("bookingSession") as string
+              window.localStorage.getItem("bookingSession") as string,
             )?.id,
             step: "restart",
           }),
@@ -34,9 +34,14 @@ export const BookingFooter = () => {
         if (response.error) {
           handleError({ message: response.error });
         } else {
-          localStorage.removeItem("email");
-          localStorage.removeItem("bookingSession");
-          router.replace("/schedule-an-appointment");
+          if (isAppMode) {
+            localStorage.removeItem("bookingSession");
+            router.replace("/schedule-an-appointment?mode=app");
+          } else {
+            localStorage.removeItem("email");
+            localStorage.removeItem("bookingSession");
+            router.replace("/schedule-an-appointment");
+          }
         }
       })
       .catch((error) => handleError(error))
@@ -49,7 +54,7 @@ export const BookingFooter = () => {
     setError(error);
     setIsLoading(false);
   };
-  return !isAppMode ? (
+  return (
     <>
       <div
         className="flex flex-row justify-center items-center cursor-pointer text-xs hover:text-movet-red ease-in-out duration-500"
@@ -82,7 +87,5 @@ export const BookingFooter = () => {
         noButtonText="CANCEL"
       />
     </>
-  ) : (
-    <></>
   );
 };

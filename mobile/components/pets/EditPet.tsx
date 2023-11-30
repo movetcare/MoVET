@@ -196,10 +196,7 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
       xhr.open("GET", uri, true);
       xhr.send(null);
     });
-    const fileRef = ref(
-      storage,
-      `clients/${user?.uid}/patients/${id}/` + uuid(),
-    );
+    const fileRef = ref(storage, `clients/${user?.uid}/patients/${id}/profile`);
     await uploadBytes(fileRef, blob).catch((error) => {
       setIsLoading(false);
       setError(error);
@@ -242,7 +239,18 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
         await createPatient(patientData)
           .then(async (result: any) => {
             if (result.data) {
-              if (petImage) await uploadImageAsync(petImage, result.data);
+              if (petImage) {
+                const photoUrl = await uploadImageAsync(petImage, result.data);
+                const updatePatient = httpsCallable(functions, "updatePatient");
+                await updatePatient({
+                  id: result.data,
+                  photoUrl,
+                })
+                  .then((result: any) => {
+                    if (!result.data) setError("Failed to Update Pet Photo");
+                  })
+                  .catch((error: any) => setError(error));
+              }
               setIsLoading(false);
               reset();
               setPetImage(null);

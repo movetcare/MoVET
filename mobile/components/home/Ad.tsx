@@ -4,7 +4,6 @@ import { Image, TouchableOpacity } from "react-native";
 import LayoutDimensions from "constants/Layout";
 import tw from "tailwind";
 import { View } from "components/themed";
-import { isTablet } from "utils/isTablet";
 
 export interface Ad {
   autoOpen?: boolean;

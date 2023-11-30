@@ -201,21 +201,13 @@ const importPatientData = async (proVetClientData: any) => {
   proVetClientData.patients.map((patientUrl: string) =>
     patientIds.push(getProVetIdFromUrl(patientUrl)),
   );
-  let patientsConfigured = 0;
   return await Promise.all(
     patientIds.map(async (patientId: string) => {
       const patient = await fetchEntity("patient", parseInt(patientId));
-      await savePatient(patient);
-      patientsConfigured++;
+      if (!patient?.archived) await savePatient(patient);
     }),
   )
-    .then(async () => {
-      if (patientsConfigured === patientIds.length) return true;
-      else
-        return throwError(
-          `ERROR: ${patientsConfigured} Out of ${patientIds.length} Patients Imported`,
-        );
-    })
+    .then(() => true)
     .catch((error: any) => throwError(error));
 };
 

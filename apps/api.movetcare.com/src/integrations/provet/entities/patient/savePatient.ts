@@ -4,7 +4,8 @@ import { modifyDateString } from "../../../../utils/modifyStringDate";
 
 export const savePatient = async (
   proVetPatientData: any,
-  vcprRequired?: boolean
+  vcprRequired?: boolean,
+  photoUrl?: string,
 ): Promise<void> => {
   const patientDocument = await admin
     .firestore()
@@ -25,14 +26,15 @@ export const savePatient = async (
           if (DEBUG) console.log(`${customField.label}`, customField.value);
           vcprRequiredCustomField = true;
         } else if (DEBUG) console.log(`${customField.label} SKIPPED`);
-      }
+      },
     );
   }
   if (DEBUG) {
+    console.log("photoUrl", photoUrl);
     console.log("vcprRequired", vcprRequired);
     console.log("vcprRequiredCustomField", vcprRequiredCustomField);
   }
-  const patientData = {
+  const patientData: any = {
     id: proVetPatientData?.id,
     archived: proVetPatientData.archived,
     breed: proVetPatientData.breed,
@@ -50,6 +52,8 @@ export const savePatient = async (
       ? modifyDateString(proVetPatientData.date_of_birth)
       : null,
   };
+
+  if (photoUrl) patientData.photoUrl = photoUrl;
 
   const data = proVetPatientData?.client
     ? {
@@ -72,14 +76,14 @@ export const savePatient = async (
           .then(() => {
             if (DEBUG)
               console.log(
-                `Successfully Synchronized PROVET Cloud Data w/ Firestore for Patient #${proVetPatientData.id}`
+                `Successfully Synchronized PROVET Cloud Data w/ Firestore for Patient #${proVetPatientData.id}`,
               );
             return proVetPatientData.id;
           });
       } else {
         if (DEBUG)
           console.log(
-            `Unable to find Patient #${proVetPatientData.id} in Firestore`
+            `Unable to find Patient #${proVetPatientData.id} in Firestore`,
           );
         return await admin
           .firestore()
@@ -92,7 +96,7 @@ export const savePatient = async (
           .then(() => {
             if (DEBUG)
               console.log(
-                `Successfully Generated Firestore Document for Patient #${proVetPatientData.id}`
+                `Successfully Generated Firestore Document for Patient #${proVetPatientData.id}`,
               );
             return proVetPatientData.id;
           })

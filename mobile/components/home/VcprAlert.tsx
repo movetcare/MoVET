@@ -11,10 +11,10 @@ import {
 import { TouchableOpacity } from "react-native";
 import { ReactNode, useState } from "react";
 import tw from "tailwind";
-import { Patient } from "app/(app)/home";
 import { Modal } from "components/Modal";
 import { router } from "expo-router";
 import { isTablet } from "utils/isTablet";
+import { Patient } from "stores";
 
 export interface Announcement {
   color: string;
@@ -27,8 +27,10 @@ export interface Announcement {
 
 export const VcprAlert = ({
   patients,
+  scheduleAppointmentPath = "/(app)/home/new-appointment",
 }: {
   patients: Array<Patient> | null;
+  scheduleAppointmentPath?: string;
 }): ReactNode => {
   const [showVcprModal, setShowVcprModal] = useState<boolean>(false);
   const textStyles = [isTablet ? tw`text-lg` : tw`text-sm`, tw`mb-2`];
@@ -36,6 +38,7 @@ export const VcprAlert = ({
     <>
       <TouchableOpacity onPress={() => setShowVcprModal(true)}>
         <View
+          noDarkMode
           style={[
             isTablet ? tw`px-16` : tw`px-4`,
             tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`,
@@ -141,7 +144,7 @@ export const VcprAlert = ({
               iconName="calendar-plus"
               onPress={() => {
                 setShowVcprModal(false);
-                router.replace("/(app)/appointments/new");
+                router.push(scheduleAppointmentPath);
               }}
             />
           </Container>

@@ -16,7 +16,7 @@ import {
   ActionButton,
 } from "components/themed";
 import { router, useLocalSearchParams } from "expo-router";
-import { AuthStore } from "stores";
+import { AuthStore, ErrorStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 import { Modal } from "components/Modal";
@@ -27,6 +27,7 @@ import Animated, {
   Easing,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import { isTablet } from "utils/isTablet";
 
 const getRandomBackgroundImage = () => {
   const randomNumber = getRandomInt(1, 5);
@@ -67,7 +68,6 @@ export default function SignIn() {
   });
   const email = watch("email" as any);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [signInError, setSignInError] = useState<null | string>(null);
   const [showVerificationButton, setShowVerificationButton] =
     useState<boolean>(false);
   const { user, isLoggedIn } = AuthStore.useState();
@@ -126,10 +126,10 @@ export default function SignIn() {
     setIsLoading(true);
     await signInWithLink(email, link)
       .then((signInError: string) => {
-        if (signInError) setSignInError(signInError);
+        if (signInError) setError(signInError);
         else router.replace("/(app)/home");
       })
-      .catch((error: any) => setSignInError(JSON.stringify(error)))
+      .catch((error: any) => setError(error))
       .finally(() => {
         setIsLoading(false);
         setShowVerificationButton(true);
@@ -139,14 +139,20 @@ export default function SignIn() {
     setIsLoading(true);
     await signIn(data?.email, data?.password)
       .then((signInError: string) => {
-        if (signInError) setSignInError(signInError);
+        if (signInError) setError(signInError);
         else if (!data?.password) setSignInLinkSent(true);
       })
-      .catch((error: any) => setSignInError(JSON.stringify(error)))
+      .catch((error: any) => setError(error))
       .finally(() => {
         setIsLoading(false);
         setShowVerificationButton(true);
       });
+  };
+
+  const setError = (error: any) => {
+    ErrorStore.update((s: any) => {
+      s.currentError = error;
+    });
   };
 
   return (
@@ -162,13 +168,15 @@ export default function SignIn() {
       >
         <Animated.View style={[tw`flex-grow`, animatedStyle]}>
           <View
-            style={tw`w-full bg-transparent flex-1 justify-center items-center`}
+            style={[
+              isTablet ? tw`px-16` : tw`px-0`,
+              tw`w-full bg-transparent flex-1 justify-center items-center`,
+            ]}
             noDarkMode
           >
             <View
               style={tw`
               w-full rounded-t-xl flex justify-center items-center bg-transparent
-              
             `}
               noDarkMode
             >

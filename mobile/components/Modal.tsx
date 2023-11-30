@@ -60,7 +60,10 @@ export const ErrorModal = ({
 }) => {
   let parsedMessage = message;
   if (typeof message === "string" && message?.includes("auth/"))
-    parsedMessage = message.split("auth/")[1].replaceAll("-", " ");
+    parsedMessage = message
+      .split("auth/")[1]
+      .replaceAll("-", " ")
+      .replaceAll('"', "");
   parsedMessage = (parsedMessage as any)?.toUpperCase();
   return (
     <View style={tw`bg-movet-black/50`} noDarkMode>

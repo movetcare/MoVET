@@ -359,7 +359,11 @@ export default function PetSelection() {
                     className={"w-full sm:w-1/2 mr-0 sm:mr-4"}
                     onClick={() => {
                       setIsLoading(true);
-                      router.push("/schedule-an-appointment/add-a-pet");
+                      router.push(
+                        isAppMode
+                          ? "/schedule-an-appointment/add-a-pet?mode=app"
+                          : "/schedule-an-appointment/add-a-pet",
+                      );
                     }}
                   />
                   <Button

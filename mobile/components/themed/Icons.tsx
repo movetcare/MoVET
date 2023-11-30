@@ -139,7 +139,7 @@ export const Icon = ({
   color = null,
 }: {
   name: SupportedIcons;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  size?: "xxs" | "xs" | "sm" | "md" | "lg" | "xl";
   style?: any;
   height?: number;
   width?: number;
@@ -154,6 +154,10 @@ export const Icon = ({
     if (width) iconWidth = width;
   } else
     switch (size) {
+      case "xxs":
+        iconHeight = 12;
+        iconWidth = 12;
+        break;
       case "xs":
         iconHeight = 20;
         iconWidth = 20;

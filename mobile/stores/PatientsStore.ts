@@ -21,6 +21,7 @@ export interface Patient {
   vcprRequired: boolean;
   weight: number;
   minorIllness: string;
+  photoUrl?: string;
 }
 
 export const PatientsStore = new Store({patients: null as Patient[] | null});

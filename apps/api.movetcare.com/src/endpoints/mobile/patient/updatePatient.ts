@@ -1,17 +1,13 @@
 import {
   functions,
   defaultRuntimeOptions,
-  mobileClientApiKey,
   throwError,
 } from "../../../config/config";
-import {updateProVetPatient} from "../../../integrations/provet/entities/patient/updateProVetPatient";
+import { updateProVetPatient } from "../../../integrations/provet/entities/patient/updateProVetPatient";
 
 export const updatePatient: Promise<boolean> = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any, context: any): Promise<boolean> => {
-    if (!context.auth)
-      if (!context.auth) throwError({message: "MISSING AUTHENTICATION"});
-    if (data?.apiKey === mobileClientApiKey) {
-      return await updateProVetPatient({...data, client: context.auth.uid});
-    } else return false;
+    if (!context.auth) throwError({ message: "MISSING AUTHENTICATION" });
+    return await updateProVetPatient({ ...data, client: context.auth.uid });
   });

@@ -11,6 +11,7 @@ import { savePatient } from "./savePatient";
 export const updateProVetPatient = async (data: Patient): Promise<any> => {
   if (DEBUG) console.log("updateProVetPatient -> ", data);
   // const {weight} = data;
+  const { photoUrl } = data || {};
   const requestPayload: any = {};
 
   Object.entries(data).forEach(([key, value]) => {
@@ -80,7 +81,9 @@ export const updateProVetPatient = async (data: Patient): Promise<any> => {
     })
     .catch((error: any) => throwError(error));
 
-  return await savePatient(proVetPatientData);
+  return photoUrl
+    ? await savePatient(proVetPatientData, undefined, photoUrl)
+    : await savePatient(proVetPatientData);
 };
 
 // function toIsoString(date: Date) {

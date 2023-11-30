@@ -20,9 +20,9 @@ service firebase.storage {
     
     match /clients/{clientId}/{allPaths=**} {
       allow read, write: if clientOwnsBucket(clientId);
-      match /patients/{patientId}/{allPaths=**} {
-      allow read, write: if clientOwnsBucket(clientId);
-    }
+      match /patients/{patientId} {
+        allow read, write: if clientOwnsBucket(clientId);
+      }
     }
   }
 }

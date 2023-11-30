@@ -24,10 +24,9 @@ import {
   doc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { ErrorModal } from "components/Modal";
 import { ErrorStore } from "stores";
 
-const DEBUG_DATA = true;
+const DEBUG_DATA = false;
 
 const TabsLayout = (props: any) => {
   const { user } = AuthStore.useState();

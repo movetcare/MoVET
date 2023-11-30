@@ -8,4 +8,5 @@ export type Patient = {
   date_of_birth?: string;
   weight?: string;
   archived?: boolean;
+  photoUrl?: string;
 };

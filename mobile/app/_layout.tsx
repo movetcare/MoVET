@@ -99,7 +99,9 @@ const Layout = () => {
           onClose={() =>
             ErrorStore.update((s: any) => {
               s.currentError = null;
-              s.pastErrors = [...s.pastErrors, currentError];
+              s.pastErrors = s.pastErrors
+                ? [...s.pastErrors, currentError]
+                : [currentError];
             })
           }
           message={
