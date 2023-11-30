@@ -6,7 +6,7 @@ import {
   //DEBUG,
 } from "../../../../config/config";
 import { capitalizeFirstLetter } from "../../../../utils/capitalizeFirstLetter";
-const DEBUG = true;
+const DEBUG = false;
 export const updateProVetClient = async (payload: any): Promise<boolean> => {
   if (DEBUG) console.log("updateProVetClient -> ", payload);
 

@@ -34,9 +34,9 @@ export const SelectInput = ({
               error
                 ? tw`border-movet-re`
                 : tw`border-movet-black dark:border-movet-white`,
-              !editable && tw`'opacity-50`,
+              !editable && tw`opacity-50`,
             ]}
-            itemStyle={tw`'text-movet-black dark:text-movet-white`}
+            itemStyle={tw`text-movet-black dark:text-movet-white`}
             dropdownIconColor={
               isDarkMode ? tw.color("movet-white") : tw.color("movet-black")
             }
@@ -65,7 +65,7 @@ export const SelectInput = ({
           </Picker>
         )}
         rules={{
-          required: true,
+          required: "A Breed is Required",
         }}
         name={name}
       />

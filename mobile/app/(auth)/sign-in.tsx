@@ -19,7 +19,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { AuthStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
-import { Modal, ErrorModal } from "components/Modal";
+import { Modal } from "components/Modal";
 import { getRandomInt } from "utils/getRandomInt";
 import Animated, {
   useSharedValue,
@@ -322,11 +322,6 @@ export default function SignIn() {
         }}
         message={`Check your email - ${email} for a sign in link.`}
         title="One More Step..."
-      />
-      <ErrorModal
-        isVisible={signInError !== null}
-        onClose={() => setSignInError(null)}
-        message={signInError}
       />
     </KeyboardAwareScrollView>
   );

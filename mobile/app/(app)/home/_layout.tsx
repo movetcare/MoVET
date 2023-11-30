@@ -36,6 +36,14 @@ export default function Layout() {
         canGoBack: true,
       });
       //}, 180);
+    } else if (segments && segments.includes("new-appointment")) {
+      //setTimeout(() => {
+      setNavigationDetails({
+        title: "Schedule Appointment",
+        iconName: "calendar-plus",
+        canGoBack: true,
+      });
+      //}, 180);
     } else setNavigationDetails(null);
   }, [screenTitle, screenTitleIcon, segments]);
 

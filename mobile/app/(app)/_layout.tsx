@@ -4,16 +4,41 @@ import { SafeAreaView, useColorScheme } from "react-native";
 import tw from "tailwind";
 import { Icon } from "components/themed";
 import { isTablet } from "utils/isTablet";
-import { AuthStore } from "stores";
+import {
+  Appointment,
+  AppointmentsStore,
+  AuthStore,
+  Patient,
+  PatientsStore,
+} from "stores";
 import { firestore } from "firebase-config";
-import { onSnapshot, query, collection, where, QuerySnapshot, } from "firebase/firestore";
+import {
+  onSnapshot,
+  query,
+  collection,
+  where,
+  QuerySnapshot,
+  orderBy,
+  DocumentData,
+  limit,
+  doc,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { ErrorModal } from "components/Modal";
+import { ErrorStore } from "stores";
 
+const DEBUG_DATA = true;
 
 const TabsLayout = (props: any) => {
-    const { user } = AuthStore.useState();
-    const [patientsCount, setPatientsCount] = useState<number | null>(null);
-    const pathName = usePathname() 
+  const { user } = AuthStore.useState();
+  const [patientsCount, setPatientsCount] = useState<number | null>(null);
+  const [upcomingAppointmentsCount, setUpcomingAppointmentsCount] = useState<
+    number | null
+  >(null);
+  const [pastAppointmentsCount, setPastAppointmentsCount] = useState<
+    number | null
+  >(null);
+  const pathName = usePathname();
   const iconHeight = isTablet ? 26 : 20;
   const iconWidth = isTablet ? 26 : 20;
   const isDarkMode = useColorScheme() !== "light";
@@ -51,22 +76,115 @@ const TabsLayout = (props: any) => {
     },
   };
 
-    useEffect(() => {
+  useEffect(() => {
+    const unsubscribeUser = onSnapshot(
+      doc(firestore, "clients", user?.uid),
+      (doc) => {
+        if (doc.exists()) {
+          AuthStore.update((store) => {
+            store.client = {
+              firstName: doc.data()?.firstName,
+              lastName: doc.data()?.lastName,
+              email: doc.data()?.email,
+              phone: doc.data()?.phone,
+              address:
+                doc.data()?.street && doc.data()?.city
+                  ? `${doc.data()?.street ? doc.data()?.street + "," : ""} ${
+                      doc.data()?.city ? doc.data()?.city + "," : ""
+                    } ${doc.data()?.state ? doc.data()?.state : ""} ${
+                      doc.data()?.zipCode ? doc.data().zipCode : ""
+                    }`
+                  : "",
+            };
+          });
+        }
+      },
+      (error: any) => {
+        setError(error);
+      },
+    );
+    const unsubscribeUpcomingAppointments = onSnapshot(
+      query(
+        collection(firestore, "appointments"),
+        where("client", "==", Number(user.uid)),
+        where("active", "==", 1),
+        where("start", ">=", new Date()),
+        orderBy("start", "desc"),
+        limit(100),
+      ),
+      (querySnapshot: QuerySnapshot) => {
+        if (querySnapshot.empty) return;
+        else setUpcomingAppointmentsCount(querySnapshot.size);
+        const appointments: Appointment[] = [];
+        querySnapshot.forEach((doc: DocumentData) => {
+          if (DEBUG_DATA)
+            console.log("UPCOMING APPOINTMENT DATA => ", doc.data());
+          appointments.push({ id: doc.id, ...doc.data() });
+        });
+        AppointmentsStore.update((store: any) => {
+          store.upcomingAppointments = appointments;
+        });
+      },
+      (error: any) => setError(error),
+    );
+    const unsubscribePastAppointments = onSnapshot(
+      query(
+        collection(firestore, "appointments"),
+        where("client", "==", Number(user.uid)),
+        where("active", "==", 0),
+        orderBy("start", "desc"),
+        limit(100),
+      ),
+      (querySnapshot: QuerySnapshot) => {
+        if (querySnapshot.empty) return;
+        else setPastAppointmentsCount(querySnapshot.size);
+        const appointments: Appointment[] = [];
+        querySnapshot.forEach((doc: DocumentData) => {
+          if (DEBUG_DATA) console.log("PAST APPOINTMENT DATA => ", doc.data());
+          appointments.push({ id: doc.id, ...doc.data() });
+        });
+        AppointmentsStore.update((store: any) => {
+          store.pastAppointments = appointments;
+        });
+      },
+      (error: any) => setError(error),
+    );
     const unsubscribePatients = onSnapshot(
       query(
         collection(firestore, "patients"),
         where("client", "==", Number(user.uid)),
         where("archived", "==", false),
+        orderBy("createdOn", "desc"),
+        limit(100),
       ),
       (querySnapshot: QuerySnapshot) => {
         if (querySnapshot.empty) return;
-         else setPatientsCount(querySnapshot.size)
+        else setPatientsCount(querySnapshot.size);
+        const patients: Patient[] = [];
+        querySnapshot.forEach((doc: DocumentData) => {
+          if (DEBUG_DATA) console.log("PATIENT DATA => ", doc.data());
+          patients.push(doc.data());
+        });
+        PatientsStore.update((store: any) => {
+          store.patients = patients;
+        });
       },
-      (error: any) => console.error("ERROR => ", error),
+      (error: any) => setError(error),
     );
-    return () => 
+    return () => {
+      unsubscribeUser();
       unsubscribePatients();
+      unsubscribeUpcomingAppointments();
+      unsubscribePastAppointments();
+    };
   }, [user?.uid]);
+
+  const setError = (error: any) => {
+    ErrorStore.update((s: any) => {
+      s.currentError = error;
+    });
+  };
+
   return (
     <SafeAreaView style={tw`flex-1 bg-movet-red dark:bg-movet-black`}>
       <Tabs
@@ -74,7 +192,11 @@ const TabsLayout = (props: any) => {
           headerShown: false,
           tabBarStyle: {
             backgroundColor: "transparent",
-            display: (( pathName === "appointments"  || pathName === "pets" ) && patientsCount) ? "none" : "flex",
+            display:
+              (pathName === "appointments" || pathName === "pets") &&
+              patientsCount
+                ? "none"
+                : "flex",
           },
         }}
       >
@@ -113,69 +235,79 @@ const TabsLayout = (props: any) => {
         />
         <Tabs.Screen
           name="appointments"
-          options={patientsCount ? {
-            title: "Appointments",
-            tabBarIcon: (navigationOptions: any) =>
-              navigationOptions.focused ? (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="clipboard-medical"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : isDarkMode ? (
-                <Icon
-                  color="white"
-                  noDarkMode
-                  name="clipboard-medical"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="clipboard-medical"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ),
-            ...tabBarStyle,
-          }: {href: null}}
+          options={
+            upcomingAppointmentsCount &&
+            pastAppointmentsCount &&
+            upcomingAppointmentsCount + pastAppointmentsCount > 0
+              ? {
+                  title: "Appointments",
+                  tabBarIcon: (navigationOptions: any) =>
+                    navigationOptions.focused ? (
+                      <Icon
+                        color="black"
+                        noDarkMode
+                        name="clipboard-medical"
+                        height={iconHeight}
+                        width={iconWidth}
+                      />
+                    ) : isDarkMode ? (
+                      <Icon
+                        color="white"
+                        noDarkMode
+                        name="clipboard-medical"
+                        height={iconHeight}
+                        width={iconWidth}
+                      />
+                    ) : (
+                      <Icon
+                        color="black"
+                        noDarkMode
+                        name="clipboard-medical"
+                        height={iconHeight}
+                        width={iconWidth}
+                      />
+                    ),
+                  ...tabBarStyle,
+                }
+              : { href: null }
+          }
         />
         <Tabs.Screen
           name="pets"
-          options={patientsCount ? {
-            title: "Pets",
-            tabBarIcon: (navigationOptions: any) =>
-              navigationOptions.focused ? (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="paw"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : isDarkMode ? (
-                <Icon
-                  color="white"
-                  noDarkMode
-                  name="paw"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="paw"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ),
-            ...tabBarStyle,
-          } : {href: null}}
+          options={
+            patientsCount
+              ? {
+                  title: "Pets",
+                  tabBarIcon: (navigationOptions: any) =>
+                    navigationOptions.focused ? (
+                      <Icon
+                        color="black"
+                        noDarkMode
+                        name="paw"
+                        height={iconHeight}
+                        width={iconWidth}
+                      />
+                    ) : isDarkMode ? (
+                      <Icon
+                        color="white"
+                        noDarkMode
+                        name="paw"
+                        height={iconHeight}
+                        width={iconWidth}
+                      />
+                    ) : (
+                      <Icon
+                        color="black"
+                        noDarkMode
+                        name="paw"
+                        height={iconHeight}
+                        width={iconWidth}
+                      />
+                    ),
+                  ...tabBarStyle,
+                }
+              : { href: null }
+          }
         />
         <Tabs.Screen
           name="chat"

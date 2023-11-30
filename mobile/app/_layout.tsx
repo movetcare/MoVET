@@ -16,6 +16,8 @@ import { ErrorLayout } from "components/themed";
 import { useFonts } from "expo-font";
 import { AuthStore } from "stores";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { ErrorModal } from "components/Modal";
+import { ErrorStore } from "stores";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,6 +36,7 @@ const Layout = () => {
   useDeviceContext(tw);
   const navigationState = useRootNavigationState();
   const { initialized, isLoggedIn } = AuthStore.useState();
+  const { currentError } = ErrorStore.useState();
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user: any) =>
       updateUserAuth(user),
@@ -85,11 +88,27 @@ const Layout = () => {
 
   return (
     <ActionSheetProvider>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      />
+      <>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        />
+        <ErrorModal
+          isVisible={currentError !== null}
+          onClose={() =>
+            ErrorStore.update((s: any) => {
+              s.currentError = null;
+              s.pastErrors = [...s.pastErrors, currentError];
+            })
+          }
+          message={
+            currentError?.code ||
+            currentError?.message ||
+            JSON.stringify(currentError)
+          }
+        />
+      </>
     </ActionSheetProvider>
   );
 };

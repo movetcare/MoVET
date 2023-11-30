@@ -12,6 +12,7 @@ export const NameInput = ({
   autoFocus = false,
   style,
   editable = true,
+  required = false,
 }: {
   control: any;
   error: any;
@@ -22,19 +23,29 @@ export const NameInput = ({
   autoFocus?: boolean;
   style?: any;
   editable?: boolean;
+  required: boolean;
 }) => {
   const isDarkMode = useColorScheme() !== "light";
   return (
     <>
       <Controller
         control={control}
-        rules={{
-          //required: "Name is required",
-          minLength: {
-            message: "Names are usually more than 2 characters",
-            value: 2,
-          },
-        }}
+        rules={
+          required
+            ? {
+                required: "Name is required",
+                minLength: {
+                  message: "Names are usually more than 2 characters",
+                  value: 2,
+                },
+              }
+            : {
+                minLength: {
+                  message: "Names are usually more than 2 characters",
+                  value: 2,
+                },
+              }
+        }
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             editable={editable}

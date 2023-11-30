@@ -18,7 +18,7 @@ import { formatTimeHoursToDate } from "../../utils/formatTimeHoursToDate";
 import { formatTimeHoursToString } from "../../utils/formatTimeHoursToString";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
-const DEBUG = true;
+const DEBUG = false;
 interface Appointment {
   start: any;
   end: any;
@@ -296,8 +296,8 @@ const assignConfiguration = async ({
         patients?.length >= 3
           ? configuration?.clinicThreePatientDuration
           : patients?.length === 2
-          ? configuration?.clinicTwoPatientDuration
-          : configuration?.clinicOnePatientDuration;
+            ? configuration?.clinicTwoPatientDuration
+            : configuration?.clinicOnePatientDuration;
       break;
     case "housecall":
       standardLunchTime = configuration?.housecallLunchTime;
@@ -310,8 +310,8 @@ const assignConfiguration = async ({
         patients?.length >= 3
           ? configuration?.housecallThreePatientDuration
           : patients?.length === 2
-          ? configuration?.housecallTwoPatientDuration
-          : configuration?.housecallOnePatientDuration;
+            ? configuration?.housecallTwoPatientDuration
+            : configuration?.housecallOnePatientDuration;
       break;
     case "virtual":
       standardLunchTime = configuration?.virtualLunchTime;
@@ -324,8 +324,8 @@ const assignConfiguration = async ({
         patients?.length >= 3
           ? configuration?.virtualThreePatientDuration
           : patients?.length === 2
-          ? configuration?.virtualTwoPatientDuration
-          : configuration?.virtualOnePatientDuration;
+            ? configuration?.virtualTwoPatientDuration
+            : configuration?.virtualOnePatientDuration;
       break;
     default:
       break;
@@ -616,10 +616,10 @@ const verifyScheduleIsOpen = async (
       schedule === "clinic"
         ? configuration?.clinicSameDayAppointmentVcprRequired
         : schedule === "housecall"
-        ? configuration?.housecallSameDayAppointmentVcprRequired
-        : schedule === "virtual"
-        ? configuration?.virtualSameDayAppointmentVcprRequired
-        : null,
+          ? configuration?.housecallSameDayAppointmentVcprRequired
+          : schedule === "virtual"
+            ? configuration?.virtualSameDayAppointmentVcprRequired
+            : null,
     );
     console.log("schedule", schedule);
     console.log("calendarDay", calendarDay);
@@ -640,10 +640,10 @@ const verifyScheduleIsOpen = async (
     (schedule === "clinic"
       ? configuration?.clinicSameDayAppointmentVcprRequired
       : schedule === "housecall"
-      ? configuration?.housecallSameDayAppointmentVcprRequired
-      : schedule === "virtual"
-      ? configuration?.virtualSameDayAppointmentVcprRequired
-      : null) &&
+        ? configuration?.housecallSameDayAppointmentVcprRequired
+        : schedule === "virtual"
+          ? configuration?.virtualSameDayAppointmentVcprRequired
+          : null) &&
     calendarDay === new Date().getDate() &&
     monthNumber === new Date().getMonth() + 1
   ) {
@@ -1035,8 +1035,8 @@ const calculateAvailableAppointments = async ({
                 availableAppointmentSlot.start.toString().length === 3
                   ? `0${availableAppointmentSlot.start}`.slice(2)
                   : `${availableAppointmentSlot.start}`.slice(3)?.length === 1
-                  ? `0${availableAppointmentSlot.start}`.slice(3)
-                  : `${availableAppointmentSlot.start}`.slice(3);
+                    ? `0${availableAppointmentSlot.start}`.slice(3)
+                    : `${availableAppointmentSlot.start}`.slice(3);
               const forcedOpenStartHours =
                 opening.startTime.toString().length === 3
                   ? `0${opening.startTime}`.slice(0, 2)
@@ -1045,8 +1045,8 @@ const calculateAvailableAppointments = async ({
                 opening.startTime.toString().length === 3
                   ? `0${opening.startTime}`.slice(2)
                   : `${opening.startTime}`.slice(3)?.length === 1
-                  ? `0${opening.startTime}`.slice(3)
-                  : `${opening.startTime}`.slice(3);
+                    ? `0${opening.startTime}`.slice(3)
+                    : `${opening.startTime}`.slice(3);
               const forcedOpenCloseHours =
                 opening.endTime.toString().length === 3
                   ? `0${opening.endTime}`.slice(0, 2)
@@ -1055,8 +1055,8 @@ const calculateAvailableAppointments = async ({
                 opening.endTime.toString().length === 3
                   ? `0${opening.endTime}`.slice(2)
                   : `${opening.endTime}`.slice(3)?.length === 1
-                  ? `0${opening.endTime}`.slice(3)
-                  : `${opening.endTime}`.slice(3);
+                    ? `0${opening.endTime}`.slice(3)
+                    : `${opening.endTime}`.slice(3);
               if (DEBUG) {
                 console.log("interval", {
                   start: new Date(
@@ -1177,8 +1177,8 @@ const getScheduledClosures = async (schedule: string) =>
       schedule === "clinic"
         ? doc.data()?.closureDatesClinic || false
         : schedule === "housecall"
-        ? doc.data()?.closureDatesHousecall || false
-        : doc.data()?.closureDatesVirtual || false,
+          ? doc.data()?.closureDatesHousecall || false
+          : doc.data()?.closureDatesVirtual || false,
     )
     .catch((error: any) => throwError(error));
 
@@ -1192,7 +1192,7 @@ const getForcedOpenings = async (schedule: string) =>
       schedule === "clinic"
         ? doc.data()?.openingDatesClinic || false
         : schedule === "housecall"
-        ? doc.data()?.openingDatesHousecall || false
-        : doc.data()?.openingDatesVirtual || false,
+          ? doc.data()?.openingDatesHousecall || false
+          : doc.data()?.openingDatesVirtual || false,
     )
     .catch((error: any) => throwError(error));

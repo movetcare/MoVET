@@ -8,36 +8,10 @@ import {
   View,
 } from "./themed";
 import { isTablet } from "utils/isTablet";
+import { Appointment, AppointmentsStore, Patient } from "stores";
 
-export interface Appointment {
-  id: string;
-  active: 0 | 1;
-  client: number;
-  createdOn: string;
-  end: any;
-  notes: string;
-  patients: Array<Patient>;
-  reason: string;
-  requestHash: string;
-  resources: Array<number>;
-  start: any;
-  type: 1 | 2 | 3 | 4;
-  user: number;
-}
-
-interface Patient {
-  gender: string;
-  id: number;
-  minorIllness: boolean;
-  name: string;
-  species: string;
-}
-
-export const AppointmentList = ({
-  appointments,
-}: {
-  appointments: Array<Appointment>;
-}) => {
+export const AppointmentList = () => {
+  const { upcomingAppointments } = AppointmentsStore.useState();
   return (
     <View
       style={[
@@ -46,8 +20,8 @@ export const AppointmentList = ({
       ]}
       noDarkMode
     >
-      {appointments &&
-        appointments.map((appointment: Appointment) => {
+      {upcomingAppointments &&
+        upcomingAppointments.map((appointment: Appointment) => {
           const location =
             appointment.resources.includes(6) || // Exam Room 1
             appointment.resources.includes(7) || // Exam Room 2

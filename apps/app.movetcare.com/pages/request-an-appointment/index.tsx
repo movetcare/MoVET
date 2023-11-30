@@ -87,7 +87,7 @@ export default function RequestAnAppointment({
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
   const router = useRouter();
-  const { email, mode }: any = router.query || {};
+  const { email, mode, firstName, lastName, phone }: any = router.query || {};
   const isAppMode = mode === "app";
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hideFormSection, setHideFormSection] = useState<boolean>(!isAppMode);
@@ -139,9 +139,9 @@ export default function RequestAnAppointment({
       }),
     ),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      phone: "",
+      firstName: firstName || "",
+      lastName: lastName || "",
+      phone: phone || "",
       email: email || "",
       numberOfPets: "1",
       numberOfPetsWithMinorIllness: "0",

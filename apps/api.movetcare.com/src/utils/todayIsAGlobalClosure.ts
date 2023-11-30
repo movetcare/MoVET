@@ -1,5 +1,5 @@
 import { admin, throwError } from "../config/config";
-const DEBUG = true;
+const DEBUG = false;
 
 export const todayIsAGlobalClosure = async (): Promise<boolean> => {
   let todayIsAGlobalClosure = false;

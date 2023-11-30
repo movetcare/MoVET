@@ -4,7 +4,6 @@ import {
   presentPaymentSheet,
   PaymentMethod,
 } from "@stripe/stripe-react-native";
-import { ErrorModal } from "components/Modal";
 import {
   View,
   Screen,
@@ -31,7 +30,7 @@ import {
 import { httpsCallable } from "firebase/functions";
 import { useState, useEffect } from "react";
 import { TouchableOpacity } from "react-native";
-import { AuthStore } from "stores/AuthStore";
+import { AuthStore, ErrorStore } from "stores";
 import tw from "tailwind";
 import { isProductionEnvironment } from "utils/isProductionEnvironment";
 import { isTablet } from "utils/isTablet";
@@ -47,7 +46,6 @@ interface PaymentMethod {
 
 const PaymentMethods = () => {
   const { user } = AuthStore.useState();
-  const [error, setError] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showUpcomingExpirationWarning, setShowUpcomingExpirationWarning] =
     useState(false);
@@ -95,6 +93,12 @@ const PaymentMethods = () => {
     return () => unsubscribePaymentMethods();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const setError = (error: any) => {
+    ErrorStore.update((s: any) => {
+      s.currentError = error;
+    });
+  };
 
   const prepPaymentSheet = async () => {
     setIsLoading(true);
@@ -394,14 +398,6 @@ const PaymentMethods = () => {
           disabled={!paymentOptionsReady || isLoading}
         />
       </View>
-      <ErrorModal
-        isVisible={error !== null}
-        onClose={() => {
-          handleError(null);
-          router.back();
-        }}
-        message={error?.code || error?.message || JSON.stringify(error)}
-      />
     </Screen>
   );
 };

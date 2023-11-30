@@ -1,22 +1,24 @@
-import { Appointment, AppointmentList } from "components/AppointmentList";
+import { AppointmentList } from "components/AppointmentList";
 import { SectionHeading } from "components/SectionHeading";
 import { Container, ActionButton } from "components/themed";
 import { router } from "expo-router";
+import { AppointmentsStore } from "stores";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 
 export const AppointmentsList = ({
-  appointments,
+  source = "appointments",
 }: {
-  appointments: Array<Appointment> | null;
+  source: "home" | "appointments";
 }) => {
-  return appointments && appointments.length ? (
+  const { upcomingAppointments } = AppointmentsStore.useState();
+  return upcomingAppointments && upcomingAppointments.length ? (
     <>
       <SectionHeading
         iconName={"clipboard-medical"}
         text={"Upcoming Appointments"}
       />
-      <AppointmentList appointments={appointments} />
+      <AppointmentList />
       <Container
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
@@ -26,7 +28,11 @@ export const AppointmentsList = ({
         <ActionButton
           title="Schedule an Appointment"
           iconName="calendar-plus"
-          onPress={() => router.push("/(app)/appointments/new")}
+          onPress={() =>
+            source === "appointments"
+              ? router.push("/(app)/appointments/new")
+              : router.push("/(app)/home/new-appointment")
+          }
           style={tw`sm:w-2.75/6`}
         />
         <ActionButton
@@ -50,7 +56,11 @@ export const AppointmentsList = ({
         <ActionButton
           title="Schedule an Appointment"
           iconName="calendar-plus"
-          onPress={() => router.push("/(app)/appointments/new")}
+          onPress={() =>
+            source === "appointments"
+              ? router.push("/(app)/appointments/new")
+              : router.push("/(app)/home/new-appointment")
+          }
           style={tw`sm:w-2.75/6`}
         />
         <ActionButton

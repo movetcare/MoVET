@@ -1,6 +1,6 @@
-import { Appointment } from "components/AppointmentList";
 import { Loader } from "components/Loader";
 import { MoVETLogo } from "components/MoVETLogo";
+import { ErrorModal } from "components/Modal";
 import { SectionHeading } from "components/SectionHeading";
 import { Ad } from "components/home/Ad";
 import { Announcement } from "components/home/Announcement";
@@ -23,9 +23,6 @@ import {
   DocumentData,
   QuerySnapshot,
   onSnapshot,
-  where,
-  limit,
-  orderBy,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
@@ -35,56 +32,24 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { AuthStore } from "stores";
-import { PatientsStore } from "stores/PatientsStore";
+import { AuthStore, ErrorStore, Patient, PatientsStore } from "stores";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 
-export interface Patient {
-  archived: boolean;
-  birthday: string;
-  breed: string;
-  breedId: number;
-  client: number;
-  createdOn: any;
-  customFields: Array<{
-    field_id: number;
-    id: number;
-    label: string;
-    value: string;
-  }>;
-  gender: string;
-  id: number;
-  name: string;
-  picture: string | null;
-  species: string;
-  vcprRequired: boolean;
-  weight: number;
-}
-
 const DEBUG_DATA = false;
+
 const Home = () => {
   const isDarkMode = useColorScheme() !== "light";
+  const { patients } = PatientsStore.useState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [didFetchAppointments, setDidFetchAppointments] =
-    useState<boolean>(false);
-  const [didFetchPatients, setDidFetchPatients] = useState<boolean>(false);
-  const [didFetchAlerts, setDidFetchAlerts] = useState<boolean>(false);
   const [announcement, setAnnouncement] = useState<null | Announcement>(null);
   const [ad, setAd] = useState<null | Ad>(null);
   const [telehealthStatus, setTelehealthStatus] =
     useState<null | TelehealthStatus>(null);
-  const [appointments, setAppointments] = useState<null | Appointment[]>(null);
   const [showVcprAlert, setShowVcprAlert] = useState<boolean>(false);
   const [vcprPatients, setVcprPatients] = useState<Patient[] | null>(null);
-  const [patients, setPatients] = useState<Patient[] | null>(null);
   const { user } = AuthStore.useState();
   const fadeInOpacity = useSharedValue(0);
-
-  useEffect(() => {
-    if (didFetchAppointments && didFetchPatients && didFetchAlerts)
-      setIsLoading(false);
-  }, [didFetchAlerts, didFetchAppointments, didFetchPatients]);
 
   const fadeIn = () => {
     fadeInOpacity.value = withTiming(1, {
@@ -104,11 +69,25 @@ const Home = () => {
   });
 
   useEffect(() => {
+    if (patients) {
+      const vcprPatients: Array<Patient> = [];
+      patients.forEach((patient: Patient) => {
+        if (patient.vcprRequired) {
+          vcprPatients.push(patient);
+          setShowVcprAlert(true);
+        }
+      });
+      setVcprPatients(vcprPatients);
+      setIsLoading(false);
+    }
+  }, [patients]);
+
+  useEffect(() => {
     const unsubscribeAlerts = onSnapshot(
       query(collection(firestore, "alerts")),
       (querySnapshot: QuerySnapshot) => {
-        setDidFetchAlerts(true);
         if (querySnapshot.empty) {
+          setIsLoading(false);
           return;
         }
         querySnapshot.forEach((doc: DocumentData) => {
@@ -130,74 +109,72 @@ const Home = () => {
               break;
           }
         });
+        setIsLoading(false);
       },
-      (error: any) => console.error("ERROR => ", error),
-    );
-    const unsubscribeAppointments = onSnapshot(
-      query(
-        collection(firestore, "appointments"),
-        where("client", "==", Number(user.uid)),
-        where("active", "==", 1),
-        where("start", ">=", new Date()),
-        orderBy("start", "desc"),
-        limit(20),
-      ),
-      (querySnapshot: QuerySnapshot) => {
-        setDidFetchAppointments(true);
-        if (querySnapshot.empty) {
-          if (DEBUG_DATA)
-            console.log("APPOINTMENT DATA => NO APPOINTMENTS FOUND");
-
-          return;
-        }
-        const appointments: Appointment[] = [];
-        querySnapshot.forEach((doc: DocumentData) => {
-          if (DEBUG_DATA) console.log("APPOINTMENT DATA => ", doc.data());
-          appointments.push({ id: doc.id, ...doc.data() });
+      (error: any) => {
+        setIsLoading(false);
+        ErrorStore.update((s: any) => {
+          s.currentError = error;
         });
-        setAppointments(appointments);
       },
-      (error: any) => console.error("ERROR => ", error),
     );
-    const unsubscribePatients = onSnapshot(
-      query(
-        collection(firestore, "patients"),
-        where("client", "==", Number(user.uid)),
-        where("archived", "==", false),
-        orderBy("createdOn", "desc"),
-      ),
-      (querySnapshot: QuerySnapshot) => {
-        setDidFetchPatients(true);
-        if (querySnapshot.empty) {
-          if (DEBUG_DATA) console.log("PATIENT DATA => NO PATIENTS FOUND");
-          return;
-        }
-        const patients: Patient[] = [];
-        querySnapshot.forEach((doc: DocumentData) => {
-          if (DEBUG_DATA) console.log("PATIENT DATA => ", doc.data());
-          patients.push(doc.data());
-        });
-        PatientsStore.update((store: any) => {
-          store.patients = patients;
-        });
-        const vcprPatients: Array<Patient> = [];
-        patients.forEach((patient: Patient) => {
-          setPatients(patients);
-          if (patient.vcprRequired) {
-            vcprPatients.push(patient);
-            setShowVcprAlert(true);
-          }
-        });
-        setVcprPatients(vcprPatients);
-      },
-      (error: any) => console.error("ERROR => ", error),
-    );
-    return () => {
-      unsubscribeAlerts();
-      unsubscribeAppointments();
-      unsubscribePatients();
-    };
+    return () => unsubscribeAlerts();
   }, [user?.uid]);
+
+  const OnboardingFlow = () => {
+    return (
+      <View
+        style={tw`flex-grow w-full justify-center items-center bg-transparent`}
+        noDarkMode
+      >
+        <Icon
+          name="clinic"
+          height={isTablet ? 150 : 100}
+          width={isTablet ? 150 : 100}
+          style={tw`-mb-4`}
+        />
+        <SectionHeading text={"Setup Your Account"} />
+        <BodyText style={tw`text-center px-8 mb-2 mt-2`}>
+          Welcome to MoVET! Please add your pet(s) to start booking your first
+          appointment.
+        </BodyText>
+        <Container
+          style={tw`w-full flex-col sm:flex-row justify-around items-center px-4`}
+        >
+          <ActionButton
+            title="Add a Pet"
+            iconName="plus"
+            onPress={() => router.push("/(app)/home/new-pet")}
+            style={tw`sm:w-0.9/3`}
+          />
+          <ActionButton
+            title="View Our Services"
+            iconName="list"
+            color="brown"
+            style={tw`sm:w-0.9/3`}
+            onPress={() =>
+              router.push({
+                pathname: "/(app)/home/web-view",
+                params: {
+                  path: "/services",
+                  applicationSource: "website",
+                  screenTitle: "Our Services",
+                  screenTitleIcon: "list",
+                },
+              })
+            }
+          />
+          <ActionButton
+            color="black"
+            title="Chat w/ Us"
+            iconName="user-medical-message"
+            onPress={() => router.push("/(app)/chat")}
+            style={tw`sm:w-0.9/3`}
+          />
+        </Container>
+      </View>
+    );
+  };
 
   return isLoading ? (
     <Loader />
@@ -219,7 +196,10 @@ const Home = () => {
           />
         </View>
         {patients && patients.length ? (
-          <>
+          <View
+            style={tw`flex-grow w-full justify-center items-center bg-transparent`}
+            noDarkMode
+          >
             {(announcement?.isActiveMobile || ad?.isActive) && (
               <SectionHeading
                 iconName={"bullhorn"}
@@ -233,73 +213,24 @@ const Home = () => {
             )}
             {ad?.isActive && <Ad content={ad} />}
             {!announcement?.isActiveMobile && !ad?.isActive && (
-              <View style={tw`h-4`} />
+              <View noDarkMode style={tw`h-4 bg-transparent`} />
             )}
             {showVcprAlert && <VcprAlert patients={vcprPatients} />}
             {(announcement?.isActiveMobile || ad?.isActive) && (
-              <View style={tw`h-4`} />
+              <View noDarkMode style={tw`h-4 bg-transparent`} />
             )}
             {patients && patients.length && telehealthStatus?.isOnline && (
               <>
                 {!announcement?.isActiveMobile && !ad?.isActive && (
-                  <View style={tw`h-4`} />
+                  <View noDarkMode style={tw`h-4 bg-transparent`} />
                 )}
                 <TelehealthStatus status={telehealthStatus} />
               </>
             )}
-            <AppointmentsList appointments={appointments} />
-          </>
-        ) : (
-          <View
-            style={tw`flex-grow w-full justify-center items-center bg-transparent`}
-            noDarkMode
-          >
-            <Icon
-              name="clinic"
-              height={isTablet ? 150 : 100}
-              width={isTablet ? 150 : 100}
-              style={tw`-mb-4`}
-            />
-            <SectionHeading text={"Setup Your Account"} />
-            <BodyText style={tw`text-center px-8 mb-2 mt-2`}>
-              Welcome to MoVET! Please add your pet(s) to start booking your
-              first appointment.
-            </BodyText>
-            <Container
-              style={tw`w-full flex-col sm:flex-row justify-around items-center px-4`}
-            >
-              <ActionButton
-                title="Add a Pet"
-                iconName="plus"
-                onPress={() => router.push("/(app)/home/new-pet")}
-                style={tw`sm:w-0.9/3`}
-              />
-              <ActionButton
-                title="View Our Services"
-                iconName="list"
-                color="brown"
-                style={tw`sm:w-0.9/3`}
-                onPress={() =>
-                  router.push({
-                    pathname: "/(app)/home/web-view",
-                    params: {
-                      path: "/services",
-                      applicationSource: "website",
-                      screenTitle: "Our Services",
-                      screenTitleIcon: "list",
-                    },
-                  })
-                }
-              />
-              <ActionButton
-                color="black"
-                title="Chat w/ Us"
-                iconName="user-medical-message"
-                onPress={() => router.push("/(app)/chat")}
-                style={tw`sm:w-0.9/3`}
-              />
-            </Container>
+            <AppointmentsList source="home" />
           </View>
+        ) : (
+          <OnboardingFlow />
         )}
       </Animated.View>
       <View style={tw`h-8`} />

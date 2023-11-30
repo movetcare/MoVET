@@ -1,5 +1,4 @@
 import {
-  AutoCompleteInput,
   Container,
   DateInput,
   Icon,
@@ -14,7 +13,6 @@ import {
   ActivityIndicator,
   Alert,
   Image,
-  Platform,
   TouchableOpacity,
 } from "react-native";
 import tw from "tailwind";
@@ -29,15 +27,18 @@ import { v4 as uuid } from "uuid";
 import { useForm } from "react-hook-form";
 import { httpsCallable } from "firebase/functions";
 import { isTablet } from "utils/isTablet";
+import { sortDataBy } from "utils/sortDataBy";
+import { AuthStore, ErrorStore } from "stores";
+import { ErrorModal } from "components/Modal";
+import { router } from "expo-router";
 
-export const AddAPet = () => {
+export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const [petImage, setPetImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<any>(false);
   const [canineBreeds, setCanineBreeds] = useState<any>(null);
   const [felineBreeds, setFelineBreeds] = useState<any>(null);
-  const [patient, setPatient] = useState<null | { id: number }>(null);
+  const { user } = AuthStore.useState();
 
   const {
     control,
@@ -65,8 +66,8 @@ export const AddAPet = () => {
         .then((result: any) => {
           if (!result.data) setError({ message: "Failed to Get Breeds" });
           else {
-            setCanineBreeds(result?.data[0]?.breeds);
-            setFelineBreeds(result?.data[1]?.breeds);
+            setCanineBreeds(sortDataBy(result?.data[0]?.breeds, "title"));
+            setFelineBreeds(sortDataBy(result?.data[1]?.breeds, "title"));
           }
         })
         .catch((error: any) => setError(error))
@@ -132,7 +133,6 @@ export const AddAPet = () => {
         ],
         { cancelable: true },
       );
-
       return false;
     }
     return true;
@@ -140,6 +140,7 @@ export const AddAPet = () => {
 
   const pickImageAsync = async () => {
     try {
+      await getPermissionAsync("mediaLibrary");
       const mediaLibraryPermission =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (mediaLibraryPermission.status !== "denied") {
@@ -155,12 +156,14 @@ export const AddAPet = () => {
       } else if (mediaLibraryPermission.status === "denied")
         await getPermissionAsync("mediaLibrary");
     } catch (error) {
-      alert("ERROR => " + JSON.stringify(error));
+      setIsLoading(false);
+      setError(error);
     }
   };
 
   const takePictureAsync = async () => {
     try {
+      await getPermissionAsync("camera");
       const cameraPermission =
         await ImagePicker.requestCameraPermissionsAsync();
       if (cameraPermission.status !== "denied") {
@@ -175,32 +178,36 @@ export const AddAPet = () => {
       } else if (cameraPermission.status === "denied")
         await getPermissionAsync("camera");
     } catch (error) {
-      alert("ERROR => " + JSON.stringify(error));
+      setIsLoading(false);
+      setError(error);
     }
   };
 
-  const uploadImageAsync = async (uri: any) => {
+  const uploadImageAsync = async (uri: any, id: number) => {
     const blob: any = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = () => resolve(xhr.response);
       xhr.onerror = (error: any) => {
-        console.error(error);
-        alert(error);
+        setIsLoading(false);
+        setError(error);
         reject(new TypeError("Network request failed"));
       };
       xhr.responseType = "blob";
       xhr.open("GET", uri, true);
       xhr.send(null);
     });
-    const fileRef = ref(storage, `patients/${patient.id}/` + uuid());
+    const fileRef = ref(
+      storage,
+      `clients/${user?.uid}/patients/${id}/` + uuid(),
+    );
     await uploadBytes(fileRef, blob).catch((error) => {
-      console.error(error);
-      alert(error);
+      setIsLoading(false);
+      setError(error);
     });
     blob.close();
     return await getDownloadURL(fileRef).catch((error) => {
-      console.error(error);
-      alert(error);
+      setIsLoading(false);
+      setError(error);
     });
   };
 
@@ -214,8 +221,13 @@ export const AddAPet = () => {
     } else return "";
   };
 
+  const setError = (error: any) => {
+    ErrorStore.update((s: any) => {
+      s.currentError = error;
+    });
+  };
+
   const onSubmit = async (data: any) => {
-    console.log(data);
     setIsLoading(true);
     const patientData = {
       name: data.name,
@@ -224,32 +236,39 @@ export const AddAPet = () => {
       gender: data.gender,
       birthday: modifyDateStringMDY(data.birthday),
     };
-    try {
-      const createPatient = httpsCallable(functions, "createPatient");
-      await createPatient(patientData)
-        .then(async (result: any) => {
-          if (result.data) {
-            console.log("patientId", result.data);
-            if (petImage) {
-              await uploadImageAsync(uploadImageAsync);
-            }
-          } else setError("Unable to Add a Pet");
-          setIsLoading(false);
-        })
-        .catch((error: any) => setError(error))
-        .finally(() => setIsLoading(false));
-    } catch (error: any) {
-      setIsLoading(false);
-      reset();
-      setError(error);
+    if (mode === "add") {
+      try {
+        const createPatient = httpsCallable(functions, "createPatient");
+        await createPatient(patientData)
+          .then(async (result: any) => {
+            if (result.data) {
+              if (petImage) await uploadImageAsync(petImage, result.data);
+              setIsLoading(false);
+              reset();
+              setPetImage(null);
+              router.back();
+            } else setError("Unable to Add a Pet");
+            setIsLoading(false);
+          })
+          .catch((error: any) => setError(error))
+          .finally(() => setIsLoading(false));
+      } catch (error: any) {
+        setIsLoading(false);
+        reset();
+        setPetImage(null);
+        setError(error);
+      }
+    } else if (mode === "edit") {
+      console.log("DATA", data);
     }
   };
   return (
     <View
       style={[
         isTablet ? tw`px-16` : tw`px-4`,
-        tw`flex-grow items-center justify-center w-full`,
+        tw`flex-grow items-center justify-center w-full bg-transparent`,
       ]}
+      noDarkMode
     >
       <TouchableOpacity onPress={() => uploadMedia()}>
         <View
@@ -284,7 +303,13 @@ export const AddAPet = () => {
       </TouchableOpacity>
       <SubHeadingText>{petImage ? "Pet Photo" : "Add a Photo"}</SubHeadingText>
       <View style={tw`w-full mb-8`}>
-        <SubHeadingText style={tw`mt-3`}>Name*</SubHeadingText>
+        <SubHeadingText style={tw`mt-3`}>
+          Name
+          <SubHeadingText style={tw`text-movet-red`} noDarkMode>
+            {" "}
+            *
+          </SubHeadingText>
+        </SubHeadingText>
         <NameInput
           editable={!isLoading}
           control={control}
@@ -293,14 +318,21 @@ export const AddAPet = () => {
           placeholder="What do you call your pet?"
           textContentType="name"
           style={tw`flex bg-transparent mt-4`}
+          required
         />
-        <SubHeadingText style={tw`mt-6 mb-4`}>Type*</SubHeadingText>
+        <SubHeadingText style={tw`mt-6 mb-4`}>
+          Type
+          <SubHeadingText style={tw`text-movet-red`} noDarkMode>
+            {" "}
+            *
+          </SubHeadingText>
+        </SubHeadingText>
         <RadioInput
           editable={!isLoading}
           groupStyle={tw`flex-row`}
           buttonStyle={{
             normal: tw`flex-1 bg-movet-white dark:bg-movet-black dark:border-movet-white border-2 py-4 rounded-3xl text-center`,
-            selected: tw`bg-movet-red border-movet-red`,
+            selected: tw`bg-movet-brown border-movet-brown`,
           }}
           buttonTextStyle={{
             normal: tw`text-center`,
@@ -320,13 +352,19 @@ export const AddAPet = () => {
           error={(errors["species"] as any)?.message as string}
           name="species"
         />
-        <SubHeadingText style={tw`mt-6 mb-4`}>Gender*</SubHeadingText>
+        <SubHeadingText style={tw`mt-6 mb-4`}>
+          Gender
+          <SubHeadingText style={tw`text-movet-red`} noDarkMode>
+            {" "}
+            *
+          </SubHeadingText>
+        </SubHeadingText>
         <RadioInput
           editable={!isLoading}
           groupStyle={tw`flex-row`}
           buttonStyle={{
             normal: tw`flex-1 bg-movet-white dark:bg-movet-black dark:border-movet-white border-2 py-4 rounded-3xl text-center`,
-            selected: tw`bg-movet-red border-movet-red`,
+            selected: tw`bg-movet-brown border-movet-brown`,
           }}
           buttonTextStyle={{
             normal: tw`text-center`,
@@ -346,55 +384,45 @@ export const AddAPet = () => {
           error={(errors["gender"] as any)?.message as string}
           name="gender"
         />
-        <SubHeadingText style={tw`mt-6`}>Breed*</SubHeadingText>
-        {canineBreeds &&
-          selectedSpecies === "Dog" &&
-          (Platform.OS === "ios" ? (
-            <AutoCompleteInput
-              name="breed"
-              control={control}
-              error={(errors["breed"] as any)?.message as string}
-              values={canineBreeds}
-              placeholderText="Select a Dog Breed..."
-              watch={watch}
-            />
-          ) : (
-            <SelectInput
-              defaultValue={{ id: "", title: "Select a Dog Breed..." }}
-              editable={!isLoading}
-              control={control}
-              error={(errors["breed"] as any)?.message as string}
-              name="breed"
-              values={canineBreeds}
-            />
-          ))}
-        {felineBreeds &&
-          selectedSpecies === "Cat" &&
-          (Platform.OS === "ios" ? (
-            <AutoCompleteInput
-              name="breed"
-              control={control}
-              error={(errors["breed"] as any)?.message as string}
-              values={felineBreeds}
-              placeholderText="Select a Cat Breed..."
-              watch={watch}
-            />
-          ) : (
-            <SelectInput
-              defaultValue={{ id: "", title: "Select a Cat Breed..." }}
-              editable={!isLoading}
-              control={control}
-              error={(errors["breed"] as any)?.message as string}
-              name="breed"
-              values={felineBreeds}
-            />
-          ))}
+        <SubHeadingText style={tw`mt-6`}>
+          Breed
+          <SubHeadingText style={tw`text-movet-red`} noDarkMode>
+            {" "}
+            *
+          </SubHeadingText>
+        </SubHeadingText>
+        {canineBreeds && selectedSpecies === "Dog" && (
+          <SelectInput
+            defaultValue={{ id: "", title: "Select a Dog Breed..." }}
+            editable={!isLoading}
+            control={control}
+            error={(errors["breed"] as any)?.message as string}
+            name="breed"
+            values={canineBreeds}
+          />
+        )}
+        {felineBreeds && selectedSpecies === "Cat" && (
+          <SelectInput
+            defaultValue={{ id: "", title: "Select a Cat Breed..." }}
+            editable={!isLoading}
+            control={control}
+            error={(errors["breed"] as any)?.message as string}
+            name="breed"
+            values={felineBreeds}
+          />
+        )}
         {!selectedSpecies && (
           <SubHeadingText style={tw`text-center text-xs my-6`}>
             Select a Type Above
           </SubHeadingText>
         )}
-        <SubHeadingText style={tw`mt-6`}>Birthday*</SubHeadingText>
+        <SubHeadingText style={tw`mt-6`}>
+          Birthday
+          <SubHeadingText style={tw`text-movet-red`} noDarkMode>
+            {" "}
+            *
+          </SubHeadingText>
+        </SubHeadingText>
         <DateInput
           editable={!isLoading}
           control={control}
@@ -410,6 +438,7 @@ export const AddAPet = () => {
           title={isLoading ? "SAVING PET..." : "CONTINUE"}
           color="black"
           iconName={"arrow-right"}
+          style={tw`mx-auto`}
         />
       </View>
     </View>

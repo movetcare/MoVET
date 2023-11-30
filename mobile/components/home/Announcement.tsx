@@ -50,6 +50,7 @@ export const Announcement = ({
       }
     >
       <View
+        noDarkMode
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
           tw`flex-row mb-4 shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`,

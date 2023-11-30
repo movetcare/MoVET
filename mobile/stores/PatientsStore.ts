@@ -20,6 +20,7 @@ export interface Patient {
   species: string;
   vcprRequired: boolean;
   weight: number;
+  minorIllness: string;
 }
 
 export const PatientsStore = new Store({patients: null as Patient[] | null});

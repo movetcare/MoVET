@@ -8,7 +8,7 @@ import {
   throwError,
 } from "../../../../config/config";
 import { sendNotification } from "../../../../notifications/sendNotification";
-const DEBUG = true;
+const DEBUG = false;
 export const updateProVetAppointment = async (data: any): Promise<any> => {
   if (DEBUG) console.log("updateProVetAppointment -> ", data);
   const requestPayload: any = {

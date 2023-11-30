@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader } from "components/Loader";
 import { doc, onSnapshot } from "firebase/firestore";
-import { AuthStore } from "stores";
+import { AuthStore, ErrorStore } from "stores";
 import { firestore, functions } from "firebase-config";
 import { ErrorModal, Modal } from "components/Modal";
 import {
@@ -27,12 +27,10 @@ import { router } from "expo-router";
 import { isTablet } from "utils/isTablet";
 
 const AccountSettings = () => {
-  const { user } = AuthStore.useState();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<any>(null);
+  const { user, client } = AuthStore.useState();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showChangeEmailModal, setShowChangeEmailModal] =
     useState<boolean>(false);
-  const [client, setClient] = useState<any>(null);
   const [showAccountDeletionConfirmation, setShowAccountDeletionConfirmation] =
     useState<boolean>(false);
   const [location, setLocation] = useState<{
@@ -59,52 +57,14 @@ const AccountSettings = () => {
   });
 
   useEffect(() => {
-    const unsubscribeAccountSettings = onSnapshot(
-      doc(firestore, "clients", user?.uid),
-      (doc) => {
-        if (doc.exists()) {
-          setIsLoading(false);
-          setClient({
-            firstName: doc.data()?.firstName,
-            lastName: doc.data()?.lastName,
-            email: doc.data()?.email,
-            phone: doc.data()?.phone,
-            address:
-              doc.data()?.street && doc.data()?.city
-                ? `${doc.data()?.street ? doc.data()?.street + "," : ""} ${
-                    doc.data()?.city ? doc.data()?.city + "," : ""
-                  } ${doc.data()?.state ? doc.data()?.state : ""} ${
-                    doc.data()?.zipCode ? doc.data().zipCode : ""
-                  }`
-                : "",
-          });
-          reset({
-            firstName: doc.data()?.firstName,
-            lastName: doc.data()?.lastName,
-            email: doc.data()?.email,
-            phone: doc.data()?.phone,
-            address:
-              doc.data()?.street && doc.data()?.city
-                ? `${doc.data()?.street ? doc.data()?.street + "," : ""} ${
-                    doc.data()?.city ? doc.data()?.city + "," : ""
-                  } ${doc.data()?.state ? doc.data()?.state : ""} ${
-                    doc.data()?.zipCode ? doc.data().zipCode : ""
-                  }`
-                : "",
-          });
-        } else {
-          setClient(false);
-          setIsLoading(false);
-        }
-      },
-      (error: any) => {
-        setClient(false);
-        setIsLoading(false);
-        setError(error);
-      },
-    );
-    return () => unsubscribeAccountSettings();
-  }, [user, reset]);
+    if (client) reset(client);
+  }, [client]);
+
+  const setError = (error: any) => {
+    ErrorStore.update((s: any) => {
+      s.currentError = error;
+    });
+  };
 
   useEffect(() => {
     if (client) reset(client);
@@ -327,11 +287,6 @@ const AccountSettings = () => {
               </Container>
             </View>
           </Modal>
-          <ErrorModal
-            isVisible={error !== null}
-            onClose={() => setError(null)}
-            message={error?.code || error?.message || JSON.stringify(error)}
-          />
         </>
       )}
     </Screen>
