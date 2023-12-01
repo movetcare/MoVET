@@ -14,7 +14,7 @@ import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 import { Image, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
-import { VcprAlert } from "components/home/VcprAlert";
+import { VcprAlert } from "components/VcprAlert";
 
 const MyPets = () => {
   const { patients } = PatientsStore.useState();
@@ -81,7 +81,7 @@ const MyPets = () => {
                       {patient?.photoUrl ? (
                         <Image
                           source={{ uri: patient?.photoUrl }}
-                          alt="pic"
+                          alt={patient?.name + "'s photo"}
                           height={35}
                           width={35}
                           style={tw`rounded-full`}

@@ -1,6 +1,6 @@
 import tw from "tailwind";
 import { HeadingText, Icon, SupportedIcons, View } from ".";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { TouchableOpacity } from "react-native";
 
 export const NavigationHeader = ({
@@ -13,13 +13,17 @@ export const NavigationHeader = ({
   iconName: SupportedIcons | null;
   canGoBack?: boolean;
   goBackRoot?: string;
-}) =>
-  canGoBack ? (
+}) => {
+  const params = useLocalSearchParams();
+  return canGoBack ? (
     <>
       <TouchableOpacity
         style={tw`absolute z-1 h-12 w-12`}
         onPress={() =>
-          (router.push(goBackRoot) as any) ||
+          (router.push({
+            pathname: (params?.goBackRoot as string) || goBackRoot,
+            params,
+          }) as any) ||
           (router.canGoBack() && router.back())
         }
       >
@@ -62,3 +66,4 @@ export const NavigationHeader = ({
       </HeadingText>
     </View>
   );
+};

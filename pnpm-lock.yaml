@@ -54,14 +54,14 @@ importers:
   apps/admin.movetcare.com:
     dependencies:
       '@fortawesome/fontawesome-svg-core':
-        specifier: ^6.5.0
-        version: 6.5.0
+        specifier: ^6.5.1
+        version: 6.5.1
       '@fortawesome/free-solid-svg-icons':
-        specifier: ^6.5.0
-        version: 6.5.0
+        specifier: ^6.5.1
+        version: 6.5.1
       '@fortawesome/react-fontawesome':
         specifier: ^0.2.0
-        version: 0.2.0(@fortawesome/fontawesome-svg-core@6.5.0)(react@18.2.0)
+        version: 0.2.0(@fortawesome/fontawesome-svg-core@6.5.1)(react@18.2.0)
       '@headlessui/react':
         specifier: ^1.7.17
         version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
@@ -223,8 +223,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       stripe:
-        specifier: ^14.6.0
-        version: 14.6.0
+        specifier: ^14.7.0
+        version: 14.7.0
       trello-node-api:
         specifier: ^0.0.9
         version: 0.0.9
@@ -278,17 +278,17 @@ importers:
   apps/app.movetcare.com:
     dependencies:
       '@fortawesome/fontawesome-svg-core':
-        specifier: ^6.5.0
-        version: 6.5.0
+        specifier: ^6.5.1
+        version: 6.5.1
       '@fortawesome/free-brands-svg-icons':
-        specifier: ^6.5.0
-        version: 6.5.0
+        specifier: ^6.5.1
+        version: 6.5.1
       '@fortawesome/free-solid-svg-icons':
-        specifier: ^6.5.0
-        version: 6.5.0
+        specifier: ^6.5.1
+        version: 6.5.1
       '@fortawesome/react-fontawesome':
         specifier: ^0.2.0
-        version: 0.2.0(@fortawesome/fontawesome-svg-core@6.5.0)(react@18.2.0)
+        version: 0.2.0(@fortawesome/fontawesome-svg-core@6.5.1)(react@18.2.0)
       '@headlessui/react':
         specifier: ^1.7.17
         version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
@@ -435,14 +435,14 @@ importers:
   apps/movetcare.com:
     dependencies:
       '@fortawesome/fontawesome-svg-core':
-        specifier: ^6.5.0
-        version: 6.5.0
+        specifier: ^6.5.1
+        version: 6.5.1
       '@fortawesome/free-solid-svg-icons':
-        specifier: ^6.5.0
-        version: 6.5.0
+        specifier: ^6.5.1
+        version: 6.5.1
       '@fortawesome/react-fontawesome':
         specifier: ^0.2.0
-        version: 0.2.0(@fortawesome/fontawesome-svg-core@6.5.0)(react@18.2.0)
+        version: 0.2.0(@fortawesome/fontawesome-svg-core@6.5.1)(react@18.2.0)
       '@headlessui/react':
         specifier: ^1.7.17
         version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
@@ -615,17 +615,17 @@ importers:
         version: 2.3.0(@popperjs/core@2.11.8)(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@fortawesome/fontawesome-svg-core':
-        specifier: ^6.5.0
-        version: 6.5.0
+        specifier: ^6.5.1
+        version: 6.5.1
       '@fortawesome/free-brands-svg-icons':
-        specifier: ^6.5.0
-        version: 6.5.0
+        specifier: ^6.5.1
+        version: 6.5.1
       '@fortawesome/free-solid-svg-icons':
-        specifier: ^6.5.0
-        version: 6.5.0
+        specifier: ^6.5.1
+        version: 6.5.1
       '@fortawesome/react-fontawesome':
         specifier: ^0.2.0
-        version: 0.2.0(@fortawesome/fontawesome-svg-core@6.5.0)(react@18.2.0)
+        version: 0.2.0(@fortawesome/fontawesome-svg-core@6.5.1)(react@18.2.0)
       '@headlessui/react':
         specifier: ^1.7.17
         version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
@@ -1557,53 +1557,53 @@ packages:
     resolution: {integrity: sha512-eSkJsnhBWv5kCTSU1tSUVl9mpFu+5NXXunZc83le8GMjMlsWwQArSc7cJJ4yl+aDFY0NGLi0AjZWMn1axOrkRg==}
     dev: false
 
-  /@floating-ui/core@1.5.0:
-    resolution: {integrity: sha512-kK1h4m36DQ0UHGj5Ah4db7R0rHemTqqO0QLvUqi1/mUUp3LuAWbWxdxSIf/XsnH9VS6rRVPLJCncjRzUvyCLXg==}
+  /@floating-ui/core@1.5.1:
+    resolution: {integrity: sha512-QgcKYwzcc8vvZ4n/5uklchy8KVdjJwcOeI+HnnTNclJjs2nYsy23DOCf+sSV1kBwD9yDAoVKCkv/gEPzgQU3Pw==}
     dependencies:
       '@floating-ui/utils': 0.1.6
 
   /@floating-ui/dom@1.5.3:
     resolution: {integrity: sha512-ClAbQnEqJAKCJOEbbLo5IUlZHkNszqhuxS4fHAVxRPXPya6Ysf2G8KypnYcOTpx6I8xcgF9bbHb6g/2KpbV8qA==}
     dependencies:
-      '@floating-ui/core': 1.5.0
+      '@floating-ui/core': 1.5.1
       '@floating-ui/utils': 0.1.6
 
   /@floating-ui/utils@0.1.6:
     resolution: {integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==}
 
-  /@fortawesome/fontawesome-common-types@6.5.0:
-    resolution: {integrity: sha512-vYC8oN2l8meu05sRi1j3Iie/HNFAeIxpitYFhsUrBc11TxiMken9QdXnSQ0q16FYsOSt/6soxs5ghdk+VYGiog==}
+  /@fortawesome/fontawesome-common-types@6.5.1:
+    resolution: {integrity: sha512-GkWzv+L6d2bI5f/Vk6ikJ9xtl7dfXtoRu3YGE6nq0p/FFqA1ebMOAWg3XgRyb0I6LYyYkiAo+3/KrwuBp8xG7A==}
     engines: {node: '>=6'}
     requiresBuild: true
 
-  /@fortawesome/fontawesome-svg-core@6.5.0:
-    resolution: {integrity: sha512-5DrR+oxQr+ruRQ3CEVV8DSCT/q8Atm56+FzAs0P6eW/epW47OmecSpSwc/YTlJ3u5BfPKUBSGyPR2qjZ+5eIgA==}
-    engines: {node: '>=6'}
-    requiresBuild: true
-    dependencies:
-      '@fortawesome/fontawesome-common-types': 6.5.0
-
-  /@fortawesome/free-brands-svg-icons@6.5.0:
-    resolution: {integrity: sha512-LwIl3b5cH0xjmBS7mcy8+SsSsl/7J4xi3aP+Tr4rDUf2Tab8r1c8NcqC8wP5c+bgphGstyG3QPx7l4b9WtcO5Q==}
+  /@fortawesome/fontawesome-svg-core@6.5.1:
+    resolution: {integrity: sha512-MfRCYlQPXoLlpem+egxjfkEuP9UQswTrlCOsknus/NcMoblTH2g0jPrapbcIb04KGA7E2GZxbAccGZfWoYgsrQ==}
     engines: {node: '>=6'}
     requiresBuild: true
     dependencies:
-      '@fortawesome/fontawesome-common-types': 6.5.0
+      '@fortawesome/fontawesome-common-types': 6.5.1
 
-  /@fortawesome/free-solid-svg-icons@6.5.0:
-    resolution: {integrity: sha512-6ZPq8mme67Q7O9Fbp2O+Z7mPZbcWTsRv555JLftLaTodiV0Wq+99YgMhyQ8O6mgNQfComqS9OEvqs7M8ySA92g==}
+  /@fortawesome/free-brands-svg-icons@6.5.1:
+    resolution: {integrity: sha512-093l7DAkx0aEtBq66Sf19MgoZewv1zeY9/4C7vSKPO4qMwEsW/2VYTUTpBtLwfb9T2R73tXaRDPmE4UqLCYHfg==}
     engines: {node: '>=6'}
     requiresBuild: true
     dependencies:
-      '@fortawesome/fontawesome-common-types': 6.5.0
+      '@fortawesome/fontawesome-common-types': 6.5.1
 
-  /@fortawesome/react-fontawesome@0.2.0(@fortawesome/fontawesome-svg-core@6.5.0)(react@18.2.0):
+  /@fortawesome/free-solid-svg-icons@6.5.1:
+    resolution: {integrity: sha512-S1PPfU3mIJa59biTtXJz1oI0+KAXW6bkAb31XKhxdxtuXDiUIFsih4JR1v5BbxY7hVHsD1RKq+jRkVRaf773NQ==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dependencies:
+      '@fortawesome/fontawesome-common-types': 6.5.1
+
+  /@fortawesome/react-fontawesome@0.2.0(@fortawesome/fontawesome-svg-core@6.5.1)(react@18.2.0):
     resolution: {integrity: sha512-uHg75Rb/XORTtVt7OS9WoK8uM276Ufi7gCzshVWkUJbHhh3svsUUeqXerrM96Wm7fRiDzfKRwSoahhMIkGAYHw==}
     peerDependencies:
       '@fortawesome/fontawesome-svg-core': ~1 || ~6
       react: '>=16.3'
     dependencies:
-      '@fortawesome/fontawesome-svg-core': 6.5.0
+      '@fortawesome/fontawesome-svg-core': 6.5.1
       prop-types: 15.8.1
       react: 18.2.0
 
@@ -2326,8 +2326,8 @@ packages:
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
     dev: false
 
-  /@types/node@18.18.14:
-    resolution: {integrity: sha512-iSOeNeXYNYNLLOMDSVPvIFojclvMZ/HDY2dU17kUlcsOsSQETbWIslJbYLZgA+ox8g2XQwSHKTkght1a5X26lQ==}
+  /@types/node@18.19.0:
+    resolution: {integrity: sha512-667KNhaD7U29mT5wf+TZUnrzPrlL2GNQ5N0BMjO2oNULhBxX0/FKCkm6JMu0Jh7Z+1LwUlR21ekd7KhIboNFNw==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -3055,8 +3055,8 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001565
-      electron-to-chromium: 1.4.597
-      node-releases: 2.0.13
+      electron-to-chromium: 1.4.600
+      node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.22.1)
 
   /buffer-crc32@0.2.13:
@@ -3464,7 +3464,7 @@ packages:
     dependencies:
       '@cypress/request': 3.0.1
       '@cypress/xvfb': 1.2.4(supports-color@8.1.1)
-      '@types/node': 18.18.14
+      '@types/node': 18.19.0
       '@types/sinonjs__fake-timers': 8.1.1
       '@types/sizzle': 2.3.8
       arch: 2.2.0
@@ -3777,8 +3777,8 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: false
 
-  /electron-to-chromium@1.4.597:
-    resolution: {integrity: sha512-0XOQNqHhg2YgRVRUrS4M4vWjFCFIP2ETXcXe/0KIQBjXE9Cpy+tgzzYfuq6HGai3hWq0YywtG+5XK8fyG08EjA==}
+  /electron-to-chromium@1.4.600:
+    resolution: {integrity: sha512-KD6CWjf1BnQG+NsXuyiTDDT1eV13sKuYsOUioXkQweYTQIbgHkXPry9K7M+7cKtYHnSUPitVaLrXYB1jTkkYrw==}
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -3867,7 +3867,7 @@ packages:
       is-weakref: 1.0.2
       object-inspect: 1.13.1
       object-keys: 1.1.1
-      object.assign: 4.1.4
+      object.assign: 4.1.5
       regexp.prototype.flags: 1.5.1
       safe-array-concat: 1.0.1
       safe-regex-test: 1.0.0
@@ -5938,7 +5938,7 @@ packages:
     dependencies:
       array-includes: 3.1.7
       array.prototype.flat: 1.3.2
-      object.assign: 4.1.4
+      object.assign: 4.1.5
       object.values: 1.1.7
     dev: true
 
@@ -6763,8 +6763,8 @@ packages:
     resolution: {integrity: sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==}
     engines: {node: '>= 6.13.0'}
 
-  /node-releases@2.0.13:
-    resolution: {integrity: sha512-uYr7J37ae/ORWdZeQ1xxMJe3NtdmqMC/JZK+geofDrkLUApKRHPd18/TxtBOJ4A0/+uUIliorNrfYV6s1b02eQ==}
+  /node-releases@2.0.14:
+    resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
 
   /normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -6824,8 +6824,8 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /object.assign@4.1.4:
-    resolution: {integrity: sha512-1mxKf0e58bvyjSCtKYY4sRe9itRk3PJpquJOjeIkz885CczcI4IvJJDLPS72oowuSh+pBxUFROpX+TU++hxhZQ==}
+  /object.assign@4.1.5:
+    resolution: {integrity: sha512-byy+U7gp+FVwmyzKPYhW2h5l3crpmGsxl7X2s8y43IgxvG4g3QZ6CffDtsNQy1WsmZpQbO+ybo0AlW7TY6DcBQ==}
     engines: {node: '>= 0.4'}
     dependencies:
       call-bind: 1.0.5
@@ -8381,8 +8381,8 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
-  /stripe@14.6.0:
-    resolution: {integrity: sha512-fMSVzZkSYRo99sT+wD3zroZUpJtgZh/hNwSAEIOFcOgZSpHDxon3+O340RpVgOn69QCfhO3qg7mjp3nzBHLnhw==}
+  /stripe@14.7.0:
+    resolution: {integrity: sha512-A6XWH76K0K7IgEBz4odIVxjhkdPduSPafZju6ltAFU0oMbWJlfeaDyMTfRJ9vcYA9zqENfwRizExD/2nZ4rQ1A==}
     engines: {node: '>=12.*'}
     dependencies:
       '@types/node': 20.10.1

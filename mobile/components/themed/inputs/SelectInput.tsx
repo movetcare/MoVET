@@ -32,7 +32,7 @@ export const SelectInput = ({
             style={[
               tw`border-2 w-full rounded-xl bg-movet-white dark:bg-movet-black text-movet-black dark:text-movet-white -mr-8`,
               error
-                ? tw`border-movet-re`
+                ? tw`border-movet-red dark:border-movet-red`
                 : tw`border-movet-black dark:border-movet-white`,
               !editable && tw`opacity-50`,
             ]}

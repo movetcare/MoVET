@@ -1,12 +1,11 @@
 import { Loader } from "components/Loader";
 import { MoVETLogo } from "components/MoVETLogo";
-import { ErrorModal } from "components/Modal";
 import { SectionHeading } from "components/SectionHeading";
 import { Ad } from "components/home/Ad";
 import { Announcement } from "components/home/Announcement";
 import { AppointmentsList } from "components/home/AppointmentsList";
 import { TelehealthStatus } from "components/home/TelehealthStatus";
-import { VcprAlert } from "components/home/VcprAlert";
+import { VcprAlert } from "components/VcprAlert";
 import {
   ActionButton,
   BodyText,

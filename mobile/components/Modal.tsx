@@ -38,7 +38,7 @@ export const Modal = ({
           <View style={tw`p-4`}>{children}</View>
         ) : (
           <BodyText
-            style={tw`text-movet-black dark:text-movet-white px-4 text-center`}
+            style={tw`text-movet-black dark:text-movet-white p-4 text-center`}
             noDarkMode
           >
             {message}

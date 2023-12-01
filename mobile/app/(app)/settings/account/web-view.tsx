@@ -10,7 +10,6 @@ import { ApplicationTypes, getPlatformUrl } from "utils/getPlatformUrl";
 const WebView = () => {
   const { path, queryString, applicationSource } = useLocalSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  console.log(queryString);
   return (
     <>
       {isLoading && (

@@ -23,17 +23,18 @@ import { useEffect, useState } from "react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { functions, storage } from "firebase-config";
 import "react-native-get-random-values";
-import { v4 as uuid } from "uuid";
 import { useForm } from "react-hook-form";
 import { httpsCallable } from "firebase/functions";
 import { isTablet } from "utils/isTablet";
 import { sortDataBy } from "utils/sortDataBy";
-import { AuthStore, ErrorStore } from "stores";
-import { ErrorModal } from "components/Modal";
-import { router } from "expo-router";
+import { AuthStore, ErrorStore, Patient, PatientsStore } from "stores";
+import { router, useLocalSearchParams } from "expo-router";
 
-export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
+export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
   const { showActionSheetWithOptions } = useActionSheet();
+  const { id } = useLocalSearchParams();
+  const { patients } = PatientsStore.useState();
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [petImage, setPetImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [canineBreeds, setCanineBreeds] = useState<any>(null);
@@ -44,6 +45,7 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { isDirty, errors },
     watch,
   } = useForm({
@@ -56,7 +58,31 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
       birthday: null,
     },
   });
+
+  useEffect(() => {
+    if (mode === "edit" && id && patients && canineBreeds && felineBreeds) {
+      patients.forEach((patient: Patient) => {
+        if (id === `${patient.id}`) {
+          if (patient?.photoUrl) setPhotoUrl(patient?.photoUrl);
+          reset({
+            name: patient?.name || null,
+            species: patient?.species?.toLowerCase()?.includes("dog")
+              ? "Dog"
+              : "Cat" || null,
+            gender: patient?.gender || null,
+            breed: String(patient.breedId) || null,
+            birthday: patient?.birthday || null,
+          } as any);
+        }
+      });
+    }
+  }, [id, patients, reset, canineBreeds, felineBreeds, mode]);
+
   const selectedSpecies = watch("species");
+
+  useEffect(() => {
+    if (selectedSpecies) setValue("breed", null);
+  }, [selectedSpecies, setValue]);
 
   useEffect(() => {
     const fetchBreeds = async () => {
@@ -151,6 +177,7 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
         delete (result as any).cancelled;
         if (!result.canceled) {
           setPetImage(result.assets[0]?.uri);
+          setPhotoUrl(null);
           return result.assets[0]?.uri;
         } else setIsLoading(false);
       } else if (mediaLibraryPermission.status === "denied")
@@ -226,7 +253,7 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    const patientData = {
+    const patientData: any = {
       name: data.name,
       breed: data.breed ? data.breed : data.species === "Dog" ? "6714" : "6713",
       species: data.species,
@@ -267,7 +294,31 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
         setError(error);
       }
     } else if (mode === "edit") {
-      console.log("DATA", data);
+      try {
+        patientData["id"] = id;
+        if (petImage)
+          patientData["photoUrl"] = await uploadImageAsync(
+            petImage,
+            Number(id),
+          );
+        console.log(patientData);
+        const updatePatient = httpsCallable(functions, "updatePatient");
+        await updatePatient(patientData)
+          .then(async (result: any) => {
+            if (result.data) {
+              setIsLoading(false);
+              router.back();
+            } else setError("Unable to Add a Pet");
+            setIsLoading(false);
+          })
+          .catch((error: any) => setError(error))
+          .finally(() => setIsLoading(false));
+      } catch (error: any) {
+        setIsLoading(false);
+        reset();
+        setPetImage(null);
+        setError(error);
+      }
     }
   };
   return (
@@ -283,7 +334,13 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
           style={tw`w-40 h-40 bg-movet-gray/50 rounded-full mb-4 mt-8`}
           noDarkMode
         >
-          {petImage ? (
+          {photoUrl ? (
+            <Image
+              source={{ uri: photoUrl }}
+              style={tw`w-full h-full rounded-full`}
+              alt="uploaded pet image"
+            />
+          ) : petImage ? (
             <Image
               source={{ uri: petImage }}
               style={tw`w-full h-full rounded-full`}
@@ -309,7 +366,9 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
           )}
         </View>
       </TouchableOpacity>
-      <SubHeadingText>{petImage ? "Pet Photo" : "Add a Photo"}</SubHeadingText>
+      <SubHeadingText>
+        {photoUrl ? "" : petImage ? "Pet Photo" : "Add a Photo"}
+      </SubHeadingText>
       <View style={tw`w-full mb-8`}>
         <SubHeadingText style={tw`mt-3`}>
           Name
@@ -392,7 +451,7 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
           error={(errors["gender"] as any)?.message as string}
           name="gender"
         />
-        <SubHeadingText style={tw`mt-6`}>
+        <SubHeadingText style={tw`mt-6 mb-4`}>
           Breed
           <SubHeadingText style={tw`text-movet-red`} noDarkMode>
             {" "}
@@ -401,7 +460,13 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
         </SubHeadingText>
         {canineBreeds && selectedSpecies === "Dog" && (
           <SelectInput
-            defaultValue={{ id: "", title: "Select a Dog Breed..." }}
+            defaultValue={{
+              id: "",
+              title:
+                mode === "edit"
+                  ? "Select a New Breed..."
+                  : "Select a Dog Breed...",
+            }}
             editable={!isLoading}
             control={control}
             error={(errors["breed"] as any)?.message as string}
@@ -411,7 +476,13 @@ export const EditPet = ({ mode }: { mode: "add" | "edit" }) => {
         )}
         {felineBreeds && selectedSpecies === "Cat" && (
           <SelectInput
-            defaultValue={{ id: "", title: "Select a Cat Breed..." }}
+            defaultValue={{
+              id: "",
+              title:
+                mode === "edit"
+                  ? "Select a New Breed..."
+                  : "Select a Cat Breed...",
+            }}
             editable={!isLoading}
             control={control}
             error={(errors["breed"] as any)?.message as string}

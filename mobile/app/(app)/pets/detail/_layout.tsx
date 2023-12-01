@@ -17,32 +17,30 @@ export default function Layout() {
 
   useEffect(() => {
     if (segments)
-      if (segments.includes("new-pet")) {
+      if (segments.includes("edit")) {
         //setTimeout(() => {
         setNavigationDetails({
-          title: "Add a Pet",
-          iconName: "plus",
+          title: "Edit Pet",
+          iconName: "pencil",
           canGoBack: true,
-          goBackRoot: "/(app)/pets",
+          goBackRoot: "/(app)/pets/detail",
         });
         //}, 180);
-      } else if (
-        segments.includes("new-appointment") &&
-        !segments.includes("detail")
-      ) {
+      } else if (segments.includes("new-appointment")) {
         //setTimeout(() => {
         setNavigationDetails({
           title: "Schedule Appointment",
           iconName: "calendar-plus",
           canGoBack: true,
-          goBackRoot: "/(app)/pets",
+          goBackRoot: "/(app)/pets/detail",
         });
         //}, 180);
-      } else if (segments.includes("pets") && !segments.includes("detail")) {
+      } else if (segments.includes("detail")) {
         setNavigationDetails({
-          title: "My Pets",
+          title: "My Pet",
           iconName: "paw",
-          canGoBack: false,
+          canGoBack: true,
+          goBackRoot: "/(app)/pets/",
         });
       } else setNavigationDetails(null);
   }, [screenTitle, screenTitleIcon, segments]);

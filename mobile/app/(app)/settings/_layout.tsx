@@ -33,6 +33,14 @@ export default function Layout() {
         canGoBack: true,
       });
       //}, 180);
+    } else if (segments && segments.includes("errors")) {
+      //setTimeout(() => {
+      setNavigationDetails({
+        title: "ERROR LOG",
+        iconName: "exclamation-circle",
+        canGoBack: true,
+      });
+      //}, 180);
     } else if (segments && segments.includes("account")) {
       if (segments && segments.includes("web-view")) {
         //setTimeout(() => {

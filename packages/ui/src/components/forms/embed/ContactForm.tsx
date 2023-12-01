@@ -36,6 +36,7 @@ export const ContactForm = () => {
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
     null,
   );
+  const isAppMode = mode === "app";
   const {
     control,
     handleSubmit,
@@ -116,7 +117,7 @@ export const ContactForm = () => {
       {isLoading ? (
         <Loader message="Processing submission, please wait..." />
       ) : (
-        <div id="contact-form">
+        <div id="contact-form" className="w-full">
           {submissionSuccess ? (
             <div className="text-center max-w-3xl">
               <FontAwesomeIcon
@@ -146,9 +147,9 @@ export const ContactForm = () => {
                 July 4th, Labor Day, Thanksgiving, and between Christmas and New
                 Year&apos;s Day.
               </p>
-              {mode !== "app" && <EmergencyWarning />}
+              {!isAppMode && <EmergencyWarning />}
             </div>
-          ) : mode !== "app" ? (
+          ) : !isAppMode ? (
             <div className="text-center -mt-4">
               <h2 className="text-3xl font-extrabold tracking-tight text-movet-black sm:text-4xl">
                 {submissionSuccess === null
@@ -168,7 +169,7 @@ export const ContactForm = () => {
           )}
           {submissionSuccess === null && (
             <div className="mt-4 flex md:flex-row flex-col">
-              {mode !== "app" && (
+              {!isAppMode && (
                 <section className="w-full md:w-1/2 p-6">
                   <h2 className="m-0 text-xl">MoVET @ Belleview Station</h2>
                   <iframe
@@ -237,7 +238,11 @@ export const ContactForm = () => {
                   </div>
                 </section>
               )}
-              <section className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 text-left w-full md:w-1/2 px-6 pb-6 pt-0 sm:p-6">
+              <section
+                className={`grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 text-left w-full md:w-1/2 px-6 pb-6 pt-0 sm:p-6${
+                  isAppMode ? " -mt-8" : ""
+                }`}
+              >
                 {isLoading ? (
                   "Processing your request, please wait..."
                 ) : submissionSuccess === null ? (
@@ -255,7 +260,7 @@ export const ContactForm = () => {
                   </p>
                 )}
                 <TextInput
-                  autoFocus={!(mode !== "app")}
+                  autoFocus={!!isAppMode}
                   disabled={isLoading}
                   label="First Name"
                   name="firstName"
@@ -294,7 +299,7 @@ export const ContactForm = () => {
                     required={false}
                   />
                 </div>
-                {mode !== "app" && (
+                {!isAppMode && (
                   <div className="sm:col-span-2 my-2">
                     <SelectInput
                       label="Reason"

@@ -82,6 +82,8 @@ import FemaleIcon from "assets/icons/svgs/font-awesome/female.svg";
 import FemaleIconDark from "assets/icons/svgs/font-awesome/female-dark.svg";
 import ArrowLeftIcon from "assets/icons/svgs/font-awesome/arrow-left.svg";
 import ArrowLeftIconDark from "assets/icons/svgs/font-awesome/arrow-left-dark.svg";
+import PencilIcon from "assets/icons/svgs/font-awesome/pencil.svg";
+import PencilIconDark from "assets/icons/svgs/font-awesome/pencil-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -127,7 +129,8 @@ export type SupportedIcons =
   | "check"
   | "trash"
   | "male"
-  | "female";
+  | "female"
+  | "pencil";
 
 export const Icon = ({
   name = "poo",
@@ -316,6 +319,12 @@ export const Icon = ({
         <PawIconDark height={iconHeight} width={iconWidth} style={style} />
       ) : (
         <PawIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "pencil":
+      return showWhiteIcon ? (
+        <PencilIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <PencilIcon height={iconHeight} width={iconWidth} style={style} />
       );
     case "user-medical-message":
       return showWhiteIcon ? (

@@ -133,8 +133,8 @@ const send24HourAppointmentNotification = async (
   const locationType = notes?.includes("Appointment Location: Home -")
     ? "Home"
     : notes?.includes("Virtual")
-    ? "Virtually"
-    : "Clinic";
+      ? "Virtually"
+      : "Clinic";
   const { email, phoneNumber, displayName } = userDetails;
   if (DEBUG) console.log("USER DATA", { email, phoneNumber, displayName });
   if (
@@ -171,11 +171,11 @@ const send24HourAppointmentNotification = async (
         locationType === "Home" && appointmentAddress
           ? `<p></p><p><b>Location</b>: ${appointmentAddress}</p>`
           : locationType === "Virtually"
-          ? "<p></p><p><b>Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-          : locationType === "Clinic"
-          ? // eslint-disable-next-line quotes
-            '<p></p><p><b>Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-          : "<p></p><p><b>Location</b>: Walk In Appointment</p>"
+            ? "<p></p><p><b>Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+            : locationType === "Clinic"
+              ? // eslint-disable-next-line quotes
+                '<p></p><p><b>Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+              : "<p></p><p><b>Location</b>: Walk In Appointment</p>"
       }${
         start
           ? `<p></p><p><b>Date & Time</b>: ${getDateStringFromDate(
@@ -224,18 +224,18 @@ const send24HourAppointmentNotification = async (
     doesHaveValidPaymentOnFile.length > 0
       ? ""
       : user === 8
-      ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-          email as string
-        )?.replaceAll(
-          "+",
-          "%2B",
-        )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-      : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-          email as string
-        )?.replaceAll(
-          "+",
-          "%2B",
-        )}`}" target="_blank">add a form of payment</a></b></p>`
+        ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+            email as string
+          )?.replaceAll(
+            "+",
+            "%2B",
+          )}`}" target="_blank">Add a Form of Payment</a></b></p>`
+        : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+            email as string
+          )?.replaceAll(
+            "+",
+            "%2B",
+          )}`}" target="_blank">add a form of payment</a></b></p>`
   }<p><b> Handling Tips for your Pet${
     patients.length > 1 ? "s" : ""
   }:</b> Pets can get nervous and anxious about visiting the 
@@ -266,10 +266,10 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
                       clientProvetRecord?.state || "STATE UNKNOWN"
                     } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
                 : user === 7
-                ? 'MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)'
-                : user === 9
-                ? "Virtual - We'll email you a link when it's time for your consultation"
-                : 'MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)'
+                  ? 'MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)'
+                  : user === 9
+                    ? "Virtual - We'll email you a link when it's time for your consultation"
+                    : 'MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)'
             }</p>`
           : ""
       }<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p><p><b>Pet${
@@ -291,18 +291,18 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
     doesHaveValidPaymentOnFile.length > 0
       ? ""
       : user === 8
-      ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-          email as string
-        )?.replaceAll(
-          "+",
-          "%2B",
-        )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-      : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-          email as string
-        )?.replaceAll(
-          "+",
-          "%2B",
-        )}`}" target="_blank">add a form of payment</a></b></p>`
+        ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+            email as string
+          )?.replaceAll(
+            "+",
+            "%2B",
+          )}`}" target="_blank">Add a Form of Payment</a></b></p>`
+        : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+            email as string
+          )?.replaceAll(
+            "+",
+            "%2B",
+          )}`}" target="_blank">add a form of payment</a></b></p>`
   }<p><b> Handling Tips for your Pet${
     patients.length > 1 ? "s" : ""
   }:</b> Pets can get nervous and anxious about visiting the 
@@ -364,8 +364,8 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
     const locationType = notes?.includes("Appointment Location: Home -")
       ? "Home"
       : notes?.includes("Virtual")
-      ? "Virtually"
-      : "Clinic";
+        ? "Virtually"
+        : "Clinic";
     let smsText = "";
     if (isNewFlow)
       smsText = `${
@@ -376,11 +376,11 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
         locationType === "Home" && appointmentAddress
           ? `Location: ${appointmentAddress}`
           : locationType === "Virtually"
-          ? "Location: Virtual - We will send you a link to the virtual meeting room on the day of your appointment."
-          : locationType === "Clinic"
-          ? // eslint-disable-next-line quotes
-            'Location: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>'
-          : "Location: Walk In Appointment"
+            ? "Location: Virtual - We will send you a link to the virtual meeting room on the day of your appointment."
+            : locationType === "Clinic"
+              ? // eslint-disable-next-line quotes
+                'Location: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>'
+              : "Location: Walk In Appointment"
       }\nTime: ${getDateStringFromDate(start?.toDate())}\nPet${
         patients.length > 1 ? "s" : ""
       }: ${petNames}\n${
@@ -411,10 +411,10 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
                       clientProvetRecord?.state || "STATE UNKNOWN"
                     } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
                 : user === 7
-                ? "MoVET Clinic @ 4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9"
-                : user === 9
-                ? "Virtual - We'll email you a link when it's time for your consultation"
-                : "UNKNOWN"
+                  ? "MoVET Clinic @ 4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9"
+                  : user === 9
+                    ? "Virtual - We'll email you a link when it's time for your consultation"
+                    : "UNKNOWN"
             }`
           : ""
       }\nTime: ${getDateStringFromDate(start?.toDate())}\nPet${
@@ -426,12 +426,12 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
         doesHaveValidPaymentOnFile.length > 0
           ? ""
           : user === 8
-          ? `\nOur records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment. Please use the link below to add a new form of payment to your account:\n\n${`https://app.movetcare.com/update-payment-method?email=${(
-              email as string
-            )?.replaceAll("+", "%2B")}`}\n`
-          : `\nOur records indicate that you do not have a form of payment on file. Please add a payment source: ${`https://app.movetcare.com/update-payment-method?email=${(
-              email as string
-            )?.replaceAll("+", "%2B")}`}\n`
+            ? `\nOur records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment. Please use the link below to add a new form of payment to your account:\n\n${`https://app.movetcare.com/update-payment-method?email=${(
+                email as string
+              )?.replaceAll("+", "%2B")}`}\n`
+            : `\nOur records indicate that you do not have a form of payment on file. Please add a payment source: ${`https://app.movetcare.com/update-payment-method?email=${(
+                email as string
+              )?.replaceAll("+", "%2B")}`}\n`
       }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     }
     if (DEBUG) console.log("smsText -> ", smsText);
@@ -494,7 +494,22 @@ const send30MinAppointmentNotification = async (
     const isNewFlow = user ? false : true;
     const appointmentAddress = notes?.includes("Appointment Address")
       ? notes?.split("-")[1]?.split("|")[0]?.trim()
-      : null;
+      : await admin
+          .firestore()
+          .collection("clients")
+          .doc(`${client}`)
+          .get()
+          .then(
+            (doc: any) =>
+              doc.data()?.street +
+              " " +
+              doc.data()?.city +
+              ", " +
+              doc.data()?.state +
+              " " +
+              doc.data()?.zipCode,
+          )
+          .catch((error: any) => throwError(error));
     if (DEBUG) console.log("appointmentAddress", appointmentAddress);
     const vcprRequired = await admin
       .firestore()
@@ -510,8 +525,8 @@ const send30MinAppointmentNotification = async (
     const locationType = notes?.includes("Appointment Location: Home -")
       ? "Home"
       : notes?.includes("Virtual")
-      ? "Virtually"
-      : "Clinic";
+        ? "Virtually"
+        : "Clinic";
     let emailText = "";
     if (isNewFlow)
       emailText = `${
@@ -527,10 +542,10 @@ const send30MinAppointmentNotification = async (
               "timeOnly",
             )} appointment today.</p>`
           : locationType === "Clinic"
-          ? "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
-          : locationType === "Virtually"
-          ? "<p>Dr. MoVET has invited you to join a secure video call:</p>"
-          : ""
+            ? "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
+            : locationType === "Virtually"
+              ? "<p>Dr. MoVET has invited you to join a secure video call:</p>"
+              : ""
       }${
         locationType === "Home" || locationType === "Clinic"
           ? `<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p>`
@@ -564,18 +579,18 @@ const send30MinAppointmentNotification = async (
       doesHaveValidPaymentOnFile.length > 0
         ? ""
         : user === 8 || user === 9
-        ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-            email as string
-          )?.replaceAll(
-            "+",
-            "%2B",
-          )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-        : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-            email as string
-          )?.replaceAll(
-            "+",
-            "%2B",
-          )}`}" target="_blank">add a form of payment</a></b></p>`
+          ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+              email as string
+            )?.replaceAll(
+              "+",
+              "%2B",
+            )}`}" target="_blank">Add a Form of Payment</a></b></p>`
+          : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+              email as string
+            )?.replaceAll(
+              "+",
+              "%2B",
+            )}`}" target="_blank">add a form of payment</a></b></p>`
     }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
     else
       emailText = `${
@@ -591,10 +606,10 @@ const send30MinAppointmentNotification = async (
               "timeOnly",
             )} appointment today.</p>`
           : user === 7
-          ? "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
-          : user === 9
-          ? "<p>Dr. MoVET has invited you to join a secure video call:</p>"
-          : ""
+            ? "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
+            : user === 9
+              ? "<p>Dr. MoVET has invited you to join a secure video call:</p>"
+              : ""
       }${
         user === 7 || user === 9
           ? `<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p>`
@@ -627,18 +642,18 @@ const send30MinAppointmentNotification = async (
       doesHaveValidPaymentOnFile.length > 0
         ? ""
         : user === 8 || user === 9
-        ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-            email as string
-          )?.replaceAll(
-            "+",
-            "%2B",
-          )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-        : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-            email as string
-          )?.replaceAll(
-            "+",
-            "%2B",
-          )}`}" target="_blank">add a form of payment</a></b></p>`
+          ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+              email as string
+            )?.replaceAll(
+              "+",
+              "%2B",
+            )}`}" target="_blank">Add a Form of Payment</a></b></p>`
+          : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+              email as string
+            )?.replaceAll(
+              "+",
+              "%2B",
+            )}`}" target="_blank">add a form of payment</a></b></p>`
     }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
 
     if (DEBUG) console.log("emailText -> ", emailText);
@@ -692,8 +707,8 @@ const send30MinAppointmentNotification = async (
     const locationType = notes?.includes("Appointment Location: Home -")
       ? "Home"
       : notes?.includes("Virtual")
-      ? "Virtually"
-      : "Clinic";
+        ? "Virtually"
+        : "Clinic";
     let smsText = "";
     if (isNewFlow)
       smsText = `${
@@ -709,10 +724,10 @@ const send30MinAppointmentNotification = async (
               "timeOnly",
             )} appointment today.\n`
           : locationType === "Clinic"
-          ? "We are reaching out to remind you of your upcoming appointment with MoVET today.\n\nAPPOINTMENT DETAILS:\n"
-          : locationType === "Virtually"
-          ? "Dr. MoVET has invited you to join a secure video call:\n\n"
-          : ""
+            ? "We are reaching out to remind you of your upcoming appointment with MoVET today.\n\nAPPOINTMENT DETAILS:\n"
+            : locationType === "Virtually"
+              ? "Dr. MoVET has invited you to join a secure video call:\n\n"
+              : ""
       }Time: ${getDateStringFromDate(start?.toDate())}\n${
         locationType === "Clinic"
           ? `Location: MoVET Clinic @ Belleview Station (4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9)\n`
@@ -756,10 +771,10 @@ const send30MinAppointmentNotification = async (
               "timeOnly",
             )} appointment today.\n`
           : user === 7
-          ? "We are reaching out to remind you of your upcoming appointment with MoVET today.\n\nAPPOINTMENT DETAILS:\n"
-          : user === 9
-          ? "Dr. MoVET has invited you to join a secure video call:\n\n"
-          : ""
+            ? "We are reaching out to remind you of your upcoming appointment with MoVET today.\n\nAPPOINTMENT DETAILS:\n"
+            : user === 9
+              ? "Dr. MoVET has invited you to join a secure video call:\n\n"
+              : ""
       }${
         user === 7 || user === 9
           ? `Time: ${getDateStringFromDate(start?.toDate())}\n`
@@ -783,12 +798,12 @@ const send30MinAppointmentNotification = async (
     doesHaveValidPaymentOnFile.length > 0
       ? ""
       : user === 8 || user === 9
-      ? `Payment on File: Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment:\n\n Add a Payment Method\nhttps://app.movetcare.com/update-payment-method?email=${(
-          email as string
-        )?.replaceAll("+", "%2B")}\n\n`
-      : `Our records indicate that you do not have a form of payment on file. Please add a payment method.\nhttps://app.movetcare.com/update-payment-method?email=${(
-          email as string
-        )?.replaceAll("+", "%2B")}\n\n`
+        ? `Payment on File: Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment:\n\n Add a Payment Method\nhttps://app.movetcare.com/update-payment-method?email=${(
+            email as string
+          )?.replaceAll("+", "%2B")}\n\n`
+        : `Our records indicate that you do not have a form of payment on file. Please add a payment method.\nhttps://app.movetcare.com/update-payment-method?email=${(
+            email as string
+          )?.replaceAll("+", "%2B")}\n\n`
   }\nPlease email info@movetcare.com, text (720) 507-7387 us, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     }
     if (DEBUG) console.log("smsText -> ", smsText);
