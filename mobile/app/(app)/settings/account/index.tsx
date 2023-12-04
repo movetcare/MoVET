@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Loader } from "components/Loader";
-import { doc, onSnapshot } from "firebase/firestore";
 import { AuthStore, ErrorStore } from "stores";
-import { firestore, functions } from "firebase-config";
-import { ErrorModal, Modal } from "components/Modal";
+import { functions } from "firebase-config";
+import { Modal } from "components/Modal";
 import {
   ActionButton,
   BodyText,

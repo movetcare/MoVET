@@ -29,56 +29,28 @@ interface Option {
   link: string;
 }
 
-const settingsOptions: Array<Option> = __DEV__
-  ? [
-      {
-        name: "My Account",
-        icon: "user-edit",
-        link: "/(app)/settings/account",
-      },
-      {
-        name: "Payment Methods",
-        icon: "credit-card",
-        link: "/(app)/settings/payment-methods",
-      },
-      {
-        name: "Notifications",
-        icon: "bell",
-        link: "/(app)/settings/notifications",
-      },
-      {
-        name: "ERRORS",
-        icon: "exclamation-circle",
-        link: "/(app)/settings/errors",
-      },
-      {
-        name: "Logout",
-        icon: "right-from-bracket",
-        link: "/(app)/settings/sign-out",
-      },
-    ]
-  : [
-      {
-        name: "My Account",
-        icon: "user-edit",
-        link: "/(app)/settings/account",
-      },
-      {
-        name: "Payment Methods",
-        icon: "credit-card",
-        link: "/(app)/settings/payment-methods",
-      },
-      {
-        name: "Notifications",
-        icon: "bell",
-        link: "/(app)/settings/notifications",
-      },
-      {
-        name: "Logout",
-        icon: "right-from-bracket",
-        link: "/(app)/settings/sign-out",
-      },
-    ];
+const settingsOptions: Array<Option> = [
+  {
+    name: "My Account",
+    icon: "user-edit",
+    link: "/(app)/settings/account",
+  },
+  {
+    name: "Payment Methods",
+    icon: "credit-card",
+    link: "/(app)/settings/payment-methods",
+  },
+  {
+    name: "Notifications",
+    icon: "bell",
+    link: "/(app)/settings/notifications",
+  },
+  {
+    name: "Logout",
+    icon: "right-from-bracket",
+    link: "/(app)/settings/sign-out",
+  },
+];
 const Settings = () => {
   const fadeInOpacity = useSharedValue(0);
 

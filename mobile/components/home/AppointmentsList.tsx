@@ -22,7 +22,7 @@ export const AppointmentsList = ({
       <Container
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
-          tw`flex-col sm:flex-row justify-around w-full`,
+          tw`flex-col sm:flex-row justify-around w-full mt-8`,
         ]}
       >
         <ActionButton

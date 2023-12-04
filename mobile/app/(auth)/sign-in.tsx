@@ -216,7 +216,10 @@ export default function SignIn() {
                 !withPassword &&
                 !showPasswordInput && (
                   <View
-                    style={tw`flex-row bg-movet-white/80 dark:bg-movet-black/75 rounded-xl p-2`}
+                    style={[
+                      errors && tw`mt-4`,
+                      tw`flex-row bg-movet-white/80 dark:bg-movet-black/75 rounded-xl p-2`,
+                    ]}
                     noDarkMode
                   >
                     <ItalicText style={tw`text-sm normal-case text-center`}>

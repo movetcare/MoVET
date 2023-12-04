@@ -31,7 +31,13 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { AuthStore, ErrorStore, Patient, PatientsStore } from "stores";
+import {
+  AppointmentsStore,
+  AuthStore,
+  ErrorStore,
+  Patient,
+  PatientsStore,
+} from "stores";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 
@@ -49,6 +55,7 @@ const Home = () => {
   const [vcprPatients, setVcprPatients] = useState<Patient[] | null>(null);
   const { user } = AuthStore.useState();
   const fadeInOpacity = useSharedValue(0);
+  const { upcomingAppointments } = AppointmentsStore.useState();
 
   const fadeIn = () => {
     fadeInOpacity.value = withTiming(1, {
@@ -203,7 +210,7 @@ const Home = () => {
               <SectionHeading
                 iconName={"bullhorn"}
                 text={"Latest Announcements"}
-                containerStyle={tw`mb-4 -mt-2`}
+                containerStyle={tw`mb-4`}
                 textStyle={tw`text-lg sm:text-2xl`}
               />
             )}
@@ -214,16 +221,20 @@ const Home = () => {
             {!announcement?.isActiveMobile && !ad?.isActive && (
               <View noDarkMode style={tw`h-4 bg-transparent`} />
             )}
-            {showVcprAlert && <VcprAlert patients={vcprPatients} />}
-            {(announcement?.isActiveMobile || ad?.isActive) && (
-              <View noDarkMode style={tw`h-4 bg-transparent`} />
-            )}
-            {patients && patients.length && telehealthStatus?.isOnline && (
+            {!upcomingAppointments && (
               <>
-                {!announcement?.isActiveMobile && !ad?.isActive && (
+                {showVcprAlert && <VcprAlert patients={vcprPatients} />}
+                {(announcement?.isActiveMobile || ad?.isActive) && (
                   <View noDarkMode style={tw`h-4 bg-transparent`} />
                 )}
-                <TelehealthStatus status={telehealthStatus} />
+                {patients && patients.length && telehealthStatus?.isOnline && (
+                  <>
+                    {!announcement?.isActiveMobile && !ad?.isActive && (
+                      <View noDarkMode style={tw`h-4 bg-transparent`} />
+                    )}
+                    <TelehealthStatus status={telehealthStatus} />
+                  </>
+                )}
               </>
             )}
             <AppointmentsList source="home" />

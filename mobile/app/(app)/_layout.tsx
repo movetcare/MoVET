@@ -29,14 +29,14 @@ import { ErrorStore } from "stores";
 const DEBUG_DATA = false;
 
 const TabsLayout = (props: any) => {
-  const { user } = AuthStore.useState();
+  const { user, initialized, isLoggedIn } = AuthStore.useState();
   const [patientsCount, setPatientsCount] = useState<number | null>(null);
-  const [upcomingAppointmentsCount, setUpcomingAppointmentsCount] = useState<
-    number | null
-  >(null);
-  const [pastAppointmentsCount, setPastAppointmentsCount] = useState<
-    number | null
-  >(null);
+  // const [upcomingAppointmentsCount, setUpcomingAppointmentsCount] = useState<
+  //   number | null
+  // >(null);
+  // const [pastAppointmentsCount, setPastAppointmentsCount] = useState<
+  //   number | null
+  // >(null);
   const pathName = usePathname();
   const iconHeight = isTablet ? 26 : 20;
   const iconWidth = isTablet ? 26 : 20;
@@ -76,6 +76,7 @@ const TabsLayout = (props: any) => {
   };
 
   useEffect(() => {
+    if (!isLoggedIn || !initialized || !user?.uid) return;
     const unsubscribeUser = onSnapshot(
       doc(firestore, "clients", user?.uid),
       (doc) => {
@@ -113,7 +114,7 @@ const TabsLayout = (props: any) => {
       ),
       (querySnapshot: QuerySnapshot) => {
         if (querySnapshot.empty) return;
-        else setUpcomingAppointmentsCount(querySnapshot.size);
+        //else setUpcomingAppointmentsCount(querySnapshot.size);
         const appointments: Appointment[] = [];
         querySnapshot.forEach((doc: DocumentData) => {
           if (DEBUG_DATA)
@@ -130,16 +131,18 @@ const TabsLayout = (props: any) => {
       query(
         collection(firestore, "appointments"),
         where("client", "==", Number(user.uid)),
-        where("active", "==", 0),
+        where("active", "==", 1),
+        where("start", "<", new Date()),
         orderBy("start", "desc"),
         limit(100),
       ),
       (querySnapshot: QuerySnapshot) => {
         if (querySnapshot.empty) return;
-        else setPastAppointmentsCount(querySnapshot.size);
+        //else setPastAppointmentsCount(querySnapshot.size);
         const appointments: Appointment[] = [];
         querySnapshot.forEach((doc: DocumentData) => {
-          if (DEBUG_DATA) console.log("PAST APPOINTMENT DATA => ", doc.data());
+          //if (DEBUG_DATA)
+          console.log("PAST APPOINTMENT DATA => ", doc.data());
           appointments.push({ id: doc.id, ...doc.data() });
         });
         AppointmentsStore.update((store: any) => {
@@ -176,7 +179,7 @@ const TabsLayout = (props: any) => {
       unsubscribeUpcomingAppointments();
       unsubscribePastAppointments();
     };
-  }, [user?.uid]);
+  }, [user?.uid, initialized, isLoggedIn]);
 
   const setError = (error: any) => {
     ErrorStore.update((s: any) => {
@@ -232,7 +235,7 @@ const TabsLayout = (props: any) => {
             ...tabBarStyle,
           }}
         />
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name="appointments"
           options={
             upcomingAppointmentsCount &&
@@ -270,7 +273,7 @@ const TabsLayout = (props: any) => {
                 }
               : { href: null }
           }
-        />
+        /> */}
         <Tabs.Screen
           name="pets"
           options={

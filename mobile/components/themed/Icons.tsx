@@ -50,6 +50,8 @@ import InfoCircleIcon from "assets/icons/svgs/font-awesome/circle-info.svg";
 import InfoCircleIconDark from "assets/icons/svgs/font-awesome/circle-info-dark.svg";
 import PawIcon from "assets/icons/svgs/font-awesome/paw.svg";
 import PawIconDark from "assets/icons/svgs/font-awesome/paw-dark.svg";
+import CalendarHeartIcon from "assets/icons/svgs/font-awesome/calendar-heart.svg";
+import CalendarHeartIconDark from "assets/icons/svgs/font-awesome/calendar-heart-dark.svg";
 import CalendarPlusIcon from "assets/icons/svgs/font-awesome/calendar-plus.svg";
 import CalendarPlusIconDark from "assets/icons/svgs/font-awesome/calendar-plus-dark.svg";
 import CatIcon from "assets/icons/svgs/font-awesome/cat.svg";
@@ -84,6 +86,10 @@ import ArrowLeftIcon from "assets/icons/svgs/font-awesome/arrow-left.svg";
 import ArrowLeftIconDark from "assets/icons/svgs/font-awesome/arrow-left-dark.svg";
 import PencilIcon from "assets/icons/svgs/font-awesome/pencil.svg";
 import PencilIconDark from "assets/icons/svgs/font-awesome/pencil-dark.svg";
+import CakeIcon from "assets/icons/svgs/font-awesome/cake.svg";
+import CakeIconDark from "assets/icons/svgs/font-awesome/cake-dark.svg";
+import FolderHeartIcon from "assets/icons/svgs/font-awesome/folder-heart.svg";
+import FolderHeartIconDark from "assets/icons/svgs/font-awesome/folder-heart-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -130,7 +136,10 @@ export type SupportedIcons =
   | "trash"
   | "male"
   | "female"
-  | "pencil";
+  | "pencil"
+  | "cake"
+  | "calendar-heart"
+  | "folder-heart";
 
 export const Icon = ({
   name = "poo",
@@ -503,6 +512,36 @@ export const Icon = ({
         <FemaleIconDark height={iconHeight} width={iconWidth} style={style} />
       ) : (
         <FemaleIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "cake":
+      return showWhiteIcon ? (
+        <CakeIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <CakeIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "calendar-heart":
+      return showWhiteIcon ? (
+        <CalendarHeartIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <CalendarHeartIcon
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      );
+    case "folder-heart":
+      return showWhiteIcon ? (
+        <FolderHeartIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <FolderHeartIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (

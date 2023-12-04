@@ -9,29 +9,100 @@ import {
   SubHeadingText,
   ItalicText,
   Screen,
+  HeadingText,
 } from "components/themed";
 import { TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
 import tw from "tailwind";
 import { Modal } from "components/Modal";
-import { Patient, PatientsStore } from "stores";
+import {
+  Appointment,
+  AppointmentsStore,
+  AuthStore,
+  ErrorStore,
+  Patient,
+  PatientsStore,
+} from "stores";
 import { isTablet } from "utils/isTablet";
+import { SectionHeading } from "components/SectionHeading";
+import { firestore } from "firebase-config";
+import {
+  onSnapshot,
+  query,
+  collection,
+  QuerySnapshot,
+  DocumentData,
+} from "firebase/firestore";
+import { getProVetIdFromUrl } from "utils/getProVetIdFromUrl";
 
 const PetDetail = () => {
   const { id } = useLocalSearchParams();
+  const { user } = AuthStore.useState();
   const { patients } = PatientsStore.useState();
+  const { upcomingAppointments, pastAppointments } =
+    AppointmentsStore.useState();
+  const [reasons, setReasons] = useState<Array<any> | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [upcomingPatientAppointments, setUpcomingPatientAppointments] =
+    useState<Array<Appointment> | null>(null);
+  const [pastPatientAppointments, setPastPatientAppointments] =
+    useState<Array<Appointment> | null>(null);
   const [showVcprModal, setShowVcprModal] = useState<boolean>(false);
-  const textStyles = [isTablet ? tw`text-lg` : tw`text-sm`, tw`mb-2`];
+  const [showRecordsRequestModal, setShowRecordsRequestModal] =
+    useState<boolean>(false);
+  const textStyles = [isTablet ? tw`text-lg` : tw`text-sm`];
 
   useEffect(() => {
     if (id && patients) {
       patients.forEach((patient: Patient) => {
-        if (id === `${patient.id}`) setPatient(patient);
+        if (id === `${patient.id}`) {
+          setPatient(patient);
+          if (upcomingAppointments && upcomingAppointments.length > 0) {
+            const upcomingPatientAppointments: Array<Appointment> = [];
+            upcomingAppointments.map((appointment: Appointment) => {
+              appointment?.patients?.forEach((patientData: Patient) => {
+                if (patientData.id === patient.id)
+                  upcomingPatientAppointments.push(appointment);
+              });
+            });
+            setUpcomingPatientAppointments(upcomingPatientAppointments);
+          }
+          if (pastAppointments && pastAppointments.length > 0) {
+            const pastPatientAppointments: Array<Appointment> = [];
+            pastAppointments.map((appointment: Appointment) => {
+              appointment?.patients?.forEach((patientData: Patient) => {
+                if (patientData.id === patient.id)
+                  pastPatientAppointments.push(appointment);
+              });
+            });
+            setPastPatientAppointments(pastPatientAppointments);
+          }
+        }
       });
     }
-  }, [id, patients]);
+  }, [id, patients, upcomingAppointments, pastAppointments]);
 
+  useEffect(() => {
+    const unsubscribeReasons = onSnapshot(
+      query(collection(firestore, "reasons")),
+      (querySnapshot: QuerySnapshot) => {
+        if (querySnapshot.empty) return;
+        const reasons: Array<any> = [];
+        querySnapshot.forEach((doc: DocumentData) => {
+          reasons.push(doc.data());
+        });
+        setReasons(reasons);
+      },
+      (error: any) => setError(error),
+    );
+    return () => unsubscribeReasons();
+  }, []);
+
+  const setError = (error: any) => {
+    ErrorStore.update((s: any) => {
+      s.currentError = error;
+    });
+  };
   return (
     <Screen>
       <Stack.Screen options={{ title: patient?.name }} />
@@ -43,7 +114,7 @@ const PetDetail = () => {
         noDarkMode
       >
         <View
-          style={tw`w-40 h-40 bg-movet-gray/50 rounded-full mb-4 mt-8`}
+          style={tw`w-30 h-30 bg-movet-gray/50 rounded-full mb-4 mt-8`}
           noDarkMode
         >
           {patient?.photoUrl ? (
@@ -53,7 +124,7 @@ const PetDetail = () => {
               alt={patient?.name + "'s photo"}
             />
           ) : (
-            <Container style={tw`absolute top-13.5 left-13.5`}>
+            <Container style={tw`absolute top-8.5 left-8.5`}>
               <Icon
                 name={
                   patient?.species?.toLowerCase()?.includes("dog")
@@ -65,22 +136,215 @@ const PetDetail = () => {
               />
             </Container>
           )}
+        </View>
+        <Container style={tw`flex-row items-center justify-center w-full mt-2`}>
+          <Icon
+            name={
+              patient?.species?.toLowerCase()?.includes("dog") ? "dog" : "cat"
+            }
+            height={20}
+            width={20}
+          />
+          <SubHeadingText style={tw`ml-1`}>
+            {patient?.breed?.toUpperCase()}
+          </SubHeadingText>
+        </Container>
+        <Container style={tw`flex-row items-center justify-center w-full mt-2`}>
           <Icon
             name={
               patient?.gender?.toLowerCase()?.includes("male")
                 ? "male"
                 : "female"
             }
-            size="xxs"
+            height={20}
+            width={20}
           />
-        </View>
-        {patient?.vcprRequired && (
+          <SubHeadingText style={tw`ml-1`}>
+            {patient?.gender?.toUpperCase()}
+          </SubHeadingText>
+        </Container>
+        <Container
+          style={tw`flex-row items-center justify-center w-full mt-2 mb-4`}
+        >
+          <Icon name="cake" height={20} width={20} />
+          <SubHeadingText style={tw`ml-1`}>
+            {patient?.birthday?.toUpperCase()}
+          </SubHeadingText>
+        </Container>
+        {upcomingPatientAppointments &&
+          upcomingPatientAppointments.length > 0 && (
+            <>
+              <SectionHeading
+                iconName={"calendar-heart"}
+                text={
+                  upcomingPatientAppointments.length > 1
+                    ? "Upcoming Appointments"
+                    : "Upcoming Appointment"
+                }
+              />
+              <View
+                style={tw`flex-col rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent w-full`}
+                noDarkMode
+              >
+                {reasons &&
+                  upcomingPatientAppointments.map(
+                    (appointment: Appointment) => {
+                      const location =
+                        appointment.resources.includes(6) || // Exam Room 1
+                        appointment.resources.includes(7) || // Exam Room 2
+                        appointment.resources.includes(8) || // Exam Room 3
+                        appointment.resources.includes(14) || // Exam Room 1
+                        appointment.resources.includes(15) || // Exam Room 2
+                        appointment.resources.includes(16) // Exam Room 3
+                          ? "CLINIC"
+                          : appointment.resources.includes(3) || // Truck 1
+                              appointment.resources.includes(9) // Truck 2
+                            ? "HOUSECALL"
+                            : appointment.resources.includes(11) || // Virtual Room 1
+                                appointment.resources.includes(18) // Virtual Room 2
+                              ? "TELEHEALTH"
+                              : "UNKNOWN APPOINTMENT TYPE";
+                      const reason = reasons?.map((reason: any) => {
+                        if (
+                          reason.id === getProVetIdFromUrl(appointment.reason)
+                        )
+                          return reason.name;
+                      });
+                      return (
+                        <View
+                          key={appointment.id}
+                          style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+                        >
+                          <Container style={tw`p-3`}>
+                            <Icon
+                              name={
+                                location === "CLINIC"
+                                  ? "clinic-alt"
+                                  : location === "HOUSECALL"
+                                    ? "mobile"
+                                    : location === "TELEHEALTH"
+                                      ? "telehealth"
+                                      : "question"
+                              }
+                              size="md"
+                            />
+                          </Container>
+                          <Container style={tw`flex-shrink`}>
+                            <HeadingText style={tw`text-lg`}>
+                              {reason}
+                            </HeadingText>
+                            <BodyText style={tw`text-sm -mt-0.5`}>
+                              {appointment.start
+                                .toDate()
+                                .toLocaleDateString("en-us", {
+                                  weekday: "long",
+                                  year: "2-digit",
+                                  month: "numeric",
+                                  day: "numeric",
+                                })}{" "}
+                              @{" "}
+                              {appointment.start
+                                .toDate()
+                                .toLocaleString("en-US", {
+                                  hour: "numeric",
+                                  minute: "numeric",
+                                  hour12: true,
+                                })}
+                            </BodyText>
+                          </Container>
+                        </View>
+                      );
+                    },
+                  )}
+              </View>
+            </>
+          )}
+        {pastPatientAppointments && pastPatientAppointments.length > 0 && (
+          <>
+            <SectionHeading
+              iconName={"clipboard-medical"}
+              text={
+                pastPatientAppointments.length > 1
+                  ? "Past Appointments"
+                  : "Past Appointment"
+              }
+            />
+            <View
+              style={tw`flex-col rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent w-full`}
+              noDarkMode
+            >
+              {reasons &&
+                pastPatientAppointments.map((appointment: Appointment) => {
+                  const location =
+                    appointment.resources.includes(6) || // Exam Room 1
+                    appointment.resources.includes(7) || // Exam Room 2
+                    appointment.resources.includes(8) || // Exam Room 3
+                    appointment.resources.includes(14) || // Exam Room 1
+                    appointment.resources.includes(15) || // Exam Room 2
+                    appointment.resources.includes(16) // Exam Room 3
+                      ? "CLINIC"
+                      : appointment.resources.includes(3) || // Truck 1
+                          appointment.resources.includes(9) // Truck 2
+                        ? "HOUSECALL"
+                        : appointment.resources.includes(11) || // Virtual Room 1
+                            appointment.resources.includes(18) // Virtual Room 2
+                          ? "TELEHEALTH"
+                          : "UNKNOWN APPOINTMENT TYPE";
+                  const reason = reasons?.map((reason: any) => {
+                    if (reason.id === getProVetIdFromUrl(appointment.reason))
+                      return reason.name;
+                  });
+                  return (
+                    <View
+                      key={appointment.id}
+                      style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+                    >
+                      <Container style={tw`p-3`}>
+                        <Icon
+                          name={
+                            location === "CLINIC"
+                              ? "clinic-alt"
+                              : location === "HOUSECALL"
+                                ? "mobile"
+                                : location === "TELEHEALTH"
+                                  ? "telehealth"
+                                  : "question"
+                          }
+                          size="md"
+                        />
+                      </Container>
+                      <Container style={tw`flex-shrink`}>
+                        <HeadingText style={tw`text-lg`}>{reason}</HeadingText>
+                        <BodyText style={tw`text-sm -mt-0.5`}>
+                          {appointment.start
+                            .toDate()
+                            .toLocaleDateString("en-us", {
+                              weekday: "long",
+                              year: "2-digit",
+                              month: "numeric",
+                              day: "numeric",
+                            })}{" "}
+                          @{" "}
+                          {appointment.start.toDate().toLocaleString("en-US", {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                          })}
+                        </BodyText>
+                      </Container>
+                    </View>
+                  );
+                })}
+            </View>
+          </>
+        )}
+        {patient?.vcprRequired && !upcomingPatientAppointments && (
           <>
             <TouchableOpacity onPress={() => setShowVcprModal(true)}>
               <View
                 noDarkMode
                 style={[
-                  tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`,
+                  tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent mt-8`,
                 ]}
               >
                 <View
@@ -90,12 +354,12 @@ const PetDetail = () => {
                   <Container>
                     <Icon
                       name={"exclamation-circle"}
-                      height={30}
-                      width={30}
+                      height={22}
+                      width={22}
                       color="white"
                     />
                   </Container>
-                  <Container style={tw`px-3 mr-6 flex-1`}>
+                  <Container style={tw`px-3 mr-4 flex-1`}>
                     <ItalicText
                       style={tw`text-movet-white text-sm text-center`}
                       noDarkMode
@@ -186,7 +450,33 @@ const PetDetail = () => {
             </Modal>
           </>
         )}
-        <Container style={tw`flex-col sm:flex-row justify-around w-full`}>
+        <Modal
+          isVisible={showRecordsRequestModal}
+          onClose={() => {
+            setShowRecordsRequestModal(false);
+          }}
+          title="Confirm Pet Records Request"
+        >
+          <>
+            <BodyText style={textStyles}>
+              Do you want a copy of {patient?.name}&apos;s records sent to your
+              email address - {user?.email}?
+            </BodyText>
+            <Container style={[tw`flex-row justify-center sm:mb-2`]}>
+              <ActionButton
+                title="Send Records via Email"
+                iconName="plane"
+                onPress={() => {
+                  setShowRecordsRequestModal(false);
+                  // TODO : Send Records Request Email to Admin
+                }}
+              />
+            </Container>
+          </>
+        </Modal>
+        <Container
+          style={tw`flex-col sm:flex-row justify-around w-full mb-8 mt-4`}
+        >
           <ActionButton
             title="Schedule an Appointment"
             iconName="calendar-plus"
@@ -199,7 +489,14 @@ const PetDetail = () => {
                 },
               })
             }
-            style={tw`sm:w-2.75/6`}
+            style={tw`sm:w-0.9/3`}
+          />
+          <ActionButton
+            color="black"
+            title="Request Records"
+            iconName="folder-heart"
+            onPress={() => setShowRecordsRequestModal(true)}
+            style={tw`sm:w-0.9/3`}
           />
           <ActionButton
             color="brown"
@@ -211,7 +508,7 @@ const PetDetail = () => {
                 params: { id: patient?.id },
               })
             }
-            style={tw`sm:w-2.75/6`}
+            style={tw`sm:w-0.9/3`}
           />
         </Container>
       </View>

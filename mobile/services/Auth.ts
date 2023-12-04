@@ -7,7 +7,12 @@ import {
   signInWithEmailLink,
 } from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
-import { AuthStore } from "stores";
+import {
+  AppointmentsStore,
+  AuthStore,
+  NotificationStore,
+  PatientsStore,
+} from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import * as Device from "expo-device";
 import * as Network from "expo-network";
@@ -137,6 +142,21 @@ export const signInWithLink = async (email: string, link: string) =>
 export const signOut = async () =>
   await signOff(auth)
     .then(() => {
+      AuthStore.update((store) => {
+        store.user = null;
+        store.isLoggedIn = false;
+      });
+      AppointmentsStore.update((store) => {
+        store.upcomingAppointments = null;
+        store.pastAppointments = null;
+      });
+      PatientsStore.update((store) => {
+        store.patients = null;
+      });
+      NotificationStore.update((store) => {
+        store.expoPushToken = null;
+        store.notification = null;
+      });
       AuthStore.update((store) => {
         store.user = null;
         store.isLoggedIn = false;

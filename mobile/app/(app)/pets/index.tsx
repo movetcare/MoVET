@@ -9,41 +9,16 @@ import {
   ItalicText,
 } from "components/themed";
 import { router } from "expo-router";
-import { Patient, PatientsStore } from "stores";
+import { Appointment, AppointmentsStore, Patient, PatientsStore } from "stores";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 import { Image, TouchableOpacity } from "react-native";
-import { useState, useEffect } from "react";
-import { VcprAlert } from "components/VcprAlert";
 
 const MyPets = () => {
   const { patients } = PatientsStore.useState();
-  const [showVcprAlert, setShowVcprAlert] = useState<boolean>(false);
-  const [vcprPatients, setVcprPatients] = useState<Patient[] | null>(null);
-
-  useEffect(() => {
-    if (patients) {
-      const vcprPatients: Array<Patient> = [];
-      patients.forEach((patient: Patient) => {
-        if (patient.vcprRequired) {
-          vcprPatients.push(patient);
-          setShowVcprAlert(true);
-        }
-      });
-      setVcprPatients(vcprPatients);
-    }
-  }, [patients]);
-
+  const { upcomingAppointments } = AppointmentsStore.useState();
   return (
     <Screen>
-      {showVcprAlert && (
-        <Container style={tw`mt-4`}>
-          <VcprAlert
-            patients={vcprPatients}
-            scheduleAppointmentPath="/(app)/pets/new-appointment"
-          />
-        </Container>
-      )}
       <View
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
@@ -72,18 +47,17 @@ const MyPets = () => {
                 >
                   <View
                     noDarkMode
-                    style={[
-                      tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:bg-movet-black dark:border-movet-white w-full`,
-                      patient?.vcprRequired && tw`bg-movet-red/30`,
-                    ]}
+                    style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:bg-movet-black dark:border-movet-white w-full`}
                   >
-                    <Container style={tw`p-3`}>
+                    <Container
+                      style={tw`px-4 flex items-center justify-center`}
+                    >
                       {patient?.photoUrl ? (
                         <Image
                           source={{ uri: patient?.photoUrl }}
                           alt={patient?.name + "'s photo"}
-                          height={35}
-                          width={35}
+                          height={50}
+                          width={50}
                           style={tw`rounded-full`}
                         />
                       ) : (
@@ -100,7 +74,7 @@ const MyPets = () => {
                     <Container style={tw`flex-shrink`}>
                       <HeadingText style={tw`text-black text-lg`}>
                         {patient.name}
-                        {__DEV__ && ` - #${patient.id}`}
+                        {/* {__DEV__ && ` - #${patient.id}`} */}
                       </HeadingText>
                       <BodyText style={tw`text-black text-sm -mt-0.5`}>
                         {patient.breed}
@@ -118,13 +92,54 @@ const MyPets = () => {
                           {patient.birthday}
                         </ItalicText>
                       </Container>
+                      {upcomingAppointments &&
+                        upcomingAppointments.length > 0 &&
+                        upcomingAppointments.map(
+                          (appointment: Appointment, index: number) => {
+                            let upcomingPatientAppointments = 0;
+                            appointment?.patients?.forEach(
+                              (patientData: Patient) => {
+                                if (patientData.id === patient.id)
+                                  upcomingPatientAppointments += 1;
+                              },
+                            );
+                            if (upcomingPatientAppointments > 0)
+                              return (
+                                <Container
+                                  style={tw`flex-row items-center`}
+                                  key={index}
+                                >
+                                  <Icon name={"calendar-heart"} size="xxs" />
+                                  <ItalicText style={tw`text-xs ml-1`}>
+                                    {upcomingPatientAppointments} Upcoming
+                                    Appointment
+                                    {upcomingPatientAppointments > 1 ? "s" : ""}
+                                  </ItalicText>
+                                </Container>
+                              );
+                          },
+                        )}
+                      {patient.vcprRequired && !upcomingAppointments && (
+                        <Container
+                          style={tw`flex-row items-center`}
+                          key={index}
+                        >
+                          <Icon name={"exclamation-circle"} size="xxs" />
+                          <ItalicText
+                            noDarkMode
+                            style={tw`text-movet-red text-xs ml-1`}
+                          >
+                            VCPR Required!
+                          </ItalicText>
+                        </Container>
+                      )}
                     </Container>
                   </View>
                 </TouchableOpacity>
               );
             })}
         </View>
-        <Container style={tw`flex-col sm:flex-row justify-around w-full mb-8`}>
+        <Container style={tw`flex-col sm:flex-row justify-around w-full my-8`}>
           <ActionButton
             title="Schedule an Appointment"
             iconName="calendar-plus"

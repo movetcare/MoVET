@@ -63,6 +63,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
     if (mode === "edit" && id && patients && canineBreeds && felineBreeds) {
       patients.forEach((patient: Patient) => {
         if (id === `${patient.id}`) {
+          console.log(String(patient.breedId));
           if (patient?.photoUrl) setPhotoUrl(patient?.photoUrl);
           reset({
             name: patient?.name || null,
@@ -81,8 +82,8 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
   const selectedSpecies = watch("species");
 
   useEffect(() => {
-    if (selectedSpecies) setValue("breed", null);
-  }, [selectedSpecies, setValue]);
+    if (selectedSpecies && isDirty) setValue("breed", null);
+  }, [selectedSpecies, isDirty, setValue]);
 
   useEffect(() => {
     const fetchBreeds = async () => {
@@ -514,9 +515,17 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
           onSubmit={onSubmit}
           disabled={!isDirty || isLoading}
           loading={isLoading}
-          title={isLoading ? "SAVING PET..." : "CONTINUE"}
+          title={
+            isLoading
+              ? mode === "edit"
+                ? "Saving Pet..."
+                : "Saving New Pet..."
+              : mode === "edit"
+                ? "Save Changes"
+                : "Add Pet"
+          }
           color="black"
-          iconName={"arrow-right"}
+          iconName={mode === "edit" ? "check" : "plus"}
           style={tw`mx-auto`}
         />
       </View>
