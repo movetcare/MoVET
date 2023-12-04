@@ -68,7 +68,7 @@
     "@expo/webpack-config": "^19.0.0",
     "@svgr/cli": "^8.1.0",
     "@types/lodash.debounce": "^4.0.9",
-    "@types/react": "~18.2.39",
+    "@types/react": "~18.2.41",
     "@types/uuid": "^9.0.7",
     "husky": "^8.0.3",
     "react-native-svg-transformer": "^1.1.0",
