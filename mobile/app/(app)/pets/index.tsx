@@ -18,11 +18,12 @@ const MyPets = () => {
   const { patients } = PatientsStore.useState();
   const { upcomingAppointments } = AppointmentsStore.useState();
   return (
-    <Screen>
+    <Screen withBackground="pets">
       <View
+        noDarkMode
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
-          tw`flex-grow items-center justify-center w-full mt-2`,
+          tw`flex-grow items-center justify-center w-full pt-2 bg-transparent`,
         ]}
       >
         <View

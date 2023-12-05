@@ -2,6 +2,7 @@ import { Stack, useLocalSearchParams, useSegments } from "expo-router";
 import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions";
 import { NavigationHeader } from "components/themed/NavigationHeader";
 import { useEffect, useState } from "react";
+import { SupportedIcons } from "components/themed";
 
 export default function Layout() {
   const segments = useSegments();
@@ -9,7 +10,7 @@ export default function Layout() {
   const { screenTitle, screenTitleIcon }: any = router?.params || {};
   const [navigationDetails, setNavigationDetails] = useState<{
     title: string;
-    iconName: any;
+    iconName: SupportedIcons;
     canGoBack: boolean;
   } | null>(null);
 
@@ -41,6 +42,14 @@ export default function Layout() {
       setNavigationDetails({
         title: "Schedule Appointment",
         iconName: "calendar-plus",
+        canGoBack: true,
+      });
+      //}, 180);
+    } else if (segments && segments.includes("appointment-detail")) {
+      //setTimeout(() => {
+      setNavigationDetails({
+        title: "Appointment Summary",
+        iconName: "calendar-heart",
         canGoBack: true,
       });
       //}, 180);

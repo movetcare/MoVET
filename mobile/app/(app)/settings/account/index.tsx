@@ -57,7 +57,7 @@ const AccountSettings = () => {
 
   useEffect(() => {
     if (client) reset(client);
-  }, [client]);
+  }, [client, reset]);
 
   const setError = (error: any) => {
     ErrorStore.update((s: any) => {

@@ -6,11 +6,7 @@ import { AppointmentsStore } from "stores";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 
-export const AppointmentsList = ({
-  source = "appointments",
-}: {
-  source: "home" | "appointments";
-}) => {
+export const AppointmentsList = ({ source = "pets" }: { source: "home" | "pets" }) => {
   const { upcomingAppointments } = AppointmentsStore.useState();
   return upcomingAppointments && upcomingAppointments.length ? (
     <>
@@ -18,7 +14,7 @@ export const AppointmentsList = ({
         iconName={"clipboard-medical"}
         text={"Upcoming Appointments"}
       />
-      <AppointmentList />
+      <AppointmentList source={source}/>
       <Container
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
@@ -29,8 +25,8 @@ export const AppointmentsList = ({
           title="Schedule an Appointment"
           iconName="calendar-plus"
           onPress={() =>
-            source === "appointments"
-              ? router.push("/(app)/appointments/new")
+            source === "pets"
+              ? router.push("/(app)/pets/new-appointment")
               : router.push("/(app)/home/new-appointment")
           }
           style={tw`sm:w-2.75/6`}
@@ -57,8 +53,8 @@ export const AppointmentsList = ({
           title="Schedule an Appointment"
           iconName="calendar-plus"
           onPress={() =>
-            source === "appointments"
-              ? router.push("/(app)/appointments/new")
+            source === "pets"
+              ? router.push("/(app)/pets/new-appointment")
               : router.push("/(app)/home/new-appointment")
           }
           style={tw`sm:w-2.75/6`}

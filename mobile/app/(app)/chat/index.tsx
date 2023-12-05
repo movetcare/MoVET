@@ -32,7 +32,7 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import { Platform, useColorScheme } from "react-native";
 import * as Notifications from "expo-notifications";
-import { Icon, View } from "components/themed";
+import { Icon, View, Screen } from "components/themed";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -353,48 +353,62 @@ const ChatIndex = () => {
         wrapperStyle={{
           right: {
             backgroundColor: isDarkMode
-              ? tw.color("movet-white")
-              : tw.color(`white`),
+              ? tw.color("movet-white/80")
+              : tw.color(`white/60`),
+            borderColor: isDarkMode
+              ? tw.color("movet-white/50")
+              : tw.color("movet-black/50"),
+            borderWidth: 0.5,
           },
           left: {
-            backgroundColor: tw.color(`movet-red/20`),
+            backgroundColor: isDarkMode
+              ? tw.color(`movet-red/70`)
+              : tw.color(`movet-red/30`),
+            borderColor: isDarkMode
+              ? tw.color("movet-white/50")
+              : tw.color("movet-black/50"),
+            borderWidth: 0.5,
           },
         }}
       />
     );
   };
   return (
-    <View style={tw`flex-1 bg-white -mb-1.5`}>
-      <GiftedChat
-        infiniteScroll
-        scrollToBottom
-        messages={isLoading || user === null ? defaultMessages : messages}
-        renderBubble={renderBubble}
-        onSend={(messages: IMessage[]) => onSend(messages)}
-        user={{
-          _id: user?.uid,
-          name: user?.displayName,
-          avatar: user?.photoURL,
-        }}
-        renderAvatar={null}
-        renderActions={renderCustomActions}
-        renderSystemMessage={renderSystemMessage}
-        renderSend={renderSend}
-        keyboardShouldPersistTaps="never"
-        timeTextStyle={{
-          left: {
-            color: tw.color(`movet-black/75`),
-            fontSize: 10,
-            fontStyle: "italic",
-          },
-          right: {
-            color: tw.color(`movet-black/75`),
-            fontSize: 10,
-            fontStyle: "italic",
-          },
-        }}
-      />
-    </View>
+    <Screen withBackground="pets" noScroll>
+      <View noDarkMode style={tw`flex-1 bg-transparent -mb-1 w-full`}>
+        <GiftedChat
+          infiniteScroll
+          scrollToBottom
+          messages={isLoading || user === null ? defaultMessages : messages}
+          renderBubble={renderBubble}
+          onSend={(messages: IMessage[]) => onSend(messages)}
+          user={{
+            _id: user?.uid,
+            name: user?.displayName,
+            avatar: user?.photoURL,
+          }}
+          renderAvatar={null}
+          renderActions={renderCustomActions}
+          renderSystemMessage={renderSystemMessage}
+          renderSend={renderSend}
+          keyboardShouldPersistTaps="never"
+          timeTextStyle={{
+            left: {
+              color: isDarkMode
+                ? tw.color(`movet-white/80`)
+                : tw.color(`movet-black/80`),
+              fontSize: 10,
+              fontStyle: "italic",
+            },
+            right: {
+              color: tw.color(`movet-black/80`),
+              fontSize: 10,
+              fontStyle: "italic",
+            },
+          }}
+        />
+      </View>
+    </Screen>
   );
 };
 

@@ -1,6 +1,6 @@
 import { SupportedIcons } from "components/themed";
 import { NavigationHeader } from "components/themed/NavigationHeader";
-import { Stack, useLocalSearchParams, useSegments } from "expo-router";
+import { Stack, useSegments } from "expo-router";
 import { useState, useEffect } from "react";
 import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions";
 
@@ -30,14 +30,6 @@ export default function Layout() {
       setNavigationDetails({
         title: "Payment Settings",
         iconName: "credit-card",
-        canGoBack: true,
-      });
-      //}, 180);
-    } else if (segments && segments.includes("errors")) {
-      //setTimeout(() => {
-      setNavigationDetails({
-        title: "ERROR LOG",
-        iconName: "exclamation-circle",
         canGoBack: true,
       });
       //}, 180);

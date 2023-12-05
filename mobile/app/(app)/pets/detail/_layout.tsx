@@ -35,6 +35,13 @@ export default function Layout() {
           goBackRoot: "/(app)/pets/detail",
         });
         //}, 180);
+      } else if (segments.includes("appointment-detail")) {
+        setNavigationDetails({
+          title: "Appointment Summary",
+          iconName: "calendar-heart",
+          canGoBack: true,
+          goBackRoot: "/(app)/pets/detail",
+        });
       } else if (segments.includes("detail")) {
         setNavigationDetails({
           title: "My Pet",
@@ -49,7 +56,6 @@ export default function Layout() {
       screenOptions={{
         ...navigationStackScreenOptions,
         header: (props) => {
-          //console.log("props", props);
           return navigationDetails ? (
             <NavigationHeader
               title={props.options.title || navigationDetails.title}

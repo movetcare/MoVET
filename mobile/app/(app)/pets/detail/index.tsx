@@ -211,48 +211,57 @@ const PetDetail = () => {
                           return reason.name;
                       });
                       return (
-                        <View
+                        <TouchableOpacity
                           key={appointment.id}
-                          style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+                          onPress={() =>
+                            router.push({
+                              pathname: `/(app)/pets/detail/appointment-detail/`,
+                              params: { id: appointment?.id },
+                            })
+                          }
                         >
-                          <Container style={tw`p-3`}>
-                            <Icon
-                              name={
-                                location === "CLINIC"
-                                  ? "clinic-alt"
-                                  : location === "HOUSECALL"
-                                    ? "mobile"
-                                    : location === "TELEHEALTH"
-                                      ? "telehealth"
-                                      : "question"
-                              }
-                              size="md"
-                            />
-                          </Container>
-                          <Container style={tw`flex-shrink`}>
-                            <HeadingText style={tw`text-lg`}>
-                              {reason}
-                            </HeadingText>
-                            <BodyText style={tw`text-sm -mt-0.5`}>
-                              {appointment.start
-                                .toDate()
-                                .toLocaleDateString("en-us", {
-                                  weekday: "long",
-                                  year: "2-digit",
-                                  month: "numeric",
-                                  day: "numeric",
-                                })}{" "}
-                              @{" "}
-                              {appointment.start
-                                .toDate()
-                                .toLocaleString("en-US", {
-                                  hour: "numeric",
-                                  minute: "numeric",
-                                  hour12: true,
-                                })}
-                            </BodyText>
-                          </Container>
-                        </View>
+                          <View
+                            style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+                          >
+                            <Container style={tw`p-3`}>
+                              <Icon
+                                name={
+                                  location === "CLINIC"
+                                    ? "clinic-alt"
+                                    : location === "HOUSECALL"
+                                      ? "mobile"
+                                      : location === "TELEHEALTH"
+                                        ? "telehealth"
+                                        : "question"
+                                }
+                                size="md"
+                              />
+                            </Container>
+                            <Container style={tw`flex-shrink`}>
+                              <HeadingText style={tw`text-lg`}>
+                                {reason}
+                              </HeadingText>
+                              <BodyText style={tw`text-sm -mt-0.5`}>
+                                {appointment.start
+                                  .toDate()
+                                  .toLocaleDateString("en-us", {
+                                    weekday: "long",
+                                    year: "2-digit",
+                                    month: "numeric",
+                                    day: "numeric",
+                                  })}{" "}
+                                @{" "}
+                                {appointment.start
+                                  .toDate()
+                                  .toLocaleString("en-US", {
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                    hour12: true,
+                                  })}
+                              </BodyText>
+                            </Container>
+                          </View>
+                        </TouchableOpacity>
                       );
                     },
                   )}
@@ -295,44 +304,58 @@ const PetDetail = () => {
                       return reason.name;
                   });
                   return (
-                    <View
+                    <TouchableOpacity
                       key={appointment.id}
-                      style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+                      onPress={() =>
+                        router.push({
+                          pathname: `/(app)/pets/detail/appointment-detail/`,
+                          params: { id: appointment?.id },
+                        })
+                      }
                     >
-                      <Container style={tw`p-3`}>
-                        <Icon
-                          name={
-                            location === "CLINIC"
-                              ? "clinic-alt"
-                              : location === "HOUSECALL"
-                                ? "mobile"
-                                : location === "TELEHEALTH"
-                                  ? "telehealth"
-                                  : "question"
-                          }
-                          size="md"
-                        />
-                      </Container>
-                      <Container style={tw`flex-shrink`}>
-                        <HeadingText style={tw`text-lg`}>{reason}</HeadingText>
-                        <BodyText style={tw`text-sm -mt-0.5`}>
-                          {appointment.start
-                            .toDate()
-                            .toLocaleDateString("en-us", {
-                              weekday: "long",
-                              year: "2-digit",
-                              month: "numeric",
-                              day: "numeric",
-                            })}{" "}
-                          @{" "}
-                          {appointment.start.toDate().toLocaleString("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                          })}
-                        </BodyText>
-                      </Container>
-                    </View>
+                      <View
+                        key={appointment.id}
+                        style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+                      >
+                        <Container style={tw`p-3`}>
+                          <Icon
+                            name={
+                              location === "CLINIC"
+                                ? "clinic-alt"
+                                : location === "HOUSECALL"
+                                  ? "mobile"
+                                  : location === "TELEHEALTH"
+                                    ? "telehealth"
+                                    : "question"
+                            }
+                            size="md"
+                          />
+                        </Container>
+                        <Container style={tw`flex-shrink`}>
+                          <HeadingText style={tw`text-lg`}>
+                            {reason}
+                          </HeadingText>
+                          <BodyText style={tw`text-sm -mt-0.5`}>
+                            {appointment.start
+                              .toDate()
+                              .toLocaleDateString("en-us", {
+                                weekday: "long",
+                                year: "2-digit",
+                                month: "numeric",
+                                day: "numeric",
+                              })}{" "}
+                            @{" "}
+                            {appointment.start
+                              .toDate()
+                              .toLocaleString("en-US", {
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              })}
+                          </BodyText>
+                        </Container>
+                      </View>
+                    </TouchableOpacity>
                   );
                 })}
             </View>
@@ -344,7 +367,7 @@ const PetDetail = () => {
               <View
                 noDarkMode
                 style={[
-                  tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent mt-8`,
+                  tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent mt-4`,
                 ]}
               >
                 <View

@@ -6,8 +6,6 @@ import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions
 
 export default function Layout() {
   const segments = useSegments();
-  const route = useLocalSearchParams();
-  const { screenTitle, screenTitleIcon }: any = route?.params || {};
   const [navigationDetails, setNavigationDetails] = useState<{
     title: string;
     iconName: SupportedIcons;
@@ -38,14 +36,18 @@ export default function Layout() {
           goBackRoot: "/(app)/pets",
         });
         //}, 180);
-      } else if (segments.includes("pets") && !segments.includes("detail")) {
+      } else if (
+        segments.includes("pets") &&
+        !segments.includes("appointment-detail") &&
+        !segments.includes("detail")
+      ) {
         setNavigationDetails({
           title: "My Pets",
           iconName: "paw",
           canGoBack: false,
         });
       } else setNavigationDetails(null);
-  }, [screenTitle, screenTitleIcon, segments]);
+  }, [segments]);
   return (
     <Stack
       screenOptions={{
