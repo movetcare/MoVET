@@ -16,7 +16,8 @@ import { Image, TouchableOpacity } from "react-native";
 
 const MyPets = () => {
   const { patients } = PatientsStore.useState();
-  const { upcomingAppointments } = AppointmentsStore.useState();
+  const { upcomingAppointments, pastAppointments } =
+    AppointmentsStore.useState();
   return (
     <Screen withBackground="pets">
       <View
@@ -142,7 +143,11 @@ const MyPets = () => {
         </View>
         <Container style={tw`flex-col sm:flex-row justify-around w-full my-8`}>
           <ActionButton
-            title="Schedule an Appointment"
+            title={
+              (!upcomingAppointments && !pastAppointments
+                ? "Request"
+                : "Schedule") + " an Appointment"
+            }
             iconName="calendar-plus"
             onPress={() => router.push("/(app)/pets/new-appointment")}
             style={tw`sm:w-2.75/6`}

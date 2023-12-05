@@ -20,7 +20,7 @@ export default function Layout() {
     if (segments && segments.includes("notifications")) {
       //setTimeout(() => {
       setNavigationDetails({
-        title: "Notification Settings",
+        title: "Notifications",
         iconName: "bell",
         canGoBack: true,
       });
@@ -28,7 +28,7 @@ export default function Layout() {
     } else if (segments && segments.includes("payment-methods")) {
       //setTimeout(() => {
       setNavigationDetails({
-        title: "Payment Settings",
+        title: "Payment Methods",
         iconName: "credit-card",
         canGoBack: true,
       });

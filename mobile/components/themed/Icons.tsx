@@ -5,7 +5,7 @@ import MobileIcon from "assets/icons/svgs/custom/mobile.svg";
 import DogWashIcon from "assets/icons/svgs/custom/dog-wash.svg";
 import ClinicIcon from "assets/icons/svgs/custom/clinic.svg";
 import ClinicAltIcon from "assets/icons/svgs/custom/clinic-alt.svg";
-import TelehealthIconDark from "assets/icons/svgs/custom/telehealth.svg";
+import TelehealthIconDark from "assets/icons/svgs/custom/telehealth-dark.svg";
 import BoutiqueIconDark from "assets/icons/svgs/custom/boutique-dark.svg";
 import PharmacyIconDark from "assets/icons/svgs/custom/pharmacy-dark.svg";
 import MobileIconDark from "assets/icons/svgs/custom/mobile-dark.svg";

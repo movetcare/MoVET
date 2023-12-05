@@ -1,13 +1,14 @@
 import { SupportedIcons } from "components/themed";
 import { NavigationHeader } from "components/themed/NavigationHeader";
-import { Stack, useLocalSearchParams, useSegments } from "expo-router";
+import { Stack, useSegments } from "expo-router";
 import { useState, useEffect } from "react";
+import { AppointmentsStore } from "stores";
 import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions";
 
 export default function Layout() {
   const segments = useSegments();
-  const route = useLocalSearchParams();
-  const { screenTitle, screenTitleIcon }: any = route?.params || {};
+  const { upcomingAppointments, pastAppointments } =
+    AppointmentsStore.useState();
   const [navigationDetails, setNavigationDetails] = useState<{
     title: string;
     iconName: SupportedIcons;
@@ -29,7 +30,10 @@ export default function Layout() {
       } else if (segments.includes("new-appointment")) {
         //setTimeout(() => {
         setNavigationDetails({
-          title: "Schedule Appointment",
+          title:
+            (!upcomingAppointments && !pastAppointments
+              ? "Request"
+              : "Schedule") + " an Appointment",
           iconName: "calendar-plus",
           canGoBack: true,
           goBackRoot: "/(app)/pets/detail",
@@ -50,7 +54,7 @@ export default function Layout() {
           goBackRoot: "/(app)/pets/",
         });
       } else setNavigationDetails(null);
-  }, [screenTitle, screenTitleIcon, segments]);
+  }, [pastAppointments, segments, upcomingAppointments]);
   return (
     <Stack
       screenOptions={{

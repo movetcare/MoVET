@@ -334,8 +334,8 @@ export default function RequestAnAppointment({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       <div ref={forwardedRef} className="sm:col-span-2">
-        <Divider />
-        <div className="my-8">
+        {mode !== "app" && <Divider />}
+        <div className={mode === "app" ? "mb-8" : "my-8"}>
           <NumberInput
             label="Number of Pets"
             name="numberOfPets"
@@ -402,7 +402,7 @@ export default function RequestAnAppointment({
           food motivated, territorial, or aggressive towards humans or other
           pets?"
         />
-        <Divider />
+        {mode !== "app" && <Divider />}
         <div className="my-8">
           {options && (
             <ToggleInput
@@ -530,38 +530,83 @@ export default function RequestAnAppointment({
                 />
                 <div className="mt-8 px-1">
                   <form className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 text-left">
-                    <TextInput
-                      autoFocus
-                      label="First Name"
-                      name="firstName"
-                      control={control}
-                      errors={errors}
-                      placeholder="Your First Name"
-                      autoComplete="given-name"
-                      required
-                    />
-                    <TextInput
-                      label="Last Name"
-                      name="lastName"
-                      control={control}
-                      errors={errors}
-                      placeholder="Your Last Name"
-                      autoComplete="family-name"
-                      required
-                    />
-                    <div
-                      className={`sm:col-span-2 my-2${
-                        hideFormSection ? " mb-8" : ""
-                      }`}
-                    >
-                      <PhoneInput
-                        label="Phone Number"
-                        name="phone"
-                        control={control}
-                        errors={errors}
-                        required
-                      />
-                    </div>
+                    {mode === "app" && email ? (
+                      <>
+                        {!firstName && (
+                          <TextInput
+                            autoFocus
+                            label="First Name"
+                            name="firstName"
+                            control={control}
+                            errors={errors}
+                            placeholder="Your First Name"
+                            autoComplete="given-name"
+                            required
+                          />
+                        )}
+                        {!lastName && (
+                          <TextInput
+                            label="Last Name"
+                            name="lastName"
+                            control={control}
+                            errors={errors}
+                            placeholder="Your Last Name"
+                            autoComplete="family-name"
+                            required
+                          />
+                        )}
+                        {!phone && (
+                          <div
+                            className={`sm:col-span-2 my-2${
+                              hideFormSection ? " mb-8" : ""
+                            }`}
+                          >
+                            <PhoneInput
+                              label="Phone Number"
+                              name="phone"
+                              control={control}
+                              errors={errors}
+                              required
+                            />
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <TextInput
+                          autoFocus
+                          label="First Name"
+                          name="firstName"
+                          control={control}
+                          errors={errors}
+                          placeholder="Your First Name"
+                          autoComplete="given-name"
+                          required
+                        />
+                        <TextInput
+                          label="Last Name"
+                          name="lastName"
+                          control={control}
+                          errors={errors}
+                          placeholder="Your Last Name"
+                          autoComplete="family-name"
+                          required
+                        />
+                        <div
+                          className={`sm:col-span-2 my-2${
+                            hideFormSection ? " mb-8" : ""
+                          }`}
+                        >
+                          <PhoneInput
+                            label="Phone Number"
+                            name="phone"
+                            control={control}
+                            errors={errors}
+                            required
+                          />
+                        </div>
+                      </>
+                    )}
                     <Transition
                       show={!hideFormSection}
                       enter="transition ease-in duration-500"

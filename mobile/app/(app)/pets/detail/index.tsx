@@ -224,7 +224,7 @@ const PetDetail = () => {
                           <View
                             style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
                           >
-                            <Container style={tw`p-2`}>
+                            <Container style={tw`px-3`}>
                               <Icon
                                 name={
                                   location === "CLINIC"
@@ -467,7 +467,11 @@ const PetDetail = () => {
                   ]}
                 >
                   <ActionButton
-                    title="Schedule an Appointment"
+                    title={
+                      (!upcomingAppointments && !pastAppointments
+                        ? "Request"
+                        : "Schedule") + " an Appointment"
+                    }
                     iconName="calendar-plus"
                     onPress={() => {
                       setShowVcprModal(false);
@@ -507,7 +511,11 @@ const PetDetail = () => {
           style={tw`flex-col sm:flex-row justify-around w-full mb-8 mt-4`}
         >
           <ActionButton
-            title="Schedule an Appointment"
+            title={
+              (!upcomingAppointments && !pastAppointments
+                ? "Request"
+                : "Schedule") + " an Appointment"
+            }
             iconName="calendar-plus"
             onPress={() =>
               router.push({

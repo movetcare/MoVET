@@ -37,7 +37,7 @@ export const SubmitButton = ({
         color === "black"
           ? tw` bg-movet-black dark:border-movet-white dark:bg-movet-white`
           : tw`border-movet-red bg-movet-red`,
-        tw`flex-row justify-center items-center border-2 mt-4 py-4 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white`,
+        tw`flex-row justify-center items-center border-2 mt-4 py-4 rounded-full shadow-lg shadow-movet-black dark:shadow-movet-white`,
         isTablet ? tw`w-1/2` : tw`w-full`,
         disabled && tw`opacity-50`,
         style,

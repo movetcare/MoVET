@@ -117,6 +117,7 @@ export const AppointmentDetail = () => {
         ]}
         noDarkMode
       >
+        {__DEV__ && <BodyText style={tw`text-xs`}>#{appointment?.id}</BodyText>}
         <Container style={tw`p-3`}>
           <Icon
             name={
@@ -132,13 +133,13 @@ export const AppointmentDetail = () => {
             width={100}
           />
         </Container>
-        <HeadingText>
+        <HeadingText style={tw`text-center mb-2`}>
           {
             (appointment?.reason as { name: string; instructions: string })
               ?.name
           }
         </HeadingText>
-        <SubHeadingText style={tw`text-lg`}>
+        <SubHeadingText style={tw`text-lg mb-2`}>
           {appointment?.start?.toDate()?.toLocaleString("en-US", {
             timeZone: "America/Denver",
             month: "long",
@@ -157,7 +158,7 @@ export const AppointmentDetail = () => {
             ?.instructions) && (
           <>
             <SubHeadingText style={tw`mt-4`}>INSTRUCTIONS</SubHeadingText>
-            <ItalicText>
+            <ItalicText style={tw`mb-4`}>
               {appointment?.instructions ||
                 (
                   appointment?.reason as {
@@ -168,12 +169,20 @@ export const AppointmentDetail = () => {
             </ItalicText>
           </>
         )}
-        <SubHeadingText>
+        {appointment?.notes && (
+          <>
+            <SubHeadingText style={tw`mt-4`}>
+              Appointment Location
+            </SubHeadingText>
+            <ItalicText style={tw`mb-4`}>{appointment?.notes}</ItalicText>
+          </>
+        )}
+        {/* <SubHeadingText>
           PET
           {appointment?.patients && appointment?.patients?.length > 1
             ? "S"
             : ""}
-        </SubHeadingText>
+        </SubHeadingText> */}
         {appointment?.patients?.map((patient: Patient, index: number) => (
           <TouchableOpacity
             key={index}
@@ -230,41 +239,6 @@ export const AppointmentDetail = () => {
                     {patient.birthday}
                   </ItalicText>
                 </Container>
-                {upcomingAppointments &&
-                  upcomingAppointments.length > 0 &&
-                  upcomingAppointments.map(
-                    (appointment: Appointment, index: number) => {
-                      let upcomingPatientAppointments = 0;
-                      appointment?.patients?.forEach((patientData: Patient) => {
-                        if (patientData.id === patient.id)
-                          upcomingPatientAppointments += 1;
-                      });
-                      if (upcomingPatientAppointments > 0)
-                        return (
-                          <Container
-                            style={tw`flex-row items-center`}
-                            key={index}
-                          >
-                            <Icon name={"calendar-heart"} size="xxs" />
-                            <ItalicText style={tw`text-xs ml-1`}>
-                              {upcomingPatientAppointments} Upcoming Appointment
-                              {upcomingPatientAppointments > 1 ? "s" : ""}
-                            </ItalicText>
-                          </Container>
-                        );
-                    },
-                  )}
-                {patient.vcprRequired && !upcomingAppointments && (
-                  <Container style={tw`flex-row items-center`} key={index}>
-                    <Icon name={"exclamation-circle"} size="xxs" />
-                    <ItalicText
-                      noDarkMode
-                      style={tw`text-movet-red text-xs ml-1`}
-                    >
-                      VCPR Required!
-                    </ItalicText>
-                  </Container>
-                )}
               </Container>
             </View>
           </TouchableOpacity>
@@ -362,6 +336,7 @@ export const AppointmentDetail = () => {
             title="Cancel Appointment"
             iconName="cancel"
             onPress={() => setShowCancelModal(true)}
+            style={tw`mb-8`}
           />
         ) : (
           <></>

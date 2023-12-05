@@ -51,17 +51,6 @@ export default function RequestSuccess() {
               Please allow 1 business day for a response. All appointment
               requests are responded to in the order they are received.
             </p>
-            <Button
-              icon={faPlusCircle}
-              iconSize={"sm"}
-              color="black"
-              text="Schedule Another Appointment"
-              onClick={() =>
-                router.replace(
-                  "/?mode=" + mode + "&email=" + email?.replaceAll(" ", "+"),
-                )
-              }
-            />
           </section>
           {/* {!isAppMode && submissionSuccess && (
             <section>

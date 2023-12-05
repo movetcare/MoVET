@@ -3,10 +3,13 @@ import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions
 import { NavigationHeader } from "components/themed/NavigationHeader";
 import { useEffect, useState } from "react";
 import { SupportedIcons } from "components/themed";
+import { AppointmentsStore } from "stores/AppointmentsStore";
 
 export default function Layout() {
   const segments = useSegments();
   const router = useLocalSearchParams();
+  const { upcomingAppointments, pastAppointments } =
+    AppointmentsStore.useState();
   const { screenTitle, screenTitleIcon }: any = router?.params || {};
   const [navigationDetails, setNavigationDetails] = useState<{
     title: string;
@@ -40,7 +43,10 @@ export default function Layout() {
     } else if (segments && segments.includes("new-appointment")) {
       //setTimeout(() => {
       setNavigationDetails({
-        title: "Schedule Appointment",
+        title:
+          (!upcomingAppointments && !pastAppointments
+            ? "Request"
+            : "Schedule") + " an Appointment",
         iconName: "calendar-plus",
         canGoBack: true,
       });

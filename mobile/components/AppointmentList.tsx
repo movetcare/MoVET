@@ -78,7 +78,7 @@ export const AppointmentList = ({
                   ? "TELEHEALTH"
                   : "UNKNOWN APPOINTMENT TYPE";
           const reason = reasons?.map((reason: any) => {
-            if (reason.id === getProVetIdFromUrl(appointment.reason))
+            if (reason.id === getProVetIdFromUrl(appointment.reason as any))
               return reason.name;
           });
           return (
@@ -94,7 +94,7 @@ export const AppointmentList = ({
               <View
                 style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
               >
-                <Container style={tw`p-3`}>
+                <Container style={tw`px-3`}>
                   <Icon
                     name={
                       location === "CLINIC"
@@ -105,7 +105,8 @@ export const AppointmentList = ({
                             ? "telehealth"
                             : "question"
                     }
-                    size="md"
+                    height={50}
+                    width={50}
                   />
                 </Container>
                 <Container style={tw`flex-shrink`}>

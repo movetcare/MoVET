@@ -32,7 +32,8 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import { Platform, useColorScheme } from "react-native";
 import * as Notifications from "expo-notifications";
-import { Icon, View, Screen } from "components/themed";
+import { Icon, View, Screen, Container } from "components/themed";
+import { isTablet } from "utils/isTablet";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -312,19 +313,31 @@ const ChatIndex = () => {
 
   const renderSystemMessage = useCallback((props: any) => {
     return (
-      <SystemMessage
-        {...props}
-        containerStyle={{
-          marginBottom: 15,
-          marginHorizontal: 10,
-        }}
-        textStyle={{
-          textAlign: "center",
-          fontSize: 14,
-          color: isDarkMode ? tw.color("movet-white") : tw.color("movet-black"),
-          fontStyle: "italic",
-        }}
-      />
+      <Container style={tw`flex-grow w-full`}>
+        <Container style={tw`grow items-center justify-center w-full`}>
+          <Icon
+            name="telehealth"
+            width={isTablet ? 150 : 100}
+            height={isTablet ? 150 : 100} //style={tw`mt-20`}
+          />
+        </Container>
+        <SystemMessage
+          {...props}
+          containerStyle={{
+            marginBottom: 15,
+            marginHorizontal: 14,
+            //flex: 1,
+          }}
+          textStyle={{
+            textAlign: "center",
+            fontSize: isTablet ? 24 : 18,
+            color: isDarkMode
+              ? tw.color("movet-white")
+              : tw.color("movet-black"),
+            fontStyle: "italic",
+          }}
+        />
+      </Container>
     );
   }, []);
 

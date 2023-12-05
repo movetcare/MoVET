@@ -16,7 +16,7 @@ import {
   HeadingText,
 } from "components/themed";
 import Constants from "expo-constants";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { firestore, functions } from "firebase-config";
 import {
   onSnapshot,
@@ -28,7 +28,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { TouchableOpacity } from "react-native";
 import { AuthStore, ErrorStore } from "stores";
 import tw from "tailwind";
@@ -45,6 +45,7 @@ interface PaymentMethod {
 }
 
 const PaymentMethods = () => {
+  const { autoOpen } = useLocalSearchParams();
   const { user } = AuthStore.useState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showUpcomingExpirationWarning, setShowUpcomingExpirationWarning] =
@@ -124,7 +125,13 @@ const PaymentMethods = () => {
       .finally(() => setIsLoading(false));
   };
 
-  const loadPaymentOptions = async () => {
+  const handleError = useCallback((error: any) => {
+    setError(error);
+    setPaymentOptionsReady(false);
+    setIsLoading(false);
+  }, []);
+
+  const loadPaymentOptions = useCallback(async () => {
     setIsLoading(true);
     const handleCustomerToken = httpsCallable(
       functions,
@@ -153,7 +160,12 @@ const PaymentMethods = () => {
           const { error } = await presentPaymentSheet();
           if (error && error?.message !== "The payment has been canceled") {
             handleError(error);
-          } else router.replace("/settings/payment-methods");
+          } else if (
+            error &&
+            error?.message === "The payment has been canceled"
+          )
+            console.log("canceled");
+          else router.replace("/settings/payment-methods");
         } else {
           const { error } = await presentPaymentSheet();
           if (error) handleError(error);
@@ -161,7 +173,14 @@ const PaymentMethods = () => {
       })
       .catch((error: any) => handleError(error))
       .finally(() => setIsLoading(false));
-  };
+  }, [handleError]);
+
+  useEffect(() => {
+    if (autoOpen) {
+      const showPaymentOptions = async () => await loadPaymentOptions();
+      showPaymentOptions();
+    }
+  }, [autoOpen, loadPaymentOptions]);
 
   useEffect(() => {
     if (paymentMethods) {
@@ -200,12 +219,6 @@ const PaymentMethods = () => {
       else setShowUpcomingExpirationWarning(false);
     }
   }, [paymentMethods]);
-
-  const handleError = (error: any) => {
-    setError(error);
-    setPaymentOptionsReady(false);
-    setIsLoading(false);
-  };
 
   return (
     <Screen>
@@ -249,11 +262,13 @@ const PaymentMethods = () => {
                         paymentMethod.expMonth >= new Date().getMonth()) &&
                         paymentMethod.expYear === new Date().getFullYear() &&
                         tw`bg-movet-yellow/50`,
-                      paymentMethod.expMonth < new Date().getMonth() + 1 &&
-                        paymentMethod.expYear <= new Date().getFullYear() &&
+                      (paymentMethod.expYear < new Date().getFullYear() ||
+                        (paymentMethod.expMonth < new Date().getMonth() + 1 &&
+                          paymentMethod.expYear <= new Date().getFullYear())) &&
                         tw`bg-movet-red/50`,
                     ]}
                     noDarkMode={
+                      paymentMethod.expYear < new Date().getFullYear() ||
                       (paymentMethod.expMonth < new Date().getMonth() + 1 &&
                         paymentMethod.expYear <= new Date().getFullYear()) ||
                       ((paymentMethod.expMonth === new Date().getMonth() + 1 ||
@@ -393,7 +408,7 @@ const PaymentMethods = () => {
             !paymentMethods ? "Add a Payment Method" : "Update Payment Methods"
           }
           loading={isLoading}
-          iconName={!paymentMethods ? "plus" : "credit-card"}
+          iconName={!paymentMethods ? "plus" : "pencil"}
           onPress={async () => await loadPaymentOptions()}
           disabled={!paymentOptionsReady || isLoading}
         />

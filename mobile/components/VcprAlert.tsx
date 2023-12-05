@@ -14,7 +14,7 @@ import tw from "tailwind";
 import { Modal } from "components/Modal";
 import { router } from "expo-router";
 import { isTablet } from "utils/isTablet";
-import { Patient } from "stores";
+import { AppointmentsStore, Patient } from "stores";
 
 export interface Announcement {
   color: string;
@@ -32,6 +32,8 @@ export const VcprAlert = ({
   patients: Array<Patient> | null;
   scheduleAppointmentPath?: string;
 }): ReactNode => {
+  const { upcomingAppointments, pastAppointments } =
+    AppointmentsStore.useState();
   const [showVcprModal, setShowVcprModal] = useState<boolean>(false);
   const textStyles = [isTablet ? tw`text-lg` : tw`text-sm`, tw`mb-2`];
   return (
@@ -140,7 +142,11 @@ export const VcprAlert = ({
             ]}
           >
             <ActionButton
-              title="Schedule an Appointment"
+              title={
+                (!upcomingAppointments && !pastAppointments
+                  ? "Request"
+                  : "Schedule") + " an Appointment"
+              }
               iconName="calendar-plus"
               onPress={() => {
                 setShowVcprModal(false);

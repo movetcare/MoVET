@@ -513,7 +513,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
         <SubmitButton
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
-          disabled={!isDirty || isLoading}
+          disabled={(!isDirty && !petImage) || isLoading}
           loading={isLoading}
           title={
             isLoading
