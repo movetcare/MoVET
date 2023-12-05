@@ -90,6 +90,10 @@ import CakeIcon from "assets/icons/svgs/font-awesome/cake.svg";
 import CakeIconDark from "assets/icons/svgs/font-awesome/cake-dark.svg";
 import FolderHeartIcon from "assets/icons/svgs/font-awesome/folder-heart.svg";
 import FolderHeartIconDark from "assets/icons/svgs/font-awesome/folder-heart-dark.svg";
+import MapIcon from "assets/icons/svgs/font-awesome/map.svg";
+import MapIconDark from "assets/icons/svgs/font-awesome/map-dark.svg";
+import CancelIcon from "assets/icons/svgs/font-awesome/cancel.svg";
+import CancelIconDark from "assets/icons/svgs/font-awesome/cancel-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -139,7 +143,9 @@ export type SupportedIcons =
   | "pencil"
   | "cake"
   | "calendar-heart"
-  | "folder-heart";
+  | "folder-heart"
+  | "map"
+  | "cancel";
 
 export const Icon = ({
   name = "poo",
@@ -542,6 +548,18 @@ export const Icon = ({
         />
       ) : (
         <FolderHeartIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "map":
+      return showWhiteIcon ? (
+        <MapIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <MapIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "cancel":
+      return showWhiteIcon ? (
+        <CancelIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <CancelIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (

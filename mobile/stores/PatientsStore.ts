@@ -16,11 +16,10 @@ export interface Patient {
   gender: string;
   id: number;
   name: string;
-  picture: string | null;
+  picture?: string | null;
   species: string;
   vcprRequired: boolean;
   weight: number;
-  minorIllness: string;
   photoUrl?: string;
 }
 

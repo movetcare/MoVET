@@ -9,12 +9,14 @@ export interface Appointment {
   end: any;
   notes: string;
   patients: Array<Patient>;
-  reason: string;
+  reason: string | { name: string; instructions: string };
   requestHash: string;
   resources: Array<number>;
   start: any;
   type: 1 | 2 | 3 | 4;
   user: number;
+  location?: string;
+  instructions?: string;
 }
 
 export const AppointmentsStore = new Store({

@@ -206,29 +206,15 @@ const AccountSettings = () => {
                 Deleting your account will erase ALL of your data. This action
                 can not be undone.
               </ItalicText>
-              <Container
-                style={tw`flex-row w-full items-center justify-around`}
-              >
-                <ActionButton
-                  title="Cancel"
-                  iconName="close"
-                  color="black"
-                  onPress={() => setShowAccountDeletionConfirmation(false)}
-                  style={tw`w-1/2 mr-4`}
-                />
-                <ActionButton
-                  title="Delete Account"
-                  iconName="check"
-                  onPress={() => {
-                    if (__DEV__)
-                      alert(
-                        "This feature is not available in development mode.",
-                      );
-                    else deleteAccount();
-                  }}
-                  style={tw`w-1/2 ml-4`}
-                />
-              </Container>
+              <ActionButton
+                title="Delete My Account"
+                iconName="check"
+                onPress={() => {
+                  if (__DEV__)
+                    alert("This feature is not available in development mode.");
+                  else deleteAccount();
+                }}
+              />
             </View>
           </Modal>
           <Modal
@@ -242,48 +228,36 @@ const AccountSettings = () => {
               <ItalicText>
                 Please contact us if you need to change your email address.
               </ItalicText>
-              <Container
-                style={tw`flex-row w-full items-center justify-around`}
-              >
-                <ActionButton
-                  title="Cancel"
-                  iconName="close"
-                  color="black"
-                  onPress={() => setShowChangeEmailModal(false)}
-                  style={tw`w-1/2 mr-4`}
-                />
-                <ActionButton
-                  title="Contact Us"
-                  iconName="arrow-right"
-                  onPress={() => {
-                    setShowChangeEmailModal(false);
-                    router.push({
-                      pathname: "/(app)/settings/account/web-view",
-                      params: {
-                        path: "/contact",
-                        queryString: `${
-                          client?.firstName
-                            ? `&firstName=${client?.firstName}`
-                            : ""
-                        }${
-                          client?.lastName
-                            ? `&lastName=${client?.lastName}`
-                            : ""
-                        }${client?.email ? `&email=${client?.email}` : ""}${
-                          client?.phone
-                            ? `&phone=${client?.phone
-                                ?.replaceAll(" ", "")
-                                ?.replaceAll("(", "")
-                                ?.replaceAll(")", "")
-                                ?.replaceAll("-", "")}`
-                            : ""
-                        }&message=I need to change the email address for my MoVET account. Please use <NEW_EMAIL_ADDRESS> going forward. Thanks!`,
-                      },
-                    });
-                  }}
-                  style={tw`w-1/2 ml-4`}
-                />
-              </Container>
+              <ActionButton
+                title="Contact Us"
+                iconName="arrow-right"
+                onPress={() => {
+                  setShowChangeEmailModal(false);
+                  router.push({
+                    pathname: "/(app)/settings/account/web-view",
+                    params: {
+                      path: "/contact",
+                      queryString: `${
+                        client?.firstName
+                          ? `&firstName=${client?.firstName}`
+                          : ""
+                      }${
+                        client?.lastName ? `&lastName=${client?.lastName}` : ""
+                      }${client?.email ? `&email=${client?.email}` : ""}${
+                        client?.phone
+                          ? `&phone=${client?.phone
+                              ?.replaceAll(" ", "")
+                              ?.replaceAll("(", "")
+                              ?.replaceAll(")", "")
+                              ?.replaceAll("-", "")}`
+                          : ""
+                      }&message=I need to change the email address for my MoVET account. Please use <NEW_EMAIL_ADDRESS> going forward. Thanks!`
+                        ?.replaceAll(")", "")
+                        ?.replaceAll("(", ""),
+                    },
+                  });
+                }}
+              />
             </View>
           </Modal>
         </>

@@ -206,7 +206,8 @@ const PetDetail = () => {
                               : "UNKNOWN APPOINTMENT TYPE";
                       const reason = reasons?.map((reason: any) => {
                         if (
-                          reason.id === getProVetIdFromUrl(appointment.reason)
+                          reason.id ===
+                          getProVetIdFromUrl(appointment.reason as any)
                         )
                           return reason.name;
                       });
@@ -223,7 +224,7 @@ const PetDetail = () => {
                           <View
                             style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
                           >
-                            <Container style={tw`p-3`}>
+                            <Container style={tw`p-2`}>
                               <Icon
                                 name={
                                   location === "CLINIC"
@@ -234,7 +235,8 @@ const PetDetail = () => {
                                         ? "telehealth"
                                         : "question"
                                 }
-                                size="md"
+                                height={50}
+                                width={50}
                               />
                             </Container>
                             <Container style={tw`flex-shrink`}>
@@ -300,7 +302,10 @@ const PetDetail = () => {
                           ? "TELEHEALTH"
                           : "UNKNOWN APPOINTMENT TYPE";
                   const reason = reasons?.map((reason: any) => {
-                    if (reason.id === getProVetIdFromUrl(appointment.reason))
+                    if (
+                      reason.id ===
+                      getProVetIdFromUrl(appointment.reason as any)
+                    )
                       return reason.name;
                   });
                   return (
@@ -317,7 +322,7 @@ const PetDetail = () => {
                         key={appointment.id}
                         style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
                       >
-                        <Container style={tw`p-3`}>
+                        <Container style={tw`p-2`}>
                           <Icon
                             name={
                               location === "CLINIC"
@@ -328,7 +333,8 @@ const PetDetail = () => {
                                     ? "telehealth"
                                     : "question"
                             }
-                            size="md"
+                            height={50}
+                            width={50}
                           />
                         </Container>
                         <Container style={tw`flex-shrink`}>
