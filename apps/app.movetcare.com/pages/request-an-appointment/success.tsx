@@ -1,15 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { AppHeader } from "components/AppHeader";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Button } from "ui";
 
 export default function RequestSuccess() {
   const router = useRouter();
-  const { email, mode }: any = router.query || {};
+  const { mode }: any = router.query || {};
   const isAppMode = mode === "app";
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
     null,
