@@ -13,11 +13,36 @@ import { Appointment, AppointmentsStore, Patient, PatientsStore } from "stores";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 import { Image, TouchableOpacity } from "react-native";
+import { useEffect, useState } from "react";
 
 const MyPets = () => {
   const { patients } = PatientsStore.useState();
   const { upcomingAppointments, pastAppointments } =
     AppointmentsStore.useState();
+  const [appointmentCounts, setAppointmentCounts] = useState<Array<{
+    id: number;
+    count: number;
+  }> | null>(null);
+
+  useEffect(() => {
+    if (upcomingAppointments) {
+      const appointmentCounts: any = [];
+      patients?.forEach((patient: Patient) => {
+        let upcomingPatientAppointments = 0;
+        upcomingAppointments.forEach((appointment: Appointment) => {
+          appointment?.patients?.forEach((patientData: Patient) => {
+            if (patientData.id === patient.id) upcomingPatientAppointments += 1;
+          });
+        });
+        appointmentCounts.push({
+          id: patient?.id,
+          count: upcomingPatientAppointments,
+        });
+      });
+      setAppointmentCounts(appointmentCounts);
+    }
+  }, [patients, upcomingAppointments]);
+
   return (
     <Screen withBackground="pets">
       <View
@@ -74,11 +99,11 @@ const MyPets = () => {
                       )}
                     </Container>
                     <Container style={tw`flex-shrink`}>
-                      <HeadingText style={tw`text-black text-lg`}>
+                      <HeadingText style={tw`text-lg`}>
                         {patient.name}
                         {/* {__DEV__ && ` - #${patient.id}`} */}
                       </HeadingText>
-                      <BodyText style={tw`text-black text-sm -mt-0.5`}>
+                      <BodyText style={tw`text-sm -mt-0.5`}>
                         {patient.breed}
                       </BodyText>
                       <Container style={tw`flex-row items-center`}>
@@ -90,35 +115,31 @@ const MyPets = () => {
                           }
                           size="xxs"
                         />
-                        <ItalicText style={tw`text-black text-xs ml-1`}>
+                        <ItalicText style={tw`text-xs ml-1`}>
                           {patient.birthday}
                         </ItalicText>
                       </Container>
-                      {upcomingAppointments &&
-                        upcomingAppointments.length > 0 &&
-                        upcomingAppointments.map(
-                          (appointment: Appointment, index: number) => {
-                            let upcomingPatientAppointments = 0;
-                            appointment?.patients?.forEach(
-                              (patientData: Patient) => {
-                                if (patientData.id === patient.id)
-                                  upcomingPatientAppointments += 1;
-                              },
-                            );
-                            if (upcomingPatientAppointments > 0)
+                      {appointmentCounts &&
+                        appointmentCounts.map(
+                          (appointmentCount: { id: number; count: number }) => {
+                            if (
+                              appointmentCount.id === patient.id &&
+                              appointmentCount.count > 0
+                            ) {
                               return (
                                 <Container
                                   style={tw`flex-row items-center`}
-                                  key={index}
+                                  key={appointmentCount.id}
                                 >
                                   <Icon name={"calendar-heart"} size="xxs" />
                                   <ItalicText style={tw`text-xs ml-1`}>
-                                    {upcomingPatientAppointments} Upcoming
+                                    {appointmentCount.count} Upcoming
                                     Appointment
-                                    {upcomingPatientAppointments > 1 ? "s" : ""}
+                                    {appointmentCount.count > 1 ? "s" : ""}
                                   </ItalicText>
                                 </Container>
                               );
+                            }
                           },
                         )}
                       {patient.vcprRequired && !upcomingAppointments && (

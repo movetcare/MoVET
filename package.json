@@ -49,7 +49,7 @@
   "devDependencies": {
     "@types/node": "^20.10.3",
     "concurrently": "^8.2.2",
-    "cypress": "^13.6.0",
+    "cypress": "^13.6.1",
     "cypress-fail-fast": "^7.1.0",
     "eslint-config-custom": "workspace:*",
     "git-branch-is": "^4.0.0",
@@ -57,7 +57,7 @@
     "lint-staged": "^15.2.0",
     "prettier": "^3.1.0",
     "start-server-and-test": "^2.0.3",
-    "turbo": "^1.10.16",
+    "turbo": "^1.11.0",
     "typescript": "^5.3.2",
     "typescript-coverage-report": "^0.8.0",
     "x2js": "^3.4.4"

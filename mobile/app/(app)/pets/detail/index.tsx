@@ -50,7 +50,6 @@ const PetDetail = () => {
   const [showVcprModal, setShowVcprModal] = useState<boolean>(false);
   const [showRecordsRequestModal, setShowRecordsRequestModal] =
     useState<boolean>(false);
-  const textStyles = [isTablet ? tw`text-lg` : tw`text-sm`];
 
   useEffect(() => {
     if (id && patients) {
@@ -412,20 +411,20 @@ const PetDetail = () => {
               title="What is a VCPR?"
             >
               <>
-                <BodyText style={textStyles}>
+                <BodyText>
                   A Veterinarian-Client-Patient Relationship (&quot;VCPR&quot;)
                   is established only when your veterinarian examines your pet
                   in person, and is maintained by regular veterinary visits as
                   needed to monitor your pet&apos;s health.
                 </BodyText>
-                <BodyText style={textStyles}>
+                <BodyText>
                   If a VCPR is established but your veterinarian does not
                   regularly see your pet afterward, the VCPR is no longer valid
                   and it would be illegal (and unethical) for your veterinarian
                   to dispense or prescribe medications or recommend treatment
                   without recently examining your pet.
                 </BodyText>
-                <BodyText style={textStyles}>
+                <BodyText>
                   A valid VCPR cannot be established online, via email, or over
                   the phone. However, once a VCPR is established, it may be able
                   to be maintained between medically necessary examinations via
@@ -491,7 +490,7 @@ const PetDetail = () => {
           title="Confirm Pet Records Request"
         >
           <>
-            <BodyText style={textStyles}>
+            <BodyText>
               Do you want a copy of {patient?.name}&apos;s records sent to your
               email address - {user?.email}?
             </BodyText>

@@ -14,7 +14,7 @@ import {
   Screen,
   View,
 } from "components/themed";
-import { router } from "expo-router";
+import { Stack, router } from "expo-router";
 import { firestore } from "firebase-config";
 import {
   collection,
@@ -134,14 +134,15 @@ const Home = () => {
         style={tw`flex-grow w-full justify-center items-center bg-transparent`}
         noDarkMode
       >
+        <Stack.Screen options={{ headerShown: false }} />
         <Icon
           name="clinic"
           height={isTablet ? 150 : 100}
           width={isTablet ? 150 : 100}
-          style={tw`-mb-4`}
+          style={tw`-mb-8`}
         />
         <SectionHeading text={"Setup Your Account"} />
-        <BodyText style={tw`text-center px-8 mb-2 mt-2`}>
+        <BodyText style={[tw`text-center px-8 mb-8`]}>
           Welcome to MoVET! Please add your pet(s) to start booking your first
           appointment.
         </BodyText>

@@ -10,9 +10,14 @@ import {
   SubHeadingText,
   View,
 } from "./themed";
-import { Image, Linking, Platform, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Linking,
+  Platform,
+  useColorScheme,
+} from "react-native";
 import { useEffect, useState } from "react";
-import { Appointment, AppointmentsStore } from "stores/AppointmentsStore";
 import { firestore } from "firebase-config";
 import {
   onSnapshot,
@@ -27,15 +32,47 @@ import { isTablet } from "utils/isTablet";
 import { getProVetIdFromUrl } from "utils/getProVetIdFromUrl";
 import { Patient, PatientsStore } from "stores/PatientsStore";
 import { Modal } from "./Modal";
+import MapView, { Marker } from "react-native-maps";
+import Constants from "expo-constants";
+import { AuthStore, Appointment, AppointmentsStore } from "stores";
+import { getPlatformUrl } from "utils/getPlatformUrl";
 
 export const AppointmentDetail = () => {
   const { id } = useLocalSearchParams();
   const { upcomingAppointments, pastAppointments } =
     AppointmentsStore.useState();
+  const { client } = AuthStore.useState();
   const { patients: patientsData } = PatientsStore.useState();
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [reasons, setReasons] = useState<Array<any> | null>(null);
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
+  const isDarkMode = useColorScheme() !== "light";
+  const [isLoadingMap, setIsLoadingMap] = useState<boolean>(false);
+  const [mapCoordinates, setMapCoordinates] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (
+      mapCoordinates === null &&
+      (appointment?.notes?.includes("Appointment Location:") || client?.address)
+    ) {
+      setIsLoadingMap(true);
+      fetch(
+        `https://maps.google.com/maps/api/geocode/json?address=${encodeURI(
+          appointment?.notes?.split("-")[1]?.split("|")[0]?.trim() ||
+            client?.address,
+        )}&key=${Constants.expoConfig?.extra?.google_maps_geocode_key}`,
+      )
+        .then((response: any) => response.json())
+        .then((json: any) => {
+          setMapCoordinates(json.results[0].geometry.location);
+        })
+        .catch((error: any) => setError(error))
+        .finally(() => setIsLoadingMap(false));
+    }
+  }, [mapCoordinates, appointment?.notes, client?.address]);
 
   useEffect(() => {
     if (id && reasons) {
@@ -169,22 +206,175 @@ export const AppointmentDetail = () => {
             </ItalicText>
           </>
         )}
-        {appointment?.notes && (
+        {appointment?.notes?.includes("Appointment Location:") ? (
           <>
-            <SubHeadingText style={tw`mt-4`}>
-              Appointment Location
+            <SubHeadingText style={tw`mt-2`}>
+              APPOINTMENT LOCATION
             </SubHeadingText>
-            <ItalicText style={tw`mb-4`}>{appointment?.notes}</ItalicText>
+            {appointment?.notes?.split("-")[1]?.split("|")[0]?.trim() && (
+              <ItalicText style={tw`text-center`}>
+                {appointment?.notes?.split("-")[1]?.split("(")[0]?.trim()}
+              </ItalicText>
+            )}
+            {appointment?.notes
+              ?.split("-")[1]
+              ?.split("|")[0]
+              ?.trim()
+              .split("(")[1]
+              ?.split(")")[0]
+              ?.trim() && (
+              <ItalicText style={tw`mb-4 text-center text-sm`}>
+                *{" "}
+                {appointment?.notes
+                  ?.split("-")[1]
+                  ?.split("|")[0]
+                  ?.trim()
+                  .split("(")[1]
+                  ?.split(")")[0]
+                  ?.trim()}
+              </ItalicText>
+            )}
+            {isLoadingMap || !mapCoordinates ? (
+              <ActivityIndicator
+                size={"large"}
+                color={tw.color("movet-red")}
+                style={tw`my-8`}
+              />
+            ) : (
+              <View
+                style={tw`
+              flex-row w-full h-60 self-center overflow-hidden border-2 border-black dark:border-movet-white rounded-xl mb-4
+            `}
+              >
+                <MapView
+                  style={tw`flex-grow h-60`}
+                  loadingEnabled={true}
+                  loadingIndicatorColor={tw.color("movet-red")}
+                  loadingBackgroundColor={"transparent"}
+                  userInterfaceStyle={isDarkMode ? "dark" : "light"}
+                  tintColor={tw.color("movet-red")}
+                  region={{
+                    latitude: mapCoordinates.lat,
+                    longitude: mapCoordinates.lng,
+                    latitudeDelta: 0.0055,
+                    longitudeDelta: 0.0055,
+                  }}
+                >
+                  <Marker
+                    coordinate={{
+                      latitude: mapCoordinates.lat,
+                      longitude: mapCoordinates.lng,
+                    }}
+                    title="Home"
+                    tracksViewChanges={false}
+                  />
+                </MapView>
+              </View>
+            )}
           </>
-        )}
-        {/* <SubHeadingText>
+        ) : appointment?.location === "HOUSECALL" && client?.address ? (
+          <>
+            <SubHeadingText style={tw`mt-2`}>
+              APPOINTMENT LOCATION
+            </SubHeadingText>
+            <ItalicText style={tw`text-center mb-4`}>
+              {client?.address}
+            </ItalicText>
+            {isLoadingMap || !mapCoordinates ? (
+              <ActivityIndicator
+                size={"large"}
+                color={tw.color("movet-red")}
+                style={tw`my-8`}
+              />
+            ) : (
+              <View
+                style={tw`
+              flex-row w-full h-60 self-center overflow-hidden border-2 border-black dark:border-movet-white rounded-xl mb-4
+            `}
+              >
+                <MapView
+                  style={tw`flex-grow h-60`}
+                  loadingEnabled={true}
+                  loadingIndicatorColor={tw.color("movet-red")}
+                  loadingBackgroundColor={"transparent"}
+                  userInterfaceStyle={isDarkMode ? "dark" : "light"}
+                  tintColor={tw.color("movet-red")}
+                  region={{
+                    latitude: mapCoordinates.lat,
+                    longitude: mapCoordinates.lng,
+                    latitudeDelta: 0.0055,
+                    longitudeDelta: 0.0055,
+                  }}
+                >
+                  <Marker
+                    coordinate={{
+                      latitude: mapCoordinates.lat,
+                      longitude: mapCoordinates.lng,
+                    }}
+                    title="Home"
+                    tracksViewChanges={false}
+                  />
+                </MapView>
+              </View>
+            )}
+          </>
+        ) : appointment?.location === "HOUSECALL" && !client?.address ? (
+          <>
+            <SubHeadingText style={tw`mt-2`}>
+              APPOINTMENT LOCATION
+            </SubHeadingText>
+            <ItalicText
+              style={tw`text-center mb-4 underline text-movet-red`}
+              noDarkMode
+            >
+              UNKNOWN - Please contact us ASAP with the correct address for your
+              housecall appointment.
+            </ItalicText>
+            {appointment?.start?.toDate() >= new Date() ? (
+              <ActionButton
+                title="Provide an Address"
+                iconName="map"
+                onPress={() => {
+                  Linking.canOpenURL(getPlatformUrl() + "/contact").then(
+                    (supported) => {
+                      if (supported)
+                        Linking.openURL(
+                          `${getPlatformUrl()}/contact?${
+                            client?.firstName
+                              ? `&firstName=${client?.firstName}`
+                              : ""
+                          }${
+                            client?.lastName
+                              ? `&lastName=${client?.lastName}`
+                              : ""
+                          }${client?.email ? `&email=${client?.email}` : ""}${
+                            client?.phone
+                              ? `&phone=${client?.phone
+                                  ?.replaceAll(" ", "")
+                                  ?.replaceAll("(", "")
+                                  ?.replaceAll(")", "")
+                                  ?.replaceAll("-", "")}`
+                              : ""
+                          }&message=Please use <MY_APPOINTMENT_ADDRESS> as the location for my next housecall appointment. Thanks!`,
+                        );
+                    },
+                  );
+                }}
+                style={tw`mb-8`}
+              />
+            ) : (
+              <></>
+            )}
+          </>
+        ) : null}
+        <SubHeadingText>
           PET
           {appointment?.patients && appointment?.patients?.length > 1
             ? "S"
             : ""}
-        </SubHeadingText> */}
+        </SubHeadingText>
         {appointment?.patients?.map((patient: Patient, index: number) => (
-          <TouchableOpacity
+          <Container
             key={index}
             style={tw`flex-row`}
             // onPress={() =>
@@ -241,7 +431,7 @@ export const AppointmentDetail = () => {
                 </Container>
               </Container>
             </View>
-          </TouchableOpacity>
+          </Container>
         ))}
         <Modal
           isVisible={showCancelModal}

@@ -2,6 +2,7 @@ import React from "react";
 import { Text as DefaultText } from "react-native";
 import { useThemeColor } from "hooks/useThemeColor";
 import tw from "tailwind";
+import { isTablet } from "utils/isTablet";
 
 type ThemeProps = {
   lightColor?: string;
@@ -31,7 +32,11 @@ export const SubHeadingText = (props: TextProps) => (
 export const BodyText = (props: TextProps) => (
   <Text
     {...props}
-    style={[tw`font-source-sans-pro rounded-xl text-base`, props.style]}
+    style={[
+      tw`font-source-sans-pro rounded-xl text-base`,
+      isTablet && tw`text-lg`,
+      props.style,
+    ]}
   />
 );
 
