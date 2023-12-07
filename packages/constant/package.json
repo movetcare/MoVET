@@ -11,6 +11,6 @@
   "private": true,
   "license": "NONE",
   "devDependencies": {
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.3"
   }
 }

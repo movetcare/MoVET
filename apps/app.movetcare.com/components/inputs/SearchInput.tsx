@@ -79,13 +79,14 @@ export const SearchInput = ({
                   color: state.isSelected ? "#f6f2f0" : "#232127",
                   backgroundColor: state.isSelected ? "#6c382b" : "transparent",
                 }),
-                singleValue: (base, state) => ({
-                  ...base,
-                  borderWidth: 0,
-                  borderColor: "transparent",
-                  fontFamily: "Abside Smooth",
-                  color: state.data.color,
-                }),
+                singleValue: (base, state) =>
+                  ({
+                    ...base,
+                    borderWidth: 0,
+                    borderColor: "transparent",
+                    fontFamily: "Abside Smooth",
+                    color: state.data.color,
+                  }) as any,
                 indicatorSeparator: (base: any) => ({
                   ...base,
                   backgroundColor: "#232127",

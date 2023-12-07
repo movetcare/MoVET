@@ -36,6 +36,7 @@ import MapView, { Marker } from "react-native-maps";
 import Constants from "expo-constants";
 import { AuthStore, Appointment, AppointmentsStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
+import { isLoading } from "expo-font";
 
 export const AppointmentDetail = () => {
   const { id } = useLocalSearchParams();
@@ -47,7 +48,7 @@ export const AppointmentDetail = () => {
   const [reasons, setReasons] = useState<Array<any> | null>(null);
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
   const isDarkMode = useColorScheme() !== "light";
-  const [isLoadingMap, setIsLoadingMap] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [mapCoordinates, setMapCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -58,7 +59,7 @@ export const AppointmentDetail = () => {
       mapCoordinates === null &&
       (appointment?.notes?.includes("Appointment Location:") || client?.address)
     ) {
-      setIsLoadingMap(true);
+      setIsLoading(true);
       fetch(
         `https://maps.google.com/maps/api/geocode/json?address=${encodeURI(
           appointment?.notes?.split("-")[1]?.split("|")[0]?.trim() ||
@@ -70,7 +71,7 @@ export const AppointmentDetail = () => {
           setMapCoordinates(json.results[0].geometry.location);
         })
         .catch((error: any) => setError(error))
-        .finally(() => setIsLoadingMap(false));
+        .finally(() => setIsLoading(false));
     }
   }, [mapCoordinates, appointment?.notes, client?.address]);
 
@@ -234,7 +235,7 @@ export const AppointmentDetail = () => {
                   ?.trim()}
               </ItalicText>
             )}
-            {isLoadingMap || !mapCoordinates ? (
+            {isLoading || !mapCoordinates ? (
               <ActivityIndicator
                 size={"large"}
                 color={tw.color("movet-red")}
@@ -280,7 +281,7 @@ export const AppointmentDetail = () => {
             <ItalicText style={tw`text-center mb-4`}>
               {client?.address}
             </ItalicText>
-            {isLoadingMap || !mapCoordinates ? (
+            {isLoading || !mapCoordinates ? (
               <ActivityIndicator
                 size={"large"}
                 color={tw.color("movet-red")}
@@ -438,34 +439,50 @@ export const AppointmentDetail = () => {
           onClose={() => {
             setShowCancelModal(false);
           }}
-          title="Cancel Appointment"
+          title={isLoading ? "Canceling Appointment" : "Cancel Appointment"}
         >
-          <>
-            <BodyText
-              style={[isTablet ? tw`text-lg` : tw`text-sm`, tw`text-center`]}
-            >
-              Are you sure you want to cancel this appointment?
-            </BodyText>
+          {isLoading ? (
             <ItalicText
               style={[
                 isTablet ? tw`text-sm` : tw`text-xs`,
                 tw`mt-2 text-center`,
               ]}
             >
-              A $60 cancellation fee will be charged if cancellation occurs
-              within 24 hours of your appointment.
+              We are canceling your appointment. Please wait...
             </ItalicText>
-            <Container style={[tw`flex-row justify-center sm:mb-2`]}>
-              <ActionButton
-                title="Yes, Cancel My Appointment"
-                iconName="cancel"
-                onPress={() => {
-                  setShowCancelModal(false);
-                  // TODO : Cancel Appointment
-                }}
-              />
-            </Container>
-          </>
+          ) : (
+            <>
+              <BodyText
+                style={[isTablet ? tw`text-xl` : tw`text-lg`, tw`text-center`]}
+              >
+                Are you sure you want to cancel this appointment?
+              </BodyText>
+              <BodyText
+                style={[
+                  isTablet ? tw`text-lg` : tw`text-sm`,
+                  tw`text-center mt-2 mb-4`,
+                ]}
+              >
+                If so, please let us know why you are canceling:
+              </BodyText>
+              <ItalicText
+                style={[
+                  isTablet ? tw`text-sm` : tw`text-xs`,
+                  tw`mt-2 text-center`,
+                ]}
+              >
+                A $60 cancellation fee will be charged if cancellation occurs
+                within 24 hours of your appointment.
+              </ItalicText>
+              <Container style={[tw`flex-row justify-center sm:mb-2`]}>
+                <ActionButton
+                  title="Yes, Cancel My Appointment"
+                  iconName="check"
+                  onPress={() => {}}
+                />
+              </Container>
+            </>
+          )}
         </Modal>
         {appointment?.location === "CLINIC" &&
         appointment?.start?.toDate() >= new Date() ? (
