@@ -358,13 +358,14 @@ const TelehealthChatStatus = () => {
                       ? "#E76159"
                       : "transparent",
                   }),
-                  singleValue: (base, state) => ({
-                    ...base,
-                    borderWidth: 0,
-                    borderColor: "transparent",
-                    fontFamily: "Abside Smooth",
-                    color: (state.data as any).color,
-                  }),
+                  singleValue: (base, state) =>
+                    ({
+                      ...base,
+                      borderWidth: 0,
+                      borderColor: "transparent",
+                      fontFamily: "Abside Smooth",
+                      color: (state.data as any).color,
+                    }) as any,
                   indicatorSeparator: (base: any) => ({
                     ...base,
                     backgroundColor: "#232127",
@@ -493,13 +494,14 @@ const TelehealthChatStatus = () => {
                       ? "#E76159"
                       : "transparent",
                   }),
-                  singleValue: (base, state) => ({
-                    ...base,
-                    borderWidth: 0,
-                    borderColor: "transparent",
-                    fontFamily: "Abside Smooth",
-                    color: (state.data as any).color,
-                  }),
+                  singleValue: (base, state) =>
+                    ({
+                      ...base,
+                      borderWidth: 0,
+                      borderColor: "transparent",
+                      fontFamily: "Abside Smooth",
+                      color: (state.data as any).color,
+                    }) as any,
                   indicatorSeparator: (base: any) => ({
                     ...base,
                     backgroundColor: "#232127",
