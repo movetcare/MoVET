@@ -34,6 +34,7 @@ interface AppointmentDetails {
     species: string;
   }>;
   reason: string;
+  resources: Array<number>;
 }
 
 interface UserDetails {
@@ -115,8 +116,17 @@ const send24HourAppointmentNotification = async (
   doesHaveValidPaymentOnFile: false | Array<any>,
   petNames: string | Array<string>,
 ) => {
-  const { id, client, user, start, notes, instructions, patients, reason } =
-    appointmentDetails;
+  const {
+    id,
+    client,
+    user,
+    start,
+    notes,
+    instructions,
+    patients,
+    reason,
+    resources,
+  } = appointmentDetails;
   const reasonName = reason ? await getReasonName(reason) : null;
   if (DEBUG)
     console.log("APPOINTMENT DETAILS", {
@@ -128,6 +138,7 @@ const send24HourAppointmentNotification = async (
       patients,
       reason,
       reasonName,
+      resources,
       doesHaveValidPaymentOnFile,
     });
   const locationType = notes?.includes("Appointment Location: Home -")
@@ -135,6 +146,19 @@ const send24HourAppointmentNotification = async (
     : notes?.includes("Virtual")
       ? "Virtually"
       : "Clinic";
+  const newLocationType =
+    resources?.includes(6) || // Exam Room 1
+    resources?.includes(7) || // Exam Room 2
+    resources?.includes(8) || // Exam Room 3
+    resources?.includes(14) || // Exam Room 1
+    resources?.includes(15) || // Exam Room 2
+    resources?.includes(16) // Exam Room 3
+      ? "CLINIC"
+      : resources?.includes(3) || resources?.includes(9) // Truck 1 // Truck 2
+        ? "HOUSECALL"
+        : resources?.includes(11) || resources?.includes(18) // Virtual Room 1 // Virtual Room 2
+          ? "TELEHEALTH"
+          : null;
   const { email, phoneNumber, displayName } = userDetails;
   if (DEBUG) console.log("USER DATA", { email, phoneNumber, displayName });
   if (
@@ -168,14 +192,15 @@ const send24HourAppointmentNotification = async (
           : "<p>Hey there!</p>"
       }<p>This email contains important information about your upcoming appointment with MoVET.</p>
       ${
-        locationType === "Home" && appointmentAddress
+        (locationType === "Home" || newLocationType === "HOUSECALL") &&
+        appointmentAddress
           ? `<p></p><p><b>Location</b>: ${appointmentAddress}</p>`
-          : locationType === "Virtually"
+          : locationType === "Virtually" || newLocationType === "TELEHEALTH"
             ? "<p></p><p><b>Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-            : locationType === "Clinic"
+            : locationType === "Clinic" || newLocationType === "CLINIC"
               ? // eslint-disable-next-line quotes
                 '<p></p><p><b>Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-              : "<p></p><p><b>Location</b>: Walk In Appointment</p>"
+              : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
       }${
         start
           ? `<p></p><p><b>Date & Time</b>: ${getDateStringFromDate(
@@ -193,15 +218,19 @@ const send24HourAppointmentNotification = async (
         '<p></p><p><b>Medical Records:</b> Please email (or have your previous vet email) their vaccine and medical records to <a href="mailto://info@movetcare.com" target="_blank">info@movetcare.com</a> <b>prior</b> to your appointment.</p>'
       : ""
   }${
-    phoneNumber && (locationType === "Home" || locationType === "Virtually")
+    phoneNumber &&
+    (locationType === "Home" ||
+      locationType === "Virtually" ||
+      newLocationType === "HOUSECALL" ||
+      newLocationType === "TELEHEALTH")
       ? `<p></p><p><b>Contact Phone Number</b>: ${phoneNumber}</p><p>*Please keep your phone handy the day of the ${
-          locationType === "Virtually"
+          locationType === "Virtually" || newLocationType === "TELEHEALTH"
             ? "consultation."
             : "appointment. We will text you when we are on our way.</p>"
         }`
       : ""
   }${
-    locationType === "Home"
+    locationType === "Home" || newLocationType === "HOUSECALL"
       ? "<p></p><p><b>Home Visit Trip Fee</b>: $60</p><p><b>*Additional charges will apply for add-on diagnostics, medications, pampering, etc.</b></p><p><i>A $60 cancellation fee will be charged if cancellation occurs within 24 hours of your appointment</i></p>"
       : "" // TODO: Convert waiver text to be conditional based on VCPR status - If VCPR is not established, then include waiver text.
   }${
@@ -366,6 +395,19 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
       : notes?.includes("Virtual")
         ? "Virtually"
         : "Clinic";
+    const newLocationType =
+      resources?.includes(6) || // Exam Room 1
+      resources?.includes(7) || // Exam Room 2
+      resources?.includes(8) || // Exam Room 3
+      resources?.includes(14) || // Exam Room 1
+      resources?.includes(15) || // Exam Room 2
+      resources?.includes(16) // Exam Room 3
+        ? "CLINIC"
+        : resources?.includes(3) || resources?.includes(9) // Truck 1 // Truck 2
+          ? "HOUSECALL"
+          : resources?.includes(11) || resources?.includes(18) // Virtual Room 1 // Virtual Room 2
+            ? "TELEHEALTH"
+            : null;
     let smsText = "";
     if (isNewFlow)
       smsText = `${
@@ -373,11 +415,12 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
           ? `Hi ${getClientFirstNameFromDisplayName(displayName)}. `
           : "Hey there! "
       }\n\nThis is MoVET reaching out to remind you of your upcoming appointment.\n\nAPPOINTMENT DETAILS:\n${
-        locationType === "Home" && appointmentAddress
+        (locationType === "Home" || newLocationType === "HOUSECALL") &&
+        appointmentAddress
           ? `Location: ${appointmentAddress}`
-          : locationType === "Virtually"
+          : locationType === "Virtually" || newLocationType === "TELEHEALTH"
             ? "Location: Virtual - We will send you a link to the virtual meeting room on the day of your appointment."
-            : locationType === "Clinic"
+            : locationType === "Clinic" || newLocationType === "CLINIC"
               ? // eslint-disable-next-line quotes
                 'Location: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>'
               : "Location: Walk In Appointment"
@@ -468,6 +511,7 @@ const send30MinAppointmentNotification = async (
     reason,
     telemedicineUrl,
     notes,
+    resources,
   } = appointmentDetails;
   const reasonName = reason ? await getReasonName(reason) : null;
   if (DEBUG)
@@ -480,6 +524,7 @@ const send30MinAppointmentNotification = async (
       patients,
       reason,
       reasonName,
+      resources,
       doesHaveValidPaymentOnFile,
       telemedicineUrl,
     });
@@ -527,6 +572,19 @@ const send30MinAppointmentNotification = async (
       : notes?.includes("Virtual")
         ? "Virtually"
         : "Clinic";
+    const newLocationType =
+      resources?.includes(6) || // Exam Room 1
+      resources?.includes(7) || // Exam Room 2
+      resources?.includes(8) || // Exam Room 3
+      resources?.includes(14) || // Exam Room 1
+      resources?.includes(15) || // Exam Room 2
+      resources?.includes(16) // Exam Room 3
+        ? "CLINIC"
+        : resources?.includes(3) || resources?.includes(9) // Truck 1 // Truck 2
+          ? "HOUSECALL"
+          : resources?.includes(11) || resources?.includes(18) // Virtual Room 1 // Virtual Room 2
+            ? "TELEHEALTH"
+            : null;
     let emailText = "";
     if (isNewFlow)
       emailText = `${
@@ -534,25 +592,29 @@ const send30MinAppointmentNotification = async (
           ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
           : "<p>Hey there!</p>"
       }${
-        locationType === "Home" && appointmentAddress
+        (locationType === "Home" || newLocationType === "HOUSECALL") &&
+        appointmentAddress
           ? `<p>A MoVET Expert is on their way to ${
               appointmentAddress || "UNKNOWN"
             } for your ${getDateStringFromDate(
               start?.toDate(),
               "timeOnly",
             )} appointment today.</p>`
-          : locationType === "Clinic"
+          : locationType === "Clinic" || newLocationType === "CLINIC"
             ? "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
-            : locationType === "Virtually"
+            : locationType === "Virtually" || newLocationType === "TELEHEALTH"
               ? "<p>Dr. MoVET has invited you to join a secure video call:</p>"
               : ""
       }${
-        locationType === "Home" || locationType === "Clinic"
+        locationType === "Home" ||
+        locationType === "Clinic" ||
+        newLocationType === "HOUSECALL" ||
+        newLocationType === "CLINIC"
           ? `<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p>`
           : ""
       }
     ${
-      locationType === "Clinic"
+      locationType === "Clinic" || newLocationType === "CLINIC"
         ? `<p><b>Location: </b> MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)</p>`
         : ""
     }${
@@ -709,6 +771,19 @@ const send30MinAppointmentNotification = async (
       : notes?.includes("Virtual")
         ? "Virtually"
         : "Clinic";
+    const newLocationType =
+      resources?.includes(6) || // Exam Room 1
+      resources?.includes(7) || // Exam Room 2
+      resources?.includes(8) || // Exam Room 3
+      resources?.includes(14) || // Exam Room 1
+      resources?.includes(15) || // Exam Room 2
+      resources?.includes(16) // Exam Room 3
+        ? "CLINIC"
+        : resources?.includes(3) || resources?.includes(9) // Truck 1 // Truck 2
+          ? "HOUSECALL"
+          : resources?.includes(11) || resources?.includes(18) // Virtual Room 1 // Virtual Room 2
+            ? "TELEHEALTH"
+            : null;
     let smsText = "";
     if (isNewFlow)
       smsText = `${
@@ -716,20 +791,21 @@ const send30MinAppointmentNotification = async (
           ? `Hi ${getClientFirstNameFromDisplayName(displayName)},\n\n`
           : "Hey there!\n\n"
       }${
-        locationType === "Home" && appointmentAddress
+        (locationType === "Home" || newLocationType === "HOUSECALL") &&
+        appointmentAddress
           ? `A MoVET Expert is on their way to ${
               appointmentAddress || "UNKNOWN"
             } for your ${getDateStringFromDate(
               start?.toDate(),
               "timeOnly",
             )} appointment today.\n`
-          : locationType === "Clinic"
+          : locationType === "Clinic" || newLocationType === "CLINIC"
             ? "We are reaching out to remind you of your upcoming appointment with MoVET today.\n\nAPPOINTMENT DETAILS:\n"
-            : locationType === "Virtually"
+            : locationType === "Virtually" || newLocationType === "TELEHEALTH"
               ? "Dr. MoVET has invited you to join a secure video call:\n\n"
               : ""
       }Time: ${getDateStringFromDate(start?.toDate())}\n${
-        locationType === "Clinic"
+        locationType === "Clinic" || newLocationType === "CLINIC"
           ? `Location: MoVET Clinic @ Belleview Station (4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9)\n`
           : ""
       }${instructions !== undefined ? `Instructions: ${instructions}` : ""}
@@ -739,7 +815,7 @@ const send30MinAppointmentNotification = async (
         "Medical Records: Please email (or have your previous vet email) their vaccine and medical records to info@movetcare.com prior to your appointment."
       : ""
   }${
-    locationType === "Virtually"
+    locationType === "Virtually" || newLocationType === "TELEHEALTH"
       ? `\nPlease tap the "START CONSULTATION" button in our mobile app to start your Virtual Consultation session for ${petNames}. You can also use the link below to start your Virtual Consultation session via web browser:\n\n${telemedicineUrl}\n\nPlease email info@movetcare.com if you have any pictures or videos that you'd like to share with us prior to our consultation.\n\n Make sure you are using a device with good internet connection and access to camera/audio. Our telehealth platform allows you to test your device prior to starting the consultation. We highly suggest you run those diagnostic tests prior to connecting with us.\n\nThe cost of this service is  between $32.00 - $50 per consultation.\n\n`
       : ""
   }${

@@ -12,7 +12,7 @@ export * from "./inputs/PhoneInput";
 export * from "./inputs/AddressInput";
 export * from "./inputs/SelectInput";
 export * from "./inputs/DateInput";
-export * from "./buttons/TextButton";
+export * from "./inputs/TextInput";
 export * from "./View";
 export * from "./Text";
 export * from "./Icons";

@@ -17,6 +17,7 @@ export interface Appointment {
   user: number;
   location?: string;
   instructions?: string;
+  telemedicineUrl?: string;
 }
 
 export const AppointmentsStore = new Store({

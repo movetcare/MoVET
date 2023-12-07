@@ -38,6 +38,22 @@ export const sendAppointmentConfirmationEmail = async (
     .then((appointment: any) => appointment.data())
     .catch((error: any) => throwError(error));
 
+  const newLocationType =
+    appointment.resources.includes(6) || // Exam Room 1
+    appointment.resources.includes(7) || // Exam Room 2
+    appointment.resources.includes(8) || // Exam Room 3
+    appointment.resources.includes(14) || // Exam Room 1
+    appointment.resources.includes(15) || // Exam Room 2
+    appointment.resources.includes(16) // Exam Room 3
+      ? "CLINIC"
+      : appointment.resources.includes(3) || // Truck 1
+          appointment.resources.includes(9) // Truck 2
+        ? "HOUSECALL"
+        : appointment.resources.includes(11) || // Virtual Room 1
+            appointment.resources.includes(18) // Virtual Room 2
+          ? "TELEHEALTH"
+          : null;
+
   if (DEBUG) console.log("appointment -> ", appointment);
 
   const isNewFlow = appointment?.user ? false : true;
@@ -141,7 +157,14 @@ export const sendAppointmentConfirmationEmail = async (
         : appointment?.locationType === "Clinic"
           ? // eslint-disable-next-line quotes
             '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-          : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
+          : newLocationType === "HOUSECALL" && appointmentAddress
+            ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
+            : newLocationType === "TELEHEALTH"
+              ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+              : newLocationType === "CLINIC"
+                ? // eslint-disable-next-line quotes
+                  '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+                : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
   }${
     appointment?.start
       ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
@@ -203,7 +226,14 @@ export const sendAppointmentConfirmationEmail = async (
         : appointment?.locationType === "Clinic"
           ? // eslint-disable-next-line quotes
             '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-          : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
+          : newLocationType === "HOUSECALL" && appointmentAddress
+            ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
+            : newLocationType === "TELEHEALTH"
+              ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+              : newLocationType === "CLINIC"
+                ? // eslint-disable-next-line quotes
+                  '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+                : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
   }${
     appointment?.start
       ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
@@ -265,7 +295,14 @@ export const sendAppointmentConfirmationEmail = async (
               '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
             : appointment?.user === 9
               ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-              : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
+              : newLocationType === "HOUSECALL" && appointmentAddress
+                ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
+                : newLocationType === "TELEHEALTH"
+                  ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+                  : newLocationType === "CLINIC"
+                    ? // eslint-disable-next-line quotes
+                      '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+                    : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
   }${
     appointment?.start
       ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
@@ -346,7 +383,14 @@ ${
             '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
           : appointment?.user === 9
             ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-            : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
+            : newLocationType === "HOUSECALL" && appointmentAddress
+              ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
+              : newLocationType === "TELEHEALTH"
+                ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+                : newLocationType === "CLINIC"
+                  ? // eslint-disable-next-line quotes
+                    '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+                  : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
 }${
       appointment?.start
         ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(

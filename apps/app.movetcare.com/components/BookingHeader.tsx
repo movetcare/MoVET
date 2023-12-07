@@ -13,11 +13,13 @@ export const BookingHeader = ({
       id="top"
     >
       <div className="flex flex-col justify-center items-center w-full">
-        {!isAppMode && (
-          <h2 className="text-3xl font-extrabold tracking-tight text-movet-black">
-            {title}
-          </h2>
-        )}
+        <h2
+          className={`${
+            isAppMode ? "text-2xl" : "text-3xl"
+          } font-extrabold tracking-tight text-movet-black`}
+        >
+          {title}
+        </h2>
         <p className="text-lg leading-6 text-movet-black">{description}</p>
       </div>
     </div>

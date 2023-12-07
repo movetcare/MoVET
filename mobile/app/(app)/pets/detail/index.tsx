@@ -37,7 +37,7 @@ import { getProVetIdFromUrl } from "utils/getProVetIdFromUrl";
 
 const PetDetail = () => {
   const { id } = useLocalSearchParams();
-  const { user } = AuthStore.useState();
+  const { user, client } = AuthStore.useState();
   const { patients } = PatientsStore.useState();
   const { upcomingAppointments, pastAppointments } =
     AppointmentsStore.useState();
@@ -50,6 +50,9 @@ const PetDetail = () => {
   const [showVcprModal, setShowVcprModal] = useState<boolean>(false);
   const [showRecordsRequestModal, setShowRecordsRequestModal] =
     useState<boolean>(false);
+  const [showAllPastAppointments, setShowAllPastAppointments] =
+    useState<boolean>(false);
+  const textStyles = [isTablet ? tw`text-lg` : tw`text-sm`, tw`mb-2`];
 
   useEffect(() => {
     if (id && patients) {
@@ -64,7 +67,9 @@ const PetDetail = () => {
                   upcomingPatientAppointments.push(appointment);
               });
             });
-            setUpcomingPatientAppointments(upcomingPatientAppointments);
+            if (upcomingPatientAppointments?.length > 0)
+              setUpcomingPatientAppointments(upcomingPatientAppointments);
+            else setUpcomingPatientAppointments(null);
           }
           if (pastAppointments && pastAppointments.length > 0) {
             const pastPatientAppointments: Array<Appointment> = [];
@@ -74,7 +79,8 @@ const PetDetail = () => {
                   pastPatientAppointments.push(appointment);
               });
             });
-            setPastPatientAppointments(pastPatientAppointments);
+            if (pastPatientAppointments?.length > 0)
+              setPastPatientAppointments(pastPatientAppointments);
           }
         }
       });
@@ -102,9 +108,13 @@ const PetDetail = () => {
       s.currentError = error;
     });
   };
+
   return (
     <Screen>
       <Stack.Screen options={{ title: patient?.name }} />
+      {__DEV__ && (
+        <BodyText style={tw`text-xs`}>#{JSON.stringify(patient?.id)}</BodyText>
+      )}
       <View
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
@@ -284,85 +294,151 @@ const PetDetail = () => {
               noDarkMode
             >
               {reasons &&
-                pastPatientAppointments.map((appointment: Appointment) => {
-                  const location =
-                    appointment.resources.includes(6) || // Exam Room 1
-                    appointment.resources.includes(7) || // Exam Room 2
-                    appointment.resources.includes(8) || // Exam Room 3
-                    appointment.resources.includes(14) || // Exam Room 1
-                    appointment.resources.includes(15) || // Exam Room 2
-                    appointment.resources.includes(16) // Exam Room 3
-                      ? "CLINIC"
-                      : appointment.resources.includes(3) || // Truck 1
-                          appointment.resources.includes(9) // Truck 2
-                        ? "HOUSECALL"
-                        : appointment.resources.includes(11) || // Virtual Room 1
-                            appointment.resources.includes(18) // Virtual Room 2
-                          ? "TELEHEALTH"
-                          : "UNKNOWN APPOINTMENT TYPE";
-                  const reason = reasons?.map((reason: any) => {
-                    if (
-                      reason.id ===
-                      getProVetIdFromUrl(appointment.reason as any)
-                    )
-                      return reason.name;
-                  });
-                  return (
-                    <TouchableOpacity
-                      key={appointment.id}
-                      onPress={() =>
-                        router.push({
-                          pathname: `/(app)/pets/detail/appointment-detail/`,
-                          params: { id: appointment?.id },
-                        })
-                      }
-                    >
-                      <View
+                pastPatientAppointments.map(
+                  (appointment: Appointment, index: number) => {
+                    const location =
+                      appointment.resources.includes(6) || // Exam Room 1
+                      appointment.resources.includes(7) || // Exam Room 2
+                      appointment.resources.includes(8) || // Exam Room 3
+                      appointment.resources.includes(14) || // Exam Room 1
+                      appointment.resources.includes(15) || // Exam Room 2
+                      appointment.resources.includes(16) // Exam Room 3
+                        ? "CLINIC"
+                        : appointment.resources.includes(3) || // Truck 1
+                            appointment.resources.includes(9) // Truck 2
+                          ? "HOUSECALL"
+                          : appointment.resources.includes(11) || // Virtual Room 1
+                              appointment.resources.includes(18) // Virtual Room 2
+                            ? "TELEHEALTH"
+                            : "UNKNOWN APPOINTMENT TYPE";
+                    const reason = reasons?.map((reason: any) => {
+                      if (
+                        reason.id ===
+                        getProVetIdFromUrl(appointment.reason as any)
+                      )
+                        return reason.name;
+                    });
+                    return !showAllPastAppointments && index < 3 ? (
+                      <TouchableOpacity
                         key={appointment.id}
-                        style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+                        onPress={() =>
+                          router.push({
+                            pathname: `/(app)/pets/detail/appointment-detail/`,
+                            params: { id: appointment?.id },
+                          })
+                        }
                       >
-                        <Container style={tw`p-2`}>
-                          <Icon
-                            name={
-                              location === "CLINIC"
-                                ? "clinic-alt"
-                                : location === "HOUSECALL"
-                                  ? "mobile"
-                                  : location === "TELEHEALTH"
-                                    ? "telehealth"
-                                    : "question"
-                            }
-                            height={50}
-                            width={50}
-                          />
-                        </Container>
-                        <Container style={tw`flex-shrink`}>
-                          <HeadingText style={tw`text-lg`}>
-                            {reason}
-                          </HeadingText>
-                          <BodyText style={tw`text-sm -mt-0.5`}>
-                            {appointment.start
-                              .toDate()
-                              .toLocaleDateString("en-us", {
-                                weekday: "long",
-                                year: "2-digit",
-                                month: "numeric",
-                                day: "numeric",
-                              })}{" "}
-                            @{" "}
-                            {appointment.start
-                              .toDate()
-                              .toLocaleString("en-US", {
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: true,
-                              })}
-                          </BodyText>
-                        </Container>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
+                        <View
+                          key={appointment.id}
+                          style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+                        >
+                          <Container style={tw`p-2`}>
+                            <Icon
+                              name={
+                                location === "CLINIC"
+                                  ? "clinic-alt"
+                                  : location === "HOUSECALL"
+                                    ? "mobile"
+                                    : location === "TELEHEALTH"
+                                      ? "telehealth"
+                                      : "question"
+                              }
+                              height={50}
+                              width={50}
+                            />
+                          </Container>
+                          <Container style={tw`flex-shrink`}>
+                            <HeadingText style={tw`text-lg`}>
+                              {reason}
+                            </HeadingText>
+                            <BodyText style={tw`text-sm -mt-0.5`}>
+                              {appointment.start
+                                .toDate()
+                                .toLocaleDateString("en-us", {
+                                  weekday: "long",
+                                  year: "2-digit",
+                                  month: "numeric",
+                                  day: "numeric",
+                                })}{" "}
+                              @{" "}
+                              {appointment.start
+                                .toDate()
+                                .toLocaleString("en-US", {
+                                  hour: "numeric",
+                                  minute: "numeric",
+                                  hour12: true,
+                                })}
+                            </BodyText>
+                          </Container>
+                        </View>
+                      </TouchableOpacity>
+                    ) : showAllPastAppointments ? (
+                      <TouchableOpacity
+                        key={appointment.id}
+                        onPress={() =>
+                          router.push({
+                            pathname: `/(app)/pets/detail/appointment-detail/`,
+                            params: { id: appointment?.id },
+                          })
+                        }
+                      >
+                        <View
+                          key={appointment.id}
+                          style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+                        >
+                          <Container style={tw`p-2`}>
+                            <Icon
+                              name={
+                                location === "CLINIC"
+                                  ? "clinic-alt"
+                                  : location === "HOUSECALL"
+                                    ? "mobile"
+                                    : location === "TELEHEALTH"
+                                      ? "telehealth"
+                                      : "question"
+                              }
+                              height={50}
+                              width={50}
+                            />
+                          </Container>
+                          <Container style={tw`flex-shrink`}>
+                            <HeadingText style={tw`text-lg`}>
+                              {reason}
+                            </HeadingText>
+                            <BodyText style={tw`text-sm -mt-0.5`}>
+                              {appointment.start
+                                .toDate()
+                                .toLocaleDateString("en-us", {
+                                  weekday: "long",
+                                  year: "2-digit",
+                                  month: "numeric",
+                                  day: "numeric",
+                                })}{" "}
+                              @{" "}
+                              {appointment.start
+                                .toDate()
+                                .toLocaleString("en-US", {
+                                  hour: "numeric",
+                                  minute: "numeric",
+                                  hour12: true,
+                                })}
+                            </BodyText>
+                          </Container>
+                        </View>
+                      </TouchableOpacity>
+                    ) : null;
+                  },
+                )}
+              <ActionButton
+                type="text"
+                iconName={"folder-heart"}
+                style={tw`text-center -mt-1.5 w-full`}
+                textStyle={tw`text-movet-black dark:text-movet-white`}
+                title={showAllPastAppointments ? "Show Fewer" : "View All"}
+                onPress={() =>
+                  setShowAllPastAppointments(!showAllPastAppointments)
+                }
+              />
             </View>
           </>
         )}
@@ -411,20 +487,20 @@ const PetDetail = () => {
               title="What is a VCPR?"
             >
               <>
-                <BodyText>
+                <BodyText style={textStyles}>
                   A Veterinarian-Client-Patient Relationship (&quot;VCPR&quot;)
                   is established only when your veterinarian examines your pet
                   in person, and is maintained by regular veterinary visits as
                   needed to monitor your pet&apos;s health.
                 </BodyText>
-                <BodyText>
+                <BodyText style={textStyles}>
                   If a VCPR is established but your veterinarian does not
                   regularly see your pet afterward, the VCPR is no longer valid
                   and it would be illegal (and unethical) for your veterinarian
                   to dispense or prescribe medications or recommend treatment
                   without recently examining your pet.
                 </BodyText>
-                <BodyText>
+                <BodyText style={textStyles}>
                   A valid VCPR cannot be established online, via email, or over
                   the phone. However, once a VCPR is established, it may be able
                   to be maintained between medically necessary examinations via
@@ -525,15 +601,43 @@ const PetDetail = () => {
                 },
               })
             }
-            style={tw`sm:w-0.9/3`}
+            style={
+              pastPatientAppointments && pastPatientAppointments?.length > 0
+                ? tw`sm:w-0.9/3`
+                : tw`sm:mr-4`
+            }
           />
-          <ActionButton
-            color="black"
-            title="Request Records"
-            iconName="folder-heart"
-            onPress={() => setShowRecordsRequestModal(true)}
-            style={tw`sm:w-0.9/3`}
-          />
+          {pastPatientAppointments && pastPatientAppointments?.length > 0 && (
+            <ActionButton
+              color="black"
+              title="Request Records"
+              iconName="folder-heart"
+              onPress={() =>
+                router.push({
+                  pathname: "/(app)/pets/detail/web-view",
+                  params: {
+                    path: "/contact",
+                    queryString: `${
+                      client?.firstName ? `&firstName=${client?.firstName}` : ""
+                    }${
+                      client?.lastName ? `&lastName=${client?.lastName}` : ""
+                    }${client?.email ? `&email=${client?.email}` : ""}${
+                      client?.phone
+                        ? `&phone=${client?.phone
+                            ?.replaceAll(" ", "")
+                            ?.replaceAll("(", "")
+                            ?.replaceAll(")", "")
+                            ?.replaceAll("-", "")}`
+                        : ""
+                    }&message=Please send a copy of ${patient?.name}'s records to <EMAIL_ADDRESS>. Thanks!`
+                      ?.replaceAll(")", "")
+                      ?.replaceAll("(", ""),
+                  },
+                })
+              }
+              style={tw`sm:w-0.9/3`}
+            />
+          )}
           <ActionButton
             color="brown"
             title="Edit Pet"
@@ -544,7 +648,11 @@ const PetDetail = () => {
                 params: { id: patient?.id },
               })
             }
-            style={tw`sm:w-0.9/3`}
+            style={
+              pastPatientAppointments && pastPatientAppointments?.length > 0
+                ? tw`sm:w-0.9/3`
+                : tw`sm:ml-4`
+            }
           />
         </Container>
       </View>

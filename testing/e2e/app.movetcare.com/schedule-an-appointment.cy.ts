@@ -408,7 +408,7 @@ if (isDevelopmentEnvironment)
         cy.location("pathname", {
           timeout: pathTimeout + 3000,
         }).should("eq", "/schedule-an-appointment/success/");
-        cy.get("h2").contains("Housecall Request Successful");
+        cy.get("h2").contains("Your Appointment is Scheduled");
         cy.request("POST", Cypress.env().testApiUrl, {
           apiKey: Cypress.env().endpointApiKey,
           id: "winter-mode-off",

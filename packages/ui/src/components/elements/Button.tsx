@@ -110,7 +110,7 @@ export const Button = ({
         padding(),
         "flex justify-center items-center mx-auto h-12 border border-transparent shadow-2xl font-source-sans-pro tracking-widest text-xs font-semibold uppercase group-hover:bg-movet-black hover:bg-movet-black ease-in-out duration-500",
         color === "white" &&
-          ("bg-movet-white hover:bg-movet-red group-hover:bg-movet-red text-black hover:text-movet-white" as any),
+          ("bg-movet-white hover:bg-movet-red group-hover:bg-movet-red text-movet-black hover:text-movet-white" as any),
         color === "black" &&
           ("bg-movet-black hover:bg-movet-red group-hover:bg-movet-red text-movet-white" as any),
         color === "red" &&

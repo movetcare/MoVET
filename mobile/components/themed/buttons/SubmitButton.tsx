@@ -68,18 +68,20 @@ export const SubmitButton = ({
           <ButtonText
             noDarkMode
             style={
-              isDarkMode && color === "black" ? tw`text-black` : tw`text-white`
+              isDarkMode && color === "black"
+                ? tw`text-movet-black`
+                : tw`text-movet-white`
             }
           >
             {title}
           </ButtonText>
         </View>
       ) : isDarkMode && color === "black" ? (
-        <ButtonText style={tw`text-black`} noDarkMode>
+        <ButtonText style={tw`text-movet-black`} noDarkMode>
           {title}
         </ButtonText>
       ) : (
-        <ButtonText style={tw`text-white`} noDarkMode>
+        <ButtonText style={tw`text-movet-white`} noDarkMode>
           {title}
         </ButtonText>
       )}

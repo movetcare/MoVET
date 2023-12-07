@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import {
   ActionButton,
   BodyText,
@@ -8,6 +8,8 @@ import {
   ItalicText,
   Screen,
   SubHeadingText,
+  SubmitButton,
+  TextInput,
   View,
 } from "./themed";
 import {
@@ -18,7 +20,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { firestore } from "firebase-config";
+import { firestore, functions } from "firebase-config";
 import {
   onSnapshot,
   query,
@@ -36,7 +38,9 @@ import MapView, { Marker } from "react-native-maps";
 import Constants from "expo-constants";
 import { AuthStore, Appointment, AppointmentsStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
-import { isLoading } from "expo-font";
+import { useForm } from "react-hook-form";
+import { httpsCallable } from "firebase/functions";
+import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 
 export const AppointmentDetail = () => {
   const { id } = useLocalSearchParams();
@@ -53,6 +57,18 @@ export const AppointmentDetail = () => {
     lat: number;
     lng: number;
   } | null>(null);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty, errors },
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      reasonId: 1,
+      cancellationReason: null,
+    },
+  });
 
   useEffect(() => {
     if (
@@ -86,7 +102,7 @@ export const AppointmentDetail = () => {
               ? pastAppointments
               : [];
       allAppointments.map((appointment: Appointment) => {
-        if (String(appointment.id) === id) {
+        if (String(appointment?.id) === id) {
           const appointmentPatients: Array<Patient> = [];
           appointment?.patients?.forEach(
             (patient: any) =>
@@ -140,6 +156,29 @@ export const AppointmentDetail = () => {
     return () => unsubscribeReasons();
   }, []);
 
+  const onSubmit = async (data: any) => {
+    setIsLoading(true);
+    const updateAppointment = httpsCallable(functions, "updateAppointment");
+    await updateAppointment({
+      cancellation_reason_text: data.cancellationReason,
+      cancellation_reason: data.reasonId,
+      active: 0,
+      id,
+    })
+      .then(async (result: any) => {
+        if (result.data) router.back();
+        else
+          setError({
+            message: "Failed to cancel appointment, please try again",
+          });
+      })
+      .catch((error: any) => setError(error))
+      .finally(() => {
+        setShowCancelModal(false);
+        setIsLoading(false);
+      });
+  };
+
   const setError = (error: any) => {
     ErrorStore.update((s: any) => {
       s.currentError = error;
@@ -148,6 +187,9 @@ export const AppointmentDetail = () => {
 
   return (
     <Screen>
+      {appointment?.location === "TELEHEALTH" && (
+        <Stack.Screen options={{ title: "Virtual Consultation" }} />
+      )}
       <View
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
@@ -375,16 +417,7 @@ export const AppointmentDetail = () => {
             : ""}
         </SubHeadingText>
         {appointment?.patients?.map((patient: Patient, index: number) => (
-          <Container
-            key={index}
-            style={tw`flex-row`}
-            // onPress={() =>
-            //   router.push({
-            //     pathname: "/(app)/pets/detail",
-            //     params: { id: patient?.id },
-            //   })
-            // }
-          >
+          <Container key={index} style={tw`flex-row`}>
             <View
               noDarkMode
               style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:bg-movet-black dark:border-movet-white w-full`}
@@ -410,11 +443,11 @@ export const AppointmentDetail = () => {
                 )}
               </Container>
               <Container style={tw`flex-shrink`}>
-                <HeadingText style={tw`text-black text-lg`}>
+                <HeadingText style={tw`text-movet-black text-lg`}>
                   {patient.name}
-                  {/* {__DEV__ && ` - #${patient.id}`} */}
+                  {__DEV__ && ` - #${patient.id}`}
                 </HeadingText>
-                <BodyText style={tw`text-black text-sm -mt-0.5`}>
+                <BodyText style={tw`text-movet-black text-sm -mt-0.5`}>
                   {patient.breed}
                 </BodyText>
                 <Container style={tw`flex-row items-center`}>
@@ -426,7 +459,7 @@ export const AppointmentDetail = () => {
                     }
                     size="xxs"
                   />
-                  <ItalicText style={tw`text-black text-xs ml-1`}>
+                  <ItalicText style={tw`text-movet-black text-xs ml-1`}>
                     {patient.birthday}
                   </ItalicText>
                 </Container>
@@ -434,6 +467,14 @@ export const AppointmentDetail = () => {
             </View>
           </Container>
         ))}
+        {appointment?.location === "TELEHEALTH" &&
+          appointment?.start?.toDate() >= new Date() && (
+            <ItalicText style={tw`text-sm text-center mt-4`}>
+              * Virtual Consultations are performed via a secure third party web
+              application. A modern web browser with camera and microphone
+              permissions enabled is required.
+            </ItalicText>
+          )}
         <Modal
           isVisible={showCancelModal}
           onClose={() => {
@@ -465,20 +506,38 @@ export const AppointmentDetail = () => {
               >
                 If so, please let us know why you are canceling:
               </BodyText>
+              <TextInput
+                editable={!isLoading}
+                control={control}
+                error={(errors["cancellationReason"] as any)?.message as string}
+                name="cancellationReason"
+                required={false}
+                multiline
+                numberOfLines={4}
+                placeholder="Reason for Cancelation..."
+              />
               <ItalicText
                 style={[
                   isTablet ? tw`text-sm` : tw`text-xs`,
-                  tw`mt-2 text-center`,
+                  tw`mt-4 text-center`,
                 ]}
               >
-                A $60 cancellation fee will be charged if cancellation occurs
+                * A $60 cancellation fee will be charged if cancellation occurs
                 within 24 hours of your appointment.
               </ItalicText>
-              <Container style={[tw`flex-row justify-center sm:mb-2`]}>
-                <ActionButton
-                  title="Yes, Cancel My Appointment"
+              <Container style={[tw`flex-row justify-center sm:mb-2 mt-4`]}>
+                <SubmitButton
+                  handleSubmit={handleSubmit}
+                  onSubmit={onSubmit}
+                  disabled={!isDirty || isLoading}
+                  loading={isLoading}
+                  title={
+                    isLoading
+                      ? "Canceling Appointment..."
+                      : "Yes, Cancel My Appointment"
+                  }
+                  color="red"
                   iconName="check"
-                  onPress={() => {}}
                 />
               </Container>
             </>
@@ -518,17 +577,35 @@ export const AppointmentDetail = () => {
               style={tw`sm:w-2.75/6`}
             />
           </Container>
-        ) : appointment?.location === "VIRTUAL" &&
+        ) : appointment?.location === "TELEHEALTH" &&
           appointment?.start?.toDate() >= new Date() ? (
           <Container
-            style={tw`flex-col sm:flex-row justify-around w-full mt-4 mb-8`}
+            style={
+              appointment?.telemedicineUrl
+                ? tw`flex-col sm:flex-row justify-around w-full mt-4 mb-8`
+                : tw`w-full flex-col items-center justify-center mt-4 mb-8`
+            }
           >
-            <ActionButton
-              title="START CONSULTATION"
-              iconName="check"
-              onPress={() => console.log("START CONSULTATION")}
-              style={tw`sm:w-2.75/6`}
-            />
+            {appointment?.telemedicineUrl && (
+              <ActionButton
+                title="START CONSULTATION"
+                iconName="arrow-right"
+                onPress={() =>
+                  openUrlInWebBrowser(
+                    appointment?.telemedicineUrl as string,
+                    isDarkMode,
+                    {
+                      dismissButtonStyle: "close",
+                      enableBarCollapsing: true,
+                      enableDefaultShareMenuItem: false,
+                      readerMode: true,
+                      showTitle: false,
+                    },
+                  )
+                }
+                style={tw`sm:w-2.75/6`}
+              />
+            )}
             <ActionButton
               color="black"
               title="Cancel Consultation"
@@ -546,7 +623,7 @@ export const AppointmentDetail = () => {
             style={tw`mb-8`}
           />
         ) : (
-          <></>
+          <Container style={tw`my-4`} />
         )}
       </View>
     </Screen>

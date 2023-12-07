@@ -25,21 +25,24 @@ const MyPets = () => {
   }> | null>(null);
 
   useEffect(() => {
-    if (upcomingAppointments) {
+    if (patients) {
       const appointmentCounts: any = [];
       patients?.forEach((patient: Patient) => {
         let upcomingPatientAppointments = 0;
-        upcomingAppointments.forEach((appointment: Appointment) => {
-          appointment?.patients?.forEach((patientData: Patient) => {
-            if (patientData.id === patient.id) upcomingPatientAppointments += 1;
+        if (upcomingAppointments)
+          upcomingAppointments.forEach((appointment: Appointment) => {
+            appointment?.patients?.forEach((patientData: Patient) => {
+              if (patientData.id === patient.id)
+                upcomingPatientAppointments += 1;
+            });
           });
-        });
+
         appointmentCounts.push({
           id: patient?.id,
           count: upcomingPatientAppointments,
         });
       });
-      setAppointmentCounts(appointmentCounts);
+      if (appointmentCounts.length > 0) setAppointmentCounts(appointmentCounts);
     }
   }, [patients, upcomingAppointments]);
 
@@ -139,23 +142,30 @@ const MyPets = () => {
                                   </ItalicText>
                                 </Container>
                               );
-                            }
+                            } else if (
+                              patient.vcprRequired &&
+                              appointmentCount.id === patient.id &&
+                              appointmentCount.count === 0
+                            )
+                              return (
+                                <Container
+                                  style={tw`flex-row items-center`}
+                                  key={index}
+                                >
+                                  <Icon
+                                    name={"exclamation-circle"}
+                                    size="xxs"
+                                  />
+                                  <ItalicText
+                                    noDarkMode
+                                    style={tw`text-movet-red text-xs ml-1`}
+                                  >
+                                    VCPR Required!
+                                  </ItalicText>
+                                </Container>
+                              );
                           },
                         )}
-                      {patient.vcprRequired && !upcomingAppointments && (
-                        <Container
-                          style={tw`flex-row items-center`}
-                          key={index}
-                        >
-                          <Icon name={"exclamation-circle"} size="xxs" />
-                          <ItalicText
-                            noDarkMode
-                            style={tw`text-movet-red text-xs ml-1`}
-                          >
-                            VCPR Required!
-                          </ItalicText>
-                        </Container>
-                      )}
                     </Container>
                   </View>
                 </TouchableOpacity>

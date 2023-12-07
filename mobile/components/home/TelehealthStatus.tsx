@@ -43,28 +43,28 @@ export const TelehealthStatus = ({
             />
           </Container>
           <Container style={tw`flex-shrink`}>
-            <HeadingText style={tw`text-black text-lg`}>
+            <HeadingText style={tw`text-movet-black text-lg`}>
               Telehealth Chat is ONLINE!
             </HeadingText>
-            <BodyText style={tw`text-black text-sm -mt-0.5`}>
+            <BodyText style={tw`text-movet-black text-sm -mt-0.5`}>
               {message}
             </BodyText>
             <Container style={tw`flex-row mt-1.5`}>
               {queueSize > 0 && (
                 <>
-                  <BodyText style={tw`text-black text-xs`}>
+                  <BodyText style={tw`text-movet-black text-xs`}>
                     Queue Size:{" "}
                     <SubHeadingText
-                      style={tw`text-black text-xs normal-case mt-2`}
+                      style={tw`text-movet-black text-xs normal-case mt-2`}
                     >
                       {queueSize}
                     </SubHeadingText>
                   </BodyText>
-                  <BodyText style={tw`text-black text-xs`}>
+                  <BodyText style={tw`text-movet-black text-xs`}>
                     {" "}
                     | Wait Time:{" "}
                     <SubHeadingText
-                      style={tw`text-black text-xs normal-case mt-2`}
+                      style={tw`text-movet-black text-xs normal-case mt-2`}
                     >
                       {waitTime}
                       {waitTime > 1 ? " minutes" : " minute"}

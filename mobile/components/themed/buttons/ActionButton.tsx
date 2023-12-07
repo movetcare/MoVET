@@ -49,14 +49,27 @@ export const ActionButton = ({
       ]}
     >
       {iconName && !loading && (
-        <Icon
-          name={iconName}
-          height={18}
-          width={18}
-          color={color === "black" && isDarkMode ? "black" : "white"}
-          style={tw`mr-2`}
-          noDarkMode
-        />
+        <>
+          {type === "button" ? (
+            <Icon
+              name={iconName}
+              height={18}
+              width={18}
+              color={color === "black" && isDarkMode ? "black" : "white"}
+              style={tw`mr-2`}
+              noDarkMode
+            />
+          ) : (
+            <Icon
+              name={iconName}
+              height={18}
+              width={18}
+              color={isDarkMode ? "white" : "black"}
+              style={tw`mr-2`}
+              noDarkMode
+            />
+          )}
+        </>
       )}
       {loading && (
         <ActivityIndicator
@@ -73,8 +86,8 @@ export const ActionButton = ({
         <ButtonText
           style={[
             color === "black" && isDarkMode
-              ? tw`text-black text-center`
-              : tw`text-white text-center`,
+              ? tw`text-movet-black text-center`
+              : tw`text-movet-white text-center`,
             textStyle,
           ]}
           noDarkMode
@@ -86,8 +99,8 @@ export const ActionButton = ({
           style={[
             tw`shadow-lg shadow-movet-black dark:shadow-movet-white`,
             color === "black" && isDarkMode
-              ? tw`text-black text-center`
-              : tw`text-white text-center`,
+              ? tw`text-movet-black text-center`
+              : tw`text-movet-white text-center`,
             textStyle,
           ]}
           noDarkMode

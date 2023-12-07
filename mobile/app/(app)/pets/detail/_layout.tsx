@@ -46,6 +46,15 @@ export default function Layout() {
           canGoBack: true,
           goBackRoot: "/(app)/pets/detail",
         });
+      } else if (segments && segments.includes("web-view")) {
+        //setTimeout(() => {
+        setNavigationDetails({
+          title: "Request Pet's Records",
+          iconName: "folder-heart",
+          canGoBack: true,
+          goBackRoot: "/(app)/pets/detail/",
+        });
+        //}, 180);
       } else if (segments.includes("detail")) {
         setNavigationDetails({
           title: "My Pet",

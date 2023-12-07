@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import {
   StyleProp,
   StyleSheet,
@@ -41,10 +41,10 @@ const CustomActions = ({
       async (buttonIndex) => {
         switch (buttonIndex) {
           case 0:
-             pickImageAsync(onSend);
+            pickImageAsync(onSend);
             return;
           case 1:
-             takePictureAsync(onSend);
+            takePictureAsync(onSend);
             return;
         }
       },

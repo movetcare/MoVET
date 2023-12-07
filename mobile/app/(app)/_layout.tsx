@@ -107,23 +107,23 @@ const TabsLayout = (props: any) => {
       query(
         collection(firestore, "appointments"),
         where("client", "==", Number(user.uid)),
-        where("active", "==", 1),
         where("start", ">=", new Date()),
-        orderBy("start", "desc"),
+        orderBy("start", "asc"),
         limit(100),
       ),
       (querySnapshot: QuerySnapshot) => {
         if (querySnapshot.empty) return;
-        //else setUpcomingAppointmentsCount(querySnapshot.size);
         const appointments: Appointment[] = [];
         querySnapshot.forEach((doc: DocumentData) => {
           if (DEBUG_DATA)
             console.log("UPCOMING APPOINTMENT DATA => ", doc.data());
-          appointments.push({ id: doc.id, ...doc.data() });
+          if (doc.data()?.active)
+            appointments.push({ id: doc.id, ...doc.data() });
         });
-        AppointmentsStore.update((store: any) => {
-          store.upcomingAppointments = appointments;
-        });
+        if (appointments.length)
+          AppointmentsStore.update((store: any) => {
+            store.upcomingAppointments = appointments;
+          });
       },
       (error: any) => setError(error),
     );
@@ -131,23 +131,22 @@ const TabsLayout = (props: any) => {
       query(
         collection(firestore, "appointments"),
         where("client", "==", Number(user.uid)),
-        where("active", "==", 1),
         where("start", "<", new Date()),
         orderBy("start", "desc"),
         limit(100),
       ),
       (querySnapshot: QuerySnapshot) => {
         if (querySnapshot.empty) return;
-        //else setPastAppointmentsCount(querySnapshot.size);
         const appointments: Appointment[] = [];
         querySnapshot.forEach((doc: DocumentData) => {
-          //if (DEBUG_DATA)
-          console.log("PAST APPOINTMENT DATA => ", doc.data());
-          appointments.push({ id: doc.id, ...doc.data() });
+          if (DEBUG_DATA) console.log("PAST APPOINTMENT DATA => ", doc.data());
+          if (doc.data()?.active)
+            appointments.push({ id: doc.id, ...doc.data() });
         });
-        AppointmentsStore.update((store: any) => {
-          store.pastAppointments = appointments;
-        });
+        if (appointments.length)
+          AppointmentsStore.update((store: any) => {
+            store.pastAppointments = appointments;
+          });
       },
       (error: any) => setError(error),
     );

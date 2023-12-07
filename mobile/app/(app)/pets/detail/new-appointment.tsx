@@ -1,6 +1,6 @@
 import { Loader } from "components/Loader";
 import { View } from "components/themed";
-import React, { useState } from "react";
+import { useState } from "react";
 import { AuthStore } from "stores/AuthStore";
 import tw from "tailwind";
 import { getPlatformUrl } from "utils/getPlatformUrl";

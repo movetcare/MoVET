@@ -32,6 +32,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import {
+  Appointment,
   AppointmentsStore,
   AuthStore,
   ErrorStore,
@@ -52,7 +53,6 @@ const Home = () => {
   const [ad, setAd] = useState<null | Ad>(null);
   const [telehealthStatus, setTelehealthStatus] =
     useState<null | TelehealthStatus>(null);
-  const [showVcprAlert, setShowVcprAlert] = useState<boolean>(false);
   const [vcprPatients, setVcprPatients] = useState<Patient[] | null>(null);
   const { user } = AuthStore.useState();
   const fadeInOpacity = useSharedValue(0);
@@ -80,14 +80,21 @@ const Home = () => {
       const vcprPatients: Array<Patient> = [];
       patients.forEach((patient: Patient) => {
         if (patient.vcprRequired) {
-          vcprPatients.push(patient);
-          setShowVcprAlert(true);
+          let upcomingPatientAppointments = 0;
+          if (upcomingAppointments)
+            upcomingAppointments.forEach((appointment: Appointment) => {
+              appointment?.patients?.forEach((patientData: Patient) => {
+                if (patientData.id === patient.id)
+                  upcomingPatientAppointments += 1;
+              });
+            });
+          if (upcomingPatientAppointments === 0) vcprPatients.push(patient);
         }
       });
-      setVcprPatients(vcprPatients);
+      if (vcprPatients.length > 0) setVcprPatients(vcprPatients);
       setIsLoading(false);
     }
-  }, [patients]);
+  }, [patients, upcomingAppointments]);
 
   useEffect(() => {
     const unsubscribeAlerts = onSnapshot(
@@ -223,9 +230,11 @@ const Home = () => {
             {!announcement?.isActiveMobile && !ad?.isActive && (
               <View noDarkMode style={tw`h-4 bg-transparent`} />
             )}
+            {vcprPatients && vcprPatients?.length > 0 && (
+              <VcprAlert patients={vcprPatients} />
+            )}
             {!upcomingAppointments && (
               <>
-                {showVcprAlert && <VcprAlert patients={vcprPatients} />}
                 {(announcement?.isActiveMobile || ad?.isActive) && (
                   <View noDarkMode style={tw`h-4 bg-transparent`} />
                 )}

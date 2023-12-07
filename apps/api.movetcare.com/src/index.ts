@@ -35,7 +35,7 @@ export { createAppointment } from "./endpoints/mobile/appointment/createAppointm
 export { getEstimates } from "./endpoints/mobile/appointment/getEstimates";
 export { getAppointmentOptions } from "./endpoints/mobile/appointment/getAppointmentOptions";
 export { getCancellationReasons } from "./endpoints/mobile/appointment/getCancellationReasons";
-//export { updateAppointment } from "./endpoints/mobile/appointment/updateAppointment";
+export { updateAppointment } from "./endpoints/mobile/appointment/updateAppointment";
 export { updateOnboardingStatus } from "./endpoints/mobile/client/updateOnboardingStatus";
 export { refreshCustomerToken } from "./endpoints/mobile/client/refreshCustomerToken";
 export { getBookingToken } from "./endpoints/mobile/booking/getBookingToken";
@@ -63,7 +63,7 @@ export { assignRoles } from "./endpoints/admin/accounts/assignRoles";
 export { verifyAccount } from "./endpoints/admin/accounts/verifyAccount";
 export { sendPaymentLink } from "./endpoints/admin/accounts/sendPaymentLink";
 export { sendPasswordResetLink } from "./endpoints/admin/accounts/sendPasswordResetLink";
-//export { deleteMoVETAccount } from "./endpoints/admin/accounts/deleteMoVETAccount";
+export { deleteMoVETAccount } from "./endpoints/admin/accounts/deleteMoVETAccount";
 export { deleteAccount } from "./endpoints/admin/accounts/deleteAccount";
 export { event } from "./endpoints/admin/event";
 export { reportABugInternal } from "./endpoints/admin/reports/reportABugInternal";

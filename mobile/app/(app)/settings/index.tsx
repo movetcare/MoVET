@@ -122,7 +122,7 @@ const Settings = () => {
                     <Icon name={option.icon} size="xs" />
                   </Container>
                   <Container style={tw`flex-shrink`}>
-                    <SubHeadingText style={tw`text-black`}>
+                    <SubHeadingText style={tw`text-movet-black`}>
                       {option.name}
                     </SubHeadingText>
                   </Container>

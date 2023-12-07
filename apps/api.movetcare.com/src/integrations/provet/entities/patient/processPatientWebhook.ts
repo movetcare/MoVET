@@ -14,15 +14,10 @@ export const processPatientWebhook = async (
     throwError({
       message: "INVALID_PAYLOAD => " + JSON.stringify(request.body),
     });
-  try {
-    const proVetPatientData = await fetchEntity(
-      "patient",
-      request.body?.patient_id,
-    );
-    await savePatient(proVetPatientData);
-    return response.status(200).send({ received: true });
-  } catch (error: any) {
-    throwError(error);
-    return response.status(500).send({ received: false });
-  }
+  const proVetPatientData = await fetchEntity(
+    "patient",
+    request.body?.patient_id,
+  );
+  await savePatient(proVetPatientData);
+  return response.status(200).send({ received: true });
 };

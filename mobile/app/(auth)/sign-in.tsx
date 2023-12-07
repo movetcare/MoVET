@@ -1,5 +1,5 @@
 import { ImageBackground, Pressable, useColorScheme } from "react-native";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { signIn, signInWithLink } from "services/Auth";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import DeviceDimensions from "utils/DeviceDimensions";

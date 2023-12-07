@@ -110,13 +110,13 @@ export const AppointmentList = ({
                   />
                 </Container>
                 <Container style={tw`flex-shrink`}>
-                  <HeadingText style={tw`text-black text-lg`}>
+                  <HeadingText style={tw`text-movet-black text-lg`}>
                     {appointment.patients.map(
                       (patient: Patient) => patient.name,
                     )}
                     {/* {__DEV__ && ` - #${appointment.id}`} */}
                   </HeadingText>
-                  <BodyText style={tw`text-black text-sm -mt-0.5`}>
+                  <BodyText style={tw`text-movet-black text-sm -mt-0.5`}>
                     {appointment.start.toDate().toLocaleDateString("en-us", {
                       weekday: "long",
                       year: "2-digit",
@@ -131,7 +131,7 @@ export const AppointmentList = ({
                     })}
                   </BodyText>
                   <Container style={tw`flex-row`}>
-                    <ItalicText style={tw`text-black text-xs`}>
+                    <ItalicText style={tw`text-movet-black text-xs`}>
                       {reason}
                     </ItalicText>
                   </Container>
