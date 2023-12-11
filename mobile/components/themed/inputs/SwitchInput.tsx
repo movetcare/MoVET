@@ -7,10 +7,12 @@ export const SwitchInput = ({
   control,
   name,
   defaultValue,
+  color = "red",
 }: {
   control: any;
   name: string;
   defaultValue?: boolean;
+  color?: "brown" | "red";
 }) => {
   const isDarkMode = useColorScheme() !== "light";
   return (
@@ -22,7 +24,10 @@ export const SwitchInput = ({
             false: isDarkMode
               ? tw.color("movet-white")
               : tw.color("movet-black"),
-            true: tw.color("movet-red"),
+            true:
+              color === "brown"
+                ? tw.color("movet-brown")
+                : tw.color("movet-red"),
           }}
           thumbColor={
             isDarkMode ? tw.color("movet-black") : tw.color("movet-white")

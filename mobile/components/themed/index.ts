@@ -13,6 +13,7 @@ export * from "./inputs/AddressInput";
 export * from "./inputs/SelectInput";
 export * from "./inputs/DateInput";
 export * from "./inputs/TextInput";
+export * from "./inputs/NumberInput";
 export * from "./View";
 export * from "./Text";
 export * from "./Icons";

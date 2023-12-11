@@ -56,7 +56,7 @@ export const RadioButton = ({
               buttonTextStyle.normal,
               isChecked && buttonTextStyle.selected,
               !editable && tw`opacity-50`,
-              tw`ml-2`,
+              listItem.icon && tw`ml-2`,
             ]}
           >
             {listItem.value}
