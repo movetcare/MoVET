@@ -180,7 +180,22 @@ const send24HourAppointmentNotification = async (
       .catch((error: any) => throwError(error));
     const appointmentAddress = notes?.includes("Appointment Address")
       ? notes?.split("-")[1]?.split("|")[0]?.trim()
-      : null;
+      : await admin
+          .firestore()
+          .collection("clients")
+          .doc(`${client}`)
+          .get()
+          .then(
+            (doc: any) =>
+              doc.data()?.street +
+              " " +
+              doc.data()?.city +
+              ", " +
+              doc.data()?.state +
+              " " +
+              doc.data()?.zipCode,
+          )
+          .catch((error: any) => throwError(error));
     if (DEBUG) {
       console.log("appointmentAddress", appointmentAddress);
       console.log("vcprRequired", vcprRequired);
@@ -378,7 +393,22 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
     const isNewFlow = user ? false : true;
     const appointmentAddress = notes?.includes("Appointment Address")
       ? notes?.split("-")[1]?.split("|")[0]?.trim()
-      : null;
+      : await admin
+          .firestore()
+          .collection("clients")
+          .doc(`${client}`)
+          .get()
+          .then(
+            (doc: any) =>
+              doc.data()?.street +
+              " " +
+              doc.data()?.city +
+              ", " +
+              doc.data()?.state +
+              " " +
+              doc.data()?.zipCode,
+          )
+          .catch((error: any) => throwError(error));
     if (DEBUG) console.log("SMS appointmentAddress", appointmentAddress);
     const petNames =
       patients.length > 1
@@ -604,17 +634,13 @@ const send30MinAppointmentNotification = async (
             ? "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
             : locationType === "Virtually" || newLocationType === "TELEHEALTH"
               ? "<p>Dr. MoVET has invited you to join a secure video call:</p>"
-              : ""
-      }${
-        locationType === "Home" ||
-        locationType === "Clinic" ||
-        newLocationType === "HOUSECALL" ||
-        newLocationType === "CLINIC"
-          ? `<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p>`
-          : ""
-      }
+              : "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
+      }<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p>
     ${
-      locationType === "Clinic" || newLocationType === "CLINIC"
+      locationType !== "Virtually" &&
+      newLocationType !== "TELEHEALTH" &&
+      locationType !== "Home" &&
+      newLocationType !== "HOUSECALL"
         ? `<p><b>Location: </b> MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)</p>`
         : ""
     }${
@@ -629,7 +655,9 @@ const send30MinAppointmentNotification = async (
       : ""
   }
     ${
-      user === 9
+      user === 9 ||
+      locationType === "Virtually" ||
+      newLocationType === "TELEHEALTH"
         ? `<p>Please tap the "START CONSULTATION" button in our <a href="https://movetcare.com/get-the-app" target="_blank">mobile app</a> to start your Virtual Consultation session for ${petNames}. <i>You can also use <b><a href="${telemedicineUrl}" target="_blank">this link</a></b> to start your session via web browser.</p>
         <p>Please reply to this message if you have any pictures or videos that you'd like to share with us prior to our consultation.</p>
         <p>Make sure you are using a device with good internet connection and access to camera/audio. Our telehealth platform allows you to test your device prior to starting the consultation. We highly suggest you run those diagnostic tests prior to connecting with us.</p>
@@ -751,9 +779,24 @@ const send30MinAppointmentNotification = async (
         : patients[0].name;
     if (DEBUG) console.log("petNames -> ", petNames);
     const isNewFlow = user ? false : true;
-    const appointmentAddress = notes?.includes("Appointment Location:")
+    const appointmentAddress = notes?.includes("Appointment Address")
       ? notes?.split("-")[1]?.split("|")[0]?.trim()
-      : null;
+      : await admin
+          .firestore()
+          .collection("clients")
+          .doc(`${client}`)
+          .get()
+          .then(
+            (doc: any) =>
+              doc.data()?.street +
+              " " +
+              doc.data()?.city +
+              ", " +
+              doc.data()?.state +
+              " " +
+              doc.data()?.zipCode,
+          )
+          .catch((error: any) => throwError(error));
     if (DEBUG) console.log("appointmentAddress", appointmentAddress);
     const vcprRequired = await admin
       .firestore()

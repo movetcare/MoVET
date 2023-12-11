@@ -134,10 +134,24 @@ export const sendAppointmentConfirmationEmail = async (
       return doc?.data()?.vcprRequired;
     })
     .catch((error: any) => throwError(error));
-  const appointmentAddress = appointment?.notes
-    ?.split("-")[1]
-    ?.split("|")[0]
-    ?.trim();
+  const appointmentAddress = appointment?.notes?.includes("Appointment Address")
+    ? appointment?.notes?.split("-")[1]?.split("|")[0]?.trim()
+    : await admin
+        .firestore()
+        .collection("clients")
+        .doc(`${appointment?.client}`)
+        .get()
+        .then(
+          (doc: any) =>
+            doc.data()?.street +
+            " " +
+            doc.data()?.city +
+            ", " +
+            doc.data()?.state +
+            " " +
+            doc.data()?.zipCode,
+        )
+        .catch((error: any) => throwError(error));
   if (isNewFlow) {
     if (DEBUG) console.log("SENDING NEW FLOW EMAIL TEMPLATE");
     if (DEBUG) {
