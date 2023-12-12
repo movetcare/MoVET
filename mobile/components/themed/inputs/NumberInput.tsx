@@ -4,6 +4,7 @@ import { TextInput, useColorScheme } from "react-native";
 import { View } from "../View";
 import tw from "tailwind";
 import { FormFieldError } from "./InputFieldError";
+import { MaskedTextInput } from "react-native-mask-text";
 
 export const NumberInput = ({
   control,
@@ -66,7 +67,7 @@ export const NumberInput = ({
           },
         }}
         render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
+          <MaskedTextInput
             editable={editable}
             onFocus={() => {
               setNumberFocus(true);
@@ -91,7 +92,8 @@ export const NumberInput = ({
               onBlur();
               setNumberFocus(false);
             }}
-            onChangeText={onChange}
+            onChangeText={(formatted) => onChange(formatted)}
+            mask={"999"}
             value={value}
             placeholder={placeholder || `${nameCap}${plural ? `(s)` : ``}`}
             placeholderTextColor={

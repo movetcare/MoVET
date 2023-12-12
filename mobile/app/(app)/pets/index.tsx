@@ -7,6 +7,7 @@ import {
   Icon,
   HeadingText,
   ItalicText,
+  ExtendedViewProps,
 } from "components/themed";
 import { router } from "expo-router";
 import { Appointment, AppointmentsStore, Patient, PatientsStore } from "stores";
@@ -23,11 +24,17 @@ const MyPets = () => {
     id: number;
     count: number;
   }> | null>(null);
+  const [backgroundImage, setBackgroundImage] =
+    useState<ExtendedViewProps["withBackground"]>("dog");
 
   useEffect(() => {
     if (patients) {
       const appointmentCounts: any = [];
+      let dogCount = 0;
+      let catCount = 0;
       patients?.forEach((patient: Patient) => {
+        if (patient.species?.toLowerCase()?.includes("dog")) dogCount += 1;
+        else if (patient.species?.toLowerCase()?.includes("cat")) catCount += 1;
         let upcomingPatientAppointments = 0;
         if (upcomingAppointments)
           upcomingAppointments.forEach((appointment: Appointment) => {
@@ -36,18 +43,18 @@ const MyPets = () => {
                 upcomingPatientAppointments += 1;
             });
           });
-
         appointmentCounts.push({
           id: patient?.id,
           count: upcomingPatientAppointments,
         });
       });
+      if (catCount > dogCount) setBackgroundImage("cat");
       if (appointmentCounts.length > 0) setAppointmentCounts(appointmentCounts);
     }
   }, [patients, upcomingAppointments]);
 
   return (
-    <Screen withBackground="pets">
+    <Screen withBackground={backgroundImage}>
       <View
         noDarkMode
         style={[

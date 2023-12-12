@@ -1,14 +1,9 @@
 import { savePatient } from "./savePatient";
-import {
-  request,
-  throwError,
-  proVetApiUrl,
-  DEBUG,
-} from "../../../../config/config";
+import { request, throwError, proVetApiUrl } from "../../../../config/config";
 import { toIsoString } from "../../../../utils/toIsoString";
 import { capitalizeFirstLetter } from "../../../../utils/capitalizeFirstLetter";
 import { updateCustomField } from "./updateCustomField";
-
+const DEBUG = true;
 export const createProVetPatient = async (data: {
   client: string;
   name: string;
@@ -58,18 +53,18 @@ export const createProVetPatient = async (data: {
     console.log("REQUEST PAYLOAD =>", {
       client: `${proVetApiUrl}/client/${client}/`,
       name,
-      species: `${species === "Dog" ? "1445" : "1443"}001`,
+      species: `${species?.toLowerCase() === "dog" ? "1445" : "1443"}001`,
       gender:
-        gender === "Male"
+        gender?.toLowerCase() === "male"
           ? spayedOrNeutered
             ? 3
             : 1
           : spayedOrNeutered
-          ? 4
-          : 2,
+            ? 4
+            : 2,
       breed:
         breed === null || breed === "null"
-          ? `${species === "Dog" ? "6714" : "6713"}001`
+          ? `${species?.toLowerCase() === "dog" ? "6714" : "6713"}001`
           : `${breed}001`,
       date_of_birth: birthday,
       archived: 0,
@@ -82,13 +77,13 @@ export const createProVetPatient = async (data: {
       name: capitalizeFirstLetter(name), // Required by PROVET API
       species: `${species === "Dog" || species === "dog" ? "1445" : "1443"}001`, // Required by PROVET API - Species ID in Cloud. Needs to have a ending number of 001 for own species list or 002 for Venom species list.
       gender:
-        gender === "Male"
+        gender?.toLowerCase() === "male"
           ? spayedOrNeutered
             ? 3
             : 1
           : spayedOrNeutered
-          ? 4
-          : 2, // Required by PROVET API
+            ? 4
+            : 2,
       breed: `${breed}001`, // Breed ID in Cloud. Needs to have a ending number of 001 for own breed list or 002 for Venom breed list. Has to be a valid value in Cloud. If no valid data available, drop this from array before sending
       date_of_birth: birthday,
       archived: 0,

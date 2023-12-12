@@ -119,7 +119,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
   const { pastAppointments } = AppointmentsStore.useState();
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [petImage, setPetImage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isUploadingPhoto, setIsUploadingPhotos] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -176,11 +176,11 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
                 !Array.isArray(value) &&
                 value !== null
                   ? object().shape({
-                      name: string().trim().min(1, "A selection is required"),
+                      name: string()
+                        .trim()
+                        .min(1, "A selection is required..."),
                     })
-                  : string()
-                      .matches(/.*\d/, "A selection is required")
-                      .required("A selection is required"),
+                  : string().required("A selection is required!!"),
               ),
               vet: string(),
               notes: string(),
@@ -214,6 +214,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
   const specie = watch("type");
   const isNonReproductive = watch("spayedOrNeutered");
   const gender = watch("gender");
+  const vet = watch("vet");
 
   useEffect(() => {
     if (mode === "edit" && id && patients) {
@@ -420,7 +421,6 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
       const updatePatient = httpsCallable(functions, "updatePatient");
       await updatePatient({ archived: true, id })
         .then(async (result: any) => {
-          console.log("DELETE", result.data);
           if (result.data) {
             setIsDeleting(false);
             router.replace("/(app)/pets");
@@ -444,20 +444,24 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
       try {
         patientData["breed"] = data.breed
           ? data.breed
-          : data.species === "Dog"
+          : data.species?.toLowerCase() === "dog"
             ? "6714"
             : "6713";
-        patientData["species"] = data.species;
+        patientData["species"] = data.type;
         patientData["gender"] = data.gender;
         patientData["birthday"] = modifyDateStringMDY(data.birthday);
-        console.log(patientData);
+        patientData["spayedOrNeutered"] = data.spayedOrNeutered;
+        patientData["weight"] = data.weight;
+        patientData["aggressionStatus"] = data.aggressionStatus;
+        patientData["vet"] = data.vet;
+        patientData["notes"] = data.notes;
         const createPatient = httpsCallable(functions, "createPatient");
         await createPatient(patientData)
           .then(async (result: any) => {
             if (result.data) {
+              const updatePatient = httpsCallable(functions, "updatePatient");
               if (petImage) {
                 const photoUrl = await uploadImageAsync(petImage, result.data);
-                const updatePatient = httpsCallable(functions, "updatePatient");
                 await updatePatient({
                   id: result.data,
                   photoUrl,
@@ -467,6 +471,14 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
                   })
                   .catch((error: any) => setError(error));
               }
+              await updatePatient({
+                id: result.data,
+                ...patientData,
+              })
+                .then((result: any) => {
+                  if (!result.data) setError("Failed to Update Pet Data");
+                })
+                .catch((error: any) => setError(error));
               setIsSaving(false);
               reset();
               setPetImage(null);
@@ -490,7 +502,6 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
             petImage,
             Number(id),
           );
-        console.log(patientData);
         const updatePatient = httpsCallable(functions, "updatePatient");
         await updatePatient(patientData)
           .then(async (result: any) => {
@@ -511,17 +522,19 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
     }
   };
   return isLoading || isSaving || isDeleting ? (
-    <Loader
-      description={
-        isSaving
-          ? mode === "edit"
-            ? `Updating ${name}'s Records...`
-            : "Creating Your Pet..."
-          : isDeleting
-            ? `Deleting "${name}"...`
-            : "Loading, Please Wait..."
-      }
-    />
+    <Container style={tw`flex-1 w-full`}>
+      <Loader
+        description={
+          isSaving
+            ? mode === "edit"
+              ? `Updating ${name}'s Records...`
+              : "Creating Your Pet..."
+            : isDeleting
+              ? `Deleting "${name}"...`
+              : "Loading, Please Wait..."
+        }
+      />
+    </Container>
   ) : (
     <View
       style={[
@@ -767,6 +780,17 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
               required={false}
               placeholder="Name of Previous Vet"
             />
+            {vet !== "" && (
+              <ItalicText
+                style={tw`text-movet-yellow text-center font-extrabold px-4 mt-4`}
+              >
+                * Please contact your previous vet and have them forward your
+                pet&apos;s medical records to{" "}
+                <BodyText style={tw`text-movet-red font-extrabold`}>
+                  info@movetcare.com
+                </BodyText>
+              </ItalicText>
+            )}
             <SubHeadingText style={tw`mt-6 mb-4`}>
               Aggression Status
               <SubHeadingText style={tw`text-movet-red`} noDarkMode>
@@ -805,8 +829,9 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
                   icon: null,
                 },
               ]}
-              error={(errors["type"] as any)?.message as string}
-              name="type"
+              error={(errors["aggressionStatus"] as any)?.message as string}
+              name="aggressionStatus"
+              required
             />
             <ItalicText style={tw`text-center text-xs mt-4`}>
               * Please note, this may not disqualify your pet from being seen.
@@ -845,13 +870,15 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
           iconName={mode === "edit" ? "check" : "plus"}
           style={tw`mx-auto`}
         />
-        <TouchableOpacity
-          style={tw`w-full mt-16 flex-row items-center justify-center mb-8`}
-          onPress={() => setShowPetDeletionConfirmation(true)}
-        >
-          <Icon name="trash" height={14} width={14} />
-          <ButtonText style={tw`text-xs ml-2`}>Delete Pet</ButtonText>
-        </TouchableOpacity>
+        {mode === "edit" && (
+          <TouchableOpacity
+            style={tw`w-full mt-16 flex-row items-center justify-center pb-8`}
+            onPress={() => setShowPetDeletionConfirmation(true)}
+          >
+            <Icon name="trash" height={14} width={14} />
+            <ButtonText style={tw`text-xs ml-2`}>Delete Pet</ButtonText>
+          </TouchableOpacity>
+        )}
       </View>
       <Modal
         isVisible={showPetDeletionConfirmation}
@@ -901,9 +928,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
           <ActionButton
             title={`Delete "${name?.toString()}"`}
             iconName="trash"
-            onPress={() => {
-              deletePet();
-            }}
+            onPress={() => deletePet()}
           />
         </View>
       </Modal>

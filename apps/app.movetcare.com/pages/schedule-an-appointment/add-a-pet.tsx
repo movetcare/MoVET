@@ -367,8 +367,8 @@ export default function ContactInfo() {
                           {gender === "male"
                             ? "neutered"
                             : gender === "female"
-                            ? "spayed"
-                            : "spayed / neutered"}
+                              ? "spayed"
+                              : "spayed / neutered"}
                         </p>
                       }
                     />
@@ -459,15 +459,13 @@ export default function ContactInfo() {
                       enterFrom="opacity-0"
                       enterTo="opacity-100"
                     >
-                      <>
-                        <p className="text-movet-yellow text-center font-extrabold px-4 mt-4">
-                          * Please contact your previous vet and have them
-                          forward your pet&apos;s medical records to{" "}
-                          <span className="text-movet-red font-extrabold">
-                            info@movetcare.com
-                          </span>
-                        </p>
-                      </>
+                      <p className="text-movet-yellow text-center font-extrabold px-4 mt-4">
+                        * Please contact your previous vet and have them forward
+                        your pet&apos;s medical records to{" "}
+                        <span className="text-movet-red font-extrabold">
+                          info@movetcare.com
+                        </span>
+                      </p>
                     </Transition>
                     {/* <FileUploadInput
                       fileTypes="PDF"

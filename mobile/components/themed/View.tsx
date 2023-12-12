@@ -9,8 +9,8 @@ type ThemeProps = {
 };
 
 export type ViewProps = ThemeProps & DefaultView["props"];
-interface ExtendedViewProps extends ViewProps {
-  withBackground?: "pets";
+export interface ExtendedViewProps extends ViewProps {
+  withBackground?: "pets" | "cat" | "dog" | "bone" | "mouse";
   noDarkMode?: boolean;
   noScroll?: boolean;
 }
@@ -28,11 +28,31 @@ export const Screen = (props: ExtendedViewProps) => {
     { light: lightColor, dark: darkColor },
     "background",
   );
+  let backgroundImage = null;
+  switch (withBackground) {
+    case "pets":
+      backgroundImage = require("assets/images/backgrounds/pets-background.png");
+      break;
+    case "cat":
+      backgroundImage = require("assets/images/backgrounds/cat-background.png");
+      break;
+    case "dog":
+      backgroundImage = require("assets/images/backgrounds/dog-background.png");
+      break;
+    case "bone":
+      backgroundImage = require("assets/images/backgrounds/bone-background.png");
+      break;
+    case "mouse":
+      backgroundImage = require("assets/images/backgrounds/mouse-background.png");
+      break;
+    default:
+      break;
+  }
   return noScroll ? (
     <>
-      {withBackground === "pets" ? (
+      {backgroundImage ? (
         <ImageBackground
-          source={require("assets/images/backgrounds/pets-background.png")}
+          source={backgroundImage}
           resizeMode="cover"
           style={[{ backgroundColor }, tw`flex-1`]}
         >
@@ -59,9 +79,9 @@ export const Screen = (props: ExtendedViewProps) => {
       style={tw`flex-1 bg-transparent`}
       contentContainerStyle={tw`flex-grow bg-transparent`}
     >
-      {withBackground === "pets" ? (
+      {backgroundImage ? (
         <ImageBackground
-          source={require("assets/images/backgrounds/pets-background.png")}
+          source={backgroundImage}
           resizeMode="cover"
           style={[{ backgroundColor }, tw`flex-1`]}
         >
@@ -97,9 +117,30 @@ export const View = (props: ExtendedViewProps) => {
     { light: lightColor, dark: darkColor },
     "background",
   );
-  return withBackground === "pets" ? (
+
+  let backgroundImage = null;
+  switch (withBackground) {
+    case "pets":
+      backgroundImage = require("assets/images/backgrounds/pets-background.png");
+      break;
+    case "cat":
+      backgroundImage = require("assets/images/backgrounds/cat-background.png");
+      break;
+    case "dog":
+      backgroundImage = require("assets/images/backgrounds/dog-background.png");
+      break;
+    case "bone":
+      backgroundImage = require("assets/images/backgrounds/bone-background.png");
+      break;
+    case "mouse":
+      backgroundImage = require("assets/images/backgrounds/mouse-background.png");
+      break;
+    default:
+      break;
+  }
+  return backgroundImage ? (
     <ImageBackground
-      source={require("assets/images/backgrounds/pets-background.png")}
+      source={backgroundImage}
       resizeMode="cover"
       style={tw`flex-1`}
     >

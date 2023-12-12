@@ -7,11 +7,12 @@ import {
 import type { Patient } from "../../../../types/patient";
 import { capitalizeFirstLetter } from "../../../../utils/capitalizeFirstLetter";
 import { savePatient } from "./savePatient";
+import { updateCustomField } from "./updateCustomField";
 
 export const updateProVetPatient = async (data: Patient): Promise<any> => {
   if (DEBUG) console.log("updateProVetPatient -> ", data);
   // const {weight} = data;
-  const { photoUrl } = data || {};
+  const { photoUrl, spayedOrNeutered } = data || {};
   const requestPayload: any = {};
 
   Object.entries(data).forEach(([key, value]) => {
@@ -23,10 +24,18 @@ export const updateProVetPatient = async (data: Patient): Promise<any> => {
         requestPayload.name = capitalizeFirstLetter(value as string);
         break;
       case "species":
-        requestPayload.species = `${value === "Dog" ? "1445" : "1443"}001`;
+        requestPayload.species = `${
+          (value as string)?.toLowerCase() === "dog" ? "1445" : "1443"
+        }001`;
         break;
       case "gender":
-        requestPayload.gender = value === "Male" ? 1 : 2;
+        (value as string)?.toLowerCase() === "male"
+          ? spayedOrNeutered
+            ? 3
+            : 1
+          : spayedOrNeutered
+            ? 4
+            : 2;
         break;
       case "breed":
         requestPayload.breed = `${value}001`;
@@ -36,6 +45,24 @@ export const updateProVetPatient = async (data: Patient): Promise<any> => {
         break;
       case "archived":
         requestPayload.archived = value;
+        break;
+      case "aggressionStatus":
+        updateCustomField(
+          String(data?.id),
+          4,
+          (value as string)?.includes("no history of aggression")
+            ? "False"
+            : "True",
+        );
+        break;
+      case "notes":
+        updateCustomField(String(data?.id), 6, value);
+        break;
+      case "vet":
+        updateCustomField(String(data?.id), 5, value);
+        break;
+      case "photoUrl":
+        updateCustomField(String(data?.id), 7, value);
         break;
       default:
         break;

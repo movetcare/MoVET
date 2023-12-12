@@ -9,4 +9,5 @@ export type Patient = {
   weight?: string;
   archived?: boolean;
   photoUrl?: string;
+  spayedOrNeutered?: boolean;
 };

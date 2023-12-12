@@ -4,11 +4,11 @@ import { admin, request, DEBUG } from "../../../../config/config";
 export const updateCustomField = async (
   patient: string,
   id: number,
-  value: any
+  value: any,
 ): Promise<boolean> => {
   if (DEBUG) {
     console.log("updateCustomField Patient", patient);
-    console.log("updateCustomField Id", patient);
+    console.log("updateCustomField Id", id);
     console.log("updateCustomField Value", value);
   }
   const customFieldValue = await admin
@@ -24,33 +24,33 @@ export const updateCustomField = async (
               (customField: { field_id: number; id: number }) => {
                 if (customField.field_id === id) return customField.id;
                 else return;
-              }
+              },
             )
-        : null
+        : null,
     )
     .catch((error: any) => console.log("updateCustomField => ERROR: ", error));
   if (DEBUG) {
     console.log("updateCustomField => customFieldValue", customFieldValue);
     console.log(
       "updateCustomField => customFieldValue.length ",
-      customFieldValue?.length
+      customFieldValue?.length,
     );
     console.log(
       "updateCustomField => customFieldValue.length < 1",
-      customFieldValue?.length < 1
+      customFieldValue?.length < 1,
     );
     console.log(
       "updateCustomField => Array.isArray(customFieldValue) ",
-      Array.isArray(customFieldValue)
+      Array.isArray(customFieldValue),
     );
     console.log(
       // eslint-disable-next-line quotes
       'typeof customFieldValue === "object"',
-      typeof customFieldValue === "object"
+      typeof customFieldValue === "object",
     );
     console.log(
       "typeof customFieldValue === 'undefined'",
-      typeof customFieldValue === "undefined"
+      typeof customFieldValue === "undefined",
     );
     console.log("id", id);
   }
@@ -71,8 +71,8 @@ export const updateCustomField = async (
           DEBUG &&
           console.log(
             "API Response: POST /custom_field_values/ => ",
-            response.data
-          )
+            response.data,
+          ),
       )
       .then(() => true)
       .catch((error: any) => (console.log("ERROR: ", error) as any) && false);
@@ -88,12 +88,12 @@ export const updateCustomField = async (
           DEBUG &&
           console.log(
             `API Response: PATCH /custom_field_values/${id} => `,
-            response.data
-          )
+            response.data,
+          ),
       )
       .then(() => true)
       .catch(
         (error: any) =>
-          (console.log("API ERROR: ", JSON.stringify(error)) as any) && false
+          (console.log("API ERROR: ", JSON.stringify(error)) as any) && false,
       );
 };
