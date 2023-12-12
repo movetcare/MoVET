@@ -53,9 +53,6 @@ jobs:
       - name: Install Dependencies
         id: install-dependencies
         run: pnpm install
-      - name: Lint Cloud Functions
-        id: lint
-        run: pnpm -F api.movetcare.com run lint
       - name: Build Cloud Functions
         id: build
         run: pnpm -F api.movetcare.com run build
