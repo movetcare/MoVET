@@ -12,7 +12,7 @@ export const syncChatLogWithProVet = functions.firestore
     if (status === "complete") {
       const { email, displayName, phoneNumber } = await getAuthUserById(
         context.params.clientId,
-        ["email", "displayName", "phoneNumber"]
+        ["email", "displayName", "phoneNumber"],
       );
       const lastQuestionTimestamp = await admin
         .firestore()
@@ -53,9 +53,8 @@ export const syncChatLogWithProVet = functions.firestore
                 : `(${doc
                     .data()
                     ?.createdAt?.toDate()
-                    ?.toLocaleTimeString("en-US")}) MoVET Support: ${
-                    doc.data()?.text
-                  }<br/>`;
+                    ?.toLocaleTimeString("en-US")}) MoVET Support: ${doc.data()
+                    ?.text}<br/>`;
           });
           return messages;
         })
@@ -79,7 +78,7 @@ export const syncChatLogWithProVet = functions.firestore
         displayName
           ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
           : "Hey there,"
-      }<p>Thank you for reaching out to MoVET today!<p><p>Please find your chat log summary below:</p>\n\n${chatLog}\n\n<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>- The MoVET Team</p>`;
+      }<p>Thank you for reaching out to MoVET today!<p><p>Please find your chat log summary below:</p>\n\n${chatLog}\n\n<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>- The MoVET Team</p>`;
       const emailConfig: any = {
         to: email,
         subject: "Your MoVET Telehealth Chat Summary",

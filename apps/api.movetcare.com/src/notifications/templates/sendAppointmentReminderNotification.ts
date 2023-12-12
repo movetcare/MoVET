@@ -291,7 +291,7 @@ or aggressive towards humans or other pets? Anything that would make your pet mo
 comfortable with us for their visit would be great! We can offer anti-anxiety medications ahead of
 appointments for some patients that might need a little help relaxing around us.</p><p><i>Please reply to this email <b>before your appointment</b> should 
 you feel your pet(s) needs more options, such as anxiolytics and / or supplements to continue to 
-make your pet's visit more comfortable. We thank you in advance for keeping our staff safe!</i></p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
+make your pet's visit more comfortable. We thank you in advance for keeping our staff safe!</i></p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
     } else {
       const clientProvetRecord = await fetchEntity("client", client);
       emailText = `${
@@ -358,7 +358,7 @@ or aggressive towards humans or other pets? Anything that would make your pet mo
 comfortable with us for their visit would be great! We can offer anti-anxiety medications ahead of
 appointments for some patients that might need a little help relaxing around us.</p><p><i>Please reply to this email <b>before your appointment</b> should 
 you feel your pet(s) needs more options, such as anxiolytics and / or supplements to continue to 
-make your pet's visit more comfortable. We thank you in advance for keeping our staff safe!</i></p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
+make your pet's visit more comfortable. We thank you in advance for keeping our staff safe!</i></p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
     }
     if (DEBUG) console.log("emailText -> ", emailText);
     const emailConfig: EmailConfiguration = {
@@ -465,7 +465,7 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
           : `\nOur records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment. Please use the link below to add a new form of payment to your account:\n\n${`https://app.movetcare.com/update-payment-method?email=${(
               email as string
             )?.replaceAll("+", "%2B")}`}\n`
-      }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
+      }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     else {
       const clientProvetRecord = await fetchEntity("client", client);
       smsText = `${
@@ -505,7 +505,7 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
             : `\nOur records indicate that you do not have a form of payment on file. Please add a payment source: ${`https://app.movetcare.com/update-payment-method?email=${(
                 email as string
               )?.replaceAll("+", "%2B")}`}\n`
-      }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
+      }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     }
     if (DEBUG) console.log("smsText -> ", smsText);
     sendNotification({
@@ -681,7 +681,7 @@ const send30MinAppointmentNotification = async (
               "+",
               "%2B",
             )}`}" target="_blank">add a form of payment</a></b></p>`
-    }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
+    }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
     else
       emailText = `${
         displayName
@@ -744,7 +744,7 @@ const send30MinAppointmentNotification = async (
               "+",
               "%2B",
             )}`}" target="_blank">add a form of payment</a></b></p>`
-    }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
+    }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
 
     if (DEBUG) console.log("emailText -> ", emailText);
     const emailConfig: EmailConfiguration = {
@@ -868,7 +868,7 @@ const send30MinAppointmentNotification = async (
       : `Payment on File: Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment:\n\n Add a Payment Method\nhttps://app.movetcare.com/update-payment-method?email=${(
           email as string
         )?.replaceAll("+", "%2B")}\n\n`
-  }\nPlease email info@movetcare.com, text (720) 507-7387 us, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
+  }\nPlease email info@movetcare.com, text (720) 507-7387 us, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     else {
       const clientProvetRecord = await fetchEntity("client", client);
       smsText = `${
@@ -923,7 +923,7 @@ const send30MinAppointmentNotification = async (
         : `Our records indicate that you do not have a form of payment on file. Please add a payment method.\nhttps://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll("+", "%2B")}\n\n`
-  }\nPlease email info@movetcare.com, text (720) 507-7387 us, or "Ask a Question" via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
+  }\nPlease email info@movetcare.com, text (720) 507-7387 us, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     }
     if (DEBUG) console.log("smsText -> ", smsText);
     sendNotification({

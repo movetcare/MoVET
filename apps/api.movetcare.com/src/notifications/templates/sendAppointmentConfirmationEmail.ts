@@ -8,7 +8,7 @@ import { EmailConfiguration } from "../../types/email.d";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
-const DEBUG = false;
+const DEBUG = true;
 export const sendAppointmentConfirmationEmail = async (
   clientId: string,
   appointmentId: string,

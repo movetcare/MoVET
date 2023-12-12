@@ -88,6 +88,10 @@ const PaymentMethods = () => {
       (error: any) => {
         setPaymentMethods(null);
         setIsLoading(false);
+        alert(
+          "ERROR SOURCE - unsubscribePaymentMethods => " +
+            JSON.stringify(error),
+        );
         setError(error);
       },
     );
@@ -117,11 +121,19 @@ const PaymentMethods = () => {
             merchantDisplayName: "MoVET",
             testEnv: isProductionEnvironment,
           } as any);
-          if (paymentSheetError) handleError(paymentSheetError);
-          else setPaymentOptionsReady(true);
+          if (paymentSheetError) {
+            alert(
+              "ERROR SOURCE - paymentSheetError => " +
+                JSON.stringify(paymentSheetError),
+            );
+            handleError(paymentSheetError);
+          } else setPaymentOptionsReady(true);
         }
       })
-      .catch((error: any) => handleError(error))
+      .catch((error: any) => {
+        alert("ERROR SOURCE - getCustomerDetails => " + JSON.stringify(error));
+        handleError(error);
+      })
       .finally(() => setIsLoading(false));
   };
 
@@ -151,6 +163,10 @@ const PaymentMethods = () => {
             testEnv: !isProductionEnvironment,
           } as any);
           if (paymentSheetError) {
+            alert(
+              "ERROR SOURCE - paymentSheetError => " +
+                JSON.stringify(paymentSheetError),
+            );
             handleError(
               paymentSheetError?.message
                 ? paymentSheetError.message
@@ -159,6 +175,9 @@ const PaymentMethods = () => {
           }
           const { error } = await presentPaymentSheet();
           if (error && error?.message !== "The payment has been canceled") {
+            alert(
+              "ERROR SOURCE - paymentSheetError => " + JSON.stringify(error),
+            );
             handleError(error);
           } else if (
             error &&
@@ -168,10 +187,18 @@ const PaymentMethods = () => {
           else router.replace("/settings/payment-methods");
         } else {
           const { error } = await presentPaymentSheet();
-          if (error) handleError(error);
+          if (error) {
+            alert(
+              "ERROR SOURCE - presentPaymentSheet => " + JSON.stringify(error),
+            );
+            handleError(error);
+          }
         }
       })
-      .catch((error: any) => handleError(error))
+      .catch((error: any) => {
+        alert("ERROR SOURCE - handleCustomerToken => " + JSON.stringify(error));
+        handleError(error);
+      })
       .finally(() => setIsLoading(false));
   }, [handleError]);
 

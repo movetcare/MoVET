@@ -1,6 +1,20 @@
 {
   "indexes": [
     {
+      "collectionGroup": "patients",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "client",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "archived",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "appointments",
       "queryScope": "COLLECTION",
       "fields": [
@@ -157,24 +171,6 @@
       ]
     },
     {
-      "collectionGroup": "counter_sales",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "credit_note",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "client_due_sum",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
       "collectionGroup": "client_invoices",
       "queryScope": "COLLECTION",
       "fields": [
@@ -248,6 +244,20 @@
         },
         {
           "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "appointments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "active",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "start",
           "order": "ASCENDING"
         }
       ]

@@ -64,7 +64,7 @@ export const sendBookingRequestClientNotification = async ({
     selectedTime === "Specific Time Preference" && specificTime !== ""
       ? `<p><b>Specific Time Requested:</b> "${specificTime}"</p>`
       : ""
-  }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or "Ask a Question" via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
+  }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
   if (DEBUG)
     console.log("Sending CLIENT Appointment Request for New Client", message);
   sendNotification({

@@ -9,9 +9,10 @@ import firebaseEmulatorConfig from "./firebase.json";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+import { isProductionEnvironment } from "utils/isProductionEnvironment";
 const { emulators } = firebaseEmulatorConfig;
 
-const FIREBASE_KEYS = __DEV__
+const FIREBASE_KEYS = !isProductionEnvironment
   ? {
       API_KEY: "AIzaSyCRJEv6XXchM9e2Ibq4C-yoR346vmsBMFk",
       AUTH_DOMAIN: "movet-care-staging.firebaseapp.com",
@@ -53,7 +54,7 @@ export const firestore = getFirestore(app);
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
 
-if (__DEV__) {
+if (!isProductionEnvironment && __DEV__) {
   console.log("DEVELOPMENT MODE DETECTED - USING LOCAL FIREBASE EMULATORS", {
     auth: {
       host: emulators.auth.host,

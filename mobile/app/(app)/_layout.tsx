@@ -100,6 +100,7 @@ const TabsLayout = (props: any) => {
         }
       },
       (error: any) => {
+        alert("ERROR SOURCE: unsubscribeUser => " + JSON.stringify(error));
         setError(error);
       },
     );
@@ -125,7 +126,13 @@ const TabsLayout = (props: any) => {
             store.upcomingAppointments = appointments;
           });
       },
-      (error: any) => setError(error),
+      (error: any) => {
+        alert(
+          "ERROR SOURCE: unsubscribeUpcomingAppointments => " +
+            JSON.stringify(error),
+        );
+        setError(error);
+      },
     );
     const unsubscribePastAppointments = onSnapshot(
       query(
@@ -148,7 +155,13 @@ const TabsLayout = (props: any) => {
             store.pastAppointments = appointments;
           });
       },
-      (error: any) => setError(error),
+      (error: any) => {
+        alert(
+          "ERROR SOURCE: unsubscribePastAppointments => " +
+            JSON.stringify(error),
+        );
+        setError(error);
+      },
     );
     const unsubscribePatients = onSnapshot(
       query(
@@ -170,7 +183,10 @@ const TabsLayout = (props: any) => {
           store.patients = patients;
         });
       },
-      (error: any) => setError(error),
+      (error: any) => {
+        alert("ERROR SOURCE: unsubscribePatients => " + JSON.stringify(error));
+        setError(error);
+      },
     );
     return () => {
       unsubscribeUser();

@@ -56,7 +56,7 @@ service cloud.firestore {
     match /clients/{uid} {
       allow read, write: if clientOwnsDocuments(uid) || isMoVETStaff();
       match /payment_methods/{pid} {
-        allow read, write: if clientOwnsDocuments(uid) || isMoVETStaff();
+        allow read, write, list: if clientOwnsDocuments(uid) || isMoVETStaff();
       }
       match /chat/{oid} {
         allow read, write, list: if clientOwnsDocuments(uid);
@@ -67,8 +67,7 @@ service cloud.firestore {
       }
     }
     match /patients/{pid} {
-      allow read, write: if clientOwnsPatient() || isMoVETStaff();
-      allow list: if isMoVETStaff();
+      allow read, write, list: if clientOwnsPatient() || isMoVETStaff();
     }
     match /reminders/{pid} {
       allow read, write: if clientIsAuthed() && request.auth.uid  == string(resource.data.client);

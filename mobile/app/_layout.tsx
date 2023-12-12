@@ -67,6 +67,10 @@ const Layout = () => {
   }, []);
 
   useEffect(() => {
+    if (currentError !== null) alert(JSON.stringify(currentError));
+  }, [currentError]);
+
+  useEffect(() => {
     if (!navigationState?.key || !initialized) return;
     else if (!isLoggedIn) router.replace("/(auth)/sign-in");
   }, [navigationState?.key, initialized, isLoggedIn]);
