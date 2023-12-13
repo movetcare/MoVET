@@ -284,7 +284,7 @@ export default function LocationSelection({
           !isAppMode ? " p-4 mb-4 sm:p-8" : ""
         }`}
       >
-        <div className={isAppMode ? "px-4 mb-8" : ""}>
+        <div className={isAppMode ? "mb-8" : ""}>
           <section className="relative mx-auto">
             {(isLoading && !isLoaded) || reasonGroups === false ? (
               <Loader message={loadingMessage} isAppMode={isAppMode} />

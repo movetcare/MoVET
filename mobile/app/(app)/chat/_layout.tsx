@@ -7,13 +7,12 @@ export default function Layout() {
     <Stack
       screenOptions={{
         ...navigationStackScreenOptions,
-        header: () => null,
-        // (
-        //   <NavigationHeader
-        //     title="Chat with MoVET"
-        //     iconName="user-medical-message"
-        //   />
-        // ),
+        header: () => (
+          <NavigationHeader
+            title="Telehealth Chat"
+            iconName="user-medical-message"
+          />
+        ),
       }}
     />
   );

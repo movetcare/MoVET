@@ -150,7 +150,7 @@ const PetDetail = () => {
           }
         >
           <View
-            style={tw`w-30 h-30 bg-movet-gray/50 rounded-full mb-4 mt-8`}
+            style={tw`w-30 h-30 bg-movet-gray rounded-full mb-4 mt-8`}
             noDarkMode
           >
             {patient?.photoUrl ? (

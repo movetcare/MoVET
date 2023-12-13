@@ -4,6 +4,7 @@ import {
   Icon,
   HeadingText,
   SupportedIcons,
+  View,
 } from "components/themed";
 import { isTablet } from "utils/isTablet";
 
@@ -21,25 +22,24 @@ export const SectionHeading = ({
   textStyle?: any;
 }) => {
   return (
-    <Container
+    <View
       style={[
-        tw`flex-row justify-center items-center`,
+        tw`flex-row justify-center items-center rounded-xl shadow-sm shadow-movet-black dark:shadow-movet-white bg-movet-white/70 dark:bg-movet-black/70 p-2`,
         isTablet ? tw`my-3` : tw`my-1.5`,
         containerStyle,
       ]}
+      noDarkMode
     >
       {iconName && (
         <Icon
           name={iconName}
           size={isTablet ? "sm" : "xs"}
-          style={[tw`mt-4 mr-2`, iconStyle]}
+          style={[tw`mr-2`, iconStyle]}
         />
       )}
-      <HeadingText
-        style={[tw`mt-4`, isTablet ? tw`text-2xl` : tw`text-xl`, textStyle]}
-      >
+      <HeadingText style={[isTablet ? tw`text-2xl` : tw`text-xl`, textStyle]}>
         {text}
       </HeadingText>
-    </Container>
+    </View>
   );
 };

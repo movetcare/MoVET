@@ -10,7 +10,7 @@ import {
 } from "react-native-gifted-chat";
 import CustomActions from "components/chat/CustomActions";
 import tw from "tailwind";
-import { AuthStore } from "stores";
+import { AuthStore, ErrorStore } from "stores";
 import {
   onSnapshot,
   doc,
@@ -34,14 +34,6 @@ import { Platform, useColorScheme } from "react-native";
 import * as Notifications from "expo-notifications";
 import { Icon, View, Screen, Container } from "components/themed";
 import { isTablet } from "utils/isTablet";
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: true,
-  }),
-});
 
 const registerForPushNotificationsAsync = async () => {
   let token;
@@ -85,6 +77,12 @@ const ChatIndex = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const isDarkMode = useColorScheme() !== "light";
+
+  const setError = (error: any) =>
+    ErrorStore.update((s: any) => {
+      s.currentError = error;
+    });
+
   useEffect(() => {
     registerForPushNotificationsAsync().then(async (token: any) => {
       const deviceInfo = JSON.parse(
@@ -249,8 +247,7 @@ const ChatIndex = () => {
       const xhr = new XMLHttpRequest();
       xhr.onload = () => resolve(xhr.response);
       xhr.onerror = (error: any) => {
-        console.error(error);
-        alert(error);
+        setError({ ...error, source: "uploadImageAsync XMLHttpRequest" });
         reject(new TypeError("Network request failed"));
       };
       xhr.responseType = "blob";
@@ -259,13 +256,11 @@ const ChatIndex = () => {
     });
     const fileRef = ref(storage, `clients/${user?.uid}/` + uuid());
     await uploadBytes(fileRef, blob).catch((error) => {
-      console.error(error);
-      alert(error);
+      setError({ ...error, source: "uploadImageAsync uploadBytes" });
     });
     blob.close();
     return await getDownloadURL(fileRef).catch((error) => {
-      console.error(error);
-      alert(error);
+      setError({ ...error, source: "uploadImageAsync getDownloadURL" });
     });
   };
 
@@ -303,7 +298,7 @@ const ChatIndex = () => {
       }),
     )
       .then(() => onSend(messagesUploaded))
-      .catch((error) => alert("onSendFromUser ERROR => " + error));
+      .catch((error) => setError({ ...error, source: "messagesToUpload" }));
   }, []);
 
   const renderCustomActions = useCallback(

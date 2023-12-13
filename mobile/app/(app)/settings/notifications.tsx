@@ -66,14 +66,6 @@ const NotificationSettings = () => {
   const smsStatus = watch("sendSms");
   const pushStatus = watch("sendPush");
 
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: true,
-    }),
-  });
-
   const registerForPushNotificationsAsync = async () => {
     let token;
     if (Device.isDevice) {
@@ -363,14 +355,14 @@ const NotificationSettings = () => {
               color="black"
               iconName="check"
             />
-            {pushToken === null && (
-              <ActionButton
-                color="brown"
-                iconName="arrow-right"
-                title="Open App Setting"
-                onPress={() => Linking.openSettings()}
-              />
-            )}
+            <ActionButton
+              type="text"
+              iconName={"gear"}
+              style={tw`text-center mt-0 w-full`}
+              textStyle={tw`text-movet-black dark:text-movet-white`}
+              title="Open System Setting"
+              onPress={() => Linking.openSettings()}
+            />
           </Container>
         </>
       )}

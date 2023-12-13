@@ -39,7 +39,7 @@ export default function IChooseYou() {
           content="/static/images/blog/i-chews-you.jpg"
         />
       </Head>
-      <section className="flex flex-col items-center justify-center sm:max-w-screen-lg mx-4 sm:mx-auto mt-8 mb-20 px-8 lg:px-20 bg-white rounded-xl p-4 sm:p-8">
+      <section className="flex flex-col items-center justify-center sm:max-w-screen-lg mx-4 sm:mx-auto mt-8 mb-20 lg:px-20 bg-white rounded-xl p-4 sm:p-8">
         <Image
           className="rounded-xl"
           src="/images/blog/i-chews-you.jpg"

@@ -10,7 +10,7 @@ import {
 } from "components/themed";
 import { Stack, router } from "expo-router";
 import tw from "tailwind";
-import { TouchableOpacity } from "react-native";
+import { Linking, TouchableOpacity } from "react-native";
 import { isTablet } from "utils/isTablet";
 import Constants from "expo-constants";
 import { isProductionEnvironment } from "utils/isProductionEnvironment";
@@ -26,7 +26,7 @@ const versions = require("../../../version.json");
 interface Option {
   name: string;
   icon: SupportedIcons;
-  link: string;
+  link: string | null;
 }
 
 const settingsOptions: Array<Option> = [
@@ -44,6 +44,11 @@ const settingsOptions: Array<Option> = [
     name: "Notifications",
     icon: "bell",
     link: "/(app)/settings/notifications",
+  },
+  {
+    name: "System Settings",
+    icon: "gear",
+    link: null,
   },
   {
     name: "Logout",
@@ -110,7 +115,9 @@ const Settings = () => {
           {settingsOptions.map((option: Option, index: number) => (
             <TouchableOpacity
               key={index}
-              onPress={() => router.push(option.link)}
+              onPress={() =>
+                option.link ? router.push(option.link) : Linking.openSettings()
+              }
             >
               <View
                 style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-col items-center border-2 dark:border-movet-white w-full`}

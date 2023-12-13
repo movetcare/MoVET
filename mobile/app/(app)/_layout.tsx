@@ -76,18 +76,7 @@ const TabsLayout = (props: any) => {
   };
 
   useEffect(() => {
-    if (!isLoggedIn || !initialized || !user?.uid) {
-      alert(
-        "ROOT LAYOUT ERROR: " +
-          "isLoggedIn: " +
-          isLoggedIn +
-          " initialized: " +
-          initialized +
-          " user?.uid: " +
-          user?.uid,
-      );
-      return;
-    }
+    if (!isLoggedIn || !initialized || !user?.uid) return; 
     const unsubscribeUser = onSnapshot(
       doc(firestore, "clients", user?.uid),
       (doc) => {

@@ -111,29 +111,16 @@ export default function SignIn() {
   }, [tapCount]);
 
   useEffect(() => {
-    if (mode && oobCode && continueUrl && lang && apiKey && user?.email) {
-      alert(
-        "SIGN IN LINK: " +
-          user?.email +
-          " => URL:" +
-          getPlatformUrl() +
-          `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
-      );
+    if (mode && oobCode && continueUrl && lang && apiKey && user?.email)
       signInUserWithLink(
         user?.email,
         getPlatformUrl() +
           `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
       );
-    }
   }, [mode, oobCode, continueUrl, lang, apiKey, user?.email]);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      alert(
-        "USER IS LOGGED IN! REDIRECTING..." + (redirectPath || "/(app)/home"),
-      );
-      router.replace((redirectPath as string) || "/(app)/home");
-    }
+    if (isLoggedIn) router.replace((redirectPath as string) || "/(app)/home");
   }, [isLoggedIn, redirectPath]);
 
   const signInUserWithLink = async (email: string, link: string) => {

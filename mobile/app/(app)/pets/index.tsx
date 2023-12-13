@@ -15,6 +15,7 @@ import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 import { Image, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
+import { SectionHeading } from "components/SectionHeading";
 
 const MyPets = () => {
   const { patients } = PatientsStore.useState();
@@ -62,6 +63,12 @@ const MyPets = () => {
           tw`flex-grow items-center justify-center w-full pt-2 bg-transparent`,
         ]}
       >
+        <SectionHeading
+          iconName="paw"
+          text="My Pets"
+          containerStyle={tw`mb-2`}
+          textStyle={tw`text-2xl`}
+        />
         <View
           style={[
             tw`flex-col rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent w-full`,

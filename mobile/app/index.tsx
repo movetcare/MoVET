@@ -11,10 +11,14 @@ const Index = () => {
   useEffect(() => {
     if (!navigationState?.key || !initialized) return;
     else {
-      alert("INDEX => isLoggedin: " + isLoggedIn + " segments: " + segments[0]);
       if (!isLoggedIn && segments[0] !== "(auth)" && segments[0] !== "sign-in")
         router.replace("/(auth)/sign-in");
-      else if (isLoggedIn) router.replace("/(app)/home");
+      else if (isLoggedIn && segments.length === 0)
+        router.replace("/(app)/home");
+      else if (isLoggedIn && segments.length > 0) {
+        alert("segments => " + JSON.stringify(segments));
+        router.replace("/(app)/chat");
+      }
     }
   }, [segments, navigationState?.key, initialized, isLoggedIn]);
 

@@ -582,7 +582,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
     >
       <TouchableOpacity onPress={() => uploadMedia()}>
         <View
-          style={tw`w-40 h-40 bg-movet-gray/50 rounded-full mb-4 mt-8`}
+          style={tw`w-40 h-40 bg-movet-gray rounded-full mb-4 mt-8`}
           noDarkMode
         >
           {photoUrl ? (

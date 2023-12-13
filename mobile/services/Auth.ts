@@ -108,7 +108,6 @@ export const signIn = async (email: string, password?: string | undefined) => {
     try {
       const verifyClient = httpsCallable(functions, "verifyClient");
       verifyClient({ email, device }).then(async (result) => {
-        alert("verifyClient => " + JSON.stringify(result));
         if (result.data) {
           await sendSignInLinkToEmail(auth, email, {
             url: getPlatformUrl() + "/home",
@@ -146,7 +145,6 @@ export const signInWithLink = async (email: string, link: string) => {
         console.error(error);
         return error?.code || "Unknown Error...";
       });
-  else alert("ERROR isSignInWithEmailLink => FALSE");
 };
 
 export const signOut = async () =>

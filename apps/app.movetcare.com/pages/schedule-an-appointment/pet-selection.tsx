@@ -193,11 +193,9 @@ export default function PetSelection() {
     <section className="w-full flex-1">
       <AppHeader />
       <div
-        className={`flex-grow items-center justify-center bg-white rounded-xl max-w-xl mx-auto${
-          !isAppMode ? " p-4 mb-4 sm:p-8" : ""
-        }`}
+        className={`flex-1 items-center justify-center bg-white rounded-xl max-w-xl mx-auto`}
       >
-        <div className={isAppMode ? "px-4 mb-8" : ""}>
+        <div>
           <section className="relative mx-auto">
             {isLoading ? (
               <Loader
@@ -207,38 +205,45 @@ export default function PetSelection() {
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (
-              <>
-                <BookingHeader
-                  isAppMode={isAppMode}
-                  title={`Select ${pets.length > 1 ? "Your Pets" : "a Pet"}`}
-                  description={`Which ${
-                    pets.length > 1 ? "pets" : "pet"
-                  } would you like to book an
+              <div
+                className={
+                  isAppMode
+                    ? "flex flex-grow items-center justify-center min-h-screen"
+                    : ""
+                }
+              >
+                <div className="flex-col">
+                  <BookingHeader
+                    isAppMode={isAppMode}
+                    title={`Select ${pets.length > 1 ? "Your Pets" : "a Pet"}`}
+                    description={`Which ${
+                      pets.length > 1 ? "pets" : "pet"
+                    } would you like to book an
               appointment for?`}
-                />
-                <legend className="mt-8 text-2xl font-medium mb-2 w-full text-center">
-                  Your
-                  {pets.length > 1 ? " Pets" : " Pet"}
-                </legend>
-                {pets
-                  .sort(
-                    (item: any, nextItem: any) =>
-                      nextItem.vcprRequired - item.vcprRequired,
-                  )
-                  .map((pet: any, index: number) => (
-                    <div
-                      key={index}
-                      className={
-                        index === pets.length - 1
-                          ? "w-full"
-                          : "w-full border-b border-movet-gray divide-y divide-movet-gray"
-                      }
-                    >
-                      <label
-                        htmlFor={`${pet.name}`}
-                        className="text-lg select-none font-source-sans-pro flex flex-row items-center py-2 w-full"
+                  />
+                  <legend className="mt-8 text-2xl font-medium mb-2 w-full text-center">
+                    Your
+                    {pets.length > 1 ? " Pets" : " Pet"}
+                  </legend>
+                  {pets
+                    .sort(
+                      (item: any, nextItem: any) =>
+                        nextItem.vcprRequired - item.vcprRequired,
+                    )
+                    .map((pet: any, index: number) => (
+                      <div
+                        key={index}
+                        className={
+                          index === pets.length - 1
+                            ? "w-full"
+                            : "w-full border-b border-movet-gray divide-y divide-movet-gray"
+                        }
                       >
-                        {/* {petPhotos &&
+                        <label
+                          htmlFor={`${pet.name}`}
+                          className="text-lg select-none font-source-sans-pro flex flex-row items-center py-2 w-full"
+                        >
+                          {/* {petPhotos &&
                       petPhotos.map(
                         ({ patient, url }: { url: string; patient: number }) =>
                           `${patient}` === pet.id ? (
@@ -257,127 +262,129 @@ export default function PetSelection() {
                             />
                           )
                       )} */}
-                        {/* <FontAwesomeIcon
+                          {/* <FontAwesomeIcon
                           icon={pet.species.includes("Dog") ? faDog : faCat}
                           size={"lg"}
                           className="mr-2 h-8 w-8 text-movet-brown flex-none"
                         /> */}
-                        <p>
-                          {pet.species.includes("Dog") ? "🐶" : "🐱"}{" "}
-                          {capitalizeFirstLetter(pet.name)}
-                        </p>
-                        {pet.vcprRequired ? (
-                          <span className="text-xs italic text-movet-red ml-2 text-right grow font-extrabold">
-                            * Requires Establish Care Exam
-                          </span>
-                        ) : (
-                          <span className="text-xs italic text-movet-red ml-2 text-center grow">
-                            {""}
-                          </span>
-                        )}
-                        <div className="ml-3 flex items-center h-5 flex-none">
-                          <input
-                            id={`${pet.name}`}
-                            {...register("pets")}
-                            value={`${pet.id}`}
-                            type="checkbox"
-                            className="focus:ring-movet-brown h-6 w-6 text-movet-brown border-movet-gray rounded-full ease-in-out duration-500"
-                          />
-                        </div>
-                      </label>
-                    </div>
-                  ))}
-                <ErrorMessage
-                  errorMessage={
-                    vcprRequiredError
-                      ? "Only pets that require an Establish Care Exam may be selected"
-                      : (errors?.pets?.message as string)
-                  }
-                />
-                {showVcprDescription && (
-                  <>
-                    <span
-                      className="text-center text-gray mt-8 flex justify-center items-center text-xs cursor-pointer italic hover:text-movet-brown ease-in-out duration-500"
-                      onClick={() => setShowExplainer(!showExplainer)}
-                    >
-                      <FontAwesomeIcon
-                        icon={faInfoCircle}
-                        size="lg"
-                        className="mr-2 text-movet-brown -mt-1"
-                      />
-                      What are Establish Care Exams?
-                    </span>
-                  </>
-                )}
-                <Modal
-                  showModal={showExplainer}
-                  setShowModal={setShowExplainer}
-                  cancelButtonRef={cancelButtonRef}
-                  isLoading={isLoading}
-                  error={error ? <Error message={error} /> : undefined}
-                  content={
+                          <p>
+                            {pet.species.includes("Dog") ? "🐶" : "🐱"}{" "}
+                            {capitalizeFirstLetter(pet.name)}
+                          </p>
+                          {pet.vcprRequired ? (
+                            <span className="text-xs italic text-movet-red ml-2 text-right grow font-extrabold">
+                              * Requires Establish Care Exam
+                            </span>
+                          ) : (
+                            <span className="text-xs italic text-movet-red ml-2 text-center grow">
+                              {""}
+                            </span>
+                          )}
+                          <div className="ml-3 flex items-center h-5 flex-none">
+                            <input
+                              id={`${pet.name}`}
+                              {...register("pets")}
+                              value={`${pet.id}`}
+                              type="checkbox"
+                              className="focus:ring-movet-brown h-6 w-6 text-movet-brown border-movet-gray rounded-full ease-in-out duration-500"
+                            />
+                          </div>
+                        </label>
+                      </div>
+                    ))}
+                  <ErrorMessage
+                    errorMessage={
+                      vcprRequiredError
+                        ? "Only pets that require an Establish Care Exam may be selected"
+                        : (errors?.pets?.message as string)
+                    }
+                  />
+                  {showVcprDescription && (
                     <>
-                      <p>
-                        Establish Care Exams are used to start a
-                        Veterinarian-Client-Patient Relationship
-                        (&quot;VCPR&quot;).
-                      </p>
-                      <p>
-                        A VCPR is established only when your veterinarian
-                        examines your pet in person, and is maintained by
-                        regular veterinary visits as needed to monitor your
-                        pet&apos;s health.
-                      </p>
-                      <p>
-                        If a VCPR is established but your veterinarian does not
-                        regularly see your pet afterward, the VCPR is no longer
-                        valid and it would be illegal (and unethical) for your
-                        veterinarian to dispense or prescribe medications or
-                        recommend treatment without recently examining your pet.
-                      </p>
-                      <p>
-                        A valid VCPR cannot be established online, via email, or
-                        over the phone. However, once a VCPR is established, it
-                        may be able to be maintained between medically necessary
-                        examinations via telephone or other types of
-                        consultations; but it&apos;s up to your
-                        veterinarian&apos; discretion to determine if this is
-                        appropriate and in the best interests of your pets&apos;
-                        health.
-                      </p>
+                      <span
+                        className="text-center text-gray mt-8 flex justify-center items-center text-xs cursor-pointer italic hover:text-movet-brown ease-in-out duration-500"
+                        onClick={() => setShowExplainer(!showExplainer)}
+                      >
+                        <FontAwesomeIcon
+                          icon={faInfoCircle}
+                          size="lg"
+                          className="mr-2 text-movet-brown -mt-1"
+                        />
+                        What are Establish Care Exams?
+                      </span>
                     </>
-                  }
-                  title="What are Establish Care Exams?"
-                  icon={faStethoscope}
-                />
-                <div className="flex flex-col sm:flex-row mt-12 mb-6">
-                  <Button
-                    icon={faPlusCircle}
-                    iconSize={"sm"}
-                    color="black"
-                    text="Add a Pet"
-                    className={"w-full sm:w-1/2 mr-0 sm:mr-4"}
-                    onClick={() => {
-                      setIsLoading(true);
-                      router.push(
-                        isAppMode
-                          ? "/schedule-an-appointment/add-a-pet?mode=app"
-                          : "/schedule-an-appointment/add-a-pet",
-                      );
-                    }}
+                  )}
+                  <Modal
+                    showModal={showExplainer}
+                    setShowModal={setShowExplainer}
+                    cancelButtonRef={cancelButtonRef}
+                    isLoading={isLoading}
+                    error={error ? <Error message={error} /> : undefined}
+                    content={
+                      <>
+                        <p>
+                          Establish Care Exams are used to start a
+                          Veterinarian-Client-Patient Relationship
+                          (&quot;VCPR&quot;).
+                        </p>
+                        <p>
+                          A VCPR is established only when your veterinarian
+                          examines your pet in person, and is maintained by
+                          regular veterinary visits as needed to monitor your
+                          pet&apos;s health.
+                        </p>
+                        <p>
+                          If a VCPR is established but your veterinarian does
+                          not regularly see your pet afterward, the VCPR is no
+                          longer valid and it would be illegal (and unethical)
+                          for your veterinarian to dispense or prescribe
+                          medications or recommend treatment without recently
+                          examining your pet.
+                        </p>
+                        <p>
+                          A valid VCPR cannot be established online, via email,
+                          or over the phone. However, once a VCPR is
+                          established, it may be able to be maintained between
+                          medically necessary examinations via telephone or
+                          other types of consultations; but it&apos;s up to your
+                          veterinarian&apos; discretion to determine if this is
+                          appropriate and in the best interests of your
+                          pets&apos; health.
+                        </p>
+                      </>
+                    }
+                    title="What are Establish Care Exams?"
+                    icon={faStethoscope}
                   />
-                  <Button
-                    type="submit"
-                    icon={faArrowRight}
-                    iconSize={"sm"}
-                    disabled={!isDirty || !isValid || vcprRequiredError}
-                    color="red"
-                    text="Continue"
-                    className={"w-full sm:w-1/2 ml-0 sm:ml-4 mt-4 sm:mt-0"}
-                    onClick={handleSubmit(onSubmit)}
-                  />
+                  <div className="flex flex-col sm:flex-row mt-12 mb-6">
+                    <Button
+                      icon={faPlusCircle}
+                      iconSize={"sm"}
+                      color="black"
+                      text="Add a Pet"
+                      className={"w-full sm:w-1/2 mr-0 sm:mr-4"}
+                      onClick={() => {
+                        setIsLoading(true);
+                        router.push(
+                          isAppMode
+                            ? "/schedule-an-appointment/add-a-pet?mode=app"
+                            : "/schedule-an-appointment/add-a-pet",
+                        );
+                      }}
+                    />
+                    <Button
+                      type="submit"
+                      icon={faArrowRight}
+                      iconSize={"sm"}
+                      disabled={!isDirty || !isValid || vcprRequiredError}
+                      color="red"
+                      text="Continue"
+                      className={"w-full sm:w-1/2 ml-0 sm:ml-4 mt-4 sm:mt-0"}
+                      onClick={handleSubmit(onSubmit)}
+                    />
+                  </div>
                 </div>
-              </>
+              </div>
             )}
           </section>
         </div>

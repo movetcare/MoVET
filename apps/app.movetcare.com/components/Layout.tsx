@@ -11,7 +11,7 @@ const Layout = ({ children }: any) => {
     <main
       className={`flex items-center justify-center${
         isAppMode
-          ? " w-full bg-white p-4"
+          ? " w-full bg-white px-4 sm:px-0"
           : " min-h-screen max-w-screen-md mx-auto px-4 sm:px-8 overflow-hidden"
       }`}
     >
@@ -24,7 +24,7 @@ const Layout = ({ children }: any) => {
         }}
       >
         {router.pathname.includes(
-          "/schedule-an-appointment/location-selection"
+          "/schedule-an-appointment/location-selection",
         ) ? (
           <GoogleMapsProvider
             googleMapsApiKey={"AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"}
