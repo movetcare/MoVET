@@ -48,28 +48,21 @@ export default function Layout() {
         !segments.includes("detail")
       ) {
         setNavigationDetails(null);
-        //   {
-        //   title: "My Pets",
-        //   iconName: "paw",
-        //   canGoBack: false,
-        // }
       } else setNavigationDetails(null);
   }, [pastAppointments, segments, upcomingAppointments]);
   return (
     <Stack
       screenOptions={{
         ...navigationStackScreenOptions,
-        header: (props) => {
-          //console.log("props", props);
-          return navigationDetails ? (
+        header: (props) =>
+          navigationDetails ? (
             <NavigationHeader
               title={props.options.title || navigationDetails.title}
               iconName={navigationDetails.iconName}
               canGoBack={navigationDetails.canGoBack}
               goBackRoot={navigationDetails.goBackRoot}
             />
-          ) : undefined;
-        },
+          ) : undefined,
       }}
     />
   );
