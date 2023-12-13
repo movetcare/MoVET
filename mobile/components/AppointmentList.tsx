@@ -41,16 +41,15 @@ export const AppointmentList = ({
         });
         setReasons(reasons);
       },
-      (error: any) => setError(error),
+      (error: any) => setError({ ...error, source: "unsubscribeReasons" }),
     );
     return () => unsubscribeReasons();
   }, []);
 
-  const setError = (error: any) => {
+  const setError = (error: any) =>
     ErrorStore.update((s: any) => {
       s.currentError = error;
     });
-  };
 
   return (
     <View

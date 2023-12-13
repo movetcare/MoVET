@@ -59,11 +59,10 @@ const AccountSettings = () => {
     if (client) reset(client);
   }, [client, reset]);
 
-  const setError = (error: any) => {
+  const setError = (error: any) =>
     ErrorStore.update((s: any) => {
       s.currentError = error;
     });
-  };
 
   useEffect(() => {
     if (client) reset(client);
@@ -86,9 +85,13 @@ const AccountSettings = () => {
     const updateClient = httpsCallable(functions, "updateClient");
     await updateClient(clientData)
       .then((result) => {
-        if (!result.data) setError({ message: "Failed to Save Updates" });
+        if (!result.data)
+          setError({
+            message: "Failed to Save Updates",
+            source: "updateClient",
+          });
       })
-      .catch((error: any) => setError(error))
+      .catch((error: any) => setError({ ...error, source: "updateClient" }))
       .finally(() => setIsLoading(false));
   };
 
@@ -97,10 +100,16 @@ const AccountSettings = () => {
     const deleteMoVETAccount = httpsCallable(functions, "deleteAccount");
     await deleteMoVETAccount()
       .then((result) => {
-        if (!result.data) setError({ message: "Failed to Delete Account" });
+        if (!result.data)
+          setError({
+            message: "Failed to Delete Account",
+            source: "deleteMoVETAccount",
+          });
         else router.push("/(app)/settings/sign-out");
       })
-      .catch((error: any) => setError(error))
+      .catch((error: any) =>
+        setError({ ...error, source: "deleteMoVETAccount" }),
+      )
       .finally(() => {
         setShowAccountDeletionConfirmation(false);
         setIsLoading(false);

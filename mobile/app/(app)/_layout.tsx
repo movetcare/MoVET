@@ -76,7 +76,18 @@ const TabsLayout = (props: any) => {
   };
 
   useEffect(() => {
-    if (!isLoggedIn || !initialized || !user?.uid) return;
+    if (!isLoggedIn || !initialized || !user?.uid) {
+      alert(
+        "ROOT LAYOUT ERROR: " +
+          "isLoggedIn: " +
+          isLoggedIn +
+          " initialized: " +
+          initialized +
+          " user?.uid: " +
+          user?.uid,
+      );
+      return;
+    }
     const unsubscribeUser = onSnapshot(
       doc(firestore, "clients", user?.uid),
       (doc) => {
@@ -99,10 +110,7 @@ const TabsLayout = (props: any) => {
           });
         }
       },
-      (error: any) => {
-        alert("ERROR SOURCE: unsubscribeUser => " + JSON.stringify(error));
-        setError(error);
-      },
+      (error: any) => setError({ ...error, source: "unsubscribeUser" }),
     );
     const unsubscribeUpcomingAppointments = onSnapshot(
       query(
@@ -126,13 +134,8 @@ const TabsLayout = (props: any) => {
             store.upcomingAppointments = appointments;
           });
       },
-      (error: any) => {
-        alert(
-          "ERROR SOURCE: unsubscribeUpcomingAppointments => " +
-            JSON.stringify(error),
-        );
-        setError(error);
-      },
+      (error: any) =>
+        setError({ ...error, source: "unsubscribeUpcomingAppointments" }),
     );
     const unsubscribePastAppointments = onSnapshot(
       query(
@@ -155,13 +158,8 @@ const TabsLayout = (props: any) => {
             store.pastAppointments = appointments;
           });
       },
-      (error: any) => {
-        alert(
-          "ERROR SOURCE: unsubscribePastAppointments => " +
-            JSON.stringify(error),
-        );
-        setError(error);
-      },
+      (error: any) =>
+        setError({ ...error, source: "unsubscribePastAppointments" }),
     );
     const unsubscribePatients = onSnapshot(
       query(
@@ -183,10 +181,7 @@ const TabsLayout = (props: any) => {
           store.patients = patients;
         });
       },
-      (error: any) => {
-        alert("ERROR SOURCE: unsubscribePatients => " + JSON.stringify(error));
-        setError(error);
-      },
+      (error: any) => setError({ ...error, source: "unsubscribePatients" }),
     );
     return () => {
       unsubscribeUser();
@@ -196,11 +191,10 @@ const TabsLayout = (props: any) => {
     };
   }, [user?.uid, initialized, isLoggedIn]);
 
-  const setError = (error: any) => {
+  const setError = (error: any) =>
     ErrorStore.update((s: any) => {
       s.currentError = error;
     });
-  };
 
   return (
     <SafeAreaView style={tw`flex-1 bg-movet-red dark:bg-movet-black`}>

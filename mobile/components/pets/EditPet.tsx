@@ -253,13 +253,14 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
       const getBreeds = httpsCallable(functions, "getBreeds");
       await getBreeds()
         .then((result: any) => {
-          if (!result.data) setError({ message: "Failed to Get Breeds" });
+          if (!result.data)
+            setError({ message: "Failed to Get Breeds", source: "getBreeds" });
           else {
             setCanineBreeds(sortDataBy(result?.data[0]?.breeds, "title"));
             setFelineBreeds(sortDataBy(result?.data[1]?.breeds, "title"));
           }
         })
-        .catch((error: any) => setError(error))
+        .catch((error: any) => setError({ ...error, source: "getBreeds" }))
         .finally(() => setIsLoading(false));
     };
     fetchBreeds();
@@ -345,9 +346,9 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
         } else setIsUploadingPhotos(false);
       } else if (mediaLibraryPermission.status === "denied")
         await getPermissionAsync("mediaLibrary");
-    } catch (error) {
+    } catch (error: any) {
       setIsUploadingPhotos(false);
-      setError(error);
+      setError({ ...error, source: "pickImageAsync" });
     }
   };
 
@@ -367,9 +368,9 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
         } else setIsUploadingPhotos(false);
       } else if (cameraPermission.status === "denied")
         await getPermissionAsync("camera");
-    } catch (error) {
+    } catch (error: any) {
       setIsUploadingPhotos(false);
-      setError(error);
+      setError({ ...error, source: "takePictureAsync" });
     }
   };
 
@@ -379,7 +380,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
       xhr.onload = () => resolve(xhr.response);
       xhr.onerror = (error: any) => {
         setIsUploadingPhotos(false);
-        setError(error);
+        setError({ ...error, source: "uploadImageAsync XMLHttpRequest" });
         reject(new TypeError("Network request failed"));
       };
       xhr.responseType = "blob";
@@ -389,12 +390,12 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
     const fileRef = ref(storage, `clients/${user?.uid}/patients/${id}/profile`);
     await uploadBytes(fileRef, blob).catch((error) => {
       setIsUploadingPhotos(false);
-      setError(error);
+      setError({ ...error, source: "uploadImageAsync uploadBytes" });
     });
     blob.close();
     return await getDownloadURL(fileRef).catch((error) => {
       setIsUploadingPhotos(false);
-      setError(error);
+      setError({ ...error, source: "uploadImageAsync getDownloadURL" });
     });
   };
 
@@ -408,11 +409,10 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
     } else return "";
   };
 
-  const setError = (error: any) => {
+  const setError = (error: any) =>
     ErrorStore.update((s: any) => {
       s.currentError = error;
     });
-  };
 
   const deletePet = async () => {
     setShowPetDeletionConfirmation(false);
@@ -424,14 +424,20 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
           if (result.data) {
             setIsDeleting(false);
             router.replace("/(app)/pets");
-          } else setError("Unable to Delete Pet");
+          } else
+            setError({
+              message: "Unable to Delete Pet",
+              source: "deletePet updatePatient",
+            });
           setIsDeleting(false);
         })
-        .catch((error: any) => setError(error))
+        .catch((error: any) =>
+          setError({ ...error, source: "deletePet updatePatient" }),
+        )
         .finally(() => setIsDeleting(false));
     } catch (error: any) {
       setIsDeleting(false);
-      setError(error);
+      setError({ ...error, source: "deletePet" });
     }
   };
 
@@ -467,32 +473,57 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
                   photoUrl,
                 })
                   .then((result: any) => {
-                    if (!result.data) setError("Failed to Update Pet Photo");
+                    if (!result.data)
+                      setError({
+                        message: "Failed to Update Pet Photo",
+                        source: "onSubmit createPatient updatePatient photoUrl",
+                      });
                   })
-                  .catch((error: any) => setError(error));
+                  .catch((error: any) =>
+                    setError({
+                      ...error,
+                      source: "onSubmit createPatient updatePatient photoUrl",
+                    }),
+                  );
               }
               await updatePatient({
                 id: result.data,
                 ...patientData,
               })
                 .then((result: any) => {
-                  if (!result.data) setError("Failed to Update Pet Data");
+                  if (!result.data)
+                    setError({
+                      message: "Failed to Update Pet Data",
+                      source:
+                        "onSubmit createPatient updatePatient patientData",
+                    });
                 })
-                .catch((error: any) => setError(error));
+                .catch((error: any) =>
+                  setError({
+                    ...error,
+                    source: "onSubmit createPatient updatePatient patientData",
+                  }),
+                );
               setIsSaving(false);
               reset();
               setPetImage(null);
               router.back();
-            } else setError("Unable to Add a Pet");
+            } else
+              setError({
+                message: "Unable to Add a Pet",
+                source: "onSubmit createPatient",
+              });
             setIsSaving(false);
           })
-          .catch((error: any) => setError(error))
+          .catch((error: any) =>
+            setError({ ...error, source: "onSubmit createPatient" }),
+          )
           .finally(() => setIsSaving(false));
       } catch (error: any) {
         setIsSaving(false);
         reset();
         setPetImage(null);
-        setError(error);
+        setError({ ...error, source: "onSubmit createPatient" });
       }
     } else if (mode === "edit") {
       try {
@@ -508,16 +539,22 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
             if (result.data) {
               setIsSaving(false);
               router.back();
-            } else setError("Unable to Add a Pet");
+            } else
+              setError({
+                message: "Unable to Add a Pet",
+                source: "onSubmit updatePatient",
+              });
             setIsSaving(false);
           })
-          .catch((error: any) => setError(error))
+          .catch((error: any) =>
+            setError({ ...error, source: "onSubmit updatePatient" }),
+          )
           .finally(() => setIsSaving(false));
       } catch (error: any) {
         setIsSaving(false);
         reset();
         setPetImage(null);
-        setError(error);
+        setError({ ...error, source: "onSubmit updatePatient" });
       }
     }
   };

@@ -28,6 +28,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { isTablet } from "utils/isTablet";
+import LogRocket from "@logrocket/react-native";
 
 const getRandomBackgroundImage = () => {
   const randomNumber = getRandomInt(1, 5);
@@ -110,26 +111,40 @@ export default function SignIn() {
   }, [tapCount]);
 
   useEffect(() => {
-    if (mode && oobCode && continueUrl && lang && apiKey && user?.email)
+    if (mode && oobCode && continueUrl && lang && apiKey && user?.email) {
+      alert(
+        "SIGN IN LINK: " +
+          user?.email +
+          " => URL:" +
+          getPlatformUrl() +
+          `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
+      );
       signInUserWithLink(
         user?.email,
         getPlatformUrl() +
           `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
       );
+    }
   }, [mode, oobCode, continueUrl, lang, apiKey, user?.email]);
 
   useEffect(() => {
-    if (isLoggedIn) router.replace((redirectPath as string) || "/(app)/home");
+    if (isLoggedIn) {
+      alert(
+        "USER IS LOGGED IN! REDIRECTING..." + (redirectPath || "/(app)/home"),
+      );
+      router.replace((redirectPath as string) || "/(app)/home");
+    }
   }, [isLoggedIn, redirectPath]);
 
   const signInUserWithLink = async (email: string, link: string) => {
     setIsLoading(true);
     await signInWithLink(email, link)
-      .then((signInError: string) => {
-        if (signInError) setError(signInError);
+      .then((signInError: any) => {
+        if (signInError)
+          setError({ message: signInError, source: "signInWithLink" });
         else router.replace("/(app)/home");
       })
-      .catch((error: any) => setError(error))
+      .catch((error: any) => setError({ ...error, source: "signInWithLink" }))
       .finally(() => {
         setIsLoading(false);
         setShowVerificationButton(true);
@@ -137,23 +152,23 @@ export default function SignIn() {
   };
   const onSubmit = async (data: { email: string; password?: string }) => {
     setIsLoading(true);
+    if (!__DEV__) LogRocket.identify(email, { status: "signed-out" });
     await signIn(data?.email, data?.password)
       .then((signInError: string) => {
-        if (signInError) setError(signInError);
+        if (signInError) setError({ message: signInError, source: "signIn" });
         else if (!data?.password) setSignInLinkSent(true);
       })
-      .catch((error: any) => setError(error))
+      .catch((error: any) => setError({ ...error, source: "signIn" }))
       .finally(() => {
         setIsLoading(false);
         setShowVerificationButton(true);
       });
   };
 
-  const setError = (error: any) => {
+  const setError = (error: any) =>
     ErrorStore.update((s: any) => {
       s.currentError = error;
     });
-  };
 
   return (
     <KeyboardAwareScrollView

@@ -12,8 +12,10 @@ import { AuthStore } from "stores";
 import { firestore, functions } from "firebase-config";
 import {
   ActionButton,
+  BodyText,
   Container,
   Icon,
+  ItalicText,
   Screen,
   SubHeadingText,
   SubmitButton,
@@ -111,13 +113,16 @@ const NotificationSettings = () => {
         } else {
           setNotificationSettings(null);
           setIsLoading(false);
-          setError({ message: "MISSING CLIENT DATA" });
+          setError({
+            message: "MISSING CLIENT DATA",
+            source: "unsubscribeNotificationSettings",
+          });
         }
       },
       (error: any) => {
         setNotificationSettings(null);
         setIsLoading(false);
-        setError(error);
+        setError({ ...error, source: "unsubscribeNotificationSettings" });
       },
     );
     return () => unsubscribeNotificationSettings();
@@ -243,17 +248,17 @@ const NotificationSettings = () => {
       sendPush: data.sendPush,
     })
       .then((result) => {
-        if (!result.data) setError({ message: "Failed to Save Updates" });
+        if (!result.data)
+          setError({ message: "Failed to Save Updates", source: "onSubmit" });
       })
-      .catch((error: any) => setError(error))
+      .catch((error: any) => setError({ ...error, source: "onSubmit" }))
       .finally(() => setIsLoading(false));
   };
 
-  const setError = (error: any) => {
+  const setError = (error: any) =>
     ErrorStore.update((s: any) => {
       s.currentError = error;
     });
-  };
 
   return (
     <Screen>
@@ -267,6 +272,18 @@ const NotificationSettings = () => {
               tw`flex-grow w-full items-center justify-center`,
             ]}
           >
+            <BodyText
+              style={emailStatus ? tw`text-center mb-4` : tw`text-center`}
+            >
+              Use the toggles below to control which kind of notifications you
+              receive.
+            </BodyText>
+            {!emailStatus && (
+              <ItalicText style={tw`text-center my-4`}>
+                * MoVET will always send you an appointment reminder
+                notification to help make sure you never miss an appointment.
+              </ItalicText>
+            )}
             <View
               style={tw`w-full bg-transparent flex flex-row justify-between items-center mt-6`}
             >

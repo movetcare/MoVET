@@ -86,7 +86,9 @@ export const AppointmentDetail = () => {
         .then((json: any) => {
           setMapCoordinates(json.results[0].geometry.location);
         })
-        .catch((error: any) => setError(error))
+        .catch((error: any) =>
+          setError({ ...error, source: "Google Geocode API" }),
+        )
         .finally(() => setIsLoading(false));
     }
   }, [mapCoordinates, appointment?.notes, client?.address]);
@@ -151,7 +153,7 @@ export const AppointmentDetail = () => {
         });
         setReasons(reasons);
       },
-      (error: any) => setError(error),
+      (error: any) => setError({ ...error, source: "unsubscribeReasons" }),
     );
     return () => unsubscribeReasons();
   }, []);
@@ -170,20 +172,22 @@ export const AppointmentDetail = () => {
         else
           setError({
             message: "Failed to cancel appointment, please try again",
+            source: "updateAppointment",
           });
       })
-      .catch((error: any) => setError(error))
+      .catch((error: any) =>
+        setError({ ...error, source: "updateAppointment" }),
+      )
       .finally(() => {
         setShowCancelModal(false);
         setIsLoading(false);
       });
   };
 
-  const setError = (error: any) => {
+  const setError = (error: any) =>
     ErrorStore.update((s: any) => {
       s.currentError = error;
-    });
-  };
+    }); 
 
   return (
     <Screen>

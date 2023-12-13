@@ -76,6 +76,7 @@ const Home = () => {
   });
 
   useEffect(() => {
+    console.log("Upcoming Appointments: ", upcomingAppointments);
     if (patients) {
       const vcprPatients: Array<Patient> = [];
       patients.forEach((patient: Patient) => {

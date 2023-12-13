@@ -74,7 +74,6 @@ export const Screen = (props: ExtendedViewProps) => {
     </>
   ) : (
     <KeyboardAwareScrollView
-      keyboardShouldPersistTaps="always"
       showsVerticalScrollIndicator={false}
       style={tw`flex-1 bg-transparent`}
       contentContainerStyle={tw`flex-grow bg-transparent`}

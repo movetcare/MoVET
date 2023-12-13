@@ -62,7 +62,7 @@ export const PaymentMethodSummary = (): ReactNode => {
       (error: any) => {
         setPaymentMethods(null);
         setIsLoading(false);
-        setError(error);
+        setError({ ...error, source: "unsubscribePaymentMethods" });
       },
     );
     return () => unsubscribePaymentMethods();
@@ -107,11 +107,11 @@ export const PaymentMethodSummary = (): ReactNode => {
     }
   }, [paymentMethods]);
 
-  const setError = (error: any) => {
+  const setError = (error: any) =>
     ErrorStore.update((s: any) => {
       s.currentError = error;
     });
-  };
+  
 
   return (paymentMethods && paymentMethods.length === 0) ||
     showUpcomingExpirationWarning ||

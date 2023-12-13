@@ -18,6 +18,7 @@ import { AuthStore } from "stores";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { ErrorModal } from "components/Modal";
 import { ErrorStore } from "stores";
+import LogRocket from "@logrocket/react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,6 +39,7 @@ const Layout = () => {
   const { initialized, isLoggedIn } = AuthStore.useState();
   const { currentError } = ErrorStore.useState();
   useEffect(() => {
+    if (!__DEV__) LogRocket.init("cjlcsx/movet-mobile-app");
     const unsubscribeAuth = onAuthStateChanged(auth, (user: any) =>
       updateUserAuth(user),
     );
@@ -109,9 +111,11 @@ const Layout = () => {
             })
           }
           message={
-            currentError?.code ||
-            currentError?.message ||
-            JSON.stringify(currentError)
+            currentError?.source +
+            " => " +
+            (currentError?.code ||
+              currentError?.message ||
+              JSON.stringify(currentError))
           }
         />
       </>

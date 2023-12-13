@@ -47,11 +47,12 @@ export default function Layout() {
         !segments.includes("appointment-detail") &&
         !segments.includes("detail")
       ) {
-        setNavigationDetails({
-          title: "My Pets",
-          iconName: "paw",
-          canGoBack: false,
-        });
+        setNavigationDetails(null);
+        //   {
+        //   title: "My Pets",
+        //   iconName: "paw",
+        //   canGoBack: false,
+        // }
       } else setNavigationDetails(null);
   }, [pastAppointments, segments, upcomingAppointments]);
   return (

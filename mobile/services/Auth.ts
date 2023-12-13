@@ -5,6 +5,7 @@ import {
   signOut as signOff,
   sendSignInLinkToEmail,
   signInWithEmailLink,
+  isSignInWithEmailLink,
 } from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
 import {
@@ -16,6 +17,7 @@ import {
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import * as Device from "expo-device";
 import * as Network from "expo-network";
+import LogRocket from "@logrocket/react-native";
 
 export const signIn = async (email: string, password?: string | undefined) => {
   AuthStore.update((store) => {
@@ -96,6 +98,7 @@ export const signIn = async (email: string, password?: string | undefined) => {
         store.user = auth.currentUser;
         store.isLoggedIn = true;
       });
+      if (!__DEV__) LogRocket.identify(email, { status: "logged-in" });
       router.replace("/(app)/home");
     } catch (error: any) {
       console.error(error);
@@ -105,6 +108,7 @@ export const signIn = async (email: string, password?: string | undefined) => {
     try {
       const verifyClient = httpsCallable(functions, "verifyClient");
       verifyClient({ email, device }).then(async (result) => {
+        alert("verifyClient => " + JSON.stringify(result));
         if (result.data) {
           await sendSignInLinkToEmail(auth, email, {
             url: getPlatformUrl() + "/home",
@@ -117,7 +121,9 @@ export const signIn = async (email: string, password?: string | undefined) => {
               minimumVersion: "12",
             },
             handleCodeInApp: true,
-          });
+          }).catch((error) =>
+            alert("ERROR sendSignInLinkToEmail => " + JSON.stringify(error)),
+          );
         } else return "Client Verification FAILED: " + JSON.stringify(result);
       });
     } catch (error: any) {
@@ -126,18 +132,22 @@ export const signIn = async (email: string, password?: string | undefined) => {
     }
 };
 
-export const signInWithLink = async (email: string, link: string) =>
-  await signInWithEmailLink(auth, email, link)
-    .then(() => {
-      AuthStore.update((store) => {
-        store.user = auth.currentUser;
-        store.isLoggedIn = true;
+export const signInWithLink = async (email: string, link: string) => {
+  if (isSignInWithEmailLink(auth, link))
+    await signInWithEmailLink(auth, email, link)
+      .then(() => {
+        if (!__DEV__) LogRocket.identify(email, { status: "logged-in" });
+        AuthStore.update((store) => {
+          store.user = auth.currentUser;
+          store.isLoggedIn = true;
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        return error?.code || "Unknown Error...";
       });
-    })
-    .catch((error) => {
-      console.error(error);
-      return error?.code || "Unknown Error...";
-    });
+  else alert("ERROR isSignInWithEmailLink => FALSE");
+};
 
 export const signOut = async () =>
   await signOff(auth)

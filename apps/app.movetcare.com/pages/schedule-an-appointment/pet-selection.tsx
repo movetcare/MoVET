@@ -193,7 +193,7 @@ export default function PetSelection() {
     <section className="w-full flex-1">
       <AppHeader />
       <div
-        className={`flex items-center justify-center bg-white rounded-xl max-w-xl mx-auto${
+        className={`flex-grow items-center justify-center bg-white rounded-xl max-w-xl mx-auto${
           !isAppMode ? " p-4 mb-4 sm:p-8" : ""
         }`}
       >
