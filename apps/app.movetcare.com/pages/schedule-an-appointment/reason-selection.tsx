@@ -137,7 +137,7 @@ export default function ReasonSelection() {
           !isAppMode ? " p-4 mb-4 sm:p-8" : ""
         }`}
       >
-        <div className={isAppMode ? "px-4 mb-8" : ""}>
+        <div className={isAppMode ? "mb-8" : ""}>
           <section className="relative mx-auto">
             {isLoading ? (
               <Loader
@@ -147,37 +147,45 @@ export default function ReasonSelection() {
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (
-              <>
-                <BookingHeader
-                  isAppMode={isAppMode}
-                  title={"Choose a Service"}
-                  description={"What kind of service are you needing?"}
-                />
-                <div className="mt-8 px-1">
-                  <form className="grid grid-cols-1 gap-y-8 text-left mt-8 z-50 relative mb-8 overflow-visible">
-                    <SearchInput
-                      label="Service"
-                      options={reasons || []}
-                      control={control}
-                      errors={errors}
-                      name="reason"
-                      placeholder="Select a Service Type"
-                      required
-                    />
-                    <Button
-                      disabled={!isDirty || !isValid}
-                      type="submit"
-                      icon={faArrowRight}
-                      iconSize={"sm"}
-                      color="black"
-                      text="Continue"
-                      className={"w-full mx-auto mt-12"}
-                      onClick={handleSubmit(onSubmit)}
-                    />
-                  </form>
+              <div
+                className={
+                  isAppMode
+                    ? "flex flex-grow items-center justify-center min-h-screen"
+                    : ""
+                }
+              >
+                <div className="flex-col">
+                  <BookingHeader
+                    isAppMode={isAppMode}
+                    title={"Choose a Service"}
+                    description={"What kind of service are you needing?"}
+                  />
+                  <div className="mt-8 px-1">
+                    <form className="grid grid-cols-1 gap-y-8 text-left mt-8 z-50 relative mb-8 overflow-visible">
+                      <SearchInput
+                        label="Service"
+                        options={reasons || []}
+                        control={control}
+                        errors={errors}
+                        name="reason"
+                        placeholder="Select a Service Type"
+                        required
+                      />
+                      <Button
+                        disabled={!isDirty || !isValid}
+                        type="submit"
+                        icon={faArrowRight}
+                        iconSize={"sm"}
+                        color="black"
+                        text="Continue"
+                        className={"w-full mx-auto mt-12"}
+                        onClick={handleSubmit(onSubmit)}
+                      />
+                    </form>
+                  </div>
+                  <BookingFooter />
                 </div>
-                <BookingFooter />
-              </>
+              </div>
             )}
           </section>
         </div>

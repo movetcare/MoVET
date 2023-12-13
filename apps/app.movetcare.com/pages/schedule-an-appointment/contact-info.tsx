@@ -124,7 +124,7 @@ export default function ContactInfo() {
           !isAppMode ? " p-4 mb-4 sm:p-8" : ""
         }`}
       >
-        <div className={isAppMode ? "px-4 mb-8" : ""}>
+        <div className={isAppMode ? "mb-8" : ""}>
           <section className="relative mx-auto">
             {isLoading ? (
               <Loader
@@ -134,56 +134,64 @@ export default function ContactInfo() {
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
             ) : (
-              <>
-                <BookingHeader
-                  isAppMode={isAppMode}
-                  title={"Contact Information"}
-                  description={"Please let us know how to contact you."}
-                />
-                <div className="mt-8 px-1">
-                  <form className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 text-left">
-                    <TextInput
-                      autoFocus
-                      label="First Name"
-                      name="firstName"
-                      control={control}
-                      errors={errors}
-                      placeholder="Your First Name"
-                      autoComplete="given-name"
-                      required
-                    />
-                    <TextInput
-                      label="Last Name"
-                      name="lastName"
-                      control={control}
-                      errors={errors}
-                      placeholder="Your Last Name"
-                      autoComplete="family-name"
-                      required
-                    />
-                    <div className="sm:col-span-2 my-2">
-                      <PhoneInput
-                        label="Phone Number"
-                        name="phone"
+              <div
+                className={
+                  isAppMode
+                    ? "flex flex-grow items-center justify-center min-h-screen"
+                    : ""
+                }
+              >
+                <div className="flex-col">
+                  <BookingHeader
+                    isAppMode={isAppMode}
+                    title={"Contact Information"}
+                    description={"Please let us know how to contact you."}
+                  />
+                  <div className="mt-8 px-1">
+                    <form className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 text-left">
+                      <TextInput
+                        autoFocus
+                        label="First Name"
+                        name="firstName"
                         control={control}
                         errors={errors}
+                        placeholder="Your First Name"
+                        autoComplete="given-name"
                         required
                       />
-                    </div>
-                    <div className="group flex flex-col justify-center items-center sm:col-span-2 my-4">
-                      <Button
-                        type="submit"
-                        icon={faArrowRight}
-                        iconSize={"sm"}
-                        disabled={!isDirty}
-                        color="black"
-                        text="Continue"
-                        onClick={handleSubmit(onSubmit)}
+                      <TextInput
+                        label="Last Name"
+                        name="lastName"
+                        control={control}
+                        errors={errors}
+                        placeholder="Your Last Name"
+                        autoComplete="family-name"
+                        required
                       />
-                    </div>
-                  </form>
+                      <div className="sm:col-span-2 my-2">
+                        <PhoneInput
+                          label="Phone Number"
+                          name="phone"
+                          control={control}
+                          errors={errors}
+                          required
+                        />
+                      </div>
+                      <div className="group flex flex-col justify-center items-center sm:col-span-2 my-4">
+                        <Button
+                          type="submit"
+                          icon={faArrowRight}
+                          iconSize={"sm"}
+                          disabled={!isDirty}
+                          color="black"
+                          text="Continue"
+                          onClick={handleSubmit(onSubmit)}
+                        />
+                      </div>
+                    </form>
+                  </div>
                 </div>
-              </>
+              </div>
             )}
           </section>
         </div>

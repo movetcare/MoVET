@@ -291,220 +291,36 @@ export default function LocationSelection({
             ) : error || loadError ? (
               <Error error={error || loadError} isAppMode={isAppMode} />
             ) : (
-              <>
-                <BookingHeader
-                  isAppMode={isAppMode}
-                  title="Choose a Location"
-                  description={"Where would you like to have your appointment?"}
-                />
-                <form className={isHousecallRequest ? "" : "mt-8"}>
-                  {!isHousecallRequest && (
-                    <>
-                      {options && (
-                        <ToggleInput
-                          options={options}
-                          control={control}
-                          errors={errors}
-                          name="location"
-                        />
-                      )}
-                    </>
-                  )}
-                  <Transition
-                    show={locationSelection === "Home" || isHousecallRequest}
-                    enter="transition ease-in duration-500"
-                    leave="transition ease-out"
-                    leaveTo="opacity-0"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leaveFrom="opacity-100"
-                  >
-                    <>
-                      <div className="flex rounded-lg border-2 border-movet-brown mt-8 mb-8 p-1">
-                        <div className="flex w-full h-72 mx-auto">
-                          <GoogleMap
-                            mapContainerStyle={containerStyle}
-                            options={mapOptions}
-                            center={(addressLatLon as any) || center}
-                            zoom={addressLatLon ? 17 : 8.5}
-                          />
-                        </div>
-                      </div>
-                      <>
-                        <PlacesInput
-                          label="Home Address"
-                          name="address"
-                          placeholder="Search for an address"
-                          errors={errors}
-                          control={control}
-                          setValue={null}
-                          setLatLon={setAddressLetLon}
-                          setExternalZipcodeValidation={setZipcode}
-                          required
-                          className={
-                            hasAddressError
-                              ? " border-movet-red border-2"
-                              : null
-                          }
-                        />
-                        {hasAddressError && (
-                          <div className="mb-8">
-                            <ErrorMessage errorMessage="MoVET does not currently service this area. Please enter a new address that is in (or near) the Denver Metro area." />
-                          </div>
-                        )}
-                        <TextInput
-                          label="Additional Info"
-                          name="info"
-                          control={control}
-                          errors={errors}
-                          placeholder="Apartment #, Door Code(s), Parking Options/Locations, etc."
-                          multiline
-                          numberOfLines={2}
-                          className="my-4"
-                        />
-                      </>
-                    </>
-                  </Transition>
-                  <Transition
-                    show={locationSelection === "Clinic" && !isHousecallRequest}
-                    enter="transition ease-in duration-500"
-                    leave="transition ease-out"
-                    leaveTo="opacity-0"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leaveFrom="opacity-100"
-                  >
-                    <div className="flex flex-col w-full mx-auto">
-                      <div className="flex rounded-lg border-2 border-movet-brown m-4 mt-8 p-1">
-                        <div className="w-full h-72 mx-auto">
-                          <iframe
-                            title="Google Map of MoVET @ Belleview Station"
-                            loading="lazy"
-                            allowFullScreen
-                            referrerPolicy="no-referrer-when-downgrade"
-                            src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
-                            className="w-full h-72 rounded-lg"
-                          />
-                        </div>
-                      </div>
-                      <h2 className="mb-0 mt-8 text-center">
-                        MoVET @ Belleview Station
-                      </h2>
-                      {!isAppMode ? (
-                        <a
-                          href="https://goo.gl/maps/bRjYuF66CtemGSyq8"
-                          target="_blank"
-                          className="text-center hover:underline text-movet-brown mt-1"
-                          rel="noreferrer"
-                        >
-                          4912 S Newport St, Denver CO 80237
-                        </a>
-                      ) : (
-                        <p className="text-center">
-                          4912 S Newport St, Denver CO 80237
-                        </p>
-                      )}
-                    </div>
-                  </Transition>
-                  <Transition
-                    show={
-                      locationSelection === "Virtually" && !isHousecallRequest
+              <div
+                className={
+                  isAppMode
+                    ? "flex flex-grow items-center justify-center min-h-screen"
+                    : ""
+                }
+              >
+                <div className="flex-col">
+                  <BookingHeader
+                    isAppMode={isAppMode}
+                    title="Choose a Location"
+                    description={
+                      "Where would you like to have your appointment?"
                     }
-                    enter="transition ease-in duration-500"
-                    leave="transition ease-out"
-                    leaveTo="opacity-0"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leaveFrom="opacity-100"
-                  >
-                    <div className="flex flex-col w-full mx-auto sm:px-4">
-                      <FontAwesomeIcon
-                        icon={faLaptopMedical}
-                        size="4x"
-                        className="mt-8 text-movet-brown"
-                      />
-                      <h2 className="mb-0 mt-4 text-center">
-                        What can I expect in a Virtual Consultation?
-                      </h2>
-                      <p className="text-center font-bold">
-                        At MoVET, we offer multiple types of Virtual
-                        Consultations:
-                      </p>
-                      <ul className="text-sm px-8 italic">
-                        <li className="my-2">
-                          <span className="font-extrabold">Triage</span>: We can
-                          offer general advice, but a diagnosis is not rendered,
-                          nor can we prescribe medications. Great for new
-                          clients to get to know us!
-                        </li>
-                        <li>
-                          <span className="font-extrabold">Telemedicine</span>:
-                          We can diagnose, treat and prescribe medication for
-                          existing patients non-urgent conditions. Virtual
-                          Coaching Sessions: Live virtual demos are a simple and
-                          stress-free way to learn how to do procedures for your
-                          pet in the comfort of your home.
-                          <p className="text-xs italic text-center">
-                            * Telemedicine is only available to existing clients
-                            with an established VCPR
-                            (Veterinarian-Client-Patient Relationship).
-                          </p>
-                        </li>
-                      </ul>
-                      <p
-                        className="text-center text-gray mt-4 mb-2 flex justify-center items-center text-xs cursor-pointer italic hover:text-movet-brown ease-in-out duration-500"
-                        onClick={() => setShowExplainer(!showExplainer)}
-                      >
-                        <FontAwesomeIcon
-                          icon={faInfoCircle}
-                          size="lg"
-                          className="mr-2 text-movet-brown -mt-1"
-                        />
-                        What is VCPR?
-                      </p>
-                      <Modal
-                        showModal={showExplainer}
-                        setShowModal={setShowExplainer}
-                        cancelButtonRef={cancelButtonRef}
-                        isLoading={isLoading}
-                        error={error ? <Error message={error} /> : undefined}
-                        content={
-                          <>
-                            <p>
-                              A Veterinarian-Client-Patient Relationship
-                              (&quot;VCPR&quot;) is established only when your
-                              veterinarian examines your pet in person, and is
-                              maintained by regular veterinary visits as needed
-                              to monitor your pet&apos;s health.
-                            </p>
-                            <p>
-                              If a VCPR is established but your veterinarian
-                              does not regularly see your pet afterward, the
-                              VCPR is no longer valid and it would be illegal
-                              (and unethical) for your veterinarian to dispense
-                              or prescribe medications or recommend treatment
-                              without recently examining your pet.
-                            </p>
-                            <p>
-                              A valid VCPR cannot be established online, via
-                              email, or over the phone. However, once a VCPR is
-                              established, it may be able to be maintained
-                              between medically necessary examinations via
-                              telephone or other types of consultations; but
-                              it&apos;s up to your veterinarian&apos; discretion
-                              to determine if this is appropriate and in the
-                              best interests of your pets&apos; health.
-                            </p>
-                          </>
-                        }
-                        title="What is a Veterinarian-Client-Patient Relationship?"
-                        icon={faStethoscope}
-                      />
-                    </div>
-                  </Transition>
-                  <div className="flex flex-col justify-center items-center mt-8 mb-4">
+                  />
+                  <form className={isHousecallRequest ? "" : "mt-8"}>
+                    {!isHousecallRequest && (
+                      <>
+                        {options && (
+                          <ToggleInput
+                            options={options}
+                            control={control}
+                            errors={errors}
+                            name="location"
+                          />
+                        )}
+                      </>
+                    )}
                     <Transition
-                      show={reasonGroups !== false}
+                      show={locationSelection === "Home" || isHousecallRequest}
                       enter="transition ease-in duration-500"
                       leave="transition ease-out"
                       leaveTo="opacity-0"
@@ -512,28 +328,225 @@ export default function LocationSelection({
                       enterTo="opacity-100"
                       leaveFrom="opacity-100"
                     >
-                      <Button
-                        type="submit"
-                        icon={faArrowRight}
-                        disabled={
-                          (locationSelection === "Clinic" &&
-                            isHousecallRequest &&
-                            (addressSelection === null || hasAddressError)) ||
-                          (locationSelection !== "Clinic" && !isDirty) ||
-                          (locationSelection === "Home" &&
-                            addressSelection === null) ||
-                          (locationSelection === "Home" && hasAddressError)
-                        }
-                        iconSize={"sm"}
-                        color="black"
-                        text="Continue"
-                        onClick={handleSubmit(onSubmit)}
-                      />
+                      <>
+                        <div className="flex rounded-lg border-2 border-movet-brown mt-8 mb-8 p-1">
+                          <div className="flex w-full h-72 mx-auto">
+                            <GoogleMap
+                              mapContainerStyle={containerStyle}
+                              options={mapOptions}
+                              center={(addressLatLon as any) || center}
+                              zoom={addressLatLon ? 17 : 8.5}
+                            />
+                          </div>
+                        </div>
+                        <>
+                          <PlacesInput
+                            label="Home Address"
+                            name="address"
+                            placeholder="Search for an address"
+                            errors={errors}
+                            control={control}
+                            setValue={null}
+                            setLatLon={setAddressLetLon}
+                            setExternalZipcodeValidation={setZipcode}
+                            required
+                            className={
+                              hasAddressError
+                                ? " border-movet-red border-2"
+                                : null
+                            }
+                          />
+                          {hasAddressError && (
+                            <div className="mb-8">
+                              <ErrorMessage errorMessage="MoVET does not currently service this area. Please enter a new address that is in (or near) the Denver Metro area." />
+                            </div>
+                          )}
+                          <TextInput
+                            label="Additional Info"
+                            name="info"
+                            control={control}
+                            errors={errors}
+                            placeholder="Apartment #, Door Code(s), Parking Options/Locations, etc."
+                            multiline
+                            numberOfLines={2}
+                            className="my-4"
+                          />
+                        </>
+                      </>
                     </Transition>
-                  </div>
-                </form>
-                <BookingFooter />
-              </>
+                    <Transition
+                      show={
+                        locationSelection === "Clinic" && !isHousecallRequest
+                      }
+                      enter="transition ease-in duration-500"
+                      leave="transition ease-out"
+                      leaveTo="opacity-0"
+                      enterFrom="opacity-0"
+                      enterTo="opacity-100"
+                      leaveFrom="opacity-100"
+                    >
+                      <div className="flex flex-col w-full mx-auto">
+                        <div className="flex rounded-lg border-2 border-movet-brown m-4 mt-8 p-1">
+                          <div className="w-full h-72 mx-auto">
+                            <iframe
+                              title="Google Map of MoVET @ Belleview Station"
+                              loading="lazy"
+                              allowFullScreen
+                              referrerPolicy="no-referrer-when-downgrade"
+                              src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ9aCJc9mHbIcRu0B0dJWB4x8&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0"
+                              className="w-full h-72 rounded-lg"
+                            />
+                          </div>
+                        </div>
+                        <h2 className="mb-0 mt-8 text-center">
+                          MoVET @ Belleview Station
+                        </h2>
+                        {!isAppMode ? (
+                          <a
+                            href="https://goo.gl/maps/bRjYuF66CtemGSyq8"
+                            target="_blank"
+                            className="text-center hover:underline text-movet-brown mt-1"
+                            rel="noreferrer"
+                          >
+                            4912 S Newport St, Denver CO 80237
+                          </a>
+                        ) : (
+                          <p className="text-center">
+                            4912 S Newport St, Denver CO 80237
+                          </p>
+                        )}
+                      </div>
+                    </Transition>
+                    <Transition
+                      show={
+                        locationSelection === "Virtually" && !isHousecallRequest
+                      }
+                      enter="transition ease-in duration-500"
+                      leave="transition ease-out"
+                      leaveTo="opacity-0"
+                      enterFrom="opacity-0"
+                      enterTo="opacity-100"
+                      leaveFrom="opacity-100"
+                    >
+                      <div className="flex flex-col w-full mx-auto sm:px-4">
+                        <FontAwesomeIcon
+                          icon={faLaptopMedical}
+                          size="4x"
+                          className="mt-8 text-movet-brown"
+                        />
+                        <h2 className="mb-0 mt-4 text-center">
+                          What can I expect in a Virtual Consultation?
+                        </h2>
+                        <p className="text-center font-bold">
+                          At MoVET, we offer multiple types of Virtual
+                          Consultations:
+                        </p>
+                        <ul className="text-sm px-8 italic">
+                          <li className="my-2">
+                            <span className="font-extrabold">Triage</span>: We
+                            can offer general advice, but a diagnosis is not
+                            rendered, nor can we prescribe medications. Great
+                            for new clients to get to know us!
+                          </li>
+                          <li>
+                            <span className="font-extrabold">Telemedicine</span>
+                            : We can diagnose, treat and prescribe medication
+                            for existing patients non-urgent conditions. Virtual
+                            Coaching Sessions: Live virtual demos are a simple
+                            and stress-free way to learn how to do procedures
+                            for your pet in the comfort of your home.
+                            <p className="text-xs italic text-center">
+                              * Telemedicine is only available to existing
+                              clients with an established VCPR
+                              (Veterinarian-Client-Patient Relationship).
+                            </p>
+                          </li>
+                        </ul>
+                        <p
+                          className="text-center text-gray mt-4 mb-2 flex justify-center items-center text-xs cursor-pointer italic hover:text-movet-brown ease-in-out duration-500"
+                          onClick={() => setShowExplainer(!showExplainer)}
+                        >
+                          <FontAwesomeIcon
+                            icon={faInfoCircle}
+                            size="lg"
+                            className="mr-2 text-movet-brown -mt-1"
+                          />
+                          What is VCPR?
+                        </p>
+                        <Modal
+                          showModal={showExplainer}
+                          setShowModal={setShowExplainer}
+                          cancelButtonRef={cancelButtonRef}
+                          isLoading={isLoading}
+                          error={error ? <Error message={error} /> : undefined}
+                          content={
+                            <>
+                              <p>
+                                A Veterinarian-Client-Patient Relationship
+                                (&quot;VCPR&quot;) is established only when your
+                                veterinarian examines your pet in person, and is
+                                maintained by regular veterinary visits as
+                                needed to monitor your pet&apos;s health.
+                              </p>
+                              <p>
+                                If a VCPR is established but your veterinarian
+                                does not regularly see your pet afterward, the
+                                VCPR is no longer valid and it would be illegal
+                                (and unethical) for your veterinarian to
+                                dispense or prescribe medications or recommend
+                                treatment without recently examining your pet.
+                              </p>
+                              <p>
+                                A valid VCPR cannot be established online, via
+                                email, or over the phone. However, once a VCPR
+                                is established, it may be able to be maintained
+                                between medically necessary examinations via
+                                telephone or other types of consultations; but
+                                it&apos;s up to your veterinarian&apos;
+                                discretion to determine if this is appropriate
+                                and in the best interests of your pets&apos;
+                                health.
+                              </p>
+                            </>
+                          }
+                          title="What is a Veterinarian-Client-Patient Relationship?"
+                          icon={faStethoscope}
+                        />
+                      </div>
+                    </Transition>
+                    <div className="flex flex-col justify-center items-center mt-8 mb-4">
+                      <Transition
+                        show={reasonGroups !== false}
+                        enter="transition ease-in duration-500"
+                        leave="transition ease-out"
+                        leaveTo="opacity-0"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leaveFrom="opacity-100"
+                      >
+                        <Button
+                          type="submit"
+                          icon={faArrowRight}
+                          disabled={
+                            (locationSelection === "Clinic" &&
+                              isHousecallRequest &&
+                              (addressSelection === null || hasAddressError)) ||
+                            (locationSelection !== "Clinic" && !isDirty) ||
+                            (locationSelection === "Home" &&
+                              addressSelection === null) ||
+                            (locationSelection === "Home" && hasAddressError)
+                          }
+                          iconSize={"sm"}
+                          color="black"
+                          text="Continue"
+                          onClick={handleSubmit(onSubmit)}
+                        />
+                      </Transition>
+                    </div>
+                  </form>
+                  <BookingFooter />
+                </div>
+              </div>
             )}
           </section>
         </div>

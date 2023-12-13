@@ -196,347 +196,369 @@ export default function DateTime() {
                 isAppMode={isAppMode}
               />
             ) : (
-              <>
-                <BookingHeader
-                  isAppMode={isAppMode}
-                  title="Choose a Day & Time"
-                  description={
-                    "What day and time would you like to schedule an appointment for?"
-                  }
-                />
-                <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
-                  <Modal
-                    showModal={retryRequired}
-                    setShowModal={setRetryRequired}
-                    cancelButtonRef={cancelButtonRef}
-                    isLoading={isLoading}
-                    error={error ? <Error message={error} /> : undefined}
-                    content={
-                      <p>
-                        We&apos;re sorry, but there is already an appointment
-                        scheduled for this time. Please select a different time
-                        slot and try again.
-                      </p>
+              <div
+                className={
+                  isAppMode
+                    ? "flex flex-grow items-center justify-center min-h-screen"
+                    : ""
+                }
+              >
+                <div className="flex-col">
+                  <BookingHeader
+                    isAppMode={isAppMode}
+                    title="Choose a Day & Time"
+                    description={
+                      "What day and time would you like to schedule an appointment for?"
                     }
-                    title="Something Went Wrong..."
-                    icon={faExclamationTriangle}
                   />
-                  <Calendar
-                    onChange={(value: any) => {
-                      setIsLoading(true);
-                      onDateChange(value);
-                    }}
-                    value={selectedDate}
-                    minDate={today}
-                    minDetail="month"
-                    className="flex-1 justify-center items-center my-8 w-full mx-auto"
-                  />
-                  {isLoading ? (
-                    <Loader
-                      message={loadingMessage || "Loading, please wait..."}
-                      isAppMode={isAppMode}
-                    />
-                  ) : error ? (
-                    <Error error={error} isAppMode={isAppMode} />
-                  ) : (
-                    <>
-                      <div className="w-full mx-auto">
-                        <p className="italic text-center -mt-2 font-extrabold text-lg">
-                          {closedReason
-                            ? closedReason
-                            : appointmentAvailability &&
-                                appointmentAvailability?.length > 0
-                              ? "Available Appointment Times"
-                              : "No Appointments Available - Please Select a Different Day..."}
+                  <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
+                    <Modal
+                      showModal={retryRequired}
+                      setShowModal={setRetryRequired}
+                      cancelButtonRef={cancelButtonRef}
+                      isLoading={isLoading}
+                      error={error ? <Error message={error} /> : undefined}
+                      content={
+                        <p>
+                          We&apos;re sorry, but there is already an appointment
+                          scheduled for this time. Please select a different
+                          time slot and try again.
                         </p>
-                        <div className="flex flex-row w-full mx-auto">
-                          {appointmentAvailability &&
-                          appointmentAvailability.length < 6 ? (
-                            <ul className="w-full">
-                              {appointmentAvailability?.map(
-                                (
-                                  appointmentSlot: {
-                                    resource: number;
-                                    start: string;
-                                    end: string;
-                                  },
-                                  index: number,
-                                ) => (
-                                  <li
-                                    key={index}
-                                    className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
-                                      selectedTime ===
-                                      `${formatTime(
-                                        appointmentSlot.start,
-                                      )} - ${formatTime(appointmentSlot.end)}`
-                                        ? " bg-movet-red text-white border-movet-white"
-                                        : " bg-movet-gray/20"
-                                    }`}
-                                    onClick={() => {
-                                      setSelectedTime(
+                      }
+                      title="Something Went Wrong..."
+                      icon={faExclamationTriangle}
+                    />
+                    <Calendar
+                      onChange={(value: any) => {
+                        setIsLoading(true);
+                        onDateChange(value);
+                      }}
+                      value={selectedDate}
+                      minDate={today}
+                      minDetail="month"
+                      className="flex-1 justify-center items-center my-8 w-full mx-auto"
+                    />
+                    {isLoading ? (
+                      <Loader
+                        message={loadingMessage || "Loading, please wait..."}
+                        isAppMode={isAppMode}
+                      />
+                    ) : error ? (
+                      <Error error={error} isAppMode={isAppMode} />
+                    ) : (
+                      <>
+                        <div className="w-full mx-auto">
+                          <p className="italic text-center -mt-2 font-extrabold text-lg">
+                            {closedReason
+                              ? closedReason
+                              : appointmentAvailability &&
+                                  appointmentAvailability?.length > 0
+                                ? "Available Appointment Times"
+                                : "No Appointments Available - Please Select a Different Day..."}
+                          </p>
+                          <div className="flex flex-row w-full mx-auto">
+                            {appointmentAvailability &&
+                            appointmentAvailability.length < 6 ? (
+                              <ul className="w-full">
+                                {appointmentAvailability?.map(
+                                  (
+                                    appointmentSlot: {
+                                      resource: number;
+                                      start: string;
+                                      end: string;
+                                    },
+                                    index: number,
+                                  ) => (
+                                    <li
+                                      key={index}
+                                      className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
+                                        selectedTime ===
                                         `${formatTime(
                                           appointmentSlot.start,
-                                        )} - ${formatTime(
-                                          appointmentSlot.end,
-                                        )}`,
-                                      );
-                                      setSelectedResource(
-                                        appointmentSlot?.resource,
-                                      );
-                                      scrollToBottom();
-                                    }}
-                                  >
-                                    {environment === "production" ? (
-                                      <p>{formatTime(appointmentSlot.start)}</p>
-                                    ) : (
-                                      <p>
-                                        {formatTime(appointmentSlot.start)} -{" "}
-                                        {formatTime(appointmentSlot.end)}
-                                      </p>
-                                    )}
-                                  </li>
-                                ),
-                              )}
-                            </ul>
-                          ) : (
-                            <>
-                              <ul className="w-1/2">
-                                {appointmentAvailability?.map(
-                                  (
-                                    appointmentSlot: {
-                                      resource: number;
-                                      start: string;
-                                      end: string;
-                                    },
-                                    index: number,
-                                  ) =>
-                                    index <
-                                    appointmentAvailability.length / 2 ? (
-                                      <li
-                                        key={index}
-                                        className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
-                                          selectedTime ===
+                                        )} - ${formatTime(appointmentSlot.end)}`
+                                          ? " bg-movet-red text-white border-movet-white"
+                                          : " bg-movet-gray/20"
+                                      }`}
+                                      onClick={() => {
+                                        setSelectedTime(
                                           `${formatTime(
                                             appointmentSlot.start,
                                           )} - ${formatTime(
                                             appointmentSlot.end,
-                                          )}`
-                                            ? " bg-movet-red text-white border-movet-white"
-                                            : " bg-movet-gray/20"
-                                        }`}
-                                        onClick={() => {
-                                          setSelectedTime(
-                                            `${formatTime(
-                                              appointmentSlot.start,
-                                            )} - ${formatTime(
-                                              appointmentSlot.end,
-                                            )}`,
-                                          );
-                                          setSelectedResource(
-                                            appointmentSlot?.resource,
-                                          );
-                                          scrollToBottom();
-                                        }}
-                                      >
-                                        {environment === "production" ? (
-                                          <p>
-                                            {formatTime(appointmentSlot.start)}
-                                          </p>
-                                        ) : (
-                                          <p>
-                                            {formatTime(appointmentSlot.start)}{" "}
-                                            - {formatTime(appointmentSlot.end)}
-                                          </p>
-                                        )}
-                                      </li>
-                                    ) : null,
-                                )}
-                              </ul>
-                              <ul className="w-1/2">
-                                {appointmentAvailability?.map(
-                                  (
-                                    appointmentSlot: {
-                                      resource: number;
-                                      start: string;
-                                      end: string;
-                                    },
-                                    index: number,
-                                  ) =>
-                                    index >=
-                                    appointmentAvailability.length / 2 ? (
-                                      <li
-                                        key={index}
-                                        className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
-                                          selectedTime ===
-                                          `${formatTime(
-                                            appointmentSlot.start,
-                                          )} - ${formatTime(
-                                            appointmentSlot.end,
-                                          )}`
-                                            ? " bg-movet-red text-white border-movet-white"
-                                            : " bg-movet-gray/20"
-                                        }`}
-                                        onClick={() => {
-                                          setSelectedTime(
-                                            `${formatTime(
-                                              appointmentSlot.start,
-                                            )} - ${formatTime(
-                                              appointmentSlot.end,
-                                            )}`,
-                                          );
-                                          setSelectedResource(
-                                            appointmentSlot?.resource,
-                                          );
-                                          scrollToBottom();
-                                        }}
-                                      >
-                                        {environment === "production" ? (
-                                          <p>
-                                            {formatTime(appointmentSlot.start)}
-                                          </p>
-                                        ) : (
-                                          <p>
-                                            {formatTime(appointmentSlot.start)}{" "}
-                                            - {formatTime(appointmentSlot.end)}
-                                          </p>
-                                        )}
-                                      </li>
-                                    ) : null,
-                                )}
-                              </ul>
-                            </>
-                          )}
-                        </div>
-                        <Transition
-                          show={selectedTime !== null}
-                          enter="transition ease-in duration-500"
-                          leave="transition ease-out duration-500"
-                          leaveTo="opacity-10"
-                          enterFrom="opacity-0"
-                          enterTo="opacity-100"
-                          leaveFrom="opacity-100"
-                        >
-                          <>
-                            <hr className="mt-8 mb-8 text-movet-gray" />
-                            <div className="w-full flex flex-col mt-4 items-center text-center">
-                              <FontAwesomeIcon
-                                icon={faUserDoctor}
-                                className="text-movet-red mb-2"
-                                size="3x"
-                              />
-                              <h3 className="mt-2 text-lg">
-                                Ready to Schedule Your Appointment?
-                              </h3>
-                              <p className="italic mb-6 text-sm">
-                                Please confirm your appointment details below
-                              </p>
-                              <h5 className="font-bold">Date & Time</h5>
-                              <p className="italic">
-                                {selectedDate.toLocaleString("en-US", {
-                                  weekday: "long",
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                })}{" "}
-                                -{" "}
-                                {selectedTime &&
-                                  selectedTime.split("-")[0].trim()}
-                              </p>
-                              <h5 className="font-bold -mb-2">Location</h5>
-                              <p className="italic font-extrabold">
-                                {session?.location === "Home" ? (
-                                  `Housecall @ ${session?.address?.full}`
-                                ) : session?.location === "Clinic" ? (
-                                  <>
-                                    <span>MoVET @ Belleview Station</span>
-                                    <br />
-                                    <a
-                                      className=" font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
-                                      target="_blank"
-                                      href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
-                                      rel="noopener noreferrer"
-                                    >
-                                      4912 S Newport St, Denver, CO 80237
-                                    </a>
-                                  </>
-                                ) : (
-                                  <>
-                                    <span>Virtual Telehealth Consultation</span>
-                                  </>
-                                )}
-                              </p>
-                              {session?.address?.info && (
-                                <p className="-mt-2 italic text-sm">
-                                  Note: {session?.address?.info}
-                                </p>
-                              )}
-                              <h5 className="font-bold -mb-2">Reason</h5>
-                              <p className="italic font-extrabold">
-                                {session?.establishCareExamRequired
-                                  ? "Establish Care Exam"
-                                  : session?.reason?.label}
-                              </p>
-                              <h5 className="font-bold -mb-2">
-                                Pet
-                                {session?.selectedPatients.length > 1 && "s"}
-                              </h5>
-                              {session?.selectedPatients?.map(
-                                (patientId: string) =>
-                                  session?.patients?.map(
-                                    (patient: any, index: number) => {
-                                      if (patientId === patient?.id)
-                                        return (
-                                          <div
-                                            key={index + "-" + patient?.name}
-                                          >
-                                            <p className="italic font-extrabold">
-                                              {patient?.name}
-                                            </p>
-                                            {patient?.illnessDetails && (
-                                              <>
-                                                <p className="italic -mt-2 text-sm">
-                                                  {
-                                                    patient?.illnessDetails
-                                                      ?.symptoms
-                                                  }
-                                                </p>
-                                                <p className="italic -mt-2 text-sm">
-                                                  {JSON.stringify(
-                                                    patient?.illnessDetails
-                                                      ?.notes,
-                                                  )}
-                                                </p>
-                                              </>
-                                            )}
-                                          </div>
+                                          )}`,
                                         );
-                                    },
+                                        setSelectedResource(
+                                          appointmentSlot?.resource,
+                                        );
+                                        scrollToBottom();
+                                      }}
+                                    >
+                                      {environment === "production" ? (
+                                        <p>
+                                          {formatTime(appointmentSlot.start)}
+                                        </p>
+                                      ) : (
+                                        <p>
+                                          {formatTime(appointmentSlot.start)} -{" "}
+                                          {formatTime(appointmentSlot.end)}
+                                        </p>
+                                      )}
+                                    </li>
                                   ),
-                              )}
-                            </div>
-                          </>
-                        </Transition>
-                        <div
-                          className="bottomContainerElement"
-                          ref={bottomRef as any}
+                                )}
+                              </ul>
+                            ) : (
+                              <>
+                                <ul className="w-1/2">
+                                  {appointmentAvailability?.map(
+                                    (
+                                      appointmentSlot: {
+                                        resource: number;
+                                        start: string;
+                                        end: string;
+                                      },
+                                      index: number,
+                                    ) =>
+                                      index <
+                                      appointmentAvailability.length / 2 ? (
+                                        <li
+                                          key={index}
+                                          className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
+                                            selectedTime ===
+                                            `${formatTime(
+                                              appointmentSlot.start,
+                                            )} - ${formatTime(
+                                              appointmentSlot.end,
+                                            )}`
+                                              ? " bg-movet-red text-white border-movet-white"
+                                              : " bg-movet-gray/20"
+                                          }`}
+                                          onClick={() => {
+                                            setSelectedTime(
+                                              `${formatTime(
+                                                appointmentSlot.start,
+                                              )} - ${formatTime(
+                                                appointmentSlot.end,
+                                              )}`,
+                                            );
+                                            setSelectedResource(
+                                              appointmentSlot?.resource,
+                                            );
+                                            scrollToBottom();
+                                          }}
+                                        >
+                                          {environment === "production" ? (
+                                            <p>
+                                              {formatTime(
+                                                appointmentSlot.start,
+                                              )}
+                                            </p>
+                                          ) : (
+                                            <p>
+                                              {formatTime(
+                                                appointmentSlot.start,
+                                              )}{" "}
+                                              -{" "}
+                                              {formatTime(appointmentSlot.end)}
+                                            </p>
+                                          )}
+                                        </li>
+                                      ) : null,
+                                  )}
+                                </ul>
+                                <ul className="w-1/2">
+                                  {appointmentAvailability?.map(
+                                    (
+                                      appointmentSlot: {
+                                        resource: number;
+                                        start: string;
+                                        end: string;
+                                      },
+                                      index: number,
+                                    ) =>
+                                      index >=
+                                      appointmentAvailability.length / 2 ? (
+                                        <li
+                                          key={index}
+                                          className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
+                                            selectedTime ===
+                                            `${formatTime(
+                                              appointmentSlot.start,
+                                            )} - ${formatTime(
+                                              appointmentSlot.end,
+                                            )}`
+                                              ? " bg-movet-red text-white border-movet-white"
+                                              : " bg-movet-gray/20"
+                                          }`}
+                                          onClick={() => {
+                                            setSelectedTime(
+                                              `${formatTime(
+                                                appointmentSlot.start,
+                                              )} - ${formatTime(
+                                                appointmentSlot.end,
+                                              )}`,
+                                            );
+                                            setSelectedResource(
+                                              appointmentSlot?.resource,
+                                            );
+                                            scrollToBottom();
+                                          }}
+                                        >
+                                          {environment === "production" ? (
+                                            <p>
+                                              {formatTime(
+                                                appointmentSlot.start,
+                                              )}
+                                            </p>
+                                          ) : (
+                                            <p>
+                                              {formatTime(
+                                                appointmentSlot.start,
+                                              )}{" "}
+                                              -{" "}
+                                              {formatTime(appointmentSlot.end)}
+                                            </p>
+                                          )}
+                                        </li>
+                                      ) : null,
+                                  )}
+                                </ul>
+                              </>
+                            )}
+                          </div>
+                          <Transition
+                            show={selectedTime !== null}
+                            enter="transition ease-in duration-500"
+                            leave="transition ease-out duration-500"
+                            leaveTo="opacity-10"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leaveFrom="opacity-100"
+                          >
+                            <>
+                              <hr className="mt-8 mb-8 text-movet-gray" />
+                              <div className="w-full flex flex-col mt-4 items-center text-center">
+                                <FontAwesomeIcon
+                                  icon={faUserDoctor}
+                                  className="text-movet-red mb-2"
+                                  size="3x"
+                                />
+                                <h3 className="mt-2 text-lg">
+                                  Ready to Schedule Your Appointment?
+                                </h3>
+                                <p className="italic mb-6 text-sm">
+                                  Please confirm your appointment details below
+                                </p>
+                                <h5 className="font-bold">Date & Time</h5>
+                                <p className="italic">
+                                  {selectedDate.toLocaleString("en-US", {
+                                    weekday: "long",
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  })}{" "}
+                                  -{" "}
+                                  {selectedTime &&
+                                    selectedTime.split("-")[0].trim()}
+                                </p>
+                                <h5 className="font-bold -mb-2">Location</h5>
+                                <p className="italic font-extrabold">
+                                  {session?.location === "Home" ? (
+                                    `Housecall @ ${session?.address?.full}`
+                                  ) : session?.location === "Clinic" ? (
+                                    <>
+                                      <span>MoVET @ Belleview Station</span>
+                                      <br />
+                                      <a
+                                        className=" font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                                        target="_blank"
+                                        href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
+                                        rel="noopener noreferrer"
+                                      >
+                                        4912 S Newport St, Denver, CO 80237
+                                      </a>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span>
+                                        Virtual Telehealth Consultation
+                                      </span>
+                                    </>
+                                  )}
+                                </p>
+                                {session?.address?.info && (
+                                  <p className="-mt-2 italic text-sm">
+                                    Note: {session?.address?.info}
+                                  </p>
+                                )}
+                                <h5 className="font-bold -mb-2">Reason</h5>
+                                <p className="italic font-extrabold">
+                                  {session?.establishCareExamRequired
+                                    ? "Establish Care Exam"
+                                    : session?.reason?.label}
+                                </p>
+                                <h5 className="font-bold -mb-2">
+                                  Pet
+                                  {session?.selectedPatients.length > 1 && "s"}
+                                </h5>
+                                {session?.selectedPatients?.map(
+                                  (patientId: string) =>
+                                    session?.patients?.map(
+                                      (patient: any, index: number) => {
+                                        if (patientId === patient?.id)
+                                          return (
+                                            <div
+                                              key={index + "-" + patient?.name}
+                                            >
+                                              <p className="italic font-extrabold">
+                                                {patient?.name}
+                                              </p>
+                                              {patient?.illnessDetails && (
+                                                <>
+                                                  <p className="italic -mt-2 text-sm">
+                                                    {
+                                                      patient?.illnessDetails
+                                                        ?.symptoms
+                                                    }
+                                                  </p>
+                                                  <p className="italic -mt-2 text-sm">
+                                                    {JSON.stringify(
+                                                      patient?.illnessDetails
+                                                        ?.notes,
+                                                    )}
+                                                  </p>
+                                                </>
+                                              )}
+                                            </div>
+                                          );
+                                      },
+                                    ),
+                                )}
+                              </div>
+                            </>
+                          </Transition>
+                          <div
+                            className="bottomContainerElement"
+                            ref={bottomRef as any}
+                          />
+                        </div>
+                        <Button
+                          text="Schedule My Appointment"
+                          type="submit"
+                          disabled={!selectedTime || !selectedDate}
+                          className="mt-8"
+                          icon={faCalendarCheck}
+                          color="black"
+                          onClick={() => onSubmit()}
                         />
-                      </div>
-                      <Button
-                        text="Schedule My Appointment"
-                        type="submit"
-                        disabled={!selectedTime || !selectedDate}
-                        className="mt-8"
-                        icon={faCalendarCheck}
-                        color="black"
-                        onClick={() => onSubmit()}
-                      />
-                    </>
-                  )}
+                      </>
+                    )}
+                  </div>
+                  <div className="mt-8">
+                    <BookingFooter />
+                  </div>
                 </div>
-                <div className="mt-8">
-                  <BookingFooter />
-                </div>
-              </>
+              </div>
             )}
           </div>
         </div>
