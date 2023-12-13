@@ -82,6 +82,9 @@ const TabsLayout = (props: any) => {
       (doc) => {
         if (doc.exists()) {
           AuthStore.update((store) => {
+            store.client = null;
+          });
+          AuthStore.update((store) => {
             store.client = {
               firstName: doc.data()?.firstName,
               lastName: doc.data()?.lastName,
@@ -118,10 +121,14 @@ const TabsLayout = (props: any) => {
           if (doc.data()?.active)
             appointments.push({ id: doc.id, ...doc.data() });
         });
-        if (appointments.length)
+        if (appointments.length) {
+          AppointmentsStore.update((store: any) => {
+            store.upcomingAppointments = null;
+          });
           AppointmentsStore.update((store: any) => {
             store.upcomingAppointments = appointments;
           });
+        }
       },
       (error: any) =>
         setError({ ...error, source: "unsubscribeUpcomingAppointments" }),
@@ -142,10 +149,14 @@ const TabsLayout = (props: any) => {
           if (doc.data()?.active)
             appointments.push({ id: doc.id, ...doc.data() });
         });
-        if (appointments.length)
+        if (appointments.length) {
+          AppointmentsStore.update((store: any) => {
+            store.pastAppointments = null;
+          });
           AppointmentsStore.update((store: any) => {
             store.pastAppointments = appointments;
           });
+        }
       },
       (error: any) =>
         setError({ ...error, source: "unsubscribePastAppointments" }),
@@ -166,9 +177,14 @@ const TabsLayout = (props: any) => {
           if (DEBUG_DATA) console.log("PATIENT DATA => ", doc.data());
           patients.push(doc.data());
         });
-        PatientsStore.update((store: any) => {
-          store.patients = patients;
-        });
+        if (patients.length) {
+          PatientsStore.update((store: any) => {
+            store.patients = null;
+          });
+          PatientsStore.update((store: any) => {
+            store.patients = patients;
+          });
+        }
       },
       (error: any) => setError({ ...error, source: "unsubscribePatients" }),
     );
