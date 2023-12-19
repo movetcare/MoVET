@@ -25,6 +25,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { ErrorStore } from "stores";
+import LogRocket from "@logrocket/react-native";
 
 const DEBUG_DATA = false;
 
@@ -77,6 +78,7 @@ const TabsLayout = (props: any) => {
 
   useEffect(() => {
     if (!isLoggedIn || !initialized || !user?.uid) return; 
+    if (!__DEV__ && user?.email) LogRocket.identify(user?.email, { status: "logged-in" });
     const unsubscribeUser = onSnapshot(
       doc(firestore, "clients", user?.uid),
       (doc) => {
