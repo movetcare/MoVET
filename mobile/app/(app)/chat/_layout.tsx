@@ -9,7 +9,7 @@ export default function Layout() {
         ...navigationStackScreenOptions,
         header: () => (
           <NavigationHeader
-            title="Telehealth Chat"
+            title="Chat with MoVET"
             iconName="user-medical-message"
           />
         ),

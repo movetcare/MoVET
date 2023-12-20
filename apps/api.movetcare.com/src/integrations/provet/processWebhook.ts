@@ -10,6 +10,8 @@ import { processUserWebhook } from "./entities/user/processUserWebhook";
 import { processConsultationWebhook } from "./entities/consultation/processConsultationWebhook";
 import { sendNotification } from "../../notifications/sendNotification";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
+import { configureProVetAuth } from "./configureProVetAuth";
+
 const DEBUG = true;
 export const processProVetWebhook = async (
   request: Request,
@@ -76,8 +78,24 @@ export const processProVetWebhook = async (
     invoicepayment_id,
     user_id,
     consultation_id,
+    algorithm,
+    authorization_grant_type,
+    client_type,
+    provet_id,
+    client_secret,
+    token_url,
   } = request.body;
   if (
+    provet_id === 4285 &&
+    algorithm === "RS256" &&
+    authorization_grant_type === "client_credentials" &&
+    client_type === "confidential" &&
+    client_id &&
+    client_secret &&
+    token_url
+  ) {
+    return await configureProVetAuth(request.body);
+  } else if (
     typeof user_id !== "undefined" ||
     typeof client_id !== "undefined" ||
     typeof patient_id !== "undefined" ||

@@ -73,15 +73,17 @@ export const updateProVetAppointment = async (data: any): Promise<any> => {
         if (doc.exists) return doc.data();
         else return "NEW APPOINTMENT - No Previous Data";
       })) || {};
-  console.log(
-    "Number(previousAppointmentData.client)",
-    Number(previousAppointmentData.client),
-  );
-  console.log("data.client", Number(data.client));
-  console.log(
-    "Number(previousAppointmentData.client) !== Number(data.client)",
-    Number(previousAppointmentData.client) !== Number(data.client),
-  );
+  if (DEBUG) {
+    console.log(
+      "Number(previousAppointmentData.client)",
+      Number(previousAppointmentData.client),
+    );
+    console.log("data.client", Number(data.client));
+    console.log(
+      "Number(previousAppointmentData.client) !== Number(data.client)",
+      Number(previousAppointmentData.client) !== Number(data.client),
+    );
+  }
   if (Number(previousAppointmentData.client) !== Number(data.client))
     return false;
 

@@ -1,3 +1,4 @@
+import { Debug } from "components/Debug";
 import { BodyText, HeadingText, ItalicText } from "components/themed";
 import { Container, View, Icon } from "components/themed";
 import { router } from "expo-router";
@@ -47,14 +48,15 @@ export const PaymentMethodSummary = (): ReactNode => {
         if (querySnapshot.empty) return;
         const paymentMethods: Array<PaymentMethod> = [];
         querySnapshot.forEach((doc: DocumentData) => {
-          paymentMethods.push({
-            id: doc.id,
-            brand: doc.data()?.card?.brand,
-            last4: doc.data()?.card?.last4,
-            expMonth: doc.data()?.card?.exp_month,
-            expYear: doc.data()?.card?.exp_year,
-            type: doc.data()?.type,
-          });
+          if (doc.data().active)
+            paymentMethods.push({
+              id: doc.id,
+              brand: doc.data()?.card?.brand,
+              last4: doc.data()?.card?.last4,
+              expMonth: doc.data()?.card?.exp_month,
+              expYear: doc.data()?.card?.exp_year,
+              type: doc.data()?.type,
+            });
         });
         if (paymentMethods.length > 0) setPaymentMethods(paymentMethods);
         setIsLoading(false);
@@ -105,13 +107,15 @@ export const PaymentMethodSummary = (): ReactNode => {
         setShowUpcomingExpirationWarning(true);
       else setShowUpcomingExpirationWarning(false);
     }
+    console.log("showExpiredWarning", showExpiredWarning);
+    console.log("showUpcomingExpirationWarning", showUpcomingExpirationWarning);
+    console.log("paymentMethods", paymentMethods);
   }, [paymentMethods]);
 
   const setError = (error: any) =>
     ErrorStore.update((s: any) => {
       s.currentError = error;
     });
-  
 
   return (paymentMethods && paymentMethods.length === 0) ||
     showUpcomingExpirationWarning ||
@@ -140,6 +144,9 @@ export const PaymentMethodSummary = (): ReactNode => {
           ]}
           noDarkMode
         >
+          <Debug object={showExpiredWarning} />
+          <Debug object={showUpcomingExpirationWarning} />
+          <Debug object={paymentMethods.length} />
           <Container style={tw`px-4`}>
             {isLoading ? (
               <ActivityIndicator size="small" color={tw.color("movet-white")} />

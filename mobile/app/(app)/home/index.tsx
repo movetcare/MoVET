@@ -42,6 +42,7 @@ import {
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 import { PaymentMethodSummary } from "components/home/PaymentMethodSummary";
+import { Debug } from "components/Debug";
 
 const DEBUG_DATA = false;
 
@@ -248,7 +249,8 @@ const Home = () => {
                 )}
               </>
             )}
-            {upcomingAppointments && <PaymentMethodSummary />}
+            {upcomingAppointments !== null && <PaymentMethodSummary />}
+            {/* <Debug object={upcomingAppointments} /> */}
             <AppointmentsList source="home" />
           </View>
         ) : (
