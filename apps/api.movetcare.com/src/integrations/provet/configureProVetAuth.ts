@@ -30,7 +30,7 @@ export const configureProVetAuth = async ({
   });
   if (DEBUG) console.log("PROVET AUTH - authorizationUrl =>", authorizationUrl);
   const params = new Proxy(
-    new URLSearchParams("?" + authorizationUrl.split("?")[1]),
+    new URLSearchParams(authorizationUrl.split("?")[1]),
     {
       get: (searchParams, prop: any) => searchParams.get(prop),
     },
