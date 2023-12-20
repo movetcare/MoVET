@@ -44,7 +44,7 @@ export const TelehealthStatus = ({
           </Container>
           <Container style={tw`flex-shrink`}>
             <HeadingText style={tw`text-movet-black text-lg`}>
-              Telehealth Chat is ONLINE!
+              Chat with MoVET
             </HeadingText>
             <BodyText style={tw`text-movet-black text-sm -mt-0.5`}>
               {message}

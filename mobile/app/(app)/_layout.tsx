@@ -77,15 +77,13 @@ const TabsLayout = (props: any) => {
   };
 
   useEffect(() => {
-    if (!isLoggedIn || !initialized || !user?.uid) return; 
-    if (!__DEV__ && user?.email) LogRocket.identify(user?.email, { status: "logged-in" });
+    if (!isLoggedIn || !initialized || !user?.uid) return;
+    if (!__DEV__ && user?.email)
+      LogRocket.identify(user?.email, { status: "logged-in" });
     const unsubscribeUser = onSnapshot(
       doc(firestore, "clients", user?.uid),
       (doc) => {
         if (doc.exists()) {
-          AuthStore.update((store) => {
-            store.client = null;
-          });
           AuthStore.update((store) => {
             store.client = {
               firstName: doc.data()?.firstName,
@@ -102,7 +100,10 @@ const TabsLayout = (props: any) => {
                   : "",
             };
           });
-        }
+        } else
+          AuthStore.update((store) => {
+            store.client = null;
+          });
       },
       (error: any) => setError({ ...error, source: "unsubscribeUser" }),
     );
@@ -115,7 +116,12 @@ const TabsLayout = (props: any) => {
         limit(100),
       ),
       (querySnapshot: QuerySnapshot) => {
-        if (querySnapshot.empty) return;
+        if (querySnapshot.empty) {
+          AppointmentsStore.update((store: any) => {
+            store.upcomingAppointments = null;
+          });
+          return;
+        }
         const appointments: Appointment[] = [];
         querySnapshot.forEach((doc: DocumentData) => {
           if (DEBUG_DATA)
@@ -123,14 +129,14 @@ const TabsLayout = (props: any) => {
           if (doc.data()?.active)
             appointments.push({ id: doc.id, ...doc.data() });
         });
-        if (appointments.length) {
-          AppointmentsStore.update((store: any) => {
-            store.upcomingAppointments = null;
-          });
+        if (appointments.length > 0)
           AppointmentsStore.update((store: any) => {
             store.upcomingAppointments = appointments;
           });
-        }
+        else
+          AppointmentsStore.update((store: any) => {
+            store.upcomingAppointments = null;
+          });
       },
       (error: any) =>
         setError({ ...error, source: "unsubscribeUpcomingAppointments" }),
@@ -144,21 +150,26 @@ const TabsLayout = (props: any) => {
         limit(100),
       ),
       (querySnapshot: QuerySnapshot) => {
-        if (querySnapshot.empty) return;
+        if (querySnapshot.empty) {
+          AppointmentsStore.update((store: any) => {
+            store.pastAppointments = null;
+          });
+          return;
+        }
         const appointments: Appointment[] = [];
         querySnapshot.forEach((doc: DocumentData) => {
           if (DEBUG_DATA) console.log("PAST APPOINTMENT DATA => ", doc.data());
           if (doc.data()?.active)
             appointments.push({ id: doc.id, ...doc.data() });
         });
-        if (appointments.length) {
-          AppointmentsStore.update((store: any) => {
-            store.pastAppointments = null;
-          });
+        if (appointments.length > 0)
           AppointmentsStore.update((store: any) => {
             store.pastAppointments = appointments;
           });
-        }
+        else
+          AppointmentsStore.update((store: any) => {
+            store.pastAppointments = null;
+          });
       },
       (error: any) =>
         setError({ ...error, source: "unsubscribePastAppointments" }),
@@ -172,21 +183,25 @@ const TabsLayout = (props: any) => {
         limit(100),
       ),
       (querySnapshot: QuerySnapshot) => {
-        if (querySnapshot.empty) return;
-        else setPatientsCount(querySnapshot.size);
+        if (querySnapshot.empty) {
+          PatientsStore.update((store: any) => {
+            store.patients = null;
+          });
+          return;
+        } else setPatientsCount(querySnapshot.size);
         const patients: Patient[] = [];
         querySnapshot.forEach((doc: DocumentData) => {
           if (DEBUG_DATA) console.log("PATIENT DATA => ", doc.data());
           patients.push(doc.data());
         });
-        if (patients.length) {
-          PatientsStore.update((store: any) => {
-            store.patients = null;
-          });
+        if (patients.length > 0)
           PatientsStore.update((store: any) => {
             store.patients = patients;
           });
-        }
+        else
+          PatientsStore.update((store: any) => {
+            store.patients = null;
+          });
       },
       (error: any) => setError({ ...error, source: "unsubscribePatients" }),
     );
@@ -196,7 +211,7 @@ const TabsLayout = (props: any) => {
       unsubscribeUpcomingAppointments();
       unsubscribePastAppointments();
     };
-  }, [user?.uid, initialized, isLoggedIn]);
+  }, [user.uid, initialized, isLoggedIn, user?.email]);
 
   const setError = (error: any) =>
     ErrorStore.update((s: any) => {

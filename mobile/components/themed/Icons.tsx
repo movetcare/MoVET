@@ -94,6 +94,10 @@ import MapIcon from "assets/icons/svgs/font-awesome/map.svg";
 import MapIconDark from "assets/icons/svgs/font-awesome/map-dark.svg";
 import CancelIcon from "assets/icons/svgs/font-awesome/cancel.svg";
 import CancelIconDark from "assets/icons/svgs/font-awesome/cancel-dark.svg";
+import ChevronUpIcon from "assets/icons/svgs/font-awesome/chevron-up.svg";
+import ChevronUpIconDark from "assets/icons/svgs/font-awesome/chevron-up-dark.svg";
+import ChevronDownIcon from "assets/icons/svgs/font-awesome/chevron-down.svg";
+import ChevronDownIconDark from "assets/icons/svgs/font-awesome/chevron-down-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -145,7 +149,9 @@ export type SupportedIcons =
   | "calendar-heart"
   | "folder-heart"
   | "map"
-  | "cancel";
+  | "cancel"
+  | "chevron-up"
+  | "chevron-down";
 
 export const Icon = ({
   name = "poo",
@@ -560,6 +566,26 @@ export const Icon = ({
         <CancelIconDark height={iconHeight} width={iconWidth} style={style} />
       ) : (
         <CancelIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "chevron-up":
+      return showWhiteIcon ? (
+        <ChevronUpIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <ChevronUpIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "chevron-down":
+      return showWhiteIcon ? (
+        <ChevronDownIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <ChevronDownIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (

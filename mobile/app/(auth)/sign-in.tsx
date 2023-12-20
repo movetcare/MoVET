@@ -72,15 +72,8 @@ export default function SignIn() {
   const [showVerificationButton, setShowVerificationButton] =
     useState<boolean>(false);
   const { user, isLoggedIn } = AuthStore.useState();
-  const {
-    mode,
-    oobCode,
-    continueUrl,
-    lang,
-    apiKey,
-    withPassword,
-    redirectPath,
-  } = useLocalSearchParams();
+  const { mode, oobCode, continueUrl, lang, apiKey, withPassword } =
+    useLocalSearchParams();
   const isDarkMode = useColorScheme() !== "light";
   const [tapCount, setTapCount] = useState<number>(0);
   const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false);
@@ -106,37 +99,41 @@ export default function SignIn() {
   });
 
   useEffect(() => {
-    if (tapCount === 15) setShowPasswordInput(true);
-    else if (tapCount > 15) setShowPasswordInput(false);
+    if (tapCount === 5) setShowPasswordInput(true);
+    else if (tapCount > 5) setShowPasswordInput(false);
   }, [tapCount]);
 
   useEffect(() => {
-    if (mode && oobCode && continueUrl && lang && apiKey && user?.email)
+    if (mode && oobCode && continueUrl && lang && apiKey) {
+      const signInUserWithLink = async (email: string, link: string) => {
+        setIsLoading(true);
+        await signInWithLink(email, link)
+          .then((signInError: any) => {
+            if (signInError)
+              setError({ message: signInError, source: "signInWithLink" });
+            else router.replace("/(app)/home");
+          })
+          .catch((error: any) =>
+            setError({ ...error, source: "signInWithLink" }),
+          )
+          .finally(() => {
+            setIsLoading(false);
+            setShowVerificationButton(true);
+          });
+      };
       signInUserWithLink(
         user?.email,
         getPlatformUrl() +
           `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
       );
-  }, [mode, oobCode, continueUrl, lang, apiKey, user?.email]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, oobCode, continueUrl, lang, apiKey]);
 
   useEffect(() => {
-    if (isLoggedIn) router.replace((redirectPath as string) || "/(app)/home");
-  }, [isLoggedIn, redirectPath]);
+    if (isLoggedIn) router.replace("/(app)/home");
+  }, [isLoggedIn]);
 
-  const signInUserWithLink = async (email: string, link: string) => {
-    setIsLoading(true);
-    await signInWithLink(email, link)
-      .then((signInError: any) => {
-        if (signInError)
-          setError({ message: signInError, source: "signInWithLink" });
-        else router.replace("/(app)/home");
-      })
-      .catch((error: any) => setError({ ...error, source: "signInWithLink" }))
-      .finally(() => {
-        setIsLoading(false);
-        setShowVerificationButton(true);
-      });
-  };
   const onSubmit = async (data: { email: string; password?: string }) => {
     setIsLoading(true);
     if (!__DEV__) LogRocket.identify(email, { status: "signed-out" });

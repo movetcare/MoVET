@@ -24,7 +24,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useColorScheme } from "react-native";
+import { Pressable, useColorScheme } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -42,7 +42,6 @@ import {
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 import { PaymentMethodSummary } from "components/home/PaymentMethodSummary";
-import { Debug } from "components/Debug";
 
 const DEBUG_DATA = false;
 
@@ -50,6 +49,7 @@ const Home = () => {
   const isDarkMode = useColorScheme() !== "light";
   const { patients } = PatientsStore.useState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [showAnnouncements, setShowAnnouncements] = useState<boolean>(true);
   const [announcement, setAnnouncement] = useState<null | Announcement>(null);
   const [ad, setAd] = useState<null | Ad>(null);
   const [telehealthStatus, setTelehealthStatus] =
@@ -196,7 +196,9 @@ const Home = () => {
     <Loader />
   ) : (
     <Screen withBackground="pets">
-      <Animated.View style={[tw`w-full flex-grow`, animatedStyle]}>
+      <Animated.View
+        style={[tw`w-full`, showAnnouncements && tw`flex-grow`, animatedStyle]}
+      >
         <View
           style={tw`
               w-full justify-center items-center bg-transparent
@@ -217,37 +219,60 @@ const Home = () => {
             noDarkMode
           >
             {(announcement?.isActiveMobile || ad?.isActive) && (
-              <SectionHeading
-                iconName={"bullhorn"}
-                text={"Latest Announcements"}
-                containerStyle={tw`mb-4`}
-                textStyle={tw`text-lg sm:text-2xl`}
+              <Pressable
+                onPress={() => setShowAnnouncements(!showAnnouncements)}
+                style={tw`w-full flex-row justify-center items-center`}
+              >
+                <SectionHeading
+                  iconName={"bullhorn"}
+                  text={
+                    announcement?.isActiveMobile && ad?.isActive
+                      ? "Latest Announcements"
+                      : "Latest Announcement"
+                  }
+                  containerStyle={tw`mb-2 mt-2`}
+                  textStyle={tw`text-lg sm:text-2xl`}
+                />
+                <Icon
+                  name={showAnnouncements ? "chevron-down" : "chevron-up"}
+                  size="xs"
+                />
+              </Pressable>
+            )}
+            {showAnnouncements && (
+              <>
+                {announcement?.isActiveMobile && (
+                  <Announcement announcement={announcement} />
+                )}
+                {ad?.isActive && <Ad content={ad} />}
+                {!announcement?.isActiveMobile && !ad?.isActive && (
+                  <View noDarkMode style={tw`h-4 bg-transparent`} />
+                )}
+              </>
+            )}
+            {(announcement?.isActiveMobile || ad?.isActive) && (
+              <View
+                style={tw`border-t-2 border-movet-gray mt-2 mb-6 mx-8 w-2.6/3`}
               />
-            )}
-            {announcement?.isActiveMobile && (
-              <Announcement announcement={announcement} />
-            )}
-            {ad?.isActive && <Ad content={ad} />}
-            {!announcement?.isActiveMobile && !ad?.isActive && (
-              <View noDarkMode style={tw`h-4 bg-transparent`} />
             )}
             {vcprPatients && vcprPatients?.length > 0 && (
               <VcprAlert patients={vcprPatients} />
             )}
-            {!upcomingAppointments && (
+            {(announcement?.isActiveMobile || ad?.isActive) && (
+              <View noDarkMode style={tw`h-4 bg-transparent`} />
+            )}
+            {patients && patients.length > 0 && telehealthStatus?.isOnline && (
               <>
-                {(announcement?.isActiveMobile || ad?.isActive) && (
+                {!announcement?.isActiveMobile && !ad?.isActive && (
                   <View noDarkMode style={tw`h-4 bg-transparent`} />
                 )}
-                {patients && patients.length && telehealthStatus?.isOnline && (
-                  <>
-                    {!announcement?.isActiveMobile && !ad?.isActive && (
-                      <View noDarkMode style={tw`h-4 bg-transparent`} />
-                    )}
-                    <TelehealthStatus status={telehealthStatus} />
-                  </>
-                )}
+                <TelehealthStatus status={telehealthStatus} />
               </>
+            )}
+            {(announcement?.isActiveMobile || ad?.isActive) && (
+              <View
+                style={tw`border-t-2 border-movet-gray mt-6 mx-8 w-2.6/3`}
+              />
             )}
             {upcomingAppointments !== null && <PaymentMethodSummary />}
             {/* <Debug object={upcomingAppointments} /> */}

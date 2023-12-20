@@ -1,11 +1,5 @@
 import tw from "tailwind";
-import {
-  Container,
-  Icon,
-  HeadingText,
-  SupportedIcons,
-  View,
-} from "components/themed";
+import { Icon, HeadingText, SupportedIcons, View } from "components/themed";
 import { isTablet } from "utils/isTablet";
 
 export const SectionHeading = ({
@@ -25,7 +19,7 @@ export const SectionHeading = ({
     <View
       style={[
         tw`flex-row justify-center items-center rounded-xl shadow-sm shadow-movet-black dark:shadow-movet-white bg-movet-white/70 dark:bg-movet-black/70 p-2`,
-        isTablet ? tw`my-3` : tw`my-1.5`,
+        isTablet ? tw`mb-3 mt-6` : tw`mb-1.5 mt-4`,
         containerStyle,
       ]}
       noDarkMode

@@ -174,39 +174,47 @@ const PetDetail = () => {
             )}
           </View>
         </TouchableOpacity>
-        <Container style={tw`flex-row items-center justify-center w-full mt-2`}>
-          <Icon
-            name={
-              patient?.species?.toLowerCase()?.includes("dog") ? "dog" : "cat"
-            }
-            height={20}
-            width={20}
-          />
-          <SubHeadingText style={tw`ml-1`}>
-            {patient?.breed?.toUpperCase()}
-          </SubHeadingText>
-        </Container>
-        <Container style={tw`flex-row items-center justify-center w-full mt-2`}>
-          <Icon
-            name={
-              patient?.gender?.toLowerCase()?.includes("male")
-                ? "male"
-                : "female"
-            }
-            height={20}
-            width={20}
-          />
-          <SubHeadingText style={tw`ml-1`}>
-            {patient?.gender?.toUpperCase()}
-          </SubHeadingText>
-        </Container>
         <Container
-          style={tw`flex-row items-center justify-center w-full mt-2 mb-4`}
+          style={tw`flex-col items-center justify-center w-full rounded-xl shadow-sm shadow-movet-black dark:shadow-movet-white bg-movet-white/70 dark:bg-movet-black/70`}
         >
-          <Icon name="cake" height={20} width={20} />
-          <SubHeadingText style={tw`ml-1`}>
-            {patient?.birthday?.toUpperCase()}
-          </SubHeadingText>
+          <Container
+            style={tw`flex-row items-center justify-center w-full mt-2`}
+          >
+            <Icon
+              name={
+                patient?.species?.toLowerCase()?.includes("dog") ? "dog" : "cat"
+              }
+              height={20}
+              width={20}
+            />
+            <SubHeadingText style={tw`ml-1`}>
+              {patient?.breed?.toUpperCase()}
+            </SubHeadingText>
+          </Container>
+          <Container
+            style={tw`flex-row items-center justify-center w-full mt-1`}
+          >
+            <Icon
+              name={
+                patient?.gender?.toLowerCase()?.includes("male")
+                  ? "male"
+                  : "female"
+              }
+              height={20}
+              width={20}
+            />
+            <SubHeadingText style={tw`ml-1`}>
+              {patient?.gender?.toUpperCase()}
+            </SubHeadingText>
+          </Container>
+          <Container
+            style={tw`flex-row items-center justify-center w-full mb-4 mt-1`}
+          >
+            <Icon name="cake" height={20} width={20} />
+            <SubHeadingText style={tw`ml-1`}>
+              {patient?.birthday?.toUpperCase()}
+            </SubHeadingText>
+          </Container>
         </Container>
         {upcomingPatientAppointments &&
           upcomingPatientAppointments.length > 0 && (

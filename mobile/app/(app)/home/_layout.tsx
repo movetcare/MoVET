@@ -60,7 +60,13 @@ export default function Layout() {
       });
       //}, 180);
     } else setNavigationDetails(null);
-  }, [screenTitle, screenTitleIcon, segments]);
+  }, [
+    pastAppointments,
+    screenTitle,
+    screenTitleIcon,
+    segments,
+    upcomingAppointments,
+  ]);
 
   return (
     <Stack

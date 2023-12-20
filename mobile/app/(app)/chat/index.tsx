@@ -63,7 +63,7 @@ const registerForPushNotificationsAsync = async () => {
 const defaultMessages: IMessage[] = [
   {
     _id: 1,
-    text: "Welcome to MoVET's Telehealth Chat!\n\nPlease submit a question via the field below to start your chat with a MoVET expert.",
+    text: "Welcome to MoVET!\n\nPlease submit any questions you have for us using the text field below and a MoVET expert will get back to you shortly...",
     createdAt: new Date(),
     system: true,
     user: {
@@ -325,7 +325,7 @@ const ChatIndex = () => {
           }}
           textStyle={{
             textAlign: "center",
-            fontSize: isTablet ? 24 : 18,
+            fontSize: isTablet ? 24 : 16,
             color: isDarkMode
               ? tw.color("movet-white")
               : tw.color("movet-black"),

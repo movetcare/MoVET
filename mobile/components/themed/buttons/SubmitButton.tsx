@@ -14,7 +14,7 @@ export const SubmitButton = ({
   handleSubmit,
   onSubmit,
   disabled,
-  loading,
+  loading = false,
   title,
   color = "black",
   style,
@@ -23,7 +23,7 @@ export const SubmitButton = ({
   handleSubmit: any;
   onSubmit: any;
   disabled: boolean;
-  loading: boolean;
+  loading?: boolean;
   title: string;
   color?: "red" | "black";
   style?: any;

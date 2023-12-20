@@ -140,9 +140,11 @@ export const signInWithLink = async (email: string, link: string) => {
           store.user = auth.currentUser;
           store.isLoggedIn = true;
         });
+        return null;
       })
       .catch((error) => {
         console.error(error);
+        alert(JSON.stringify(error));
         return error?.code || "Unknown Error...";
       });
 };

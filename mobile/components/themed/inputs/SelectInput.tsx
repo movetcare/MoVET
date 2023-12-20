@@ -45,8 +45,8 @@ export const SelectInput = ({
           >
             {defaultValue && (
               <Picker.Item
-                label={defaultValue.title || ""}
-                value={defaultValue.id || ""}
+                label={defaultValue?.title || ""}
+                value={defaultValue?.id || ""}
               />
             )}
             {values &&

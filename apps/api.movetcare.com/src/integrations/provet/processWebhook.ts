@@ -94,7 +94,7 @@ export const processProVetWebhook = async (
     client_secret &&
     token_url
   ) {
-    return await configureProVetAuth(request.body);
+    return await configureProVetAuth(request, response);
   } else if (
     typeof user_id !== "undefined" ||
     typeof client_id !== "undefined" ||

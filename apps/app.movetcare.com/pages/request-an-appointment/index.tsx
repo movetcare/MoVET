@@ -499,9 +499,7 @@ export default function RequestAnAppointment({
   return (
     <section
       className={
-        isLoading
-          ? "h-screen flex items-center justify-center"
-          : "w-full flex-1"
+        isLoading ? "flex-1 items-center justify-center" : "w-full flex-1"
       }
     >
       <AppHeader />
