@@ -1,4 +1,4 @@
-import { Tabs, usePathname } from "expo-router";
+import { Tabs, router, usePathname } from "expo-router";
 import { useThemeColor } from "hooks/useThemeColor";
 import { SafeAreaView, useColorScheme } from "react-native";
 import tw from "tailwind";
@@ -75,6 +75,10 @@ const TabsLayout = (props: any) => {
       marginTop: isTablet ? 0 : 8,
     },
   };
+
+  useEffect(() => {
+    if (!isLoggedIn) router.replace("/(auth)/sign-in");
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (!isLoggedIn || !initialized || !user?.uid) return;
@@ -211,7 +215,7 @@ const TabsLayout = (props: any) => {
       unsubscribeUpcomingAppointments();
       unsubscribePastAppointments();
     };
-  }, [user.uid, initialized, isLoggedIn, user?.email]);
+  }, [user?.uid, initialized, isLoggedIn, user?.email]);
 
   const setError = (error: any) =>
     ErrorStore.update((s: any) => {

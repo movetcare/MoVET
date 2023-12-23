@@ -133,7 +133,7 @@ export const signIn = async (email: string, password?: string | undefined) => {
 
 export const signInWithLink = async (email: string, link: string) => {
   if (isSignInWithEmailLink(auth, link))
-    await signInWithEmailLink(auth, email, link)
+    return await signInWithEmailLink(auth, email, link)
       .then(() => {
         if (!__DEV__) LogRocket.identify(email, { status: "logged-in" });
         AuthStore.update((store) => {
@@ -147,6 +147,7 @@ export const signInWithLink = async (email: string, link: string) => {
         alert(JSON.stringify(error));
         return error?.code || "Unknown Error...";
       });
+      return "Invalid Sign In Link...";
 };
 
 export const signOut = async () =>

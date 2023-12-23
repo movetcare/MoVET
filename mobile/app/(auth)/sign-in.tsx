@@ -103,32 +103,32 @@ export default function SignIn() {
     else if (tapCount > 5) setShowPasswordInput(false);
   }, [tapCount]);
 
-  useEffect(() => {
-    if (mode && oobCode && continueUrl && lang && apiKey) {
-      const signInUserWithLink = async (email: string, link: string) => {
-        setIsLoading(true);
-        await signInWithLink(email, link)
-          .then((signInError: any) => {
-            if (signInError)
-              setError({ message: signInError, source: "signInWithLink" });
-            else router.replace("/(app)/home");
-          })
-          .catch((error: any) =>
-            setError({ ...error, source: "signInWithLink" }),
-          )
-          .finally(() => {
-            setIsLoading(false);
-            setShowVerificationButton(true);
-          });
-      };
-      signInUserWithLink(
-        user?.email,
-        getPlatformUrl() +
-          `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, oobCode, continueUrl, lang, apiKey]);
+  // useEffect(() => {
+  //   if (mode && oobCode && continueUrl && lang && apiKey) {
+  //     const signInUserWithLink = async (email: string, link: string) => {
+  //       setIsLoading(true);
+  //       await signInWithLink(email, link)
+  //         .then((signInError: any) => {
+  //           if (signInError)
+  //             setError({ message: signInError, source: "signInWithLink" });
+  //           else router.replace("/(app)/home");
+  //         })
+  //         .catch((error: any) =>
+  //           setError({ ...error, source: "signInWithLink" }),
+  //         )
+  //         .finally(() => {
+  //           setIsLoading(false);
+  //           setShowVerificationButton(true);
+  //         });
+  //     };
+  //     signInUserWithLink(
+  //       user?.email,
+  //       getPlatformUrl() +
+  //         `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
+  //     );
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [mode, oobCode, continueUrl, lang, apiKey]);
 
   useEffect(() => {
     if (isLoggedIn) router.replace("/(app)/home");
