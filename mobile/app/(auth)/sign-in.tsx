@@ -1,6 +1,6 @@
 import { ImageBackground, Pressable, useColorScheme } from "react-native";
 import { useEffect, useState } from "react";
-import { signIn, signInWithLink } from "services/Auth";
+import { signIn, signInWithLink, updateUserAuth } from "services/Auth";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import DeviceDimensions from "utils/DeviceDimensions";
 import tw from "tailwind";
@@ -15,7 +15,11 @@ import {
   LinkText,
   ActionButton,
 } from "components/themed";
-import { router, useLocalSearchParams } from "expo-router";
+import {
+  router,
+  useLocalSearchParams,
+  useRootNavigationState,
+} from "expo-router";
 import { AuthStore, ErrorStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
@@ -29,6 +33,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { isTablet } from "utils/isTablet";
 import LogRocket from "@logrocket/react-native";
+import { auth } from "firebase-config";
+import { onAuthStateChanged } from "firebase/auth";
 
 const getRandomBackgroundImage = () => {
   const randomNumber = getRandomInt(1, 5);
@@ -71,7 +77,8 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showVerificationButton, setShowVerificationButton] =
     useState<boolean>(false);
-  const { user, isLoggedIn } = AuthStore.useState();
+  const navigationState = useRootNavigationState();
+  const { initialized, isLoggedIn, user } = AuthStore.useState();
   const { mode, oobCode, continueUrl, lang, apiKey, withPassword } =
     useLocalSearchParams();
   const isDarkMode = useColorScheme() !== "light";
@@ -103,32 +110,44 @@ export default function SignIn() {
     else if (tapCount > 5) setShowPasswordInput(false);
   }, [tapCount]);
 
-  // useEffect(() => {
-  //   if (mode && oobCode && continueUrl && lang && apiKey) {
-  //     const signInUserWithLink = async (email: string, link: string) => {
-  //       setIsLoading(true);
-  //       await signInWithLink(email, link)
-  //         .then((signInError: any) => {
-  //           if (signInError)
-  //             setError({ message: signInError, source: "signInWithLink" });
-  //           else router.replace("/(app)/home");
-  //         })
-  //         .catch((error: any) =>
-  //           setError({ ...error, source: "signInWithLink" }),
-  //         )
-  //         .finally(() => {
-  //           setIsLoading(false);
-  //           setShowVerificationButton(true);
-  //         });
-  //     };
-  //     signInUserWithLink(
-  //       user?.email,
-  //       getPlatformUrl() +
-  //         `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
-  //     );
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [mode, oobCode, continueUrl, lang, apiKey]);
+  useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user: any) =>
+      updateUserAuth(user),
+    );
+    return () => unsubscribeAuth();
+  }, []);
+
+  useEffect(() => {
+    if (!navigationState?.key || !initialized) return;
+    else if (mode && oobCode && continueUrl && lang && apiKey && user?.email) {
+      const signInUserWithLink = async (email: string, link: string) => {
+        await signInWithLink(email, link)
+          .then((signInError: any) => {
+            if (signInError)
+              setError({ message: signInError, source: "signInWithLink" });
+            else router.replace("/(app)/home");
+          })
+          .catch((error: any) =>
+            setError({ ...error, source: "signInWithLink" }),
+          );
+      };
+      signInUserWithLink(
+        user?.email,
+        getPlatformUrl() +
+          `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
+      );
+    }
+  }, [
+    navigationState?.key,
+    initialized,
+    isLoggedIn,
+    mode,
+    oobCode,
+    continueUrl,
+    lang,
+    apiKey,
+    user?.email,
+  ]);
 
   useEffect(() => {
     if (isLoggedIn) router.replace("/(app)/home");

@@ -2,12 +2,11 @@ import {
   ErrorBoundaryProps,
   SplashScreen,
   Stack,
-  router,
   useLocalSearchParams,
   useRootNavigationState,
 } from "expo-router";
 import { useEffect } from "react";
-import { signInWithLink, updateUserAuth } from "services/Auth";
+import { updateUserAuth } from "services/Auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "firebase-config";
 import { useDeviceContext } from "twrnc";
@@ -18,7 +17,6 @@ import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { ErrorModal } from "components/Modal";
 import { AuthStore, ErrorStore } from "stores";
 import LogRocket from "@logrocket/react-native";
-import { getPlatformUrl } from "utils/getPlatformUrl";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -75,60 +73,12 @@ export function ErrorBoundary(props: ErrorBoundaryProps) {
 
 const Layout = () => {
   useDeviceContext(tw);
-  const navigationState = useRootNavigationState();
-  const { initialized, isLoggedIn, user } = AuthStore.useState();
-  const { mode, oobCode, continueUrl, lang, apiKey } = useLocalSearchParams();
   const { currentError } = ErrorStore.useState();
   //useNotificationObserver();
 
   useEffect(() => {
     if (!__DEV__) LogRocket.init("cjlcsx/movet-mobile-app");
-    const unsubscribeAuth = onAuthStateChanged(auth, (user: any) =>
-      updateUserAuth(user),
-    );
-    return () => unsubscribeAuth();
   }, []);
-
-  useEffect(() => {
-    if (!navigationState?.key || !initialized) return;
-    else if (mode && oobCode && continueUrl && lang && apiKey && user?.email) {
-      const signInUserWithLink = async (email: string, link: string) => {
-        await signInWithLink(email, link)
-          .then((signInError: any) => {
-            if (signInError)
-              setError({ message: signInError, source: "signInWithLink" });
-            else router.replace("/(app)/home");
-          })
-          .catch((error: any) =>
-            setError({ ...error, source: "signInWithLink" }),
-          );
-      };
-      signInUserWithLink(
-        user?.email,
-        getPlatformUrl() +
-          `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
-      );
-    }
-  }, [
-    navigationState?.key,
-    initialized,
-    isLoggedIn,
-    mode,
-    oobCode,
-    continueUrl,
-    lang,
-    apiKey,
-    user?.email,
-  ]);
-
-  // useEffect(() => {
-  //   if (currentError !== null) alert(JSON.stringify(currentError));
-  // }, [currentError]);
-
-  // useEffect(() => {
-  //   if (!navigationState?.key || !initialized) return;
-  //   else if (!isLoggedIn) router.replace("/(auth)/sign-in");
-  // }, [navigationState?.key, initialized, isLoggedIn]);
 
   const [fontsLoaded, fontsError] = useFonts({
     Abside: require("../assets/fonts/Abside-Regular.ttf"),
@@ -144,11 +94,6 @@ const Layout = () => {
   }, [fontsLoaded, fontsError]);
 
   if (!fontsLoaded) return null;
-
-  const setError = (error: any) =>
-    ErrorStore.update((s: any) => {
-      s.currentError = error;
-    });
 
   return (
     <ActionSheetProvider>
