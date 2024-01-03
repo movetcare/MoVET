@@ -4,7 +4,7 @@ export type PopUpAd = {
   autoOpen: boolean;
   isActive?: boolean;
   description: string;
-  urlRedirect?: string;
+  link?: string;
   ignoreUrlPath?: string;
   imagePath?: string;
   height?: number;

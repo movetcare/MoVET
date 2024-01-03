@@ -567,7 +567,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
           title={popUpAd?.title}
           description={popUpAd?.description}
           adComponent={
-            <Link href={popUpAd?.urlRedirect as string}>
+            <Link href={popUpAd?.link as string}>
               <Image
                 className="rounded-xl"
                 src={popUpAd?.imagePath as string}

@@ -51,7 +51,6 @@ export const WebPopUpAdControls = () => {
       link: null,
       isActive: false,
       autoOpen: false,
-      urlRedirect: null,
       ignoreUrlPaths: null,
       imagePath: null,
       height: null,
@@ -67,29 +66,29 @@ export const WebPopUpAdControls = () => {
     color?.id === "#DAAA00"
       ? "text-movet-yellow"
       : color?.id === "#2C3C72"
-      ? "text-movet-dark-blue"
-      : color?.id === "#E76159"
-      ? "text-movet-red"
-      : color?.id === "#232127"
-      ? "text-movet-black"
-      : color?.id === "#00A36C"
-      ? "text-movet-green"
-      : color?.id === "#A15643"
-      ? "text-movet-brown"
-      : "text-movet-black";
+        ? "text-movet-dark-blue"
+        : color?.id === "#E76159"
+          ? "text-movet-red"
+          : color?.id === "#232127"
+            ? "text-movet-black"
+            : color?.id === "#00A36C"
+              ? "text-movet-green"
+              : color?.id === "#A15643"
+                ? "text-movet-brown"
+                : "text-movet-black";
 
   const selectedIcon =
     icon?.id === "bullhorn"
       ? faBullhorn
       : icon?.id === "exclamation-circle"
-      ? faExclamationCircle
-      : icon?.id === "bell"
-      ? faBell
-      : icon?.id === "star"
-      ? faStar
-      : icon?.id === "info-circle"
-      ? faInfoCircle
-      : faIcons;
+        ? faExclamationCircle
+        : icon?.id === "bell"
+          ? faBell
+          : icon?.id === "star"
+            ? faStar
+            : icon?.id === "info-circle"
+              ? faInfoCircle
+              : faIcons;
 
   useEffect(() => {
     if (announcement !== null && announcement !== undefined)
@@ -101,16 +100,16 @@ export const WebPopUpAdControls = () => {
                 announcement.data()?.color === "#DAAA00"
                   ? "Yellow"
                   : announcement.data()?.color === "#2C3C72"
-                  ? "Blue"
-                  : announcement.data()?.color === "#E76159"
-                  ? "Red"
-                  : announcement.data()?.color === "#232127"
-                  ? "Black"
-                  : announcement.data()?.color === "#00A36C"
-                  ? "Green"
-                  : announcement.data()?.color === "#A15643"
-                  ? "Brown"
-                  : "Black",
+                    ? "Blue"
+                    : announcement.data()?.color === "#E76159"
+                      ? "Red"
+                      : announcement.data()?.color === "#232127"
+                        ? "Black"
+                        : announcement.data()?.color === "#00A36C"
+                          ? "Green"
+                          : announcement.data()?.color === "#A15643"
+                            ? "Brown"
+                            : "Black",
               id: announcement.data()?.color,
             }
           : { name: "Blue", id: "#2C3C72" },
@@ -120,14 +119,14 @@ export const WebPopUpAdControls = () => {
                 announcement.data()?.icon === "bullhorn"
                   ? "Bullhorn"
                   : announcement.data()?.icon === "exclamation-circle"
-                  ? "Exclamation"
-                  : announcement.data()?.icon === "bell"
-                  ? "Bell"
-                  : announcement.data()?.icon === "star"
-                  ? "Star"
-                  : announcement.data()?.icon === "info-circle"
-                  ? "Info"
-                  : "Bullhorn",
+                    ? "Exclamation"
+                    : announcement.data()?.icon === "bell"
+                      ? "Bell"
+                      : announcement.data()?.icon === "star"
+                        ? "Star"
+                        : announcement.data()?.icon === "info-circle"
+                          ? "Info"
+                          : "Bullhorn",
               id: announcement.data()?.icon,
             }
           : { name: "Bullhorn", id: "bullhorn" },

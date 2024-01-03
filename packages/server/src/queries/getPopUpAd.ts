@@ -15,8 +15,8 @@ export const getPopUpAd = async () => {
           imagePath:
             "https://movetcare.com" + doc.data()?.imagePath ||
             "https://movetcare.com/images/logos/logo-paw-black.png",
-          urlRedirect:
-            "https://movetcare.com" + doc.data()?.urlRedirect ||
+          link:
+            "https://movetcare.com" + doc.data()?.link ||
             "https://movetcare.com",
           ignoreUrlPath:
             "https://movetcare.com" + doc.data()?.ignoreUrlPath ||

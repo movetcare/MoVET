@@ -31,7 +31,7 @@ export const configurePopUpAd = async (): Promise<boolean> => {
           autoOpen: true,
           description:
             "Join us at the Belleview Station Dog Park for this fun and FREE event! Enjoy a Photo Booth, Treats, and Belly Rubs. Dress your furry friend in their most adorable, scary, or hilarious costume. The more creative the better!",
-          urlRedirect: "/blog/howl-o-ween/",
+          link: "/blog/howl-o-ween/",
           ignoreUrlPath: "/blog/howl-o-ween/",
           imagePath: "/images/blog/howl-o-ween-clip.png",
           isActive: true,
