@@ -19,6 +19,8 @@ import { Transition } from "@headlessui/react";
 import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
 import { environment } from "utilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useForm } from "react-hook-form";
+import { TextInput } from "ui/src/components/forms/inputs";
 
 const formatTime = (time: string): string => {
   const hours =
@@ -71,6 +73,17 @@ export default function DateTime() {
   const [loadingMessage, setLoadingMessage] = useState<string | null>(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
 
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      notes: null,
+    },
+  });
+
   useEffect(() => {
     if (window.localStorage.getItem("bookingSession") !== null && router)
       setSession(
@@ -117,7 +130,7 @@ export default function DateTime() {
     setIsLoading(false);
     setAppointmentAvailability(null);
   };
-  const onSubmit = async () => {
+  const onSubmit = async (data: any) => {
     setIsLoadingFull(true);
     setLoadingMessage("Saving Date & Time Selection...");
     if (executeRecaptcha) {
@@ -135,6 +148,7 @@ export default function DateTime() {
               resource: selectedResource,
               date: selectedDate,
               time: selectedTime,
+              notes: data.notes,
             },
             id: session?.id,
             device: JSON.parse(
@@ -449,7 +463,9 @@ export default function DateTime() {
                                 <p className="italic mb-6 text-sm">
                                   Please confirm your appointment details below
                                 </p>
-                                <h5 className="font-bold">Date & Time</h5>
+                                <label className="block text-sm font-medium text-movet-black font-abside">
+                                  Date & Time
+                                </label>
                                 <p className="italic">
                                   {selectedDate.toLocaleString("en-US", {
                                     weekday: "long",
@@ -461,7 +477,9 @@ export default function DateTime() {
                                   {selectedTime &&
                                     selectedTime.split("-")[0].trim()}
                                 </p>
-                                <h5 className="font-bold -mb-2">Location</h5>
+                                <label className="block text-sm font-medium text-movet-black font-abside">
+                                  Location
+                                </label>
                                 <p className="italic font-extrabold">
                                   {session?.location === "Home" ? (
                                     `Housecall @ ${session?.address?.full}`
@@ -491,16 +509,18 @@ export default function DateTime() {
                                     Note: {session?.address?.info}
                                   </p>
                                 )}
-                                <h5 className="font-bold -mb-2">Reason</h5>
+                                <label className="block text-sm font-medium text-movet-black font-abside">
+                                  Reason
+                                </label>
                                 <p className="italic font-extrabold">
                                   {session?.establishCareExamRequired
                                     ? "Establish Care Exam"
                                     : session?.reason?.label}
                                 </p>
-                                <h5 className="font-bold -mb-2">
+                                <label className="block text-sm font-medium text-movet-black font-abside">
                                   Pet
                                   {session?.selectedPatients.length > 1 && "s"}
-                                </h5>
+                                </label>
                                 {session?.selectedPatients?.map(
                                   (patientId: string) =>
                                     session?.patients?.map(
@@ -534,6 +554,16 @@ export default function DateTime() {
                                       },
                                     ),
                                 )}
+                                <TextInput
+                                  label="Additional Notes / Promo Code"
+                                  name="notes"
+                                  control={control}
+                                  errors={errors}
+                                  placeholder="Enter any additional notes or a promo code"
+                                  multiline
+                                  numberOfLines={2}
+                                  className="my-4"
+                                />
                               </div>
                             </>
                           </Transition>
@@ -549,7 +579,7 @@ export default function DateTime() {
                           className="mt-8"
                           icon={faCalendarCheck}
                           color="black"
-                          onClick={() => onSubmit()}
+                          onClick={handleSubmit(onSubmit)}
                         />
                       </>
                     )}

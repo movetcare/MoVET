@@ -190,6 +190,11 @@ export const sendAppointmentConfirmationEmail = async (
       ? `<p></p><p><b>Instructions: </b>${appointment?.instructions}</p>`
       : ""
   }
+   ${
+     appointment?.illnessDetails
+       ? `<p><b>Illness Details</b>: ${appointment?.illnessDetails}/p>`
+       : ""
+   }
   ${
     vcprRequired
       ? // eslint-disable-next-line quotes
@@ -248,6 +253,15 @@ export const sendAppointmentConfirmationEmail = async (
                 ? // eslint-disable-next-line quotes
                   '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
                 : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
+  }
+  ${
+    appointment?.illnessDetails
+      ? `<p></p><p><b>Illness Details</b>: ${appointment?.illnessDetails}/p>`
+      : ""
+  }${
+    appointment?.additionalNotes
+      ? `<p></p><p><b>Client Note / Promo Code</b>: ${appointment?.additionalNotes}/p>`
+      : ""
   }${
     appointment?.start
       ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(

@@ -5,10 +5,15 @@ import type { BookingError, Booking } from "../../types/booking";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 import { handleFailedBooking } from "./handleFailedBooking";
-const DEBUG = false;
+const DEBUG = true;
 export const processDateTime = async (
   id: string,
-  requestedDateTime: { resource: number; date: string; time: string },
+  requestedDateTime: {
+    resource: number;
+    date: string;
+    time: string;
+    notes: string | null;
+  },
 ): Promise<Booking | BookingError> => {
   if (DEBUG) console.log("DATE TIME DATA", requestedDateTime);
   if (requestedDateTime && id) {
@@ -69,15 +74,15 @@ export const processDateTime = async (
                 (environment?.type === "development"
                   ? "http://localhost:3001"
                   : environment?.type === "production"
-                  ? "https://app.movetcare.com"
-                  : "https://stage.app.movetcare.com") +
+                    ? "https://app.movetcare.com"
+                    : "https://stage.app.movetcare.com") +
                 "/schedule-an-appointment/success",
               cancel_url:
                 (environment?.type === "development"
                   ? "http://localhost:3001"
                   : environment?.type === "production"
-                  ? "https://app.movetcare.com"
-                  : "https://stage.app.movetcare.com") +
+                    ? "https://app.movetcare.com"
+                    : "https://stage.app.movetcare.com") +
                 "/schedule-an-appointment",
             })
           : null;
@@ -91,6 +96,7 @@ export const processDateTime = async (
             time: requestedDateTime?.time,
             date: requestedDateTime?.date,
             resource: requestedDateTime?.resource,
+            additionalNotes: requestedDateTime?.notes,
             sessionId: id,
             reason: session?.reason?.value,
             selectedStaff: session?.selectedStaff,
@@ -99,7 +105,7 @@ export const processDateTime = async (
             addressInfo: session?.address?.info,
             patients: session?.patients,
             patientSelection: session?.selectedPatients,
-            illPatients: session?.illPatients,
+            illPatientSelection: session?.illPatientSelection,
             establishCareExamRequired: session?.establishCareExamRequired,
             totalPatients: session?.selectedPatients?.length,
           });
@@ -108,6 +114,7 @@ export const processDateTime = async (
           time: requestedDateTime?.time,
           date: requestedDateTime?.date,
           resource: requestedDateTime?.resource,
+          additionalNotes: requestedDateTime?.notes,
           reason: session?.reason?.value,
           sessionId: id,
           selectedStaff: session?.selectedStaff,
@@ -116,7 +123,7 @@ export const processDateTime = async (
           addressInfo: session?.address?.info,
           patients: session?.patients,
           patientSelection: session?.selectedPatients,
-          illPatients: session?.illPatients,
+          illPatientSelection: session?.illPatientSelection,
           establishCareExamRequired: session?.establishCareExamRequired,
           totalPatients: session?.selectedPatients?.length,
         });
@@ -139,9 +146,9 @@ export const processDateTime = async (
           step: checkoutSession
             ? ("datetime-selection" as Booking["step"])
             : appointmentIsScheduled === false ||
-              appointmentIsScheduled === "ALREADY_BOOKED"
-            ? "datetime-selection"
-            : "success",
+                appointmentIsScheduled === "ALREADY_BOOKED"
+              ? "datetime-selection"
+              : "success",
         })
         .then(() => DEBUG && console.log("DID UPDATE BOOKING"), {
           needsRetry:
@@ -152,9 +159,9 @@ export const processDateTime = async (
           step: checkoutSession
             ? ("datetime-selection" as Booking["step"])
             : appointmentIsScheduled === false ||
-              appointmentIsScheduled === "ALREADY_BOOKED"
-            ? "datetime-selection"
-            : "success",
+                appointmentIsScheduled === "ALREADY_BOOKED"
+              ? "datetime-selection"
+              : "success",
         })
         .catch(async (error: any) => {
           throwError(error);
@@ -185,8 +192,13 @@ export const processDateTime = async (
                 },
                 {
                   type: "plain_text",
-                  text:
-                    requestedDateTime?.date + " @ " + requestedDateTime?.time,
+                  text: requestedDateTime?.notes
+                    ? requestedDateTime?.date + " @ " + requestedDateTime?.time
+                    : requestedDateTime?.date +
+                      " @ " +
+                      requestedDateTime?.time +
+                      " - " +
+                      requestedDateTime?.notes,
                 },
                 {
                   type: "mrkdwn",
@@ -233,9 +245,9 @@ export const processDateTime = async (
         step: checkoutSession
           ? ("datetime-selection" as Booking["step"])
           : appointmentIsScheduled === false ||
-            appointmentIsScheduled === "ALREADY_BOOKED"
-          ? "datetime-selection"
-          : "success",
+              appointmentIsScheduled === "ALREADY_BOOKED"
+            ? "datetime-selection"
+            : "success",
         id,
         client: {
           uid: session?.client?.uid,
@@ -342,9 +354,10 @@ const formatAppointmentData = async (appointment: any) => {
           appointment?.addressInfo ? `(${appointment?.addressInfo})` : ""
         }`
       : appointment?.locationType === "Virtual"
-      ? "Virtual Telehealth Consultation"
-      : "*";
+        ? "Virtual Telehealth Consultation"
+        : "*";
 
+  let illnessDetails = "";
   appointment?.illPatientSelection?.forEach(
     (illPatient: string) =>
       appointment?.patients?.forEach((patient: any) => {
@@ -359,6 +372,9 @@ const formatAppointmentData = async (appointment: any) => {
           notes += ` | Ill Patient: ${patient?.name} - Symptom(s): ${JSON.stringify(
             patient?.illnessDetails?.symptoms,
           )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)}`;
+          illnessDetails += `${patient?.name} - Symptom(s): ${JSON.stringify(
+            patient?.illnessDetails?.symptoms,
+          )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)} | `;
         }
       }),
   );
@@ -366,6 +382,11 @@ const formatAppointmentData = async (appointment: any) => {
   if (appointment?.selectedStaff)
     notes += ` | Requested Staff: ${appointment?.selectedStaff?.title} ${appointment?.selectedStaff?.firstName} ${appointment?.selectedStaff?.lastName}`;
 
+  if (appointment?.additionalNotes)
+    notes += ` | Client Notes / Promo: ${appointment?.additionalNotes?.substring(
+      0,
+      180,
+    )}`;
   notes += ` | Booking Session ID: ${appointment?.sessionId}`;
   const defaultBookingReasons = await admin
     .firestore()
@@ -382,20 +403,20 @@ const formatAppointmentData = async (appointment: any) => {
     ? appointment?.locationType === "Home"
       ? defaultBookingReasons?.housecallStandardVcprReason?.label
       : appointment?.locationType === "Clinic"
-      ? defaultBookingReasons?.clinicStandardVcprReason?.label
-      : defaultBookingReasons?.virtualStandardVcprReason?.label
+        ? defaultBookingReasons?.clinicStandardVcprReason?.label
+        : defaultBookingReasons?.virtualStandardVcprReason?.label
     : appointment?.reason
-    ? await admin
-        .firestore()
-        .collection("reasons")
-        .doc(`${appointment?.reason}`)
-        .get()
-        .then((doc: any) => doc.data()?.name || "REASON NAME NOT FOUND...")
-        .catch(async (error: any) => {
-          console.error(error);
-          return "REASON NOT FOUND...";
-        })
-    : "No Symptoms of Illness";
+      ? await admin
+          .firestore()
+          .collection("reasons")
+          .doc(`${appointment?.reason}`)
+          .get()
+          .then((doc: any) => doc.data()?.name || "REASON NAME NOT FOUND...")
+          .catch(async (error: any) => {
+            console.error(error);
+            return "REASON NOT FOUND...";
+          })
+      : "No Symptoms of Illness";
   if (DEBUG)
     console.log("appointment RETURN", {
       proVetData: {
@@ -404,8 +425,8 @@ const formatAppointmentData = async (appointment: any) => {
           appointment?.locationType === "Home"
             ? "Housecall Appointment"
             : appointment?.locationType === "Virtual"
-            ? "Virtual Telehealth Consultation"
-            : "Clinic"
+              ? "Virtual Telehealth Consultation"
+              : "Clinic"
         } Appointment (${
           appointment.totalPatients === 1
             ? "1 Patient"
@@ -418,8 +439,8 @@ const formatAppointmentData = async (appointment: any) => {
           ? appointment?.locationType === "Home"
             ? defaultBookingReasons?.housecallStandardVcprReason?.value
             : appointment?.locationType === "Clinic"
-            ? defaultBookingReasons?.clinicStandardVcprReason?.value
-            : defaultBookingReasons?.virtualStandardVcprReason?.value
+              ? defaultBookingReasons?.clinicStandardVcprReason?.value
+              : defaultBookingReasons?.virtualStandardVcprReason?.value
           : appointment?.reason,
         resources: [appointment?.resource],
         notes,
@@ -439,8 +460,8 @@ const formatAppointmentData = async (appointment: any) => {
         appointment?.locationType === "Home"
           ? "Housecall Appointment"
           : appointment?.locationType === "Virtual"
-          ? "Virtual Telehealth Consultation"
-          : "Clinic"
+            ? "Virtual Telehealth Consultation"
+            : "Clinic"
       } Appointment (${
         appointment.totalPatients === 1
           ? "1 Patient"
@@ -453,8 +474,8 @@ const formatAppointmentData = async (appointment: any) => {
         ? appointment?.locationType === "Home"
           ? defaultBookingReasons?.housecallStandardVcprReason?.value
           : appointment?.locationType === "Clinic"
-          ? defaultBookingReasons?.clinicStandardVcprReason?.value
-          : defaultBookingReasons?.virtualStandardVcprReason?.value
+            ? defaultBookingReasons?.clinicStandardVcprReason?.value
+            : defaultBookingReasons?.virtualStandardVcprReason?.value
         : appointment?.reason,
       resources: [appointment?.resource],
       notes,
@@ -465,6 +486,8 @@ const formatAppointmentData = async (appointment: any) => {
       locationType: appointment?.locationType,
       address: appointment?.address,
       patients: appointment.patientSelection,
+      notes: appointment?.additionalNotes,
+      illnessDetails: illnessDetails.length > 0 ? illnessDetails : null,
     },
   };
 };

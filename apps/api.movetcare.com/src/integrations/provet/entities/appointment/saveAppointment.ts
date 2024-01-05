@@ -57,6 +57,10 @@ export const saveAppointment = async (
       data.ward = getProVetIdFromUrl(proVetAppointmentData?.ward);
     if (movetAppointmentData?.patients)
       data.patients = movetAppointmentData?.patients;
+    if (movetAppointmentData?.notes)
+      data.additionalNotes = movetAppointmentData?.notes;
+    if (movetAppointmentData?.illnessDetails)
+      data.illnessDetails = movetAppointmentData?.illnessDetails;
     else if (proVetAppointmentData?.patients) {
       const proVetPatientData: any = await Promise.all(
         proVetAppointmentData?.patients.map(async (patientUrl: string) => {
