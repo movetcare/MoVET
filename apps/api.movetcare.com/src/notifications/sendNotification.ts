@@ -233,7 +233,7 @@ export const sendNotification = async ({
               request
                 .request({
                   method: "POST",
-                  url: "https://api.jive.com/messaging/v1/messages",
+                  url: "https://api.goto.com/messaging/v1/messages",
                   headers: {
                     Authorization: `Bearer ${accessToken}`,
                     "content-type": "application/json",
@@ -302,7 +302,7 @@ export const sendNotification = async ({
                       request
                         .request({
                           method: "POST",
-                          url: "https://api.jive.com/messaging/v1/messages",
+                          url: "https://api.goto.com/messaging/v1/messages",
                           headers: {
                             Authorization: `Bearer ${newAccessToken}`,
                             "content-type": "application/json",
