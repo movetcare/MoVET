@@ -49,7 +49,7 @@ export default function BanishBadDogBreath() {
       <section className="flex flex-col items-center justify-center sm:max-w-screen-lg mx-4 sm:mx-auto mt-8 mb-20 lg:px-20 bg-white rounded-xl p-4 sm:p-8">
         <Image
           className="rounded-xl cursor-pointer"
-          src="/images/blog/banish-bad-dog-breath.png"
+          src="/images/blog/canine-smiles-clinic.png"
           alt="Banish Doggy Breath and Get Kissable Canine Smiles Again!"
           height={200}
           width={800}
@@ -117,15 +117,6 @@ export default function BanishBadDogBreath() {
           POPDs, we are excited to move forward with oral health education and
           better overall oral care for our canine and feline friends at home.
         </p>
-        <h3 className="text-xl text-center mt-8 font-abside">
-          Upcoming Clinics:
-        </h3>
-        <ul className="text-center mt-2">
-          <li>Saturday June 17th, 9:30AM - 3:30PM</li>
-          <li>Saturday August 26th, 9:30AM - 3:30PM</li>
-          <li>Saturday October 28th, 9:30AM - 3:30PM</li>
-          <li>Saturday December 9th, 9:30AM - 3:30PM</li>
-        </ul>
         <h3 className="text-xl text-center mt-12 font-abside">
           SCHEDULE A TEETH CLEANING FOR YOUR DOG TODAY!
         </h3>

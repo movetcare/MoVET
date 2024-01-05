@@ -3,7 +3,7 @@ describe("application-redirects", () => {
     cy.visit(Cypress.env().websiteUrl + "/pharmacy");
     cy.location("host", {
       timeout: Cypress.env().defaultPathnameTimeOut,
-    }).should("eq", "movetcare.vetsfirstchoice.com");
+    }).should("eq", "movetcare.greatpetrx.com");
   });
   it("appointment check in redirects work", () => {
     cy.visit(Cypress.env().websiteUrl + "/checkin");

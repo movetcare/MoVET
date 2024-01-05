@@ -34,7 +34,7 @@ export const SelectInput = ({
               <div className="w-full z-50">
                 {label && (
                   <Listbox.Label
-                    htmlFor={label}
+                    htmlFor={name}
                     className="block text-sm font-medium text-movet-black font-abside mb-2"
                   >
                     {label}{" "}
@@ -43,18 +43,19 @@ export const SelectInput = ({
                 )}
                 <div className="mt-1 relative bg-transparent">
                   <Listbox.Button
+                    id={name}
                     onBlur={onBlur}
                     className={classNames(
                       disabled
                         ? "border-movet-gray bg-transparent"
                         : "border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown",
-                      "relative border w-full bg-white rounded-xl pl-3 pr-10 py-2 text-left cursor-pointer sm:text-sm"
+                      "relative border w-full bg-white rounded-xl pl-3 pr-10 py-2 text-left cursor-pointer sm:text-sm",
                     )}
                   >
                     <span
                       className={classNames(
                         disabled ? "text-movet-gray" : "text-movet-black",
-                        "block truncate font-abside-smooth text-base h-7 mt-1 ml-1"
+                        "block truncate font-abside-smooth text-base h-7 mt-1 ml-1",
                       )}
                     >
                       {value.name}
@@ -88,7 +89,7 @@ export const SelectInput = ({
                               active
                                 ? "text-movet-white bg-movet-brown"
                                 : "text-movet-black",
-                              "text-left cursor-default select-none relative py-2 pl-4 pr-4"
+                              "text-left cursor-default select-none relative py-2 pl-4 pr-4",
                             )
                           }
                           value={item}
@@ -98,7 +99,7 @@ export const SelectInput = ({
                               <span
                                 className={classNames(
                                   selected ? "font-semibold" : "font-normal",
-                                  "block truncate"
+                                  "block truncate",
                                 )}
                               >
                                 {item.name}
@@ -107,7 +108,7 @@ export const SelectInput = ({
                                 <span
                                   className={classNames(
                                     active ? "text-white" : "text-movet-black",
-                                    "absolute inset-y-0 left-0 flex items-center pl-1.5"
+                                    "absolute inset-y-0 left-0 flex items-center pl-1.5",
                                   )}
                                 >
                                   <FontAwesomeIcon

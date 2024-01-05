@@ -42,20 +42,20 @@ export default function K9Smiles() {
         <link rel="apple-touch-icon" href="/static/images/favicon.ico" />
         <meta
           property="og:image"
-          content="/images/blog/canine-smiles-clinic.jpg"
+          content="/images/blog/canine-smiles-clinic.png"
         />
         <meta
           name="twitter:image"
-          content="/images/blog/canine-smiles-clinic.jpg"
+          content="/images/blog/canine-smiles-clinic.png"
         />
       </Head>
       <section className="flex flex-col items-center justify-center sm:max-w-screen-lg mx-4 sm:mx-auto mt-8 mb-20 lg:px-20 bg-white rounded-xl p-4 sm:p-8">
         <Image
           className="rounded-xl cursor-pointer"
-          src="/images/blog/banish-bad-dog-breath.png"
+          src="/images/blog/canine-smiles-clinic.png"
           alt="k9 Smiles Teeth Cleaning Clinic @ MoVET"
           height={500}
-          width={500}
+          width={600}
         />
         <h2 className="text-2xl mt-8 text-center max-w-screen-md font-extrabold">
           MoVET is partnering with{" "}
@@ -75,10 +75,17 @@ export default function K9Smiles() {
           Upcoming Clinics:
         </h3>
         <ul className="text-center mt-2">
-          <li>Saturday September 23rd, 9:30AM - 3:30PM</li>
-          <li>Saturday October 28th, 9:30AM - 3:30PM</li>
-          <li>Saturday November 11th, 9:30AM - 3:30PM</li>
-          <li>Saturday December 9th, 9:30AM - 3:30PM</li>
+          <li>January 20th - 9:30AM - 3:30PM</li>
+          <li>March 2nd - 9:30AM - 3:30PM</li>
+          <li>April 6th - 9:30AM - 3:30PM</li>
+          <li>May 18th - 9:30AM - 3:30PM</li>
+          <li>June 8th - 9:30AM - 3:30PM</li>
+          <li>July 13th - 9:30AM - 3:30PM</li>
+          <li>August 24th - 9:30AM - 3:30PM</li>
+          <li>September 14th - 9:30AM - 3:30PM</li>
+          <li>October 5th - 9:30AM - 3:30PM</li>
+          <li>November 9th - 9:30AM - 3:30PM</li>
+          <li>December 14th - 9:30AM - 3:30PM</li>
         </ul>
         <h3 className="text-xl text-center mt-12 font-abside">
           SCHEDULE A TEETH CLEANING FOR YOUR PET TODAY!

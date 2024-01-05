@@ -140,7 +140,7 @@ const posts: Array<BlogPost> = [
       "We are excited to move forward with oral health education and better overall oral care for our canine and feline friends at home with the help of K9 Smiles!",
     date: "May 16th, 2023",
     datetime: "2023-05-16",
-    imageUrl: "/images/blog/banish-bad-dog-breath.png",
+    imageUrl: "/images/blog/canine-smiles-clinic.png",
     readingTime: "3 min",
     author: {
       name: "Barbara Caldwell, DVM",

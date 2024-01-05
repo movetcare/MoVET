@@ -2,7 +2,7 @@ import { admin, throwError } from "../../../config/config";
 import * as func from "firebase-functions";
 import { fetchNewProVetAccessToken } from "../fetchNewProVetAccessToken";
 const axios = require("axios").default;
-const DEBUG = true;
+const DEBUG = false;
 export const fetchEntity = async (
   entity:
     | "item"

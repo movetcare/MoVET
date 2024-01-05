@@ -34,7 +34,7 @@ export function middleware(request: NextRequest) {
     request.nextUrl.pathname === "/onlinepharmacy/" ||
     request.nextUrl.pathname === "/online-pharmacy/"
   )
-    return NextResponse.redirect("https://movetcare.vetsfirstchoice.com/");
+    return NextResponse.redirect("https://movetcare.greatpetrx.com/");
   if (
     request.nextUrl.pathname === "/k9-smiles/" ||
     request.nextUrl.pathname === "/k9smiles/" ||

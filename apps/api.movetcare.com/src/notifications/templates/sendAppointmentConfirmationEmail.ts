@@ -8,7 +8,7 @@ import { EmailConfiguration } from "../../types/email.d";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
-const DEBUG = true;
+const DEBUG = false;
 export const sendAppointmentConfirmationEmail = async (
   clientId: string,
   appointmentId: string,
@@ -70,19 +70,20 @@ export const sendAppointmentConfirmationEmail = async (
     const patientRecords: any = [];
     await Promise.all(
       appointment?.patients.map(
-        async (patientId: string) =>
+        async (patient: any) =>
           await admin
             .firestore()
             .collection("patients")
-            .doc(`${patientId}`)
+            .doc(`${patient?.id}`)
             .get()
             .then((patient: any) => patientRecords.push(patient.data()))
             .catch((error: any) => throwError(error)),
       ),
     );
-    petNames = patientRecords?.map((patient: any) =>
-      `<li>${patient?.name}</li>`.replace(",", ""),
+    petNames = patientRecords?.map(
+      (patient: any) => `<li>${patient?.name}</li>`,
     );
+    if (DEBUG) console.log("petNames -> ", petNames);
   } else
     petNames = appointment?.patients.map((patient: any) =>
       `<li>${patient?.name}${

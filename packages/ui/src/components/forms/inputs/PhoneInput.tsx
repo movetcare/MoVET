@@ -32,8 +32,10 @@ const PhoneInput = ({
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <PatternFormat
+            id={name || "phone"}
             name={`${name}-number`}
             type="tel"
+            autoComplete="tel"
             allowEmptyFormatting
             valueIsNumericString
             patternChar="#"
@@ -52,7 +54,7 @@ const PhoneInput = ({
               disabled
                 ? "border-movet-gray text-movet-gray"
                 : "focus:ring-movet-brown focus:border-movet-brown",
-              "py-3 px-4 block w-full rounded-xl placeholder-movet-gray font-abside-smooth"
+              "py-3 px-4 block w-full rounded-xl placeholder-movet-gray font-abside-smooth",
             )}
           />
         )}

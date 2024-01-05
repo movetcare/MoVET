@@ -41,6 +41,7 @@ export const EmailInput = ({
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
             <input
+              id={name}
               placeholder={placeholder || ""}
               disabled={disabled}
               readOnly={readOnly}
@@ -56,7 +57,7 @@ export const EmailInput = ({
                 disabled
                   ? "border-movet-gray text-movet-gray"
                   : "focus:ring-movet-brown focus:border-movet-brown",
-                "py-3 px-4 block w-full rounded-xl font-abside-smooth"
+                "py-3 px-4 block w-full rounded-xl font-abside-smooth",
               )}
             />
           )}
