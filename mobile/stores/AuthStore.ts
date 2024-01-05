@@ -9,7 +9,7 @@ export interface Client {
 }
 export const AuthStore = new Store({
   isLoggedIn: false,
-  initialized: false,
+  initialized: true,
   client: null as Client | null,
   user: null,
 } as any);

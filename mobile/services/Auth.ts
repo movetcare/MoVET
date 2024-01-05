@@ -99,7 +99,7 @@ export const signIn = async (email: string, password?: string | undefined) => {
         store.isLoggedIn = true;
       });
       if (!__DEV__) LogRocket.identify(email, { status: "logged-in" });
-      router.replace("/(app)/home");
+      router.replace("/test");
     } catch (error: any) {
       console.error(error);
       return error?.code || "Unknown Error...";
@@ -147,7 +147,7 @@ export const signInWithLink = async (email: string, link: string) => {
         alert(JSON.stringify(error));
         return error?.code || "Unknown Error...";
       });
-      return "Invalid Sign In Link...";
+  return "Invalid Sign In Link...";
 };
 
 export const signOut = async () =>
@@ -196,6 +196,5 @@ export const updateUserAuth = async (user: any) =>
   AuthStore.update((store) => {
     store.user = user;
     store.isLoggedIn = user ? true : false;
-    store.initialized = true;
   });
 

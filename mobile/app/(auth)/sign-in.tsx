@@ -125,7 +125,12 @@ export default function SignIn() {
           .then((signInError: any) => {
             if (signInError)
               setError({ message: signInError, source: "signInWithLink" });
-            else router.replace("/(app)/home");
+            else {
+              alert(
+                "SIGN IN w/ LINK SUCCESSFUL! REDIRECTING TO TEST SCREEN...",
+              );
+              router.replace("/test");
+            }
           })
           .catch((error: any) =>
             setError({ ...error, source: "signInWithLink" }),
@@ -149,9 +154,9 @@ export default function SignIn() {
     user?.email,
   ]);
 
-  useEffect(() => {
-    if (isLoggedIn) router.replace("/(app)/home");
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   if (isLoggedIn) router.replace("/(app)/home");
+  // }, [isLoggedIn]);
 
   const onSubmit = async (data: { email: string; password?: string }) => {
     setIsLoading(true);
