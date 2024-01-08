@@ -235,9 +235,9 @@ const NotificationSettings = () => {
     setIsLoading(true);
     const updateClient = httpsCallable(functions, "updateClient");
     await updateClient({
-      sendEmail: data.sendEmail,
-      sendSms: data.sendSms,
-      sendPush: data.sendPush,
+      sendEmail: data?.sendEmail,
+      sendSms: data?.sendSms,
+      sendPush: data?.sendPush,
     })
       .then((result) => {
         if (!result.data)

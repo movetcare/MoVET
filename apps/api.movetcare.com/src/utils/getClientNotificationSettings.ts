@@ -1,12 +1,13 @@
-import {admin, DEBUG, throwError} from "../config/config";
+import { admin, DEBUG, throwError } from "../config/config";
 
 export interface UserNotificationSettings {
   sendEmail: boolean;
   sendSms: boolean;
+  sendPush: boolean;
 }
 
 export const getClientNotificationSettings = async (
-  id: string
+  id: string,
 ): Promise<UserNotificationSettings | false> =>
   await admin
     .firestore()
@@ -18,10 +19,12 @@ export const getClientNotificationSettings = async (
         console.log("RETRIEVED CLIENT NOTIFICATION PREFERENCES", {
           sendEmail: document.data()?.sendEmail,
           sendSms: document.data()?.sendSms,
+          sendPush: document.data()?.sendPush,
         });
       return {
         sendEmail: document.data()?.sendEmail,
         sendSms: document.data()?.sendSms,
+        sendPush: document.data()?.sendPush,
       };
     })
     .catch((error: any) => throwError(error));

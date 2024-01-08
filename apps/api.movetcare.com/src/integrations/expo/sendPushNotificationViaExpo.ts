@@ -1,4 +1,4 @@
-import { expoAccessToken, throwError } from "../../config/config";
+import { admin, expoAccessToken, throwError } from "../../config/config";
 import { Expo, ExpoPushTicket } from "expo-server-sdk";
 const DEBUG = true;
 const expo = new Expo({ accessToken: expoAccessToken });
@@ -22,7 +22,6 @@ export const sendPushNotificationViaExpo = async ({
   if (DEBUG)
     console.log("NEW EXPO PUSH REQUEST: ", { to, sound, title, body, data });
   const messages: Array<any> = [];
-
   if (Array.isArray(to)) {
     for (const pushToken of to) {
       if (!Expo.isExpoPushToken(pushToken))
@@ -48,7 +47,7 @@ export const sendPushNotificationViaExpo = async ({
   }
   const chunks = expo.chunkPushNotifications(messages);
   const tickets: Array<any> = [];
-  const failedTokens = [];
+  const failedTokens: any = [];
   await Promise.all(
     chunks.map(async (chunk: any) => {
       try {
@@ -72,6 +71,16 @@ export const sendPushNotificationViaExpo = async ({
       failureCount: failedTokens.length,
       responses: JSON.stringify(tickets),
     });
+  admin.firestore().collection("expo_push_log").add({
+    to,
+    sound,
+    title,
+    body,
+    data,
+    failedTokens,
+    tickets,
+    createdOn: new Date(),
+  });
   return { failureCount: failedTokens.length, responses: tickets };
   // const receiptIds: Array<any> = [];
   // for (const ticket of tickets) {

@@ -14,6 +14,7 @@ import { fetchEntity } from "../../integrations/provet/entities/fetchEntity";
 import type { EmailConfiguration } from "../../types/email.d";
 import { sendNotification } from "../sendNotification";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
+import { truncateString } from "../../utils/truncateString";
 
 interface AppointmentDetails {
   active: boolean;
@@ -161,11 +162,7 @@ const send24HourAppointmentNotification = async (
           : null;
   const { email, phoneNumber, displayName } = userDetails;
   if (DEBUG) console.log("USER DATA", { email, phoneNumber, displayName });
-  if (
-    userNotificationSettings &&
-    userNotificationSettings?.sendEmail &&
-    email
-  ) {
+  if (email) {
     const isNewFlow = user ? false : true;
     let emailText = "";
     const vcprRequired = await admin
@@ -522,6 +519,23 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
       sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
       phoneNumber,
     });
+  if (DEBUG) console.log("USER DATA", { email, phoneNumber, displayName });
+  if (userNotificationSettings && userNotificationSettings?.sendPush && client)
+    sendNotification({
+      type: "push",
+      payload: {
+        user: { uid: client },
+        category: "client-appointment",
+        title: `${petNames}'s Appointment Reminder: ${getDateStringFromDate(
+          start?.toDate(),
+          "dateOnly",
+        )} @ ${getDateStringFromDate(start?.toDate(), "timeOnly")}`,
+        message: truncateString(
+          "Please reach out if you have any questions or need assistance!",
+        ),
+        path: `/home/appointment-detail?id=${id}`,
+      },
+    });
 };
 
 const send30MinAppointmentNotification = async (
@@ -561,11 +575,7 @@ const send30MinAppointmentNotification = async (
 
   const { email, phoneNumber, displayName } = userDetails;
   if (DEBUG) console.log("USER DATA", { email, phoneNumber, displayName });
-  if (
-    userNotificationSettings &&
-    userNotificationSettings?.sendEmail &&
-    email
-  ) {
+  if (email) {
     const isNewFlow = user ? false : true;
     const appointmentAddress = notes?.includes("Appointment Address")
       ? notes?.split("-")[1]?.split("|")[0]?.trim()
@@ -938,6 +948,19 @@ const send30MinAppointmentNotification = async (
     console.log("DID NOT 30 MIN HOUR APPOINTMENT NOTIFICATION SMS", {
       sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
       phoneNumber,
+    });
+  if (userNotificationSettings && userNotificationSettings?.sendPush && client)
+    sendNotification({
+      type: "push",
+      payload: {
+        user: { uid: client },
+        category: "client-appointment",
+        title: "It's almost time for your appointment w/ MoVET!",
+        message: truncateString(
+          "Please reach out if you have any questions or need assistance!",
+        ),
+        path: `/home/appointment-detail?id=${id}`,
+      },
     });
 };
 

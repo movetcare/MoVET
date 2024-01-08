@@ -465,9 +465,9 @@ const Client = () => {
                           {client?.displayName !== undefined
                             ? client?.displayName
                             : client?.firstName === undefined &&
-                              client?.lastName === undefined
-                            ? "UNKNOWN CLIENT"
-                            : ""}
+                                client?.lastName === undefined
+                              ? "UNKNOWN CLIENT"
+                              : ""}
                         </h1>
                       </div>
                     )}
@@ -1027,7 +1027,7 @@ const Client = () => {
                       />
                     ) : client?.sendPush === undefined ? (
                       <span className="ml-4 inline-flex items-center rounded-full bg-movet-yellow px-3 py-0.5 text-sm font-extrabold text-white text-center">
-                        UNKNOWN
+                        N/A
                       </span>
                     ) : client?.sendPush ? (
                       <span className="ml-4 inline-flex items-center rounded-full bg-movet-green px-3 py-0.5 text-sm font-extrabold text-white text-center">

@@ -508,7 +508,10 @@ export const sendNotification = async ({
             })
             .catch((error: any) => throwError(error));
         else if (DEBUG) console.log("NO TOKENS FOUND", { adminFcmTokens });
-      } else if (payload?.category === "client-telehealth") {
+      } else if (
+        payload?.category === "client-telehealth" ||
+        payload?.category === "client-appointment"
+      ) {
         const allClientTokenData: Array<any> = [];
         const clientPushTokens = await admin
           .firestore()
@@ -535,7 +538,7 @@ export const sendNotification = async ({
             title: payload?.title,
             body: payload?.message,
             data: {
-              path: payload?.path || "/chat",
+              path: payload?.path || "/home",
             },
           })
             .then(
