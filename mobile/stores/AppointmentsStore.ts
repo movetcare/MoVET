@@ -18,6 +18,8 @@ export interface Appointment {
   location?: string;
   instructions?: string;
   telemedicineUrl?: string;
+  additionalNotes?: string;
+  illnessDetails?: string;
 }
 
 export const AppointmentsStore = new Store({

@@ -269,12 +269,13 @@ const Home = () => {
                 <TelehealthStatus status={telehealthStatus} />
               </>
             )}
+            {upcomingAppointments !== null && <PaymentMethodSummary />}
             {(announcement?.isActiveMobile || ad?.isActive) && (
               <View
                 style={tw`border-t-2 border-movet-gray mt-6 mx-8 w-2.6/3`}
               />
             )}
-            {upcomingAppointments !== null && <PaymentMethodSummary />}
+
             {/* <Debug object={upcomingAppointments} /> */}
             <AppointmentsList source="home" />
           </View>

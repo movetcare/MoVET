@@ -27,7 +27,13 @@ interface PaymentMethod {
   type: string;
 }
 
-export const PaymentMethodSummary = (): ReactNode => {
+export const PaymentMethodSummary = ({
+  message,
+  title,
+}: {
+  message?: string;
+  title?: string;
+}): ReactNode => {
   const { user } = AuthStore.useState();
   const [paymentMethods, setPaymentMethods] =
     useState<Array<PaymentMethod> | null>(null);
@@ -35,6 +41,12 @@ export const PaymentMethodSummary = (): ReactNode => {
   const [showUpcomingExpirationWarning, setShowUpcomingExpirationWarning] =
     useState(false);
   const [showExpiredWarning, setShowExpiredWarning] = useState(false);
+  const [customTitle, setCustomTitle] = useState<string>(
+    "Add a Payment Method",
+  );
+  const [customMessage, setCustomMessage] = useState<string>(
+    "Having a payment source on file allows you to receive expedited service and skip the checkout lines when visiting our clinic and boutique.",
+  );
 
   useEffect(() => {
     if (!user?.uid) return;
@@ -45,7 +57,10 @@ export const PaymentMethodSummary = (): ReactNode => {
         orderBy("updatedOn", "desc"),
       ),
       (querySnapshot: QuerySnapshot) => {
-        if (querySnapshot.empty) return;
+        if (querySnapshot.empty) {
+          setIsLoading(false);
+          return;
+        }
         const paymentMethods: Array<PaymentMethod> = [];
         querySnapshot.forEach((doc: DocumentData) => {
           if (doc.data().active)
@@ -112,12 +127,42 @@ export const PaymentMethodSummary = (): ReactNode => {
     console.log("paymentMethods", paymentMethods);
   }, [paymentMethods]);
 
+  useEffect(() => {
+    if (!paymentMethods || message || title) {
+      setCustomTitle("Add a Payment Method");
+      setCustomMessage(
+        "Having a payment source on file allows you to receive expedited service and skip the checkout lines when visiting our clinic and boutique.",
+      );
+      if (title) setCustomTitle(title);
+      if (message) setCustomMessage(message);
+    } else if (showUpcomingExpirationWarning) {
+      setCustomTitle("Payment Method Expiring Soon!");
+      setCustomMessage(
+        "One or more of your payment methods are expiring soon. Please  add a new form of payment to avoid any delays in service.",
+      );
+    } else if (showExpiredWarning) {
+      setCustomTitle("Payment Method Expired!");
+      setCustomMessage(
+        " One or more of your payment methods has expired. Please add a new form of payment to avoid any delays in service.",
+      );
+    } else if (message || title) {
+      if (title) setCustomTitle(title);
+      if (message) setCustomMessage(message);
+    }
+  }, [
+    paymentMethods,
+    showExpiredWarning,
+    showUpcomingExpirationWarning,
+    message,
+    title,
+  ]);
+
   const setError = (error: any) =>
     ErrorStore.update((s: any) => {
       s.currentError = error;
     });
 
-  return (paymentMethods && paymentMethods.length === 0) ||
+  return !paymentMethods ||
     showUpcomingExpirationWarning ||
     showExpiredWarning ? (
     <TouchableOpacity
@@ -127,7 +172,7 @@ export const PaymentMethodSummary = (): ReactNode => {
           params: { autoOpen: true },
         })
       }
-      style={tw`rounded-xl`}
+      style={tw`rounded-xl my-4`}
     >
       <View
         style={[
@@ -144,9 +189,6 @@ export const PaymentMethodSummary = (): ReactNode => {
           ]}
           noDarkMode
         >
-          <Debug object={showExpiredWarning} />
-          <Debug object={showUpcomingExpirationWarning} />
-          <Debug object={paymentMethods.length} />
           <Container style={tw`px-4`}>
             {isLoading ? (
               <ActivityIndicator size="small" color={tw.color("movet-white")} />
@@ -161,48 +203,18 @@ export const PaymentMethodSummary = (): ReactNode => {
                   Loading Payment Methods...
                 </ItalicText>
               </>
-            ) : paymentMethods && paymentMethods.length === 0 ? (
-              <>
-                <HeadingText style={tw`text-movet-white text-base`} noDarkMode>
-                  Add a Payment Method
-                </HeadingText>
-                <BodyText
-                  style={tw`text-movet-white text-sm -mt-0.5`}
-                  noDarkMode
-                >
-                  Having a payment source on file allows you to receive
-                  expedited service and skip the checkout lines when visiting
-                  our clinic and boutique.
-                </BodyText>
-              </>
-            ) : showUpcomingExpirationWarning ? (
-              <>
-                <HeadingText style={tw`text-movet-white text-base`} noDarkMode>
-                  Payment Method Expiring Soon
-                </HeadingText>
-                <BodyText
-                  style={tw`text-movet-white text-sm -mt-0.5`}
-                  noDarkMode
-                >
-                  One or more of your payment methods are expiring soon. Please
-                  add a new form of payment to avoid any delays in service.
-                </BodyText>
-              </>
-            ) : showExpiredWarning ? (
-              <>
-                <HeadingText style={tw`text-movet-white text-base`} noDarkMode>
-                  Payment Method Expired!
-                </HeadingText>
-                <BodyText
-                  style={tw`text-movet-white text-sm -mt-0.5`}
-                  noDarkMode
-                >
-                  One or more of your payment methods has expired. Please add a
-                  new form of payment to avoid any delays in service.
-                </BodyText>
-              </>
             ) : (
-              <></>
+              <>
+                <HeadingText style={tw`text-movet-white text-base`} noDarkMode>
+                  {customTitle}
+                </HeadingText>
+                <BodyText
+                  style={tw`text-movet-white text-sm -mt-0.5`}
+                  noDarkMode
+                >
+                  {customMessage}
+                </BodyText>
+              </>
             )}
           </Container>
         </View>

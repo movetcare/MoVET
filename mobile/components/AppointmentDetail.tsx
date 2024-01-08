@@ -41,6 +41,7 @@ import { getPlatformUrl } from "utils/getPlatformUrl";
 import { useForm } from "react-hook-form";
 import { httpsCallable } from "firebase/functions";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
+import { PaymentMethodSummary } from "./home/PaymentMethodSummary";
 
 export const AppointmentDetail = () => {
   const { id } = useLocalSearchParams();
@@ -187,12 +188,18 @@ export const AppointmentDetail = () => {
   const setError = (error: any) =>
     ErrorStore.update((s: any) => {
       s.currentError = error;
-    }); 
+    });
 
   return (
     <Screen>
       {appointment?.location === "TELEHEALTH" && (
         <Stack.Screen options={{ title: "Virtual Consultation" }} />
+      )}
+      {appointment?.start?.toDate() >= new Date() && (
+        <PaymentMethodSummary
+          title="PAYMENT METHOD REQUIRED"
+          message="Tap here to add a payment method to your account before your appointment begins."
+        />
       )}
       <View
         style={[
@@ -237,22 +244,6 @@ export const AppointmentDetail = () => {
             hour12: true,
           })}
         </SubHeadingText>
-        {(appointment?.instructions ||
-          (appointment?.reason as { name: string; instructions: string })
-            ?.instructions) && (
-          <>
-            <SubHeadingText style={tw`mt-4`}>INSTRUCTIONS</SubHeadingText>
-            <ItalicText style={tw`mb-4`}>
-              {appointment?.instructions ||
-                (
-                  appointment?.reason as {
-                    name: string;
-                    instructions: string;
-                  }
-                )?.instructions}
-            </ItalicText>
-          </>
-        )}
         {appointment?.notes?.includes("Appointment Location:") ? (
           <>
             <SubHeadingText style={tw`mt-2`}>
@@ -471,6 +462,38 @@ export const AppointmentDetail = () => {
             </View>
           </Container>
         ))}
+        {(appointment?.instructions ||
+          (appointment?.reason as { name: string; instructions: string })
+            ?.instructions) && (
+          <>
+            <SubHeadingText style={tw`mt-4`}>INSTRUCTIONS</SubHeadingText>
+            <ItalicText style={tw`mb-4`}>
+              {appointment?.instructions ||
+                (
+                  appointment?.reason as {
+                    name: string;
+                    instructions: string;
+                  }
+                )?.instructions}
+            </ItalicText>
+          </>
+        )}
+        {appointment?.illnessDetails && (
+          <>
+            <SubHeadingText style={tw`mt-2`}>ILLNESS REPORT</SubHeadingText>
+            <ItalicText style={tw`mb-4`}>
+              {appointment?.illnessDetails.trim().slice(0, -1)}
+            </ItalicText>
+          </>
+        )}
+        {appointment?.additionalNotes && (
+          <>
+            <SubHeadingText style={tw`mt-2`}>ADDITIONAL NOTES</SubHeadingText>
+            <ItalicText style={tw`mb-4`}>
+              {appointment?.additionalNotes}
+            </ItalicText>
+          </>
+        )}
         {appointment?.location === "TELEHEALTH" &&
           appointment?.start?.toDate() >= new Date() && (
             <ItalicText style={tw`text-sm text-center mt-4`}>
