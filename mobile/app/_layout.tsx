@@ -82,9 +82,10 @@ SplashScreen.preventAutoHideAsync();
 
       useEffect(() => {
         if (!__DEV__) LogRocket.init("cjlcsx/movet-mobile-app");
-        const unsubscribeAuth = onAuthStateChanged(auth, (user: any) =>
-          updateUserAuth(user),
-        );
+        const unsubscribeAuth = onAuthStateChanged(auth, (user: any) => {
+          alert("onAuthStateChanged => " + JSON.stringify(user));
+          updateUserAuth(user);
+        });
         return () => unsubscribeAuth();
       }, []);
 
@@ -92,10 +93,10 @@ SplashScreen.preventAutoHideAsync();
       //   if (currentError !== null) alert(JSON.stringify(currentError));
       // }, [currentError]);
 
-      useEffect(() => {
-        if (!navigationState?.key || !initialized) return;
-        else if (!isLoggedIn) router.replace("/(auth)/sign-in");
-      }, [navigationState?.key, initialized, isLoggedIn]);
+      // useEffect(() => {
+      //   if (!navigationState?.key || !initialized) return;
+      //   else if (!isLoggedIn) router.replace("/(auth)/sign-in");
+      // }, [navigationState?.key, initialized, isLoggedIn]);
 
       const [fontsLoaded, fontsError] = useFonts({
         Abside: require("../assets/fonts/Abside-Regular.ttf"),

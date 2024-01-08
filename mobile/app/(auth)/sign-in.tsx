@@ -112,6 +112,17 @@ export default function SignIn() {
 
   useEffect(() => {
     if (mode && oobCode && continueUrl && lang && apiKey && user?.email) {
+      alert(
+        "signInUserWithLink HIT =>" +
+          JSON.stringify({
+            mode,
+            oobCode,
+            continueUrl,
+            lang,
+            apiKey,
+            email: user?.email,
+          }),
+      );
       const signInUserWithLink = async (email: string, link: string) => {
         setIsLoading(true);
         await signInWithLink(email, link)

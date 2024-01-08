@@ -1,4 +1,4 @@
-import { Tabs, usePathname } from "expo-router";
+import { Tabs, router, usePathname } from "expo-router";
 import { useThemeColor } from "hooks/useThemeColor";
 import { SafeAreaView, useColorScheme } from "react-native";
 import tw from "tailwind";
@@ -11,7 +11,7 @@ import {
   Patient,
   PatientsStore,
 } from "stores";
-import { auth, firestore } from "firebase-config";
+import { firestore } from "firebase-config";
 import {
   onSnapshot,
   query,
@@ -83,13 +83,11 @@ const TabsLayout = (props: any) => {
   //   return () => unsubscribeAuth();
   // }, []);
 
-  // useEffect(() => {
-  //   if (!isLoggedIn) router.replace("/(auth)/sign-in");
-  // }, [isLoggedIn]);
-
   useEffect(() => {
-    if (!isLoggedIn || !initialized || !user?.uid) return;
-    if (!__DEV__ && user?.email)
+    if (!isLoggedIn || !initialized || !user?.uid) {
+      if (!isLoggedIn) router.replace("/(auth)/sign-in");
+      return;
+    } else if (!__DEV__ && user?.email)
       LogRocket.identify(user?.email, { status: "logged-in" });
     const unsubscribeUser = onSnapshot(
       doc(firestore, "clients", user?.uid),
