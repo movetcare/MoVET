@@ -1,6 +1,6 @@
 import { ImageBackground, Pressable, useColorScheme } from "react-native";
 import { useEffect, useState } from "react";
-import { signIn, signInWithLink, updateUserAuth } from "services/Auth";
+import { signIn, signInWithLink } from "services/Auth";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import DeviceDimensions from "utils/DeviceDimensions";
 import tw from "tailwind";
@@ -15,11 +15,7 @@ import {
   LinkText,
   ActionButton,
 } from "components/themed";
-import {
-  router,
-  useLocalSearchParams,
-  useRootNavigationState,
-} from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { AuthStore, ErrorStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
@@ -33,8 +29,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { isTablet } from "utils/isTablet";
 import LogRocket from "@logrocket/react-native";
-import { auth } from "firebase-config";
-import { onAuthStateChanged } from "firebase/auth";
 
 const getRandomBackgroundImage = () => {
   const randomNumber = getRandomInt(1, 5);
@@ -77,10 +71,16 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showVerificationButton, setShowVerificationButton] =
     useState<boolean>(false);
-  const navigationState = useRootNavigationState();
-  const { initialized, isLoggedIn, user } = AuthStore.useState();
-  const { mode, oobCode, continueUrl, lang, apiKey, withPassword } =
-    useLocalSearchParams();
+  const { user, isLoggedIn } = AuthStore.useState();
+  const {
+    mode,
+    oobCode,
+    continueUrl,
+    lang,
+    apiKey,
+    withPassword,
+    redirectPath,
+  } = useLocalSearchParams();
   const isDarkMode = useColorScheme() !== "light";
   const [tapCount, setTapCount] = useState<number>(0);
   const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false);
@@ -111,30 +111,25 @@ export default function SignIn() {
   }, [tapCount]);
 
   useEffect(() => {
-    const unsubscribeAuth = onAuthStateChanged(auth, (user: any) =>
-      updateUserAuth(user),
-    );
-    return () => unsubscribeAuth();
-  }, []);
-
-  useEffect(() => {
-    if (!navigationState?.key || !initialized) return;
-    else if (mode && oobCode && continueUrl && lang && apiKey && user?.email) {
+    if (mode && oobCode && continueUrl && lang && apiKey && user?.email) {
       const signInUserWithLink = async (email: string, link: string) => {
+        setIsLoading(true);
         await signInWithLink(email, link)
           .then((signInError: any) => {
             if (signInError)
               setError({ message: signInError, source: "signInWithLink" });
             else {
-              alert(
-                "SIGN IN w/ LINK SUCCESSFUL! REDIRECTING TO TEST SCREEN...",
-              );
-              router.replace("/test");
+              alert("signInWithLink REDIRECTING...");
+              router.replace("/(app)/home");
             }
           })
           .catch((error: any) =>
             setError({ ...error, source: "signInWithLink" }),
-          );
+          )
+          .finally(() => {
+            setIsLoading(false);
+            setShowVerificationButton(true);
+          });
       };
       signInUserWithLink(
         user?.email,
@@ -142,21 +137,11 @@ export default function SignIn() {
           `?mode=${mode}&oobCode=${oobCode}&continueUrl=${continueUrl}&lang=${lang}&apiKey=${apiKey}`,
       );
     }
-  }, [
-    navigationState?.key,
-    initialized,
-    isLoggedIn,
-    mode,
-    oobCode,
-    continueUrl,
-    lang,
-    apiKey,
-    user?.email,
-  ]);
+  }, [mode, oobCode, continueUrl, lang, apiKey, user?.email]);
 
-  // useEffect(() => {
-  //   if (isLoggedIn) router.replace("/(app)/home");
-  // }, [isLoggedIn]);
+  useEffect(() => {
+    if (isLoggedIn) router.replace((redirectPath as string) || "/(app)/home");
+  }, [isLoggedIn, redirectPath]);
 
   const onSubmit = async (data: { email: string; password?: string }) => {
     setIsLoading(true);

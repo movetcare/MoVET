@@ -1,4 +1,4 @@
-import { Tabs, router, usePathname } from "expo-router";
+import { Tabs, usePathname } from "expo-router";
 import { useThemeColor } from "hooks/useThemeColor";
 import { SafeAreaView, useColorScheme } from "react-native";
 import tw from "tailwind";
@@ -26,8 +26,6 @@ import {
 import { useEffect, useState } from "react";
 import { ErrorStore } from "stores";
 import LogRocket from "@logrocket/react-native";
-import { onAuthStateChanged } from "firebase/auth";
-import { updateUserAuth } from "services/Auth";
 
 const DEBUG_DATA = false;
 
@@ -78,16 +76,16 @@ const TabsLayout = (props: any) => {
     },
   };
 
-  useEffect(() => {
-    const unsubscribeAuth = onAuthStateChanged(auth, (user: any) =>
-      updateUserAuth(user),
-    );
-    return () => unsubscribeAuth();
-  }, []);
+  // useEffect(() => {
+  //   const unsubscribeAuth = onAuthStateChanged(auth, (user: any) =>
+  //     updateUserAuth(user),
+  //   );
+  //   return () => unsubscribeAuth();
+  // }, []);
 
-  useEffect(() => {
-    if (!isLoggedIn) router.replace("/(auth)/sign-in");
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   if (!isLoggedIn) router.replace("/(auth)/sign-in");
+  // }, [isLoggedIn]);
 
   useEffect(() => {
     if (!isLoggedIn || !initialized || !user?.uid) return;

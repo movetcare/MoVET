@@ -9,15 +9,16 @@ const Index = () => {
   const { initialized, isLoggedIn } = AuthStore.useState();
 
   useEffect(() => {
-    console.log("initialized", initialized);
-    console.log("navigationState?.key", navigationState?.key);
-    console.log("isLoggedIn", isLoggedIn);
-    console.log("segments", segments);
     if (!navigationState?.key || !initialized) return;
     else {
       if (!isLoggedIn && segments[0] !== "(auth)" && segments[0] !== "sign-in")
         router.replace("/(auth)/sign-in");
-      else if (isLoggedIn) router.replace("/test");
+      else if (isLoggedIn && segments.length === 0)
+        router.replace("/(app)/home");
+      else if (isLoggedIn && segments.length > 0) {
+        alert("segments => " + JSON.stringify(segments));
+        router.replace("/(app)/chat");
+      }
     }
   }, [segments, navigationState?.key, initialized, isLoggedIn]);
 
