@@ -1,4 +1,3 @@
-import { router } from "expo-router";
 import { auth, functions } from "firebase-config";
 import {
   signInWithEmailAndPassword,
@@ -94,14 +93,7 @@ export const signIn = async (email: string, password?: string | undefined) => {
         email,
         device,
       });
-      AuthStore.update((store) => {
-        store.user = auth.currentUser;
-        store.isLoggedIn = true;
-      });
-      if (!__DEV__) LogRocket.identify(email, { status: "logged-in" });
-      router.replace("/(app)/home");
     } catch (error: any) {
-      console.error(error);
       return error?.code || "Unknown Error...";
     }
   } else
@@ -120,47 +112,25 @@ export const signIn = async (email: string, password?: string | undefined) => {
               minimumVersion: "12",
             },
             handleCodeInApp: true,
-          }).catch((error) =>
-            alert("ERROR sendSignInLinkToEmail => " + JSON.stringify(error)),
-          );
-        } else return "Client Verification FAILED: " + JSON.stringify(result);
+          }).catch((error) => error);
+        } else return "Verification FAILED: " + JSON.stringify(result);
       });
     } catch (error: any) {
-      console.error(error);
       return error?.code || "Unknown Error...";
     }
 };
 
 export const signInWithLink = async (email: string, link: string) => {
-  try {
-    if (isSignInWithEmailLink(auth, link))
-      return await signInWithEmailLink(auth, email, link)
-        .then(() => {
-          // if (!__DEV__) LogRocket.identify(email, { status: "logged-in" });
-          // AuthStore.update((store) => {
-          //   store.user = auth.currentUser;
-          //   store.isLoggedIn = true;
-          // });
-          return false;
-        })
-        .catch((error) => {
-          console.error(error);
-          alert(JSON.stringify(error));
-          return error?.code || "Unknown Error...";
-        });
-    return "Invalid Sign In Link...";
-  } catch (error) {
-    alert("signInWithEmailLink ERROR => " + JSON.stringify(error));
-  }
+  if (isSignInWithEmailLink(auth, link))
+    return await signInWithEmailLink(auth, email, link)
+      .then(() => null)
+      .catch((error) => error?.code || "Unknown Error...");
+  return "Invalid Sign In Link...";
 };
 
 export const signOut = async () =>
   await signOff(auth)
     .then(() => {
-      AuthStore.update((store) => {
-        store.user = null;
-        store.isLoggedIn = false;
-      });
       AppointmentsStore.update((store) => {
         store.upcomingAppointments = null;
         store.pastAppointments = null;
@@ -175,6 +145,7 @@ export const signOut = async () =>
       AuthStore.update((store) => {
         store.user = null;
         store.isLoggedIn = false;
+        store.initialized = false;
       });
     })
     .catch((error: any) => {
@@ -182,24 +153,12 @@ export const signOut = async () =>
       return error?.code || "Unknown Error...";
     });
 
-// export const signUp = async (email: string, password: string) => {
-//   try {
-//     await createUserWithEmailAndPassword(auth, email, password);
-//     AuthStore.update((store) => {
-//       store.user = auth.currentUser;
-//       store.isLoggedIn = true;
-//     });
-//     return { user: auth.currentUser };
-//   } catch (error: any) {
-//     console.error(error);
-//     return error?.code || "Unknown Error...";
-//   }
-// };
-
-export const updateUserAuth = async (user: any) =>
+export const updateUserAuth = async (user: any) => {
   AuthStore.update((store) => {
     store.user = user;
     store.isLoggedIn = user?.uid ? true : false;
     store.initialized = true;
   });
-
+  if (!__DEV__ && user?.uid)
+    LogRocket.identify(user?.email, { status: "logged-in" });
+};

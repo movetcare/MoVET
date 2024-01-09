@@ -32,12 +32,6 @@ const DEBUG_DATA = false;
 const TabsLayout = (props: any) => {
   const { user, initialized, isLoggedIn } = AuthStore.useState();
   const [patientsCount, setPatientsCount] = useState<number | null>(null);
-  // const [upcomingAppointmentsCount, setUpcomingAppointmentsCount] = useState<
-  //   number | null
-  // >(null);
-  // const [pastAppointmentsCount, setPastAppointmentsCount] = useState<
-  //   number | null
-  // >(null);
   const iconHeight = isTablet ? 26 : 20;
   const iconWidth = isTablet ? 26 : 20;
   const isDarkMode = useColorScheme() !== "light";
@@ -74,13 +68,6 @@ const TabsLayout = (props: any) => {
       marginTop: isTablet ? 0 : 8,
     },
   };
-
-  // useEffect(() => {
-  //   const unsubscribeAuth = onAuthStateChanged(auth, (user: any) =>
-  //     updateUserAuth(user),
-  //   );
-  //   return () => unsubscribeAuth();
-  // }, []);
 
   useEffect(() => {
     if (!isLoggedIn || !initialized || !user?.uid) {
@@ -268,45 +255,6 @@ const TabsLayout = (props: any) => {
           ...tabBarStyle,
         }}
       />
-      {/* <Tabs.Screen
-          name="appointments"
-          options={
-            upcomingAppointmentsCount &&
-            pastAppointmentsCount &&
-            upcomingAppointmentsCount + pastAppointmentsCount > 0
-              ? {
-                  title: "Appointments",
-                  tabBarIcon: (navigationOptions: any) =>
-                    navigationOptions.focused ? (
-                      <Icon
-                        color="black"
-                        noDarkMode
-                        name="clipboard-medical"
-                        height={iconHeight}
-                        width={iconWidth}
-                      />
-                    ) : isDarkMode ? (
-                      <Icon
-                        color="white"
-                        noDarkMode
-                        name="clipboard-medical"
-                        height={iconHeight}
-                        width={iconWidth}
-                      />
-                    ) : (
-                      <Icon
-                        color="black"
-                        noDarkMode
-                        name="clipboard-medical"
-                        height={iconHeight}
-                        width={iconWidth}
-                      />
-                    ),
-                  ...tabBarStyle,
-                }
-              : { href: null }
-          }
-        /> */}
       <Tabs.Screen
         name="pets"
         options={
@@ -417,7 +365,7 @@ const TabsLayout = (props: any) => {
               "https://movetcare.com/pharmacy/?mode=app",
               isDarkMode,
               {
-                dismissButtonStyle: "close",
+                dismissButtonStyle: "done",
                 enableBarCollapsing: true,
                 enableDefaultShareMenuItem: false,
                 readerMode: false,

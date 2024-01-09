@@ -14,6 +14,7 @@ import {
   ItalicText,
   LinkText,
   ActionButton,
+  SubHeadingText,
 } from "components/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import { AuthStore, ErrorStore } from "stores";
@@ -114,29 +115,18 @@ export default function SignIn() {
     if (mode && oobCode && continueUrl && lang && apiKey && user?.email) {
       const signInUserWithLink = async (email: string, link: string) => {
         setIsLoading(true);
-        alert("LINK = " + link);
-        try {
-          await signInWithLink(email, link)
-            .then((signInError: any) => {
-              if (signInError)
-                setError({ message: signInError, source: "signInWithLink" });
-              else {
-                if (!__DEV__)
-                  LogRocket.identify(email, { status: "logged-in" });
-                alert("signInWithLink COMPLETE...");
-                //router.replace("/(app)/home");
-              }
-            })
-            .catch((error: any) =>
-              setError({ ...error, source: "signInWithLink" }),
-            )
-            .finally(() => {
-              setIsLoading(false);
-              setShowVerificationButton(true);
-            });
-        } catch (error) {
-          alert("signInUserWithLink ERROR => " + JSON.stringify(error));
-        }
+        await signInWithLink(email, link)
+          .then((signInError: any) => {
+            if (signInError)
+              setError({ message: signInError, source: "signInWithLink" });
+          })
+          .catch((error: any) =>
+            setError({ ...error, source: "signInWithLink" }),
+          )
+          .finally(() => {
+            setIsLoading(false);
+            setShowVerificationButton(true);
+          });
       };
       signInUserWithLink(
         user?.email,
@@ -211,12 +201,30 @@ export default function SignIn() {
               ]}
               noDarkMode
             >
-              <EmailInput
-                control={control}
-                error={((errors as any)["email"] as any)?.message as string}
-                textContentType="username"
-                editable={!isLoading && !disableEmailInput}
-              />
+              {signInLinkSent ? (
+                <View
+                  style={tw`p-2 rounded-xl bg-movet-white/50 dark:bg-movet-black/50`}
+                  noDarkMode
+                >
+                  <SubHeadingText style={tw`text-center text-base`}>
+                    Check your email &quot;
+                    <ItalicText
+                      style={tw`text-movet-brown dark:text-movet-white`}
+                      noDarkMode
+                    >
+                      {email}
+                    </ItalicText>
+                    &quot; for a sign in link.
+                  </SubHeadingText>
+                </View>
+              ) : (
+                <EmailInput
+                  control={control}
+                  error={((errors as any)["email"] as any)?.message as string}
+                  textContentType="username"
+                  editable={!isLoading && !disableEmailInput}
+                />
+              )}
               {(withPassword || showPasswordInput) && (
                 <PasswordInput
                   control={control}
@@ -301,6 +309,7 @@ export default function SignIn() {
                     iconName="plane"
                     onPress={() => onSubmit({ email: user?.email })}
                   />
+
                   <ActionButton
                     title="Use a Different Email"
                     iconName="redo"
@@ -310,7 +319,27 @@ export default function SignIn() {
                       setShowVerificationButton(false);
                       setDisableEmailInput(false);
                       setIsLoading(false);
+                      setSignInLinkSent(false);
                     }}
+                  />
+                  <ActionButton
+                    color="brown"
+                    title="Contact Support"
+                    iconName="house-medical"
+                    onPress={() =>
+                      openUrlInWebBrowser(
+                        "https://movetcare.com/contact/?mode=app&email=" +
+                          email,
+                        isDarkMode,
+                        {
+                          dismissButtonStyle: "cancel",
+                          enableBarCollapsing: true,
+                          enableDefaultShareMenuItem: false,
+                          readerMode: false,
+                          showTitle: false,
+                        },
+                      )
+                    }
                   />
                 </>
               ) : (
@@ -340,15 +369,6 @@ export default function SignIn() {
           </View>
         </Animated.View>
       </ImageBackground>
-      <Modal
-        isVisible={signInLinkSent}
-        onClose={() => {
-          setSignInLinkSent(false);
-          setDisableEmailInput(true);
-        }}
-        message={`Check your email - ${email} for a sign in link.`}
-        title="One More Step..."
-      />
     </KeyboardAwareScrollView>
   );
 }
