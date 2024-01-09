@@ -196,7 +196,7 @@ export const signOut = async () =>
 export const updateUserAuth = async (user: any) =>
   AuthStore.update((store) => {
     store.user = user;
-    store.isLoggedIn = user ? true : false;
+    store.isLoggedIn = user?.uid ? true : false;
     store.initialized = true;
   });
 

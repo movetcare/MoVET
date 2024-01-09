@@ -12,7 +12,7 @@ export const handleAnnouncementBannerUpdate = functions.firestore
         data,
       });
     if ((id === "banner_web" || id === "pop_up_ad") && data !== undefined) {
-      const { isActive, isActiveMobile, link, message, title } = data || {};
+      const { isActive, title } = data || {};
       // https://vercel.com/docs/concepts/git/deploy-hooks
       const didTriggerVercelBuildWebhook =
         isActive && environment.type === "production"
@@ -53,19 +53,11 @@ export const handleAnnouncementBannerUpdate = functions.firestore
                 },
                 {
                   type: "mrkdwn",
-                  text: "*MESSAGE:*",
+                  text: "*TYPE:*",
                 },
                 {
                   type: "plain_text",
-                  text: message,
-                },
-                {
-                  type: "mrkdwn",
-                  text: "*LINK*",
-                },
-                {
-                  type: "plain_text",
-                  text: `https://movetcare.com${link}`,
+                  text: id === "banner_web" ? "WEB BANNER" : "POP UP AD",
                 },
                 {
                   type: "mrkdwn",
@@ -73,14 +65,9 @@ export const handleAnnouncementBannerUpdate = functions.firestore
                 },
                 {
                   type: "plain_text",
-                  text:
-                    (isActive
-                      ? "WEB: :white_check_mark: "
-                      : "WEB: :red_circle: ") +
-                    " | " +
-                    (isActiveMobile
-                      ? "MOBILE: :white_check_mark: "
-                      : "MOBILE: :red_circle: "),
+                  text: isActive
+                    ? "WEB: :white_check_mark: "
+                    : "WEB: :red_circle: ",
                 },
                 {
                   type: "mrkdwn",

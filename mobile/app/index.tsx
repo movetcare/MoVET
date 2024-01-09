@@ -11,7 +11,6 @@ const Index = () => {
   useEffect(() => {
     if (!navigationState?.key || !initialized) return;
     else {
-      alert("INDEX HIT");
       if (!isLoggedIn && segments[0] !== "(auth)" && segments[0] !== "sign-in")
         router.replace("/(auth)/sign-in");
       else if (isLoggedIn && segments.length === 0)

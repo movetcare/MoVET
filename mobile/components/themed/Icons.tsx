@@ -98,6 +98,8 @@ import ChevronUpIcon from "assets/icons/svgs/font-awesome/chevron-up.svg";
 import ChevronUpIconDark from "assets/icons/svgs/font-awesome/chevron-up-dark.svg";
 import ChevronDownIcon from "assets/icons/svgs/font-awesome/chevron-down.svg";
 import ChevronDownIconDark from "assets/icons/svgs/font-awesome/chevron-down-dark.svg";
+import ShopIcon from "assets/icons/svgs/font-awesome/shop.svg";
+import ShopIconDark from "assets/icons/svgs/font-awesome/shop-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -151,7 +153,8 @@ export type SupportedIcons =
   | "map"
   | "cancel"
   | "chevron-up"
-  | "chevron-down";
+  | "chevron-down"
+  | "shop";
 
 export const Icon = ({
   name = "poo",
@@ -586,6 +589,12 @@ export const Icon = ({
         />
       ) : (
         <ChevronDownIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "shop":
+      return showWhiteIcon ? (
+        <ShopIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <ShopIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (

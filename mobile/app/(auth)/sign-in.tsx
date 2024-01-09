@@ -125,13 +125,14 @@ export default function SignIn() {
       );
       const signInUserWithLink = async (email: string, link: string) => {
         setIsLoading(true);
+        alert("LINK = " + link);
         await signInWithLink(email, link)
           .then((signInError: any) => {
             if (signInError)
               setError({ message: signInError, source: "signInWithLink" });
             else {
-              alert("signInWithLink REDIRECTING...");
-              router.replace("/(app)/home");
+              alert("signInWithLink COMPLETE...");
+              //router.replace("/(app)/home");
             }
           })
           .catch((error: any) =>

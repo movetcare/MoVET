@@ -1,7 +1,6 @@
 import { Tabs, router, usePathname } from "expo-router";
 import { useThemeColor } from "hooks/useThemeColor";
-import { SafeAreaView, useColorScheme } from "react-native";
-import tw from "tailwind";
+import { useColorScheme } from "react-native";
 import { Icon } from "components/themed";
 import { isTablet } from "utils/isTablet";
 import {
@@ -26,6 +25,9 @@ import {
 import { useEffect, useState } from "react";
 import { ErrorStore } from "stores";
 import LogRocket from "@logrocket/react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import tw from "tailwind";
+import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 
 const DEBUG_DATA = false;
 
@@ -228,17 +230,15 @@ const TabsLayout = (props: any) => {
     });
 
   return (
-    <SafeAreaView style={tw`flex-1 bg-movet-red dark:bg-movet-black`}>
+    <SafeAreaView
+      style={tw`flex-1 bg-transparent`}
+      edges={["top", "right", "left"]}
+    >
       <Tabs
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
             backgroundColor: "transparent",
-            display:
-              (pathName === "appointments" || pathName === "pets") &&
-              patientsCount
-                ? "none"
-                : "flex",
           },
         }}
       >
@@ -383,6 +383,55 @@ const TabsLayout = (props: any) => {
                 />
               ),
             ...tabBarStyle,
+          }}
+        />
+        <Tabs.Screen
+          name="shop"
+          options={{
+            title: "Shop",
+            tabBarIcon: (navigationOptions: any) =>
+              navigationOptions.focused ? (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="shop"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : isDarkMode ? (
+                <Icon
+                  color="white"
+                  noDarkMode
+                  name="shop"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ) : (
+                <Icon
+                  color="black"
+                  noDarkMode
+                  name="shop"
+                  height={iconHeight}
+                  width={iconWidth}
+                />
+              ),
+            ...tabBarStyle,
+          }}
+          listeners={{
+            tabPress: (e) => {
+              e.preventDefault();
+              openUrlInWebBrowser(
+                "https://movetcare.com/pharmacy/?mode=app",
+                isDarkMode,
+                {
+                  dismissButtonStyle: "close",
+                  enableBarCollapsing: true,
+                  enableDefaultShareMenuItem: false,
+                  readerMode: false,
+                  showTitle: false,
+                },
+              );
+            },
           }}
         />
         <Tabs.Screen
