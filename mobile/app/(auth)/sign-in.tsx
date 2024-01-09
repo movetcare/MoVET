@@ -20,7 +20,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { AuthStore, ErrorStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
-import { Modal } from "components/Modal";
 import { getRandomInt } from "utils/getRandomInt";
 import Animated, {
   useSharedValue,

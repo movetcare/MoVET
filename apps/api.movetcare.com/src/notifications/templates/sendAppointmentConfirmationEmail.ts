@@ -261,7 +261,7 @@ export const sendAppointmentConfirmationEmail = async (
       : ""
   }${
     appointment?.additionalNotes
-      ? `<p></p><p><b>Client Note / Promo Code</b>: ${appointment?.additionalNotes}/p>`
+      ? `<p></p><p><b>Client Note / Promo Code</b>: ${appointment?.additionalNotes}</p>`
       : ""
   }${
     appointment?.start

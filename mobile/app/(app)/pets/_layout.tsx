@@ -9,7 +9,6 @@ import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions
 
 export default function Layout() {
   const insets = useSafeAreaInsets();
-  const [usesSafeAreaInsets, setUsesSafeAreaInsets] = useState(false);
   const segments = useSegments();
   const { upcomingAppointments, pastAppointments } =
     AppointmentsStore.useState();
@@ -24,7 +23,7 @@ export default function Layout() {
     if (segments)
       if (segments.includes("new-pet")) {
         //setTimeout(() => {
-        setUsesSafeAreaInsets(true);
+
         setNavigationDetails({
           title: "Add a Pet",
           iconName: "plus",
@@ -38,7 +37,7 @@ export default function Layout() {
         !segments.includes("detail")
       ) {
         //setTimeout(() => {
-        setUsesSafeAreaInsets(true);
+
         setNavigationDetails({
           title:
             (!upcomingAppointments && !pastAppointments
@@ -53,19 +52,20 @@ export default function Layout() {
         segments.includes("pets") &&
         !segments.includes("appointment-detail") &&
         !segments.includes("detail")
-      ) {
-        setUsesSafeAreaInsets(false);
+      )
         setNavigationDetails(null);
-      } else {
-        setUsesSafeAreaInsets(true);
-        setNavigationDetails(null);
-      }
+      else setNavigationDetails(null);
   }, [pastAppointments, segments, upcomingAppointments]);
   return (
     <Container
       style={[
-        tw`flex-1 bg-movet-red`,
-        { paddingTop: usesSafeAreaInsets ? insets.top : 0 },
+        tw`flex-1`,
+        segments.includes("pets") &&
+        !segments.includes("appointment-detail") &&
+        !segments.includes("detail")
+          ? tw`bg-transparent`
+          : tw`bg-movet-red`,
+        { paddingTop: insets.top },
       ]}
     >
       <Stack

@@ -93,7 +93,6 @@ const Home = () => {
         }
       });
       if (vcprPatients.length > 0) setVcprPatients(vcprPatients);
-      else setVcprPatients(null);
       setIsLoading(false);
     }
   }, [patients, upcomingAppointments]);
@@ -253,7 +252,7 @@ const Home = () => {
             )}
             {(announcement?.isActiveMobile || ad?.isActive) && (
               <View
-                style={tw`border-t-2 border-movet-gray mt-2 mb-2 mx-8 w-2.6/3`}
+                style={tw`border-t-2 border-movet-gray mt-2 mb-6 mx-8 w-2.6/3`}
               />
             )}
             {vcprPatients && vcprPatients?.length > 0 && (
@@ -273,11 +272,9 @@ const Home = () => {
             {upcomingAppointments !== null && <PaymentMethodSummary />}
             {(announcement?.isActiveMobile || ad?.isActive) && (
               <View
-                style={tw`border-t-2 border-movet-gray mt-2 mx-8 w-2.6/3`}
+                style={tw`border-t-2 border-movet-gray mt-6 mx-8 w-2.6/3`}
               />
             )}
-
-            {/* <Debug object={upcomingAppointments} /> */}
             <AppointmentsList source="home" />
           </View>
         ) : (

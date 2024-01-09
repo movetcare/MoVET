@@ -131,17 +131,17 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         ...sharedConfig,
         description: "Production Build of MoVET Mobile Application",
         icon: "./assets/icons/app-icon.png",
-        splash: {
-          image: "./assets/images/backgrounds/splash-screen.png",
-        },
+        // splash: {
+        //   image: "./assets/images/backgrounds/splash-screen.png",
+        // },
       } as any)
     : ({
         ...config,
         ...sharedConfig,
         description: "BETA build of MoVET Mobile Application",
         icon: "./assets/icons/app-icon-beta.png",
-        splash: {
-          image: "./assets/images/backgrounds/splash-screen-beta.png",
-        },
+        // splash: {
+        //   image: "./assets/images/backgrounds/splash-screen-beta.png",
+        // },
       } as any);
 };

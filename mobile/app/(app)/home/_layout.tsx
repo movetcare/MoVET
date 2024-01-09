@@ -11,7 +11,6 @@ export default function Layout() {
   const segments = useSegments();
   const router = useLocalSearchParams();
   const insets = useSafeAreaInsets();
-  const [usesSafeAreaInsets, setUsesSafeAreaInsets] = useState(false);
   const { upcomingAppointments, pastAppointments } =
     AppointmentsStore.useState();
   const { screenTitle, screenTitleIcon }: any = router?.params || {};
@@ -23,7 +22,6 @@ export default function Layout() {
 
   useEffect(() => {
     if (screenTitle) {
-      setUsesSafeAreaInsets(true);
       setNavigationDetails({
         title: screenTitle as string,
         iconName: screenTitleIcon ? screenTitleIcon : "bullhorn",
@@ -31,7 +29,6 @@ export default function Layout() {
       });
     } else if (segments && segments.includes("web-view")) {
       //setTimeout(() => {
-      setUsesSafeAreaInsets(true);
       setNavigationDetails({
         title: "Announcement",
         iconName: "bullhorn",
@@ -40,7 +37,6 @@ export default function Layout() {
       //}, 180);
     } else if (segments && segments.includes("new-pet")) {
       //setTimeout(() => {
-      setUsesSafeAreaInsets(true);
       setNavigationDetails({
         title: "Add a Pet",
         iconName: "paw",
@@ -49,7 +45,6 @@ export default function Layout() {
       //}, 180);
     } else if (segments && segments.includes("new-appointment")) {
       //setTimeout(() => {
-      setUsesSafeAreaInsets(true);
       setNavigationDetails({
         title:
           (!upcomingAppointments && !pastAppointments
@@ -61,24 +56,27 @@ export default function Layout() {
       //}, 180);
     } else if (segments && segments.includes("appointment-detail")) {
       //setTimeout(() => {
-      setUsesSafeAreaInsets(true);
       setNavigationDetails({
         title: "Appointment Summary",
         iconName: "calendar-heart",
         canGoBack: true,
       });
       //}, 180);
-    } else {
-      setUsesSafeAreaInsets(false);
-      setNavigationDetails(null);
-    }
-  }, [screenTitle, screenTitleIcon, segments]);
+    } else setNavigationDetails(null);
+  }, [
+    pastAppointments,
+    screenTitle,
+    screenTitleIcon,
+    segments,
+    upcomingAppointments,
+  ]);
 
   return (
     <Container
       style={[
-        tw`flex-1 bg-movet-red`,
-        { paddingTop: usesSafeAreaInsets ? insets.top : 0 },
+        tw`flex-1`,
+        !navigationDetails ? tw`bg-transparent` : tw`bg-movet-red`,
+        { paddingTop: insets.top },
       ]}
     >
       <Stack
