@@ -112,36 +112,31 @@ export default function SignIn() {
 
   useEffect(() => {
     if (mode && oobCode && continueUrl && lang && apiKey && user?.email) {
-      alert(
-        "signInUserWithLink HIT =>" +
-          JSON.stringify({
-            mode,
-            oobCode,
-            continueUrl,
-            lang,
-            apiKey,
-            email: user?.email,
-          }),
-      );
       const signInUserWithLink = async (email: string, link: string) => {
         setIsLoading(true);
         alert("LINK = " + link);
-        await signInWithLink(email, link)
-          .then((signInError: any) => {
-            if (signInError)
-              setError({ message: signInError, source: "signInWithLink" });
-            else {
-              alert("signInWithLink COMPLETE...");
-              //router.replace("/(app)/home");
-            }
-          })
-          .catch((error: any) =>
-            setError({ ...error, source: "signInWithLink" }),
-          )
-          .finally(() => {
-            setIsLoading(false);
-            setShowVerificationButton(true);
-          });
+        try {
+          await signInWithLink(email, link)
+            .then((signInError: any) => {
+              if (signInError)
+                setError({ message: signInError, source: "signInWithLink" });
+              else {
+                if (!__DEV__)
+                  LogRocket.identify(email, { status: "logged-in" });
+                alert("signInWithLink COMPLETE...");
+                //router.replace("/(app)/home");
+              }
+            })
+            .catch((error: any) =>
+              setError({ ...error, source: "signInWithLink" }),
+            )
+            .finally(() => {
+              setIsLoading(false);
+              setShowVerificationButton(true);
+            });
+        } catch (error) {
+          alert("signInUserWithLink ERROR => " + JSON.stringify(error));
+        }
       };
       signInUserWithLink(
         user?.email,

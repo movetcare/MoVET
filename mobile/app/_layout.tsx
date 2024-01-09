@@ -1,25 +1,17 @@
-import {
-  ErrorBoundaryProps,
-  SplashScreen,
-  Stack,
-  useRootNavigationState,
-} from "expo-router";
+import { ErrorBoundaryProps, SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { updateUserAuth } from "services/Auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "firebase-config";
 //import * as Notifications from "expo-notifications";
-import { router } from "expo-router";
 import { useDeviceContext } from "twrnc";
 import tw from "tailwind";
 import { ErrorLayout } from "components/themed";
 import { useFonts } from "expo-font";
-import { AuthStore } from "stores";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { ErrorModal } from "components/Modal";
 import { ErrorStore } from "stores";
 import LogRocket from "@logrocket/react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -76,8 +68,6 @@ export function ErrorBoundary(props: ErrorBoundaryProps) {
 
 const Layout = () => {
   useDeviceContext(tw);
-  const navigationState = useRootNavigationState();
-  const { initialized, isLoggedIn } = AuthStore.useState();
   const { currentError } = ErrorStore.useState();
   //useNotificationObserver();
 
@@ -88,15 +78,6 @@ const Layout = () => {
     });
     return () => unsubscribeAuth();
   }, []);
-
-  // useEffect(() => {
-  //   if (currentError !== null) alert(JSON.stringify(currentError));
-  // }, [currentError]);
-
-  // useEffect(() => {
-  //   if (!navigationState?.key || !initialized) return;
-  //   else if (!isLoggedIn) router.replace("/(auth)/sign-in");
-  // }, [navigationState?.key, initialized, isLoggedIn]);
 
   const [fontsLoaded, fontsError] = useFonts({
     Abside: require("../assets/fonts/Abside-Regular.ttf"),
@@ -114,35 +95,33 @@ const Layout = () => {
   if (!fontsLoaded) return null;
 
   return (
-    <SafeAreaProvider>
-      <ActionSheetProvider>
-        <>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}
-          />
-          <ErrorModal
-            isVisible={currentError !== null}
-            onClose={() =>
-              ErrorStore.update((s: any) => {
-                s.currentError = null;
-                s.pastErrors = s.pastErrors
-                  ? [...s.pastErrors, currentError]
-                  : [currentError];
-              })
-            }
-            message={
-              currentError?.source +
-              " => " +
-              (currentError?.code ||
-                currentError?.message ||
-                JSON.stringify(currentError))
-            }
-          />
-        </>
-      </ActionSheetProvider>
-    </SafeAreaProvider>
+    <ActionSheetProvider>
+      <>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        />
+        <ErrorModal
+          isVisible={currentError !== null}
+          onClose={() =>
+            ErrorStore.update((s: any) => {
+              s.currentError = null;
+              s.pastErrors = s.pastErrors
+                ? [...s.pastErrors, currentError]
+                : [currentError];
+            })
+          }
+          message={
+            currentError?.source +
+            " => " +
+            (currentError?.code ||
+              currentError?.message ||
+              JSON.stringify(currentError))
+          }
+        />
+      </>
+    </ActionSheetProvider>
   );
 };
 

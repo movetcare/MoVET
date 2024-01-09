@@ -132,23 +132,26 @@ export const signIn = async (email: string, password?: string | undefined) => {
 };
 
 export const signInWithLink = async (email: string, link: string) => {
-  if (isSignInWithEmailLink(auth, link))
-    return await signInWithEmailLink(auth, email, link)
-      .then(() => {
-        alert("signInWithLink SUCCESS");
-        if (!__DEV__) LogRocket.identify(email, { status: "logged-in" });
-        AuthStore.update((store) => {
-          store.user = auth.currentUser;
-          store.isLoggedIn = true;
+  try {
+    if (isSignInWithEmailLink(auth, link))
+      return await signInWithEmailLink(auth, email, link)
+        .then(() => {
+          // if (!__DEV__) LogRocket.identify(email, { status: "logged-in" });
+          // AuthStore.update((store) => {
+          //   store.user = auth.currentUser;
+          //   store.isLoggedIn = true;
+          // });
+          return false;
+        })
+        .catch((error) => {
+          console.error(error);
+          alert(JSON.stringify(error));
+          return error?.code || "Unknown Error...";
         });
-        return null;
-      })
-      .catch((error) => {
-        console.error(error);
-        alert(JSON.stringify(error));
-        return error?.code || "Unknown Error...";
-      });
-  return "Invalid Sign In Link...";
+    return "Invalid Sign In Link...";
+  } catch (error) {
+    alert("signInWithEmailLink ERROR => " + JSON.stringify(error));
+  }
 };
 
 export const signOut = async () =>

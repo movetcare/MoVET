@@ -10,7 +10,7 @@ import { sendNotification } from "../../../notifications/sendNotification";
 import { getAuthUserByEmail } from "../../../utils/auth/getAuthUserByEmail";
 import { verifyExistingClient } from "../../../utils/auth/verifyExistingClient";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-
+const DEBUG = true;
 export const verifyClient = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
@@ -41,8 +41,10 @@ export const verifyClient = functions
       const { email, device } = data;
       if (email) {
         const isExistingClient = await verifyExistingClient(email);
+        if (DEBUG) console.log("isExistingClient", isExistingClient);
         if (isExistingClient) {
           const authUser: UserRecord | null = await getAuthUserByEmail(email);
+          if (DEBUG) console.log("authUser", authUser);
           admin
             .firestore()
             .collection("clients")
@@ -70,7 +72,9 @@ export const verifyClient = functions
           });
           return true;
         } else {
+          if (DEBUG) console.log("NEW CLIENT SIGN UP");
           const proVetClientData: any = await createProVetClient(data);
+          if (DEBUG) console.log("proVetClientData", proVetClientData);
           if (proVetClientData) {
             sendNotification({
               type: "push",
@@ -89,6 +93,7 @@ export const verifyClient = functions
               undefined,
               false,
             ).then((result: boolean) => {
+              if (DEBUG) console.log("createAuthClient result", result);
               admin
                 .firestore()
                 .collection("clients")
@@ -105,6 +110,7 @@ export const verifyClient = functions
               return result;
             });
           } else {
+            if (DEBUG) console.log("FAILED Mobile App Sign Up - " + email);
             sendNotification({
               type: "push",
               payload: {
@@ -117,6 +123,9 @@ export const verifyClient = functions
             return false;
           }
         }
-      } else return null;
+      } else {
+        if (DEBUG) console.log("FAILED MISSING EMAIL ADDRESS " + email);
+        return null;
+      }
     },
   );

@@ -197,6 +197,7 @@ export const AppointmentDetail = () => {
       )}
       {appointment?.start?.toDate() >= new Date() && (
         <PaymentMethodSummary
+          titleSize={"sm"}
           title="PAYMENT METHOD REQUIRED"
           message="Tap here to add a payment method to your account before your appointment begins."
         />

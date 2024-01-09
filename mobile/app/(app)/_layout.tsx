@@ -1,4 +1,4 @@
-import { Tabs, router, usePathname } from "expo-router";
+import { Tabs, router } from "expo-router";
 import { useThemeColor } from "hooks/useThemeColor";
 import { useColorScheme } from "react-native";
 import { Icon } from "components/themed";
@@ -25,8 +25,6 @@ import {
 import { useEffect, useState } from "react";
 import { ErrorStore } from "stores";
 import LogRocket from "@logrocket/react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import tw from "tailwind";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 
 const DEBUG_DATA = false;
@@ -40,7 +38,6 @@ const TabsLayout = (props: any) => {
   // const [pastAppointmentsCount, setPastAppointmentsCount] = useState<
   //   number | null
   // >(null);
-  const pathName = usePathname();
   const iconHeight = isTablet ? 26 : 20;
   const iconWidth = isTablet ? 26 : 20;
   const isDarkMode = useColorScheme() !== "light";
@@ -230,52 +227,48 @@ const TabsLayout = (props: any) => {
     });
 
   return (
-    <SafeAreaView
-      style={tw`flex-1 bg-transparent`}
-      edges={["top", "right", "left"]}
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: "transparent",
+        },
+      }}
     >
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          tabBarStyle: {
-            backgroundColor: "transparent",
-          },
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: "Home",
+          tabBarIcon: (navigationOptions: any) =>
+            navigationOptions.focused ? (
+              <Icon
+                color="black"
+                noDarkMode
+                name="hospital"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ) : isDarkMode ? (
+              <Icon
+                color="white"
+                noDarkMode
+                name="hospital"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ) : (
+              <Icon
+                color="black"
+                noDarkMode
+                name="hospital"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ),
+          ...tabBarStyle,
         }}
-      >
-        <Tabs.Screen
-          name="home"
-          options={{
-            title: "Home",
-            tabBarIcon: (navigationOptions: any) =>
-              navigationOptions.focused ? (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="hospital"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : isDarkMode ? (
-                <Icon
-                  color="white"
-                  noDarkMode
-                  name="hospital"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="hospital"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ),
-            ...tabBarStyle,
-          }}
-        />
-        {/* <Tabs.Screen
+      />
+      {/* <Tabs.Screen
           name="appointments"
           options={
             upcomingAppointmentsCount &&
@@ -314,161 +307,160 @@ const TabsLayout = (props: any) => {
               : { href: null }
           }
         /> */}
-        <Tabs.Screen
-          name="pets"
-          options={
-            patientsCount
-              ? {
-                  title: "Pets",
-                  tabBarIcon: (navigationOptions: any) =>
-                    navigationOptions.focused ? (
-                      <Icon
-                        color="black"
-                        noDarkMode
-                        name="paw"
-                        height={iconHeight}
-                        width={iconWidth}
-                      />
-                    ) : isDarkMode ? (
-                      <Icon
-                        color="white"
-                        noDarkMode
-                        name="paw"
-                        height={iconHeight}
-                        width={iconWidth}
-                      />
-                    ) : (
-                      <Icon
-                        color="black"
-                        noDarkMode
-                        name="paw"
-                        height={iconHeight}
-                        width={iconWidth}
-                      />
-                    ),
-                  ...tabBarStyle,
-                }
-              : { href: null }
-          }
-        />
-        <Tabs.Screen
-          name="chat"
-          options={{
-            title: "Chat",
-            headerShown: false,
-            tabBarIcon: (navigationOptions: any) =>
-              navigationOptions.focused ? (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="user-medical-message"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : isDarkMode ? (
-                <Icon
-                  color="white"
-                  noDarkMode
-                  name="user-medical-message"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="user-medical-message"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ),
-            ...tabBarStyle,
-          }}
-        />
-        <Tabs.Screen
-          name="shop"
-          options={{
-            title: "Shop",
-            tabBarIcon: (navigationOptions: any) =>
-              navigationOptions.focused ? (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="shop"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : isDarkMode ? (
-                <Icon
-                  color="white"
-                  noDarkMode
-                  name="shop"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="shop"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ),
-            ...tabBarStyle,
-          }}
-          listeners={{
-            tabPress: (e) => {
-              e.preventDefault();
-              openUrlInWebBrowser(
-                "https://movetcare.com/pharmacy/?mode=app",
-                isDarkMode,
-                {
-                  dismissButtonStyle: "close",
-                  enableBarCollapsing: true,
-                  enableDefaultShareMenuItem: false,
-                  readerMode: false,
-                  showTitle: false,
-                },
-              );
-            },
-          }}
-        />
-        <Tabs.Screen
-          name="settings"
-          options={{
-            title: "Settings",
-            tabBarIcon: (navigationOptions: any) =>
-              navigationOptions.focused ? (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="gear"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : isDarkMode ? (
-                <Icon
-                  color="white"
-                  noDarkMode
-                  name="gear"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ) : (
-                <Icon
-                  color="black"
-                  noDarkMode
-                  name="gear"
-                  height={iconHeight}
-                  width={iconWidth}
-                />
-              ),
-            ...tabBarStyle,
-          }}
-        />
-      </Tabs>
-    </SafeAreaView>
+      <Tabs.Screen
+        name="pets"
+        options={
+          patientsCount
+            ? {
+                title: "Pets",
+                tabBarIcon: (navigationOptions: any) =>
+                  navigationOptions.focused ? (
+                    <Icon
+                      color="black"
+                      noDarkMode
+                      name="paw"
+                      height={iconHeight}
+                      width={iconWidth}
+                    />
+                  ) : isDarkMode ? (
+                    <Icon
+                      color="white"
+                      noDarkMode
+                      name="paw"
+                      height={iconHeight}
+                      width={iconWidth}
+                    />
+                  ) : (
+                    <Icon
+                      color="black"
+                      noDarkMode
+                      name="paw"
+                      height={iconHeight}
+                      width={iconWidth}
+                    />
+                  ),
+                ...tabBarStyle,
+              }
+            : { href: null }
+        }
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
+          title: "Chat",
+          headerShown: false,
+          tabBarIcon: (navigationOptions: any) =>
+            navigationOptions.focused ? (
+              <Icon
+                color="black"
+                noDarkMode
+                name="user-medical-message"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ) : isDarkMode ? (
+              <Icon
+                color="white"
+                noDarkMode
+                name="user-medical-message"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ) : (
+              <Icon
+                color="black"
+                noDarkMode
+                name="user-medical-message"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ),
+          ...tabBarStyle,
+        }}
+      />
+      <Tabs.Screen
+        name="shop"
+        options={{
+          title: "Shop",
+          tabBarIcon: (navigationOptions: any) =>
+            navigationOptions.focused ? (
+              <Icon
+                color="black"
+                noDarkMode
+                name="shop"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ) : isDarkMode ? (
+              <Icon
+                color="white"
+                noDarkMode
+                name="shop"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ) : (
+              <Icon
+                color="black"
+                noDarkMode
+                name="shop"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ),
+          ...tabBarStyle,
+        }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            openUrlInWebBrowser(
+              "https://movetcare.com/pharmacy/?mode=app",
+              isDarkMode,
+              {
+                dismissButtonStyle: "close",
+                enableBarCollapsing: true,
+                enableDefaultShareMenuItem: false,
+                readerMode: false,
+                showTitle: false,
+              },
+            );
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: (navigationOptions: any) =>
+            navigationOptions.focused ? (
+              <Icon
+                color="black"
+                noDarkMode
+                name="gear"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ) : isDarkMode ? (
+              <Icon
+                color="white"
+                noDarkMode
+                name="gear"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ) : (
+              <Icon
+                color="black"
+                noDarkMode
+                name="gear"
+                height={iconHeight}
+                width={iconWidth}
+              />
+            ),
+          ...tabBarStyle,
+        }}
+      />
+    </Tabs>
   );
 };
 

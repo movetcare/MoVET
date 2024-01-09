@@ -1,11 +1,15 @@
-import { SupportedIcons } from "components/themed";
+import { Container, SupportedIcons } from "components/themed";
 import { NavigationHeader } from "components/themed/NavigationHeader";
 import { Stack, useSegments } from "expo-router";
 import { useState, useEffect } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import tw from "tailwind";
 import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions";
 
 export default function Layout() {
   const segments = useSegments();
+  const insets = useSafeAreaInsets();
+  const [usesSafeAreaInsets, setUsesSafeAreaInsets] = useState(false);
   const [navigationDetails, setNavigationDetails] = useState<{
     title: string;
     iconName: SupportedIcons;
@@ -24,6 +28,7 @@ export default function Layout() {
         iconName: "bell",
         canGoBack: true,
       });
+      setUsesSafeAreaInsets(true);
       //}, 180);
     } else if (segments && segments.includes("payment-methods")) {
       //setTimeout(() => {
@@ -32,8 +37,10 @@ export default function Layout() {
         iconName: "credit-card",
         canGoBack: true,
       });
+      setUsesSafeAreaInsets(true);
       //}, 180);
     } else if (segments && segments.includes("account")) {
+      setUsesSafeAreaInsets(true);
       if (segments && segments.includes("web-view")) {
         //setTimeout(() => {
         setNavigationDetails({
@@ -51,30 +58,40 @@ export default function Layout() {
           canGoBack: true,
         });
       //}, 180);
-    } else
+    } else {
+      setUsesSafeAreaInsets(false);
       setNavigationDetails({
         title: "Settings",
         iconName: "gear",
         canGoBack: false,
       });
+    }
   }, [segments]);
+
   return (
-    <Stack
-      screenOptions={{
-        ...navigationStackScreenOptions,
-        header: () => (
-          <NavigationHeader
-            title={navigationDetails?.title}
-            iconName={navigationDetails?.iconName}
-            canGoBack={navigationDetails?.canGoBack}
-            goBackRoot={
-              segments && segments.includes("web-view")
-                ? "/(app)/settings/account"
-                : "/(app)/settings"
-            }
-          />
-        ),
-      }}
-    />
+    <Container
+      style={[
+        tw`flex-1 bg-movet-red`,
+        { paddingTop: usesSafeAreaInsets ? insets.top : 0 },
+      ]}
+    >
+      <Stack
+        screenOptions={{
+          ...navigationStackScreenOptions,
+          header: () => (
+            <NavigationHeader
+              title={navigationDetails?.title}
+              iconName={navigationDetails?.iconName}
+              canGoBack={navigationDetails?.canGoBack}
+              goBackRoot={
+                segments && segments.includes("web-view")
+                  ? "/(app)/settings/account"
+                  : "/(app)/settings"
+              }
+            />
+          ),
+        }}
+      />
+    </Container>
   );
 }

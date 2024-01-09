@@ -30,9 +30,11 @@ interface PaymentMethod {
 export const PaymentMethodSummary = ({
   message,
   title,
+  titleSize = "md",
 }: {
   message?: string;
   title?: string;
+  titleSize?: "sm" | "md" | "lg";
 }): ReactNode => {
   const { user } = AuthStore.useState();
   const [paymentMethods, setPaymentMethods] =
@@ -205,7 +207,17 @@ export const PaymentMethodSummary = ({
               </>
             ) : (
               <>
-                <HeadingText style={tw`text-movet-white text-base`} noDarkMode>
+                <HeadingText
+                  style={[
+                    tw`text-movet-white`,
+                    titleSize === "sm"
+                      ? tw`text-sm`
+                      : titleSize === "lg"
+                        ? tw`text-lg`
+                        : tw`text-base`,
+                  ]}
+                  noDarkMode
+                >
                   {customTitle}
                 </HeadingText>
                 <BodyText
