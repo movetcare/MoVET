@@ -1,4 +1,5 @@
-import { SplashScreen, Tabs, router } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { Tabs, router } from "expo-router";
 import { useThemeColor } from "hooks/useThemeColor";
 import { useColorScheme } from "react-native";
 import { Icon } from "components/themed";

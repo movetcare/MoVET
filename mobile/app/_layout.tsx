@@ -1,4 +1,5 @@
-import { ErrorBoundaryProps, Stack, router, SplashScreen } from "expo-router";
+import { ErrorBoundaryProps, Stack, router } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { updateUserAuth } from "services/Auth";
 import { onAuthStateChanged } from "firebase/auth";

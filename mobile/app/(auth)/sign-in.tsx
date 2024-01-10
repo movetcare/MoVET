@@ -1,3 +1,4 @@
+import * as SplashScreen from "expo-splash-screen";
 import { ImageBackground, Pressable, useColorScheme } from "react-native";
 import { useEffect, useState } from "react";
 import { signIn, signInWithLink } from "services/Auth";
@@ -14,11 +15,9 @@ import {
   ItalicText,
   LinkText,
   ActionButton,
-  SubHeadingText,
-  HeadingText,
   BodyText,
 } from "components/themed";
-import { SplashScreen, router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { AuthStore, ErrorStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
