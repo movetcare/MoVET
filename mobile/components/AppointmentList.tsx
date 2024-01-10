@@ -111,7 +111,10 @@ export const AppointmentList = ({
                 <Container style={tw`flex-shrink`}>
                   <HeadingText style={tw`text-movet-black text-lg`}>
                     {appointment.patients.map(
-                      (patient: Patient) => patient.name,
+                      (patient: Patient, index: number) =>
+                        index === appointment.patients.length - 1
+                          ? patient.name
+                          : patient.name + ", ",
                     )}
                     {/* {__DEV__ && ` - #${appointment.id}`} */}
                   </HeadingText>

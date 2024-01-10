@@ -211,7 +211,7 @@ export default function PetSelection() {
                   : "px-6"
               }
             >
-              <div className="flex-col">
+              <div className="flex-col w-full mx-2">
                 <BookingHeader
                   isAppMode={isAppMode}
                   title={`Select ${pets.length > 1 ? "Your Pets" : "a Pet"}`}
@@ -220,10 +220,6 @@ export default function PetSelection() {
                   } would you like to book an
               appointment for?`}
                 />
-                <legend className="mt-8 text-2xl font-medium mb-2 w-full text-center">
-                  Your
-                  {pets.length > 1 ? " Pets" : " Pet"}
-                </legend>
                 {pets
                   .sort(
                     (item: any, nextItem: any) =>

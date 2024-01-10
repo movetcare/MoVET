@@ -124,9 +124,6 @@ export const PaymentMethodSummary = ({
         setShowUpcomingExpirationWarning(true);
       else setShowUpcomingExpirationWarning(false);
     }
-    console.log("showExpiredWarning", showExpiredWarning);
-    console.log("showUpcomingExpirationWarning", showUpcomingExpirationWarning);
-    console.log("paymentMethods", paymentMethods);
   }, [paymentMethods]);
 
   useEffect(() => {

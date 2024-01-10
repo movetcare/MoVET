@@ -93,6 +93,7 @@ const Home = () => {
         }
       });
       if (vcprPatients.length > 0) setVcprPatients(vcprPatients);
+      else setVcprPatients(null);
       setIsLoading(false);
     }
   }, [patients, upcomingAppointments]);
@@ -256,11 +257,14 @@ const Home = () => {
               />
             )}
             {vcprPatients && vcprPatients?.length > 0 && (
-              <VcprAlert patients={vcprPatients} />
+              <>
+                <VcprAlert patients={vcprPatients} />
+                {(announcement?.isActiveMobile || ad?.isActive) && (
+                  <View noDarkMode style={tw`h-4 bg-transparent`} />
+                )}
+              </>
             )}
-            {(announcement?.isActiveMobile || ad?.isActive) && (
-              <View noDarkMode style={tw`h-4 bg-transparent`} />
-            )}
+
             {patients && patients.length > 0 && telehealthStatus?.isOnline && (
               <>
                 {!announcement?.isActiveMobile && !ad?.isActive && (

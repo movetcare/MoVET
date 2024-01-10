@@ -42,7 +42,7 @@
     "expo-web-browser": "~12.8.1",
     "firebase": "^10.7.1",
     "lodash.debounce": "^4.0.8",
-    "lottie-react-native": "6.4.1",
+    "lottie-react-native": "5.1.6",
     "pullstate": "^1.25.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

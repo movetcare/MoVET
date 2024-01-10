@@ -40,6 +40,7 @@ export default function WellnessCheck() {
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: "all",
@@ -76,6 +77,7 @@ export default function WellnessCheck() {
       setIsLoading(false);
     } else router.push("/schedule-an-appointment");
   }, [router]);
+
   const handleError = (error: any) => {
     console.error(error);
     setError(error);
@@ -150,7 +152,7 @@ export default function WellnessCheck() {
               />
             ) : error ? (
               <Error error={error} isAppMode={isAppMode} />
-            ) : (
+            ) : pets.length > 1 ? (
               <div
                 className={
                   isAppMode
@@ -162,13 +164,13 @@ export default function WellnessCheck() {
                   <BookingHeader
                     isAppMode={isAppMode}
                     title="Pet Wellness Check"
-                    description={`${
-                      pets.length > 1 ? "Are any of your pets " : "Is your pet "
-                    }showing symptoms of minor illness?`}
+                    description={
+                      "Do you have any health concerns for any of your pets?"
+                    }
                   />
-                  <legend className="mt-4 text-xl font-medium mb-2 w-full text-center">
-                    {pets.length > 1 ? "Your Pets" : " Your Pet"}
-                  </legend>
+                  <p className="italic text-center text-sm -mb-1 mt-4">
+                    Select all that apply...
+                  </p>
                   {pets
                     .sort(
                       (item: any, nextItem: any) =>
@@ -187,11 +189,6 @@ export default function WellnessCheck() {
                           htmlFor={`${pet.name}`}
                           className="text-lg select-none font-source-sans-pro flex flex-row items-center py-2 w-full"
                         >
-                          {/* <FontAwesomeIcon
-                          icon={pet.species.includes("Dog") ? faDog : faCat}
-                          size={"lg"}
-                          className="mr-2 h-8 w-8 text-movet-brown flex-none"
-                        /> */}
                           <p>
                             {pet.species.includes("Dog") ? "🐶" : "🐱"}{" "}
                             {capitalizeFirstLetter(pet.name)}
@@ -249,52 +246,6 @@ export default function WellnessCheck() {
                     title="Minor Illness Symptoms"
                     icon={faStethoscope}
                   />
-                  <Transition
-                    show={selected !== null && selected?.length > 0}
-                    enter="transition ease-in duration-500"
-                    leave="transition ease-out duration-300"
-                    leaveTo="opacity-10"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leaveFrom="opacity-100"
-                  >
-                    <>
-                      <h2 className="text-center text-sm text-movet-red mt-8">
-                        EMERGENCY CARE NOTICE
-                      </h2>
-                      <p className=" text-sm text-center">
-                        Please note, as primary care providers, our clinic is
-                        not set up for emergency care.
-                        {isAppMode ? (
-                          "Seek a veterinary hospital with emergency care for any of the following:"
-                        ) : (
-                          <span className="italic">
-                            Seek a{" "}
-                            <a href="/emergency" target="_blank">
-                              veterinary hospital with emergency care
-                            </a>{" "}
-                            for any of the following:
-                          </span>
-                        )}
-                      </p>
-                      <ul className="list-none py-2 text-xs italic text-center">
-                        <li className="my-1">Profuse Bleeding</li>
-                        <li className="my-1">Breathing Difficulties</li>
-                        <li className="my-1">Fainting / Collapse</li>
-                        <li className="my-1">Discolored / Pale Gums</li>
-                        <li className="my-1">Heat Stroke</li>
-                        <li className="my-1">Choking / Excessive Coughing</li>
-                        <li className="my-1">Bite Wounds</li>
-                        <li className="my-1">Ingestion of Toxins</li>
-                        <li className="my-1">Broken bones / Lacerations</li>
-                        <li className="my-1">Allergic Reactions</li>
-                        <li className="my-1">Snake Bites</li>
-                      </ul>
-                      <p className="text-center text-sm italic font-extrabold text-movet-brown mt-4 -mb-4">
-                        Please confirm this is NOT an emergency
-                      </p>
-                    </>
-                  </Transition>
                   <div className="flex flex-col justify-center items-center mt-8 mb-4">
                     <Button
                       type="submit"
@@ -304,19 +255,122 @@ export default function WellnessCheck() {
                           : faArrowRight
                       }
                       iconSize={"sm"}
-                      color="black"
-                      text={
+                      color={
                         selected !== null && selected?.length > 0
-                          ? `My ${
-                              Array.isArray(selected) && selected?.length > 1
-                                ? "Pets DO NOT"
-                                : "Pet DOES NOT"
-                            } need emergency care`
-                          : "Skip"
+                          ? "red"
+                          : "black"
+                      }
+                      text={
+                        selected !== null && selected?.length > 1
+                          ? `I have ill pets`
+                          : selected !== null && selected?.length === 1
+                            ? "I have an ill pet"
+                            : "Skip - They are healthy"
                       }
                       onClick={handleSubmit(onSubmit)}
                     />
                   </div>
+                  <BookingFooter />
+                </div>
+              </div>
+            ) : (
+              <div
+                className={
+                  isAppMode
+                    ? "flex flex-grow items-center justify-center min-h-screen"
+                    : ""
+                }
+              >
+                <div className="flex-col">
+                  <BookingHeader
+                    isAppMode={isAppMode}
+                    title="Pet Wellness Check"
+                    description={``}
+                  />
+                  <p className="text-center -mt-4 mb-8">
+                    Do you have any health concerns for{" "}
+                    {capitalizeFirstLetter(pets[0].name)} ?
+                  </p>
+                  <ErrorMessage
+                    errorMessage={errors?.illPets?.message as string}
+                  />
+                  <div className="flex flex-row justify-center items-center my-4 w-full">
+                    <div className="flex-col items-center justify-center w-1/2">
+                      <Button
+                        type="submit"
+                        iconSize={"sm"}
+                        color="black"
+                        text={"No Concerns"}
+                        className="mr-2"
+                        onClick={() => {
+                          setValue("illPets", null, {
+                            shouldTouch: true,
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          });
+                          handleSubmit(onSubmit)();
+                        }}
+                      />
+                      <p className="text-xs italic text-center">
+                        Vaccines & Check Up Only
+                      </p>
+                    </div>
+                    <div className="flex-col items-center justify-center w-1/2">
+                      <Button
+                        type="submit"
+                        className="ml-2"
+                        iconSize={"sm"}
+                        color="red"
+                        text={"Somethings Wrong"}
+                        onClick={() => {
+                          setValue("illPets", [pets[0]?.id] as any, {
+                            shouldTouch: true,
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          });
+                          handleSubmit(onSubmit)();
+                        }}
+                      />
+                      <p className="text-xs italic text-center">
+                        Pet has a Minor Illness
+                      </p>
+                    </div>
+                  </div>
+                  <span
+                    className="text-center text-gray my-8 flex justify-center items-center text-xs cursor-pointer italic hover:text-movet-brown ease-in-out duration-500"
+                    onClick={() => setShowExplainer(!showExplainer)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faInfoCircle}
+                      size="lg"
+                      className="mr-2 text-movet-brown -mt-1"
+                    />
+                    What can a Minor Illness include?
+                  </span>
+                  <Modal
+                    showModal={showExplainer}
+                    setShowModal={setShowExplainer}
+                    cancelButtonRef={cancelButtonRef}
+                    isLoading={isLoading}
+                    error={error ? <Error message={error} /> : undefined}
+                    content={
+                      <ul className="list-disc ml-8 pb-2">
+                        <li className="my-1">Behavioral Concerns</li>
+                        <li className="my-1">Coughing</li>
+                        <li className="my-1">Minor Cuts & Scrapes</li>
+                        <li className="my-1">Ear Infection</li>
+                        <li className="my-1">Eye Infection</li>
+                        <li className="my-1">Orthopedic / Limping Concerns</li>
+                        <li className="my-1">Lumps / Bumps / Bruises</li>
+                        <li className="my-1">Skin / Itching</li>
+                        <li className="my-1">
+                          GI Concerns - Vomiting / Diarrhea
+                        </li>
+                      </ul>
+                    }
+                    title="Minor Illness Symptoms"
+                    icon={faStethoscope}
+                  />
                   <BookingFooter />
                 </div>
               </div>

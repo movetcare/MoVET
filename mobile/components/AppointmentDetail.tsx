@@ -74,6 +74,7 @@ export const AppointmentDetail = () => {
   useEffect(() => {
     if (
       mapCoordinates === null &&
+      appointment?.location === "HOUSECALL" &&
       (appointment?.notes?.includes("Appointment Location:") || client?.address)
     ) {
       setIsLoading(true);
@@ -92,7 +93,12 @@ export const AppointmentDetail = () => {
         )
         .finally(() => setIsLoading(false));
     }
-  }, [mapCoordinates, appointment?.notes, client?.address]);
+  }, [
+    mapCoordinates,
+    appointment?.notes,
+    client?.address,
+    appointment?.location,
+  ]);
 
   useEffect(() => {
     if (id && reasons) {
@@ -512,10 +518,7 @@ export const AppointmentDetail = () => {
         >
           {isLoading ? (
             <ItalicText
-              style={[
-                isTablet ? tw`text-sm` : tw`text-xs`,
-                tw`mt-2 text-center`,
-              ]}
+              style={[isTablet ? tw`text-sm` : tw`text-xs`, tw`text-center`]}
             >
               We are canceling your appointment. Please wait...
             </ItalicText>

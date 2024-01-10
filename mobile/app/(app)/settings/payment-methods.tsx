@@ -162,9 +162,6 @@ const PaymentMethods = () => {
           const { error } = await presentPaymentSheet();
           if (error && error?.message !== "The payment has been canceled")
             handleError({ ...error, source: "presentPaymentSheet" });
-          else if (error && error?.message === "The payment has been canceled")
-            console.log("canceled");
-          // else router.replace("/settings/payment-methods");
         } else {
           const { error } = await presentPaymentSheet();
           if (error) handleError({ ...error, source: "presentPaymentSheet" });

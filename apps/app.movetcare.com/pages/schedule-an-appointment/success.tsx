@@ -176,12 +176,14 @@ export default function BookingSuccess() {
                         ),
                     )}
                   </div>
-                  <p className="text-xs italic text-center mt-4 px-4 sm:px-8">
-                    We will send you an email confirmation shortly. Please{" "}
-                    <Link href="/contact">contact us</Link> us if you have any
-                    questions or do not receive a confirmation email within the
-                    next 24 hours.
-                  </p>
+                  {!isAppMode && (
+                    <p className="text-xs italic text-center mt-4 px-4 sm:px-8">
+                      We will send you an email confirmation shortly. Please{" "}
+                      <Link href="/contact">contact us</Link> us if you have any
+                      questions or do not receive a confirmation email within
+                      the next 24 hours.
+                    </p>
+                  )}
                 </div>
               </div>
             )}

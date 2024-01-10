@@ -64,11 +64,11 @@ export const Loader = ({
             type="default"
             height={86}
             width={206}
-            style={tw`bg-transparent`}
+            style={tw`bg-transparent -mt-10`}
           />
         </View>
         <HeadingText
-          style={tw`pt-36 text-center my-6 text-lg normal-case bg-transparent`}
+          style={tw`pt-34 text-center my-6 text-lg normal-case bg-transparent`}
         >
           {description}
         </HeadingText>
