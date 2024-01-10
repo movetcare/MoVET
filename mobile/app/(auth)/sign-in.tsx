@@ -15,8 +15,10 @@ import {
   LinkText,
   ActionButton,
   SubHeadingText,
+  HeadingText,
+  BodyText,
 } from "components/themed";
-import { router, useLocalSearchParams } from "expo-router";
+import { SplashScreen, router, useLocalSearchParams } from "expo-router";
 import { AuthStore, ErrorStore } from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
@@ -86,6 +88,7 @@ export default function SignIn() {
   const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false);
   const [signInLinkSent, setSignInLinkSent] = useState<boolean>(false);
   const [disableEmailInput, setDisableEmailInput] = useState<boolean>(false);
+  const [signInLinkResent, setSignInLinkResent] = useState<boolean>(false);
   const fadeInOpacity = useSharedValue(0);
 
   const fadeIn = () => {
@@ -102,6 +105,7 @@ export default function SignIn() {
   });
 
   useEffect(() => {
+    SplashScreen.hideAsync();
     fadeIn();
   });
 
@@ -202,19 +206,28 @@ export default function SignIn() {
             >
               {signInLinkSent ? (
                 <View
-                  style={tw`p-2 rounded-xl bg-movet-white/50 dark:bg-movet-black/50`}
+                  style={[
+                    tw`p-2 rounded-xl bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2`,
+                    signInLinkSent && tw`border-movet-yellow`,
+                    signInLinkResent && tw`border-movet-red`,
+                  ]}
                   noDarkMode
                 >
-                  <SubHeadingText style={tw`text-center text-base`}>
+                  {signInLinkResent && (
+                    <ItalicText style={tw`text-lg text-center`}>
+                      Sign-In Link Resent!
+                    </ItalicText>
+                  )}
+                  <BodyText style={tw`text-center text-base my-2`}>
                     Check your email &quot;
                     <ItalicText
-                      style={tw`text-movet-brown dark:text-movet-white`}
+                      style={tw`text-movet-black dark:text-movet-white`}
                       noDarkMode
                     >
                       {email}
                     </ItalicText>
                     &quot; for a sign in link.
-                  </SubHeadingText>
+                  </BodyText>
                 </View>
               ) : (
                 <EmailInput
@@ -306,7 +319,13 @@ export default function SignIn() {
                   <ActionButton
                     title="Resend Sign-In Link"
                     iconName="plane"
-                    onPress={() => onSubmit({ email: user?.email })}
+                    onPress={() => {
+                      setSignInLinkResent(false);
+                      setTimeout(() => {
+                        setSignInLinkResent(true);
+                      }, 1000);
+                      onSubmit({ email: user?.email });
+                    }}
                   />
 
                   <ActionButton

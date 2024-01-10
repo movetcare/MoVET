@@ -1,4 +1,4 @@
-import { Tabs, router } from "expo-router";
+import { SplashScreen, Tabs, router } from "expo-router";
 import { useThemeColor } from "hooks/useThemeColor";
 import { useColorScheme } from "react-native";
 import { Icon } from "components/themed";
@@ -32,6 +32,12 @@ const DEBUG_DATA = false;
 const TabsLayout = (props: any) => {
   const { user, initialized, isLoggedIn } = AuthStore.useState();
   const [patientsCount, setPatientsCount] = useState<number | null>(null);
+  const [loadedUser, setLoadedUser] = useState<boolean>(false);
+  const [loadedPastAppointments, setLoadedPastAppointments] =
+    useState<boolean>(false);
+  const [loadedUpcomingAppointments, setLoadedUpcomingAppointments] =
+    useState<boolean>(false);
+  const [loadedPatients, setLoadedPatients] = useState<boolean>(false);
   const iconHeight = isTablet ? 26 : 20;
   const iconWidth = isTablet ? 26 : 20;
   const isDarkMode = useColorScheme() !== "light";
@@ -99,8 +105,12 @@ const TabsLayout = (props: any) => {
           AuthStore.update((store) => {
             store.client = null;
           });
+        setLoadedUser(true);
       },
-      (error: any) => setError({ ...error, source: "unsubscribeUser" }),
+      (error: any) => {
+        setLoadedUser(true);
+        setError({ ...error, source: "unsubscribeUser" });
+      },
     );
     const unsubscribeUpcomingAppointments = onSnapshot(
       query(
@@ -115,6 +125,7 @@ const TabsLayout = (props: any) => {
           AppointmentsStore.update((store: any) => {
             store.upcomingAppointments = null;
           });
+          setLoadedUpcomingAppointments(true);
           return;
         }
         const appointments: Appointment[] = [];
@@ -132,9 +143,12 @@ const TabsLayout = (props: any) => {
           AppointmentsStore.update((store: any) => {
             store.upcomingAppointments = null;
           });
+        setLoadedUpcomingAppointments(true);
       },
-      (error: any) =>
-        setError({ ...error, source: "unsubscribeUpcomingAppointments" }),
+      (error: any) => {
+        setLoadedUpcomingAppointments(true);
+        setError({ ...error, source: "unsubscribeUpcomingAppointments" });
+      },
     );
     const unsubscribePastAppointments = onSnapshot(
       query(
@@ -149,6 +163,7 @@ const TabsLayout = (props: any) => {
           AppointmentsStore.update((store: any) => {
             store.pastAppointments = null;
           });
+          setLoadedPastAppointments(true);
           return;
         }
         const appointments: Appointment[] = [];
@@ -165,9 +180,12 @@ const TabsLayout = (props: any) => {
           AppointmentsStore.update((store: any) => {
             store.pastAppointments = null;
           });
+        setLoadedPastAppointments(true);
       },
-      (error: any) =>
-        setError({ ...error, source: "unsubscribePastAppointments" }),
+      (error: any) => {
+        setLoadedPastAppointments(true);
+        setError({ ...error, source: "unsubscribePastAppointments" });
+      },
     );
     const unsubscribePatients = onSnapshot(
       query(
@@ -182,6 +200,7 @@ const TabsLayout = (props: any) => {
           PatientsStore.update((store: any) => {
             store.patients = null;
           });
+          setLoadedPatients(true);
           return;
         } else setPatientsCount(querySnapshot.size);
         const patients: Patient[] = [];
@@ -197,8 +216,12 @@ const TabsLayout = (props: any) => {
           PatientsStore.update((store: any) => {
             store.patients = null;
           });
+        setLoadedPatients(true);
       },
-      (error: any) => setError({ ...error, source: "unsubscribePatients" }),
+      (error: any) => {
+        setLoadedPatients(true);
+        setError({ ...error, source: "unsubscribePatients" });
+      },
     );
     return () => {
       unsubscribeUser();
@@ -207,6 +230,21 @@ const TabsLayout = (props: any) => {
       unsubscribePastAppointments();
     };
   }, [user?.uid, initialized, isLoggedIn, user?.email]);
+
+  useEffect(() => {
+    if (
+      loadedPastAppointments &&
+      loadedUpcomingAppointments &&
+      loadedUser &&
+      loadedPatients
+    )
+      SplashScreen.hideAsync();
+  }, [
+    loadedUser,
+    loadedPatients,
+    loadedUpcomingAppointments,
+    loadedPastAppointments,
+  ]);
 
   const setError = (error: any) =>
     ErrorStore.update((s: any) => {

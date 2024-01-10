@@ -1,4 +1,4 @@
-import { ErrorBoundaryProps, Stack, router } from "expo-router";
+import { ErrorBoundaryProps, Stack, router, SplashScreen } from "expo-router";
 import { useEffect } from "react";
 import { updateUserAuth } from "services/Auth";
 import { onAuthStateChanged } from "firebase/auth";
@@ -13,7 +13,7 @@ import { ErrorModal } from "components/Modal";
 import { ErrorStore } from "stores";
 import LogRocket from "@logrocket/react-native";
 
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
