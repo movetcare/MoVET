@@ -937,7 +937,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
               title="Request Records"
               iconName="folder-heart"
               onPress={() =>
-                router.push({
+                router.navigate({
                   pathname: "/(app)/pets/detail/web-view",
                   params: {
                     path: "/contact",

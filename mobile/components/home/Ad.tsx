@@ -22,7 +22,7 @@ export const Ad = ({ content }: { content: Ad }): ReactNode => {
   return (
     <TouchableOpacity
       onPress={() =>
-        router.push({
+        router.navigate({
           pathname: "/(app)/home/web-view",
           params: { path: urlRedirect },
         })

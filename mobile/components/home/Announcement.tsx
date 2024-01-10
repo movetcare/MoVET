@@ -43,7 +43,7 @@ export const Announcement = ({
   return link !== "" && link !== undefined ? (
     <TouchableOpacity
       onPress={() =>
-        router.push({
+        router.navigate({
           pathname: "/(app)/home/web-view",
           params: { path: link },
         })

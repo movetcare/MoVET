@@ -160,7 +160,7 @@ const Home = () => {
           <ActionButton
             title="Add a Pet"
             iconName="plus"
-            onPress={() => router.push("/(app)/home/new-pet")}
+            onPress={() => router.navigate("/(app)/home/new-pet")}
             style={tw`sm:w-0.9/3`}
           />
           <ActionButton
@@ -169,7 +169,7 @@ const Home = () => {
             color="brown"
             style={tw`sm:w-0.9/3`}
             onPress={() =>
-              router.push({
+              router.navigate({
                 pathname: "/(app)/home/web-view",
                 params: {
                   path: "/services",
@@ -184,7 +184,7 @@ const Home = () => {
             color="black"
             title="Chat w/ Us"
             iconName="user-medical-message"
-            onPress={() => router.push("/(app)/chat")}
+            onPress={() => router.navigate("/(app)/chat")}
             style={tw`sm:w-0.9/3`}
           />
         </Container>

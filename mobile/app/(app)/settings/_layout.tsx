@@ -81,11 +81,6 @@ export default function Layout() {
               title={navigationDetails?.title}
               iconName={navigationDetails?.iconName}
               canGoBack={navigationDetails?.canGoBack}
-              goBackRoot={
-                segments && segments.includes("web-view")
-                  ? "/(app)/settings/account"
-                  : "/(app)/settings"
-              }
             />
           ),
         }}

@@ -84,7 +84,7 @@ export const AppointmentList = ({
             <TouchableOpacity
               key={appointment.id}
               onPress={() =>
-                router.push({
+                router.navigate({
                   pathname: `/(app)/${source}/appointment-detail/`,
                   params: { id: appointment?.id },
                 })

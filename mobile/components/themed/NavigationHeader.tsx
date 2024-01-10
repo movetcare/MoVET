@@ -1,31 +1,22 @@
 import tw from "tailwind";
 import { HeadingText, Icon, SupportedIcons, View } from ".";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { TouchableOpacity } from "react-native";
 
 export const NavigationHeader = ({
   title = "Untitled Screen",
   iconName = null,
   canGoBack = false,
-  goBackRoot = "/(app)/home",
 }: {
   title: string;
   iconName: SupportedIcons | null;
   canGoBack?: boolean;
-  goBackRoot?: string;
 }) => {
-  const params = useLocalSearchParams();
   return canGoBack ? (
     <>
       <TouchableOpacity
         style={tw`absolute z-1 h-12 w-12`}
-        onPress={() =>
-          (router.push({
-            pathname: (params?.goBackRoot as string) || goBackRoot,
-            params,
-          }) as any) ||
-          (router.canGoBack() && router.back())
-        }
+        onPress={() => router.canGoBack() && router.back()}
       >
         <Icon
           name="arrow-left"

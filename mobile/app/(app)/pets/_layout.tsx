@@ -16,7 +16,6 @@ export default function Layout() {
     title: string;
     iconName: SupportedIcons;
     canGoBack: boolean;
-    goBackRoot?: string;
   } | null>(null);
 
   useEffect(() => {
@@ -28,7 +27,6 @@ export default function Layout() {
           title: "Add a Pet",
           iconName: "plus",
           canGoBack: true,
-          goBackRoot: "/(app)/pets",
         });
 
         //}, 180);
@@ -45,7 +43,6 @@ export default function Layout() {
               : "Schedule") + " an Appointment",
           iconName: "calendar-plus",
           canGoBack: true,
-          goBackRoot: "/(app)/pets",
         });
         //}, 180);
       } else if (
@@ -77,7 +74,6 @@ export default function Layout() {
                 title={props.options.title || navigationDetails.title}
                 iconName={navigationDetails.iconName}
                 canGoBack={navigationDetails.canGoBack}
-                goBackRoot={navigationDetails.goBackRoot}
               />
             ) : undefined,
         }}

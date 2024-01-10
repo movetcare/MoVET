@@ -116,7 +116,9 @@ const Settings = () => {
             <TouchableOpacity
               key={index}
               onPress={() =>
-                option.link ? router.push(option.link) : Linking.openSettings()
+                option.link
+                  ? router.navigate(option.link)
+                  : Linking.openSettings()
               }
             >
               <View

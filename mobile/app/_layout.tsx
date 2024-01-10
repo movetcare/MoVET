@@ -42,7 +42,7 @@ const useNotificationObserver = () => {
       alert("PUSH REDIRECT => " + JSON.stringify(notification));
       const url = notification.request.content.data?.path;
       alert("REDIRECT URL => " + url);
-      if (url) router.push(url);
+      if (url) router.navigate(url);
     };
     Notifications.getLastNotificationResponseAsync().then((response) => {
       if (response)

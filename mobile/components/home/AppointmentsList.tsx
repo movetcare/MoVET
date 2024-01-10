@@ -31,8 +31,8 @@ export const AppointmentsList = ({ source = "pets" }: { source: "home" | "pets" 
           iconName="calendar-plus"
           onPress={() =>
             source === "pets"
-              ? router.push("/(app)/pets/new-appointment")
-              : router.push("/(app)/home/new-appointment")
+              ? router.navigate("/(app)/pets/new-appointment")
+              : router.navigate("/(app)/home/new-appointment")
           }
           style={tw`sm:w-2.75/6`}
         />
@@ -40,7 +40,7 @@ export const AppointmentsList = ({ source = "pets" }: { source: "home" | "pets" 
           color="black"
           title="Chat with Us"
           iconName="user-medical-message"
-          onPress={() => router.push("/(app)/chat")}
+          onPress={() => router.navigate("/(app)/chat")}
           style={tw`sm:w-2.75/6`}
         />
       </Container>
@@ -63,8 +63,8 @@ export const AppointmentsList = ({ source = "pets" }: { source: "home" | "pets" 
           iconName="calendar-plus"
           onPress={() =>
             source === "pets"
-              ? router.push("/(app)/pets/new-appointment")
-              : router.push("/(app)/home/new-appointment")
+              ? router.navigate("/(app)/pets/new-appointment")
+              : router.navigate("/(app)/home/new-appointment")
           }
           style={tw`sm:w-2.75/6`}
         />
@@ -72,7 +72,7 @@ export const AppointmentsList = ({ source = "pets" }: { source: "home" | "pets" 
           color="black"
           title="Chat with Us"
           iconName="user-medical-message"
-          onPress={() => router.push("/(app)/chat")}
+          onPress={() => router.navigate("/(app)/chat")}
           style={tw`sm:w-2.75/6`}
         />
       </Container>

@@ -150,7 +150,7 @@ export const VcprAlert = ({
               iconName="calendar-plus"
               onPress={() => {
                 setShowVcprModal(false);
-                router.push(scheduleAppointmentPath);
+                router.navigate(scheduleAppointmentPath);
               }}
             />
           </Container>

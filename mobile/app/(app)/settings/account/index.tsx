@@ -105,7 +105,7 @@ const AccountSettings = () => {
             message: "Failed to Delete Account",
             source: "deleteMoVETAccount",
           });
-        else router.push("/(app)/settings/sign-out");
+        else router.navigate("/(app)/settings/sign-out");
       })
       .catch((error: any) =>
         setError({ ...error, source: "deleteMoVETAccount" }),
@@ -242,7 +242,7 @@ const AccountSettings = () => {
                 iconName="arrow-right"
                 onPress={() => {
                   setShowChangeEmailModal(false);
-                  router.push({
+                  router.navigate({
                     pathname: "/(app)/settings/account/web-view",
                     params: {
                       path: "/contact",

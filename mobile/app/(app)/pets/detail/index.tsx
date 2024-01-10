@@ -143,7 +143,7 @@ const PetDetail = () => {
       >
         <TouchableOpacity
           onPress={() =>
-            router.push({
+            router.navigate({
               pathname: "/(app)/pets/detail/edit",
               params: { id: patient?.id },
             })
@@ -260,7 +260,7 @@ const PetDetail = () => {
                         <TouchableOpacity
                           key={appointment.id}
                           onPress={() =>
-                            router.push({
+                            router.navigate({
                               pathname: `/(app)/pets/detail/appointment-detail/`,
                               params: { id: appointment?.id },
                             })
@@ -358,7 +358,7 @@ const PetDetail = () => {
                       <TouchableOpacity
                         key={appointment.id}
                         onPress={() =>
-                          router.push({
+                          router.navigate({
                             pathname: `/(app)/pets/detail/appointment-detail/`,
                             params: { id: appointment?.id },
                           })
@@ -412,7 +412,7 @@ const PetDetail = () => {
                       <TouchableOpacity
                         key={appointment.id}
                         onPress={() =>
-                          router.push({
+                          router.navigate({
                             pathname: `/(app)/pets/detail/appointment-detail/`,
                             params: { id: appointment?.id },
                           })
@@ -590,7 +590,7 @@ const PetDetail = () => {
                     iconName="calendar-plus"
                     onPress={() => {
                       setShowVcprModal(false);
-                      router.push("/(app)/pets/new-appointment");
+                      router.navigate("/(app)/pets/new-appointment");
                     }}
                   />
                 </Container>
@@ -633,11 +633,10 @@ const PetDetail = () => {
             }
             iconName="calendar-plus"
             onPress={() =>
-              router.push({
+              router.navigate({
                 pathname: "/(app)/pets/detail/new-appointment",
                 params: {
                   id: patient?.id,
-                  goBackRoot: "/(app)/pets/detail",
                 },
               })
             }
@@ -653,7 +652,7 @@ const PetDetail = () => {
               title="Request Records"
               iconName="folder-heart"
               onPress={() =>
-                router.push({
+                router.navigate({
                   pathname: "/(app)/pets/detail/web-view",
                   params: {
                     path: "/contact",
@@ -683,7 +682,7 @@ const PetDetail = () => {
             title="Edit Pet"
             iconName="pencil"
             onPress={() =>
-              router.push({
+              router.navigate({
                 pathname: "/(app)/pets/detail/edit",
                 params: { id: patient?.id },
               })

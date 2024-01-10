@@ -83,7 +83,7 @@ const MyPets = () => {
                   key={index}
                   style={tw`flex-row`}
                   onPress={() =>
-                    router.push({
+                    router.navigate({
                       pathname: "/(app)/pets/detail",
                       params: { id: patient?.id },
                     })
@@ -194,14 +194,14 @@ const MyPets = () => {
                 : "Schedule") + " an Appointment"
             }
             iconName="calendar-plus"
-            onPress={() => router.push("/(app)/pets/new-appointment")}
+            onPress={() => router.navigate("/(app)/pets/new-appointment")}
             style={tw`sm:w-2.75/6`}
           />
           <ActionButton
             color="black"
             title="Add a Pet"
             iconName="plus"
-            onPress={() => router.push("/(app)/pets/new-pet")}
+            onPress={() => router.navigate("/(app)/pets/new-pet")}
             style={tw`sm:w-2.75/6`}
           />
         </Container>
