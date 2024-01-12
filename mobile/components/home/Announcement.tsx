@@ -53,11 +53,11 @@ export const Announcement = ({
         noDarkMode
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
-          tw`flex-row mb-4 shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`,
+          tw`flex-row mb-4 rounded-xl bg-transparent`,
         ]}
       >
         <View
-          style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full ${backgroundColor}`}
+          style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full shadow-lg shadow-movet-black dark:shadow-movet-white ${backgroundColor}`}
           noDarkMode
         >
           <Container>
@@ -79,7 +79,7 @@ export const Announcement = ({
       noDarkMode
       style={[
         isTablet ? tw`px-16` : tw`px-4`,
-        tw`flex-row mb-4 shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`,
+        tw`flex-row mb-4 rounded-xl bg-transparent`,
       ]}
     >
       <View

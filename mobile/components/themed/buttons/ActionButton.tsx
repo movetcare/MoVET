@@ -44,7 +44,7 @@ export const ActionButton = ({
             ? tw`bg-movet-brown border-movet-brown`
             : tw`bg-movet-black dark:bg-movet-white border-movet-black dark:border-movet-white`,
         disabled && tw`opacity-50`,
-        type === "text" && tw`bg-transparent border-0`,
+        type === "text" && tw`bg-transparent border-0 shadow-none`,
         style,
       ]}
     >

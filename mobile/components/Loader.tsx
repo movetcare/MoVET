@@ -1,9 +1,9 @@
 import React from "react";
-import { ImageBackground, Platform } from "react-native";
+import { ActivityIndicator, ImageBackground, Platform, useColorScheme } from "react-native";
 import LottieView from "lottie-react-native";
 import { MoVETLogo } from "components/MoVETLogo";
 import tw from "tailwind";
-import { HeadingText, View, Screen } from "./themed";
+import { HeadingText, View, Screen, ItalicText } from "./themed";
 import { getRandomInt } from "utils/getRandomInt";
 
 export const Loader = ({
@@ -13,6 +13,7 @@ export const Loader = ({
   description?: string;
   noBackground?: boolean;
 }) => {
+  const isDarkMode = useColorScheme() !== "light";
   // Loading Animation Sources:
   // https://lottiefiles.com/web-player?lottie_url=https%3A%2F%2Fassets5.lottiefiles.com%2Fpackages%2Flf20_2ixzdfvy.json
   // https://lottiefiles.com/65612-paws
@@ -45,7 +46,7 @@ export const Loader = ({
   };
 
   const Loading = () => {
-    return (
+    return Platform.OS === 'ios' ? (
       <Screen
         withBackground="pets"
         style={tw`flex-grow justify-center items-center bg-movet-white dark:bg-movet-black bg-transparent -mt-36 pt-12`}
@@ -67,13 +68,39 @@ export const Loader = ({
             style={tw`bg-transparent`}
           />
         </View>
-        <HeadingText
+        <ItalicText
           style={tw`pt-36 text-center my-6 text-lg normal-case bg-transparent`}
         >
           {description}
-        </HeadingText>
+        </ItalicText>
       </Screen>
-    );
+    ) : (<Screen
+      withBackground="pets"
+      style={tw`flex-grow justify-center items-center bg-movet-white dark:bg-movet-black bg-transparent`}
+    >
+      <View style={tw`bg-transparent`} noDarkMode>
+        <MoVETLogo
+          type="default"
+          height={86}
+          width={206}
+          style={tw`bg-transparent`}
+        />
+      </View>
+      <ActivityIndicator
+        style={tw`mt-2`}
+        size="large"
+        color={
+          isDarkMode
+            ? tw.color("movet-white")
+            : tw.color("movet-black")
+        }
+      />
+      <ItalicText
+        style={tw`text-center mt-4 text-lg normal-case bg-transparent`}
+      >
+        {description}
+      </ItalicText>
+    </Screen>)
   };
   return noBackground ? (
     <Loading />

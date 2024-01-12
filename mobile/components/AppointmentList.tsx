@@ -55,7 +55,7 @@ export const AppointmentList = ({
     <View
       style={[
         isTablet ? tw`px-16` : tw`px-4`,
-        tw`flex-col rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent w-full`,
+        tw`flex-col rounded-xl bg-transparent w-full`,
       ]}
       noDarkMode
     >
@@ -91,7 +91,7 @@ export const AppointmentList = ({
               }
             >
               <View
-                style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+                style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`}
               >
                 <Container style={tw`px-3`}>
                   <Icon

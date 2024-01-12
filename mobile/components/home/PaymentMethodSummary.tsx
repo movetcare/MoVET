@@ -1,4 +1,3 @@
-import { Debug } from "components/Debug";
 import { BodyText, HeadingText, ItalicText } from "components/themed";
 import { Container, View, Icon } from "components/themed";
 import { router } from "expo-router";
@@ -173,7 +172,7 @@ export const PaymentMethodSummary = ({
       <View
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
-          tw`flex-row rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent`,
+            tw`flex-row rounded-xl bg-transparent`,
         ]}
         noDarkMode
       >
@@ -181,7 +180,7 @@ export const PaymentMethodSummary = ({
           style={[
             isLoading ? tw`bg-movet-black/60` : tw`bg-movet-yellow`,
             showExpiredWarning && tw`bg-movet-red`,
-            tw`pr-4 pt-2 pb-3 rounded-xl flex-row items-center dark:border-2 dark:border-movet-white w-full`,
+              tw`pr-4 pt-2 pb-3 rounded-xl flex-row items-center dark:border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`,
           ]}
           noDarkMode
         >

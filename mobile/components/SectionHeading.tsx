@@ -18,7 +18,7 @@ export const SectionHeading = ({
   return (
     <View
       style={[
-        tw`flex-row justify-center items-center rounded-xl shadow-sm shadow-movet-black dark:shadow-movet-white bg-movet-white/70 dark:bg-movet-black/70 p-2`,
+        tw`flex-row justify-center items-center rounded-xl bg-movet-white/70 dark:bg-movet-black/70 p-2`,
         isTablet ? tw`mb-3 mt-6` : tw`mb-1.5 mt-4`,
         containerStyle,
       ]}
