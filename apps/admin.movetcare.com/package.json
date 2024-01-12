@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@types/lodash.kebabcase": "^4.1.9",
-    "@types/node": "^20.10.8",
+    "@types/node": "^20.11.0",
     "@types/react": "18.2.47",
     "@types/react-datepicker": "^4.19.5",
     "@types/ua-parser-js": "^0.7.39",
