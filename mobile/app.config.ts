@@ -77,14 +77,22 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       },
       package: "com.movet",
       versionCode: versions.buildVersion,
-      compileSdkVersion: 33,
-      targetSdkVersion: 33,
-      buildToolsVersion: "33.0.0",
       permissions: ["CAMERA", "READ_CALENDAR", "WRITE_CALENDAR"],
       googleServicesFile: "./google-services.json",
     },
     plugins: [
       "@logrocket/react-native",
+      [
+        "expo-build-properties",
+        {
+          android: {
+            compileSdkVersion: 33,
+            targetSdkVersion: 33,
+            buildToolsVersion: "33.0.0",
+            kotlinVersion: "1.9.22",
+          },
+        },
+      ],
       "expo-router",
       [
         "@stripe/stripe-react-native",
