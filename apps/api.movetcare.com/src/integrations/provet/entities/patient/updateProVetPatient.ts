@@ -64,6 +64,13 @@ export const updateProVetPatient = async (data: Patient): Promise<any> => {
       case "photoUrl":
         updateCustomField(String(data?.id), 7, value);
         break;
+      case "deceased":
+        if (value) {
+          requestPayload.deceased = new Date().toISOString().split("T")[0];
+          requestPayload.reason_of_death = "Unknown";
+          requestPayload.archived = true;
+        }
+        break;
       default:
         break;
     }

@@ -562,7 +562,7 @@ export default function DateTime() {
                                   placeholder="Enter any additional notes or a promo code"
                                   multiline
                                   numberOfLines={2}
-                                  className="my-4"
+                                  className="my-4 w-full"
                                 />
                               </div>
                             </>

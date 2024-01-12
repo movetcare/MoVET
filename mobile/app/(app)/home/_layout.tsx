@@ -74,8 +74,8 @@ export default function Layout() {
   return (
     <Container
       style={[
-        tw`flex-1`,
-        !navigationDetails ? tw`bg-transparent` : tw`bg-movet-red`,
+        tw`flex-1 `,
+        !navigationDetails ? tw`bg-transparent dark:bg-movet-black` : tw`bg-movet-red`,
         { paddingTop: insets.top },
       ]}
     >

@@ -116,6 +116,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const { id } = useLocalSearchParams();
   const { patients } = PatientsStore.useState();
+  const { client } = AuthStore.useState();
   const { pastAppointments } = AppointmentsStore.useState();
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [petImage, setPetImage] = useState<string | null>(null);
@@ -129,7 +130,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
     useState<boolean>(false);
   const [pastPatientAppointments, setPastPatientAppointments] =
     useState<Array<Appointment> | null>(null);
-  const { user, client } = AuthStore.useState();
+  const { user } = AuthStore.useState();
 
   const {
     control,
@@ -541,7 +542,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
               router.back();
             } else
               setError({
-                message: "Unable to Add a Pet",
+                message: "Unable to Update a Pet",
                 source: "onSubmit updatePatient",
               });
             setIsSaving(false);
@@ -558,6 +559,42 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
       }
     }
   };
+
+  const petIsDead = async () => {
+    setIsSaving(true);
+    if (mode === "edit") {
+      try {
+        const patientData: any = {
+        };
+        patientData["id"] = id;
+        patientData["deceased"] = true;
+        const updatePatient = httpsCallable(functions, "updatePatient");
+        await updatePatient(patientData)
+          .then(async (result: any) => {
+            if (result.data) {
+              setIsSaving(false);
+              router.back();
+            } else
+              setError({
+                message: "Unable to Update a Pet",
+                source: "onSubmit updatePatient",
+              });
+            setIsSaving(false);
+            router.back();
+          })
+          .catch((error: any) =>
+            setError({ ...error, source: "onSubmit updatePatient" }),
+          )
+          .finally(() => setIsSaving(false));
+      } catch (error: any) {
+        setIsSaving(false);
+        reset();
+        setPetImage(null);
+        setError({ ...error, source: "onSubmit updatePatient" });
+      }
+    } else setIsSaving(false);
+  };
+
   return isLoading || isSaving || isDeleting ? (
     <Container style={tw`flex-1 w-full`}>
       <Loader
@@ -913,7 +950,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
             onPress={() => setShowPetDeletionConfirmation(true)}
           >
             <Icon name="trash" height={14} width={14} />
-            <ButtonText style={tw`text-xs ml-2`}>Delete Pet</ButtonText>
+              <ButtonText style={tw`text-xs ml-2`}>Remove Pet</ButtonText>
           </TouchableOpacity>
         )}
       </View>
@@ -924,46 +961,49 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
         }}
         title="Are You Sure...?"
       >
-        <View style={tw`flex-col items-center justify-center rounded-xl`}>
+          <View style={tw`flex-col items-center justify-center rounded-xl mb-2`}>
           <ItalicText>
-            Deleting your pet will erase ALL of your pets data.
+              Removing your pet will erase ALL of your pets data.
             {pastPatientAppointments && pastPatientAppointments?.length > 0
-              ? "Please make sure you have requested a copy of your pets medical records before deleting their profile."
+                ? " Please make sure you have requested a copy of your pets medical records before deleting their profile."
               : ""}
           </ItalicText>
-          {pastPatientAppointments && pastPatientAppointments?.length > 0 && (
-            <ActionButton
-              color="black"
-              title="Request Records"
-              iconName="folder-heart"
-              onPress={() =>
-                router.navigate({
-                  pathname: "/(app)/pets/detail/web-view",
-                  params: {
-                    path: "/contact",
-                    queryString: `${
-                      client?.firstName ? `&firstName=${client?.firstName}` : ""
-                    }${
-                      client?.lastName ? `&lastName=${client?.lastName}` : ""
-                    }${client?.email ? `&email=${client?.email}` : ""}${
-                      client?.phone
-                        ? `&phone=${client?.phone
+            {pastPatientAppointments && pastPatientAppointments?.length > 0 && (
+              <ActionButton
+                color="black"
+                title="Request Medical Records"
+                iconName="folder-heart"
+                onPress={() => {
+                  setShowPetDeletionConfirmation(false);
+                  router.navigate({
+                    pathname: "/(app)/pets/detail/web-view",
+                    params: {
+                      path: "/contact",
+                      queryString: `${client?.firstName ? `&firstName=${client?.firstName}` : ""
+                        }${client?.lastName ? `&lastName=${client?.lastName}` : ""
+                        }${client?.email ? `&email=${client?.email}` : ""}${client?.phone
+                          ? `&phone=${client?.phone
                             ?.replaceAll(" ", "")
                             ?.replaceAll("(", "")
                             ?.replaceAll(")", "")
                             ?.replaceAll("-", "")}`
                         : ""
-                    }&message=Please send a copy of ${name}'s records to <EMAIL_ADDRESS>. Thanks!`
-                      ?.replaceAll(")", "")
-                      ?.replaceAll("(", ""),
-                  },
-                })
-              }
-              style={tw`sm:w-0.9/3`}
+                        }&message=Please send a copy of ${name}'s full medical records to <EMAIL_ADDRESS>. Thanks!`
+                        ?.replaceAll(")", "")
+                        ?.replaceAll("(", ""),
+                    },
+                  })
+                }}
+              />
+            )}
+            <ActionButton
+              color="brown"
+              title={`"${name}" is Deceased...`}
+              iconName="coffin"
+              onPress={() => petIsDead()}
             />
-          )}
-          <ActionButton
-            title={`Delete "${name?.toString()}"`}
+            <ActionButton
+              title={`Delete "${name}"`}
             iconName="trash"
             onPress={() => deletePet()}
           />

@@ -23,7 +23,7 @@ export const TelehealthStatus = ({
   return (
     <TouchableOpacity
       onPress={() => router.replace("/(app)/chat/")}
-      style={tw`rounded-xl`}
+      style={tw`rounded-xl mb-4`}
     >
       <View
         style={[

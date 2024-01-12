@@ -1,6 +1,6 @@
 import { Loader } from "components/Loader";
 import { View } from "components/themed";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Platform, Linking } from "react-native";
 import { WebView as DefaultWebView } from "react-native-webview";
@@ -8,10 +8,11 @@ import tw from "tailwind";
 import { ApplicationTypes, getPlatformUrl } from "utils/getPlatformUrl";
 
 const WebView = () => {
-  const { path, applicationSource, queryString } = useLocalSearchParams();
+  const { path, applicationSource, queryString, screenTitle } = useLocalSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   return (
     <>
+      {screenTitle && <Stack.Screen options={{ title: screenTitle }} />}
       {isLoading && (
         <View style={tw`h-screen -mt-12`}>
           <Loader />

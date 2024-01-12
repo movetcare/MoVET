@@ -144,9 +144,6 @@ export const PaymentMethodSummary = ({
       setCustomMessage(
         " One or more of your payment methods has expired. Please add a new form of payment to avoid any delays in service.",
       );
-    } else if (message || title) {
-      if (title) setCustomTitle(title);
-      if (message) setCustomMessage(message);
     }
   }, [
     paymentMethods,
@@ -171,7 +168,7 @@ export const PaymentMethodSummary = ({
           params: { autoOpen: true },
         })
       }
-      style={tw`rounded-xl my-4`}
+      style={tw`rounded-xl`}
     >
       <View
         style={[

@@ -68,7 +68,7 @@ export default function Layout() {
       style={[
         tw`flex-1`,
         navigationDetails?.title === "Settings"
-          ? tw`bg-transparent`
+          ? tw`bg-transparent dark:bg-movet-black`
           : tw`bg-movet-red`,
         { paddingTop: insets.top },
       ]}

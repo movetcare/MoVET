@@ -100,6 +100,12 @@ import ChevronDownIcon from "assets/icons/svgs/font-awesome/chevron-down.svg";
 import ChevronDownIconDark from "assets/icons/svgs/font-awesome/chevron-down-dark.svg";
 import ShopIcon from "assets/icons/svgs/font-awesome/shop.svg";
 import ShopIconDark from "assets/icons/svgs/font-awesome/shop-dark.svg";
+import SyringeIcon from "assets/icons/svgs/font-awesome/syringe.svg";
+import SyringeIconDark from "assets/icons/svgs/font-awesome/syringe-dark.svg";
+import CoffinIcon from "assets/icons/svgs/font-awesome/coffin.svg";
+import CoffinIconDark from "assets/icons/svgs/font-awesome/coffin-dark.svg";
+import MedBottleIcon from "assets/icons/svgs/font-awesome/med-bottle.svg";
+import MedBottleIconDark from "assets/icons/svgs/font-awesome/med-bottle-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -154,7 +160,7 @@ export type SupportedIcons =
   | "cancel"
   | "chevron-up"
   | "chevron-down"
-  | "shop";
+  | "shop" | "syringe" | "coffin" | "med-bottle";
 
 export const Icon = ({
   name = "poo",
@@ -595,6 +601,24 @@ export const Icon = ({
         <ShopIconDark height={iconHeight} width={iconWidth} style={style} />
       ) : (
         <ShopIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "syringe":
+      return showWhiteIcon ? (
+        <SyringeIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <SyringeIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "coffin":
+      return showWhiteIcon ? (
+        <CoffinIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <CoffinIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "med-bottle":
+      return showWhiteIcon ? (
+        <MedBottleIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <MedBottleIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (

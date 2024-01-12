@@ -10,7 +10,7 @@
     "ios": "npx expo run:ios",
     "build:ios": "eas build --profile release --platform ios",
     "build:android": "eas build --profile release --platform android",
-    "clean": "rm -rf node_modules && watchman watch-del-all && rm -fr $TMPDIR/haste-map-* && rm -rf $TMPDIR/metro-cache && npm i && npx expo install --fix && npx expo-doctor",
+    "clean": "rm -rf node_modules && watchman watch-del-all && rm -fr $TMPDIR/haste-map-* && rm -rf $TMPDIR/metro-cache && npm i && npx expo-doctor && npx expo install --check",
     "check:deps": "npx expo install --check",
     "update": "ncu -u && npm i && npm run clean",
     "update:version": "node ./incrementVersion.js",

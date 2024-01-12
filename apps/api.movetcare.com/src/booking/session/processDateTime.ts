@@ -2,6 +2,7 @@ import { admin, environment, stripe, throwError } from "../../config/config";
 import { createProVetAppointment } from "../../integrations/provet/entities/appointment/createProVetAppointment";
 import { sendNotification } from "../../notifications/sendNotification";
 import type { BookingError, Booking } from "../../types/booking";
+import { formatToProVetTimestamp } from "../../utils/formatToProVetTimestamp";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 import { handleFailedBooking } from "./handleFailedBooking";
@@ -295,33 +296,6 @@ const convertTime12to24 = (time12h: string): string => {
     );
   }
   return `${finalHours}:${minutes}:${seconds ? seconds : "00"}`;
-};
-
-const formatToProVetTimestamp = (date: Date) => {
-  const tzo = -date.getTimezoneOffset(),
-    dif = tzo >= 0 ? "+" : "-",
-    pad = (num: number) => {
-      const norm = Math.floor(Math.abs(num));
-      return (norm < 10 ? "0" : "") + norm;
-    };
-
-  return (
-    date.getFullYear() +
-    "-" +
-    pad(date.getMonth() + 1) +
-    "-" +
-    pad(date.getDate()) +
-    "T" +
-    pad(date.getHours()) +
-    ":" +
-    pad(date.getMinutes()) +
-    ":" +
-    pad(date.getSeconds()) +
-    dif +
-    pad(tzo / 60) +
-    ":" +
-    pad(tzo % 60)
-  );
 };
 
 const formatAppointmentData = async (appointment: any) => {

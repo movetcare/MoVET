@@ -256,21 +256,20 @@ const Home = () => {
                 style={tw`border-t-2 border-movet-gray mt-2 mb-6 mx-8 w-2.6/3`}
               />
             )}
-            {vcprPatients && vcprPatients?.length > 0 && (
+              {patients && patients.length > 0 && telehealthStatus?.isOnline && (
               <>
-                <VcprAlert patients={vcprPatients} />
-                {(announcement?.isActiveMobile || ad?.isActive) && (
+                  {!announcement?.isActiveMobile && !ad?.isActive && (
                   <View noDarkMode style={tw`h-4 bg-transparent`} />
                 )}
+                  <TelehealthStatus status={telehealthStatus} />
               </>
             )}
-
-            {patients && patients.length > 0 && telehealthStatus?.isOnline && (
+              {vcprPatients && vcprPatients?.length > 0 && (
               <>
-                {!announcement?.isActiveMobile && !ad?.isActive && (
+                  <VcprAlert patients={vcprPatients} />
+                  {(announcement?.isActiveMobile || ad?.isActive) && upcomingAppointments && (
                   <View noDarkMode style={tw`h-4 bg-transparent`} />
-                )}
-                <TelehealthStatus status={telehealthStatus} />
+                  )}
               </>
             )}
             {upcomingAppointments !== null && <PaymentMethodSummary />}

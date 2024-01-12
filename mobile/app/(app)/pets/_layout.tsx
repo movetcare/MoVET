@@ -60,7 +60,7 @@ export default function Layout() {
         segments.includes("pets") &&
         !segments.includes("appointment-detail") &&
         !segments.includes("detail")
-          ? tw`bg-transparent`
+          ? tw`bg-transparent dark:bg-movet-black`
           : tw`bg-movet-red`,
         { paddingTop: insets.top },
       ]}

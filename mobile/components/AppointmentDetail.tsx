@@ -81,7 +81,7 @@ export const AppointmentDetail = () => {
       fetch(
         `https://maps.google.com/maps/api/geocode/json?address=${encodeURI(
           appointment?.notes?.split("-")[1]?.split("|")[0]?.trim() ||
-            client?.address,
+          client?.address,
         )}&key=${Constants.expoConfig?.extra?.google_maps_geocode_key}`,
       )
         .then((response: any) => response.json())
@@ -126,21 +126,21 @@ export const AppointmentDetail = () => {
             reason: reasons.find(
               (reason: any) =>
                 reason.id === getProVetIdFromUrl(appointment.reason as string),
-            ) as { name: string; instructions: string },
+            ) as { name: string; instructions: string; },
             patients: appointmentPatients,
             location:
               appointment.resources.includes(6) || // Exam Room 1
-              appointment.resources.includes(7) || // Exam Room 2
-              appointment.resources.includes(8) || // Exam Room 3
-              appointment.resources.includes(14) || // Exam Room 1
-              appointment.resources.includes(15) || // Exam Room 2
-              appointment.resources.includes(16) // Exam Room 3
+                appointment.resources.includes(7) || // Exam Room 2
+                appointment.resources.includes(8) || // Exam Room 3
+                appointment.resources.includes(14) || // Exam Room 1
+                appointment.resources.includes(15) || // Exam Room 2
+                appointment.resources.includes(16) // Exam Room 3
                 ? "CLINIC"
                 : appointment.resources.includes(3) || // Truck 1
-                    appointment.resources.includes(9) // Truck 2
+                  appointment.resources.includes(9) // Truck 2
                   ? "HOUSECALL"
                   : appointment.resources.includes(11) || // Virtual Room 1
-                      appointment.resources.includes(18) // Virtual Room 2
+                    appointment.resources.includes(18) // Virtual Room 2
                     ? "TELEHEALTH"
                     : "UNKNOWN APPOINTMENT TYPE",
           });
@@ -202,11 +202,11 @@ export const AppointmentDetail = () => {
         <Stack.Screen options={{ title: "Virtual Consultation" }} />
       )}
       {appointment?.start?.toDate() >= new Date() && (
-        <PaymentMethodSummary
+        <Container style={tw`mt-4`}><PaymentMethodSummary
           titleSize={"sm"}
           title="PAYMENT METHOD REQUIRED"
           message="Tap here to add a payment method to your account before your appointment begins."
-        />
+        /></Container>
       )}
       <View
         style={[
@@ -233,7 +233,7 @@ export const AppointmentDetail = () => {
         </Container>
         <HeadingText style={tw`text-center mb-2`}>
           {
-            (appointment?.reason as { name: string; instructions: string })
+            (appointment?.reason as { name: string; instructions: string; })
               ?.name
           }
         </HeadingText>
@@ -256,9 +256,10 @@ export const AppointmentDetail = () => {
             <SubHeadingText style={tw`mt-2`}>
               APPOINTMENT LOCATION
             </SubHeadingText>
+            <Container style={tw`mb-4`}>
             {appointment?.notes?.split("-")[1]?.split("|")[0]?.trim() && (
               <ItalicText style={tw`text-center`}>
-                {appointment?.notes?.split("-")[1]?.split("(")[0]?.trim()}
+                  {appointment?.notes?.split("-")[1]?.split("(")[0]?.trim()?.split("|")[0]?.trim()}
               </ItalicText>
             )}
             {appointment?.notes
@@ -268,7 +269,7 @@ export const AppointmentDetail = () => {
               .split("(")[1]
               ?.split(")")[0]
               ?.trim() && (
-              <ItalicText style={tw`mb-4 text-center text-sm`}>
+                <ItalicText style={tw`text-center text-sm`}>
                 *{" "}
                 {appointment?.notes
                   ?.split("-")[1]
@@ -278,7 +279,7 @@ export const AppointmentDetail = () => {
                   ?.split(")")[0]
                   ?.trim()}
               </ItalicText>
-            )}
+                )}</Container>
             {isLoading || !mapCoordinates ? (
               <ActivityIndicator
                 size={"large"}
@@ -384,22 +385,19 @@ export const AppointmentDetail = () => {
                     (supported) => {
                       if (supported)
                         Linking.openURL(
-                          `${getPlatformUrl()}/contact?${
-                            client?.firstName
-                              ? `&firstName=${client?.firstName}`
-                              : ""
-                          }${
-                            client?.lastName
-                              ? `&lastName=${client?.lastName}`
-                              : ""
-                          }${client?.email ? `&email=${client?.email}` : ""}${
-                            client?.phone
-                              ? `&phone=${client?.phone
-                                  ?.replaceAll(" ", "")
-                                  ?.replaceAll("(", "")
-                                  ?.replaceAll(")", "")
-                                  ?.replaceAll("-", "")}`
-                              : ""
+                          `${getPlatformUrl()}/contact?${client?.firstName
+                            ? `&firstName=${client?.firstName}`
+                            : ""
+                          }${client?.lastName
+                            ? `&lastName=${client?.lastName}`
+                            : ""
+                          }${client?.email ? `&email=${client?.email}` : ""}${client?.phone
+                            ? `&phone=${client?.phone
+                              ?.replaceAll(" ", "")
+                              ?.replaceAll("(", "")
+                              ?.replaceAll(")", "")
+                              ?.replaceAll("-", "")}`
+                            : ""
                           }&message=Please use <MY_APPOINTMENT_ADDRESS> as the location for my next housecall appointment. Thanks!`,
                         );
                     },
@@ -412,12 +410,6 @@ export const AppointmentDetail = () => {
             )}
           </>
         ) : null}
-        <SubHeadingText>
-          PET
-          {appointment?.patients && appointment?.patients?.length > 1
-            ? "S"
-            : ""}
-        </SubHeadingText>
         {appointment?.patients?.map((patient: Patient, index: number) => (
           <Container key={index} style={tw`flex-row`}>
             <View
@@ -470,7 +462,7 @@ export const AppointmentDetail = () => {
           </Container>
         ))}
         {(appointment?.instructions ||
-          (appointment?.reason as { name: string; instructions: string })
+          (appointment?.reason as { name: string; instructions: string; })
             ?.instructions) && (
           <>
             <SubHeadingText style={tw`mt-4`}>INSTRUCTIONS</SubHeadingText>

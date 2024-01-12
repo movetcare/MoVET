@@ -27,6 +27,7 @@ import { useEffect, useState } from "react";
 import { ErrorStore } from "stores";
 import LogRocket from "@logrocket/react-native";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
+import tw from "tailwind";
 
 const DEBUG_DATA = false;
 
@@ -257,7 +258,7 @@ const TabsLayout = (props: any) => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "transparent",
+          backgroundColor: isDarkMode ? tw.color("movet-black") : "transparent",
         },
       }}
     >
