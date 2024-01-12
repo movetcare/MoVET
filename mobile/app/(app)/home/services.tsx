@@ -7,7 +7,7 @@ import { WebView as DefaultWebView } from "react-native-webview";
 import tw from "tailwind";
 import { ApplicationTypes, getPlatformUrl } from "utils/getPlatformUrl";
 
-const WebView = () => {
+const Services = () => {
   const { path, applicationSource } = useLocalSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   return (
@@ -45,4 +45,4 @@ const WebView = () => {
   );
 };
 
-export default WebView;
+export default Services;

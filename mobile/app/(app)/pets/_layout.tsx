@@ -21,21 +21,15 @@ export default function Layout() {
   useEffect(() => {
     if (segments)
       if (segments.includes("new-pet")) {
-        //setTimeout(() => {
-
         setNavigationDetails({
           title: "Add a Pet",
           iconName: "plus",
           canGoBack: true,
         });
-
-        //}, 180);
       } else if (
         segments.includes("new-appointment") &&
         !segments.includes("detail")
       ) {
-        //setTimeout(() => {
-
         setNavigationDetails({
           title:
             (!upcomingAppointments && !pastAppointments
@@ -44,7 +38,6 @@ export default function Layout() {
           iconName: "calendar-plus",
           canGoBack: true,
         });
-        //}, 180);
       } else if (
         segments.includes("pets") &&
         !segments.includes("appointment-detail") &&
@@ -59,7 +52,7 @@ export default function Layout() {
         tw`flex-1`,
         segments.includes("pets") &&
         !segments.includes("appointment-detail") &&
-        !segments.includes("detail")
+          !segments.includes("detail") && !segments.includes("new-pet")
           ? tw`bg-transparent dark:bg-movet-black`
           : tw`bg-movet-red`,
         { paddingTop: insets.top },

@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams, useSegments } from "expo-router";
+import { Stack, useSegments } from "expo-router";
 import { navigationStackScreenOptions } from "utils/navigationStackScreenOptions";
 import { NavigationHeader } from "components/themed/NavigationHeader";
 import { useEffect, useState } from "react";
@@ -9,11 +9,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Layout() {
   const segments = useSegments();
-  const router = useLocalSearchParams();
   const insets = useSafeAreaInsets();
   const { upcomingAppointments, pastAppointments } =
     AppointmentsStore.useState();
-  const { screenTitle, screenTitleIcon }: any = router?.params || {};
   const [navigationDetails, setNavigationDetails] = useState<{
     title: string;
     iconName: SupportedIcons;
@@ -21,17 +19,19 @@ export default function Layout() {
   } | null>(null);
 
   useEffect(() => {
-    if (screenTitle) {
-      setNavigationDetails({
-        title: screenTitle as string,
-        iconName: screenTitleIcon ? screenTitleIcon : "bullhorn",
-        canGoBack: true,
-      });
-    } else if (segments && segments.includes("web-view")) {
-      //setTimeout(() => {
+    if (segments && segments.includes("announcement")) {
+    //setTimeout(() => {
       setNavigationDetails({
         title: "Announcement",
         iconName: "bullhorn",
+        canGoBack: true,
+      });
+      //}, 180);
+    } else if (segments && segments.includes("services")) {
+      //setTimeout(() => {
+      setNavigationDetails({
+        title: "Our Services",
+        iconName: "list",
         canGoBack: true,
       });
       //}, 180);
@@ -65,8 +65,6 @@ export default function Layout() {
     } else setNavigationDetails(null);
   }, [
     pastAppointments,
-    screenTitle,
-    screenTitleIcon,
     segments,
     upcomingAppointments,
   ]);

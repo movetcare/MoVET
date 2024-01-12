@@ -255,7 +255,7 @@ const NotificationSettings = () => {
   return (
     <Screen>
       {notificationSettings === null ? (
-        <Loader description={"Loading Notification Settings..."} />
+        <Container style={tw`w-full flex-1`}><Loader description={"Loading Notification Settings..."} /></Container>
       ) : (
         <>
           <Container

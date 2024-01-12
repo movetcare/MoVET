@@ -171,12 +171,11 @@ const Home = () => {
             style={tw`sm:w-0.9/3`}
             onPress={() =>
               router.navigate({
-                pathname: "/(app)/home/web-view",
+                pathname: "/(app)/home/services",
                 params: {
                   path: "/services",
                   applicationSource: "website",
                   screenTitle: "Our Services",
-                  screenTitleIcon: "list",
                 },
               })
             }
@@ -250,12 +249,7 @@ const Home = () => {
                   <View noDarkMode style={tw`h-4 bg-transparent`} />
                 )}
               </>
-            )}
-            {(announcement?.isActiveMobile || ad?.isActive) && (
-              <View
-                style={tw`border-t-2 border-movet-gray mt-2 mb-6 mx-8 w-2.6/3`}
-              />
-            )}
+              )}
               {patients && patients.length > 0 && telehealthStatus?.isOnline && (
               <>
                   {!announcement?.isActiveMobile && !ad?.isActive && (
@@ -272,12 +266,7 @@ const Home = () => {
                   )}
               </>
             )}
-            {upcomingAppointments !== null && <PaymentMethodSummary />}
-            {(announcement?.isActiveMobile || ad?.isActive) && (
-              <View
-                style={tw`border-t-2 border-movet-gray mt-6 mx-8 w-2.6/3`}
-              />
-            )}
+              {upcomingAppointments !== null && <PaymentMethodSummary />}
             <AppointmentsList source="home" />
           </View>
         ) : (

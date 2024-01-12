@@ -118,7 +118,7 @@ const AccountSettings = () => {
   return (
     <Screen>
       {client === null ? (
-        <Loader description={"Loading Account Settings..."} />
+        <Container style={tw`w-full flex-1`}><Loader description={"Loading Account Settings..."} /></Container>
       ) : (
         <>
           <Container

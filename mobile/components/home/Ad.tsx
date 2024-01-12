@@ -14,17 +14,17 @@ export interface Ad {
   imagePath: string;
   isActive: boolean;
   title: string;
-  urlRedirect: string;
+  link: string;
   width?: number;
 }
 export const Ad = ({ content }: { content: Ad }): ReactNode => {
-  const { imagePath, urlRedirect, title } = content;
+  const { imagePath, link, title } = content;
   return (
     <TouchableOpacity
       onPress={() =>
         router.navigate({
-          pathname: "/(app)/home/web-view",
-          params: { path: urlRedirect },
+          pathname: "/(app)/home/announcement",
+          params: { path: link },
         })
       }
     >
