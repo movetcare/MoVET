@@ -82,17 +82,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     plugins: [
       "@logrocket/react-native",
-      [
-        "expo-build-properties",
-        {
-          android: {
-            // compileSdkVersion: 33,
-            // targetSdkVersion: 33,
-            // buildToolsVersion: "33.0.0",
-            kotlinVersion: "1.8.20",
-          },
-        },
-      ],
       "expo-router",
       [
         "@stripe/stripe-react-native",
