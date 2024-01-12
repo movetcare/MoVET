@@ -28,6 +28,9 @@ export const sendPushNotificationViaExpo = async ({
         console.error(`Push token ${pushToken} is not a valid Expo push token`);
       messages.push({
         to: pushToken,
+        _contentAvailable: true,
+        priority: "high",
+        channelId: "default",
         sound,
         body: JSON.stringify(body),
         title,
@@ -39,6 +42,9 @@ export const sendPushNotificationViaExpo = async ({
       console.error(`Push token ${to} is not a valid Expo push token`);
     messages.push({
       to,
+      _contentAvailable: true,
+      priority: "high",
+      channelId: "default",
       sound,
       body: JSON.stringify(body),
       title,

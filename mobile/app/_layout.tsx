@@ -1,6 +1,6 @@
 import { ErrorBoundaryProps, Stack, router } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { updateUserAuth } from "services/Auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "firebase-config";
@@ -39,27 +39,23 @@ const useNotificationObserver = () => {
   useEffect(() => {
     let isMounted = true;
     const redirect = (notification: Notifications.Notification) => {
-      alert("PUSH REDIRECT => " + JSON.stringify(notification));
       const url = notification.request.content.data?.path;
-      alert("REDIRECT URL => " + url);
-      if (url) router.navigate(url);
+      if (url) {
+        router.push(url);
+      }
     };
-    Notifications.getLastNotificationResponseAsync().then((response) => {
-      if (response)
-        alert(
-          "getLastNotificationResponseAsync => " + JSON.stringify(response),
-        );
-      if (response?.notification) alert(JSON.stringify(response?.notification));
-      if (!isMounted || !response?.notification) return;
-      redirect(response?.notification);
-    });
-    const subscription = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        if (response)
-          alert("addNotificationResponseReceivedListener => " + response);
+    Notifications.getLastNotificationResponseAsync()
+      .then((response) => {
+        if (!isMounted || !response?.notification) {
+          return;
+        }
+        alert("response?.notification => " + JSON.stringify(response?.notification));
         redirect(response?.notification);
-      },
-    );
+      });
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      redirect(response.notification);
+    });
+
     return () => {
       isMounted = false;
       subscription.remove();
@@ -71,6 +67,27 @@ const Layout = () => {
   useDeviceContext(tw);
   const { currentError } = ErrorStore.useState();
   useNotificationObserver();
+
+  // const notificationListener: any = useRef();
+  // const responseListener: any = useRef();
+
+  // useEffect(() => {
+
+  //   notificationListener.current = Notifications.addNotificationReceivedListener((notification: Notifications.Notification) => {
+  //     alert("addNotificationReceivedListener notification =>" + notification.request);
+  //   });
+
+  //   responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+  //     alert("addNotificationResponseReceivedListener response =>" + response);
+  //     const url = response.notification.request.content.data?.path;
+  //     if (url) router.navigate(url);
+  //   });
+
+  //   return () => {
+  //     Notifications.removeNotificationSubscription(notificationListener.current);
+  //     Notifications.removeNotificationSubscription(responseListener.current);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (!__DEV__) LogRocket.init("cjlcsx/movet-mobile-app");
