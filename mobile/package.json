@@ -16,7 +16,7 @@
     "update:version": "node ./incrementVersion.js",
     "build:all": "npm run build:ios && npm run build:android",
     "deploy:ios": "eas submit --platform ios --latest --profile release",
-    "deploy:android": "eas submit -p android --latest --profile release",
+    "deploy:android": "eas submit --platform android --latest --profile release",
     "deploy:all": "eas submit --platform all --latest --profile release",
     "convert-svgs-to-jpgs": "npx @svgr/cli --out-dir ./assets/images/icons --ignore-existing ./assets/images/svgs"
   },

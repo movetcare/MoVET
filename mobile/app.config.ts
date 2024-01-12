@@ -77,6 +77,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       },
       package: "com.movet",
       versionCode: versions.buildVersion,
+      kotlinVersion: "1.8.0",
       permissions: ["CAMERA", "READ_CALENDAR", "WRITE_CALENDAR"],
       googleServicesFile: "./google-services.json",
     },
