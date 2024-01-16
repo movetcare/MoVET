@@ -18,7 +18,7 @@ import {
 import { fetchNewGoToAccessToken } from "../integrations/goto/fetchNewGoToAccessToken";
 import { ExpoPushTicket } from "expo-server-sdk";
 //import { pushNotification } from "../integrations/expo/pushNotification";
-const DEBUG = false;
+const DEBUG = true;
 export const sendNotification = async ({
   type,
   payload,
@@ -197,14 +197,13 @@ export const sendNotification = async ({
           .collection("clients")
           .doc(`${payload?.client}`)
           .get()
-          .then(
-            (doc: any) =>
-              doc
-                .data()
-                ?.phone?.replace("(", "")
-                ?.replace(")", "")
-                ?.replace("-", "")
-                ?.replace(" ", ""),
+          .then((doc: any) =>
+            doc
+              .data()
+              ?.phone?.replace("(", "")
+              ?.replace(")", "")
+              ?.replace("-", "")
+              ?.replace(" ", ""),
           )
           .catch((error: any) => throwError(error));
         if (phone) {
@@ -512,6 +511,11 @@ export const sendNotification = async ({
         payload?.category === "client-telehealth" ||
         payload?.category === "client-appointment"
       ) {
+        if (DEBUG)
+          console.log(
+            "sendNotification PUSH => payload?.user?.uid",
+            payload?.user?.uid,
+          );
         const allClientTokenData: Array<any> = [];
         const clientPushTokens = await admin
           .firestore()
@@ -520,14 +524,25 @@ export const sendNotification = async ({
           .get()
           .then((doc: any) => {
             const allValidTokens: Array<string> = [];
-            if (DEBUG) console.log(doc.id, " => ", doc.data());
+            if (DEBUG)
+              console.log(
+                "sendNotification PUSH => doc.id" + doc.id,
+                " => ",
+                doc.data(),
+              );
             doc.data()?.tokens?.forEach((token: any) => {
-              console.log("TOKEN ARRAY", token);
+              if (DEBUG)
+                console.log("sendNotification PUSH => TOKEN ARRAY", token);
               if (token.isActive) {
                 allValidTokens.push(token.token);
                 allClientTokenData.push({ uid: doc.id, token: token.token });
               }
             });
+            if (DEBUG)
+              console.log(
+                "sendNotification PUSH => allValidTokens",
+                allValidTokens,
+              );
             return allValidTokens;
           })
           .catch((error: any) => throwError(error));
@@ -564,7 +579,8 @@ export const sendNotification = async ({
                   });
                   if (DEBUG)
                     console.log(
-                      "List of tokens that caused failures: " + failedTokens,
+                      "sendNotification PUSH => List of tokens that caused failures: " +
+                        failedTokens,
                     );
                   if (failedTokens.length > 0) {
                     const clientTokensToDisable: Array<{
@@ -580,11 +596,16 @@ export const sendNotification = async ({
                     });
                     if (DEBUG)
                       console.log(
-                        "clientTokensToDisable",
+                        "sendNotification PUSH => clientTokensToDisable",
                         clientTokensToDisable,
                       );
                     await Promise.all(
                       clientTokensToDisable.map(async (tokenData: any) => {
+                        if (DEBUG)
+                          console.log(
+                            "sendNotification PUSH => tokenData.uid",
+                            tokenData.uid,
+                          );
                         const clientTokens = await admin
                           .firestore()
                           .collection("push_tokens")

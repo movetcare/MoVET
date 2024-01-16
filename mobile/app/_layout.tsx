@@ -49,7 +49,7 @@ const useNotificationObserver = () => {
         if (!isMounted || !response?.notification) {
           return;
         }
-        alert("response?.notification => " + JSON.stringify(response?.notification));
+        //alert("response?.notification => " + JSON.stringify(response?.notification));
         redirect(response?.notification);
       });
     const subscription = Notifications.addNotificationResponseReceivedListener(response => {

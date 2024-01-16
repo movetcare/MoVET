@@ -34,7 +34,7 @@ export const CallToAction = () => {
           </div>
           <div className="w-80 relative z-10 md:w-1/2 text-center mt-8 sm:mt-0 -mb-16 md:mb-0">
             <h3 className="first-letter:tracking-wide text-2xl sm:text-3xl whitespace-nowrap mb-1.5 text-movet-white">
-              Your neighborhood vet,!!!
+              Your neighborhood vet,
             </h3>
             <h3 className="text-4xl sm:text-5xl text-movet-red">Delivered</h3>
             <p className="text-base sm:text-lg font-abside leading-6 my-4 text-movet-white">

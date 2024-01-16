@@ -1,8 +1,8 @@
 /* eslint-disable quotes */
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getAuthUserById } from "../../utils/auth/getAuthUserById";
-import { admin, throwError, DEBUG } from "../../config/config";
-
+import { admin, throwError } from "../../config/config";
+const DEBUG = true;
 import {
   getClientNotificationSettings,
   UserNotificationSettings,
@@ -519,7 +519,14 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
       sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
       phoneNumber,
     });
-  if (DEBUG) console.log("USER DATA", { email, phoneNumber, displayName });
+  if (DEBUG)
+    console.log("sendAppointmentReminderNotification PUSH => USER DATA", {
+      email,
+      phoneNumber,
+      displayName,
+      client,
+      userNotificationSettings,
+    });
   if (userNotificationSettings && userNotificationSettings?.sendPush && client)
     sendNotification({
       type: "push",
