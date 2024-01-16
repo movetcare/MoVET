@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Button, Loader } from "ui";
+import { AppLinks, Button, Loader } from "ui";
 import { Error } from "components/Error";
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -221,7 +221,7 @@ export default function CancelAppointmentBookingRequest() {
               </>
             )}
           </section>
-          {/* {!isAppMode && !isLoading && (
+          {!isAppMode && !isLoading && (
             <section>
               <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mt-8" />
               <h2 className="text-center mb-0">Download The App!</h2>
@@ -233,7 +233,7 @@ export default function CancelAppointmentBookingRequest() {
                 appointments, chat with us, and more!
               </p>
             </section>
-          )} */}
+          )}
         </div>
       </div>
     </section>

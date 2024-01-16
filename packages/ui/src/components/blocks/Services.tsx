@@ -311,7 +311,7 @@ export const Services = ({
                   ))}
                 </ul>
               </div>
-              {/* {router?.query?.mode !== "app" && (
+              {router?.query?.mode !== "app" && (
                 <div className="flex flex-col justify-center items-center mt-8">
                   <p className="mb-3 font-abside text-sm text-center">
                     START A TELEHEALTH SESSION TODAY
@@ -320,7 +320,7 @@ export const Services = ({
                     <AppLinks />
                   </div>
                 </div>
-              )} */}
+              )}
             </div>
           </Transition>
           <Transition

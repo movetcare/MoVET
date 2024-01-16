@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from "next/router";
-import { Loader } from "ui";
+import { AppLinks, Loader } from "ui";
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -148,32 +148,29 @@ export default function BookingSuccess() {
                     <h5 className="font-bold -mb-2">
                       Pet{session?.selectedPatients.length > 1 && "s"}
                     </h5>
-                    {session?.selectedPatients?.map(
-                      (patientId: string) =>
-                        session?.patients?.map(
-                          (patient: any, index: number) => {
-                            if (patientId === patient?.id)
-                              return (
-                                <div key={index + "-" + patient?.name}>
-                                  <p className="italic font-extrabold">
-                                    {patient?.name}
+                    {session?.selectedPatients?.map((patientId: string) =>
+                      session?.patients?.map((patient: any, index: number) => {
+                        if (patientId === patient?.id)
+                          return (
+                            <div key={index + "-" + patient?.name}>
+                              <p className="italic font-extrabold">
+                                {patient?.name}
+                              </p>
+                              {patient?.illnessDetails && (
+                                <>
+                                  <p className="italic -mt-2 text-sm">
+                                    {patient?.illnessDetails?.symptoms}
                                   </p>
-                                  {patient?.illnessDetails && (
-                                    <>
-                                      <p className="italic -mt-2 text-sm">
-                                        {patient?.illnessDetails?.symptoms}
-                                      </p>
-                                      <p className="italic -mt-2 text-sm">
-                                        {JSON.stringify(
-                                          patient?.illnessDetails?.notes,
-                                        )}
-                                      </p>
-                                    </>
-                                  )}
-                                </div>
-                              );
-                          },
-                        ),
+                                  <p className="italic -mt-2 text-sm">
+                                    {JSON.stringify(
+                                      patient?.illnessDetails?.notes,
+                                    )}
+                                  </p>
+                                </>
+                              )}
+                            </div>
+                          );
+                      }),
                     )}
                   </div>
                   {!isAppMode && (
@@ -188,7 +185,7 @@ export default function BookingSuccess() {
               </div>
             )}
           </section>
-          {/* {!isLoading && !isAppMode && (
+          {!isLoading && !isAppMode && (
             <section>
               <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mt-8" />
               <h2 className="text-center mb-0">Download The App!</h2>
@@ -200,7 +197,7 @@ export default function BookingSuccess() {
                 appointments, chat with us, and more!
               </p>
             </section>
-          )} */}
+          )}
         </div>
       </div>
     </section>

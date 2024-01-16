@@ -5,6 +5,7 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { AppHeader } from "components/AppHeader";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { AppLinks } from "ui";
 
 export default function RequestSuccess() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function RequestSuccess() {
               requests are responded to in the order they are received.
             </p>
           </section>
-          {/* {!isAppMode && submissionSuccess && (
+          {!isAppMode && submissionSuccess && (
             <section>
               <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mt-8" />
               <h2 className="text-center mb-0">Download The App!</h2>
@@ -63,7 +64,7 @@ export default function RequestSuccess() {
                 appointments, chat with us, and more!
               </p>
             </section>
-          )} */}
+          )}
         </div>
       </div>
     </section>
