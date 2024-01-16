@@ -109,8 +109,9 @@ export default function SignIn() {
   });
 
   useEffect(() => {
-    if (tapCount === 5) setShowPasswordInput(true);
-    else if (tapCount > 5) setShowPasswordInput(false);
+    if (__DEV__ && tapCount === 3) setShowPasswordInput(true);
+    else if (tapCount === 15) setShowPasswordInput(true);
+    else if (tapCount > 15) setShowPasswordInput(false);
   }, [tapCount]);
 
   useEffect(() => {

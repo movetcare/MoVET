@@ -193,7 +193,7 @@ export const sendAppointmentConfirmationEmail = async (
   }
    ${
      appointment?.illnessDetails
-       ? `<p><b>Illness Details</b>: ${appointment?.illnessDetails}/p>`
+       ? `<p><b>Illness Details</b>: ${appointment?.illnessDetails}</p>`
        : ""
    }
   ${
@@ -257,7 +257,7 @@ export const sendAppointmentConfirmationEmail = async (
   }
   ${
     appointment?.illnessDetails
-      ? `<p></p><p><b>Illness Details</b>: ${appointment?.illnessDetails}/p>`
+      ? `<p></p><p><b>Illness Details</b>: ${appointment?.illnessDetails}</p>`
       : ""
   }${
     appointment?.additionalNotes
