@@ -131,9 +131,6 @@ const PetDetail = () => {
   return (
     <Screen withBackground={backgroundImage}>
       <Stack.Screen options={{ title: patient?.name }} />
-      {__DEV__ && (
-        <BodyText style={tw`text-xs`}>#{JSON.stringify(patient?.id)}</BodyText>
-      )}
       <View
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
@@ -163,7 +160,7 @@ const PetDetail = () => {
               <Container style={tw`absolute top-8.5 left-8.5`}>
                 <Icon
                   name={
-                    patient?.species?.toLowerCase()?.includes("dog")
+                      patient?.species?.toLowerCase()?.includes("dog") || patient?.species?.toLowerCase()?.includes("canine")
                       ? "dog"
                       : "cat"
                   }
@@ -239,9 +236,9 @@ const PetDetail = () => {
                         >
                           Please schedule an appointment for {patient?.name} to
                           update{" "}
-                          {patient?.gender?.toLowerCase()?.includes("male")
-                            ? "his"
-                            : "her"}{" "}
+                          {patient?.gender?.toLowerCase()?.includes("female") || patient?.gender?.toLowerCase()?.includes("female,")
+                            ? "her"
+                            : "his"}{" "}
                           VCPR status
                         </ItalicText>
                       </Container>
@@ -330,7 +327,6 @@ const PetDetail = () => {
             )}
           </>
         )}
-
         <Container
           style={tw`flex-col items-center justify-center w-full rounded-xl bg-movet-white/70 dark:bg-movet-black/70`}
         >
@@ -339,7 +335,7 @@ const PetDetail = () => {
           >
             <Icon
               name={
-                patient?.species?.toLowerCase()?.includes("dog") ? "dog" : "cat"
+                patient?.species?.toLowerCase()?.includes("dog") || patient?.species?.toLowerCase()?.includes("canine") ? "dog" : "cat"
               }
               height={20}
               width={20}
@@ -353,9 +349,9 @@ const PetDetail = () => {
           >
             <Icon
               name={
-                patient?.gender?.toLowerCase()?.includes("male")
-                  ? "male"
-                  : "female"
+                patient?.gender?.toLowerCase()?.includes("female") || patient?.gender?.toLowerCase()?.includes("female,")
+                  ? "female"
+                  : "male"
               }
               height={20}
               width={20}
@@ -668,9 +664,9 @@ const PetDetail = () => {
                     >
                       Please schedule an appointment for {patient?.name} to
                       update{" "}
-                      {patient?.gender?.toLowerCase()?.includes("male")
-                        ? "his"
-                        : "her"}{" "}
+                        {patient?.gender?.toLowerCase()?.includes("female") || patient?.gender?.toLowerCase()?.includes("female,")
+                          ? "her"
+                          : "his"}{" "}
                       VCPR status
                     </ItalicText>
                   </Container>
@@ -774,7 +770,7 @@ const PetDetail = () => {
             }
             style={
               pastPatientAppointments && pastPatientAppointments?.length > 0
-                ? tw`sm:w-0.9/3`
+                ? tw`sm:w-0.9/4`
                 : tw`sm:mr-4`
             }
           />
@@ -784,6 +780,11 @@ const PetDetail = () => {
                 color="red"
                 title="Request Medication Refill"
                 iconName="med-bottle"
+                style={
+                  pastPatientAppointments && pastPatientAppointments?.length > 0
+                    ? tw`sm:w-0.9/4`
+                    : tw`sm:mr-4`
+                }
                 onPress={() => {
                   router.navigate({
                     pathname: "/(app)/pets/detail/web-view",
@@ -819,7 +820,7 @@ const PetDetail = () => {
             }
             style={
               pastPatientAppointments && pastPatientAppointments?.length > 0
-                ? tw`sm:w-0.9/3`
+                ? tw`sm:w-0.9/4`
                 : tw`sm:ml-4`
             }
           />

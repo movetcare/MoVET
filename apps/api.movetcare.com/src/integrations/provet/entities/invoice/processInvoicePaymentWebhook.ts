@@ -47,7 +47,11 @@ export const processInvoicePaymentWebhook = async (
       }
     }
 
-    if (DEBUG) console.log("invoicePaymentDetails", invoicePaymentDetails);
+    if (DEBUG)
+      console.log(
+        "processInvoicePaymentWebhook invoicePaymentDetails",
+        invoicePaymentDetails,
+      );
 
     return invoice?.client
       ? await admin
@@ -81,7 +85,7 @@ export const processInvoicePaymentWebhook = async (
                     () =>
                       DEBUG &&
                       console.log(
-                        `SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`,
+                        `processInvoicePaymentWebhook => SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`,
                       ),
                   )
                   .catch((error: any) => throwError(error));
@@ -126,7 +130,7 @@ export const processInvoicePaymentWebhook = async (
                           () =>
                             DEBUG &&
                             console.log(
-                              `SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`,
+                              `processInvoicePaymentWebhook => SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`,
                             ),
                         )
                         .catch((error: any) => throwError(error));
@@ -139,7 +143,7 @@ export const processInvoicePaymentWebhook = async (
             if (invoice?.credit_note_original_invoice) {
               if (DEBUG)
                 console.log(
-                  "invoice?.credit_note_original_invoice",
+                  "processInvoicePaymentWebhook => invoice?.credit_note_original_invoice",
                   invoice?.credit_note_original_invoice,
                 );
               await admin
@@ -211,7 +215,7 @@ export const processInvoicePaymentWebhook = async (
                     () =>
                       DEBUG &&
                       console.log(
-                        `SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`,
+                        `processInvoicePaymentWebhook => SUCCESSFULLY UPDATED CLIENT INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`,
                       ),
                   )
                   .catch((error: any) => throwError(error));
@@ -222,7 +226,7 @@ export const processInvoicePaymentWebhook = async (
             if (invoice?.credit_note_original_invoice) {
               if (DEBUG)
                 console.log(
-                  "invoice?.credit_note_original_invoice",
+                  "processInvoicePaymentWebhook => invoice?.credit_note_original_invoice",
                   invoice?.credit_note_original_invoice,
                 );
               await admin

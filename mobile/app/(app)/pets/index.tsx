@@ -34,7 +34,7 @@ const MyPets = () => {
       let dogCount = 0;
       let catCount = 0;
       patients?.forEach((patient: Patient) => {
-        if (patient.species?.toLowerCase()?.includes("dog")) dogCount += 1;
+        if (patient.species?.toLowerCase()?.includes("dog") || patient.species?.toLowerCase()?.includes("canine")) dogCount += 1;
         else if (patient.species?.toLowerCase()?.includes("cat")) catCount += 1;
         let upcomingPatientAppointments = 0;
         if (upcomingAppointments)
@@ -107,7 +107,7 @@ const MyPets = () => {
                       ) : (
                         <Icon
                           name={
-                            patient?.species?.toLowerCase()?.includes("dog")
+                              patient?.species?.toLowerCase()?.includes("dog") || patient?.species?.toLowerCase()?.includes("canine") 
                               ? "dog"
                               : "cat"
                           }
@@ -118,7 +118,6 @@ const MyPets = () => {
                     <Container style={tw`flex-shrink`}>
                       <HeadingText style={tw`text-lg`}>
                         {patient.name}
-                        {/* {__DEV__ && ` - #${patient.id}`} */}
                       </HeadingText>
                       <BodyText style={tw`text-sm -mt-0.5`}>
                         {patient.breed}
@@ -126,9 +125,9 @@ const MyPets = () => {
                       <Container style={tw`flex-row items-center`}>
                         <Icon
                           name={
-                            patient?.gender?.toLowerCase()?.includes("male")
-                              ? "male"
-                              : "female"
+                            patient?.gender?.toLowerCase()?.includes("female") || patient?.gender?.toLowerCase()?.includes("female,")
+                              ? "female"
+                              : "male"
                           }
                           size="xxs"
                         />

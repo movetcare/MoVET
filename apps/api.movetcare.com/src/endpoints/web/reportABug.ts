@@ -7,6 +7,7 @@ import {
 } from "../../config/config";
 import { sendNotification } from "../../notifications/sendNotification";
 import { EmailConfiguration } from "../../types/email.d";
+import { randomUUID } from "crypto";
 
 export const reportABug = functions
   .runWith(defaultRuntimeOptions)
@@ -29,7 +30,6 @@ export const reportABug = functions
       osBuildFingerprint,
       platformApiLevel,
       deviceName,
-      errorMessage,
       uid,
       displayName,
       email,
@@ -38,9 +38,10 @@ export const reportABug = functions
       phoneNumber,
       photoURL,
       providerData,
-      screenshots,
+      issue,
     }: any): Promise<boolean> => {
       const payload = {
+        issue,
         isDevice,
         brand,
         manufacturer,
@@ -58,7 +59,6 @@ export const reportABug = functions
         osBuildFingerprint,
         platformApiLevel,
         deviceName,
-        errorMessage,
         uid,
         displayName,
         email,
@@ -67,26 +67,27 @@ export const reportABug = functions
         phoneNumber,
         photoURL,
         providerData,
-        screenshots,
       };
-      if (DEBUG) console.log("INCOMING REQUEST PAYLOAD => ", payload);
+      if (DEBUG)
+        console.log("reportABug => INCOMING REQUEST PAYLOAD => ", payload);
 
       return await admin
         .firestore()
         .collection("report_a_bug")
-        .doc(`${new Date().toString()}`)
-        .set({
+        .doc(`${uid}`)
+        .collection(`${randomUUID()}`)
+        .add({
           ...payload,
           createdOn: new Date(),
         })
         .then(async () => {
           if (DEBUG)
-            console.log("Successfully Saved New Bug Report", {
+            console.log("reportABug => Successfully Saved New Bug Report", {
               ...payload,
               createdOn: new Date(),
             });
           const jsonString = JSON.stringify({
-            screenshots,
+            issue,
             isDevice,
             brand,
             manufacturer,
@@ -104,7 +105,6 @@ export const reportABug = functions
             osBuildFingerprint,
             platformApiLevel,
             deviceName,
-            errorMessage,
             uid,
             displayName,
             email,
@@ -116,7 +116,7 @@ export const reportABug = functions
           });
           const emailConfig: EmailConfiguration = {
             to: "support@movetcare.com",
-            subject: `New Bug Report: ${errorMessage}`,
+            subject: "New Bug Report",
             message: jsonString,
           };
           sendNotification({
@@ -129,11 +129,11 @@ export const reportABug = functions
           sendNotification({
             type: "slack",
             payload: {
-              message: `:interrobang: PLATFORM ERROR \`\`\`${jsonString}\`\`\``,
+              message: `:interrobang: NEW ERROR REPORT => ${jsonString}`,
             },
           });
           return true;
         })
         .catch((error: any) => throwError(error));
-    }
+    },
   );

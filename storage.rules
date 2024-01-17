@@ -10,8 +10,8 @@ service firebase.storage {
       return request.auth != null && request.auth.uid == clientId;
     }
 
-    match /report_a_bug/{fileId} {
-      allow write: if request.auth.uid != null;
+    match /report_a_bug/{clientId}/{allPaths=**} {
+      allow write: if clientOwnsBucket(clientId);
     }
     
     match /report_a_bug_internal/{fileId} {

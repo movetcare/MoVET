@@ -197,7 +197,7 @@ const Home = () => {
   ) : (
     <Screen withBackground="pets">
       <Animated.View
-        style={[tw`w-full`, showAnnouncements && tw`flex-grow`, animatedStyle]}
+          style={[tw`w-full`, showAnnouncements ? tw`flex-grow` : tw`flex-1`, animatedStyle]}
       >
         <View
           style={tw`

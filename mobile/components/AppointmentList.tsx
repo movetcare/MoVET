@@ -116,7 +116,6 @@ export const AppointmentList = ({
                           ? patient.name
                           : patient.name + ", ",
                     )}
-                    {/* {__DEV__ && ` - #${appointment.id}`} */}
                   </HeadingText>
                   <BodyText style={tw`text-movet-black text-sm -mt-0.5`}>
                     {appointment.start.toDate().toLocaleDateString("en-us", {

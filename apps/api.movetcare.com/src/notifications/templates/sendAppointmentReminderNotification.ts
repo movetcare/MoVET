@@ -56,10 +56,19 @@ export const sendAppointmentReminderNotification = async (
     patients,
   } = appointmentDetails;
   if (DEBUG) {
-    console.log("appointmentDetails", appointmentDetails);
-    console.log("start", start?.toDate());
-    console.log("start.toDate() > new Date()", start?.toDate() > new Date());
-    console.log("active", active);
+    console.log(
+      "sendAppointmentReminderNotification => appointmentDetails",
+      appointmentDetails,
+    );
+    console.log(
+      "sendAppointmentReminderNotification => start",
+      start?.toDate(),
+    );
+    console.log(
+      "sendAppointmentReminderNotification => start.toDate() > new Date()",
+      start?.toDate() > new Date(),
+    );
+    console.log("sendAppointmentReminderNotification => active", active);
   }
   if (active && start?.toDate() > new Date()) {
     const userDetails: UserDetails = await getAuthUserById(`${client}`, [
@@ -86,10 +95,22 @@ export const sendAppointmentReminderNotification = async (
           )
         : patients[0].name;
     if (DEBUG) {
-      console.log("clientProvetRecord", clientProvetRecord);
-      console.log("petNames -> ", petNames);
-      console.log("send24HourReminder", send24HourReminder);
-      console.log("send30MinReminder", send30MinReminder);
+      console.log(
+        "sendAppointmentReminderNotification => clientProvetRecord",
+        clientProvetRecord,
+      );
+      console.log(
+        "sendAppointmentReminderNotification => petNames -> ",
+        petNames,
+      );
+      console.log(
+        "sendAppointmentReminderNotification => send24HourReminder",
+        send24HourReminder,
+      );
+      console.log(
+        "sendAppointmentReminderNotification => send30MinReminder",
+        send30MinReminder,
+      );
     }
     if (send24HourReminder)
       await send24HourAppointmentNotification(
@@ -130,7 +151,7 @@ const send24HourAppointmentNotification = async (
   } = appointmentDetails;
   const reasonName = reason ? await getReasonName(reason) : null;
   if (DEBUG)
-    console.log("APPOINTMENT DETAILS", {
+    console.log("sendAppointmentReminderNotification => APPOINTMENT DETAILS", {
       id,
       client,
       user,
@@ -161,7 +182,12 @@ const send24HourAppointmentNotification = async (
           ? "TELEHEALTH"
           : null;
   const { email, phoneNumber, displayName } = userDetails;
-  if (DEBUG) console.log("USER DATA", { email, phoneNumber, displayName });
+  if (DEBUG)
+    console.log("sendAppointmentReminderNotification => USER DATA", {
+      email,
+      phoneNumber,
+      displayName,
+    });
   if (email) {
     const isNewFlow = user ? false : true;
     let emailText = "";
@@ -171,7 +197,11 @@ const send24HourAppointmentNotification = async (
       .doc(`${patients[0]?.id}`)
       .get()
       .then((doc: any) => {
-        if (DEBUG) console.log("VCPR REQUIRED PATIENT DOC -> ", doc?.data());
+        if (DEBUG)
+          console.log(
+            "sendAppointmentReminderNotification => VCPR REQUIRED PATIENT DOC -> ",
+            doc?.data(),
+          );
         return doc?.data()?.vcprRequired;
       })
       .catch((error: any) => throwError(error));
@@ -194,8 +224,14 @@ const send24HourAppointmentNotification = async (
           )
           .catch((error: any) => throwError(error));
     if (DEBUG) {
-      console.log("appointmentAddress", appointmentAddress);
-      console.log("vcprRequired", vcprRequired);
+      console.log(
+        "sendAppointmentReminderNotification => appointmentAddress",
+        appointmentAddress,
+      );
+      console.log(
+        "sendAppointmentReminderNotification => vcprRequired",
+        vcprRequired,
+      );
     }
     if (isNewFlow) {
       emailText = `${
@@ -357,7 +393,11 @@ appointments for some patients that might need a little help relaxing around us.
 you feel your pet(s) needs more options, such as anxiolytics and / or supplements to continue to 
 make your pet's visit more comfortable. We thank you in advance for keeping our staff safe!</i></p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
     }
-    if (DEBUG) console.log("emailText -> ", emailText);
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => emailText -> ",
+        emailText,
+      );
     const emailConfig: EmailConfiguration = {
       to: email,
       subject: `${petNames}'s Appointment Reminder: ${getDateStringFromDate(
@@ -366,7 +406,10 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
       )} @ ${getDateStringFromDate(start?.toDate(), "timeOnly")}`,
       message: emailText,
     };
-    if (DEBUG) console.log("SENDING EMAIL APPOINTMENT NOTIFICATION");
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => SENDING EMAIL APPOINTMENT NOTIFICATION",
+      );
     sendNotification({
       type: "email",
       payload: {
@@ -376,17 +419,23 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
       },
     });
   } else if (DEBUG)
-    console.log("DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION EMAIL", {
-      sendEmail:
-        userNotificationSettings && userNotificationSettings?.sendEmail,
-      email,
-    });
+    console.log(
+      "sendAppointmentReminderNotification => DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION EMAIL",
+      {
+        sendEmail:
+          userNotificationSettings && userNotificationSettings?.sendEmail,
+        email,
+      },
+    );
   if (
     userNotificationSettings &&
     userNotificationSettings?.sendSms &&
     phoneNumber
   ) {
-    if (DEBUG) console.log("SENDING SMS APPOINTMENT NOTIFICATION");
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => SENDING SMS APPOINTMENT NOTIFICATION",
+      );
     const isNewFlow = user ? false : true;
     const appointmentAddress = notes?.includes("Appointment Address")
       ? notes?.split("-")[1]?.split("|")[0]?.trim()
@@ -406,7 +455,11 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
               doc.data()?.zipCode,
           )
           .catch((error: any) => throwError(error));
-    if (DEBUG) console.log("SMS appointmentAddress", appointmentAddress);
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => SMS appointmentAddress",
+        appointmentAddress,
+      );
     const petNames =
       patients.length > 1
         ? patients.map((patient: any, index: number) =>
@@ -415,7 +468,11 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
               : ` and ${patient?.name}`,
           )
         : patients[0].name;
-    if (DEBUG) console.log("petNames -> ", petNames);
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => petNames -> ",
+        petNames,
+      );
     const reasonName = reason ? await getReasonName(reason) : null;
     const locationType = notes?.includes("Appointment Location: Home -")
       ? "Home"
@@ -504,7 +561,11 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
               )?.replaceAll("+", "%2B")}`}\n`
       }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     }
-    if (DEBUG) console.log("smsText -> ", smsText);
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => smsText -> ",
+        smsText,
+      );
     sendNotification({
       type: "sms",
       payload: {
@@ -515,18 +576,24 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
       },
     });
   } else if (DEBUG)
-    console.log("DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION SMS", {
-      sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
-      phoneNumber,
-    });
+    console.log(
+      "sendAppointmentReminderNotification => DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION SMS",
+      {
+        sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
+        phoneNumber,
+      },
+    );
   if (DEBUG)
-    console.log("sendAppointmentReminderNotification PUSH => USER DATA", {
-      email,
-      phoneNumber,
-      displayName,
-      client,
-      userNotificationSettings,
-    });
+    console.log(
+      "sendAppointmentReminderNotification => sendAppointmentReminderNotification PUSH => USER DATA",
+      {
+        email,
+        phoneNumber,
+        displayName,
+        client,
+        userNotificationSettings,
+      },
+    );
   if (userNotificationSettings && userNotificationSettings?.sendPush && client)
     sendNotification({
       type: "push",
@@ -566,7 +633,7 @@ const send30MinAppointmentNotification = async (
   } = appointmentDetails;
   const reasonName = reason ? await getReasonName(reason) : null;
   if (DEBUG)
-    console.log("APPOINTMENT DETAILS", {
+    console.log("sendAppointmentReminderNotification => APPOINTMENT DETAILS", {
       id,
       client,
       user,
@@ -581,7 +648,12 @@ const send30MinAppointmentNotification = async (
     });
 
   const { email, phoneNumber, displayName } = userDetails;
-  if (DEBUG) console.log("USER DATA", { email, phoneNumber, displayName });
+  if (DEBUG)
+    console.log("sendAppointmentReminderNotification => USER DATA", {
+      email,
+      phoneNumber,
+      displayName,
+    });
   if (email) {
     const isNewFlow = user ? false : true;
     const appointmentAddress = notes?.includes("Appointment Address")
@@ -602,18 +674,30 @@ const send30MinAppointmentNotification = async (
               doc.data()?.zipCode,
           )
           .catch((error: any) => throwError(error));
-    if (DEBUG) console.log("appointmentAddress", appointmentAddress);
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => appointmentAddress",
+        appointmentAddress,
+      );
     const vcprRequired = await admin
       .firestore()
       .collection("patients")
       .doc(`${patients[0]?.id}`)
       .get()
       .then((doc: any) => {
-        if (DEBUG) console.log("VCPR REQUIRED PATIENT DOC -> ", doc?.data());
+        if (DEBUG)
+          console.log(
+            "sendAppointmentReminderNotification => VCPR REQUIRED PATIENT DOC -> ",
+            doc?.data(),
+          );
         return doc?.data()?.vcprRequired;
       })
       .catch((error: any) => throwError(error));
-    if (DEBUG) console.log("petNames -> ", petNames);
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => petNames -> ",
+        petNames,
+      );
     const locationType = notes?.includes("Appointment Location: Home -")
       ? "Home"
       : notes?.includes("Virtual")
@@ -763,29 +847,42 @@ const send30MinAppointmentNotification = async (
             )}`}" target="_blank">add a form of payment</a></b></p>`
     }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
 
-    if (DEBUG) console.log("emailText -> ", emailText);
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => emailText -> ",
+        emailText,
+      );
     const emailConfig: EmailConfiguration = {
       to: email,
       subject: "It's almost time for your appointment w/ MoVET!",
       message: emailText,
     };
-    if (DEBUG) console.log("SENDING EMAIL APPOINTMENT NOTIFICATION");
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => SENDING EMAIL APPOINTMENT NOTIFICATION",
+      );
     sendNotification({
       type: "email",
       payload: { ...emailConfig, client: `${client}` },
     });
   } else if (DEBUG)
-    console.log("DID NOT SEND 30 MIN APPOINTMENT NOTIFICATION EMAIL", {
-      sendEmail:
-        userNotificationSettings && userNotificationSettings?.sendEmail,
-      email,
-    });
+    console.log(
+      "sendAppointmentReminderNotification => DID NOT SEND 30 MIN APPOINTMENT NOTIFICATION EMAIL",
+      {
+        sendEmail:
+          userNotificationSettings && userNotificationSettings?.sendEmail,
+        email,
+      },
+    );
   if (
     userNotificationSettings &&
     userNotificationSettings?.sendSms &&
     phoneNumber
   ) {
-    if (DEBUG) console.log("SENDING SMS APPOINTMENT NOTIFICATION");
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => SENDING SMS APPOINTMENT NOTIFICATION",
+      );
     const petNames =
       patients.length > 1
         ? patients.map((patient: any, index: number) =>
@@ -794,7 +891,11 @@ const send30MinAppointmentNotification = async (
               : ` and ${patient?.name}`,
           )
         : patients[0].name;
-    if (DEBUG) console.log("petNames -> ", petNames);
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => petNames -> ",
+        petNames,
+      );
     const isNewFlow = user ? false : true;
     const appointmentAddress = notes?.includes("Appointment Address")
       ? notes?.split("-")[1]?.split("|")[0]?.trim()
@@ -814,18 +915,30 @@ const send30MinAppointmentNotification = async (
               doc.data()?.zipCode,
           )
           .catch((error: any) => throwError(error));
-    if (DEBUG) console.log("appointmentAddress", appointmentAddress);
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => appointmentAddress",
+        appointmentAddress,
+      );
     const vcprRequired = await admin
       .firestore()
       .collection("patients")
       .doc(`${patients[0]?.id}`)
       .get()
       .then((doc: any) => {
-        if (DEBUG) console.log("VCPR REQUIRED PATIENT DOC -> ", doc?.data());
+        if (DEBUG)
+          console.log(
+            "sendAppointmentReminderNotification => VCPR REQUIRED PATIENT DOC -> ",
+            doc?.data(),
+          );
         return doc?.data()?.vcprRequired;
       })
       .catch((error: any) => throwError(error));
-    if (DEBUG) console.log("petNames -> ", petNames);
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => petNames -> ",
+        petNames,
+      );
     const locationType = notes?.includes("Appointment Location: Home -")
       ? "Home"
       : notes?.includes("Virtual")
@@ -942,7 +1055,11 @@ const send30MinAppointmentNotification = async (
           )?.replaceAll("+", "%2B")}\n\n`
   }\nPlease email info@movetcare.com, text (720) 507-7387 us, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
     }
-    if (DEBUG) console.log("smsText -> ", smsText);
+    if (DEBUG)
+      console.log(
+        "sendAppointmentReminderNotification => smsText -> ",
+        smsText,
+      );
     sendNotification({
       type: "sms",
       payload: {
@@ -952,10 +1069,13 @@ const send30MinAppointmentNotification = async (
       },
     });
   } else if (DEBUG)
-    console.log("DID NOT 30 MIN HOUR APPOINTMENT NOTIFICATION SMS", {
-      sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
-      phoneNumber,
-    });
+    console.log(
+      "sendAppointmentReminderNotification => DID NOT 30 MIN HOUR APPOINTMENT NOTIFICATION SMS",
+      {
+        sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
+        phoneNumber,
+      },
+    );
   if (userNotificationSettings && userNotificationSettings?.sendPush && client)
     sendNotification({
       type: "push",
@@ -980,12 +1100,19 @@ const getReasonName = async (reason: string) =>
     .get()
     .then(async (querySnapshot: any) => {
       if (DEBUG)
-        console.log("querySnapshot?.docs?.length", querySnapshot?.docs?.length);
+        console.log(
+          "sendAppointmentReminderNotification => querySnapshot?.docs?.length",
+          querySnapshot?.docs?.length,
+        );
       let reason = null;
       if (querySnapshot?.docs?.length > 0)
         querySnapshot.forEach(async (doc: any) => {
           reason = doc.data()?.name;
-          if (DEBUG) console.log("REASON NAME: ", reason);
+          if (DEBUG)
+            console.log(
+              "sendAppointmentReminderNotification => REASON NAME: ",
+              reason,
+            );
         });
       return reason;
     })

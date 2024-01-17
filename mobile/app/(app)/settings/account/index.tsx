@@ -126,13 +126,7 @@ const AccountSettings = () => {
               isTablet ? tw`px-16` : tw`px-4`,
               tw`flex-grow w-full items-center justify-center`,
             ]}
-          >
-            {__DEV__ && (
-              <>
-                <SubHeadingText style={tw`self-start`}>ID</SubHeadingText>
-                <BodyText>{user.uid}</BodyText>
-              </>
-            )}
+            >
             <Container style={tw`mt-4 mb-2 w-full`}>
               <SubHeadingText style={tw`self-start`}>Email</SubHeadingText>
               <TouchableOpacity onPress={() => setShowChangeEmailModal(true)}>

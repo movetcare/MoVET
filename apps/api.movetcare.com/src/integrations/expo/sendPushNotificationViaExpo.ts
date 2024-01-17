@@ -20,7 +20,13 @@ export const sendPushNotificationViaExpo = async ({
   responses: Array<ExpoPushTicket>;
 }> => {
   if (DEBUG)
-    console.log("NEW EXPO PUSH REQUEST: ", { to, sound, title, body, data });
+    console.log("sendPushNotificationViaExpo => NEW EXPO PUSH REQUEST: ", {
+      to,
+      sound,
+      title,
+      body,
+      data,
+    });
   const messages: Array<any> = [];
   if (Array.isArray(to)) {
     for (const pushToken of to) {
@@ -59,11 +65,16 @@ export const sendPushNotificationViaExpo = async ({
       try {
         const ticketChunks: Array<ExpoPushTicket> =
           await expo.sendPushNotificationsAsync(chunk);
-        if (DEBUG) console.log("TICKET: ", ticketChunks);
+        if (DEBUG)
+          console.log("sendPushNotificationViaExpo => TICKET: ", ticketChunks);
         tickets.push(...ticketChunks);
         ticketChunks.forEach((ticket: ExpoPushTicket) => {
           if (ticket?.status === "error") {
-            if (DEBUG) console.log("FAILED TICKET", ticket);
+            if (DEBUG)
+              console.log(
+                "sendPushNotificationViaExpo => FAILED TICKET",
+                ticket,
+              );
             failedTokens.push((ticket?.details as any)?.expoPushToken);
           }
         });
@@ -73,7 +84,7 @@ export const sendPushNotificationViaExpo = async ({
     }),
   );
   if (DEBUG)
-    console.log("EXPO PUSH RESPONSE: ", {
+    console.log("sendPushNotificationViaExpo => EXPO PUSH RESPONSE: ", {
       failureCount: failedTokens.length,
       responses: JSON.stringify(tickets),
     });

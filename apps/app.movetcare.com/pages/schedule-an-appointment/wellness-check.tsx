@@ -18,7 +18,6 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Transition } from "@headlessui/react";
 import { capitalizeFirstLetter } from "utilities";
 import { BookingFooter } from "components/BookingFooter";
 import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";

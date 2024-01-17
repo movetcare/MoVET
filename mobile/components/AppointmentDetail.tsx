@@ -80,7 +80,7 @@ export const AppointmentDetail = () => {
       setIsLoading(true);
       fetch(
         `https://maps.google.com/maps/api/geocode/json?address=${encodeURI(
-          appointment?.notes?.split("-")[1]?.split("|")[0]?.trim() ||
+          appointment?.notes?.split("-")[1]?.split("|")[0].split("(")[0]?.trim() ||
           client?.address,
         )}&key=${Constants.expoConfig?.extra?.google_maps_geocode_key}`,
       )
@@ -215,7 +215,6 @@ export const AppointmentDetail = () => {
         ]}
         noDarkMode
       >
-        {__DEV__ && <BodyText style={tw`text-xs`}>#{appointment?.id}</BodyText>}
         <Container style={tw`p-3`}>
           <Icon
             name={
@@ -428,7 +427,7 @@ export const AppointmentDetail = () => {
                 ) : (
                   <Icon
                     name={
-                      patient?.species?.toLowerCase()?.includes("dog")
+                        patient?.species?.toLowerCase()?.includes("dog") || patient?.species?.toLowerCase()?.includes("canine")
                         ? "dog"
                         : "cat"
                     }
@@ -439,7 +438,6 @@ export const AppointmentDetail = () => {
               <Container style={tw`flex-shrink`}>
                 <HeadingText style={tw`text-movet-black text-lg`}>
                   {patient.name}
-                  {__DEV__ && ` - #${patient.id}`}
                 </HeadingText>
                 <BodyText style={tw`text-movet-black text-sm -mt-0.5`}>
                   {patient.breed}
@@ -447,9 +445,9 @@ export const AppointmentDetail = () => {
                 <Container style={tw`flex-row items-center`}>
                   <Icon
                     name={
-                      patient?.gender?.toLowerCase()?.includes("male")
-                        ? "male"
-                        : "female"
+                      patient?.gender?.toLowerCase()?.includes("female") || patient?.gender?.toLowerCase()?.includes("female,")
+                        ? "female"
+                        : "male"
                     }
                     size="xxs"
                   />

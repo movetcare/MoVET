@@ -52,7 +52,7 @@ export default function Layout() {
         tw`flex-1`,
         segments.includes("pets") &&
         !segments.includes("appointment-detail") &&
-          !segments.includes("detail") && !segments.includes("new-pet")
+          !segments.includes("detail") && !segments.includes("new-pet") && !segments.includes("new-appointment")
           ? tw`bg-transparent dark:bg-movet-black`
           : tw`bg-movet-red`,
         { paddingTop: insets.top },

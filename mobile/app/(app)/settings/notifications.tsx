@@ -338,14 +338,7 @@ const NotificationSettings = () => {
               ) : (
                 <SwitchInput control={control} name="sendPush" />
               )}
-            </View>
-            {__DEV__ && (
-              <View
-                style={tw`w-full bg-transparent flex-col justify-center items-center`}
-              >
-                <SubHeadingText>Push Token: {pushToken}</SubHeadingText>
               </View>
-            )}
             <SubmitButton
               handleSubmit={handleSubmit}
               onSubmit={onSubmit}

@@ -104,6 +104,12 @@ import SyringeIcon from "assets/icons/svgs/font-awesome/syringe.svg";
 import SyringeIconDark from "assets/icons/svgs/font-awesome/syringe-dark.svg";
 import CoffinIcon from "assets/icons/svgs/font-awesome/coffin.svg";
 import CoffinIconDark from "assets/icons/svgs/font-awesome/coffin-dark.svg";
+import HeadsetIcon from "assets/icons/svgs/font-awesome/headset.svg";
+import HeadsetIconDark from "assets/icons/svgs/font-awesome/headset-dark.svg";
+import BugIcon from "assets/icons/svgs/font-awesome/bug.svg";
+import BugIconDark from "assets/icons/svgs/font-awesome/bug-dark.svg";
+import SadFaceIcon from "assets/icons/svgs/font-awesome/sad-face.svg";
+import SadFaceIconDark from "assets/icons/svgs/font-awesome/sad-face-dark.svg";
 import MedBottleIcon from "assets/icons/svgs/font-awesome/med-bottle.svg";
 import MedBottleIconDark from "assets/icons/svgs/font-awesome/med-bottle-dark.svg";
 import { ReactNode } from "react";
@@ -160,7 +166,13 @@ export type SupportedIcons =
   | "cancel"
   | "chevron-up"
   | "chevron-down"
-  | "shop" | "syringe" | "coffin" | "med-bottle";
+  | "shop"
+  | "syringe"
+  | "coffin"
+  | "med-bottle"
+  | "headset"
+  | "sad-face"
+  | "bug";
 
 export const Icon = ({
   name = "poo",
@@ -614,9 +626,31 @@ export const Icon = ({
       ) : (
         <CoffinIcon height={iconHeight} width={iconWidth} style={style} />
       );
+    case "bug":
+      return showWhiteIcon ? (
+        <BugIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <BugIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "sad-face":
+      return showWhiteIcon ? (
+        <SadFaceIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <SadFaceIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "headset":
+      return showWhiteIcon ? (
+        <HeadsetIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <HeadsetIcon height={iconHeight} width={iconWidth} style={style} />
+      );
     case "med-bottle":
       return showWhiteIcon ? (
-        <MedBottleIconDark height={iconHeight} width={iconWidth} style={style} />
+        <MedBottleIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
       ) : (
         <MedBottleIcon height={iconHeight} width={iconWidth} style={style} />
       );

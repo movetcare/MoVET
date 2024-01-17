@@ -25,7 +25,6 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { ErrorStore } from "stores";
-import LogRocket from "@logrocket/react-native";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 import tw from "tailwind";
 
@@ -81,8 +80,7 @@ const TabsLayout = (props: any) => {
     if (!isLoggedIn || !initialized || !user?.uid) {
       if (!isLoggedIn) router.replace("/(auth)/sign-in");
       return;
-    } else if (!__DEV__ && user?.email)
-      LogRocket.identify(user?.email, { status: "logged-in" });
+    }
     const unsubscribeUser = onSnapshot(
       doc(firestore, "clients", user?.uid),
       (doc) => {

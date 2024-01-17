@@ -134,7 +134,9 @@ export const processProVetWebhook = async (
             },
           }),
         )
-        .catch((error: any) => console.log("ERROR: ", error));
+        .catch((error: any) =>
+          console.log("processProVetWebhook ERROR: ", error),
+        );
     else if (request.body.reminder_id)
       fetchEntity("reminder", request.body.reminder_id)
         .then((response: any) => {
@@ -161,7 +163,9 @@ export const processProVetWebhook = async (
             },
           });
         })
-        .catch((error: any) => console.log("ERROR: ", error));
+        .catch((error: any) =>
+          console.log("processProVetWebhook ERROR: ", error),
+        );
     return response.status(200).send({ received: true });
   }
   return response.status(200).send({ received: true });

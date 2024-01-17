@@ -12,8 +12,6 @@ import { Stack, router } from "expo-router";
 import tw from "tailwind";
 import { Linking, TouchableOpacity } from "react-native";
 import { isTablet } from "utils/isTablet";
-import Constants from "expo-constants";
-import { isProductionEnvironment } from "utils/isProductionEnvironment";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -49,6 +47,11 @@ const settingsOptions: Array<Option> = [
     name: "System Settings",
     icon: "gear",
     link: null,
+  },
+  {
+    name: "Report a Bug",
+    icon: "headset",
+    link: "/(app)/settings/report-a-bug",
   },
   {
     name: "Logout",
@@ -143,12 +146,6 @@ const Settings = () => {
         <ItalicText style={tw`text-xs mt-4`}>
           Version: {versions.appVersion.toString()}
         </ItalicText>
-        {!isProductionEnvironment && (
-          <ItalicText style={tw`text-xs`}>
-            Environment: &quot;{Constants?.expoConfig?.extra?.environment}
-            &quot;
-          </ItalicText>
-        )}
       </Animated.View>
     </Screen>
   );

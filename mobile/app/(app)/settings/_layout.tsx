@@ -21,39 +21,39 @@ export default function Layout() {
 
   useEffect(() => {
     if (segments && segments.includes("notifications")) {
-      //setTimeout(() => {
       setNavigationDetails({
         title: "Notifications",
         iconName: "bell",
         canGoBack: true,
       });
-      //}, 180);
     } else if (segments && segments.includes("payment-methods")) {
-      //setTimeout(() => {
       setNavigationDetails({
         title: "Payment Methods",
         iconName: "credit-card",
         canGoBack: true,
       });
-      //}, 180);
+    } else if (segments && segments.includes("report-a-bug")) {
+      setNavigationDetails({
+        title: "Report a Bug",
+        iconName: "bug",
+        canGoBack: true,
+      });
     } else if (segments && segments.includes("account")) {
       if (segments && segments.includes("web-view")) {
-        //setTimeout(() => {
+
         setNavigationDetails({
           title: "Contact Us",
           iconName: "user-medical-message",
           canGoBack: true,
         });
-        //}, 180);
+
       }
-      //setTimeout(() => {
       else
         setNavigationDetails({
           title: "My Account",
           iconName: "user-edit",
           canGoBack: true,
         });
-      //}, 180);
     } else {
       setNavigationDetails({
         title: "Settings",

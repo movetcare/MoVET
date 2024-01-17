@@ -860,9 +860,9 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
               >
                 * Please contact your previous vet and have them forward your
                 pet&apos;s medical records to{" "}
-                <BodyText style={tw`text-movet-red font-extrabold`}>
+                  <ItalicText style={tw`text-movet-red font-extrabold`} noDarkMode>
                   info@movetcare.com
-                </BodyText>
+                  </ItalicText>
               </ItalicText>
             )}
             <SubHeadingText style={tw`mt-6 mb-4`}>
@@ -999,7 +999,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
             <ActionButton
               color="brown"
               title={`"${name}" is Deceased...`}
-              iconName="coffin"
+              iconName="sad-face"
               onPress={() => petIsDead()}
             />
             <ActionButton

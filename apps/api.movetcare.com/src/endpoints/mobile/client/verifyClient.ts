@@ -41,10 +41,11 @@ export const verifyClient = functions
       const { email, device } = data;
       if (email) {
         const isExistingClient = await verifyExistingClient(email);
-        if (DEBUG) console.log("isExistingClient", isExistingClient);
+        if (DEBUG)
+          console.log("verifyClient => isExistingClient", isExistingClient);
         if (isExistingClient) {
           const authUser: UserRecord | null = await getAuthUserByEmail(email);
-          if (DEBUG) console.log("authUser", authUser);
+          if (DEBUG) console.log("verifyClient => authUser", authUser);
           admin
             .firestore()
             .collection("clients")
@@ -72,9 +73,10 @@ export const verifyClient = functions
           });
           return true;
         } else {
-          if (DEBUG) console.log("NEW CLIENT SIGN UP");
+          if (DEBUG) console.log("verifyClient => NEW CLIENT SIGN UP");
           const proVetClientData: any = await createProVetClient(data);
-          if (DEBUG) console.log("proVetClientData", proVetClientData);
+          if (DEBUG)
+            console.log("verifyClient => proVetClientData", proVetClientData);
           if (proVetClientData) {
             sendNotification({
               type: "push",
@@ -93,7 +95,8 @@ export const verifyClient = functions
               undefined,
               false,
             ).then((result: boolean) => {
-              if (DEBUG) console.log("createAuthClient result", result);
+              if (DEBUG)
+                console.log("verifyClient => createAuthClient result", result);
               admin
                 .firestore()
                 .collection("clients")
@@ -110,7 +113,10 @@ export const verifyClient = functions
               return result;
             });
           } else {
-            if (DEBUG) console.log("FAILED Mobile App Sign Up - " + email);
+            if (DEBUG)
+              console.log(
+                "verifyClient => FAILED Mobile App Sign Up - " + email,
+              );
             sendNotification({
               type: "push",
               payload: {
@@ -124,7 +130,8 @@ export const verifyClient = functions
           }
         }
       } else {
-        if (DEBUG) console.log("FAILED MISSING EMAIL ADDRESS " + email);
+        if (DEBUG)
+          console.log("verifyClient => FAILED MISSING EMAIL ADDRESS " + email);
         return null;
       }
     },
