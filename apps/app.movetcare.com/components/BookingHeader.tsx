@@ -2,10 +2,12 @@ export const BookingHeader = ({
   isAppMode,
   title,
   description,
+  customDescription = null,
 }: {
   isAppMode: boolean;
   title: string;
-  description: string;
+  description?: string;
+  customDescription?: any | null;
 }) => {
   return (
     <div
@@ -20,11 +22,15 @@ export const BookingHeader = ({
             {title}
           </h2>
         )}
-        <p
-          className={`text-lg leading-6 text-movet-black${isAppMode ? " mt-8" : ""}`}
-        >
-          {description}
-        </p>
+        {customDescription ? (
+          customDescription
+        ) : (
+          <p
+            className={`text-lg leading-6 text-movet-black${isAppMode ? " mt-8" : ""}`}
+          >
+            {description}
+          </p>
+        )}
       </div>
     </div>
   );

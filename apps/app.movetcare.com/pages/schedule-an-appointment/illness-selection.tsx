@@ -172,9 +172,15 @@ export default function IllnessSelection() {
                   <BookingHeader
                     isAppMode={isAppMode}
                     title="Minor Illness"
-                    description={`We're sorry to hear ${pet?.name} is not feeling well. What symptom(s) is ${
-                      pet?.gender?.includes("Female") ? "she" : "he"
-                    } experiencing?`}
+                    customDescription={
+                      <p>
+                        We&apos;re sorry to hear{" "}
+                        <b className="italic underline">{pet?.name}</b> is not
+                        feeling well. What symptom(s) is{" "}
+                        {pet?.gender?.includes("Female") ? "she" : "he"}{" "}
+                        experiencing?
+                      </p>
+                    }
                   />
                   <div className="w-full px-4">
                     <legend className="mt-4 text-xl font-medium mb-2 w-full text-center">

@@ -44,14 +44,14 @@ const settingsOptions: Array<Option> = [
     link: "/(app)/settings/notifications",
   },
   {
-    name: "System Settings",
-    icon: "gear",
-    link: null,
-  },
-  {
     name: "Report a Bug",
     icon: "headset",
     link: "/(app)/settings/report-a-bug",
+  },
+  {
+    name: "System Settings",
+    icon: "gear",
+    link: null,
   },
   {
     name: "Logout",
