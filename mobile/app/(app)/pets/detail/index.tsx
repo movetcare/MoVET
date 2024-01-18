@@ -127,7 +127,6 @@ const PetDetail = () => {
       s.currentError = error;
     });
 
-
   return (
     <Screen withBackground={backgroundImage}>
       <Stack.Screen options={{ title: patient?.name }} />
@@ -160,7 +159,8 @@ const PetDetail = () => {
               <Container style={tw`absolute top-8.5 left-8.5`}>
                 <Icon
                   name={
-                      patient?.species?.toLowerCase()?.includes("dog") || patient?.species?.toLowerCase()?.includes("canine")
+                    patient?.species?.toLowerCase()?.includes("dog") ||
+                    patient?.species?.toLowerCase()?.includes("canine")
                       ? "dog"
                       : "cat"
                   }
@@ -173,10 +173,14 @@ const PetDetail = () => {
         </TouchableOpacity>
         {!patient?.photoUrl && (
           <>
-            <TouchableOpacity onPress={() => router.navigate({
-              pathname: "/(app)/pets/detail/edit",
-              params: { id: patient?.id },
-            })}>
+            <TouchableOpacity
+              onPress={() =>
+                router.navigate({
+                  pathname: "/(app)/pets/detail/edit",
+                  params: { id: patient?.id },
+                })
+              }
+            >
               <View
                 noDarkMode
                 style={[
@@ -188,14 +192,7 @@ const PetDetail = () => {
                   noDarkMode
                 >
                   <Container>
-                    <Icon
-                      name={
-                        "plus"
-                      }
-                      height={22}
-                      width={22}
-                      color="white"
-                    />
+                    <Icon name={"plus"} height={22} width={22} color="white" />
                   </Container>
                   <Container style={tw`px-3 mr-4 flex-1`}>
                     <ItalicText
@@ -236,7 +233,8 @@ const PetDetail = () => {
                         >
                           Please schedule an appointment for {patient?.name} to
                           update{" "}
-                          {patient?.gender?.toLowerCase()?.includes("female") || patient?.gender?.toLowerCase()?.includes("female,")
+                          {patient?.gender?.toLowerCase()?.includes("female") ||
+                          patient?.gender?.toLowerCase()?.includes("female,")
                             ? "her"
                             : "his"}{" "}
                           VCPR status
@@ -254,26 +252,27 @@ const PetDetail = () => {
                 >
                   <>
                     <BodyText style={textStyles}>
-                      A Veterinarian-Client-Patient Relationship (&quot;VCPR&quot;)
-                      is established only when your veterinarian examines your pet
-                      in person, and is maintained by regular veterinary visits as
-                      needed to monitor your pet&apos;s health.
+                      A Veterinarian-Client-Patient Relationship
+                      (&quot;VCPR&quot;) is established only when your
+                      veterinarian examines your pet in person, and is
+                      maintained by regular veterinary visits as needed to
+                      monitor your pet&apos;s health.
                     </BodyText>
                     <BodyText style={textStyles}>
                       If a VCPR is established but your veterinarian does not
-                      regularly see your pet afterward, the VCPR is no longer valid
-                      and it would be illegal (and unethical) for your veterinarian
-                      to dispense or prescribe medications or recommend treatment
-                      without recently examining your pet.
+                      regularly see your pet afterward, the VCPR is no longer
+                      valid and it would be illegal (and unethical) for your
+                      veterinarian to dispense or prescribe medications or
+                      recommend treatment without recently examining your pet.
                     </BodyText>
                     <BodyText style={textStyles}>
-                      A valid VCPR cannot be established online, via email, or over
-                      the phone. However, once a VCPR is established, it may be able
-                      to be maintained between medically necessary examinations via
-                      telephone or other types of consultations; but it&apos;s up to
-                      your veterinarian&apos; discretion to determine if this is
-                      appropriate and in the best interests of your pets&apos;
-                      health.
+                      A valid VCPR cannot be established online, via email, or
+                      over the phone. However, once a VCPR is established, it
+                      may be able to be maintained between medically necessary
+                      examinations via telephone or other types of
+                      consultations; but it&apos;s up to your veterinarian&apos;
+                      discretion to determine if this is appropriate and in the
+                      best interests of your pets&apos; health.
                     </BodyText>
                     <SubHeadingText
                       style={[
@@ -281,8 +280,8 @@ const PetDetail = () => {
                         tw`text-center uppercase mb-1`,
                       ]}
                     >
-                      Pet{vcprPatients && vcprPatients.length > 1 && "s"} without a
-                      VCPR
+                      Pet{vcprPatients && vcprPatients.length > 1 && "s"}{" "}
+                      without a VCPR
                     </SubHeadingText>
                     {vcprPatients?.map((patient: Patient, index: number) =>
                       index <= 2 ? (
@@ -335,7 +334,10 @@ const PetDetail = () => {
           >
             <Icon
               name={
-                patient?.species?.toLowerCase()?.includes("dog") || patient?.species?.toLowerCase()?.includes("canine") ? "dog" : "cat"
+                patient?.species?.toLowerCase()?.includes("dog") ||
+                patient?.species?.toLowerCase()?.includes("canine")
+                  ? "dog"
+                  : "cat"
               }
               height={20}
               width={20}
@@ -349,7 +351,8 @@ const PetDetail = () => {
           >
             <Icon
               name={
-                patient?.gender?.toLowerCase()?.includes("female") || patient?.gender?.toLowerCase()?.includes("female,")
+                patient?.gender?.toLowerCase()?.includes("female") ||
+                patient?.gender?.toLowerCase()?.includes("female,")
                   ? "female"
                   : "male"
               }
@@ -381,7 +384,7 @@ const PetDetail = () => {
                 }
               />
               <View
-              style={tw`flex-col rounded-xl bg-transparent w-full`}
+                style={tw`flex-col rounded-xl bg-transparent w-full`}
                 noDarkMode
               >
                 {reasons &&
@@ -389,17 +392,17 @@ const PetDetail = () => {
                     (appointment: Appointment) => {
                       const location =
                         appointment.resources.includes(6) || // Exam Room 1
-                          appointment.resources.includes(7) || // Exam Room 2
-                          appointment.resources.includes(8) || // Exam Room 3
-                          appointment.resources.includes(14) || // Exam Room 1
-                          appointment.resources.includes(15) || // Exam Room 2
-                          appointment.resources.includes(16) // Exam Room 3
+                        appointment.resources.includes(7) || // Exam Room 2
+                        appointment.resources.includes(8) || // Exam Room 3
+                        appointment.resources.includes(14) || // Exam Room 1
+                        appointment.resources.includes(15) || // Exam Room 2
+                        appointment.resources.includes(16) // Exam Room 3
                           ? "CLINIC"
                           : appointment.resources.includes(3) || // Truck 1
-                            appointment.resources.includes(9) // Truck 2
+                              appointment.resources.includes(9) // Truck 2
                             ? "HOUSECALL"
                             : appointment.resources.includes(11) || // Virtual Room 1
-                              appointment.resources.includes(18) // Virtual Room 2
+                                appointment.resources.includes(18) // Virtual Room 2
                               ? "TELEHEALTH"
                               : "UNKNOWN APPOINTMENT TYPE";
                       const reason = reasons?.map((reason: any) => {
@@ -487,17 +490,17 @@ const PetDetail = () => {
                   (appointment: Appointment, index: number) => {
                     const location =
                       appointment.resources.includes(6) || // Exam Room 1
-                        appointment.resources.includes(7) || // Exam Room 2
-                        appointment.resources.includes(8) || // Exam Room 3
-                        appointment.resources.includes(14) || // Exam Room 1
-                        appointment.resources.includes(15) || // Exam Room 2
-                        appointment.resources.includes(16) // Exam Room 3
+                      appointment.resources.includes(7) || // Exam Room 2
+                      appointment.resources.includes(8) || // Exam Room 3
+                      appointment.resources.includes(14) || // Exam Room 1
+                      appointment.resources.includes(15) || // Exam Room 2
+                      appointment.resources.includes(16) // Exam Room 3
                         ? "CLINIC"
                         : appointment.resources.includes(3) || // Truck 1
-                          appointment.resources.includes(9) // Truck 2
+                            appointment.resources.includes(9) // Truck 2
                           ? "HOUSECALL"
                           : appointment.resources.includes(11) || // Virtual Room 1
-                            appointment.resources.includes(18) // Virtual Room 2
+                              appointment.resources.includes(18) // Virtual Room 2
                             ? "TELEHEALTH"
                             : "UNKNOWN APPOINTMENT TYPE";
                     const reason = reasons?.map((reason: any) => {
@@ -634,97 +637,99 @@ const PetDetail = () => {
             </View>
           </>
         )}
-        <Container
-          style={tw`flex-col sm:flex-row justify-around w-full mb-8 mt-4`}
-        >{patient?.photoUrl && patient?.vcprRequired && !upcomingPatientAppointments && (
-          <>
-            <TouchableOpacity onPress={() => setShowVcprModal(true)}>
-              <View
-                noDarkMode
-                style={[
-                  tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent mb-4`,
-                ]}
-              >
+        {patient?.photoUrl &&
+          patient?.vcprRequired &&
+          !upcomingPatientAppointments && (
+            <>
+              <TouchableOpacity onPress={() => setShowVcprModal(true)}>
                 <View
-                  style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full bg-movet-yellow`}
                   noDarkMode
-                >
-                  <Container>
-                    <Icon
-                      name={"exclamation-circle"}
-                      height={22}
-                      width={22}
-                      color="white"
-                    />
-                  </Container>
-                  <Container style={tw`px-3 mr-4 flex-1`}>
-                    <ItalicText
-                      style={tw`text-movet-white text-sm text-center`}
-                      noDarkMode
-                    >
-                      Please schedule an appointment for {patient?.name} to
-                      update{" "}
-                        {patient?.gender?.toLowerCase()?.includes("female") || patient?.gender?.toLowerCase()?.includes("female,")
-                          ? "her"
-                          : "his"}{" "}
-                      VCPR status
-                    </ItalicText>
-                  </Container>
-                </View>
-              </View>
-            </TouchableOpacity>
-            <Modal
-              isVisible={showVcprModal}
-              onClose={() => {
-                setShowVcprModal(false);
-              }}
-              title="What is a VCPR?"
-            >
-              <>
-                <BodyText style={textStyles}>
-                  A Veterinarian-Client-Patient Relationship (&quot;VCPR&quot;)
-                  is established only when your veterinarian examines your pet
-                  in person, and is maintained by regular veterinary visits as
-                  needed to monitor your pet&apos;s health.
-                </BodyText>
-                <BodyText style={textStyles}>
-                  If a VCPR is established but your veterinarian does not
-                  regularly see your pet afterward, the VCPR is no longer valid
-                  and it would be illegal (and unethical) for your veterinarian
-                  to dispense or prescribe medications or recommend treatment
-                  without recently examining your pet.
-                </BodyText>
-                <BodyText style={textStyles}>
-                  A valid VCPR cannot be established online, via email, or over
-                  the phone. However, once a VCPR is established, it may be able
-                  to be maintained between medically necessary examinations via
-                  telephone or other types of consultations; but it&apos;s up to
-                  your veterinarian&apos; discretion to determine if this is
-                  appropriate and in the best interests of your pets&apos;
-                  health.
-                </BodyText>
-                <SubHeadingText
                   style={[
-                    isTablet ? tw`mt-4 text-base` : tw`text-xs`,
-                    tw`text-center uppercase mb-1`,
+                    tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent mb-4`,
                   ]}
                 >
-                  Pet{vcprPatients && vcprPatients.length > 1 && "s"} without a
-                  VCPR
-                </SubHeadingText>
-                {vcprPatients?.map((patient: Patient, index: number) =>
-                  index <= 2 ? (
-                    <ItalicText
-                      key={index}
-                      style={[
-                        isTablet ? tw`text-base` : tw`text-xs`,
-                        tw`text-center`,
-                      ]}
-                    >
-                      {patient.name}
-                    </ItalicText>
-                  ) : null,
-                )}
+                  <View
+                    style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full bg-movet-yellow`}
+                    noDarkMode
+                  >
+                    <Container>
+                      <Icon
+                        name={"exclamation-circle"}
+                        height={22}
+                        width={22}
+                        color="white"
+                      />
+                    </Container>
+                    <Container style={tw`px-3 mr-4 flex-1`}>
+                      <ItalicText
+                        style={tw`text-movet-white text-sm text-center`}
+                        noDarkMode
+                      >
+                        Please schedule an appointment for {patient?.name} to
+                        update{" "}
+                        {patient?.gender?.toLowerCase()?.includes("female") ||
+                        patient?.gender?.toLowerCase()?.includes("female,")
+                          ? "her"
+                          : "his"}{" "}
+                        VCPR status
+                      </ItalicText>
+                    </Container>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <Modal
+                isVisible={showVcprModal}
+                onClose={() => {
+                  setShowVcprModal(false);
+                }}
+                title="What is a VCPR?"
+              >
+                <>
+                  <BodyText style={textStyles}>
+                    A Veterinarian-Client-Patient Relationship
+                    (&quot;VCPR&quot;) is established only when your
+                    veterinarian examines your pet in person, and is maintained
+                    by regular veterinary visits as needed to monitor your
+                    pet&apos;s health.
+                  </BodyText>
+                  <BodyText style={textStyles}>
+                    If a VCPR is established but your veterinarian does not
+                    regularly see your pet afterward, the VCPR is no longer
+                    valid and it would be illegal (and unethical) for your
+                    veterinarian to dispense or prescribe medications or
+                    recommend treatment without recently examining your pet.
+                  </BodyText>
+                  <BodyText style={textStyles}>
+                    A valid VCPR cannot be established online, via email, or
+                    over the phone. However, once a VCPR is established, it may
+                    be able to be maintained between medically necessary
+                    examinations via telephone or other types of consultations;
+                    but it&apos;s up to your veterinarian&apos; discretion to
+                    determine if this is appropriate and in the best interests
+                    of your pets&apos; health.
+                  </BodyText>
+                  <SubHeadingText
+                    style={[
+                      isTablet ? tw`mt-4 text-base` : tw`text-xs`,
+                      tw`text-center uppercase mb-1`,
+                    ]}
+                  >
+                    Pet{vcprPatients && vcprPatients.length > 1 && "s"} without
+                    a VCPR
+                  </SubHeadingText>
+                  {vcprPatients?.map((patient: Patient, index: number) =>
+                    index <= 2 ? (
+                      <ItalicText
+                        key={index}
+                        style={[
+                          isTablet ? tw`text-base` : tw`text-xs`,
+                          tw`text-center`,
+                        ]}
+                      >
+                        {patient.name}
+                      </ItalicText>
+                    ) : null,
+                  )}
                   {vcprPatients && vcprPatients.length > 3 && (
                     <ItalicText style={tw`text-center text-xs`}>
                       ...and {vcprPatients.length - 3} more
@@ -753,6 +758,9 @@ const PetDetail = () => {
               </Modal>
             </>
           )}
+        <Container
+          style={tw`flex-col sm:flex-row justify-around w-full mb-8 mt-4`}
+        >
           <ActionButton
             title={
               (!upcomingAppointments && !pastAppointments
@@ -776,7 +784,7 @@ const PetDetail = () => {
           />
           {pastPatientAppointments && pastPatientAppointments?.length > 0 && (
             <>
-            <ActionButton
+              <ActionButton
                 color="red"
                 title="Request Medication Refill"
                 iconName="med-bottle"
@@ -791,22 +799,29 @@ const PetDetail = () => {
                     params: {
                       path: "/contact",
                       screenTitle: "Medication Refill Request",
-                      queryString: `${client?.firstName ? `&firstName=${client?.firstName}` : ""
-                        }${client?.lastName ? `&lastName=${client?.lastName}` : ""
-                        }${client?.email ? `&email=${client?.email}` : ""}${client?.phone
+                      queryString: `${
+                        client?.firstName
+                          ? `&firstName=${client?.firstName}`
+                          : ""
+                      }${
+                        client?.lastName ? `&lastName=${client?.lastName}` : ""
+                      }${client?.email ? `&email=${client?.email}` : ""}${
+                        client?.phone
                           ? `&phone=${client?.phone
-                            ?.replaceAll(" ", "")
-                            ?.replaceAll("(", "")
-                            ?.replaceAll(")", "")
-                            ?.replaceAll("-", "")}`
-                        : ""
-                        }&message=${patient?.name} is in need of a refill for <MEDICATION_NAME>. Thanks!`
+                              ?.replaceAll(" ", "")
+                              ?.replaceAll("(", "")
+                              ?.replaceAll(")", "")
+                              ?.replaceAll("-", "")}`
+                          : ""
+                      }&message=${patient?.name} is in need of a refill for <MEDICATION_NAME>. Thanks!`
                         ?.replaceAll(")", "")
                         ?.replaceAll("(", ""),
                     },
                   });
                 }}
-              /><RequestRecords patientName={patient?.name as string} /></>
+              />
+              <RequestRecords patientName={patient?.name as string} />
+            </>
           )}
           <ActionButton
             color="brown"
