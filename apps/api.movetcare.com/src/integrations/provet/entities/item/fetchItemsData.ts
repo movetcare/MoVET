@@ -1,17 +1,16 @@
-import type { Item } from "@slack/web-api/dist/response/PinsListResponse";
 import { admin, throwError, request, DEBUG } from "../../../../config/config";
 import { addMinutesToDateObject } from "../../../../utils/addMinutesToDateObject";
 import { sliceArrayIntoChunks } from "../../../../utils/sliceArrayIntoChunks";
 
 export const fetchItemsData = async (
-  itemIds: Array<string>
-): Promise<Array<Item>> => {
-  const itemsData: Array<Item> = [];
+  itemIds: Array<string>,
+): Promise<Array<any>> => {
+  const itemsData: Array<any> = [];
   if (itemIds.length > 30) {
     if (DEBUG)
       console.log(
         "ITEM IDS > 30 - ADDING REQUESTS TO TASK QUEUE",
-        itemIds.length
+        itemIds.length,
       );
     const itemIdChunks = sliceArrayIntoChunks(itemIds, 30);
     if (DEBUG) console.log("itemIdChunks[0]", itemIdChunks[0]);
@@ -32,17 +31,17 @@ export const fetchItemsData = async (
               performAt: addMinutesToDateObject(new Date(), index),
               createdOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           )
           .then(
             async () =>
               DEBUG &&
               console.log(
                 "CONFIGURE ITEMS TASK ADDED TO QUEUE => ",
-                `configure_items_${index}`
-              )
+                `configure_items_${index}`,
+              ),
           )
-          .catch((error: any) => throwError(error)))
+          .catch((error: any) => throwError(error))),
     );
     await Promise.all(
       itemIdChunks[0].map(async (itemId: string) => {
@@ -87,12 +86,12 @@ export const fetchItemsData = async (
                 modified: result.data?.modified,
                 hideOnConsultationSearch:
                   result.data?.hide_on_consultation_search,
-              } as Item)
+              }) as any,
           )
           .catch((error: any) => throwError(error));
         if (DEBUG) console.log("initialItemData", initialItemData);
         if (initialItemData) itemsData.push(initialItemData as any);
-      })
+      }),
     );
     if (DEBUG) console.log("itemsData", itemsData);
     return itemsData;
@@ -140,12 +139,12 @@ export const fetchItemsData = async (
                 modified: result.data?.modified,
                 hideOnConsultationSearch:
                   result.data?.hide_on_consultation_search,
-              } as Item)
+              }) as any,
           )
           .catch((error: any) => throwError(error));
         if (DEBUG) console.log("itemData", itemData);
         if (itemData) itemsData.push(itemData as any);
-      })
+      }),
     );
     if (DEBUG) console.log("itemsData", itemsData);
     return itemsData;
