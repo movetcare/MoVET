@@ -171,161 +171,7 @@ const PetDetail = () => {
             )}
           </View>
         </TouchableOpacity>
-        {!patient?.photoUrl && (
-          <>
-            <TouchableOpacity
-              onPress={() =>
-                router.navigate({
-                  pathname: "/(app)/pets/detail/edit",
-                  params: { id: patient?.id },
-                })
-              }
-            >
-              <View
-                noDarkMode
-                style={[
-                  tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent mb-4`,
-                ]}
-              >
-                <View
-                  style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full bg-movet-black/50 dark:bg-movet-white/50`}
-                  noDarkMode
-                >
-                  <Container>
-                    <Icon name={"plus"} height={22} width={22} color="white" />
-                  </Container>
-                  <Container style={tw`px-3 mr-4 flex-1`}>
-                    <ItalicText
-                      style={tw`text-movet-white text-sm text-center`}
-                      noDarkMode
-                    >
-                      Add a photo of {patient?.name}
-                    </ItalicText>
-                  </Container>
-                </View>
-              </View>
-            </TouchableOpacity>
-            {patient?.vcprRequired && !upcomingPatientAppointments && (
-              <>
-                <TouchableOpacity onPress={() => setShowVcprModal(true)}>
-                  <View
-                    noDarkMode
-                    style={[
-                      tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent mb-4`,
-                    ]}
-                  >
-                    <View
-                      style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full bg-movet-yellow`}
-                      noDarkMode
-                    >
-                      <Container>
-                        <Icon
-                          name={"exclamation-circle"}
-                          height={22}
-                          width={22}
-                          color="white"
-                        />
-                      </Container>
-                      <Container style={tw`px-3 mr-4 flex-1`}>
-                        <ItalicText
-                          style={tw`text-movet-white text-sm text-center`}
-                          noDarkMode
-                        >
-                          Please schedule an appointment for {patient?.name} to
-                          update{" "}
-                          {patient?.gender?.toLowerCase()?.includes("female") ||
-                          patient?.gender?.toLowerCase()?.includes("female,")
-                            ? "her"
-                            : "his"}{" "}
-                          VCPR status
-                        </ItalicText>
-                      </Container>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-                <Modal
-                  isVisible={showVcprModal}
-                  onClose={() => {
-                    setShowVcprModal(false);
-                  }}
-                  title="What is a VCPR?"
-                >
-                  <>
-                    <BodyText style={textStyles}>
-                      A Veterinarian-Client-Patient Relationship
-                      (&quot;VCPR&quot;) is established only when your
-                      veterinarian examines your pet in person, and is
-                      maintained by regular veterinary visits as needed to
-                      monitor your pet&apos;s health.
-                    </BodyText>
-                    <BodyText style={textStyles}>
-                      If a VCPR is established but your veterinarian does not
-                      regularly see your pet afterward, the VCPR is no longer
-                      valid and it would be illegal (and unethical) for your
-                      veterinarian to dispense or prescribe medications or
-                      recommend treatment without recently examining your pet.
-                    </BodyText>
-                    <BodyText style={textStyles}>
-                      A valid VCPR cannot be established online, via email, or
-                      over the phone. However, once a VCPR is established, it
-                      may be able to be maintained between medically necessary
-                      examinations via telephone or other types of
-                      consultations; but it&apos;s up to your veterinarian&apos;
-                      discretion to determine if this is appropriate and in the
-                      best interests of your pets&apos; health.
-                    </BodyText>
-                    <SubHeadingText
-                      style={[
-                        isTablet ? tw`mt-4 text-base` : tw`text-xs`,
-                        tw`text-center uppercase mb-1`,
-                      ]}
-                    >
-                      Pet{vcprPatients && vcprPatients.length > 1 && "s"}{" "}
-                      without a VCPR
-                    </SubHeadingText>
-                    {vcprPatients?.map((patient: Patient, index: number) =>
-                      index <= 2 ? (
-                        <ItalicText
-                          key={index}
-                          style={[
-                            isTablet ? tw`text-base` : tw`text-xs`,
-                            tw`text-center`,
-                          ]}
-                        >
-                          {patient.name}
-                        </ItalicText>
-                      ) : null,
-                    )}
-                    {vcprPatients && vcprPatients.length > 3 && (
-                      <ItalicText style={tw`text-center text-xs`}>
-                        ...and {vcprPatients.length - 3} more
-                      </ItalicText>
-                    )}
-                    <Container
-                      style={[
-                        isTablet ? tw`mt-4` : tw``,
-                        tw`flex-row justify-center sm:mb-2`,
-                      ]}
-                    >
-                      <ActionButton
-                        title={
-                          (!upcomingAppointments && !pastAppointments
-                            ? "Request"
-                            : "Schedule") + " an Appointment"
-                        }
-                        iconName="calendar-plus"
-                        onPress={() => {
-                          setShowVcprModal(false);
-                          router.navigate("/(app)/pets/new-appointment");
-                        }}
-                      />
-                    </Container>
-                  </>
-                </Modal>
-              </>
-            )}
-          </>
-        )}
+
         <Container
           style={tw`flex-col items-center justify-center w-full rounded-xl bg-movet-white/70 dark:bg-movet-black/70`}
         >
@@ -482,7 +328,7 @@ const PetDetail = () => {
               }
             />
             <View
-              style={tw`flex-col rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white bg-transparent w-full`}
+              style={tw`flex-col rounded-xl bg-transparent w-full`}
               noDarkMode
             >
               {reasons &&
@@ -522,7 +368,7 @@ const PetDetail = () => {
                       >
                         <View
                           key={appointment.id}
-                          style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
+                          style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`}
                         >
                           <Container style={tw`p-2`}>
                             <Icon
@@ -637,130 +483,159 @@ const PetDetail = () => {
             </View>
           </>
         )}
-        {patient?.photoUrl &&
-          patient?.vcprRequired &&
-          !upcomingPatientAppointments && (
-            <>
-              <TouchableOpacity onPress={() => setShowVcprModal(true)}>
-                <View
-                  noDarkMode
-                  style={[
-                    tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent mb-4`,
-                  ]}
-                >
-                  <View
-                    style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full bg-movet-yellow`}
+        {!patient?.photoUrl && (
+          <TouchableOpacity
+            onPress={() =>
+              router.navigate({
+                pathname: "/(app)/pets/detail/edit",
+                params: { id: patient?.id },
+              })
+            }
+          >
+            <View
+              noDarkMode
+              style={[
+                tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent mb-4`,
+              ]}
+            >
+              <View
+                style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full bg-movet-black/50 dark:bg-movet-white/50`}
+                noDarkMode
+              >
+                <Container>
+                  <Icon name={"plus"} height={22} width={22} color="white" />
+                </Container>
+                <Container style={tw`px-3 mr-4 flex-1`}>
+                  <ItalicText
+                    style={tw`text-movet-white text-sm text-center`}
                     noDarkMode
                   >
-                    <Container>
-                      <Icon
-                        name={"exclamation-circle"}
-                        height={22}
-                        width={22}
-                        color="white"
-                      />
-                    </Container>
-                    <Container style={tw`px-3 mr-4 flex-1`}>
-                      <ItalicText
-                        style={tw`text-movet-white text-sm text-center`}
-                        noDarkMode
-                      >
-                        Please schedule an appointment for {patient?.name} to
-                        update{" "}
-                        {patient?.gender?.toLowerCase()?.includes("female") ||
-                        patient?.gender?.toLowerCase()?.includes("female,")
-                          ? "her"
-                          : "his"}{" "}
-                        VCPR status
-                      </ItalicText>
-                    </Container>
-                  </View>
-                </View>
-              </TouchableOpacity>
-              <Modal
-                isVisible={showVcprModal}
-                onClose={() => {
-                  setShowVcprModal(false);
-                }}
-                title="What is a VCPR?"
+                    Add a photo of {patient?.name}
+                  </ItalicText>
+                </Container>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+        {patient?.vcprRequired && !upcomingPatientAppointments && (
+          <>
+            <TouchableOpacity onPress={() => setShowVcprModal(true)}>
+              <View
+                noDarkMode
+                style={[
+                  tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent mb-4`,
+                ]}
               >
-                <>
-                  <BodyText style={textStyles}>
-                    A Veterinarian-Client-Patient Relationship
-                    (&quot;VCPR&quot;) is established only when your
-                    veterinarian examines your pet in person, and is maintained
-                    by regular veterinary visits as needed to monitor your
-                    pet&apos;s health.
-                  </BodyText>
-                  <BodyText style={textStyles}>
-                    If a VCPR is established but your veterinarian does not
-                    regularly see your pet afterward, the VCPR is no longer
-                    valid and it would be illegal (and unethical) for your
-                    veterinarian to dispense or prescribe medications or
-                    recommend treatment without recently examining your pet.
-                  </BodyText>
-                  <BodyText style={textStyles}>
-                    A valid VCPR cannot be established online, via email, or
-                    over the phone. However, once a VCPR is established, it may
-                    be able to be maintained between medically necessary
-                    examinations via telephone or other types of consultations;
-                    but it&apos;s up to your veterinarian&apos; discretion to
-                    determine if this is appropriate and in the best interests
-                    of your pets&apos; health.
-                  </BodyText>
-                  <SubHeadingText
-                    style={[
-                      isTablet ? tw`mt-4 text-base` : tw`text-xs`,
-                      tw`text-center uppercase mb-1`,
-                    ]}
-                  >
-                    Pet{vcprPatients && vcprPatients.length > 1 && "s"} without
-                    a VCPR
-                  </SubHeadingText>
-                  {vcprPatients?.map((patient: Patient, index: number) =>
-                    index <= 2 ? (
-                      <ItalicText
-                        key={index}
-                        style={[
-                          isTablet ? tw`text-base` : tw`text-xs`,
-                          tw`text-center`,
-                        ]}
-                      >
-                        {patient.name}
-                      </ItalicText>
-                    ) : null,
-                  )}
-                  {vcprPatients && vcprPatients.length > 3 && (
-                    <ItalicText style={tw`text-center text-xs`}>
-                      ...and {vcprPatients.length - 3} more
-                    </ItalicText>
-                  )}
-                  <Container
-                    style={[
-                      isTablet ? tw`mt-4` : tw``,
-                      tw`flex-row justify-center sm:mb-2`,
-                    ]}
-                  >
-                    <ActionButton
-                      title={
-                        (!upcomingAppointments && !pastAppointments
-                          ? "Request"
-                          : "Schedule") + " an Appointment"
-                      }
-                      iconName="calendar-plus"
-                      onPress={() => {
-                        setShowVcprModal(false);
-                        router.navigate("/(app)/pets/new-appointment");
-                      }}
+                <View
+                  style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full bg-movet-yellow`}
+                  noDarkMode
+                >
+                  <Container>
+                    <Icon
+                      name={"exclamation-circle"}
+                      height={22}
+                      width={22}
+                      color="white"
                     />
                   </Container>
-                </>
-              </Modal>
-            </>
-          )}
-        <Container
-          style={tw`flex-col sm:flex-row justify-around w-full mb-8 mt-4`}
-        >
+                  <Container style={tw`px-3 mr-4 flex-1`}>
+                    <ItalicText
+                      style={tw`text-movet-white text-sm text-center`}
+                      noDarkMode
+                    >
+                      Please schedule an appointment for {patient?.name} to
+                      update{" "}
+                      {patient?.gender?.toLowerCase()?.includes("female") ||
+                      patient?.gender?.toLowerCase()?.includes("female,")
+                        ? "her"
+                        : "his"}{" "}
+                      VCPR status
+                    </ItalicText>
+                  </Container>
+                </View>
+              </View>
+            </TouchableOpacity>
+            <Modal
+              isVisible={showVcprModal}
+              onClose={() => {
+                setShowVcprModal(false);
+              }}
+              title="What is a VCPR?"
+            >
+              <>
+                <BodyText style={textStyles}>
+                  A Veterinarian-Client-Patient Relationship (&quot;VCPR&quot;)
+                  is established only when your veterinarian examines your pet
+                  in person, and is maintained by regular veterinary visits as
+                  needed to monitor your pet&apos;s health.
+                </BodyText>
+                <BodyText style={textStyles}>
+                  If a VCPR is established but your veterinarian does not
+                  regularly see your pet afterward, the VCPR is no longer valid
+                  and it would be illegal (and unethical) for your veterinarian
+                  to dispense or prescribe medications or recommend treatment
+                  without recently examining your pet.
+                </BodyText>
+                <BodyText style={textStyles}>
+                  A valid VCPR cannot be established online, via email, or over
+                  the phone. However, once a VCPR is established, it may be able
+                  to be maintained between medically necessary examinations via
+                  telephone or other types of consultations; but it&apos;s up to
+                  your veterinarian&apos; discretion to determine if this is
+                  appropriate and in the best interests of your pets&apos;
+                  health.
+                </BodyText>
+                <SubHeadingText
+                  style={[
+                    isTablet ? tw`mt-4 text-base` : tw`text-xs`,
+                    tw`text-center uppercase mb-1`,
+                  ]}
+                >
+                  Pet{vcprPatients && vcprPatients.length > 1 && "s"} without a
+                  VCPR
+                </SubHeadingText>
+                {vcprPatients?.map((patient: Patient, index: number) =>
+                  index <= 2 ? (
+                    <ItalicText
+                      key={index}
+                      style={[
+                        isTablet ? tw`text-base` : tw`text-xs`,
+                        tw`text-center`,
+                      ]}
+                    >
+                      {patient.name}
+                    </ItalicText>
+                  ) : null,
+                )}
+                {vcprPatients && vcprPatients.length > 3 && (
+                  <ItalicText style={tw`text-center text-xs`}>
+                    ...and {vcprPatients.length - 3} more
+                  </ItalicText>
+                )}
+                <Container
+                  style={[
+                    isTablet ? tw`mt-4` : tw``,
+                    tw`flex-row justify-center sm:mb-2`,
+                  ]}
+                >
+                  <ActionButton
+                    title={
+                      (!upcomingAppointments && !pastAppointments
+                        ? "Request"
+                        : "Schedule") + " an Appointment"
+                    }
+                    iconName="calendar-plus"
+                    onPress={() => {
+                      setShowVcprModal(false);
+                      router.navigate("/(app)/pets/new-appointment");
+                    }}
+                  />
+                </Container>
+              </>
+            </Modal>
+          </>
+        )}
+        <Container style={tw`flex-col sm:flex-row justify-around w-full mb-8`}>
           <ActionButton
             title={
               (!upcomingAppointments && !pastAppointments

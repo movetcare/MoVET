@@ -27,7 +27,7 @@
     "@react-native-picker/picker": "2.6.1",
     "@react-navigation/native": "^6.1.9",
     "@stripe/stripe-react-native": "0.35.1",
-    "expo": "50.0.0",
+    "expo": "50.0.1",
     "expo-constants": "~15.4.5",
     "expo-device": "~5.9.3",
     "expo-font": "~11.10.2",

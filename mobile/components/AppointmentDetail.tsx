@@ -202,11 +202,13 @@ export const AppointmentDetail = () => {
         <Stack.Screen options={{ title: "Virtual Consultation" }} />
       )}
       {appointment?.start?.toDate() >= new Date() && (
-        <Container style={tw`mt-4`}><PaymentMethodSummary
-          titleSize={"sm"}
-          title="PAYMENT METHOD REQUIRED"
-          message="Tap here to add a payment method to your account before your appointment begins."
-        /></Container>
+        <Container style={tw`mt-4`}>
+          <PaymentMethodSummary
+            titleSize={"sm"}
+            title="PAYMENT METHOD REQUIRED"
+            message="Tap here to add a payment method to your account before your appointment begins."
+          />
+        </Container>
       )}
       <View
         style={[
@@ -232,7 +234,7 @@ export const AppointmentDetail = () => {
         </Container>
         <HeadingText style={tw`text-center mb-2`}>
           {
-            (appointment?.reason as { name: string; instructions: string; })
+            (appointment?.reason as { name: string; instructions: string })
               ?.name
           }
         </HeadingText>
@@ -256,29 +258,35 @@ export const AppointmentDetail = () => {
               APPOINTMENT LOCATION
             </SubHeadingText>
             <Container style={tw`mb-4`}>
-            {appointment?.notes?.split("-")[1]?.split("|")[0]?.trim() && (
-              <ItalicText style={tw`text-center`}>
-                  {appointment?.notes?.split("-")[1]?.split("(")[0]?.trim()?.split("|")[0]?.trim()}
-              </ItalicText>
-            )}
-            {appointment?.notes
-              ?.split("-")[1]
-              ?.split("|")[0]
-              ?.trim()
-              .split("(")[1]
-              ?.split(")")[0]
-              ?.trim() && (
+              {appointment?.notes?.split("-")[1]?.split("|")[0]?.trim() && (
+                <ItalicText style={tw`text-center`}>
+                  {appointment?.notes
+                    ?.split("-")[1]
+                    ?.split("(")[0]
+                    ?.trim()
+                    ?.split("|")[0]
+                    ?.trim()}
+                </ItalicText>
+              )}
+              {appointment?.notes
+                ?.split("-")[1]
+                ?.split("|")[0]
+                ?.trim()
+                .split("(")[1]
+                ?.split(")")[0]
+                ?.trim() && (
                 <ItalicText style={tw`text-center text-sm`}>
-                *{" "}
-                {appointment?.notes
-                  ?.split("-")[1]
-                  ?.split("|")[0]
-                  ?.trim()
-                  .split("(")[1]
-                  ?.split(")")[0]
-                  ?.trim()}
-              </ItalicText>
-                )}</Container>
+                  *{" "}
+                  {appointment?.notes
+                    ?.split("-")[1]
+                    ?.split("|")[0]
+                    ?.trim()
+                    .split("(")[1]
+                    ?.split(")")[0]
+                    ?.trim()}
+                </ItalicText>
+              )}
+            </Container>
             {isLoading || !mapCoordinates ? (
               <ActivityIndicator
                 size={"large"}
@@ -384,19 +392,22 @@ export const AppointmentDetail = () => {
                     (supported) => {
                       if (supported)
                         Linking.openURL(
-                          `${getPlatformUrl()}/contact?${client?.firstName
-                            ? `&firstName=${client?.firstName}`
-                            : ""
-                          }${client?.lastName
-                            ? `&lastName=${client?.lastName}`
-                            : ""
-                          }${client?.email ? `&email=${client?.email}` : ""}${client?.phone
-                            ? `&phone=${client?.phone
-                              ?.replaceAll(" ", "")
-                              ?.replaceAll("(", "")
-                              ?.replaceAll(")", "")
-                              ?.replaceAll("-", "")}`
-                            : ""
+                          `${getPlatformUrl()}/contact?${
+                            client?.firstName
+                              ? `&firstName=${client?.firstName}`
+                              : ""
+                          }${
+                            client?.lastName
+                              ? `&lastName=${client?.lastName}`
+                              : ""
+                          }${client?.email ? `&email=${client?.email}` : ""}${
+                            client?.phone
+                              ? `&phone=${client?.phone
+                                  ?.replaceAll(" ", "")
+                                  ?.replaceAll("(", "")
+                                  ?.replaceAll(")", "")
+                                  ?.replaceAll("-", "")}`
+                              : ""
                           }&message=Please use <MY_APPOINTMENT_ADDRESS> as the location for my next housecall appointment. Thanks!`,
                         );
                     },
@@ -427,7 +438,8 @@ export const AppointmentDetail = () => {
                 ) : (
                   <Icon
                     name={
-                        patient?.species?.toLowerCase()?.includes("dog") || patient?.species?.toLowerCase()?.includes("canine")
+                      patient?.species?.toLowerCase()?.includes("dog") ||
+                      patient?.species?.toLowerCase()?.includes("canine")
                         ? "dog"
                         : "cat"
                     }
@@ -445,7 +457,8 @@ export const AppointmentDetail = () => {
                 <Container style={tw`flex-row items-center`}>
                   <Icon
                     name={
-                      patient?.gender?.toLowerCase()?.includes("female") || patient?.gender?.toLowerCase()?.includes("female,")
+                      patient?.gender?.toLowerCase()?.includes("female") ||
+                      patient?.gender?.toLowerCase()?.includes("female,")
                         ? "female"
                         : "male"
                     }
@@ -460,7 +473,7 @@ export const AppointmentDetail = () => {
           </Container>
         ))}
         {(appointment?.instructions ||
-          (appointment?.reason as { name: string; instructions: string; })
+          (appointment?.reason as { name: string; instructions: string })
             ?.instructions) && (
           <>
             <SubHeadingText style={tw`mt-4`}>INSTRUCTIONS</SubHeadingText>
@@ -508,7 +521,7 @@ export const AppointmentDetail = () => {
         >
           {isLoading ? (
             <ItalicText
-              style={[isTablet ? tw`text-sm` : tw`text-xs`, tw`text-center`]}
+              style={[isTablet ? tw`text-base` : tw`text-sm`, tw`text-center`]}
             >
               We are canceling your appointment. Please wait...
             </ItalicText>

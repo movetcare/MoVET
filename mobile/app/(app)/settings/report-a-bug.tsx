@@ -50,10 +50,8 @@ const {
 const ReportABug = () => {
   const { showActionSheetWithOptions } = useActionSheet();
   const { user } = AuthStore.useState();
-  const isDarkMode = useColorScheme() !== "light";
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [images, setImage] = useState<any>([]);
-  const [uploading, setUploading] = useState<boolean>(true);
   const {
     control,
     handleSubmit,
@@ -66,7 +64,6 @@ const ReportABug = () => {
   });
 
   const uploadMedia = () => {
-    setUploading(true);
     const options = ["Choose From Library", "Take Picture", "Cancel"];
     const cancelButtonIndex = options.length - 1;
     showActionSheetWithOptions(
@@ -81,9 +78,6 @@ const ReportABug = () => {
             return;
           case 1:
             takePictureAsync();
-            return;
-          case 2:
-            setUploading(false);
             return;
         }
       },
@@ -110,9 +104,6 @@ const ReportABug = () => {
           },
           {
             text: "Nevermind",
-            onPress: () => {
-              setUploading(false);
-            },
             style: "cancel",
           },
         ],
@@ -137,11 +128,10 @@ const ReportABug = () => {
         if (!result.canceled) {
           setImage((images: []) => [...images, result.assets[0]?.uri]);
           return result.assets[0]?.uri;
-        } else setUploading(false);
+        }
       } else if (mediaLibraryPermission.status === "denied")
         await getPermissionAsync("mediaLibrary");
     } catch (error: any) {
-      setUploading(false);
       setError({ ...error, source: "pickImageAsync" });
     }
   };
@@ -159,11 +149,10 @@ const ReportABug = () => {
         if (!result.canceled) {
           setImage(result.assets[0]?.uri);
           return result.assets[0]?.uri;
-        } else setUploading(false);
+        }
       } else if (cameraPermission.status === "denied")
         await getPermissionAsync("camera");
     } catch (error: any) {
-      setUploading(false);
       setError({ ...error, source: "takePictureAsync" });
     }
   };
@@ -173,7 +162,6 @@ const ReportABug = () => {
       const xhr = new XMLHttpRequest();
       xhr.onload = () => resolve(xhr.response);
       xhr.onerror = (error: any) => {
-        setUploading(false);
         setError({ ...error, source: "uploadImageAsync XMLHttpRequest" });
         reject(new TypeError("Network request failed"));
       };
@@ -182,10 +170,9 @@ const ReportABug = () => {
       xhr.send(null);
     });
     const fileRef = ref(storage, `report_a_bug/${user?.uid}/${uuid()}`);
-    await uploadBytes(fileRef, blob).catch((error) => {
-      setUploading(false);
-      setError({ ...error, source: "uploadImageAsync uploadBytes" });
-    });
+    await uploadBytes(fileRef, blob).catch((error) =>
+      setError({ ...error, source: "uploadImageAsync uploadBytes" }),
+    );
     blob.close();
     return true;
   };
@@ -251,7 +238,6 @@ const ReportABug = () => {
   const setError = (error: any) => {
     setIsLoading(false);
     setImage(null);
-    setUploading(false);
     ErrorStore.update((s: any) => {
       s.currentError = error;
     });
@@ -295,17 +281,6 @@ const ReportABug = () => {
                     elevation: 2,
                   }}
                 >
-                  {uploading && (
-                    <ActivityIndicator
-                      size={"small"}
-                      style={tw`my-8`}
-                      color={
-                        isDarkMode
-                          ? tw.color("movet-white")
-                          : tw.color("movet-gray")
-                      }
-                    />
-                  )}
                   <View
                     style={{
                       borderTopRightRadius: 3,
@@ -335,9 +310,7 @@ const ReportABug = () => {
                   : "Attach a File"
               }
               onPress={async () => {
-                if (images?.length <= 5) {
-                  uploadMedia();
-                }
+                if (images?.length <= 5) uploadMedia();
               }}
               iconName={images?.length >= 5 ? "cancel" : "plus"}
               disabled={isLoading || images?.length >= 5}
@@ -374,10 +347,10 @@ const ReportABug = () => {
             onSubmit={onSubmit}
             disabled={!isDirty || isLoading}
             loading={isLoading}
-            title={isLoading ? "REPORTING BUG" : "REPORT BUG"}
+            title={isLoading ? "REPORTING BUG..." : "REPORT BUG"}
             color="red"
             iconName="bug"
-            style={tw`mx-auto`}
+            style={tw`mx-auto mb-8`}
           />
           {__DEV__ && (
             <>

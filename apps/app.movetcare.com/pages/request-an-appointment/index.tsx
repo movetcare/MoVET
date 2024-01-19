@@ -468,14 +468,14 @@ export default function RequestAnAppointment({
           </div>
         )}
         <label className="block text-sm font-medium text-movet-black font-abside mb-4 mt-10 text-center">
-          Promo Code
+          Additional Notes / Promo Code
         </label>
         <TextInput
           label=""
           name="trackingCode"
           control={control}
           errors={errors}
-          placeholder="Enter Code Here (If Applicable)"
+          placeholder="Enter any additional notes or a promo code"
         />
         <div className="group flex flex-col justify-center items-center sm:col-span-2 mb-4 mt-10">
           <Button

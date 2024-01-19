@@ -25,6 +25,7 @@ module.exports = {
       "movet-gray": "#D1CCBD",
       "movet-magenta": "#D173A6",
       "movet-pink": "#ECBAA8",
+      "movet-green": "#00A36C",
       black: colors.black,
       white: colors.white,
       gray: colors.gray,

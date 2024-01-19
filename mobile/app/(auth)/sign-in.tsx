@@ -1,5 +1,10 @@
 import * as SplashScreen from "expo-splash-screen";
-import { ImageBackground, Pressable, useColorScheme } from "react-native";
+import {
+  Alert,
+  ImageBackground,
+  Pressable,
+  useColorScheme,
+} from "react-native";
 import { useEffect, useState } from "react";
 import { signIn, signInWithLink } from "services/Auth";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -16,6 +21,7 @@ import {
   LinkText,
   ActionButton,
   BodyText,
+  SubHeadingText,
 } from "components/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import { AuthStore, ErrorStore } from "stores";
@@ -30,6 +36,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { isTablet } from "utils/isTablet";
 import LogRocket from "@logrocket/react-native";
+import { auth } from "firebase-config";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 const getRandomBackgroundImage = () => {
   const randomNumber = getRandomInt(1, 5);
@@ -85,7 +93,7 @@ export default function SignIn() {
   const isDarkMode = useColorScheme() !== "light";
   const [tapCount, setTapCount] = useState<number>(0);
   const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false);
-  const [signInLinkSent, setSignInLinkSent] = useState<boolean>(false);
+  const [hasEmailAddress, setHasEmailAddress] = useState<boolean>(false);
   const [disableEmailInput, setDisableEmailInput] = useState<boolean>(false);
   const [signInLinkResent, setSignInLinkResent] = useState<boolean>(false);
   const fadeInOpacity = useSharedValue(0);
@@ -149,7 +157,7 @@ export default function SignIn() {
     await signIn(data?.email, data?.password)
       .then((signInError: string) => {
         if (signInError) setError({ message: signInError, source: "signIn" });
-        else if (!data?.password) setSignInLinkSent(true);
+        else if (!data?.password) setHasEmailAddress(true);
       })
       .catch((error: any) => setError({ ...error, source: "signIn" }))
       .finally(() => {
@@ -199,35 +207,42 @@ export default function SignIn() {
             </View>
             <View
               style={[
-                tw`w-full pb-12 px-8 bg-transparent items-center rounded-b-xl`,
+                tw`w-full mb-4 px-8 bg-transparent items-center rounded-b-xl`,
                 DeviceDimensions.window.height > 640 ? tw`mt-12` : tw`mt-4`,
               ]}
               noDarkMode
             >
-              {signInLinkSent ? (
+              {hasEmailAddress && !withPassword && !showPasswordInput ? (
                 <View
                   style={[
                     tw`p-2 rounded-xl bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2`,
-                    signInLinkSent && tw`border-movet-yellow`,
-                    signInLinkResent && tw`border-movet-red`,
+                    signInLinkResent && tw`border-movet-green`,
                   ]}
                   noDarkMode
                 >
-                  {signInLinkResent && (
-                    <ItalicText style={tw`text-lg text-center`}>
-                      Sign-In Link Resent!
-                    </ItalicText>
+                  {signInLinkResent ? (
+                    <>
+                      <SubHeadingText style={tw`text-lg text-center`}>
+                        Sign In Link Sent!
+                      </SubHeadingText>
+                      <BodyText style={tw`text-center text-base my-2`}>
+                        Check your email &quot;
+                        <ItalicText
+                          style={tw`text-movet-black dark:text-movet-white`}
+                          noDarkMode
+                        >
+                          {email}
+                        </ItalicText>
+                        &quot; for a sign in link.
+                      </BodyText>
+                    </>
+                  ) : (
+                    <>
+                      <SubHeadingText style={tw`text-lg`}>
+                        Choose a Sign In Option
+                      </SubHeadingText>
+                    </>
                   )}
-                  <BodyText style={tw`text-center text-base my-2`}>
-                    Check your email &quot;
-                    <ItalicText
-                      style={tw`text-movet-black dark:text-movet-white`}
-                      noDarkMode
-                    >
-                      {email}
-                    </ItalicText>
-                    &quot; for a sign in link.
-                  </BodyText>
                 </View>
               ) : (
                 <EmailInput
@@ -317,8 +332,12 @@ export default function SignIn() {
               {showVerificationButton && !withPassword && !showPasswordInput ? (
                 <>
                   <ActionButton
-                    title="Resend Sign-In Link"
-                    iconName="plane"
+                    title={
+                      signInLinkResent
+                        ? "Re-send Link via Email"
+                        : "Send Link via Email"
+                    }
+                    iconName="envelope"
                     onPress={() => {
                       setSignInLinkResent(false);
                       setTimeout(() => {
@@ -327,61 +346,177 @@ export default function SignIn() {
                       onSubmit({ email: user?.email });
                     }}
                   />
-
                   <ActionButton
-                    title="Use a Different Email"
-                    iconName="redo"
                     color="black"
+                    title="Use a Password"
+                    iconName="lock"
                     onPress={() => {
-                      reset();
-                      setShowVerificationButton(false);
-                      setDisableEmailInput(false);
-                      setIsLoading(false);
-                      setSignInLinkSent(false);
+                      setShowPasswordInput(true);
                     }}
                   />
-                  <ActionButton
-                    color="brown"
-                    title="Contact Support"
-                    iconName="house-medical"
-                    onPress={() =>
-                      openUrlInWebBrowser(
-                        "https://movetcare.com/contact/?mode=app&email=" +
-                          email,
-                        isDarkMode,
-                        {
-                          dismissButtonStyle: "cancel",
-                          enableBarCollapsing: true,
-                          enableDefaultShareMenuItem: false,
-                          readerMode: false,
-                          showTitle: false,
-                        },
-                      )
-                    }
-                  />
+                  <View
+                    style={tw`mt-4 p-1 rounded-xl bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2`}
+                    noDarkMode
+                  >
+                    <SubHeadingText style={tw`text-xs`}>OR</SubHeadingText>
+                  </View>
+                  <View
+                    style={tw`mt-4 rounded-full bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2 w-full`}
+                    noDarkMode
+                  >
+                    <ActionButton
+                      style={tw`text-center mt-0 w-full`}
+                      textStyle={tw`text-movet-black dark:text-movet-white`}
+                      type="text"
+                      title="Request an Appointment"
+                      iconName="calendar-plus"
+                      onPress={() =>
+                        openUrlInWebBrowser(
+                          email
+                            ? "https://app.movetcare.com/?mode=app&email=" +
+                                email
+                            : "https://app.movetcare.com/?mode=app",
+                          isDarkMode,
+                          {
+                            dismissButtonStyle: "cancel",
+                            enableBarCollapsing: true,
+                            enableDefaultShareMenuItem: false,
+                            readerMode: false,
+                            showTitle: false,
+                          },
+                        )
+                      }
+                    />
+                  </View>
+                  <View
+                    style={tw`mt-2 rounded-full bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2 w-full`}
+                    noDarkMode
+                  >
+                    <ActionButton
+                      title="Use a Different Email"
+                      iconName="redo"
+                      style={tw`text-center mt-0 w-full`}
+                      textStyle={tw`text-movet-black dark:text-movet-white`}
+                      type="text"
+                      onPress={() => {
+                        reset();
+                        setShowVerificationButton(false);
+                        setDisableEmailInput(false);
+                        setIsLoading(false);
+                        setHasEmailAddress(false);
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={tw`mt-2 rounded-full bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2 w-full`}
+                    noDarkMode
+                  >
+                    <ActionButton
+                      style={tw`text-center mt-0 w-full`}
+                      textStyle={tw`text-movet-black dark:text-movet-white`}
+                      type="text"
+                      title="Contact Support"
+                      iconName="headset"
+                      onPress={() =>
+                        openUrlInWebBrowser(
+                          "https://movetcare.com/contact/?mode=app&email=" +
+                            email,
+                          isDarkMode,
+                          {
+                            dismissButtonStyle: "cancel",
+                            enableBarCollapsing: true,
+                            enableDefaultShareMenuItem: false,
+                            readerMode: false,
+                            showTitle: false,
+                          },
+                        )
+                      }
+                    />
+                  </View>
                 </>
               ) : (
-                <SubmitButton
-                  iconName={
-                    !withPassword && !showPasswordInput
-                      ? "arrow-right"
-                      : isDirty
-                        ? "lock-open"
-                        : "lock"
-                  }
-                  color="red"
-                  handleSubmit={handleSubmit}
-                  onSubmit={onSubmit}
-                  disabled={!isDirty}
-                  loading={isLoading}
-                  title={
-                    isLoading
-                      ? "Processing..."
-                      : !withPassword && !showPasswordInput
-                        ? "Continue"
-                        : "Sign In"
-                  }
-                />
+                <>
+                  <SubmitButton
+                    iconName={
+                      !withPassword && !showPasswordInput
+                        ? "arrow-right"
+                        : isDirty
+                          ? "lock-open"
+                          : "lock"
+                    }
+                    color="red"
+                    handleSubmit={handleSubmit}
+                    onSubmit={onSubmit}
+                    disabled={!isDirty}
+                    loading={isLoading}
+                    title={
+                      isLoading
+                        ? "Processing..."
+                        : !withPassword && !showPasswordInput
+                          ? "Continue"
+                          : "Sign In"
+                    }
+                  />
+                  {withPassword ||
+                    (showPasswordInput && (
+                      <>
+                        <ActionButton
+                          color="black"
+                          title="Forgot Password"
+                          iconName="question"
+                          onPress={() => {
+                            setIsLoading(true);
+                            sendPasswordResetEmail(auth, email)
+                              .then(() => {
+                                Alert.alert(
+                                  "Password Reset Email Sent",
+                                  `Please check your email "${email}" for a password reset link.`,
+                                  [
+                                    {
+                                      text: "Close",
+                                      style: "cancel",
+                                    },
+                                  ],
+                                );
+                              })
+                              .catch((error) => {
+                                setError({
+                                  ...error,
+                                  source: "forgotPassword",
+                                });
+                              })
+                              .finally(() => {
+                                setIsLoading(false);
+                              });
+                          }}
+                        />
+                        <View
+                          style={tw`mt-4 p-1 rounded-xl bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2`}
+                          noDarkMode
+                        >
+                          <SubHeadingText style={tw`text-xs`}>
+                            OR
+                          </SubHeadingText>
+                        </View>
+                        <View
+                          style={tw`mt-4 rounded-full bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2 w-full`}
+                          noDarkMode
+                        >
+                          <ActionButton
+                            style={tw`text-center mt-0 w-full`}
+                            textStyle={tw`text-movet-black dark:text-movet-white`}
+                            type="text"
+                            title="Go Back"
+                            iconName="arrow-left"
+                            onPress={() => {
+                              setSignInLinkResent(false);
+                              setShowPasswordInput(false);
+                            }}
+                          />
+                        </View>
+                      </>
+                    ))}
+                </>
               )}
             </View>
           </View>
