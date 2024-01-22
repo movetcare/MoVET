@@ -14,7 +14,11 @@ export default function PuppyLovePhotoShoot() {
           content="Stop by MoVET @ Belleview Station Saturday, Feb 3rd from 10 AM to noon for complimentary valentines-themed photos of you and your fur-baby! The setup will be casual + festive. Choose to take your photo inside with Valentines props (roses, heart balloons, etc) - or outside for a more urban background. This event is sponsored by Jessica Davis of Keller Williams DTC + MoVET @ Belleview Station. RSVP's are required."
         />
         <meta property="og:type" content="website" />
-        <meta name="og:title" property="og:title" content="I Chews You" />
+        <meta
+          name="og:title"
+          property="og:title"
+          content="Puppy Love Valentines Photo Event"
+        />
         <meta
           name="og:description"
           property="og:description"
@@ -22,7 +26,10 @@ export default function PuppyLovePhotoShoot() {
         />
         <meta property="og:site_name" content="MoVET" />
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content="I Chews You" />
+        <meta
+          name="twitter:title"
+          content="Puppy Love Valentines Photo Event"
+        />
         <meta
           name="twitter:description"
           content="Stop by MoVET @ Belleview Station Saturday, Feb 3rd from 10 AM to noon for complimentary valentines-themed photos of you and your fur-baby! The setup will be casual + festive. Choose to take your photo inside with Valentines props (roses, heart balloons, etc) - or outside for a more urban background. This event is sponsored by Jessica Davis of Keller Williams DTC + MoVET @ Belleview Station. RSVP's are required."
