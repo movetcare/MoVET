@@ -12,13 +12,30 @@ import type { PopUpAd as PopUpAdType } from "types";
 const posts: Array<BlogPost> = [
   {
     isFeatured: true,
+    title: "Puppy Love Valentines Photo Event - Saturday, Feb 3rd  10AM-12PM",
+    href: "/blog/puppy-love-photo-shoot",
+    category: { name: "Community", href: "#", color: "bg-movet-magenta" },
+    description:
+      "Stop by MoVET @ Belleview Station Saturday, Feb 3rd from 10 AM to noon for complimentary valentines-themed photos of you and your fur-baby! The setup will be casual + festive. Choose to take your photo inside with Valentines props (roses, heart balloons, etc) - or outside for a more urban background. This event is sponsored by Jessica Davis of Keller Williams DTC + MoVET @ Belleview Station. RSVP's are required.",
+    date: "Jan 2nd, 2024",
+    datetime: "2024-01-22",
+    imageUrl: "/images/blog/puppy-love-photo-shoot.png",
+    readingTime: "1 min",
+    author: {
+      name: "Dr. A",
+      href: "#",
+      imageUrl: "/images/blog/dr-a.png",
+    },
+  },
+  {
+    isFeatured: false,
     title: "Annual HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 29th at 1PM",
     href: "/blog/howl-o-ween",
     category: { name: "Community", href: "#", color: "bg-movet-magenta" },
     description:
       "Join us at the Belleview Station Dog Park for this fun and FREE event! Enjoy a Photo Booth, Treats, and Belly Rubs. Dress your furry friend in their most adorable, scary, or hilarious costume. The more creative the better!",
-    date: "Oct 29th, 2022",
-    datetime: "2022-10-29",
+    date: "Oct 29th, 2023",
+    datetime: "2023-10-29",
     imageUrl: "/images/blog/howl-o-ween-clip.png",
     readingTime: "3 min",
     author: {
