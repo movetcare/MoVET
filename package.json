@@ -57,7 +57,7 @@
     "lint-staged": "^15.2.1",
     "prettier": "^3.2.4",
     "start-server-and-test": "^2.0.3",
-    "turbo": "^1.12.1",
+    "turbo": "^1.12.2",
     "typescript": "^5.3.3",
     "typescript-coverage-report": "^0.8.0",
     "x2js": "^3.4.4"
