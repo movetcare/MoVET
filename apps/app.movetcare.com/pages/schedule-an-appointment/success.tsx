@@ -64,9 +64,9 @@ export default function BookingSuccess() {
     <section className="w-full flex-1">
       <AppHeader />
       <div
-        className={`flex items-center justify-center bg-white rounded-xl max-w-lg mx-auto mb-4`}
+        className={`flex items-center justify-center bg-white rounded-xl max-w-lg mx-auto ${!isAppMode && "mb-8"}`}
       >
-        <div className={isAppMode ? "px-4 mb-8" : "p-4"}>
+        <div className={isAppMode ? "px-4" : "p-4"}>
           <section className="relative mx-auto">
             {isLoading || submissionSuccess === null ? (
               <Loader message="Loading Confirmation..." isAppMode={isAppMode} />
@@ -86,6 +86,13 @@ export default function BookingSuccess() {
                     size="4x"
                     className="text-movet-green mx-auto w-full mb-4 mt-8"
                   />
+                  {isAppMode && (
+                    <h2
+                      className={`text-xl font-extrabold tracking-tight text-movet-black -mb-6 text-center`}
+                    >
+                      Your Appointment is Scheduled
+                    </h2>
+                  )}
                   <BookingHeader
                     isAppMode={isAppMode}
                     title="Your Appointment is Scheduled"

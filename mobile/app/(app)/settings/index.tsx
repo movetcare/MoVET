@@ -143,9 +143,9 @@ const Settings = () => {
             </TouchableOpacity>
           ))}
         </View>
-        {/* <ItalicText style={tw`text-xs mt-4`}>
+        <ItalicText style={tw`text-xs mt-4`}>
           Version: {versions.appVersion.toString()}
-        </ItalicText> */}
+        </ItalicText>
       </Animated.View>
     </Screen>
   );

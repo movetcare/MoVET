@@ -17,7 +17,7 @@ export const BookingHeader = ({
       <div className="flex flex-col justify-center items-center w-full">
         {!isAppMode && (
           <h2
-            className={`text-3xlfont-extrabold tracking-tight text-movet-black`}
+            className={`text-2xl font-extrabold tracking-tight text-movet-black -mb-1`}
           >
             {title}
           </h2>

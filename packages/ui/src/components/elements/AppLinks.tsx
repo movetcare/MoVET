@@ -20,7 +20,7 @@ export const AppLinks = ({ size = "sm" }: { size?: "sm" | "lg" }) => (
         )}
       />
     </a>
-    {/* <a
+    <a
       href="https://play.google.com/store/apps/details?id=com.movet&hl=en_US&gl=US&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
       target="_blank"
       rel="noreferrer"
@@ -33,6 +33,6 @@ export const AppLinks = ({ size = "sm" }: { size?: "sm" | "lg" }) => (
         src="/images/icons/google-play-badge.png" //"https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
         className={"opacity-80 hover:opacity-100 ease-in-out duration-500"}
       />
-    </a> */}
+    </a>
   </>
 );

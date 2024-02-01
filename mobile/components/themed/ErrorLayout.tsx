@@ -12,7 +12,7 @@ export const ErrorLayout = ({
   message = "Something went wrong",
   actionTitle = "Go Home",
   actionIconName = "house-medical",
-  action = () => router.replace("/(auth)/sign-in"),
+  action = () => router.replace("/sign-in"),
   details,
 }: {
   message: string;

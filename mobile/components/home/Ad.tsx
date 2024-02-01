@@ -33,10 +33,7 @@ export const Ad = ({ content }: { content: Ad }): ReactNode => {
         noDarkMode
       >
         <View
-          style={[
-            //isTablet ? tw`px-16` : tw`px-4`,
-            tw`bg-transparent rounded-xl flex-row items-center w-full px-4 shadow-lg shadow-movet-black dark:shadow-movet-white`,
-          ]}
+          style={tw`bg-transparent rounded-xl flex-row items-center w-full px-4 shadow-lg shadow-movet-black dark:shadow-movet-white`}
           noDarkMode
         >
           <Image

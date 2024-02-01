@@ -78,7 +78,7 @@ const TabsLayout = (props: any) => {
 
   useEffect(() => {
     if (!isLoggedIn || !initialized || !user?.uid) {
-      if (!isLoggedIn) router.replace("/(auth)/sign-in");
+      if (!isLoggedIn) router.replace("/sign-in");
       return;
     }
     const unsubscribeUser = onSnapshot(

@@ -12,7 +12,7 @@ const Index = () => {
     if (!navigationState?.key || !initialized) return;
     else {
       if (!isLoggedIn && segments[0] !== "(auth)" && segments[0] !== "sign-in")
-        router.replace("/(auth)/sign-in");
+        router.replace("/sign-in");
       else if (isLoggedIn && segments.length === 0)
         router.replace("/(app)/home");
       else if (isLoggedIn && segments.length > 0) {

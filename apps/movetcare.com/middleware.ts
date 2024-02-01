@@ -36,6 +36,13 @@ export function middleware(request: NextRequest) {
   )
     return NextResponse.redirect("https://movetcare.greatpetrx.com/");
   if (
+    request.nextUrl.pathname === "/vcpr/" ||
+    request.nextUrl.pathname === "/veterinarian-client-patient-relationship/"
+  )
+    return NextResponse.redirect(
+      "https://www.avma.org/resources-tools/pet-owners/petcare/veterinarian-client-patient-relationship-vcpr",
+    );
+  if (
     request.nextUrl.pathname === "/k9-smiles/" ||
     request.nextUrl.pathname === "/k9smiles/" ||
     request.nextUrl.pathname === "/k9-smile/" ||

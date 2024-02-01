@@ -45,72 +45,26 @@ export const Loader = ({
     return backgroundImage;
   };
 
-  const Loading = () => {
-    return Platform.OS === 'ios' ? (
-      <Screen
-        withBackground="pets"
-        style={tw`flex-grow justify-center items-center bg-movet-white dark:bg-movet-black bg-transparent -mt-36 pt-12`}
-      >
-        <LottieView
-          style={[
-            Platform.OS !== "ios" ? tw`h-64 my-10 mt-20` : tw`h-64 my-10`,
-            tw`bg-transparent`,
-          ]}
-          source={randomLoadingAnimation()}
-          autoPlay
-          loop
-        />
-        <View style={tw`-mt-64 bg-transparent`} noDarkMode>
-          <MoVETLogo
-            type="default"
-            height={86}
-            width={206}
-            style={tw`bg-transparent`}
-          />
-        </View>
-        <ItalicText
-          style={tw`pt-36 text-center my-6 text-lg normal-case bg-transparent`}
-        >
-          {description}
-        </ItalicText>
-      </Screen>
-    ) : (<Screen
+  return (
+    <Screen
       withBackground="pets"
-      style={tw`flex-grow justify-center items-center bg-movet-white dark:bg-movet-black bg-transparent`}
+      style={tw`flex-grow justify-center items-center`}
     >
-      <View style={tw`bg-transparent`} noDarkMode>
-        <MoVETLogo
-          type="default"
-          height={86}
-          width={206}
-          style={tw`bg-transparent`}
-        />
-      </View>
-      <ActivityIndicator
-        style={tw`mt-2`}
-        size="large"
-        color={
-          isDarkMode
-            ? tw.color("movet-white")
-            : tw.color("movet-black")
-        }
+      <MoVETLogo
+        type="default"
+        height={86}
+        width={206}
+        style={tw`-mb-8 -mt-24`}
       />
-      <ItalicText
-        style={tw`text-center mt-4 text-lg normal-case bg-transparent`}
-      >
+      <LottieView
+        style={{ width: "100%", aspectRatio: 16 / 9 }}
+        source={randomLoadingAnimation()}
+        autoPlay
+        loop
+      />
+      <ItalicText style={tw`-mt-8 text-center text-lg normal-case`}>
         {description}
       </ItalicText>
-    </Screen>)
-  };
-  return noBackground ? (
-    <Loading />
-  ) : (
-    <ImageBackground
-      source={require("assets/images/backgrounds/pets-background.png")}
-      resizeMode="cover"
-      style={tw`flex-1`}
-    >
-      <Loading />
-    </ImageBackground>
+    </Screen>
   );
 };

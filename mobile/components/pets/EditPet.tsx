@@ -860,9 +860,12 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
               >
                 * Please contact your previous vet and have them forward your
                 pet&apos;s medical records to{" "}
-                  <ItalicText style={tw`text-movet-red font-extrabold`} noDarkMode>
+                <ItalicText
+                  style={tw`text-movet-red font-extrabold`}
+                  noDarkMode
+                >
                   info@movetcare.com
-                  </ItalicText>
+                </ItalicText>
               </ItalicText>
             )}
             <SubHeadingText style={tw`mt-6 mb-4`}>
@@ -950,7 +953,7 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
             onPress={() => setShowPetDeletionConfirmation(true)}
           >
             <Icon name="trash" height={14} width={14} />
-              <ButtonText style={tw`text-xs ml-2`}>Remove Pet</ButtonText>
+            <ButtonText style={tw`text-xs ml-2`}>Remove Pet</ButtonText>
           </TouchableOpacity>
         )}
       </View>
@@ -961,49 +964,52 @@ export const EditPet = ({ mode = "add" }: { mode: "add" | "edit" }) => {
         }}
         title="Are You Sure...?"
       >
-          <View style={tw`flex-col items-center justify-center rounded-xl mb-2`}>
+        <View style={tw`flex-col items-center justify-center rounded-xl mb-2`}>
           <ItalicText>
-              Removing your pet will erase ALL of your pets data.
+            Removing your pet will erase ALL of your pets data.
             {pastPatientAppointments && pastPatientAppointments?.length > 0
-                ? " Please make sure you have requested a copy of your pets medical records before deleting their profile."
+              ? " Please make sure you have requested a copy of your pets medical records before deleting their profile."
               : ""}
           </ItalicText>
-            {pastPatientAppointments && pastPatientAppointments?.length > 0 && (
-              <ActionButton
-                color="black"
-                title="Request Medical Records"
-                iconName="folder-heart"
-                onPress={() => {
-                  setShowPetDeletionConfirmation(false);
-                  router.navigate({
-                    pathname: "/(app)/pets/detail/web-view",
-                    params: {
-                      path: "/contact",
-                      queryString: `${client?.firstName ? `&firstName=${client?.firstName}` : ""
-                        }${client?.lastName ? `&lastName=${client?.lastName}` : ""
-                        }${client?.email ? `&email=${client?.email}` : ""}${client?.phone
-                          ? `&phone=${client?.phone
+          {pastPatientAppointments && pastPatientAppointments?.length > 0 && (
+            <ActionButton
+              color="black"
+              title="Request Medical Records"
+              iconName="folder-heart"
+              onPress={() => {
+                setShowPetDeletionConfirmation(false);
+                router.navigate({
+                  pathname: "/(app)/pets/detail/web-view",
+                  params: {
+                    path: "/contact",
+                    queryString: `${
+                      client?.firstName ? `&firstName=${client?.firstName}` : ""
+                    }${
+                      client?.lastName ? `&lastName=${client?.lastName}` : ""
+                    }${client?.email ? `&email=${client?.email}` : ""}${
+                      client?.phone
+                        ? `&phone=${client?.phone
                             ?.replaceAll(" ", "")
                             ?.replaceAll("(", "")
                             ?.replaceAll(")", "")
                             ?.replaceAll("-", "")}`
                         : ""
-                        }&message=Please send a copy of ${name}'s full medical records to <EMAIL_ADDRESS>. Thanks!`
-                        ?.replaceAll(")", "")
-                        ?.replaceAll("(", ""),
-                    },
-                  })
-                }}
-              />
-            )}
-            <ActionButton
-              color="brown"
-              title={`"${name}" is Deceased...`}
-              iconName="sad-face"
-              onPress={() => petIsDead()}
+                    }&message=Please send a copy of ${name}'s full medical records to <EMAIL_ADDRESS>. Thanks!`
+                      ?.replaceAll(")", "")
+                      ?.replaceAll("(", ""),
+                  },
+                });
+              }}
             />
-            <ActionButton
-              title={`Delete "${name}"`}
+          )}
+          <ActionButton
+            color="brown"
+            title={`"${name}" is Deceased...`}
+            iconName="broken-heart"
+            onPress={() => petIsDead()}
+          />
+          <ActionButton
+            title={`Delete "${name}"`}
             iconName="trash"
             onPress={() => deletePet()}
           />

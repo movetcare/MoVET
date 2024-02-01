@@ -401,7 +401,7 @@ export default function SignIn() {
                     />
                   </View>
                   <View
-                    style={tw`mt-2 rounded-full bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2 w-full`}
+                    style={tw`mt-4 rounded-full bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2 w-full`}
                     noDarkMode
                   >
                     <ActionButton
@@ -420,7 +420,7 @@ export default function SignIn() {
                     />
                   </View>
                   <View
-                    style={tw`mt-2 rounded-full bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2 w-full`}
+                    style={tw`mt-4 rounded-full bg-movet-white/75 dark:bg-movet-black/75 border-movet-black border-2 w-full`}
                     noDarkMode
                   >
                     <ActionButton

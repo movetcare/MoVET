@@ -1,6 +1,6 @@
 import { ErrorBoundaryProps, Stack, router } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { updateUserAuth } from "services/Auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "firebase-config";
@@ -13,6 +13,9 @@ import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { ErrorModal } from "components/Modal";
 import { ErrorStore } from "stores";
 import LogRocket from "@logrocket/react-native";
+
+// https://github.com/firebase/firebase-js-sdk/issues/7962#issuecomment-1902290249
+(window.navigator as any).userAgent = "ReactNative";
 
 SplashScreen.preventAutoHideAsync();
 

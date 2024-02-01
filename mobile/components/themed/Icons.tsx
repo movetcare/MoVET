@@ -112,6 +112,10 @@ import SadFaceIcon from "assets/icons/svgs/font-awesome/sad-face.svg";
 import SadFaceIconDark from "assets/icons/svgs/font-awesome/sad-face-dark.svg";
 import MedBottleIcon from "assets/icons/svgs/font-awesome/med-bottle.svg";
 import MedBottleIconDark from "assets/icons/svgs/font-awesome/med-bottle-dark.svg";
+import LinkIcon from "assets/icons/svgs/font-awesome/link.svg";
+import LinkIconDark from "assets/icons/svgs/font-awesome/link-dark.svg";
+import BrokenHeartIcon from "assets/icons/svgs/font-awesome/broken-heart.svg";
+import BrokenHeartIconDark from "assets/icons/svgs/font-awesome/broken-heart-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -172,7 +176,9 @@ export type SupportedIcons =
   | "med-bottle"
   | "headset"
   | "sad-face"
-  | "bug";
+  | "bug"
+  | "broken-heart"
+  | "link";
 
 export const Icon = ({
   name = "poo",
@@ -653,6 +659,22 @@ export const Icon = ({
         />
       ) : (
         <MedBottleIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "link":
+      return showWhiteIcon ? (
+        <LinkIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <LinkIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "broken-heart":
+      return showWhiteIcon ? (
+        <BrokenHeartIconDark
+          height={iconHeight}
+          width={iconWidth}
+          style={style}
+        />
+      ) : (
+        <BrokenHeartIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (
