@@ -1,19 +1,15 @@
-// export {exportCollectionToCSV} from './endpoints/development/exportCollectionToCSV';
 export { taskRunnerDev } from "./endpoints/development/taskRunnerDev";
 export { webhookProxyDev } from "./endpoints/development/webhookProxyDev";
 export { initTestUser } from "./endpoints/development/initTestUser";
 export { resetTestData } from "./endpoints/development/resetTestData";
 
 export { taskRunner } from "./cron/taskRunner";
-export { refreshShifts } from "./cron/refreshShifts";
-// export { refreshBreeds } from "./cron/refreshBreeds";
 export { updateTelehealthChatStatusToOffline } from "./cron/updateTelehealthChatStatusToOffline";
 export { updateTelehealthChatStatusToOnline } from "./cron/updateTelehealthChatStatusToOnline";
 export { rebuildStaticSites as rebuildStaticWebsite } from "./cron/rebuildStaticSites";
 
 export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
 export { handleContactSubmission } from "./triggers/handleContactSubmission";
-// export { handleFileUpload } from "./triggers/handleFileUpload";
 export { handleAnnouncementBannerUpdate } from "./triggers/handleAnnouncementBannerUpdate";
 export { handleBookingConfigUpdate } from "./triggers/handleBookingConfigUpdate";
 export { handleK9SmilesRequest } from "./triggers/handleK9SmilesRequest";
@@ -21,7 +17,6 @@ export { handleOpeningConfigurationUpdate } from "./triggers/handleOpeningConfig
 export { handleClosuresConfigurationUpdates } from "./triggers/handleClosuresConfigurationUpdates";
 export { handleHoursStatusUpdate } from "./triggers/handleHoursStatusUpdate";
 export { handleCompletedTask } from "./triggers/handleCompletedTask";
-// export { sendgridWebhook } from "./endpoints/webhooks/sendgridWebhook";
 export { incomingWebhook } from "./endpoints/webhooks/incomingWebhook";
 
 export { verifyClient } from "./endpoints/mobile/client/verifyClient";

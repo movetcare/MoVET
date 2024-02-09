@@ -495,7 +495,7 @@ const PetDetail = () => {
             <View
               noDarkMode
               style={[
-                tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent mb-4`,
+                tw`flex-row shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent my-4`,
               ]}
             >
               <View
