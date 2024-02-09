@@ -2,7 +2,7 @@
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getAuthUserById } from "../../utils/auth/getAuthUserById";
 import { admin, throwError } from "../../config/config";
-const DEBUG = true;
+const DEBUG = false;
 import {
   getClientNotificationSettings,
   UserNotificationSettings,

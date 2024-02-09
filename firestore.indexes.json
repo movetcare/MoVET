@@ -69,20 +69,6 @@
       ]
     },
     {
-      "collectionGroup": "reminders",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "client",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "sendAt",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
       "collectionGroup": "tasks_queue",
       "queryScope": "COLLECTION",
       "fields": [
@@ -92,20 +78,6 @@
         },
         {
           "fieldPath": "performAt",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "shifts",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "user",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "start",
           "order": "ASCENDING"
         }
       ]

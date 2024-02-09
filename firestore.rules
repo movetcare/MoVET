@@ -61,26 +61,13 @@ service cloud.firestore {
       match /chat/{oid} {
         allow read, write, list: if clientOwnsDocuments(uid);
       }
-      match /onboarding/{oid} {
-        allow create: if clientIsAuthed();
-        allow read, write: if clientOwnsDocuments(uid);
-      }
     }
     match /patients/{pid} {
       allow read, write: if clientOwnsPatient() || isMoVETStaff();
       allow list: if isMoVETStaff();
     }
-    match /reminders/{pid} {
-      allow read, write: if clientIsAuthed() && request.auth.uid  == string(resource.data.client);
-    }
     match /appointments/{aid} {
       allow read, write: if clientIsAuthed() && request.auth.uid  == string(resource.data.client);
-    }
-    match /shifts/{sid} {
-      allow read, write: if clientIsAuthed();
-    }
-    match /waitlist/{wid} {
-      allow read, write, list: if isMoVETStaff();
     }
     match /bookings/{bid} {
       allow read, write, list: if clientIsAuthed() && bid == string(resource.id) && request.auth.uid == string(resource.data.client.uid);

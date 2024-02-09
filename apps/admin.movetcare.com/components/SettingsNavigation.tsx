@@ -27,7 +27,7 @@ export const SettingsNavigation = () => {
     {
       title: "Booking",
       description:
-        "Customize how shifts in ProVet integrate with the MoVET platform's appointment scheduling system",
+        "Customize how appointments in ProVet integrate with the MoVET platform's appointment scheduling system",
       href: "/settings/booking/",
       icon: faCalendar,
       iconForeground: "text-movet-brown",

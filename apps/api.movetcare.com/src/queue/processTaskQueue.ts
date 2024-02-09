@@ -1,6 +1,5 @@
 import { admin, throwError, DEBUG } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
-// import {configureReminders} from '../integrations/provet/entities/reminder/configureReminders';
 import { workers } from "./workers";
 export const processTaskQueue = async (): Promise<void> => {
   if (DEBUG) {

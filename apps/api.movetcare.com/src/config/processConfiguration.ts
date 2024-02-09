@@ -1,7 +1,6 @@
 import { configureReasonGroups } from "./../integrations/provet/entities/reason/configureReasonGroups";
 import { configureUsers } from "./configureUsers";
 import { configureTelehealthStatus } from "../integrations/provet/entities/appointment/configure/configureTelehealthStatus";
-import { configureShifts } from "../integrations/provet/entities/shift/configureShifts";
 import { configureAppointments } from "../integrations/provet/entities/appointment/configure/configureAppointments";
 import { configureAppointmentEstimates } from "../integrations/provet/entities/appointment/configure/configureAppointmentEstimates";
 import { configureAppointmentOptionDetails } from "../integrations/provet/entities/appointment/configure/configureAppointmentOptionDetails";
@@ -21,10 +20,8 @@ export const processConfiguration = async (options: {
     | "appointments"
     | "cancellation_reasons"
     | "reason_groups"
-    | "reminders"
     | "estimates"
     | "options"
-    | "shifts"
     | "users"
     | "items"
   >;
@@ -54,9 +51,6 @@ export const processConfiguration = async (options: {
     case "options":
       configureAppointmentOptionDetails();
       break;
-    case "shifts":
-      configureShifts();
-      break;
     case "users":
       configureUsers();
       break;
@@ -77,14 +71,12 @@ export const processConfiguration = async (options: {
         | "reasons"
         | "appointments"
         | "cancellation_reasons"
-        | "reminders"
         | "estimates"
         | "options"
-        | "shifts"
         | "reason_groups"
         | "users"
-        | "items"
-    ) => element !== entity
+        | "items",
+    ) => element !== entity,
   );
   if (entities.length > 0)
     admin
@@ -102,17 +94,17 @@ export const processConfiguration = async (options: {
           performAt: new Date(),
           createdOn: new Date(),
         },
-        { merge: true }
+        { merge: true },
       )
       .then(() => {
         console.log(
           "APP CONFIGURATION TASK ADDED TO QUEUE => ",
-          `tasks_queue/configure_app_${entities[0]}`
+          `tasks_queue/configure_app_${entities[0]}`,
         );
         console.log(
           `PLEASE WAIT ~${
             entities.length * 1.5
-          } MINUTES FOR THE TASK QUEUE TO FINISH PROCESSING...`
+          } MINUTES FOR THE TASK QUEUE TO FINISH PROCESSING...`,
         );
         sendNotification({
           type: "slack",

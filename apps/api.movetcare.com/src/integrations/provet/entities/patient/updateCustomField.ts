@@ -78,7 +78,7 @@ export const updateCustomField = async (
       .catch((error: any) => (console.log("ERROR: ", error) as any) && false);
   else
     return await request
-      .patch(`/custom_field_values/${id}`, {
+      .patch(`/custom_field_values/${customFieldValue[0]?.id}`, {
         field: id,
         value: value,
         object_id: patient,

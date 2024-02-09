@@ -3,6 +3,7 @@ import {
   defaultRuntimeOptions,
   admin,
   throwError,
+  DEBUG,
 } from "../../../config/config";
 import { createAuthClient } from "../../../integrations/provet/entities/client/createAuthClient";
 import { createProVetClient } from "../../../integrations/provet/entities/client/createProVetClient";
@@ -10,7 +11,7 @@ import { sendNotification } from "../../../notifications/sendNotification";
 import { getAuthUserByEmail } from "../../../utils/auth/getAuthUserByEmail";
 import { verifyExistingClient } from "../../../utils/auth/verifyExistingClient";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-const DEBUG = true;
+
 export const verifyClient = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(

@@ -18,7 +18,7 @@ import {
 import { fetchNewGoToAccessToken } from "../integrations/goto/fetchNewGoToAccessToken";
 import { ExpoPushTicket } from "expo-server-sdk";
 //import { pushNotification } from "../integrations/expo/pushNotification";
-const DEBUG = true;
+const DEBUG = false;
 export const sendNotification = async ({
   type,
   payload,

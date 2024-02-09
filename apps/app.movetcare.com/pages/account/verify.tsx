@@ -37,8 +37,8 @@ export default function Verify() {
         window.location.href = (continueUrl as string)
           ? (continueUrl as string)?.replaceAll("3000", "3001")?.toString()
           : environment === "production"
-          ? "movet://onboarding"
-          : "exp://172.16.30.224:19000/--/onboarding";
+            ? "movet://home"
+            : "exp://172.16.30.224:19000/--/home";
       }, 1500);
   }, [verificationSuccessful, continueUrl]);
 
