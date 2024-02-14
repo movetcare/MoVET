@@ -132,7 +132,6 @@ export const createPaymentIntent = functions
           const paymentIntentConfig: any = {
             currency: "usd",
             metadata: { invoice },
-            return_url: "https://movetcare.com/checkout/success",
           };
           if (DEBUG) {
             console.log(
@@ -155,6 +154,8 @@ export const createPaymentIntent = functions
               paymentIntentConfig.capture_method = "automatic";
               paymentIntentConfig.payment_method_types = ["card"];
               paymentIntentConfig.confirm = true;
+              paymentIntentConfig.return_url =
+                "https://movetcare.com/checkout/success";
               paymentIntentConfig.off_session = true;
               paymentIntentConfig.customer = await getCustomerId(
                 `${getProVetIdFromUrl(invoiceDetails?.client)}`,

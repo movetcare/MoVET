@@ -36,7 +36,6 @@ export const createCustomer = functions
       const setupIntent = await stripe.setupIntents
         .create({
           customer,
-          return_url: "https://movetcare.com/checkout/success",
         })
         .catch((error: any) => throwError(error) as any);
 

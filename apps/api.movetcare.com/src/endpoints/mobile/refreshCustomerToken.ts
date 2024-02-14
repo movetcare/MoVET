@@ -50,7 +50,6 @@ export const refreshCustomerToken = functions
           const setupIntent = await stripe.setupIntents
             .create({
               customer: customerId,
-              return_url: "https://movetcare.com/checkout/success",
             })
             .catch((error: any) => throwError(error) as any);
 
