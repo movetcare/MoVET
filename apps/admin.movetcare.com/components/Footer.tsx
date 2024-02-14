@@ -34,44 +34,44 @@ const Footer: React.FC = () => {
     announcementPreview?.color?.id === "#DAAA00"
       ? "bg-movet-yellow"
       : announcementPreview?.color?.id === "#2C3C72"
-      ? "bg-movet-dark-blue"
-      : announcementPreview?.color?.id === "#E76159"
-      ? "bg-movet-red"
-      : announcementPreview?.color?.id === "#232127"
-      ? "bg-movet-black"
-      : announcementPreview?.color?.id === "#00A36C"
-      ? "bg-movet-green"
-      : announcementPreview?.color?.id === "#A15643"
-      ? "bg-movet-brown"
-      : "bg-movet-dark-blue";
+        ? "bg-movet-dark-blue"
+        : announcementPreview?.color?.id === "#E76159"
+          ? "bg-movet-red"
+          : announcementPreview?.color?.id === "#232127"
+            ? "bg-movet-black"
+            : announcementPreview?.color?.id === "#00A36C"
+              ? "bg-movet-green"
+              : announcementPreview?.color?.id === "#A15643"
+                ? "bg-movet-brown"
+                : "bg-movet-dark-blue";
 
   const announcementBannerTextColor =
     announcementPreview?.color?.id === "#DAAA00"
       ? "text-movet-yellow"
       : announcementPreview?.color?.id === "#2C3C72"
-      ? "text-movet-dark-blue"
-      : announcementPreview?.color?.id === "#E76159"
-      ? "text-movet-red"
-      : announcementPreview?.color?.id === "#232127"
-      ? "text-movet-black"
-      : announcementPreview?.color?.id === "#00A36C"
-      ? "text-movet-green"
-      : announcementPreview?.color?.id === "#A15643"
-      ? "text-movet-brown"
-      : "text-movet-dark-blue";
+        ? "text-movet-dark-blue"
+        : announcementPreview?.color?.id === "#E76159"
+          ? "text-movet-red"
+          : announcementPreview?.color?.id === "#232127"
+            ? "text-movet-black"
+            : announcementPreview?.color?.id === "#00A36C"
+              ? "text-movet-green"
+              : announcementPreview?.color?.id === "#A15643"
+                ? "text-movet-brown"
+                : "text-movet-dark-blue";
 
   const announcementBannerIcon =
     announcementPreview?.icon?.id === "bullhorn"
       ? faBullhorn
       : announcementPreview?.icon?.id === "exclamation-circle"
-      ? faExclamationCircle
-      : announcementPreview?.icon?.id === "bell"
-      ? faBell
-      : announcementPreview?.icon?.id === "star"
-      ? faStar
-      : announcementPreview?.icon?.id === "info-circle"
-      ? faInfoCircle
-      : faIcons;
+        ? faExclamationCircle
+        : announcementPreview?.icon?.id === "bell"
+          ? faBell
+          : announcementPreview?.icon?.id === "star"
+            ? faStar
+            : announcementPreview?.icon?.id === "info-circle"
+              ? faInfoCircle
+              : faIcons;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -176,13 +176,13 @@ const Footer: React.FC = () => {
             ? announcementPreview?.message && announcementPreview?.title
               ? " mb-32 sm:mb-0"
               : announcementPreview?.message || announcementPreview?.title
-              ? " mb-28 sm:mb-0"
-              : ""
+                ? " mb-28 sm:mb-0"
+                : ""
             : announcementPreview?.message && announcementPreview?.title
-            ? " mb-20 sm:mb-0"
-            : announcementPreview?.message || announcementPreview?.title
-            ? " mb-14 sm:mb-0"
-            : ""
+              ? " mb-20 sm:mb-0"
+              : announcementPreview?.message || announcementPreview?.title
+                ? " mb-14 sm:mb-0"
+                : ""
         }`}
       >
         <p className="text-movet-white font-abside-smooth uppercase text-sm">
@@ -196,12 +196,12 @@ const Footer: React.FC = () => {
                   <FontAwesomeIcon icon={faCogs} size="lg" />
                 </div>
               </Link>
-              <p className="text-movet-white text-xl mx-3">|</p>
+              {/* <p className="text-movet-white text-xl mx-3">|</p>
               <Link href="/push-notifications">
                 <div className="text-movet-white font-abside-smooth uppercase hover:text-movet-red hover:cursor-pointer italic flex w-full items-center justify-center">
                   <FontAwesomeIcon icon={faBell} size="lg" />
                 </div>
-              </Link>
+              </Link> */}
               <p className="text-movet-white text-xl mx-3">|</p>
             </>
           )}

@@ -58,8 +58,6 @@ const Client = () => {
     useState<boolean>(false);
   const [isLoadingSendPaymentLink, setIsLoadingSendPaymentLink] =
     useState<boolean>(false);
-  // const [isLoadingAddingToWaitlist, setIsAddingToWaitlist] =
-  //   useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [clientData, isLoadingClient, errorClient] = useDocument(
     doc(firestore, `clients/${query?.id}`),
@@ -232,79 +230,6 @@ const Client = () => {
       .finally(() => setIsLoadingSendPaymentLink(false));
   };
 
-  // const addToWaitlist = async () => {
-  //   setIsAddingToWaitlist(true);
-  //   if (client?.email && !client?.email?.toLowerCase().includes("missing"))
-  //     await setDoc(
-  //       doc(firestore, `waitlist/${client?.email}`),
-  //       {
-  //         id: query?.id,
-  //         email: client?.email,
-  //         firstName: client?.displayName
-  //           ? client?.displayName
-  //           : client?.firstName,
-  //         lastName: client?.displayName ? "" : client?.lastName,
-  //         phone:
-  //           client?.phone !== undefined
-  //             ? formatPhoneNumber(client?.phone)
-  //             : client?.phoneNumber
-  //             ? client?.phoneNumber
-  //             : "UNKNOWN",
-  //         status: "complete",
-  //         isActive: true,
-  //         customerId: JSON.stringify(client?.customer),
-  //         paymentMethod:
-  //           client?.paymentMethods?.length > 0 && client?.paymentMethods[0]
-  //             ? [
-  //                 `${client?.paymentMethods[0]?.card?.brand?.toUpperCase()} - ${client
-  //                   ?.paymentMethods[0]?.card?.last4}`,
-  //               ]
-  //             : [],
-  //         updatedOn: serverTimestamp(),
-  //       },
-  //       { merge: true },
-  //     )
-  //       .then(() => {
-  //         toast(`CLIENT ADDED TO WAITLIST`, {
-  //           position: "top-center",
-  //           duration: 3500,
-  //           icon: (
-  //             <FontAwesomeIcon
-  //               icon={faCheck}
-  //               size="lg"
-  //               className="text-movet-green"
-  //             />
-  //           ),
-  //         });
-  //         router.push("/dashboard");
-  //       })
-  //       .catch((error: any) =>
-  //         toast(error?.message, {
-  //           position: "top-center",
-  //           duration: 5000,
-  //           icon: (
-  //             <FontAwesomeIcon
-  //               icon={faCircleExclamation}
-  //               className="text-movet-red"
-  //             />
-  //           ),
-  //         }),
-  //       )
-  //       .finally(() => setIsAddingToWaitlist(false));
-  //   else {
-  //     setIsAddingToWaitlist(false);
-  //     toast("FAILED TO CHECK IN CLIENT - MISSING EMAIL ADDRESS!", {
-  //       position: "top-center",
-  //       duration: 5000,
-  //       icon: (
-  //         <FontAwesomeIcon
-  //           icon={faCircleExclamation}
-  //           className="text-movet-red"
-  //         />
-  //       ),
-  //     });
-  //   }
-  // };
   const reloadPage = () => {
     toast(`RELOADING DATA...`, {
       position: "top-center",
@@ -1290,30 +1215,6 @@ const Client = () => {
                   </div>
                 </div>
               )}
-              {/* <Transition
-                show={
-                  client?.paymentMethods !== undefined ||
-                  (errors !== null &&
-                    errors[0] !== "Client Not Found..." &&
-                    errors[0] !== "Invalid Client ID!")
-                }
-                enter="transition ease-in duration-1000"
-                leave="transition ease-out duration-1000"
-                leaveTo="opacity-10"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leaveFrom="opacity-100"
-              >
-                <Button
-                  text="Check In Client"
-                  color="black"
-                  icon={faCheck}
-                  loading={isLoadingAddingToWaitlist}
-                  disabled={isLoadingAddingToWaitlist}
-                  onClick={() => addToWaitlist()}
-                  className="hover:bg-movet-green mt-2 mb-6"
-                />
-              </Transition> */}
             </>
           )}
         </div>

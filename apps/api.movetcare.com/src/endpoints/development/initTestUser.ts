@@ -31,8 +31,7 @@ export const initTestUser: Promise<Response> = functions
           "cus_O4miqMJzfJhmBB",
           "card_1NIdABDVQU5TYLF1Yh2xFp4M",
         )) &&
-        (await importTelehealthChat()) &&
-        (await importCheckIn())
+        (await importTelehealthChat())
         ? response.status(200).send()
         : response.status(500).send();
     else return response.status(400).send();
@@ -279,40 +278,3 @@ const importTelehealthChat = async () =>
           .catch((error: any) => throwError(error)),
     )
     .catch((error: any) => throwError(error));
-
-const importCheckIn = async (): Promise<boolean> => {
-  const { firstName, lastName, phone } = await admin
-    .firestore()
-    .collection("clients")
-    .doc("5769")
-    .get()
-    .then((doc: any) => doc?.data())
-    .catch((error: any) => throwError(error));
-  return await admin
-    .firestore()
-    .collection("waitlist")
-    .doc("dev+test@movetcare.com")
-    .set(
-      {
-        customerId: "cus_NHh7gfsz2LsVnp",
-        email: "dev+test@movetcare.com",
-        firstName,
-        id: "5769",
-        isActive: true,
-        lastName,
-        paymentMethod: {
-          ...(await stripe.paymentMethods.retrieve(
-            "pm_1MX7jnDVQU5TYLF1k3iHdDKc",
-          )),
-          active: true,
-          updatedOn: new Date(),
-        },
-        phone,
-        status: "complete",
-        updatedOn: new Date(),
-      },
-      { merge: true },
-    )
-    .then(() => true)
-    .catch((error: any) => throwError(error));
-};

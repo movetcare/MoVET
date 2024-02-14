@@ -19,7 +19,7 @@ export const paymentIntentUpdated = async (event: any): Promise<void> => {
     .then((doc: any) =>
       doc.data()?.client !== null
         ? getProVetIdFromUrl(doc.data()?.client)
-        : false
+        : false,
     )
     .catch((error: any) => {
       console.log(error);
@@ -38,7 +38,7 @@ export const paymentIntentUpdated = async (event: any): Promise<void> => {
             paymentIntentObject: object,
             updatedOn: new Date(),
           },
-          { merge: true }
+          { merge: true },
         )
         .then(() =>
           request
@@ -52,11 +52,11 @@ export const paymentIntentUpdated = async (event: any): Promise<void> => {
                     charges?.data[0]?.payment_method_details?.card?.last4
                   }`
                 : charges?.data[0]?.payment_method_details?.card_present
-                ? `${charges?.data[0]?.payment_method_details?.card_present?.brand?.toUpperCase()} - ${
-                    charges?.data[0]?.payment_method_details?.card_present
-                      ?.last4
-                  }`
-                : `UNKNOWN PAYMENT: ${id}`,
+                  ? `${charges?.data[0]?.payment_method_details?.card_present?.brand?.toUpperCase()} - ${
+                      charges?.data[0]?.payment_method_details?.card_present
+                        ?.last4
+                    }`
+                  : `UNKNOWN PAYMENT: ${id}`,
               created_user:
                 proVetApiUrl +
                 `/user/${
@@ -69,7 +69,7 @@ export const paymentIntentUpdated = async (event: any): Promise<void> => {
               if (DEBUG)
                 console.log("API Response: POST /invoicepayment/ => ", data);
             })
-            .catch((error: any) => throwError(error))
+            .catch((error: any) => throwError(error)),
         )
         .catch((error: any) => console.error(error));
     else {
@@ -92,7 +92,7 @@ export const paymentIntentUpdated = async (event: any): Promise<void> => {
               paymentIntentObject: object,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           )
           .then(() =>
             request
@@ -106,11 +106,11 @@ export const paymentIntentUpdated = async (event: any): Promise<void> => {
                       charges?.data[0]?.payment_method_details?.card?.last4
                     }`
                   : charges?.data[0]?.payment_method_details?.card_present
-                  ? `${charges?.data[0]?.payment_method_details?.card_present?.brand?.toUpperCase()} - ${
-                      charges?.data[0]?.payment_method_details?.card_present
-                        ?.last4
-                    }`
-                  : `UNKNOWN PAYMENT: ${id}`,
+                    ? `${charges?.data[0]?.payment_method_details?.card_present?.brand?.toUpperCase()} - ${
+                        charges?.data[0]?.payment_method_details?.card_present
+                          ?.last4
+                      }`
+                    : `UNKNOWN PAYMENT: ${id}`,
                 created_user:
                   proVetApiUrl +
                   `/user/${
@@ -137,63 +137,15 @@ export const paymentIntentUpdated = async (event: any): Promise<void> => {
                       paymentIntentObject: object,
                       updatedOn: new Date(),
                     },
-                    { merge: true }
-                  )
+                    { merge: true },
+                  ),
               )
-              .then(async () => {
-                const user = await admin
-                  .auth()
-                  .getUser(`${userId}`)
-                  .catch((error: any) => console.error(error));
-                if (DEBUG) {
-                  console.log("`${userId}`", `${userId}`);
-                  console.log("`${user.email}`", `${user?.email}`);
-                }
-                if (user) {
-                  const clientIsOnWaitlist = await admin
-                    .firestore()
-                    .collection("waitlist")
-                    .doc(user?.email)
-                    .get()
-                    .then((doc: any) => {
-                      if (DEBUG)
-                        console.log("clientIsOnWaitlist DATA", doc.data());
-                      return true;
-                    })
-                    .catch((error: any) => {
-                      console.error(error);
-                      return false;
-                    });
-                  if (DEBUG)
-                    console.log("`clientIsOnWaitlist`", clientIsOnWaitlist);
-                  if (clientIsOnWaitlist) {
-                    if (DEBUG)
-                      console.log(
-                        "ARCHIVING CLIENT FROM WAITLIST",
-                        user?.email
-                      );
-                    admin
-                      .firestore()
-                      .collection("waitlist")
-                      .doc(user?.email)
-                      .set(
-                        {
-                          updatedOn: new Date(),
-                          isActive: false,
-                        },
-                        { merge: true }
-                      )
-                      .catch((error: any) => console.error(error));
-                  } else if (DEBUG)
-                    console.log("CLIENT WAS NOT ON WAITLIST", user?.email);
-                }
-              })
-              .catch((error: any) => throwError(error))
+              .catch((error: any) => throwError(error)),
           )
           .catch((error: any) => console.error(error));
       else
         throwError(
-          `FAILED TO CLOSE PROVET INVOICE - UNABLE TO LOCATE CLIENT ID ON INVOICE ${invoice}`
+          `FAILED TO CLOSE PROVET INVOICE - UNABLE TO LOCATE CLIENT ID ON INVOICE ${invoice}`,
         );
     }
   }
