@@ -1,11 +1,8 @@
 import { configureReasonGroups } from "./../integrations/provet/entities/reason/configureReasonGroups";
 import { configureUsers } from "./configureUsers";
-import { configureTelehealthStatus } from "../integrations/provet/entities/appointment/configure/configureTelehealthStatus";
-import { configureAppointments } from "../integrations/provet/entities/appointment/configure/configureAppointments";
-import { configureAppointmentEstimates } from "../integrations/provet/entities/appointment/configure/configureAppointmentEstimates";
-import { configureAppointmentOptionDetails } from "../integrations/provet/entities/appointment/configure/configureAppointmentOptionDetails";
+import { configureTelehealthStatus } from "./configureTelehealthStatus";
+import { configureAppointments } from "./configureAppointments";
 import { configureBreeds } from "../integrations/provet/entities/patient/breeds/configureBreeds";
-import { configureCancellationReasons } from "../integrations/provet/entities/reason/configureCancellationReasons";
 import { configureReasons } from "../integrations/provet/entities/reason/configureReasons";
 import { admin, DEBUG, throwError } from "./config";
 import { configureItems } from "../integrations/provet/entities/item/configureItems";
@@ -18,10 +15,7 @@ export const processConfiguration = async (options: {
     | "breeds"
     | "reasons"
     | "appointments"
-    | "cancellation_reasons"
     | "reason_groups"
-    | "estimates"
-    | "options"
     | "users"
     | "items"
   >;
@@ -42,15 +36,6 @@ export const processConfiguration = async (options: {
     case "appointments":
       configureAppointments();
       break;
-    case "cancellation_reasons":
-      configureCancellationReasons();
-      break;
-    case "estimates":
-      configureAppointmentEstimates();
-      break;
-    case "options":
-      configureAppointmentOptionDetails();
-      break;
     case "users":
       configureUsers();
       break;
@@ -70,9 +55,6 @@ export const processConfiguration = async (options: {
         | "breeds"
         | "reasons"
         | "appointments"
-        | "cancellation_reasons"
-        | "estimates"
-        | "options"
         | "reason_groups"
         | "users"
         | "items",

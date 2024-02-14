@@ -1,7 +1,7 @@
 import { DEBUG, defaultRuntimeOptions, functions } from "../../config/config";
 import { configureReasons } from "../../integrations/provet/entities/reason/configureReasons";
 import { sendNotification } from "../../notifications/sendNotification";
-import { requestIsAuthorized } from "../admin/pos/requestIsAuthorized";
+import { requestIsAuthorized } from "./pos/requestIsAuthorized";
 
 export const resyncReasons = functions
   .runWith(defaultRuntimeOptions)

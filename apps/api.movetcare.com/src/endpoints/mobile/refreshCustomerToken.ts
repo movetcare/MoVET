@@ -7,7 +7,7 @@ import {
   stripe,
   //mobileClientApiKey,
   stripeApiVersion,
-} from "../../../config/config";
+} from "../../config/config";
 
 export const refreshCustomerToken = functions
   .runWith(defaultRuntimeOptions)
@@ -50,6 +50,7 @@ export const refreshCustomerToken = functions
           const setupIntent = await stripe.setupIntents
             .create({
               customer: customerId,
+              return_url: "https://movetcare.com/checkout/success",
             })
             .catch((error: any) => throwError(error) as any);
 

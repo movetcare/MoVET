@@ -1,8 +1,8 @@
-import { DEBUG, throwError } from "../../../../../config/config";
-import type { Appointment } from "../../../../../types/appointment";
-import { getProVetIdFromUrl } from "../../../../../utils/getProVetIdFromUrl";
-import { fetchEntity } from "../../fetchEntity";
-import { saveAppointment } from "../saveAppointment";
+import { DEBUG, throwError } from "./config";
+import type { Appointment } from "../types/appointment";
+import { getProVetIdFromUrl } from "../utils/getProVetIdFromUrl";
+import { fetchEntity } from "../integrations/provet/entities/fetchEntity";
+import { saveAppointment } from "../integrations/provet/entities/appointment/saveAppointment";
 
 export const configureAppointments = async (): Promise<boolean> => {
   // const alreadyHasConfiguration = await admin
@@ -31,7 +31,7 @@ export const configureAppointments = async (): Promise<boolean> => {
 };
 
 const saveAppointments = async (
-  appointments: Array<Appointment>
+  appointments: Array<Appointment>,
 ): Promise<boolean> => {
   let appointmentsConfigured = 0;
   return await Promise.all(
@@ -46,7 +46,7 @@ const saveAppointments = async (
             appointmentsConfigured++;
           })
           .catch((error: any) => throwError(error));
-    })
+    }),
   )
     .then(async () => {
       if (DEBUG) console.log(`SUCCESSFULLY UPDATED ${appointmentsConfigured}`);

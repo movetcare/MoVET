@@ -118,49 +118,4 @@ export const updateBookingCancellation = async (
       patients: Array.isArray(selectedPatients) ? allPatientIds : [],
     });
   }
-  sendNotification({
-    type: "slack",
-    payload: {
-      channel: "appointment-request",
-      message: [
-        {
-          type: "section",
-          text: {
-            text: ":book: _Appointment Booking_ *CANCELLED*",
-            type: "mrkdwn",
-          },
-          fields: [
-            {
-              type: "mrkdwn",
-              text: "*Session ID*",
-            },
-            {
-              type: "plain_text",
-              text: id,
-            },
-            {
-              type: "mrkdwn",
-              text: "*Step*",
-            },
-            {
-              type: "plain_text",
-              text: "CANCELLED BY CLIENT",
-            },
-            {
-              type: "mrkdwn",
-              text: "*Reason*",
-            },
-            {
-              type: "plain_text",
-              text: `${
-                cancelDetails
-                  ? `${cancelReason} - ${cancelDetails}`
-                  : cancelReason
-              }`,
-            },
-          ],
-        },
-      ],
-    },
-  });
 };

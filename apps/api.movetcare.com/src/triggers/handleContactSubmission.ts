@@ -1,10 +1,17 @@
 import { formatPhoneNumber } from "../utils/formatPhoneNumber";
 import { sendNotification } from "../notifications/sendNotification";
 import { admin, functions, throwError, DEBUG } from "../config/config";
-import { CONTACT_STATUS } from "../constant";
 import type { ContactForm } from "../types/forms";
 import { getAuthUserByEmail } from "../utils/auth/getAuthUserByEmail";
 import { createProVetNote } from "../integrations/provet/entities/note/createProVetNote";
+
+export const CONTACT_STATUS = {
+  NEEDS_PROCESSING: "Needs Processing",
+  STARTED_PROCESSING: "Started Processing",
+  NEEDS_REPLY: "Needs a Reply",
+  PROCESSING_COMPLETE: "Processing Complete",
+  ERROR_PROCESSING: "ERROR PROCESSING!",
+};
 
 export const handleContactSubmission = functions.firestore
   .document("contact/{id}")

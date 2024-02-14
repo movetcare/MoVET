@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { admin, throwError } from "../../../../config/config";
 import { fetchEntity } from "../fetchEntity";
-// import {configureReminders} from '../reminder/configureReminders';
 import { saveAppointment } from "./saveAppointment";
 import { sendNotification } from "../../../../notifications/sendNotification";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
@@ -32,7 +31,6 @@ export const processAppointmentWebhook = async (
           if (doc.exists) return doc.data();
           else return "NEW APPOINTMENT - No Previous Data";
         })) || {};
-    //.catch((error: any) => throwError(error));
 
     if (proVetAppointmentData) await saveAppointment(proVetAppointmentData);
 
@@ -42,18 +40,6 @@ export const processAppointmentWebhook = async (
       proVetAppointmentData &&
       proVetAppointmentData.active === 0
     ) {
-      // const userName = await admin
-      //   .firestore()
-      //   .collection("users")
-      //   .where(
-      //     "id",
-      //     "==",
-      //     getProVetIdFromUrl(proVetAppointmentData?.modified_user),
-      //   )
-      //   .get()
-      //   .then((doc: any) => doc.data()?.firstName + " " + doc.data()?.lastName)
-      //   .catch((error: any) => throwError(error));
-
       sendNotification({
         type: "email",
         payload: {
@@ -61,19 +47,15 @@ export const processAppointmentWebhook = async (
           subject: "PROVET APPOINTMENT CANCELED!",
           message:
             `<p>Appointment #${proVetAppointmentData?.id} has been canceled!' + </p>` +
-            "<p></p><p>Updated Appointment Data: " +
-            JSON.stringify(proVetAppointmentData) +
-            "</p>" +
             `<p></p><a href="https://us.provetcloud.com/4285/client/${getProVetIdFromUrl(
               proVetAppointmentData?.client,
             )}">VIEW APPOINTMENT</a>`,
         },
       });
     }
-    //await configureReminders('appointments');
     return response.status(200).send({ received: true });
   } catch (error: any) {
-    throwError(error);
+    console.error(error);
     return response.status(500).send({ received: false });
   }
 };

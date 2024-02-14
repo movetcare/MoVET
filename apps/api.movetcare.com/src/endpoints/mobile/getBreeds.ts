@@ -3,7 +3,7 @@ import {
   defaultRuntimeOptions,
   throwError,
   admin,
-} from "../../../config/config";
+} from "../../config/config";
 
 export const getBreeds = functions
   .runWith(defaultRuntimeOptions)

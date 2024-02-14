@@ -1,5 +1,5 @@
-import {functions, defaultRuntimeOptions, DEBUG} from "../../../config/config";
-import {createCard} from "../../../integrations/trello/createCard";
+import { functions, defaultRuntimeOptions, DEBUG } from "../../config/config";
+import { createCard } from "../../integrations/trello/createCard";
 
 export const reportABugInternal = functions
   .runWith(defaultRuntimeOptions)

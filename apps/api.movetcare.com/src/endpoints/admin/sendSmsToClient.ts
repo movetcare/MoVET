@@ -1,4 +1,4 @@
-import { sendNotification } from "../../../notifications/sendNotification";
+import { sendNotification } from "../../notifications/sendNotification";
 import {
   defaultRuntimeOptions,
   functions,
@@ -6,9 +6,9 @@ import {
   admin,
   request,
   throwError,
-} from "../../../config/config";
-import { requestIsAuthorized } from "../pos/requestIsAuthorized";
-import { fetchNewGoToAccessToken } from "../../../integrations/goto/fetchNewGoToAccessToken";
+} from "../../config/config";
+import { requestIsAuthorized } from "./pos/requestIsAuthorized";
+import { fetchNewGoToAccessToken } from "../../integrations/goto/fetchNewGoToAccessToken";
 
 export const sendSmsToClient = functions
   .runWith(defaultRuntimeOptions)

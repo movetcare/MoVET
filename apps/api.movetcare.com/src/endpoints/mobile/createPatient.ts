@@ -2,8 +2,8 @@ import {
   functions,
   defaultRuntimeOptions,
   throwError,
-} from "../../../config/config";
-import { createProVetPatient } from "../../../integrations/provet/entities/patient/createProVetPatient";
+} from "../../config/config";
+import { createProVetPatient } from "../../integrations/provet/entities/patient/createProVetPatient";
 
 export const createPatient = functions
   .runWith(defaultRuntimeOptions)

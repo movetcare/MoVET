@@ -1,4 +1,4 @@
-import { admin, throwError } from "../../../../../config/config";
+import { admin, throwError } from "./config";
 
 export const configureTelehealthStatus = async (): Promise<boolean> => {
   const alreadyHasConfiguration = await admin

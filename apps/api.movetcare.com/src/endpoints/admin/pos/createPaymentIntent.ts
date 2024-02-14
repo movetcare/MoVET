@@ -132,6 +132,7 @@ export const createPaymentIntent = functions
           const paymentIntentConfig: any = {
             currency: "usd",
             metadata: { invoice },
+            return_url: "https://movetcare.com/checkout/success",
           };
           if (DEBUG) {
             console.log(
@@ -179,8 +180,9 @@ export const createPaymentIntent = functions
                     headers: {
                       "Content-Type": "application/x-www-form-urlencoded",
                       "Stripe-Version": functions.config()?.stripe?.api_version,
-                      Authorization: `Bearer ${functions.config()?.stripe
-                        ?.secret_key}`,
+                      Authorization: `Bearer ${
+                        functions.config()?.stripe?.secret_key
+                      }`,
                     },
                   },
                 )

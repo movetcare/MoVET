@@ -1,4 +1,3 @@
-import client = require("@sendgrid/client");
 import { admin, throwError, DEBUG } from "../../config/config";
 import { createProVetPatient } from "../../integrations/provet/entities/patient/createProVetPatient";
 import { updateCustomField } from "../../integrations/provet/entities/patient/updateCustomField";
@@ -9,7 +8,6 @@ import type {
   Booking,
   PatientBookingData,
 } from "../../types/booking";
-import { moveFile } from "../../utils/moveFile";
 import { reverseDateStringMDY } from "../../utils/reverseDateStringMDY";
 import { getAllActivePatients } from "../../utils/getAllActivePatients";
 import { handleFailedBooking } from "./handleFailedBooking";
@@ -27,7 +25,7 @@ export const processAddAPet = async (
     weight,
     vet,
     notes,
-  }: AddAPet
+  }: AddAPet,
 ): Promise<Booking | BookingError> => {
   const data = {
     name,
@@ -62,7 +60,7 @@ export const processAddAPet = async (
           step: "add-a-pet" as Booking["step"],
           updatedOn: new Date(),
         },
-        { merge: true }
+        { merge: true },
       )
       .catch(async (error: any) => {
         throwError(error);
@@ -88,7 +86,7 @@ export const processAddAPet = async (
         session?.addAPet?.aggressionStatus?.name
           ? `${
               session?.addAPet?.aggressionStatus?.name.includes(
-                "no history of aggression"
+                "no history of aggression",
               )
                 ? ""
                 : "BE CAREFUL - PATIENT IS AGGRESSIVE!"
@@ -105,10 +103,10 @@ export const processAddAPet = async (
           newPatientId,
           4,
           session?.addAPet?.aggressionStatus?.name.includes(
-            "no history of aggression"
+            "no history of aggression",
           )
             ? "False"
-            : "True"
+            : "True",
         );
       if (session?.addAPet?.notes)
         updateCustomField(newPatientId, 6, session?.addAPet?.notes);
@@ -120,20 +118,8 @@ export const processAddAPet = async (
             session?.addAPet?.vet?.value?.place_id
               ? ` - https://www.google.com/maps/place/?q=place_id:${session?.addAPet?.vet?.value?.place_id}`
               : ""
-          }`
+          }`,
         );
-      if (session?.addAPet?.photo) {
-        moveFile(
-          `clients/${client}/patients/new/photo/${session?.addAPet?.photo.name}`,
-          `clients/${client}/patients/${newPatientId}/photo/${session?.addAPet?.photo.name}`
-        );
-      }
-      if (session?.addAPet?.records) {
-        moveFile(
-          `clients/${client}/patients/new/records/${session?.addAPet?.records.name}`,
-          `clients/${client}/patients/${newPatientId}/records/${session?.addAPet?.records.name}`
-        );
-      }
       const patients: Array<PatientBookingData> | BookingError | any =
         await getAllActivePatients(session?.client?.uid);
       if (patients) {
@@ -143,7 +129,7 @@ export const processAddAPet = async (
               patients,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           )
           .catch(async (error: any) => {
             throwError(error);
@@ -191,7 +177,7 @@ export const processAddAPet = async (
                   {
                     type: "plain_text",
                     text: session?.addAPet?.aggressionStatus?.name.includes(
-                      "no history of aggression"
+                      "no history of aggression",
                     )
                       ? "No"
                       : "Yes",

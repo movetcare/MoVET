@@ -2,17 +2,14 @@ import { configureReasonGroups } from "./../integrations/provet/entities/reason/
 import { configureTerminals } from "./configureTerminals";
 import { Request, Response } from "express";
 import { mobileClientApiKey, environment, admin, throwError } from "./config";
-import { configureAppointments } from "../integrations/provet/entities/appointment/configure/configureAppointments";
+import { configureAppointments } from "./configureAppointments";
 import { configureBreeds } from "../integrations/provet/entities/patient/breeds/configureBreeds";
 import { configureReasons } from "../integrations/provet/entities/reason/configureReasons";
-import { configureAppointmentEstimates } from "../integrations/provet/entities/appointment/configure/configureAppointmentEstimates";
-import { configureAppointmentOptionDetails } from "../integrations/provet/entities/appointment/configure/configureAppointmentOptionDetails";
-import { configureCancellationReasons } from "../integrations/provet/entities/reason/configureCancellationReasons";
-import { configureTelehealthStatus } from "../integrations/provet/entities/appointment/configure/configureTelehealthStatus";
+import { configureTelehealthStatus } from "./configureTelehealthStatus";
 import { configureInvoices } from "../integrations/provet/entities/invoice/configureInvoices";
 import { configureUsers } from "./configureUsers";
 import { configureItems } from "../integrations/provet/entities/item/configureItems";
-import { configureBooking } from "../booking/configureBooking";
+import { configureBooking } from "./configureBooking";
 import { sendNotification } from "../notifications/sendNotification";
 import { configureSchedule } from "./configureSchedule";
 import { configureResources } from "../integrations/provet/entities/resource/configureResources";
@@ -46,8 +43,6 @@ export const initProVetConfig = async (
           return (
             (await configureSchedule()) &&
             (await configureBooking()) &&
-            (await configureAppointmentEstimates()) &&
-            (await configureAppointmentOptionDetails()) &&
             (await configureTelehealthStatus()) &&
             (await configurePopUpAd()) &&
             (await configureAppointments()) &&
@@ -124,18 +119,6 @@ export const initProVetConfig = async (
           : response.status(500).send();
       case "items":
         return (await configureItems())
-          ? response.status(200).send()
-          : response.status(500).send();
-      case "cancellation_reasons":
-        return (await configureCancellationReasons())
-          ? response.status(200).send()
-          : response.status(500).send();
-      case "estimates":
-        return (await configureAppointmentEstimates())
-          ? response.status(200).send()
-          : response.status(500).send();
-      case "options":
-        return (await configureAppointmentOptionDetails())
           ? response.status(200).send()
           : response.status(500).send();
       case "users":

@@ -2,8 +2,8 @@ import { sendAppointmentConfirmationEmail } from "../../../../notifications/temp
 import { fetchEntity } from "./../fetchEntity";
 import { admin, throwError, environment } from "../../../../config/config";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
-import { deleteAppointmentNotifications } from "./notifications/deleteAppointmentNotifications";
-import { generateNewAppointmentNotifications } from "./notifications/generateNewAppointmentNotifications";
+import { deleteAppointmentNotifications } from "./deleteAppointmentNotifications";
+import { generateNewAppointmentNotifications } from "./generateNewAppointmentNotifications";
 import type { Appointment } from "../../../../types/appointment";
 // import {getAuthUserById} from '../../../../utils/auth/getAuthUserById';
 // import {getDateStringFromDate} from '../../../../utils/getDateStringFromDate';

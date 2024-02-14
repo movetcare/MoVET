@@ -1,4 +1,4 @@
-import { getCustomerId } from "./../../../utils/getCustomerId";
+import { getCustomerId } from "../../utils/getCustomerId";
 import {
   functions,
   defaultRuntimeOptions,
@@ -7,10 +7,10 @@ import {
   stripe,
   DEBUG,
   stripeApiVersion,
-} from "../../../config/config";
-import { saveClient } from "../../../integrations/provet/entities/client/saveClient";
-import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
-import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
+} from "../../config/config";
+import { saveClient } from "../../integrations/provet/entities/client/saveClient";
+import { getAuthUserById } from "../../utils/auth/getAuthUserById";
+import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 
 export const createCustomer = functions
   .runWith(defaultRuntimeOptions)
@@ -36,6 +36,7 @@ export const createCustomer = functions
       const setupIntent = await stripe.setupIntents
         .create({
           customer,
+          return_url: "https://movetcare.com/checkout/success",
         })
         .catch((error: any) => throwError(error) as any);
 

@@ -1,19 +1,38 @@
-const config = require('./firebase.json');
-const dotenv = require('dotenv');
+const config = require("./firebase.json");
+const dotenv = require("dotenv");
 dotenv.config({ path: "../../.env" });
 
+const DEBUG_FIREBASE = false;
+
+if (DEBUG_FIREBASE) {
+  console.log("APP_ENVIRONMENT: ", process.env.APP_ENVIRONMENT);
+  console.log("FIREBASE CONFIG: ", config);
+  if (process.env.APP_ENVIRONMENT === "staging") {
+    console.log(
+      "STAGING_FIREBASE_PROJECT_ID",
+      process.env.STAGING_FIREBASE_PROJECT_ID,
+    );
+    console.log("STAGING_FIREBASE_EMAIL", process.env.STAGING_FIREBASE_EMAIL);
+    console.log("INIT CONFIG KEYS", {
+      apiKey: process.env?.STAGING_FIREBASE_API_KEY,
+      authDomain: process.env?.STAGING_FIREBASE_AUTH_ID,
+      projectId: process.env?.STAGING_FIREBASE_PROJECT_ID,
+      databaseURL: process.env?.STAGING_FIREBASE_DATABASE_URL,
+    });
+  }
+}
 const initializeApp = (
   mode: string,
-  environment: string = process.env.APP_ENVIRONMENT || 'development'
+  environment: string = process.env.APP_ENVIRONMENT || "development",
 ) => {
-  if (environment === 'development' || environment === 'test') {
+  if (environment === "development" || environment === "test") {
     process.env.FIREBASE_AUTH_EMULATOR_HOST = `localhost:${config.emulators.auth.port}`;
     process.env.FIRESTORE_EMULATOR_HOST = `localhost:${config.emulators.firestore.port}`;
     process.env.FIREBASE_FUNCTIONS_EMULATOR_HOST = `localhost:${config.emulators.functions.port}`;
   }
-  if (mode === 'admin') {
-    const firebase = require('firebase-admin');
-    if (environment === 'production') {
+  if (mode === "admin") {
+    const firebase = require("firebase-admin");
+    if (environment === "production") {
       if (!firebase.apps.length) {
         firebase.initializeApp({
           credential: firebase.credential.cert({
@@ -21,7 +40,7 @@ const initializeApp = (
             clientEmail: process.env?.PRODUCTION_FIREBASE_EMAIL,
             privateKey: process.env?.PRODUCTION_FIREBASE_PRIVATE_KEY?.replace(
               /\\n/g,
-              '\n'
+              "\n",
             ),
           }),
         });
@@ -34,27 +53,27 @@ const initializeApp = (
             clientEmail: process.env?.STAGING_FIREBASE_EMAIL,
             privateKey: process.env?.STAGING_FIREBASE_PRIVATE_KEY?.replace(
               /\\n/g,
-              '\n'
+              "\n",
             ),
           }),
         });
       }
     }
     firebase.firestore().settings(
-      environment === 'development' || environment === 'test'
+      environment === "development" || environment === "test"
         ? {
             host: `localhost:${config.emulators.firestore.port}`,
             ssl: false,
             ignoreUndefinedProperties: true,
             experimentalForceLongPolling: true,
           }
-        : {ignoreUndefinedProperties: true}
+        : { ignoreUndefinedProperties: true },
     );
     return firebase;
   } else {
-    const firebase = require('firebase');
-    require('firebase/functions');
-    if (environment === 'production') {
+    const firebase = require("firebase");
+    require("firebase/functions");
+    if (environment === "production") {
       firebase.initializeApp({
         apiKey: process.env?.PRODUCTION_FIREBASE_API_KEY,
         authDomain: process.env?.PRODUCTION_FIREBASE_AUTH_ID,

@@ -1,10 +1,6 @@
-import {
-  defaultRuntimeOptions,
-  functions,
-  DEBUG,
-} from "../../../config/config";
-import { configureResources } from "../../../integrations/provet/entities/resource/configureResources";
-import { requestIsAuthorized } from "../../admin/pos/requestIsAuthorized";
+import { defaultRuntimeOptions, functions, DEBUG } from "../../config/config";
+import { configureResources } from "../../integrations/provet/entities/resource/configureResources";
+import { requestIsAuthorized } from "./pos/requestIsAuthorized";
 
 export const resyncProVetResources = functions
   .runWith(defaultRuntimeOptions)

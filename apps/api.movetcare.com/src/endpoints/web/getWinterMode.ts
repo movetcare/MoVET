@@ -5,15 +5,15 @@ import {
   throwError,
   admin,
   DEBUG,
-} from "../../../config/config";
-import type { WinterMode } from "../../../types/winter-mode";
+} from "../../config/config";
+import type { WinterMode } from "../../types/winter-mode";
 
 export const getWinterMode = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
     async (
       data: { apiKey: string },
-      context: any
+      context: any,
     ): Promise<WinterMode | { isActive: false }> => {
       if (!context.auth) {
         throwError({ message: "MISSING AUTHENTICATION" });
@@ -60,5 +60,5 @@ export const getWinterMode = functions
           }
         } else return { isActive: false };
       } else return { isActive: false };
-    }
+    },
   );

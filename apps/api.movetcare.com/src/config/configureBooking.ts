@@ -1,4 +1,4 @@
-import { admin, throwError, environment, DEBUG } from "../config/config";
+import { admin, throwError, environment, DEBUG } from "./config";
 
 export const configureBooking = async (): Promise<boolean> => {
   const alreadyHasConfiguration = await admin

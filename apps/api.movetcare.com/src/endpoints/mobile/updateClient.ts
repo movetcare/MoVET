@@ -2,8 +2,8 @@ import {
   functions,
   defaultRuntimeOptions,
   throwError,
-} from "../../../config/config";
-import { updateProVetClient } from "../../../integrations/provet/entities/client/updateProVetClient";
+} from "../../config/config";
+import { updateProVetClient } from "../../integrations/provet/entities/client/updateProVetClient";
 
 export const updateClient: Promise<boolean> = functions
   .runWith(defaultRuntimeOptions)
