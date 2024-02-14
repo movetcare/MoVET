@@ -53,7 +53,7 @@
     "cypress-fail-fast": "^7.1.0",
     "eslint-config-custom": "workspace:*",
     "git-branch-is": "^4.0.0",
-    "husky": "^9.0.10",
+    "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
     "start-server-and-test": "^2.0.3",

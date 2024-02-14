@@ -38,8 +38,8 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
-    "@sendgrid/client": "^8.1.0",
-    "@sendgrid/mail": "^8.1.0",
+    "@sendgrid/client": "^8.1.1",
+    "@sendgrid/mail": "^8.1.1",
     "@slack/web-api": "^7.0.2",
     "axios": "0.27.2",
     "cors": "^2.8.5",
