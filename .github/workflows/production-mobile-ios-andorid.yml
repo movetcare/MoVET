@@ -6,8 +6,24 @@ on:
     branches:
       - main
     paths:
-      - "mobile/**"
-
+      - "mobile/app/**"
+      - "mobile/assets/**"
+      - "mobile/components/**"
+      - "mobile/constants/**"
+      - "mobile/hooks/**"
+      - "mobile/services/**"
+      - "mobile/stores/**"
+      - "mobile/utils/**"
+      - "mobile/app.config.ts"
+      - "mobile/babel.config.ts"
+      - "mobile/eas.json"
+      - "mobile/firebase-config.ts"
+      - "mobile/firebase.json"
+      - "mobile/metro.config.js"
+      - "mobile/package.json"
+      - "mobile/package-lock.json"
+      - "mobile/tailwind.config.ts"
+      - "mobile/tailwind.ts"
 jobs:
   build:
     name: New EAS PRODUCTION Builds
