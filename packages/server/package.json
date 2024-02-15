@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@firebase/app-types": "^0.9.0",
-    "@types/node": "^20.11.17",
+    "@types/node": "^20.11.18",
     "firebase-admin": "^12.0.0",
     "next": "14.1.0",
     "react": "^18.2.0",

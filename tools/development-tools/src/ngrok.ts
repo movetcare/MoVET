@@ -50,19 +50,3 @@ const DEBUG = true;
       return process.exit(1);
     });
 })();
-
-setInterval(
-  () => {
-    console.log("\n\n**************************************************\n\n");
-    console.log(
-      "ATTENTION: YOUR FREE 2 HOUR NGROK TUNNEL TIME LIMIT HAS EXPIRED!\n",
-    );
-    console.log(
-      "YOUR ENVIRONNEMENT WILL NO LONGER RECEIVE PROVET CLOUD OR STRIPE WEBHOOKS",
-    );
-    console.log("\nSOME FEATURES MAY NO LONGER WORK CORRECTLY...\n");
-    console.log("RERUN THE START SCRIPT TO SETUP A NEW NGROK TUNNEL");
-    console.log("\n\n**************************************************\n\n");
-  },
-  120 * 60 * 1000,
-);
