@@ -4,6 +4,7 @@ import {
   faHomeUser,
 } from "@fortawesome/free-solid-svg-icons";
 import InvoiceList from "components/InvoiceList";
+import { InvoiceSearch } from "components/InvoiceSearch";
 import Terminal from "components/Terminal";
 import { query, collection, where, orderBy, limit } from "firebase/firestore";
 import Head from "next/head";
@@ -40,8 +41,8 @@ export default function Billing() {
       collection(firestore, "counter_sales"),
       where("client_due_sum", "==", 0),
       where("status", "==", 3),
-      orderBy("id", "desc"),
-      limit(50),
+      orderBy("updatedOn", "desc"),
+      limit(100),
     ),
   );
   const [
@@ -53,8 +54,8 @@ export default function Billing() {
       collection(firestore, "client_invoices"),
       where("client_due_sum", "==", 0),
       where("status", "==", 3),
-      orderBy("id", "desc"),
-      limit(50),
+      orderBy("updatedOn", "desc"),
+      limit(100),
     ),
   );
 
@@ -63,6 +64,7 @@ export default function Billing() {
       <Head>
         <title>Billing</title>
       </Head>
+      <InvoiceSearch />
       <Terminal />
       <div className="grid lg:grid-cols-2 gap-4">
         <div>
