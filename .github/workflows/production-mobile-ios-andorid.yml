@@ -2,12 +2,11 @@ name: New EAS PRODUCTION iOS & Android App Builds
 on:
   workflow_dispatch:
   repository_dispatch:
-  # push:
-  #   branches:
-  #     - main
-  #   paths:
-  #     - "mobile/**"
-  #     - ".github/workflows/production-mobile-ios-android.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "mobile/**"
 
 jobs:
   build:
