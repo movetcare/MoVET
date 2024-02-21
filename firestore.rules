@@ -13,6 +13,12 @@ service cloud.firestore {
     function clientOwnsPatient() {
       return clientIsAuthed() && request.auth.uid == string(resource.data.client);
     }
+    match /completed_payments/{pid} {
+      allow read: if isMoVETStaff();
+    }
+    match /failed_payments/{pid} {
+      allow read: if isMoVETStaff();
+    }
     match /push_notifications/{nid} {
       allow read, write: if isMoVETStaff();
     }

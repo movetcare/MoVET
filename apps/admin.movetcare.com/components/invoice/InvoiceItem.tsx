@@ -555,6 +555,8 @@ const InvoiceDetails = ({
                             toast(
                               "Refund could NOT be completed. Please contact support for assistance",
                               {
+                                position: "top-center",
+                                duration: 10000,
                                 icon: (
                                   <FontAwesomeIcon
                                     icon={faCircleExclamation}
@@ -580,6 +582,8 @@ const InvoiceDetails = ({
                                   : ""
                               }`,
                               {
+                                position: "top-center",
+                                duration: 10000,
                                 icon: (
                                   <FontAwesomeIcon
                                     icon={faCircleCheck}
@@ -592,6 +596,8 @@ const InvoiceDetails = ({
                           toast(
                             `DONT FORGET TO ADD A CREDIT NOTE IN PROVET FOR INVOICE #${invoice?.id}`,
                             {
+                              position: "top-center",
+                              duration: 10000,
                               icon: (
                                 <FontAwesomeIcon
                                   icon={faCircleExclamation}
@@ -605,6 +611,8 @@ const InvoiceDetails = ({
                         .catch((error: any) => {
                           console.error(error);
                           toast(error?.message, {
+                            position: "top-center",
+                            duration: 10000,
                             icon: (
                               <FontAwesomeIcon
                                 icon={faCircleExclamation}
@@ -1102,6 +1110,8 @@ const InvoiceDetails = ({
                                                     : ""
                                                 }`,
                                                 {
+                                                  position: "top-center",
+                                                  duration: 10000,
                                                   icon: (
                                                     <FontAwesomeIcon
                                                       icon={faCircleCheck}
@@ -1126,6 +1136,8 @@ const InvoiceDetails = ({
                                               toast(
                                                 "Payment could NOT be completed. Please try again or contact support for assistance",
                                                 {
+                                                  position: "top-center",
+                                                  duration: 10000,
                                                   icon: (
                                                     <FontAwesomeIcon
                                                       icon={faCircleExclamation}
@@ -1140,6 +1152,8 @@ const InvoiceDetails = ({
                                           .catch((error: any) => {
                                             setPaymentError(error);
                                             toast(error.message, {
+                                              position: "top-center",
+                                              duration: 10000,
                                               icon: (
                                                 <FontAwesomeIcon
                                                   icon={faCircleExclamation}
@@ -1224,7 +1238,7 @@ const InvoiceDetails = ({
                                       />
                                     </div>
                                     <div className="ml-3 uppercase">
-                                      <h3 className="font-medium">
+                                      <h3 className="font-medium m-0">
                                         Refund Payment
                                       </h3>
                                       <a
@@ -1532,7 +1546,7 @@ const InvoiceDetails = ({
                                         />
                                       </div>
                                       <div className="ml-3 uppercase">
-                                        <h3 className="text-sm font-medium">
+                                        <h3 className="text-sm font-medium m-0">
                                           TRANSACTION INFO
                                         </h3>
                                         <p className="italic text-xs">
@@ -1736,7 +1750,7 @@ const InvoiceDetails = ({
                                       />
                                     </div>
                                     <div className="ml-3 uppercase">
-                                      <h3 className="text-sm font-medium">
+                                      <h3 className="text-sm font-medium m-0">
                                         TRANSACTION INFO
                                       </h3>
                                       <p className="italic text-xs">
@@ -1836,7 +1850,7 @@ const InvoiceDetails = ({
                                         />
                                       </div>
                                       <div className="ml-3 uppercase">
-                                        <h3 className="text-sm font-medium">
+                                        <h3 className="text-sm font-medium m-0">
                                           TRANSACTION INFO
                                         </h3>
                                         {invoice?.paymentIntent ? (
@@ -1920,7 +1934,7 @@ const InvoiceDetails = ({
                                     />
                                   </div>
                                   <div className="ml-3 uppercase">
-                                    <h3 className="text-sm font-medium">
+                                    <h3 className="text-sm font-medium m-0">
                                       TRANSACTION INFO
                                     </h3>
                                     <p className="italic text-xs">
@@ -1967,10 +1981,12 @@ const InvoiceDetails = ({
                                   />
                                 </div>
                                 <div className="ml-3 uppercase">
-                                  <h3 className="font-medium">
+                                  <h3 className="font-medium m-0">
                                     STEP 1 - COMPLETE
                                   </h3>
-                                  <h3 className="text-sm">PAYMENT REFUNDED</h3>
+                                  <h3 className="text-sm m-0">
+                                    PAYMENT REFUNDED
+                                  </h3>
                                   <p className="text-sm">
                                     <span className="font-bold text-base">
                                       ${invoice?.total_with_vat?.toFixed(2)}
@@ -1999,10 +2015,10 @@ const InvoiceDetails = ({
                                   />
                                 </div>
                                 <div className="ml-3 uppercase">
-                                  <h3 className="font-medium">
+                                  <h3 className="font-medium m-0">
                                     STEP 2 - In Progress
                                   </h3>
-                                  <h3 className="text-sm italic underline">
+                                  <h3 className="text-sm italic underline m-0">
                                     INVOICE UPDATE REQUIRED
                                   </h3>
                                   <a

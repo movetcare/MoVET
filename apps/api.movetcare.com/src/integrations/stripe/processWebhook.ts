@@ -4,6 +4,7 @@ import {
   throwError,
   stripeWebhookSecret,
   environment,
+  admin,
 } from "../../config/config";
 import { Response } from "express";
 import { terminalReaderActionSucceeded } from "./pos/terminalReaderActionSucceeded";
@@ -17,7 +18,7 @@ import { sendNotification } from "../../notifications/sendNotification";
 
 export const processStripeWebhook = async (
   request: any,
-  response: Response
+  response: Response,
 ) => {
   console.log("INCOMING STRIPE REQUEST PAYLOAD => ", request.body);
   const sig: any = request.headers["stripe-signature"];
@@ -27,7 +28,7 @@ export const processStripeWebhook = async (
       event = stripe.webhooks.constructEvent(
         request?.rawBody,
         sig,
-        stripeWebhookSecret
+        stripeWebhookSecret,
       );
     } catch (error: any) {
       throwError(error);
@@ -106,15 +107,27 @@ export const processStripeWebhook = async (
         paymentIntentUpdated(event);
         break;
       case "payment_intent.payment_failed":
+        await admin
+          .firestore()
+          .collection("failed_payments")
+          .add({ ...event?.data?.object, createdOn: new Date() });
         paymentIntentUpdated(event);
         break;
       case "payment_intent.processing":
         paymentIntentUpdated(event);
         break;
       case "payment_intent.requires_action":
+        await admin
+          .firestore()
+          .collection("failed_payments")
+          .add({ ...event?.data?.object, createdOn: new Date() });
         paymentIntentUpdated(event);
         break;
       case "payment_intent.succeeded":
+        await admin
+          .firestore()
+          .collection("completed_payments")
+          .add({ ...event?.data?.object, createdOn: new Date() });
         paymentIntentUpdated(event);
         break;
       default:

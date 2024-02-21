@@ -5,11 +5,19 @@ import {
   faCog,
   faHeadset,
   faRedo,
+  faThumbsUp,
+  faThumbsDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import {
+  collection,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { useEffect, useRef, useState } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
 import toast from "react-hot-toast";
 import { auth, firestore, functions } from "services/firebase";
@@ -22,6 +30,10 @@ const Terminal = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [reader, setReader] = useState<any>();
   const [readerError, setReaderError] = useState<any>();
+  const [previousPayments, setPreviousPayments] = useState<Array<any>>([]);
+  const [failedPayments, setFailedPayments] = useState<Array<any>>([]);
+  const firstPreviousPaymentRenderRef = useRef(false);
+  const firstFailedPaymentRenderRef = useRef(false);
   const [terminals, loadingTerminals, errorTerminals]: any = useCollection(
     query(collection(firestore, "configuration/pos/terminals")),
   );
@@ -38,6 +50,92 @@ const Terminal = () => {
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const unsubscribeCompletedPayments = onSnapshot(
+      query(
+        collection(firestore, `completed_payments`),
+        orderBy("createdOn", "desc"),
+        limit(10),
+      ),
+      (querySnapshot) => {
+        const completedPayments: Array<any> = [];
+        querySnapshot.forEach((doc) => {
+          completedPayments.push({
+            ...(doc?.data() as any),
+            createdOn: doc?.data()?.createdOn.toDate(),
+          });
+        });
+        completedPayments.sort(
+          (a, b) =>
+            new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime(),
+        );
+        setPreviousPayments(completedPayments);
+      },
+    );
+    return () => unsubscribeCompletedPayments();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeFailedPayments = onSnapshot(
+      query(
+        collection(firestore, `failed_payments`),
+        orderBy("createdOn", "desc"),
+        limit(10),
+      ),
+      (querySnapshot) => {
+        const failedPayments: Array<any> = [];
+        querySnapshot.forEach((doc) => {
+          failedPayments.push({
+            ...(doc?.data() as any),
+            createdOn: doc?.data()?.createdOn.toDate(),
+          });
+        });
+        failedPayments.sort(
+          (a, b) =>
+            new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime(),
+        );
+        setFailedPayments(failedPayments);
+      },
+    );
+    return () => unsubscribeFailedPayments();
+  }, []);
+
+  useEffect(() => {
+    if (previousPayments?.length > 0)
+      if (firstPreviousPaymentRenderRef.current) {
+        toast(
+          `$${(previousPayments[0]?.amount_received / 100).toFixed(2)} PAYMENT RECEIVED (#${previousPayments[0]?.metadata?.invoice})`,
+          {
+            icon: (
+              <FontAwesomeIcon icon={faThumbsUp} size="3x" color="#00A36C" />
+            ),
+            position: "top-center",
+            duration: 10000,
+          },
+        );
+      } else {
+        firstPreviousPaymentRenderRef.current = true;
+      }
+  }, [previousPayments]);
+
+  useEffect(() => {
+    if (failedPayments?.length > 0)
+      if (firstFailedPaymentRenderRef.current) {
+        toast(
+          `$${(failedPayments[0]?.amount / 100).toFixed(2)} PAYMENT FAILED! (#${failedPayments[0]?.metadata?.invoice})`,
+          {
+            icon: (
+              <FontAwesomeIcon icon={faThumbsDown} size="3x" color="#E76159" />
+            ),
+            position: "top-center",
+            duration: 10000,
+          },
+        );
+      } else {
+        firstFailedPaymentRenderRef.current = true;
+      }
+  }, [failedPayments]);
 
   useEffect(() => {
     if (reader && reader?.status !== "online") {
@@ -90,15 +188,15 @@ const Terminal = () => {
     <div className="mb-4 sm:mb-8">
       <div
         onClick={() => {
-          if (isAdmin) setShowReaderDetails(!showReaderDetails);
+          setShowReaderDetails(!showReaderDetails);
         }}
         className={`shadow overflow-hidden flex flex-col justify-between items-center px-6 hover:cursor-pointer rounded-full${
           reader?.status === "online"
             ? " bg-movet-green bg-opacity-100 text-movet-white"
             : reader?.status === "offline" ||
-              (!reader?.status && !loadingTerminals)
-            ? " bg-movet-red bg-opacity-100 text-movet-white"
-            : ""
+                (!reader?.status && !loadingTerminals)
+              ? " bg-movet-red bg-opacity-100 text-movet-white"
+              : ""
         }`}
       >
         <div
@@ -126,12 +224,12 @@ const Terminal = () => {
                     {loadingTerminals
                       ? "Loading..."
                       : reader?.status === "online"
-                      ? "Ready to Accept Payments"
-                      : !reader
-                      ? "Configuration Required"
-                      : `Reader Status: ${reader?.status
-                          ?.replace("_", " ")
-                          .toUpperCase()}`}
+                        ? "Ready to Accept Payments"
+                        : !reader
+                          ? "Configuration Required"
+                          : `Reader Status: ${reader?.status
+                              ?.replace("_", " ")
+                              .toUpperCase()}`}
                   </span>
                 </h2>
                 {reader?.action?.status && (
@@ -139,8 +237,8 @@ const Terminal = () => {
                     {reader?.action?.status === "in_progress"
                       ? "Transaction In Progress..."
                       : reader?.action?.status === "failed"
-                      ? "Transaction Failed..."
-                      : ""}
+                        ? "Transaction Failed..."
+                        : ""}
                   </h2>
                 )}
                 {readerError && (
@@ -166,295 +264,427 @@ const Terminal = () => {
             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div className="overflow-hidden sm:rounded-lg">
-                  {reader?.status === "online" ? (
-                    <table className="min-w-full divide-y divide-movet-gray">
-                      <thead className="bg-movet-white bg-opacity-50">
-                        <tr>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs text-movet-black font-bold text-opacity-75 uppercase tracking-wider"
-                          >
-                            Item
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
-                          >
-                            Value
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="bg-white">
-                          <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                            ID
+                  <h3 className="text-center uppercase italic text-base my-4 hover:text-movet-red hover:underline ease-in-out duration-500">
+                    <a
+                      href="https://dashboard.stripe.com/payments"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      LAST 10 SUCCESSFUL PAYMENTS
+                    </a>
+                  </h3>
+                  <table className="min-w-full divide-y divide-movet-gray">
+                    <thead className="bg-movet-white bg-opacity-50">
+                      <tr>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs text-movet-black font-bold text-opacity-75 uppercase tracking-wider"
+                        >
+                          Invoice
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
+                        >
+                          Amount
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
+                        >
+                          Time
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {previousPayments.map((payment: any, index: number) => (
+                        <tr
+                          key={index}
+                          className={
+                            index % 2 === 0
+                              ? "bg-movet-green bg-opacity-50"
+                              : "bg-white"
+                          }
+                        >
+                          <td className="px-6 py-4 text-xs font-medium text-movet-black">
+                            <a
+                              href={`/billing/invoice/?id=${payment?.metadata?.invoice}`}
+                              target="_blank"
+                              className="font-extrabold hover:text-movet-red hover:underline ease-in-out duration-500"
+                            >
+                              #{payment?.metadata?.invoice}
+                            </a>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.id}
+                          <td className="px-6 py-4 text-xs text-movet-black">
+                            ${(payment?.amount_received / 100).toFixed(2)}
                           </td>
-                        </tr>
-                        <tr className="bg-movet-white bg-opacity-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                            Label
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.label}
-                          </td>
-                        </tr>
-                        <tr className="bg-white">
-                          <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                            Object
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.object}
-                          </td>
-                        </tr>
-                        <tr className="bg-movet-white bg-opacity-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                            Device Type
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.device_type}
-                          </td>
-                        </tr>
-                        <tr className="bg-white">
-                          <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                            IP Address
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.ip_address}
-                          </td>
-                        </tr>
-                        <tr className="bg-movet-white bg-opacity-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                            Serial Number
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.serial_number}
+                          <td className="px-6 py-4 text-xs text-movet-black">
+                            {payment?.createdOn?.toLocaleString()}
                           </td>
                         </tr>
-                        <tr className="bg-white">
-                          <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                            Location
+                      ))}
+                    </tbody>
+                  </table>
+                  <h3 className="text-center uppercase italic text-base my-4 hover:text-movet-red hover:underline ease-in-out duration-500">
+                    <a
+                      href="https://dashboard.stripe.com/payments"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      LAST 10 FAILED PAYMENTS
+                    </a>
+                  </h3>
+                  <table className="min-w-full divide-y divide-movet-gray">
+                    <thead className="bg-movet-white bg-opacity-50">
+                      <tr>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs text-movet-black font-bold text-opacity-75 uppercase tracking-wider"
+                        >
+                          Invoice
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
+                        >
+                          Amount
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
+                        >
+                          Time
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {failedPayments.map((payment: any, index: number) => (
+                        <tr
+                          key={index}
+                          className={
+                            index % 2 === 0
+                              ? "bg-movet-red bg-opacity-50"
+                              : "bg-white"
+                          }
+                        >
+                          <td className="px-6 py-4 text-xs font-medium text-movet-black">
+                            <a
+                              href={`/billing/invoice/?id=${payment?.metadata?.invoice}`}
+                              target="_blank"
+                              className="font-extrabold hover:text-movet-red hover:underline ease-in-out duration-500"
+                            >
+                              #{payment?.metadata?.invoice}
+                            </a>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.location}
+                          <td className="px-6 py-4 text-xs text-movet-black">
+                            ${(payment?.amount / 100).toFixed(2)}
+                          </td>
+                          <td className="px-6 py-4 text-xs text-movet-black">
+                            {payment?.createdOn?.toLocaleString()}
                           </td>
                         </tr>
-                        <tr className="bg-movet-white bg-opacity-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                            Device Version
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.device_sw_version === ""
-                              ? "virtual_terminal_simulator"
-                              : reader?.device_sw_version}
-                          </td>
-                        </tr>
-                        <tr className="bg-white">
-                          <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                            status
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.status}
-                          </td>
-                        </tr>
-                        <tr className="bg-movet-white bg-opacity-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                            Live Mode
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                            {reader?.livemode?.toString() || ""}
-                          </td>
-                        </tr>
-                        {reader?.action?.failure_code && (
-                          <tr className="bg-white">
-                            <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                              Failure Code
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                              {reader?.action?.failure_code}
-                            </td>
-                          </tr>
-                        )}
-                        {reader?.action?.failure_message && (
-                          <tr className="bg-white">
-                            <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                              Failure Message
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                              {reader?.action?.failure_message}
-                            </td>
-                          </tr>
-                        )}
-                        {reader?.action?.process_payment_intent
-                          ?.payment_intent && (
-                          <tr className="bg-white">
-                            <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                              Transaction ID
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                              {
-                                reader?.action?.process_payment_intent
-                                  ?.payment_intent
-                              }
-                            </td>
-                          </tr>
-                        )}
-                        {reader?.action?.status && (
-                          <tr className="bg-white">
-                            <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
-                              Transaction Status
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
-                              {reader?.action?.status}
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <div className="max-w-sm flex flex-col justify-center items-center mx-auto text-movet-red p-8">
-                      <FontAwesomeIcon icon={faCashRegister} size="2x" />
-                      <h3 className="text-center italic uppercase text-lg mt-4">
-                        No Card Reader Found
-                      </h3>
-                      <button
-                        onClick={() => {
-                          setReader({
-                            status: "Resetting Card Reader...",
-                          });
-                          const resetTerminal = httpsCallable(
-                            functions,
-                            "resetTerminal",
-                          );
-                          resetTerminal()
-                            .then((result: any) => {
-                              if (result.data)
-                                setReader({
-                                  status: "online",
-                                });
-                            })
-                            .catch((error: any) => setReaderError(error));
-                        }}
-                        className="mt-4 flex flex-row bg-movet-red group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red"
-                      >
-                        <span className="mr-2">
-                          <FontAwesomeIcon icon={faRedo} size="lg" />
-                        </span>
-                        Reset Card Reader
-                      </button>
-                      <a
-                        href="mailto:support@movetcare.com"
-                        target="_blank"
-                        className="mt-4 flex flex-row bg-movet-black group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-red focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red"
-                        rel="noreferrer"
-                      >
-                        <span className="mr-2">
-                          <FontAwesomeIcon icon={faHeadset} size="lg" />
-                        </span>
-                        Contact Support
-                      </a>
-                    </div>
-                  )}
-                  {environment !== "production" && (
+                      ))}
+                    </tbody>
+                  </table>
+                  {isAdmin && (
                     <>
                       <h3 className="text-center uppercase italic text-base my-4 hover:text-movet-red hover:underline ease-in-out duration-500">
-                        <a
-                          href="https://stripe.com/docs/terminal/references/testing#physical-test-cards"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Test Invoice Amounts
-                        </a>
+                        CREDIT CARD READER DETAILS
                       </h3>
-                      <table className="min-w-full divide-y divide-movet-gray">
-                        <thead className="bg-movet-white bg-opacity-50">
-                          <tr>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-left text-xs text-movet-black font-bold text-opacity-75 uppercase tracking-wider"
+                      {reader?.status === "online" ? (
+                        <table className="min-w-full divide-y divide-movet-gray">
+                          <thead className="bg-movet-white bg-opacity-50">
+                            <tr>
+                              <th
+                                scope="col"
+                                className="px-6 py-3 text-left text-xs text-movet-black font-bold text-opacity-75 uppercase tracking-wider"
+                              >
+                                Item
+                              </th>
+                              <th
+                                scope="col"
+                                className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
+                              >
+                                Value
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="bg-white">
+                              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                ID
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                {reader?.id}
+                              </td>
+                            </tr>
+                            <tr className="bg-movet-white bg-opacity-50">
+                              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                Label
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                {reader?.label}
+                              </td>
+                            </tr>
+                            <tr className="bg-white">
+                              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                Object
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                {reader?.object}
+                              </td>
+                            </tr>
+                            <tr className="bg-movet-white bg-opacity-50">
+                              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                Device Type
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                {reader?.device_type}
+                              </td>
+                            </tr>
+                            <tr className="bg-white">
+                              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                IP Address
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                {reader?.ip_address}
+                              </td>
+                            </tr>
+                            <tr className="bg-movet-white bg-opacity-50">
+                              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                Serial Number
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                {reader?.serial_number}
+                              </td>
+                            </tr>
+                            <tr className="bg-white">
+                              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                Location
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                {reader?.location}
+                              </td>
+                            </tr>
+                            <tr className="bg-movet-white bg-opacity-50">
+                              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                Device Version
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                {reader?.device_sw_version === ""
+                                  ? "virtual_terminal_simulator"
+                                  : reader?.device_sw_version}
+                              </td>
+                            </tr>
+                            <tr className="bg-white">
+                              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                status
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                {reader?.status}
+                              </td>
+                            </tr>
+                            <tr className="bg-movet-white bg-opacity-50">
+                              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                Live Mode
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                {reader?.livemode?.toString() || ""}
+                              </td>
+                            </tr>
+                            {reader?.action?.failure_code && (
+                              <tr className="bg-white">
+                                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                  Failure Code
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                  {reader?.action?.failure_code}
+                                </td>
+                              </tr>
+                            )}
+                            {reader?.action?.failure_message && (
+                              <tr className="bg-white">
+                                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                  Failure Message
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                  {reader?.action?.failure_message}
+                                </td>
+                              </tr>
+                            )}
+                            {reader?.action?.process_payment_intent
+                              ?.payment_intent && (
+                              <tr className="bg-white">
+                                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                  Transaction ID
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                  {
+                                    reader?.action?.process_payment_intent
+                                      ?.payment_intent
+                                  }
+                                </td>
+                              </tr>
+                            )}
+                            {reader?.action?.status && (
+                              <tr className="bg-white">
+                                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-movet-black">
+                                  Transaction Status
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-xs text-movet-black">
+                                  {reader?.action?.status}
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      ) : (
+                        <div className="max-w-sm flex flex-col justify-center items-center mx-auto text-movet-red p-8">
+                          <FontAwesomeIcon icon={faCashRegister} size="2x" />
+                          <h3 className="text-center italic uppercase text-lg mt-4">
+                            No Card Reader Found
+                          </h3>
+                          <button
+                            onClick={() => {
+                              setReader({
+                                status: "Resetting Card Reader...",
+                              });
+                              const resetTerminal = httpsCallable(
+                                functions,
+                                "resetTerminal",
+                              );
+                              resetTerminal()
+                                .then((result: any) => {
+                                  if (result.data)
+                                    setReader({
+                                      status: "online",
+                                    });
+                                })
+                                .catch((error: any) => setReaderError(error));
+                            }}
+                            className="mt-4 flex flex-row bg-movet-red group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red"
+                          >
+                            <span className="mr-2">
+                              <FontAwesomeIcon icon={faRedo} size="lg" />
+                            </span>
+                            Reset Card Reader
+                          </button>
+                          <a
+                            href="mailto:support@movetcare.com"
+                            target="_blank"
+                            className="mt-4 flex flex-row bg-movet-black group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-red focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red"
+                            rel="noreferrer"
+                          >
+                            <span className="mr-2">
+                              <FontAwesomeIcon icon={faHeadset} size="lg" />
+                            </span>
+                            Contact Support
+                          </a>
+                        </div>
+                      )}
+                      {environment !== "production" && (
+                        <>
+                          <h3 className="text-center uppercase italic text-base my-4 hover:text-movet-red hover:underline ease-in-out duration-500">
+                            <a
+                              href="https://stripe.com/docs/terminal/references/testing#physical-test-cards"
+                              target="_blank"
+                              rel="noreferrer"
                             >
-                              Decimal
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
-                            >
-                              Result
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr className="bg-white">
-                            <td className="px-6 py-4 text-xs font-medium text-movet-black">
-                              01
-                            </td>
-                            <td className="px-6 py-4 text-xs text-movet-black">
-                              Payment is declined with a call_issuer code.
-                            </td>
-                          </tr>
-                          <tr className="bg-movet-white bg-opacity-50">
-                            <td className="px-6 py-4 text-xs font-medium text-movet-black">
-                              02
-                            </td>
-                            <td className="px-6 py-4 text-xs text-movet-black">
-                              (Contactless, non-US only) Payment is declined
-                              with an offline_pin_required code. When using
-                              readers featuring a cardholder-facing screen,
-                              follow the on-screen prompts to complete the
-                              transaction. If a PIN is required, enter the PIN
-                              1234.
-                            </td>
-                          </tr>
-                          <tr className="bg-white">
-                            <td className="px-6 py-4 text-xs font-medium text-movet-black">
-                              03
-                            </td>
-                            <td className="px-6 py-4 text-xs text-movet-black">
-                              (Contactless, non-US only) Payment is declined
-                              with an online_or_offline_pin_required code. When
-                              using readers featuring a cardholder-facing
-                              screen, follow the on-screen prompts to complete
-                              the transaction. If a PIN is required, enter any
-                              4-digit PIN.
-                            </td>
-                          </tr>
-                          <tr className="bg-movet-white bg-opacity-50">
-                            <td className="px-6 py-4 text-xs font-medium text-movet-black">
-                              05
-                            </td>
-                            <td className="px-6 py-4 text-xs text-movet-black">
-                              Payment is declined with an generic_decline code.
-                            </td>
-                          </tr>
-                          <tr className="bg-white">
-                            <td className="px-6 py-4 text-xs font-medium text-movet-black">
-                              55
-                            </td>
-                            <td className="px-6 py-4 text-xs text-movet-black">
-                              Payment is declined with an incorrect_pin code.
-                            </td>
-                          </tr>
-                          <tr className="bg-movet-white bg-opacity-50">
-                            <td className="px-6 py-4 text-xs font-medium text-movet-black">
-                              65
-                            </td>
-                            <td className="px-6 py-4 text-xs text-movet-black">
-                              Payment is declined with an
-                              withdrawal_count_limit_exceeded code.
-                            </td>
-                          </tr>
-                          <tr className="bg-white">
-                            <td className="px-6 py-4 text-xs font-medium text-movet-black">
-                              75
-                            </td>
-                            <td className="px-6 py-4 text-xs text-movet-black">
-                              Payment is declined with an pin_try_exceeded code.
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                              Test Invoice Amounts
+                            </a>
+                          </h3>
+                          <table className="min-w-full divide-y divide-movet-gray">
+                            <thead className="bg-movet-white bg-opacity-50">
+                              <tr>
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 text-left text-xs text-movet-black font-bold text-opacity-75 uppercase tracking-wider"
+                                >
+                                  Decimal
+                                </th>
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
+                                >
+                                  Result
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr className="bg-white">
+                                <td className="px-6 py-4 text-xs font-medium text-movet-black">
+                                  01
+                                </td>
+                                <td className="px-6 py-4 text-xs text-movet-black">
+                                  Payment is declined with a call_issuer code.
+                                </td>
+                              </tr>
+                              <tr className="bg-movet-white bg-opacity-50">
+                                <td className="px-6 py-4 text-xs font-medium text-movet-black">
+                                  02
+                                </td>
+                                <td className="px-6 py-4 text-xs text-movet-black">
+                                  (Contactless, non-US only) Payment is declined
+                                  with an offline_pin_required code. When using
+                                  readers featuring a cardholder-facing screen,
+                                  follow the on-screen prompts to complete the
+                                  transaction. If a PIN is required, enter the
+                                  PIN 1234.
+                                </td>
+                              </tr>
+                              <tr className="bg-white">
+                                <td className="px-6 py-4 text-xs font-medium text-movet-black">
+                                  03
+                                </td>
+                                <td className="px-6 py-4 text-xs text-movet-black">
+                                  (Contactless, non-US only) Payment is declined
+                                  with an online_or_offline_pin_required code.
+                                  When using readers featuring a
+                                  cardholder-facing screen, follow the on-screen
+                                  prompts to complete the transaction. If a PIN
+                                  is required, enter any 4-digit PIN.
+                                </td>
+                              </tr>
+                              <tr className="bg-movet-white bg-opacity-50">
+                                <td className="px-6 py-4 text-xs font-medium text-movet-black">
+                                  05
+                                </td>
+                                <td className="px-6 py-4 text-xs text-movet-black">
+                                  Payment is declined with an generic_decline
+                                  code.
+                                </td>
+                              </tr>
+                              <tr className="bg-white">
+                                <td className="px-6 py-4 text-xs font-medium text-movet-black">
+                                  55
+                                </td>
+                                <td className="px-6 py-4 text-xs text-movet-black">
+                                  Payment is declined with an incorrect_pin
+                                  code.
+                                </td>
+                              </tr>
+                              <tr className="bg-movet-white bg-opacity-50">
+                                <td className="px-6 py-4 text-xs font-medium text-movet-black">
+                                  65
+                                </td>
+                                <td className="px-6 py-4 text-xs text-movet-black">
+                                  Payment is declined with an
+                                  withdrawal_count_limit_exceeded code.
+                                </td>
+                              </tr>
+                              <tr className="bg-white">
+                                <td className="px-6 py-4 text-xs font-medium text-movet-black">
+                                  75
+                                </td>
+                                <td className="px-6 py-4 text-xs text-movet-black">
+                                  Payment is declined with an pin_try_exceeded
+                                  code.
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </>
+                      )}
                     </>
                   )}
                 </div>
@@ -469,9 +699,9 @@ const Terminal = () => {
             reader?.status === "online"
               ? " bg-movet-green bg-opacity-100 text-movet-white"
               : reader?.status === "offline" ||
-                (!reader?.status && !loadingTerminals)
-              ? " bg-movet-red bg-opacity-100 text-movet-white"
-              : ""
+                  (!reader?.status && !loadingTerminals)
+                ? " bg-movet-red bg-opacity-100 text-movet-white"
+                : ""
           }`}
         >
           <h3 className="mb-2 -mt-2 text-lg font-medium">SIMULATOR DISPLAY</h3>
