@@ -20,8 +20,6 @@ on:
       - "mobile/firebase-config.ts"
       - "mobile/firebase.json"
       - "mobile/metro.config.js"
-      - "mobile/package.json"
-      - "mobile/package-lock.json"
       - "mobile/tailwind.config.ts"
       - "mobile/tailwind.ts"
 jobs:
