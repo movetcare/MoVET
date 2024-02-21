@@ -30,7 +30,7 @@
     "react-hot-toast": "^2.4.1",
     "react-json-formatter": "^0.4.0",
     "react-number-format": "^5.3.1",
-    "react-tooltip": "^5.26.2",
+    "react-tooltip": "^5.26.3",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
     "ua-parser-js": "^1.0.37",
@@ -39,7 +39,7 @@
   "devDependencies": {
     "@types/lodash.kebabcase": "^4.1.9",
     "@types/node": "^20.11.19",
-    "@types/react": "18.2.55",
+    "@types/react": "18.2.57",
     "@types/react-datepicker": "^6.0.1",
     "@types/ua-parser-js": "^0.7.39",
     "@types/uuid": "^9.0.8",
