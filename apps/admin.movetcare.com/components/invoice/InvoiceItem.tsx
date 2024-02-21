@@ -98,7 +98,9 @@ const InvoiceItemHeader = ({
   );
   return (
     <div
-      onClick={() => setShowInvoiceDetails(!showInvoiceDetails)}
+      onClick={() => {
+        setShowInvoiceDetails(!showInvoiceDetails);
+      }}
       className={
         (showInvoiceDetails
           ? "flex items-center px-4 py-4 sm:px-6 bg-movet-black text-movet-white cursor-pointer"
@@ -107,9 +109,9 @@ const InvoiceItemHeader = ({
           invoice?.paymentStatus === "partially-refunded" || transactionState
             ? " bg-movet-yellow text-white"
             : invoice?.paymentStatus === "succeeded" ||
-              transactionState === "succeeded"
-            ? "bg-movet-green"
-            : ""
+                transactionState === "succeeded"
+              ? "bg-movet-green"
+              : ""
         }`
       }
     >
@@ -176,8 +178,8 @@ const InvoiceItemHeader = ({
                   {invoice?.paymentStatus === "partially-refunded"
                     ? " REFUND IN PROGRESS..."
                     : invoice?.first_original_invoice
-                    ? " REFUND"
-                    : ""}
+                      ? " REFUND"
+                      : ""}
                 </span>
               </p>
               {client?.firstName && client?.lastName && (
@@ -317,6 +319,14 @@ const InvoiceItemHeader = ({
                 </a>
               </>
             )}
+            <a
+              href={`/billing/invoice/?id=${invoice?.id}`}
+              target="_blank"
+              rel="noreferrer"
+              className={`hidden md:flex flex-row items-center text-xl hover:text-movet-white mx-2 text-movet-gray`}
+            >
+              <FontAwesomeIcon icon={faFileInvoiceDollar} />
+            </a>
           </div>
         </div>
       </div>
@@ -640,8 +650,8 @@ const InvoiceDetails = ({
             {invoice?.first_original_invoice
               ? `Credit Note #${invoice?.id}`
               : invoice?.client_due_sum === 0
-              ? `PAID Invoice - #${invoice?.id}`
-              : `UNPAID Invoice - #${invoice?.id}`}
+                ? `PAID Invoice - #${invoice?.id}`
+                : `UNPAID Invoice - #${invoice?.id}`}
             <a
               href={`${
                 environment === "production"
@@ -821,7 +831,7 @@ const InvoiceDetails = ({
                                   icon={faHandHoldingDollar}
                                   size={"2x"}
                                 />
-                                <h3 className="ml-2 font-medium text-center text-lg">
+                                <h3 className="ml-2 mt-2 font-medium text-center text-lg">
                                   AMOUNT DUE - $
                                   <span className="font-bold">
                                     {invoice?.client_due_sum?.toFixed(2)}
@@ -1053,8 +1063,9 @@ const InvoiceDetails = ({
                                         )} to ${paymentMethod
                                           .data()
                                           ?.card?.brand.toUpperCase()}
-                                        - ${paymentMethod.data()?.card
-                                          ?.last4}`);
+                                        - ${
+                                          paymentMethod.data()?.card?.last4
+                                        }`);
                                         const createPaymentIntent =
                                           httpsCallable(
                                             functions,
@@ -1289,18 +1300,18 @@ const InvoiceDetails = ({
                                     client?.customer?.id !== undefined
                                       ? client?.customer?.id
                                       : client?.customer
-                                      ? environment === "production"
-                                        ? `https://dashboard.stripe.com/customers/${
-                                            client?.customer?.id !== undefined
-                                              ? client?.customer?.id
-                                              : client?.customer
-                                          }/`
-                                        : `https://dashboard.stripe.com/test/customers/${
-                                            client?.customer?.id !== undefined
-                                              ? client?.customer?.id
-                                              : client?.customer
-                                          }/`
-                                      : `https://us.provetcloud.com/4285/billing/invoice/${invoice?.id}`
+                                        ? environment === "production"
+                                          ? `https://dashboard.stripe.com/customers/${
+                                              client?.customer?.id !== undefined
+                                                ? client?.customer?.id
+                                                : client?.customer
+                                            }/`
+                                          : `https://dashboard.stripe.com/test/customers/${
+                                              client?.customer?.id !== undefined
+                                                ? client?.customer?.id
+                                                : client?.customer
+                                            }/`
+                                        : `https://us.provetcloud.com/4285/billing/invoice/${invoice?.id}`
                                   }
                                   target="_blank"
                                   rel="noreferrer"
@@ -1314,7 +1325,7 @@ const InvoiceDetails = ({
                                         />
                                       </div>
                                       <div className="ml-3 uppercase">
-                                        <h3 className="font-medium">
+                                        <h3 className="font-medium m-0">
                                           Invoice{" "}
                                           <a
                                             href={`${
@@ -1335,7 +1346,7 @@ const InvoiceDetails = ({
                                             )}
                                           </a>
                                         </h3>
-                                        <h3 className="text-sm">
+                                        <h3 className="text-sm m-0">
                                           REFUND COMPLETE
                                         </h3>
                                       </div>
@@ -1407,22 +1418,22 @@ const InvoiceDetails = ({
                                         client?.customer?.id !== undefined
                                           ? client?.customer?.id
                                           : client?.customer
-                                          ? environment === "production"
-                                            ? `https://dashboard.stripe.com/customers/${
-                                                client?.customer?.id !==
-                                                undefined
-                                                  ? client?.customer?.id
-                                                  : client?.customer
-                                              }/`
-                                            : `https://dashboard.stripe.com/test/customers/${
-                                                client?.customer?.id !==
-                                                undefined
-                                                  ? client?.customer?.id
-                                                  : client?.customer
-                                              }/`
-                                          : environment === "production"
-                                          ? `https://dashboard.stripe.com/payments/${invoice?.paymentIntent}`
-                                          : `https://dashboard.stripe.com/test/payments/${invoice?.paymentIntent}`
+                                            ? environment === "production"
+                                              ? `https://dashboard.stripe.com/customers/${
+                                                  client?.customer?.id !==
+                                                  undefined
+                                                    ? client?.customer?.id
+                                                    : client?.customer
+                                                }/`
+                                              : `https://dashboard.stripe.com/test/customers/${
+                                                  client?.customer?.id !==
+                                                  undefined
+                                                    ? client?.customer?.id
+                                                    : client?.customer
+                                                }/`
+                                            : environment === "production"
+                                              ? `https://dashboard.stripe.com/payments/${invoice?.paymentIntent}`
+                                              : `https://dashboard.stripe.com/test/payments/${invoice?.paymentIntent}`
                                       }
                                       target="_blank"
                                       rel="noreferrer"
@@ -1788,20 +1799,22 @@ const InvoiceDetails = ({
                                       ? client?.customer?.id !== undefined
                                         ? client?.customer?.id
                                         : client?.customer
-                                        ? environment === "production"
-                                          ? `https://dashboard.stripe.com/customers/${
-                                              client?.customer?.id !== undefined
-                                                ? client?.customer?.id
-                                                : client?.customer
-                                            }/`
-                                          : `https://dashboard.stripe.com/test/customers/${
-                                              client?.customer?.id !== undefined
-                                                ? client?.customer?.id
-                                                : client?.customer
-                                            }/`
-                                        : environment === "production"
-                                        ? `https://dashboard.stripe.com/payments/${invoice?.paymentIntent}`
-                                        : `https://dashboard.stripe.com/test/payments/${invoice?.paymentIntent}`
+                                          ? environment === "production"
+                                            ? `https://dashboard.stripe.com/customers/${
+                                                client?.customer?.id !==
+                                                undefined
+                                                  ? client?.customer?.id
+                                                  : client?.customer
+                                              }/`
+                                            : `https://dashboard.stripe.com/test/customers/${
+                                                client?.customer?.id !==
+                                                undefined
+                                                  ? client?.customer?.id
+                                                  : client?.customer
+                                              }/`
+                                          : environment === "production"
+                                            ? `https://dashboard.stripe.com/payments/${invoice?.paymentIntent}`
+                                            : `https://dashboard.stripe.com/test/payments/${invoice?.paymentIntent}`
                                       : `https://us.provetcloud.com/4285/billing/invoice_finished/${invoice?.id}`
                                   }
                                   target="_blank"
@@ -1879,20 +1892,20 @@ const InvoiceDetails = ({
                                 client?.customer?.id !== undefined
                                   ? client?.customer?.id
                                   : client?.customer
-                                  ? environment === "production"
-                                    ? `https://dashboard.stripe.com/customers/${
-                                        client?.customer?.id !== undefined
-                                          ? client?.customer?.id
-                                          : client?.customer
-                                      }/`
-                                    : `https://dashboard.stripe.com/test/customers/${
-                                        client?.customer?.id !== undefined
-                                          ? client?.customer?.id
-                                          : client?.customer
-                                      }/`
-                                  : environment === "production"
-                                  ? `https://dashboard.stripe.com/payments/${invoice?.paymentIntent}`
-                                  : `https://dashboard.stripe.com/test/payments/${invoice?.paymentIntent}`
+                                    ? environment === "production"
+                                      ? `https://dashboard.stripe.com/customers/${
+                                          client?.customer?.id !== undefined
+                                            ? client?.customer?.id
+                                            : client?.customer
+                                        }/`
+                                      : `https://dashboard.stripe.com/test/customers/${
+                                          client?.customer?.id !== undefined
+                                            ? client?.customer?.id
+                                            : client?.customer
+                                        }/`
+                                    : environment === "production"
+                                      ? `https://dashboard.stripe.com/payments/${invoice?.paymentIntent}`
+                                      : `https://dashboard.stripe.com/test/payments/${invoice?.paymentIntent}`
                               }
                               target="_blank"
                               rel="noreferrer"
@@ -2083,7 +2096,15 @@ const getProVetIdFromUrl = (url: string | null): number | null => {
   } else return null;
 };
 
-const InvoiceItem = ({ key, invoice }: { key: number; invoice: Invoice }) => {
+const InvoiceItem = ({
+  key = null,
+  invoice,
+  mode = "list",
+}: {
+  key?: number | null;
+  invoice: Invoice;
+  mode?: "list" | "single";
+}) => {
   const [showInvoiceDetails, setShowInvoiceDetails] = useState<boolean>(false);
   const [client] = useDocument(
     doc(
@@ -2101,7 +2122,7 @@ const InvoiceItem = ({ key, invoice }: { key: number; invoice: Invoice }) => {
   );
   const [transactionState, setTransactionState] = useState<any>();
 
-  return (
+  return mode === "list" ? (
     <li key={key}>
       <InvoiceItemHeader
         client={client?.data()}
@@ -2120,6 +2141,17 @@ const InvoiceItem = ({ key, invoice }: { key: number; invoice: Invoice }) => {
         paymentMethods={paymentMethods}
       />
     </li>
+  ) : (
+    <>
+      <InvoiceDetails
+        client={client?.data()}
+        showInvoiceDetails={true}
+        transactionState={transactionState}
+        setTransactionState={setTransactionState}
+        invoice={invoice}
+        paymentMethods={paymentMethods}
+      />
+    </>
   );
 };
 

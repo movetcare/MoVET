@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Error from "./Error";
+import Error from "../Error";
 import Select, { components } from "react-select";
 import { collection } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
@@ -47,6 +47,10 @@ export const InvoiceSearch = () => {
           }),
         });
       });
+      invoices.sort(
+        (a, b) =>
+          new Date(b.updatedOn).getTime() - new Date(a.updatedOn).getTime(),
+      );
       setOptions(invoices);
     }
   }, [invoiceData]);

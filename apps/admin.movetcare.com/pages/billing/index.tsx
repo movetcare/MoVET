@@ -3,8 +3,8 @@ import {
   faFileInvoiceDollar,
   faHomeUser,
 } from "@fortawesome/free-solid-svg-icons";
-import InvoiceList from "components/InvoiceList";
-import { InvoiceSearch } from "components/InvoiceSearch";
+import InvoiceList from "components/invoice/InvoiceList";
+import { InvoiceSearch } from "components/invoice/InvoiceSearch";
 import Terminal from "components/Terminal";
 import { query, collection, where, orderBy, limit } from "firebase/firestore";
 import Head from "next/head";
