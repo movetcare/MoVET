@@ -54,6 +54,11 @@ const settingsOptions: Array<Option> = [
     link: null,
   },
   {
+    name: "Privacy Policy",
+    icon: "lock",
+    link: "/(app)/settings/privacy-policy",
+  },
+  {
     name: "Logout",
     icon: "right-from-bracket",
     link: "/(app)/settings/sign-out",

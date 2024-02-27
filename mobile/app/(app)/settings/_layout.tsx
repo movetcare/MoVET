@@ -32,6 +32,12 @@ export default function Layout() {
         iconName: "credit-card",
         canGoBack: true,
       });
+    } else if (segments && segments.includes("privacy-policy")) {
+      setNavigationDetails({
+        title: "Privacy Policy",
+        iconName: "lock",
+        canGoBack: true,
+      });
     } else if (segments && segments.includes("report-a-bug")) {
       setNavigationDetails({
         title: "Report a Bug",
@@ -40,15 +46,12 @@ export default function Layout() {
       });
     } else if (segments && segments.includes("account")) {
       if (segments && segments.includes("web-view")) {
-
         setNavigationDetails({
           title: "Contact Us",
           iconName: "user-medical-message",
           canGoBack: true,
         });
-
-      }
-      else
+      } else
         setNavigationDetails({
           title: "My Account",
           iconName: "user-edit",
