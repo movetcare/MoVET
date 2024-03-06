@@ -264,128 +264,139 @@ const Terminal = () => {
             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div className="overflow-hidden sm:rounded-lg">
-                  <h3 className="text-center uppercase italic text-base my-4 hover:text-movet-red hover:underline ease-in-out duration-500">
-                    <a
-                      href="https://dashboard.stripe.com/payments"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      LAST 10 SUCCESSFUL PAYMENTS
-                    </a>
-                  </h3>
-                  <table className="min-w-full divide-y divide-movet-gray">
-                    <thead className="bg-movet-white bg-opacity-50">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs text-movet-black font-bold text-opacity-75 uppercase tracking-wider"
+                  {previousPayments?.length > 0 && (
+                    <>
+                      <h3 className="text-center uppercase italic text-base my-4 hover:text-movet-red hover:underline ease-in-out duration-500">
+                        <a
+                          href="https://dashboard.stripe.com/payments"
+                          target="_blank"
+                          rel="noreferrer"
                         >
-                          Invoice
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
-                        >
-                          Amount
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
-                        >
-                          Time
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {previousPayments.map((payment: any, index: number) => (
-                        <tr
-                          key={index}
-                          className={
-                            index % 2 === 0
-                              ? "bg-movet-green bg-opacity-50"
-                              : "bg-white"
-                          }
-                        >
-                          <td className="px-6 py-4 text-xs font-medium text-movet-black">
-                            <a
-                              href={`/billing/invoice/?id=${payment?.metadata?.invoice}`}
-                              target="_blank"
-                              className="font-extrabold hover:text-movet-red hover:underline ease-in-out duration-500"
+                          RECENT SUCCESSFUL PAYMENTS
+                        </a>
+                      </h3>
+                      <table className="min-w-full divide-y divide-movet-gray">
+                        <thead className="bg-movet-white bg-opacity-50">
+                          <tr>
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs text-movet-black font-bold text-opacity-75 uppercase tracking-wider"
                             >
-                              #{payment?.metadata?.invoice}
-                            </a>
-                          </td>
-                          <td className="px-6 py-4 text-xs text-movet-black">
-                            ${(payment?.amount_received / 100).toFixed(2)}
-                          </td>
-                          <td className="px-6 py-4 text-xs text-movet-black">
-                            {payment?.createdOn?.toLocaleString()}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <h3 className="text-center uppercase italic text-base my-4 hover:text-movet-red hover:underline ease-in-out duration-500">
-                    <a
-                      href="https://dashboard.stripe.com/payments"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      LAST 10 FAILED PAYMENTS
-                    </a>
-                  </h3>
-                  <table className="min-w-full divide-y divide-movet-gray">
-                    <thead className="bg-movet-white bg-opacity-50">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs text-movet-black font-bold text-opacity-75 uppercase tracking-wider"
-                        >
-                          Invoice
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
-                        >
-                          Amount
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
-                        >
-                          Time
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {failedPayments.map((payment: any, index: number) => (
-                        <tr
-                          key={index}
-                          className={
-                            index % 2 === 0
-                              ? "bg-movet-red bg-opacity-50"
-                              : "bg-white"
-                          }
-                        >
-                          <td className="px-6 py-4 text-xs font-medium text-movet-black">
-                            <a
-                              href={`/billing/invoice/?id=${payment?.metadata?.invoice}`}
-                              target="_blank"
-                              className="font-extrabold hover:text-movet-red hover:underline ease-in-out duration-500"
+                              Invoice
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
                             >
-                              #{payment?.metadata?.invoice}
-                            </a>
-                          </td>
-                          <td className="px-6 py-4 text-xs text-movet-black">
-                            ${(payment?.amount / 100).toFixed(2)}
-                          </td>
-                          <td className="px-6 py-4 text-xs text-movet-black">
-                            {payment?.createdOn?.toLocaleString()}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                              Amount
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
+                            >
+                              Time
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {previousPayments.map(
+                            (payment: any, index: number) => (
+                              <tr
+                                key={index}
+                                className={
+                                  index % 2 === 0
+                                    ? "bg-movet-green bg-opacity-50"
+                                    : "bg-white"
+                                }
+                              >
+                                <td className="px-6 py-4 text-xs font-medium text-movet-black">
+                                  <a
+                                    href={`/billing/invoice/?id=${payment?.metadata?.invoice}`}
+                                    target="_blank"
+                                    className="font-extrabold hover:text-movet-red hover:underline ease-in-out duration-500"
+                                  >
+                                    #{payment?.metadata?.invoice}
+                                  </a>
+                                </td>
+                                <td className="px-6 py-4 text-xs text-movet-black">
+                                  ${(payment?.amount_received / 100).toFixed(2)}
+                                </td>
+                                <td className="px-6 py-4 text-xs text-movet-black">
+                                  {payment?.createdOn?.toLocaleString()}
+                                </td>
+                              </tr>
+                            ),
+                          )}
+                        </tbody>
+                      </table>
+                    </>
+                  )}
+                  {failedPayments?.length > 0 && (
+                    <>
+                      <h3 className="text-center uppercase italic text-base my-4 hover:text-movet-red hover:underline ease-in-out duration-500">
+                        <a
+                          href="https://dashboard.stripe.com/payments"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          RECENT FAILED PAYMENTS
+                        </a>
+                      </h3>
+                      <table className="min-w-full divide-y divide-movet-gray">
+                        <thead className="bg-movet-white bg-opacity-50">
+                          <tr>
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs text-movet-black font-bold text-opacity-75 uppercase tracking-wider"
+                            >
+                              Invoice
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
+                            >
+                              Amount
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
+                            >
+                              Time
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {failedPayments.map((payment: any, index: number) => (
+                            <tr
+                              key={index}
+                              className={
+                                index % 2 === 0
+                                  ? "bg-movet-red bg-opacity-50"
+                                  : "bg-white"
+                              }
+                            >
+                              <td className="px-6 py-4 text-xs font-medium text-movet-black">
+                                <a
+                                  href={`/billing/invoice/?id=${payment?.metadata?.invoice}`}
+                                  target="_blank"
+                                  className="font-extrabold hover:text-movet-red hover:underline ease-in-out duration-500"
+                                >
+                                  #{payment?.metadata?.invoice}
+                                </a>
+                              </td>
+                              <td className="px-6 py-4 text-xs text-movet-black">
+                                ${(payment?.amount / 100).toFixed(2)}
+                              </td>
+                              <td className="px-6 py-4 text-xs text-movet-black">
+                                {payment?.createdOn?.toLocaleString()}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </>
+                  )}
+
                   {isAdmin && (
                     <>
                       <h3 className="text-center uppercase italic text-base my-4 hover:text-movet-red hover:underline ease-in-out duration-500">

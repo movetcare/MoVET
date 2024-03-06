@@ -79,6 +79,10 @@ const Client = () => {
   }, [query]);
 
   useEffect(() => {
+    if (client) console.log("CLIENT data => ", client);
+  }, [client]);
+
+  useEffect(() => {
     if (!isLoadingClient) setIsLoading(false);
     if (clientData) {
       const verifyAccount = httpsCallable(functions, "verifyAccount");
