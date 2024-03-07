@@ -8,7 +8,7 @@ import {
   request,
   //DEBUG,
 } from "../../../config/config";
-import { requestIsAuthorized } from "./requestIsAuthorized";
+import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 import { getCustomerId } from "../../../utils/getCustomerId";
 const DEBUG = false;
 export const createPaymentIntent = functions

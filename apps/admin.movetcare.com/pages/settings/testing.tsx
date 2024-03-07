@@ -3,19 +3,25 @@ import {
   faTrash,
   faEnvelope,
   faIdCard,
+  faRedo,
+  faCheckCircle,
+  faCircleExclamation,
+  faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { collection } from "firebase/firestore";
-import { firestore } from "services/firebase";
+import { firestore, functions } from "services/firebase";
 import environment from "utils/environment";
 import "react-tooltip/dist/react-tooltip.css";
-import { Loader } from "ui";
+import { Button, Loader } from "ui";
 import { useCollection } from "react-firebase-hooks/firestore";
 import Error from "../../components/Error";
 import { Tooltip } from "react-tooltip";
 import AdminCheck from "components/AdminCheck";
 import { ClientSearch } from "components/ClientSearch";
+import { httpsCallable } from "firebase/functions";
+import toast from "react-hot-toast";
 
 interface Client {
   id: string;
@@ -55,6 +61,61 @@ const Testing = () => {
       setArchivedClients(archivedClients);
     }
   }, [clientData]);
+
+  const syncData = async ({
+    environment,
+    type,
+  }: {
+    environment: "production";
+    type: "booking" | "closures" | "openings";
+  }) => {
+    toast(
+      `Syncing ${type.toUpperCase()} Configuration Data from ${environment.toUpperCase()}...`,
+      {
+        duration: 1000,
+        icon: (
+          <FontAwesomeIcon
+            icon={faSpinner}
+            size="sm"
+            className="text-movet-gray"
+            spin
+          />
+        ),
+      },
+    );
+    await httpsCallable(
+      functions,
+      "syncData",
+    )({ environment, type })
+      .then((result: any) => {
+        toast(
+          `FINISHED Syncing ${type.toUpperCase()} Configuration Data from ${environment.toUpperCase()}!`,
+          {
+            duration: 3500,
+            icon: (
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                size="sm"
+                className="text-movet-green"
+              />
+            ),
+          },
+        );
+        console.log("RESULT", result);
+      })
+      .catch((error: any) =>
+        toast(`${type.toUpperCase()} Data Sync FAILED: "${error?.message}"`, {
+          duration: 5000,
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              size="sm"
+              className="text-movet-red"
+            />
+          ),
+        }),
+      );
+  };
 
   return (
     <AdminCheck>
@@ -275,6 +336,63 @@ const Testing = () => {
               </li>
             ))
           )}
+        </ul>
+      </div>
+      <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center mt-1 px-8">
+          <div className="flex flex-row items-center">
+            <FontAwesomeIcon
+              icon={faRedo}
+              className={"text-movet-red"}
+              size="lg"
+            />
+            <h1 className="ml-2 my-4 text-lg">
+              Sync Data w/ Production Environment
+            </h1>
+          </div>
+        </div>
+        <ul
+          role="list"
+          className="divide-y divide-movet-gray border-t border-movet-gray mt-2"
+        >
+          <li className="flex flex-col sm:flex-row text-center p-4">
+            <Button
+              className="m-4"
+              color="black"
+              onClick={() => {
+                syncData({ environment: "production", type: "booking" });
+              }}
+            >
+              <span className="flex-shrink-0 cursor-pointer mr-2">
+                <FontAwesomeIcon icon={faRedo} className="text-movet-white" />
+              </span>
+              Sync Bookings Configuration
+            </Button>
+            <Button
+              className="m-4"
+              color="black"
+              onClick={() => {
+                syncData({ environment: "production", type: "closures" });
+              }}
+            >
+              <span className="flex-shrink-0 cursor-pointer mr-2">
+                <FontAwesomeIcon icon={faRedo} className="text-movet-white" />
+              </span>
+              Sync Closures Configuration
+            </Button>
+            <Button
+              className="m-4"
+              color="black"
+              onClick={() => {
+                syncData({ environment: "production", type: "openings" });
+              }}
+            >
+              <span className="flex-shrink-0 cursor-pointer mr-2">
+                <FontAwesomeIcon icon={faRedo} className="text-movet-white" />
+              </span>
+              Sync Openings Configuration
+            </Button>
+          </li>
         </ul>
       </div>
     </AdminCheck>

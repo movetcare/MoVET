@@ -1,5 +1,5 @@
-import { functions, DEBUG } from "../../../config/config";
-import { sendNotification } from "../../../notifications/sendNotification";
+import { functions, DEBUG } from "../config/config";
+import { sendNotification } from "../notifications/sendNotification";
 
 export const requestIsAuthorized = async (context: any): Promise<boolean> => {
   if (DEBUG) {
@@ -16,18 +16,18 @@ export const requestIsAuthorized = async (context: any): Promise<boolean> => {
       console.log("requestIsAuthorized = ", false);
       console.log(
         "context.auth.token.email_verified",
-        context.auth.token.email_verified
+        context.auth.token.email_verified,
       );
       console.log(
         "context.auth.token.firebase.sign_in_provider",
-        context.auth.token.firebase.sign_in_provider
+        context.auth.token.firebase.sign_in_provider,
       );
     }
     sendNotification({
       type: "slack",
       payload: {
         message: `:interrobang: Cloud Functions Auth Error\n\n\`\`\`${JSON.stringify(
-          context.auth
+          context.auth,
         )}\`\`\`\n\n`,
       },
     });

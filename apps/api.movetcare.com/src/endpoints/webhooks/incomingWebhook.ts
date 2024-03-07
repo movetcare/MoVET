@@ -13,11 +13,14 @@ import { initProVetConfig } from "../../config/initConfig";
 import { processExpoWebhook } from "../../integrations/expo/processWebhook";
 import { processStripeWebhook } from "../../integrations/stripe/processWebhook";
 import { processGoToWebhook } from "../../integrations/goto/processGoToWebhook";
+import { getClosingsConfiguration } from "../../config/getClosingsConfiguration";
+import { getOpeningsConfiguration } from "../../config/getOpeningsConfiguration";
+import { getBookingConfiguration } from "../../utils/getBookingConfiguration";
 
 const decodeJWT = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<any> => {
   if (req.headers?.authorization?.startsWith("Bearer ")) {
     const idToken = req.headers.authorization.split("Bearer ")[1];
@@ -51,7 +54,7 @@ app.use(cors({ origin: true }));
 app.use(
   express.json({
     verify: (req: any, res: any, buffer: any) => (req["rawBody"] = buffer),
-  })
+  }),
 );
 
 app.use(decodeJWT);
@@ -61,6 +64,9 @@ app.post("/provet/webhook/", runAsync(processProVetWebhook));
 app.post("/expo/webhook/", runAsync(processExpoWebhook));
 app.post("/stripe/webhook/", runAsync(processStripeWebhook));
 app.get("/goto/login/", runAsync(processGoToWebhook));
+app.get("/configuration/booking/", runAsync(getBookingConfiguration));
+app.get("/configuration/openings/", runAsync(getOpeningsConfiguration));
+app.get("/configuration/closings/", runAsync(getClosingsConfiguration));
 
 export const incomingWebhook: Promise<Response> = functions
   .runWith({

@@ -5,14 +5,14 @@ import {
   request,
   DEBUG,
 } from "../../../config/config";
-import { requestIsAuthorized } from "./requestIsAuthorized";
+import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 export const simulatePayment = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
     async (
       data: { card: string; reader: string },
-      context: any
+      context: any,
     ): Promise<any> => {
       if (DEBUG) {
         console.log("simulatePayment context.app => ", context.app);
@@ -38,22 +38,22 @@ export const simulatePayment = functions
                     functions.config()?.stripe?.secret_key
                   }`,
                 },
-              }
+              },
             )
             .then(async (response: any) => {
               const { data } = response;
               if (DEBUG)
                 console.log(
                   `RESPONSE: https://api.stripe.com/v1/test_helpers/terminal/readers/${reader}/present_payment_method => `,
-                  data
+                  data,
                 );
               return data?.action || null;
             })
             .catch((error: any) => throwError(error));
         } else
           return throwError(
-            `UNABLE TO COMPLETE SIMULATED PAYMENT -> ${JSON.stringify(data)}`
+            `UNABLE TO COMPLETE SIMULATED PAYMENT -> ${JSON.stringify(data)}`,
           );
       }
-    }
+    },
   );

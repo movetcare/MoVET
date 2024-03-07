@@ -5,14 +5,14 @@ import {
   DEBUG,
 } from "../../../config/config";
 import { configureTerminals } from "../../../config/configureTerminals";
-import { requestIsAuthorized } from "./requestIsAuthorized";
+import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 export const resetTerminal = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
     async (
       data: { mode: "counter" | "client"; invoice: string; reader: string },
-      context: any
+      context: any,
     ): Promise<any> => {
       if (DEBUG) {
         console.log("simulatePayment context.app => ", context.app);
@@ -24,7 +24,7 @@ export const resetTerminal = functions
         return await configureTerminals();
       } else
         return throwError(
-          `UNABLE TO RESET TERMINAL -> ${JSON.stringify(data)}`
+          `UNABLE TO RESET TERMINAL -> ${JSON.stringify(data)}`,
         );
-    }
+    },
   );

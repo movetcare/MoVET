@@ -7,7 +7,7 @@ import {
 import { sendNotification } from "../../../notifications/sendNotification";
 import type { EmailConfiguration } from "../../../types/email";
 import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
-import { requestIsAuthorized } from "../pos/requestIsAuthorized";
+import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 export const sendPaymentLink = functions
   .runWith(defaultRuntimeOptions)

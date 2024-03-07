@@ -6,7 +6,7 @@ import {
   DEBUG,
 } from "../../../config/config";
 import { deleteAllAccountData } from "../../../utils/deleteAllAccountData";
-import { requestIsAuthorized } from "../pos/requestIsAuthorized";
+import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 export const deleteAccount = functions
   .runWith(defaultRuntimeOptions)
@@ -20,7 +20,7 @@ export const deleteAccount = functions
       if (DEBUG)
         console.log(
           "deleteAccount => CLIENT IS DELETING ACCOUNT",
-          context.auth?.uid
+          context.auth?.uid,
         );
       return await deleteAllAccountData(context.auth?.uid);
     } else if ((await requestIsAuthorized(context)) && data?.id) {

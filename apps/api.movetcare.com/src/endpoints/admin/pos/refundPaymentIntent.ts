@@ -6,7 +6,7 @@ import {
   admin,
   DEBUG,
 } from "../../../config/config";
-import { requestIsAuthorized } from "./requestIsAuthorized";
+import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 export const refundPaymentIntent = functions
   .runWith(defaultRuntimeOptions)
@@ -17,7 +17,7 @@ export const refundPaymentIntent = functions
         invoice: string;
         mode: "client" | "counter";
       },
-      context: any
+      context: any,
     ): Promise<any> => {
       if (DEBUG) console.log("refundPaymentIntent DATA =>", data);
       const isAuthorized = await requestIsAuthorized(context);
@@ -32,7 +32,7 @@ export const refundPaymentIntent = functions
           await admin
             .firestore()
             .collection(
-              data?.mode === "client" ? "client_invoices" : "counter_sales"
+              data?.mode === "client" ? "client_invoices" : "counter_sales",
             )
             .doc(`${data?.invoice}`)
             .collection("refunds")
@@ -42,14 +42,14 @@ export const refundPaymentIntent = functions
                 ...refund,
                 updatedOn: new Date(),
               },
-              { merge: true }
+              { merge: true },
             )
             .catch((error: any) => throwError(error));
           if (refund?.status === "succeeded")
             return await admin
               .firestore()
               .collection(
-                data?.mode === "client" ? "client_invoices" : "counter_sales"
+                data?.mode === "client" ? "client_invoices" : "counter_sales",
               )
               .doc(`${data?.invoice}`)
               .set(
@@ -57,12 +57,12 @@ export const refundPaymentIntent = functions
                   paymentStatus: "partially-refunded",
                   updatedOn: new Date(),
                 },
-                { merge: true }
+                { merge: true },
               )
               .then(async () => true)
               .catch((error: any) => throwError(error));
           else return false;
         }
       } else return false;
-    }
+    },
   );

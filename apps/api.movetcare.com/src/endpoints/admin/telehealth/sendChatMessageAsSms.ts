@@ -6,7 +6,7 @@ import {
 } from "../../../config/config";
 import { sendNotification } from "../../../notifications/sendNotification";
 import { getAuthUserByEmail } from "../../../utils/auth/getAuthUserByEmail";
-import { requestIsAuthorized } from "../../admin/pos/requestIsAuthorized";
+import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 export const sendChatMessageAsSms = functions
   .runWith(defaultRuntimeOptions)

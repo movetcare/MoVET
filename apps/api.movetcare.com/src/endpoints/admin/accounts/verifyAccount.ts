@@ -12,13 +12,14 @@ import { sendNotification } from "../../../notifications/sendNotification";
 import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
 import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
-import { requestIsAuthorized } from "../../admin/pos/requestIsAuthorized";
+import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 interface AccountData {
   email: string;
   displayName: string;
   sendEmail: boolean;
   sendSms: boolean;
+  sendPush: boolean;
   emailVerified: boolean;
   phoneNumber: string | null;
   city: string;
@@ -70,6 +71,7 @@ interface MovetData {
   phone: string;
   sendEmail: boolean;
   sendSms: boolean;
+  sendPush: boolean;
   firstName: string;
   lastName: string;
   city: string;
@@ -231,6 +233,7 @@ export const verifyAccount = functions
             email: authData?.email || "MISSING EMAIL",
             sendEmail: movetData?.sendEmail || false,
             sendSms: movetData?.sendSms || false,
+            sendPush: movetData?.sendPush || false,
             emailVerified: authData?.emailVerified || false,
             phoneNumber: authData?.phoneNumber
               ? formatPhoneNumber(authData?.phoneNumber)

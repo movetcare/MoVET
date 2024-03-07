@@ -6,7 +6,7 @@ import {
 } from "../../../config/config";
 import { sendNotification } from "../../../notifications/sendNotification";
 import { sendWelcomeEmail } from "../../../notifications/templates/sendWelcomeEmail";
-import { requestIsAuthorized } from "../pos/requestIsAuthorized";
+import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 export const sendPasswordResetLink = functions
   .runWith(defaultRuntimeOptions)
@@ -28,5 +28,5 @@ export const sendPasswordResetLink = functions
           return false;
         }
       } else return false;
-    }
+    },
   );

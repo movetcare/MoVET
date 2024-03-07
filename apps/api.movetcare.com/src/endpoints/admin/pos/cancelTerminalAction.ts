@@ -7,14 +7,14 @@ import {
   throwError,
   DEBUG,
 } from "../../../config/config";
-import { requestIsAuthorized } from "./requestIsAuthorized";
+import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 export const cancelTerminalAction = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
     async (
       data: { reader: string; paymentIntent: string },
-      context: any
+      context: any,
     ): Promise<any> => {
       if (DEBUG) {
         console.log("cancelTerminalAction context.app => ", context.app);
@@ -34,7 +34,7 @@ export const cancelTerminalAction = functions
                   functions.config()?.stripe?.secret_key
                 }`,
               },
-            }
+            },
           )
           .then(async (result: any) => {
             if (DEBUG) {
@@ -43,7 +43,7 @@ export const cancelTerminalAction = functions
             }
             if (data.paymentIntent) {
               const canceledPaymentIntent = await stripe.paymentIntents.cancel(
-                data?.paymentIntent
+                data?.paymentIntent,
               );
               if (DEBUG)
                 console.log("canceledPaymentIntent", canceledPaymentIntent);
@@ -57,7 +57,7 @@ export const cancelTerminalAction = functions
                   if (DEBUG)
                     console.log(
                       "counter_sales querySnapshot?.docs?.length",
-                      querySnapshot?.docs?.length
+                      querySnapshot?.docs?.length,
                     );
                   if (querySnapshot?.docs?.length > 0)
                     querySnapshot.forEach(async (doc: any) => {
@@ -72,7 +72,7 @@ export const cancelTerminalAction = functions
                             ...canceledPaymentIntent,
                             updatedOn: new Date(),
                           },
-                          { merge: true }
+                          { merge: true },
                         )
                         .catch((error: any) => throwError(error));
                       await admin
@@ -85,7 +85,7 @@ export const cancelTerminalAction = functions
                             paymentIntentObject: canceledPaymentIntent,
                             updatedOn: new Date(),
                           },
-                          { merge: true }
+                          { merge: true },
                         )
                         .catch((error: any) => throwError(error));
                     });
@@ -100,7 +100,7 @@ export const cancelTerminalAction = functions
                         if (DEBUG)
                           console.log(
                             "client_invoices querySnapshot?.docs?.length",
-                            querySnapshot?.docs?.length
+                            querySnapshot?.docs?.length,
                           );
                         if (querySnapshot?.docs?.length > 0)
                           querySnapshot.forEach(async (doc: any) => {
@@ -115,7 +115,7 @@ export const cancelTerminalAction = functions
                                   ...canceledPaymentIntent,
                                   updatedOn: new Date(),
                                 },
-                                { merge: true }
+                                { merge: true },
                               )
                               .catch((error: any) => throwError(error));
                             await admin
@@ -128,7 +128,7 @@ export const cancelTerminalAction = functions
                                   paymentIntentObject: canceledPaymentIntent,
                                   updatedOn: new Date(),
                                 },
-                                { merge: true }
+                                { merge: true },
                               )
                               .catch((error: any) => throwError(error));
                           });
@@ -154,12 +154,12 @@ export const cancelTerminalAction = functions
                   display: null,
                   updatedOn: new Date(),
                 },
-                { merge: true }
+                { merge: true },
               )
               .then(() => true)
               .catch((error: any) => throwError(error));
           })
           .catch((error: any) => throwError(error));
       }
-    }
+    },
   );

@@ -1,6 +1,6 @@
 import { defaultRuntimeOptions, functions, DEBUG } from "../../config/config";
 import { configureProVetUsers } from "../../integrations/provet/entities/user/configureProVetUsers";
-import { requestIsAuthorized } from "./pos/requestIsAuthorized";
+import { requestIsAuthorized } from "../../utils/requestIsAuthorized";
 
 export const resyncProVetUsers = functions
   .runWith(defaultRuntimeOptions)

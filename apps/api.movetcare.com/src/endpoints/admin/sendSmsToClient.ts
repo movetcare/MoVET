@@ -7,7 +7,7 @@ import {
   request,
   throwError,
 } from "../../config/config";
-import { requestIsAuthorized } from "./pos/requestIsAuthorized";
+import { requestIsAuthorized } from "../../utils/requestIsAuthorized";
 import { fetchNewGoToAccessToken } from "../../integrations/goto/fetchNewGoToAccessToken";
 
 export const sendSmsToClient = functions

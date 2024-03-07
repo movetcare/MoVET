@@ -2,6 +2,7 @@ export { taskRunnerDev } from "./endpoints/development/taskRunnerDev";
 export { webhookProxyDev } from "./endpoints/development/webhookProxyDev";
 export { initTestUser } from "./endpoints/development/initTestUser";
 export { resetTestData } from "./endpoints/development/resetTestData";
+export { syncData } from "./endpoints/development/syncData";
 
 export { taskRunner } from "./cron/taskRunner";
 export { updateTelehealthChatStatusToOffline } from "./cron/updateTelehealthChatStatusToOffline";
