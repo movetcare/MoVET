@@ -10,7 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { collection } from "firebase/firestore";
+import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { firestore, functions } from "services/firebase";
 import environment from "utils/environment";
 import "react-tooltip/dist/react-tooltip.css";
@@ -67,7 +67,7 @@ const Testing = () => {
     type,
   }: {
     environment: "production";
-    type: "booking" | "closures" | "openings";
+    type: "bookings" | "closures" | "openings";
   }) => {
     toast(
       `Syncing ${type.toUpperCase()} Configuration Data from ${environment.toUpperCase()}...`,
@@ -87,33 +87,77 @@ const Testing = () => {
       functions,
       "syncData",
     )({ environment, type })
-      .then((result: any) => {
+      .then(async (result: any) => {
+        if (result.data?.error)
+          toast(
+            `${type.toUpperCase()} Data Sync FAILED: "${JSON.stringify(result.data?.error)}"`,
+            {
+              duration: 5000,
+              icon: (
+                <FontAwesomeIcon
+                  icon={faCircleExclamation}
+                  size="sm"
+                  className="text-movet-red"
+                />
+              ),
+            },
+          );
+        else {
+          console.log("RESULT", result.data);
+          await setDoc(
+            doc(firestore, "configuration", type),
+            {
+              ...result.data,
+              updatedOn: serverTimestamp(),
+            },
+            { merge: true },
+          )
+            .then(() =>
+              toast(
+                `FINISHED Syncing ${type.toUpperCase()} Configuration Data from ${environment.toUpperCase()}!`,
+                {
+                  duration: 3500,
+                  icon: (
+                    <FontAwesomeIcon
+                      icon={faCheckCircle}
+                      size="sm"
+                      className="text-movet-green"
+                    />
+                  ),
+                },
+              ),
+            )
+            .catch((error: any) =>
+              toast(
+                `${type.toUpperCase()} Data Sync FAILED: "${JSON.stringify(error)}"`,
+                {
+                  duration: 5000,
+                  icon: (
+                    <FontAwesomeIcon
+                      icon={faCircleExclamation}
+                      size="sm"
+                      className="text-movet-red"
+                    />
+                  ),
+                },
+              ),
+            );
+        }
+      })
+      .catch((error: any) =>
         toast(
-          `FINISHED Syncing ${type.toUpperCase()} Configuration Data from ${environment.toUpperCase()}!`,
+          `${type.toUpperCase()} Data Sync FAILED: "${JSON.stringify(error)}"`,
           {
-            duration: 3500,
+            duration: 5000,
             icon: (
               <FontAwesomeIcon
-                icon={faCheckCircle}
+                icon={faCircleExclamation}
                 size="sm"
-                className="text-movet-green"
+                className="text-movet-red"
               />
             ),
           },
-        );
-        console.log("RESULT", result);
-      })
-      .catch((error: any) =>
-        toast(`${type.toUpperCase()} Data Sync FAILED: "${error?.message}"`, {
-          duration: 5000,
-          icon: (
-            <FontAwesomeIcon
-              icon={faCircleExclamation}
-              size="sm"
-              className="text-movet-red"
-            />
-          ),
-        }),
+        ),
       );
   };
 
@@ -359,8 +403,8 @@ const Testing = () => {
             <Button
               className="m-4"
               color="black"
-              onClick={() => {
-                syncData({ environment: "production", type: "booking" });
+              onClick={async () => {
+                await syncData({ environment: "production", type: "bookings" });
               }}
             >
               <span className="flex-shrink-0 cursor-pointer mr-2">
@@ -371,8 +415,8 @@ const Testing = () => {
             <Button
               className="m-4"
               color="black"
-              onClick={() => {
-                syncData({ environment: "production", type: "closures" });
+              onClick={async () => {
+                await syncData({ environment: "production", type: "closures" });
               }}
             >
               <span className="flex-shrink-0 cursor-pointer mr-2">
@@ -383,8 +427,8 @@ const Testing = () => {
             <Button
               className="m-4"
               color="black"
-              onClick={() => {
-                syncData({ environment: "production", type: "openings" });
+              onClick={async () => {
+                await syncData({ environment: "production", type: "openings" });
               }}
             >
               <span className="flex-shrink-0 cursor-pointer mr-2">

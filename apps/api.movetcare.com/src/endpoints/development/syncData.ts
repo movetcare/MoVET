@@ -1,12 +1,12 @@
+const axios = require("axios").default;
 import {
+  DEBUG,
   defaultRuntimeOptions,
   functions,
-  request,
   environment as serverEnv,
 } from "../../config/config";
 import { requestIsAuthorized } from "../../utils/requestIsAuthorized";
 
-const DEBUG = true;
 export const syncData = functions.runWith(defaultRuntimeOptions).https.onCall(
   async (
     {
@@ -14,7 +14,7 @@ export const syncData = functions.runWith(defaultRuntimeOptions).https.onCall(
       type,
     }: {
       environment: "production";
-      type: "booking" | "closures" | "openings";
+      type: "bookings" | "closures" | "openings";
     },
     context: any,
   ): Promise<any> => {
@@ -25,16 +25,16 @@ export const syncData = functions.runWith(defaultRuntimeOptions).https.onCall(
       serverEnv.type === "development"
     ) {
       switch (type) {
-        case "booking":
-          return await request
-            .post(
-              "https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/booking/",
+        case "bookings":
+          return await axios
+            .get(
+              "https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/bookings/",
             )
             .then(async (response: any) => {
               const { data, status } = response;
               if (DEBUG)
                 console.log(
-                  "API Response: POST https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/booking/ =>",
+                  "API Response: GET https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/bookings/ =>",
                   data,
                 );
               return status !== 200 && status !== 201
@@ -43,8 +43,8 @@ export const syncData = functions.runWith(defaultRuntimeOptions).https.onCall(
             })
             .catch((error: any) => error);
         case "openings":
-          return await request
-            .post(
+          return await axios
+            .get(
               "https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/openings/",
             )
             .then(async (response: any) => {
@@ -60,8 +60,8 @@ export const syncData = functions.runWith(defaultRuntimeOptions).https.onCall(
             })
             .catch((error: any) => error);
         case "closures":
-          return await request
-            .post(
+          return await axios
+            .get(
               "https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/closures/",
             )
             .then(async (response: any) => {

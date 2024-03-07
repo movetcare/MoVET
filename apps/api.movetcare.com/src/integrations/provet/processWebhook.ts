@@ -4,7 +4,7 @@ import { processPatientWebhook } from "./entities/patient/processPatientWebhook"
 import { processAppointmentWebhook } from "./entities/appointment/processAppointmentWebhook";
 import { processInvoiceWebhook } from "./entities/invoice/processInvoiceWebhook";
 import { Request, Response } from "express";
-import { proVetAppUrl, throwError } from "../../config/config";
+import { DEBUG, proVetAppUrl, throwError } from "../../config/config";
 import { processInvoicePaymentWebhook } from "./entities/invoice/processInvoicePaymentWebhook";
 import { processUserWebhook } from "./entities/user/processUserWebhook";
 import { processConsultationWebhook } from "./entities/consultation/processConsultationWebhook";
@@ -13,7 +13,6 @@ import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { configureProVetAuth } from "./configureProVetAuth";
 import { updateCustomField } from "./entities/patient/updateCustomField";
 
-const DEBUG = true;
 export const processProVetWebhook = async (
   request: Request,
   response: Response,

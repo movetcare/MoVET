@@ -12,13 +12,13 @@ import {
   functions,
   throwError,
   environment,
-  // DEBUG,
+  DEBUG,
 } from "../../config/config";
 import { formatTimeHoursToDate } from "../../utils/formatTimeHoursToDate";
 import { formatTimeHoursToString } from "../../utils/formatTimeHoursToString";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
-const DEBUG = false;
+
 interface Appointment {
   start: any;
   end: any;
@@ -275,7 +275,11 @@ const assignConfiguration = async ({
   appointmentDuration: any;
 }> => {
   const configuration = await getConfiguration();
-  const weekdayNumber = new Date(date).getDay();
+  const weekdayNumber = new Date(date).getDay() + 1;
+  if (DEBUG) {
+    console.log("date value", date);
+    console.log("weekdayNumber", weekdayNumber);
+  }
   let standardOpenTime: any,
     standardCloseTime: any,
     standardLunchTime: any,

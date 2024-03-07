@@ -1,9 +1,8 @@
-import { admin, throwError } from "../../../../config/config";
+import { admin, throwError, DEBUG } from "../../../../config/config";
 import { Request, Response } from "express";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { fetchEntity } from "../fetchEntity";
 
-const DEBUG = true;
 export const processInvoicePaymentWebhook = async (
   request: Request,
   response: Response,

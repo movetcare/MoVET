@@ -1,6 +1,5 @@
-import { admin, expoAccessToken, throwError } from "../../config/config";
+import { DEBUG, admin, expoAccessToken, throwError } from "../../config/config";
 import { Expo, ExpoPushTicket } from "expo-server-sdk";
-const DEBUG = true;
 const expo = new Expo({ accessToken: expoAccessToken });
 
 export const sendPushNotificationViaExpo = async ({
