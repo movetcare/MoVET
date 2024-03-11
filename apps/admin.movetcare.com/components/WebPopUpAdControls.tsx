@@ -196,7 +196,7 @@ export const WebPopUpAdControls = () => {
           size="lg"
         />
         <h1 className="ml-2 my-4 text-lg cursor-pointer">
-          {loading ? "Loading..." : "Web Pop Up Ad"}
+          {loading ? "Loading..." : "Web & Mobile Pop Up Ad"}
         </h1>
       </div>
       {loading ? (

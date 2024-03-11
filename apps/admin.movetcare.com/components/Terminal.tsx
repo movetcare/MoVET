@@ -361,6 +361,12 @@ const Terminal = () => {
                               scope="col"
                               className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
                             >
+                              Reason
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-bold text-movet-black text-opacity-75 uppercase tracking-wider"
+                            >
                               Time
                             </th>
                           </tr>
@@ -386,6 +392,16 @@ const Terminal = () => {
                               </td>
                               <td className="px-6 py-4 text-xs text-movet-black">
                                 ${(payment?.amount / 100).toFixed(2)}
+                              </td>
+                              <td className="px-6 py-4 text-xs text-movet-black">
+                                <a
+                                  href={`https://dashboard.stripe.com/payments/${payment?.last_payment_error?.charge}`}
+                                  target="_blank"
+                                >
+                                  {payment?.last_payment_error?.code?.toUpperCase()}
+                                  : &quot;
+                                  {payment?.last_payment_error?.message}&quot;
+                                </a>
                               </td>
                               <td className="px-6 py-4 text-xs text-movet-black">
                                 {payment?.createdOn?.toLocaleString()}

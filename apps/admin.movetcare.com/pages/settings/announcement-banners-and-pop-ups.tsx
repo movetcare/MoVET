@@ -6,13 +6,13 @@ const AnnouncementBanner = () => (
   <AdminCheck>
     <div className="flex flex-col lg:flex-row">
       <div className="lg:pr-2">
-        <MobileAnnouncementBannerControls />
-      </div>
-      <div className="lg:px-2">
         <WebAnnouncementBannerControls />
       </div>
-      <div className="lg:pl-2">
+      <div className="lg:px-2">
         <WebPopUpAdControls />
+      </div>
+      <div className="lg:pl-2">
+        <MobileAnnouncementBannerControls />
       </div>
     </div>
   </AdminCheck>
