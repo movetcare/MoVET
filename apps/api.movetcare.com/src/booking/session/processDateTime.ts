@@ -332,28 +332,30 @@ const formatAppointmentData = async (appointment: any) => {
         : "*";
 
   let illnessDetails = "";
-  appointment?.illPatientSelection?.forEach(
-    (illPatient: string) =>
-      appointment?.patients?.forEach((patient: any) => {
-        if (patient?.id === illPatient) {
-          if (DEBUG)
-            console.log(
-              "ILL PATIENT NOTE",
-              ` | Ill Patient: ${patient?.name} - Symptom(s): ${JSON.stringify(
-                patient?.illnessDetails?.symptoms,
-              )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)}`,
-            );
-          notes += ` | Ill Patient: ${patient?.name} - Symptom(s): ${JSON.stringify(
-            patient?.illnessDetails?.symptoms,
-          )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)}`;
-          illnessDetails += `${patient?.name} - Symptom(s): ${JSON.stringify(
-            patient?.illnessDetails?.symptoms,
-          )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)} | `;
-        }
-      }),
+  appointment?.illPatientSelection?.forEach((illPatient: string) =>
+    appointment?.patients?.forEach((patient: any) => {
+      if (patient?.id === illPatient) {
+        if (DEBUG)
+          console.log(
+            "ILL PATIENT NOTE",
+            ` | Ill Patient: ${patient?.name} - Symptom(s): ${JSON.stringify(
+              patient?.illnessDetails?.symptoms,
+            )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)}`,
+          );
+        notes += ` | Ill Patient: ${patient?.name} - Symptom(s): ${JSON.stringify(
+          patient?.illnessDetails?.symptoms,
+        )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)}`;
+        illnessDetails += `${patient?.name} - Symptom(s): ${JSON.stringify(
+          patient?.illnessDetails?.symptoms,
+        )} - Details: ${JSON.stringify(patient?.illnessDetails?.notes)} | `;
+      }
+    }),
   );
 
-  if (appointment?.selectedStaff)
+  if (
+    appointment?.selectedStaff &&
+    appointment?.selectedStaff?.toLowerCase() !== "none"
+  )
     notes += ` | Requested Staff: ${appointment?.selectedStaff?.title} ${appointment?.selectedStaff?.firstName} ${appointment?.selectedStaff?.lastName}`;
 
   if (appointment?.additionalNotes)

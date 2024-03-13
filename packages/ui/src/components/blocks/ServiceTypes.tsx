@@ -17,7 +17,7 @@ const services: {
   {
     name: "In-Clinic Appointments",
     description:
-      "Come visit us at our new Belleview Station location! Appointments are encouraged, but walk-ins are welcome if the walk-in sign is out. Our calming ambiance is designed to feel just like your living room.",
+      "Come visit us at our Belleview Station location! Appointments are encouraged, but walk-ins are welcome if the walk-in sign is out. Our calming ambiance is designed to feel just like your living room.",
     icon: "/images/icons/clinic.svg",
     image: "/images/pets/holding-dog-home.png",
   },

@@ -26,6 +26,7 @@ import {
   faCircleCheck,
   faMobileAndroid,
   faComments,
+  faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GOTO_PHONE_URL } from "constants/urls";
@@ -1164,6 +1165,23 @@ const Client = () => {
                             />
                           </div>
                         )}
+                        <Tooltip id="manuallyAddPayment" />
+                        <div
+                          data-tooltip-id="manuallyAddPayment"
+                          data-tooltip-content="Manually attach a Payment Method to this client via Stripe"
+                          onClick={() =>
+                            window
+                              ?.open(
+                                "https://app.movetcare.com/update-payment-method?email=" +
+                                  client?.email,
+                                "_blank",
+                              )
+                              ?.focus()
+                          }
+                          className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red"
+                        >
+                          <FontAwesomeIcon icon={faPlusCircle} size="lg" />
+                        </div>
                       </>
                     )}
                   </div>
