@@ -352,10 +352,7 @@ const formatAppointmentData = async (appointment: any) => {
     }),
   );
 
-  if (
-    appointment?.selectedStaff &&
-    appointment?.selectedStaff?.toLowerCase() !== "none"
-  )
+  if (appointment?.selectedStaff && appointment?.selectedStaff !== "NONE")
     notes += ` | Requested Staff: ${appointment?.selectedStaff?.title} ${appointment?.selectedStaff?.firstName} ${appointment?.selectedStaff?.lastName}`;
 
   if (appointment?.additionalNotes)

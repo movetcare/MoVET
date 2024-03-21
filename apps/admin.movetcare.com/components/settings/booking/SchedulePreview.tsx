@@ -14,8 +14,8 @@ const formatTime = (time: string): string => {
     time.toString().length === 3
       ? `0${time}`.slice(2)
       : `${time}`.slice(3)?.length === 1
-      ? "0" + `${time}`.slice(3)
-      : `${time}`.slice(3);
+        ? "0" + `${time}`.slice(3)
+        : `${time}`.slice(3);
   return new Date(
     new Date().toLocaleString("en-US", {
       timeZone: "America/Denver",
@@ -25,7 +25,7 @@ const formatTime = (time: string): string => {
     }) +
       " " +
       [hours, ":", minutes].join("") +
-      ":00"
+      ":00",
   ).toLocaleString("en-US", {
     hour: "numeric",
     minute: "numeric",
@@ -55,7 +55,7 @@ export const SchedulePreview = ({
     const fetchAppointmentAvailability = async () => {
       const { data: result }: any = await httpsCallable(
         functions,
-        "getAppointmentAvailability"
+        "getAppointmentAvailability",
       )({
         date: selectedDate,
         schedule,
@@ -63,10 +63,10 @@ export const SchedulePreview = ({
           patientType === "returning-three"
             ? ["6667", "6669", "6821"]
             : patientType === "returning-two"
-            ? ["6667", "6669"]
-            : patientType === "returning-one"
-            ? ["6667"]
-            : ["6668"],
+              ? ["6667", "6669"]
+              : patientType === "returning-one"
+                ? ["6667"]
+                : ["6668"],
       });
       if (Array.isArray(result)) {
         setAppointmentAvailability(result);
@@ -114,27 +114,43 @@ export const SchedulePreview = ({
           <Error error={error} />
         ) : (
           <div className="w-full mx-auto">
-            <h4 className="italic text-center -mt-2">
-              {closedReason
-                ? closedReason
-                : appointmentAvailability && appointmentAvailability.length > 0
-                ? "Available Appointments"
-                : "No Appointments Available"}
-            </h4>
+            {closedReason ? (
+              <div className="bg-movet-red p-2 rounded-xl">
+                <p className="italic text-center text-movet-white font-extrabold m-0 text-lg">
+                  {closedReason}
+                </p>
+              </div>
+            ) : appointmentAvailability &&
+              appointmentAvailability?.length > 0 ? (
+              <div className="bg-movet-blue p-2 rounded-xl">
+                <p className="italic text-center text-movet-white font-extrabold m-0 text-lg">
+                  Available Appointments
+                </p>
+              </div>
+            ) : (
+              <div className="bg-movet-yellow p-2 rounded-xl">
+                <p className="italic text-center mt-0 font-extrabold text-movet-white text-lg">
+                  No Appointments Available
+                </p>
+                <p className="italic text-center -mt-2 text-movet-white text-xs mb-0">
+                  Please Select a Different Day
+                </p>
+              </div>
+            )}
             <div className="flex flex-row w-full mx-auto">
               {appointmentAvailability && appointmentAvailability.length < 6 ? (
                 <ul className="w-full">
                   {appointmentAvailability?.map(
                     (
                       appointmentSlot: { start: string; end: string },
-                      index: number
+                      index: number,
                     ) => (
                       <li
                         key={index}
                         className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
                           selectedTime ===
                           `${formatTime(appointmentSlot.start)} - ${formatTime(
-                            appointmentSlot.end
+                            appointmentSlot.end,
                           )}`
                             ? " bg-movet-red text-white border-movet-white"
                             : " bg-movet-gray/20"
@@ -142,8 +158,8 @@ export const SchedulePreview = ({
                         onClick={() =>
                           setSelectedTime(
                             `${formatTime(
-                              appointmentSlot.start
-                            )} - ${formatTime(appointmentSlot.end)}`
+                              appointmentSlot.start,
+                            )} - ${formatTime(appointmentSlot.end)}`,
                           )
                         }
                       >
@@ -152,7 +168,7 @@ export const SchedulePreview = ({
                           {formatTime(appointmentSlot.end)}
                         </p>
                       </li>
-                    )
+                    ),
                   )}
                 </ul>
               ) : (
@@ -161,7 +177,7 @@ export const SchedulePreview = ({
                     {appointmentAvailability?.map(
                       (
                         appointmentSlot: { start: string; end: string },
-                        index: number
+                        index: number,
                       ) =>
                         index <= appointmentAvailability.length / 2 - 1 ? (
                           <li
@@ -169,7 +185,7 @@ export const SchedulePreview = ({
                             className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
                               selectedTime ===
                               `${formatTime(
-                                appointmentSlot.start
+                                appointmentSlot.start,
                               )} - ${formatTime(appointmentSlot.end)}`
                                 ? " bg-movet-red text-white border-movet-white"
                                 : " bg-movet-gray/20"
@@ -177,8 +193,8 @@ export const SchedulePreview = ({
                             onClick={() =>
                               setSelectedTime(
                                 `${formatTime(
-                                  appointmentSlot.start
-                                )} - ${formatTime(appointmentSlot.end)}`
+                                  appointmentSlot.start,
+                                )} - ${formatTime(appointmentSlot.end)}`,
                               )
                             }
                           >
@@ -187,14 +203,14 @@ export const SchedulePreview = ({
                               {formatTime(appointmentSlot.end)}
                             </p>
                           </li>
-                        ) : null
+                        ) : null,
                     )}
                   </ul>
                   <ul className="w-1/2">
                     {appointmentAvailability?.map(
                       (
                         appointmentSlot: { start: string; end: string },
-                        index: number
+                        index: number,
                       ) =>
                         index >= appointmentAvailability.length / 2 ? (
                           <li
@@ -202,7 +218,7 @@ export const SchedulePreview = ({
                             className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
                               selectedTime ===
                               `${formatTime(
-                                appointmentSlot.start
+                                appointmentSlot.start,
                               )} - ${formatTime(appointmentSlot.end)}`
                                 ? " bg-movet-red text-white border-movet-white"
                                 : " bg-movet-gray/20"
@@ -210,8 +226,8 @@ export const SchedulePreview = ({
                             onClick={() =>
                               setSelectedTime(
                                 `${formatTime(
-                                  appointmentSlot.start
-                                )} - ${formatTime(appointmentSlot.end)}`
+                                  appointmentSlot.start,
+                                )} - ${formatTime(appointmentSlot.end)}`,
                               )
                             }
                           >
@@ -220,7 +236,7 @@ export const SchedulePreview = ({
                               {formatTime(appointmentSlot.end)}
                             </p>
                           </li>
-                        ) : null
+                        ) : null,
                     )}
                   </ul>
                 </>

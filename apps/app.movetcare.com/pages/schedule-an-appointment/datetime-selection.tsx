@@ -257,14 +257,29 @@ export default function DateTime() {
                       ) : (
                         <>
                           <div className="w-full mx-auto">
-                            <p className="italic text-center -mt-2 font-extrabold text-lg">
-                              {closedReason
-                                ? closedReason
-                                : appointmentAvailability &&
-                                    appointmentAvailability?.length > 0
-                                  ? "Available Appointment Times"
-                                  : "No Appointments Available - Please Select a Different Day..."}
-                            </p>
+                            {closedReason ? (
+                              <div className="bg-movet-red p-2 rounded-xl">
+                                <p className="italic text-center text-movet-white font-extrabold m-0 text-lg">
+                                  {closedReason}
+                                </p>
+                              </div>
+                            ) : appointmentAvailability &&
+                              appointmentAvailability?.length > 0 ? (
+                              <div className="bg-movet-blue p-2 rounded-xl">
+                                <p className="italic text-center text-movet-white font-extrabold m-0 text-lg">
+                                  Available Appointments
+                                </p>
+                              </div>
+                            ) : (
+                              <div className="bg-movet-yellow p-2 rounded-xl">
+                                <p className="italic text-center mt-0 font-extrabold text-movet-white text-lg">
+                                  No Appointments Available
+                                </p>
+                                <p className="italic text-center -mt-2 text-movet-white text-xs mb-0">
+                                  Please Select a Different Day
+                                </p>
+                              </div>
+                            )}
                             <div className="flex flex-row w-full mx-auto">
                               {appointmentAvailability &&
                               appointmentAvailability.length < 6 ? (

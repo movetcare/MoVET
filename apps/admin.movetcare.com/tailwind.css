@@ -53,6 +53,7 @@
     display: flex;
     min-height: 100vh;
     flex-direction: column;
+     @apply bg-movet-white bg-pets bg-cover bg-top;
   }
 
   ::selection {

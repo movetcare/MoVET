@@ -7,7 +7,15 @@ module.exports = {
     "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: "class",
-  theme: movetTheme,
+  theme: {
+    ...movetTheme,
+    extend: {
+      ...movetTheme.extend,
+      backgroundImage: {
+        pets: "url('public/images/backgrounds/pets-background.png')",
+      },
+    },
+  },
   variants: {
     extend: {},
   },
