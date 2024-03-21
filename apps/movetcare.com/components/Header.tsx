@@ -31,10 +31,10 @@ export const Header = () => {
         link: "/hours",
         text: "Hours",
       },
-      {
-        link: "/reviews",
-        text: "Reviews",
-      },
+      // {
+      //   link: "/shop",
+      //   text: "shop",
+      // },
       {
         link: "/blog",
         text: "Blog",
@@ -52,7 +52,7 @@ export const Header = () => {
 
   const generateNavigationItem = (
     data: NavigationItem,
-    size: "desktop" | "mobile"
+    size: "desktop" | "mobile",
   ) => {
     let headerClassName = "";
     if (size === "desktop") {
@@ -122,7 +122,7 @@ export const Header = () => {
                       <div key={`desktop-${kebabCase(navigationItem.text)}`}>
                         {generateNavigationItem(navigationItem, "desktop")}
                       </div>
-                    )
+                    ),
                   )}
                 <div className="ml-4">
                   <a

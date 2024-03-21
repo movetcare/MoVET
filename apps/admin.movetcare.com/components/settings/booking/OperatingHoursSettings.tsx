@@ -123,58 +123,58 @@ const OperatingHoursSettings = ({
           schedule === "clinic"
             ? doc.data()?.clinicOpenMonday
             : schedule === "housecall"
-            ? doc.data()?.housecallOpenMonday
-            : doc.data()?.virtualOpenMonday,
+              ? doc.data()?.housecallOpenMonday
+              : doc.data()?.virtualOpenMonday,
         );
         setIsOpenTuesday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenTuesday
             : schedule === "housecall"
-            ? doc.data()?.housecallOpenTuesday
-            : doc.data()?.virtualOpenTuesday,
+              ? doc.data()?.housecallOpenTuesday
+              : doc.data()?.virtualOpenTuesday,
         );
         setIsOpenWednesday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenWednesday
             : schedule === "housecall"
-            ? doc.data()?.housecallOpenWednesday
-            : doc.data()?.virtualOpenWednesday,
+              ? doc.data()?.housecallOpenWednesday
+              : doc.data()?.virtualOpenWednesday,
         );
         setIsOpenThursday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenThursday
             : schedule === "housecall"
-            ? doc.data()?.housecallOpenThursday
-            : doc.data()?.virtualOpenThursday,
+              ? doc.data()?.housecallOpenThursday
+              : doc.data()?.virtualOpenThursday,
         );
         setIsOpenFriday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenFriday
             : schedule === "housecall"
-            ? doc.data()?.housecallOpenFriday
-            : doc.data()?.virtualOpenFriday,
+              ? doc.data()?.housecallOpenFriday
+              : doc.data()?.virtualOpenFriday,
         );
         setIsOpenSaturday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenSaturday
             : schedule === "housecall"
-            ? doc.data()?.housecallOpenSaturday
-            : doc.data()?.virtualOpenSaturday,
+              ? doc.data()?.housecallOpenSaturday
+              : doc.data()?.virtualOpenSaturday,
         );
         setIsOpenSunday(
           schedule === "clinic"
             ? doc.data()?.clinicOpenSunday
             : schedule === "housecall"
-            ? doc.data()?.housecallOpenSunday
-            : doc.data()?.virtualOpenSunday,
+              ? doc.data()?.housecallOpenSunday
+              : doc.data()?.virtualOpenSunday,
         );
         setSelectedStartTimeSunday(
           formatTime(
             schedule === "clinic"
               ? doc.data()?.clinicOpenSundayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallOpenSundayTime
-              : doc.data()?.virtualOpenSundayTime,
+                ? doc.data()?.housecallOpenSundayTime
+                : doc.data()?.virtualOpenSundayTime,
           ),
         );
         setSelectedEndTimeSunday(
@@ -182,8 +182,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicClosedSundayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallClosedSundayTime
-              : doc.data()?.virtualClosedSundayTime,
+                ? doc.data()?.housecallClosedSundayTime
+                : doc.data()?.virtualClosedSundayTime,
           ),
         );
         setSelectedStartTimeMonday(
@@ -191,8 +191,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicOpenMondayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallOpenMondayTime
-              : doc.data()?.virtualOpenMondayTime,
+                ? doc.data()?.housecallOpenMondayTime
+                : doc.data()?.virtualOpenMondayTime,
           ),
         );
         setSelectedEndTimeMonday(
@@ -200,8 +200,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicClosedMondayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallClosedMondayTime
-              : doc.data()?.virtualClosedMondayTime,
+                ? doc.data()?.housecallClosedMondayTime
+                : doc.data()?.virtualClosedMondayTime,
           ),
         );
         setSelectedStartTimeTuesday(
@@ -209,8 +209,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicOpenTuesdayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallOpenTuesdayTime
-              : doc.data()?.virtualOpenTuesdayTime,
+                ? doc.data()?.housecallOpenTuesdayTime
+                : doc.data()?.virtualOpenTuesdayTime,
           ),
         );
         setSelectedEndTimeTuesday(
@@ -218,8 +218,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicClosedTuesdayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallClosedTuesdayTime
-              : doc.data()?.virtualClosedTuesdayTime,
+                ? doc.data()?.housecallClosedTuesdayTime
+                : doc.data()?.virtualClosedTuesdayTime,
           ),
         );
         setSelectedStartTimeWednesday(
@@ -227,8 +227,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicOpenWednesdayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallOpenWednesdayTime
-              : doc.data()?.virtualOpenWednesdayTime,
+                ? doc.data()?.housecallOpenWednesdayTime
+                : doc.data()?.virtualOpenWednesdayTime,
           ),
         );
         setSelectedEndTimeWednesday(
@@ -236,8 +236,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicClosedWednesdayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallClosedWednesdayTime
-              : doc.data()?.virtualClosedWednesdayTime,
+                ? doc.data()?.housecallClosedWednesdayTime
+                : doc.data()?.virtualClosedWednesdayTime,
           ),
         );
         setSelectedStartTimeThursday(
@@ -245,8 +245,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicOpenThursdayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallOpenThursdayTime
-              : doc.data()?.virtualOpenThursdayTime,
+                ? doc.data()?.housecallOpenThursdayTime
+                : doc.data()?.virtualOpenThursdayTime,
           ),
         );
         setSelectedEndTimeThursday(
@@ -254,8 +254,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicClosedThursdayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallClosedThursdayTime
-              : doc.data()?.virtualClosedThursdayTime,
+                ? doc.data()?.housecallClosedThursdayTime
+                : doc.data()?.virtualClosedThursdayTime,
           ),
         );
         setSelectedStartTimeFriday(
@@ -263,8 +263,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicOpenFridayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallOpenFridayTime
-              : doc.data()?.virtualOpenFridayTime,
+                ? doc.data()?.housecallOpenFridayTime
+                : doc.data()?.virtualOpenFridayTime,
           ),
         );
         setSelectedEndTimeFriday(
@@ -272,8 +272,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicClosedFridayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallClosedFridayTime
-              : doc.data()?.virtualClosedFridayTime,
+                ? doc.data()?.housecallClosedFridayTime
+                : doc.data()?.virtualClosedFridayTime,
           ),
         );
         setSelectedStartTimeSaturday(
@@ -281,8 +281,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicOpenSaturdayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallOpenSaturdayTime
-              : doc.data()?.virtualOpenSaturdayTime,
+                ? doc.data()?.housecallOpenSaturdayTime
+                : doc.data()?.virtualOpenSaturdayTime,
           ),
         );
         setSelectedEndTimeSaturday(
@@ -290,8 +290,8 @@ const OperatingHoursSettings = ({
             schedule === "clinic"
               ? doc.data()?.clinicClosedSaturdayTime
               : schedule === "housecall"
-              ? doc.data()?.housecallClosedSaturdayTime
-              : doc.data()?.virtualClosedSaturdayTime,
+                ? doc.data()?.housecallClosedSaturdayTime
+                : doc.data()?.virtualClosedSaturdayTime,
           ),
         );
       },
@@ -331,54 +331,54 @@ const OperatingHoursSettings = ({
             updatedOn: serverTimestamp(),
           }
         : schedule === "housecall"
-        ? {
-            housecallOpenMonday: isOpenMonday,
-            housecallOpenMondayTime: Number(selectedStartTimeMonday),
-            housecallClosedMondayTime: Number(selectedEndTimeMonday),
-            housecallOpenTuesday: isOpenTuesday,
-            housecallOpenTuesdayTime: Number(selectedStartTimeTuesday),
-            housecallClosedTuesdayTime: Number(selectedEndTimeTuesday),
-            housecallOpenWednesday: isOpenWednesday,
-            housecallOpenWednesdayTime: Number(selectedStartTimeWednesday),
-            housecallClosedWednesdayTime: Number(selectedEndTimeWednesday),
-            housecallOpenThursday: isOpenThursday,
-            housecallOpenThursdayTime: Number(selectedStartTimeThursday),
-            housecallClosedThursdayTime: Number(selectedEndTimeThursday),
-            housecallOpenFriday: isOpenFriday,
-            housecallOpenFridayTime: Number(selectedStartTimeFriday),
-            housecallClosedFridayTime: Number(selectedEndTimeFriday),
-            housecallOpenSaturday: isOpenSaturday,
-            housecallOpenSaturdayTime: Number(selectedStartTimeSaturday),
-            housecallClosedSaturdayTime: Number(selectedEndTimeSaturday),
-            housecallOpenSunday: isOpenSunday,
-            housecallOpenSundayTime: Number(selectedStartTimeSunday),
-            housecallClosedSundayTime: Number(selectedEndTimeSunday),
-            updatedOn: serverTimestamp(),
-          }
-        : {
-            virtualOpenMonday: isOpenMonday,
-            virtualOpenMondayTime: Number(selectedStartTimeMonday),
-            virtualClosedMondayTime: Number(selectedEndTimeMonday),
-            virtualOpenTuesday: isOpenTuesday,
-            virtualOpenTuesdayTime: Number(selectedStartTimeTuesday),
-            virtualClosedTuesdayTime: Number(selectedEndTimeTuesday),
-            virtualOpenWednesday: isOpenWednesday,
-            virtualOpenWednesdayTime: Number(selectedStartTimeWednesday),
-            virtualClosedWednesdayTime: Number(selectedEndTimeWednesday),
-            virtualOpenThursday: isOpenThursday,
-            virtualOpenThursdayTime: Number(selectedStartTimeThursday),
-            virtualClosedThursdayTime: Number(selectedEndTimeThursday),
-            virtualOpenFriday: isOpenFriday,
-            virtualOpenFridayTime: Number(selectedStartTimeFriday),
-            virtualClosedFridayTime: Number(selectedEndTimeFriday),
-            virtualOpenSaturday: isOpenSaturday,
-            virtualOpenSaturdayTime: Number(selectedStartTimeSaturday),
-            virtualClosedSaturdayTime: Number(selectedEndTimeSaturday),
-            virtualOpenSunday: isOpenSunday,
-            virtualOpenSundayTime: Number(selectedStartTimeSunday),
-            virtualClosedSundayTime: Number(selectedEndTimeSunday),
-            updatedOn: serverTimestamp(),
-          },
+          ? {
+              housecallOpenMonday: isOpenMonday,
+              housecallOpenMondayTime: Number(selectedStartTimeMonday),
+              housecallClosedMondayTime: Number(selectedEndTimeMonday),
+              housecallOpenTuesday: isOpenTuesday,
+              housecallOpenTuesdayTime: Number(selectedStartTimeTuesday),
+              housecallClosedTuesdayTime: Number(selectedEndTimeTuesday),
+              housecallOpenWednesday: isOpenWednesday,
+              housecallOpenWednesdayTime: Number(selectedStartTimeWednesday),
+              housecallClosedWednesdayTime: Number(selectedEndTimeWednesday),
+              housecallOpenThursday: isOpenThursday,
+              housecallOpenThursdayTime: Number(selectedStartTimeThursday),
+              housecallClosedThursdayTime: Number(selectedEndTimeThursday),
+              housecallOpenFriday: isOpenFriday,
+              housecallOpenFridayTime: Number(selectedStartTimeFriday),
+              housecallClosedFridayTime: Number(selectedEndTimeFriday),
+              housecallOpenSaturday: isOpenSaturday,
+              housecallOpenSaturdayTime: Number(selectedStartTimeSaturday),
+              housecallClosedSaturdayTime: Number(selectedEndTimeSaturday),
+              housecallOpenSunday: isOpenSunday,
+              housecallOpenSundayTime: Number(selectedStartTimeSunday),
+              housecallClosedSundayTime: Number(selectedEndTimeSunday),
+              updatedOn: serverTimestamp(),
+            }
+          : {
+              virtualOpenMonday: isOpenMonday,
+              virtualOpenMondayTime: Number(selectedStartTimeMonday),
+              virtualClosedMondayTime: Number(selectedEndTimeMonday),
+              virtualOpenTuesday: isOpenTuesday,
+              virtualOpenTuesdayTime: Number(selectedStartTimeTuesday),
+              virtualClosedTuesdayTime: Number(selectedEndTimeTuesday),
+              virtualOpenWednesday: isOpenWednesday,
+              virtualOpenWednesdayTime: Number(selectedStartTimeWednesday),
+              virtualClosedWednesdayTime: Number(selectedEndTimeWednesday),
+              virtualOpenThursday: isOpenThursday,
+              virtualOpenThursdayTime: Number(selectedStartTimeThursday),
+              virtualClosedThursdayTime: Number(selectedEndTimeThursday),
+              virtualOpenFriday: isOpenFriday,
+              virtualOpenFridayTime: Number(selectedStartTimeFriday),
+              virtualClosedFridayTime: Number(selectedEndTimeFriday),
+              virtualOpenSaturday: isOpenSaturday,
+              virtualOpenSaturdayTime: Number(selectedStartTimeSaturday),
+              virtualClosedSaturdayTime: Number(selectedEndTimeSaturday),
+              virtualOpenSunday: isOpenSunday,
+              virtualOpenSundayTime: Number(selectedStartTimeSunday),
+              virtualClosedSundayTime: Number(selectedEndTimeSunday),
+              updatedOn: serverTimestamp(),
+            },
       { merge: true },
     )
       .then(() =>
@@ -478,56 +478,64 @@ const OperatingHoursSettings = ({
               />
             </Switch>
           </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">Start Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"start-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedStartTimeMonday}
-                onBlur={() => setDidTouchStartTimeMonday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedStartTimeMonday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          {isOpenMonday ? (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">Start Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"start-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedStartTimeMonday}
+                  onBlur={() => setDidTouchStartTimeMonday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedStartTimeMonday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">End Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"end-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedEndTimeMonday}
+                  onBlur={() => setDidTouchEndTimeMonday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedEndTimeMonday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
             </div>
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">End Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"end-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedEndTimeMonday}
-                onBlur={() => setDidTouchEndTimeMonday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedEndTimeMonday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          ) : (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="flex justify-center items-center my-4">
           <div className="flex flex-col justify-center items-center mx-4">
@@ -552,56 +560,64 @@ const OperatingHoursSettings = ({
               />
             </Switch>
           </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">Start Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"start-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedStartTimeTuesday}
-                onBlur={() => setDidTouchStartTimeTuesday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedStartTimeTuesday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          {isOpenTuesday ? (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">Start Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"start-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedStartTimeTuesday}
+                  onBlur={() => setDidTouchStartTimeTuesday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedStartTimeTuesday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">End Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"end-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedEndTimeTuesday}
+                  onBlur={() => setDidTouchEndTimeTuesday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedEndTimeTuesday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
             </div>
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">End Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"end-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedEndTimeTuesday}
-                onBlur={() => setDidTouchEndTimeTuesday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedEndTimeTuesday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          ) : (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="flex justify-center items-center my-4">
           <div className="flex flex-col justify-center items-center mx-4">
@@ -626,56 +642,64 @@ const OperatingHoursSettings = ({
               />
             </Switch>
           </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">Start Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"start-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedStartTimeWednesday}
-                onBlur={() => setDidTouchStartTimeWednesday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedStartTimeWednesday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          {isOpenWednesday ? (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">Start Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"start-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedStartTimeWednesday}
+                  onBlur={() => setDidTouchStartTimeWednesday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedStartTimeWednesday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">End Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"end-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedEndTimeWednesday}
+                  onBlur={() => setDidTouchEndTimeWednesday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedEndTimeWednesday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
             </div>
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">End Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"end-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedEndTimeWednesday}
-                onBlur={() => setDidTouchEndTimeWednesday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedEndTimeWednesday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          ) : (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="flex justify-center items-center my-4">
           <div className="flex flex-col justify-center items-center mx-4">
@@ -700,56 +724,64 @@ const OperatingHoursSettings = ({
               />
             </Switch>
           </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">Start Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"start-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedStartTimeThursday}
-                onBlur={() => setDidTouchStartTimeThursday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedStartTimeThursday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          {isOpenThursday ? (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">Start Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"start-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedStartTimeThursday}
+                  onBlur={() => setDidTouchStartTimeThursday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedStartTimeThursday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">End Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"end-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedEndTimeThursday}
+                  onBlur={() => setDidTouchEndTimeThursday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedEndTimeThursday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
             </div>
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">End Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"end-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedEndTimeThursday}
-                onBlur={() => setDidTouchEndTimeThursday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedEndTimeThursday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          ) : (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="flex justify-center items-center my-4">
           <div className="flex flex-col justify-center items-center mx-4">
@@ -774,56 +806,64 @@ const OperatingHoursSettings = ({
               />
             </Switch>
           </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">Start Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"start-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedStartTimeFriday}
-                onBlur={() => setDidTouchStartTimeFriday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedStartTimeFriday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          {isOpenFriday ? (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">Start Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"start-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedStartTimeFriday}
+                  onBlur={() => setDidTouchStartTimeFriday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedStartTimeFriday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">End Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"end-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedEndTimeFriday}
+                  onBlur={() => setDidTouchEndTimeFriday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedEndTimeFriday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
             </div>
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">End Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"end-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedEndTimeFriday}
-                onBlur={() => setDidTouchEndTimeFriday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedEndTimeFriday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          ) : (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="flex justify-center items-center my-4">
           <div className="flex flex-col justify-center items-center mx-4">
@@ -848,56 +888,64 @@ const OperatingHoursSettings = ({
               />
             </Switch>
           </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">Start Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"start-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedStartTimeSaturday}
-                onBlur={() => setDidTouchStartTimeSaturday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedStartTimeSaturday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          {isOpenSaturday ? (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">Start Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"start-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedStartTimeSaturday}
+                  onBlur={() => setDidTouchStartTimeSaturday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedStartTimeSaturday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">End Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"end-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedEndTimeSaturday}
+                  onBlur={() => setDidTouchEndTimeSaturday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedEndTimeSaturday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
             </div>
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">End Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"end-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedEndTimeSaturday}
-                onBlur={() => setDidTouchEndTimeSaturday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedEndTimeSaturday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          ) : (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="flex justify-center items-center my-4">
           <div className="flex flex-col justify-center items-center mx-4">
@@ -922,56 +970,64 @@ const OperatingHoursSettings = ({
               />
             </Switch>
           </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">Start Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"start-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedStartTimeSunday}
-                onBlur={() => setDidTouchStartTimeSunday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedStartTimeSunday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          {isOpenSunday ? (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">Start Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"start-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedStartTimeSunday}
+                  onBlur={() => setDidTouchStartTimeSunday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedStartTimeSunday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
+              <div className="flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">End Time</p>
+                <PatternFormat
+                  isAllowed={(values: any) => {
+                    const { value } = values;
+                    return value <= 2400;
+                  }}
+                  format={"##:##"}
+                  mask="_"
+                  patternChar="#"
+                  name={"end-time"}
+                  type="text"
+                  valueIsNumericString
+                  value={selectedEndTimeSunday}
+                  onBlur={() => setDidTouchEndTimeSunday(true)}
+                  onValueChange={(target: any) =>
+                    setSelectedEndTimeSunday(target.value)
+                  }
+                  className={
+                    "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                  }
+                />
+                <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+              </div>
             </div>
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">End Time</p>
-              <PatternFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value <= 2400;
-                }}
-                format={"##:##"}
-                mask="_"
-                patternChar="#"
-                name={"end-time"}
-                type="text"
-                valueIsNumericString
-                value={selectedEndTimeSunday}
-                onBlur={() => setDidTouchEndTimeSunday(true)}
-                onValueChange={(target: any) =>
-                  setSelectedEndTimeSunday(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+          ) : (
+            <div className="flex justify-center items-center my-4">
+              <div className="flex-col justify-center items-center mx-4">
+                <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       <Transition
