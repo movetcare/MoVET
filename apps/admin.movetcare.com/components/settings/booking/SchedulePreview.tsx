@@ -109,7 +109,13 @@ export const SchedulePreview = ({
           className="flex-1 justify-center items-center my-8 w-full mx-auto"
         />
         {isLoading ? (
-          <Loader />
+          <div className="w-full mx-auto">
+            <div className="bg-movet-yellow p-2 rounded-xl">
+              <p className="italic text-center mt-0 font-extrabold text-movet-white text-lg">
+                Loading Available Appointments...
+              </p>
+            </div>
+          </div>
         ) : error ? (
           <Error error={error} />
         ) : (
@@ -124,7 +130,8 @@ export const SchedulePreview = ({
               appointmentAvailability?.length > 0 ? (
               <div className="bg-movet-blue p-2 rounded-xl">
                 <p className="italic text-center text-movet-white font-extrabold m-0 text-lg">
-                  Available Appointments
+                  {appointmentAvailability?.length} Available Appointment
+                  {appointmentAvailability?.length > 1 ? "s" : ""}
                 </p>
               </div>
             ) : (
@@ -132,7 +139,7 @@ export const SchedulePreview = ({
                 <p className="italic text-center mt-0 font-extrabold text-movet-white text-lg">
                   No Appointments Available
                 </p>
-                <p className="italic text-center -mt-2 text-movet-white text-xs mb-0">
+                <p className="italic text-center text-movet-white text-xs mb-0">
                   Please Select a Different Day
                 </p>
               </div>

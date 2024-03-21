@@ -1,7 +1,7 @@
-import { admin } from "../../../../config/config";
+import { admin, DEBUG } from "../../../../config/config";
 import { sendNotification } from "../../../../notifications/sendNotification";
 import { subtractMinutesFromDate } from "../../../../utils/subtractMinutesFromDate";
-const DEBUG = true;
+
 export const generateNewAppointmentNotifications = async (
   appointmentData: any,
 ) => {
