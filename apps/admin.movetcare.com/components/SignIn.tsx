@@ -5,8 +5,8 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleExclamation,
-  faEnvelopeSquare,
   faPhone,
+  faSignIn,
 } from "@fortawesome/free-solid-svg-icons";
 import { Loader } from "ui";
 import Link from "next/link";
@@ -114,9 +114,9 @@ export const SignIn = () => {
                     }}
                     className="flex flex-row bg-movet-red group relative w-full justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red"
                   >
-                    EMAIL
+                    SIGN IN
                     <span className="ml-2">
-                      <FontAwesomeIcon icon={faEnvelopeSquare} size="lg" />
+                      <FontAwesomeIcon icon={faSignIn} size="lg" />
                     </span>
                   </button>
                   <button

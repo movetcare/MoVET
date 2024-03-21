@@ -62,13 +62,13 @@ export const syncData = functions.runWith(defaultRuntimeOptions).https.onCall(
         case "closures":
           return await axios
             .get(
-              "https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/closures/",
+              "https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/closings/",
             )
             .then(async (response: any) => {
               const { data, status } = response;
               if (DEBUG)
                 console.log(
-                  "API Response: POST https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/closures/ =>",
+                  "API Response: POST https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/closings/ =>",
                   data,
                 );
               return status !== 200 && status !== 201

@@ -5,7 +5,6 @@ export const getClosingsConfiguration = async (
   response: Response,
 ): Promise<any> => {
   if (DEBUG) console.log("getClosingsConfiguration req =>", request?.body);
-  // TODO: Loop Through Data and Convert Dates into Dates Objects
   return await admin
     .firestore()
     .collection("configuration")

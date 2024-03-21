@@ -104,44 +104,214 @@ const Testing = () => {
           );
         else {
           console.log("RESULT", result.data);
-          await setDoc(
-            doc(firestore, "configuration", type),
-            {
-              ...result.data,
-              updatedOn: serverTimestamp(),
-            },
-            { merge: true },
-          )
-            .then(() =>
-              toast(
-                `FINISHED Syncing ${type.toUpperCase()} Configuration Data from ${environment.toUpperCase()}!`,
-                {
-                  duration: 3500,
-                  icon: (
-                    <FontAwesomeIcon
-                      icon={faCheckCircle}
-                      size="sm"
-                      className="text-movet-green"
-                    />
+          if (type === "closures") {
+            const {
+              closureDates,
+              closureDatesClinic,
+              closureDatesHousecall,
+              closureDatesVirtual,
+            } = result.data;
+            const finalClosureDates: any = [];
+            const finalClosureDatesClinic: any = [];
+            const finalClosureDatesHousecall: any = [];
+            const finalClosureDatesVirtual: any = [];
+            closureDates.forEach(
+              (closure: {
+                endDate: any;
+                name: string;
+                startDate: any;
+                isActiveForClinic: boolean;
+                isActiveForHousecalls: boolean;
+                isActiveForTelehealth: boolean;
+                showOnWebsite: boolean;
+              }) => {
+                finalClosureDates.push({
+                  ...closure,
+                  startDate: new Date(
+                    closure.startDate._seconds * 1000 +
+                      closure.startDate._nanoseconds / 1000000,
                   ),
-                },
-              ),
-            )
-            .catch((error: any) =>
-              toast(
-                `${type.toUpperCase()} Data Sync FAILED: "${JSON.stringify(error)}"`,
-                {
-                  duration: 5000,
-                  icon: (
-                    <FontAwesomeIcon
-                      icon={faCircleExclamation}
-                      size="sm"
-                      className="text-movet-red"
-                    />
+                  endDate: new Date(
+                    closure.endDate._seconds * 1000 +
+                      closure.endDate._nanoseconds / 1000000,
                   ),
-                },
-              ),
+                });
+              },
             );
+            closureDatesClinic.forEach(
+              (closure: {
+                endTime: string;
+                name: string;
+                startTime: string;
+                date: any;
+              }) => {
+                finalClosureDatesClinic.push({
+                  ...closure,
+                  date: new Date(
+                    closure.date._seconds * 1000 +
+                      closure.date._nanoseconds / 1000000,
+                  ),
+                });
+              },
+            );
+            closureDatesHousecall.forEach(
+              (closure: {
+                endTime: string;
+                name: string;
+                startTime: string;
+                date: any;
+              }) => {
+                finalClosureDatesHousecall.push({
+                  ...closure,
+                  date: new Date(
+                    closure.date._seconds * 1000 +
+                      closure.date._nanoseconds / 1000000,
+                  ),
+                });
+              },
+            );
+            closureDatesVirtual.forEach(
+              (closure: {
+                endTime: string;
+                name: string;
+                startTime: string;
+                date: any;
+              }) => {
+                finalClosureDatesVirtual.push({
+                  ...closure,
+                  date: new Date(
+                    closure.date._seconds * 1000 +
+                      closure.date._nanoseconds / 1000000,
+                  ),
+                });
+              },
+            );
+            await setDoc(
+              doc(firestore, "configuration", type),
+              {
+                closureDates: finalClosureDates,
+                closureDatesClinic: finalClosureDatesClinic,
+                closureDatesHousecall: finalClosureDatesHousecall,
+                closureDatesVirtual: finalClosureDatesVirtual,
+                updatedOn: serverTimestamp(),
+              },
+              { merge: true },
+            )
+              .then(() =>
+                toast(
+                  `FINISHED Syncing ${type.toUpperCase()} Configuration Data from ${environment.toUpperCase()}!`,
+                  {
+                    duration: 3500,
+                    icon: (
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        size="sm"
+                        className="text-movet-green"
+                      />
+                    ),
+                  },
+                ),
+              )
+              .catch((error: any) =>
+                toast(
+                  `${type.toUpperCase()} Data Sync FAILED: "${JSON.stringify(error)}"`,
+                  {
+                    duration: 5000,
+                    icon: (
+                      <FontAwesomeIcon
+                        icon={faCircleExclamation}
+                        size="sm"
+                        className="text-movet-red"
+                      />
+                    ),
+                  },
+                ),
+              );
+          } else if (type === "bookings") {
+            await setDoc(
+              doc(firestore, "configuration", type),
+              {
+                ...result.data,
+                winterHousecallMode: {
+                  ...result.data.winterHousecallMode,
+                  startDate: new Date(
+                    result.data.winterHousecallMode.startDate,
+                  ),
+                  endDate: new Date(result.data.winterHousecallMode.endDate),
+                },
+                updatedOn: serverTimestamp(),
+              },
+              { merge: true },
+            )
+              .then(() =>
+                toast(
+                  `FINISHED Syncing ${type.toUpperCase()} Configuration Data from ${environment.toUpperCase()}!`,
+                  {
+                    duration: 3500,
+                    icon: (
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        size="sm"
+                        className="text-movet-green"
+                      />
+                    ),
+                  },
+                ),
+              )
+              .catch((error: any) =>
+                toast(
+                  `${type.toUpperCase()} Data Sync FAILED: "${JSON.stringify(error)}"`,
+                  {
+                    duration: 5000,
+                    icon: (
+                      <FontAwesomeIcon
+                        icon={faCircleExclamation}
+                        size="sm"
+                        className="text-movet-red"
+                      />
+                    ),
+                  },
+                ),
+              );
+          } else
+            await setDoc(
+              doc(firestore, "configuration", type),
+              {
+                ...result.data,
+                updatedOn: serverTimestamp(),
+              },
+              { merge: true },
+            )
+              .then(() =>
+                toast(
+                  `FINISHED Syncing ${type.toUpperCase()} Configuration Data from ${environment.toUpperCase()}!`,
+                  {
+                    duration: 3500,
+                    icon: (
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        size="sm"
+                        className="text-movet-green"
+                      />
+                    ),
+                  },
+                ),
+              )
+              .catch((error: any) =>
+                toast(
+                  `${type.toUpperCase()} Data Sync FAILED: "${JSON.stringify(error)}"`,
+                  {
+                    duration: 5000,
+                    icon: (
+                      <FontAwesomeIcon
+                        icon={faCircleExclamation}
+                        size="sm"
+                        className="text-movet-red"
+                      />
+                    ),
+                  },
+                ),
+              );
         }
       })
       .catch((error: any) =>

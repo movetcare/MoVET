@@ -473,6 +473,7 @@ const verifyScheduleIsOpen = async (
         isActiveForClinic: boolean;
       }) => {
         const checkDate = new Date(date);
+        checkDate.setUTCDate(checkDate.getUTCDate() + 1);
         checkDate.setHours(0, 0, 0, 0);
         const closureStartDate = closure.startDate.toDate();
         closureStartDate.setHours(0, 0, 0, 0);
