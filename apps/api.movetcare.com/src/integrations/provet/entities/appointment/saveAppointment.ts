@@ -128,6 +128,33 @@ export const saveAppointment = async (
       data.start.getMonth() === new Date().getMonth() &&
       data.start.getDay() === new Date().getDay();
 
+    //TODO: DELETE THESE LOGS
+    console.log(
+      "appointmentIsToday data.start.getMonth() = ",
+      data.start.getMonth(),
+    );
+    console.log(
+      "appointmentIsToday new Date().getMonth() = ",
+      new Date().getMonth(),
+    );
+    console.log(
+      "appointmentIsToday data.start.getDay() = ",
+      data.start.getDay(),
+    );
+    console.log(
+      "appointmentIsToday new Date().getDay() = ",
+      new Date().getDay(),
+    );
+    console.log("appointmentIsToday", appointmentIsToday);
+    console.log(
+      "appointmentIsToday data.start.getMonth() === new Date().getMonth()",
+      data.start.getMonth() === new Date().getMonth(),
+    );
+    console.log(
+      "appointmentIsToday data.start.getDay() === new Date().getDay()",
+      data.start.getDay() === new Date().getDay(),
+    );
+
     if (DEBUG) console.log("appointmentIsToday", appointmentIsToday);
 
     if (data?.active === 0)

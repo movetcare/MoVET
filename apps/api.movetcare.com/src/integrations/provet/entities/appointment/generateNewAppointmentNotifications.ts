@@ -1,7 +1,7 @@
-import { admin, DEBUG } from "../../../../config/config";
+import { admin } from "../../../../config/config";
 import { sendNotification } from "../../../../notifications/sendNotification";
 import { subtractMinutesFromDate } from "../../../../utils/subtractMinutesFromDate";
-
+const DEBUG = true;
 export const generateNewAppointmentNotifications = async (
   appointmentData: any,
 ) => {
@@ -12,7 +12,7 @@ export const generateNewAppointmentNotifications = async (
     .get()
     .then((document: any) => !document.exists)
     .catch((error: any) => {
-      console.log("error", error);
+      console.error(error);
       return true;
     });
 
@@ -23,7 +23,7 @@ export const generateNewAppointmentNotifications = async (
     .get()
     .then((document: any) => !document.exists)
     .catch((error: any) => {
-      console.log("error", error);
+      console.error(error);
       return true;
     });
 

@@ -47,14 +47,10 @@ interface UserDetails {
 export const sendAppointmentReminderNotification = async (
   appointmentDetails: AppointmentDetails,
 ): Promise<void> => {
-  const {
-    active,
-    send24HourReminder,
-    send30MinReminder,
-    client,
-    start,
-    patients,
-  } = appointmentDetails;
+  const { send24HourReminder, send30MinReminder, client, start, patients, id } =
+    appointmentDetails;
+  const appointmentDataInProVet = await fetchEntity("appointment", id);
+  const active = appointmentDataInProVet?.active === 1;
   if (DEBUG) {
     console.log(
       "sendAppointmentReminderNotification => appointmentDetails",
