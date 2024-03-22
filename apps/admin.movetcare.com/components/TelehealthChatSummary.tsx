@@ -1,4 +1,4 @@
-import { collection, limit, query, where } from "firebase/firestore";
+import { collection, limit, orderBy, query, where } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { Loader } from "ui";
 import { firestore } from "services/firebase";
@@ -32,7 +32,8 @@ const TelehealthChatSummary = ({ mode }: { mode?: "sidebar" }) => {
       query(
         collection(firestore, "telehealth_chat"),
         where("status", "==", "complete"),
-        limit(50),
+        orderBy("updatedOn", "desc"),
+        limit(100),
       ),
     );
 

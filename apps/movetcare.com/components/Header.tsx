@@ -31,10 +31,10 @@ export const Header = () => {
         link: "/hours",
         text: "Hours",
       },
-      // {
-      //   link: "/shop",
-      //   text: "shop",
-      // },
+      {
+        link: "/shop",
+        text: "shop",
+      },
       {
         link: "/blog",
         text: "Blog",
