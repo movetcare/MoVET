@@ -12,13 +12,13 @@ import {
   functions,
   throwError,
   environment,
-  DEBUG,
+  // DEBUG,
 } from "../../config/config";
 import { formatTimeHoursToDate } from "../../utils/formatTimeHoursToDate";
 import { formatTimeHoursToString } from "../../utils/formatTimeHoursToString";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
-
+const DEBUG = true;
 interface Appointment {
   start: any;
   end: any;
@@ -275,7 +275,7 @@ const assignConfiguration = async ({
   appointmentDuration: any;
 }> => {
   const configuration = await getConfiguration();
-  const weekdayNumber = new Date(date).getDay() + 1;
+  const weekdayNumber = new Date(date).getDay(); //+ 1;
   if (DEBUG) {
     console.log("date value", date);
     console.log("weekdayNumber", weekdayNumber);
@@ -473,7 +473,7 @@ const verifyScheduleIsOpen = async (
         isActiveForClinic: boolean;
       }) => {
         const checkDate = new Date(date);
-        checkDate.setUTCDate(checkDate.getUTCDate() + 1);
+        //checkDate.setUTCDate(checkDate.getUTCDate() + 1);
         checkDate.setHours(0, 0, 0, 0);
         const closureStartDate = closure.startDate.toDate();
         closureStartDate.setHours(0, 0, 0, 0);
