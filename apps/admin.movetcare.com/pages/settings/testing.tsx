@@ -552,63 +552,74 @@ const Testing = () => {
           )}
         </ul>
       </div>
-      <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
-        <div className="flex flex-col sm:flex-row items-center justify-center mt-1 px-8">
-          <div className="flex flex-row items-center">
-            <FontAwesomeIcon
-              icon={faRedo}
-              className={"text-movet-red"}
-              size="lg"
-            />
-            <h1 className="ml-2 my-4 text-lg">
-              Sync Data w/ Production Environment
-            </h1>
+      {environment === "development" && (
+        <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center mt-1 px-8">
+            <div className="flex flex-row items-center">
+              <FontAwesomeIcon
+                icon={faRedo}
+                className={"text-movet-red"}
+                size="lg"
+              />
+              <h1 className="ml-2 my-4 text-lg">
+                Sync Data w/ Production Environment
+              </h1>
+            </div>
           </div>
+          <ul
+            role="list"
+            className="divide-y divide-movet-gray border-t border-movet-gray mt-2"
+          >
+            <li className="flex flex-col sm:flex-row text-center p-4">
+              <Button
+                className="m-4"
+                color="black"
+                onClick={async () => {
+                  await syncData({
+                    environment: "production",
+                    type: "bookings",
+                  });
+                }}
+              >
+                <span className="flex-shrink-0 cursor-pointer mr-2">
+                  <FontAwesomeIcon icon={faRedo} className="text-movet-white" />
+                </span>
+                Sync Bookings Configuration
+              </Button>
+              <Button
+                className="m-4"
+                color="black"
+                onClick={async () => {
+                  await syncData({
+                    environment: "production",
+                    type: "closures",
+                  });
+                }}
+              >
+                <span className="flex-shrink-0 cursor-pointer mr-2">
+                  <FontAwesomeIcon icon={faRedo} className="text-movet-white" />
+                </span>
+                Sync Closures Configuration
+              </Button>
+              <Button
+                className="m-4"
+                color="black"
+                onClick={async () => {
+                  await syncData({
+                    environment: "production",
+                    type: "openings",
+                  });
+                }}
+              >
+                <span className="flex-shrink-0 cursor-pointer mr-2">
+                  <FontAwesomeIcon icon={faRedo} className="text-movet-white" />
+                </span>
+                Sync Openings Configuration
+              </Button>
+            </li>
+          </ul>
         </div>
-        <ul
-          role="list"
-          className="divide-y divide-movet-gray border-t border-movet-gray mt-2"
-        >
-          <li className="flex flex-col sm:flex-row text-center p-4">
-            <Button
-              className="m-4"
-              color="black"
-              onClick={async () => {
-                await syncData({ environment: "production", type: "bookings" });
-              }}
-            >
-              <span className="flex-shrink-0 cursor-pointer mr-2">
-                <FontAwesomeIcon icon={faRedo} className="text-movet-white" />
-              </span>
-              Sync Bookings Configuration
-            </Button>
-            <Button
-              className="m-4"
-              color="black"
-              onClick={async () => {
-                await syncData({ environment: "production", type: "closures" });
-              }}
-            >
-              <span className="flex-shrink-0 cursor-pointer mr-2">
-                <FontAwesomeIcon icon={faRedo} className="text-movet-white" />
-              </span>
-              Sync Closures Configuration
-            </Button>
-            <Button
-              className="m-4"
-              color="black"
-              onClick={async () => {
-                await syncData({ environment: "production", type: "openings" });
-              }}
-            >
-              <span className="flex-shrink-0 cursor-pointer mr-2">
-                <FontAwesomeIcon icon={faRedo} className="text-movet-white" />
-              </span>
-              Sync Openings Configuration
-            </Button>
-          </li>
-        </ul>
-      </div>
+      )}
     </AdminCheck>
   );
 };
