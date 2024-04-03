@@ -10,8 +10,8 @@
     "update": "ncu -u"
   },
   "devDependencies": {
-    "@firebase/app-types": "^0.9.0",
-    "@types/node": "^20.11.30",
+    "@firebase/app-types": "^0.9.1",
+    "@types/node": "^20.12.3",
     "firebase-admin": "^12.0.0",
     "next": "14.1.4",
     "react": "^18.2.0",
