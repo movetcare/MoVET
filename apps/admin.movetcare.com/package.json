@@ -55,7 +55,7 @@
     "tailwindcss": "^3.4.3",
     "tsconfig": "workspace:*",
     "types": "workspace:*",
-    "typescript": "^5.4.3",
+    "typescript": "^5.4.4",
     "ui": "workspace:*",
     "utilities": "workspace:*"
   }

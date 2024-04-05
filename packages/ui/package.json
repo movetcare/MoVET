@@ -29,7 +29,7 @@
     "schemas": "workspace:*",
     "tsconfig": "workspace:*",
     "types": "workspace:*",
-    "typescript": "^5.4.3",
+    "typescript": "^5.4.4",
     "utilities": "workspace:*",
     "yup": "^1.4.0"
   },
