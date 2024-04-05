@@ -174,7 +174,7 @@ export const saveAppointment = async (
                 console.log(
                   `Successfully Synchronized PROVET Cloud Data w/ Firestore for Appointment #${proVetAppointmentData.id}`,
                 );
-              if (movetAppointmentData)
+              if (movetAppointmentData && environment.type === "production")
                 sendAppointmentConfirmationEmail(
                   `${data?.client}`,
                   `${proVetAppointmentData.id}`,
@@ -200,51 +200,52 @@ export const saveAppointment = async (
                 console.log(
                   `Successfully Generated Firestore Document for Appointment #${proVetAppointmentData.id}`,
                 );
-                console.log(
-                  // eslint-disable-next-line quotes
-                  'Setting "onboardingComplete" to "true" for Client #',
-                  String(data?.client),
-                );
+                // console.log(
+                //   // eslint-disable-next-line quotes
+                //   'Setting "onboardingComplete" to "true" for Client #',
+                //   String(data?.client),
+                // );
               }
-              admin
-                .auth()
-                .setCustomUserClaims(String(data?.client), {
-                  onboardingComplete: true,
-                })
-                .catch((error: any) => {
-                  if (error.code === "auth/user-not-found") {
-                    if (data?.client && environment.type === "production")
-                      admin
-                        .firestore()
-                        .collection("tasks_queue")
-                        .doc(`create_new_client_${data?.client}`)
-                        .set(
-                          {
-                            options: {
-                              clientId: data?.client,
-                            },
-                            worker: "create_new_client",
-                            status: "scheduled",
-                            performAt: new Date(),
-                            createdOn: new Date(),
-                          },
-                          { merge: true },
-                        )
-                        .then(
-                          async () =>
-                            DEBUG &&
-                            console.log(
-                              "CREATE NEW CLIENT TASK ADDED TO QUEUE => ",
-                              `create_new_client_${data?.client}`,
-                            ),
-                        )
-                        .catch((error: any) => throwError(error));
-                  } else throwError(error);
-                });
-              sendAppointmentConfirmationEmail(
-                `${data?.client}`,
-                `${proVetAppointmentData.id}`,
-              );
+              // admin
+              //   .auth()
+              //   .setCustomUserClaims(String(data?.client), {
+              //     onboardingComplete: true,
+              //   })
+              //   .catch((error: any) => {
+              //     if (error.code === "auth/user-not-found") {
+              //       if (data?.client && environment.type === "production")
+              //         admin
+              //           .firestore()
+              //           .collection("tasks_queue")
+              //           .doc(`create_new_client_${data?.client}`)
+              //           .set(
+              //             {
+              //               options: {
+              //                 clientId: data?.client,
+              //               },
+              //               worker: "create_new_client",
+              //               status: "scheduled",
+              //               performAt: new Date(),
+              //               createdOn: new Date(),
+              //             },
+              //             { merge: true },
+              //           )
+              //           .then(
+              //             async () =>
+              //               DEBUG &&
+              //               console.log(
+              //                 "CREATE NEW CLIENT TASK ADDED TO QUEUE => ",
+              //                 `create_new_client_${data?.client}`,
+              //               ),
+              //           )
+              //           .catch((error: any) => throwError(error));
+              //     } else throwError(error);
+              //   });
+              if (environment.type === "production")
+                sendAppointmentConfirmationEmail(
+                  `${data?.client}`,
+                  `${proVetAppointmentData.id}`,
+                );
               return true;
             })
             .catch((error: any) => throwError(error));

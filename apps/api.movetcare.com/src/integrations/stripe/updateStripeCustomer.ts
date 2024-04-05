@@ -41,12 +41,12 @@ export const updateStripeCustomer = (proVetClientData: {
             proVetClientData?.firstname && proVetClientData?.lastname
               ? `${proVetClientData?.firstname} ${proVetClientData?.lastname}`
               : proVetClientData?.firstname
-              ? proVetClientData?.firstname
-              : proVetClientData?.lastname
-              ? proVetClientData?.lastname
-              : null,
+                ? proVetClientData?.firstname
+                : proVetClientData?.lastname
+                  ? proVetClientData?.lastname
+                  : null,
           phone: proVetClientData?.phone_numbers[0]?.number || "",
-        }
+        },
       );
     stripe.customers
       .update(proVetClientData?.id_number, {
@@ -64,10 +64,10 @@ export const updateStripeCustomer = (proVetClientData: {
           proVetClientData?.firstname && proVetClientData?.lastname
             ? `${proVetClientData?.firstname} ${proVetClientData?.lastname}`
             : proVetClientData?.firstname
-            ? proVetClientData?.firstname
-            : proVetClientData?.lastname
-            ? proVetClientData?.lastname
-            : "",
+              ? proVetClientData?.firstname
+              : proVetClientData?.lastname
+                ? proVetClientData?.lastname
+                : "",
         phone: proVetClientData?.phone_numbers[0]?.number || "",
       })
       .then(() =>
@@ -76,12 +76,12 @@ export const updateStripeCustomer = (proVetClientData: {
           payload: {
             message: `:money_mouth_face: Customer Information Updated in Stripe\n\nhttps://dashboard.stripe.com/customers/${proVetClientData?.id_number}\n\n`,
           },
-        })
+        }),
       )
       .catch((error: any) =>
-        error?.message?.includes("No such customer: 'cus_NHh7gfsz2LsVnp'")
+        error?.message?.includes("No such customer: 'cus_Prf6RZhu7iELJN'")
           ? console.log(error)
-          : throwError(error)
+          : throwError(error),
       );
   } else if (DEBUG) {
     console.log("updateStripeCustomerData => SKIPPING STRIPE CUSTOMER UPDATE");
@@ -91,11 +91,11 @@ export const updateStripeCustomer = (proVetClientData: {
       proVetClientData?.id_number !== ""
     )
       console.log(
-        "updateStripeCustomerData => SKIP REASON -  MISSING id_number in PROVET"
+        "updateStripeCustomerData => SKIP REASON -  MISSING id_number in PROVET",
       );
     if (environment?.type !== "production")
       console.log(
-        "updateStripeCustomerData => SKIP REASON -  ENVIRONMENT IS NOT PRODUCTION!"
+        "updateStripeCustomerData => SKIP REASON -  ENVIRONMENT IS NOT PRODUCTION!",
       );
   }
 };

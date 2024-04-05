@@ -22,14 +22,14 @@ export const initTestUser: Promise<Response> = functions
         (await importTestUser(
           "dev+test@movetcare.com",
           5769,
-          "cus_NHh7gfsz2LsVnp",
-          "pm_1MX7jnDVQU5TYLF1k3iHdDKc",
+          "cus_Prf6RZhu7iELJN",
+          "pm_1P1vnEDVQU5TYLF1pjpQcaOj",
         )) &&
         (await importTestUser(
           "dev+test_vcpr_not_required@movetcare.com",
           6008,
-          "cus_O4miqMJzfJhmBB",
-          "card_1NIdABDVQU5TYLF1Yh2xFp4M",
+          "cus_Prf9bWZqSxTbEO",
+          "pm_1P1voyDVQU5TYLF1uGxyCVVc",
         )) &&
         (await importTelehealthChat())
         ? response.status(200).send()

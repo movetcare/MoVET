@@ -26,9 +26,9 @@ export const resetTestData: Promise<Response> = functions
               DEBUG &&
                 console.log(
                   "Successfully Deleted Booking Document for Client 6008",
-                  doc.id
+                  doc.id,
                 );
-            })
+            }),
           )
           .catch((error: any) => DEBUG && console.error(error));
         const client = await fetchEntity("client", 6008);
@@ -39,18 +39,18 @@ export const resetTestData: Promise<Response> = functions
             `?client__eq=${client?.id}&active=1
             &start__gte=${
               new Date().toISOString().split("T")[0]
-            }%2000:00%2B00:00`
+            }%2000:00%2B00:00`,
           );
         const appointments = await fetchEntity(
           "appointment",
           null,
           `?client__eq=${client?.id}&active=1&start__gte=${
             new Date().toISOString().split("T")[0]
-          }%2000:00%2B00:00`
+          }%2000:00%2B00:00`,
         );
         if (appointments.length)
           proVetAppointmentIds = appointments.map(
-            (appointment: any) => appointment?.id
+            (appointment: any) => appointment?.id,
           );
 
         if (proVetAppointmentIds.length) {
@@ -58,8 +58,8 @@ export const resetTestData: Promise<Response> = functions
             console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
           Promise.all(
             proVetAppointmentIds.map((id: number) =>
-              updateProVetAppointment({ id, active: 0 })
-            )
+              updateProVetAppointment({ id, active: 0 }),
+            ),
           );
         } else if (DEBUG)
           console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
@@ -74,7 +74,10 @@ export const resetTestData: Promise<Response> = functions
           .then(
             (userRecord: any) =>
               DEBUG &&
-              console.log("Successfully Updated Auth User", userRecord.toJSON())
+              console.log(
+                "Successfully Updated Auth User",
+                userRecord.toJSON(),
+              ),
           )
           .catch((error: any) => DEBUG && console.error(error));
         await admin
@@ -88,9 +91,9 @@ export const resetTestData: Promise<Response> = functions
               DEBUG &&
                 console.log(
                   "Successfully Deleted Booking Document Client 5769",
-                  doc.id
+                  doc.id,
                 );
-            })
+            }),
           )
           .catch((error: any) => DEBUG && console.error(error));
         await admin
@@ -100,7 +103,8 @@ export const resetTestData: Promise<Response> = functions
           .delete()
           .then(
             () =>
-              DEBUG && console.log("Successfully Deleted Client Document", 5769)
+              DEBUG &&
+              console.log("Successfully Deleted Client Document", 5769),
           )
           .catch((error: any) => DEBUG && console.error(error));
         const patients = admin
@@ -116,7 +120,7 @@ export const resetTestData: Promise<Response> = functions
               if (DEBUG)
                 console.log("Successfully Deleted Patient Document", doc.id);
               //}
-            })
+            }),
           )
           .catch((error: any) => DEBUG && console.error(error));
 
@@ -138,18 +142,18 @@ export const resetTestData: Promise<Response> = functions
             `?client__eq=${client?.id}&active=1
             &start__gte=${
               new Date().toISOString().split("T")[0]
-            }%2000:00%2B00:00`
+            }%2000:00%2B00:00`,
           );
         const appointments = await fetchEntity(
           "appointment",
           null,
           `?client__eq=${client?.id}&active=1&start__gte=${
             new Date().toISOString().split("T")[0]
-          }%2000:00%2B00:00`
+          }%2000:00%2B00:00`,
         );
         if (appointments.length)
           proVetAppointmentIds = appointments.map(
-            (appointment: any) => appointment?.id
+            (appointment: any) => appointment?.id,
           );
 
         if (proVetAppointmentIds.length) {
@@ -157,8 +161,8 @@ export const resetTestData: Promise<Response> = functions
             console.log("ARCHIVING APPOINTMENTS: ", proVetAppointmentIds);
           Promise.all(
             proVetAppointmentIds.map((id: number) =>
-              updateProVetAppointment({ id, active: 0 })
-            )
+              updateProVetAppointment({ id, active: 0 }),
+            ),
           );
         } else if (DEBUG)
           console.log("NO FUTURE APPOINTMENTS FOUND", proVetAppointmentIds);
@@ -175,14 +179,14 @@ export const resetTestData: Promise<Response> = functions
 
         const paymentMethods: any = await stripe.paymentMethods
           .list({
-            customer: "cus_NHh7gfsz2LsVnp",
+            customer: "cus_Prf6RZhu7iELJN",
             type: "card",
           })
           .catch((error: any) => DEBUG && console.error(error));
         if (DEBUG) console.log("paymentMethods", paymentMethods);
         if (paymentMethods) {
           const paymentMethodIds = paymentMethods?.data?.map(
-            (paymentMethod: { id: string }) => paymentMethod?.id
+            (paymentMethod: { id: string }) => paymentMethod?.id,
           );
           if (DEBUG) console.log("paymentMethodIds", paymentMethodIds);
           Promise.all(
@@ -194,11 +198,11 @@ export const resetTestData: Promise<Response> = functions
                     DEBUG &&
                     console.log(
                       "Successfully Deleted Client Payment Method",
-                      paymentMethodId
-                    )
+                      paymentMethodId,
+                    ),
                 )
-                .catch((error: any) => DEBUG && console.error(error))
-            )
+                .catch((error: any) => DEBUG && console.error(error)),
+            ),
           ).catch((error: any) => DEBUG && console.error(error));
         }
         sendNotification({
@@ -219,9 +223,9 @@ export const resetTestData: Promise<Response> = functions
               DEBUG &&
                 console.log(
                   "Successfully Deleted Booking Document for Client 6008",
-                  doc.id
+                  doc.id,
                 );
-            })
+            }),
           )
           .catch((error: any) => DEBUG && console.error(error));
         const today = new Date();
@@ -243,7 +247,7 @@ export const resetTestData: Promise<Response> = functions
               },
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           );
       } else if (request.body?.id === "winter-mode-off")
         await disableWinterMode();
@@ -260,7 +264,7 @@ export const resetTestData: Promise<Response> = functions
               requirePaymentMethodToRequestAnAppointment: true,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           )
           .catch((error: any) => DEBUG && console.error(error));
       else if (
@@ -276,7 +280,7 @@ export const resetTestData: Promise<Response> = functions
               requirePaymentMethodToRequestAnAppointment: false,
               updatedOn: new Date(),
             },
-            { merge: true }
+            { merge: true },
           )
           .catch((error: any) => DEBUG && console.error(error));
       else if (request.body?.id === "wipe_test_data") {
@@ -294,11 +298,11 @@ export const resetTestData: Promise<Response> = functions
                     DEBUG &&
                     console.log(
                       "Successfully Deleted Test `bookings` Document",
-                      doc.id
-                    )
+                      doc.id,
+                    ),
                 )
                 .catch((error: any) => DEBUG && console.error(error));
-            })
+            }),
           )
           .catch((error: any) => DEBUG && console.error(error));
         await admin
@@ -315,11 +319,11 @@ export const resetTestData: Promise<Response> = functions
                     DEBUG &&
                     console.log(
                       "Successfully Deleted Test `bookings` Document",
-                      doc.id
-                    )
+                      doc.id,
+                    ),
                 )
                 .catch((error: any) => DEBUG && console.error(error));
-            })
+            }),
           )
           .catch((error: any) => DEBUG && console.error(error));
         await admin
@@ -336,11 +340,11 @@ export const resetTestData: Promise<Response> = functions
                     DEBUG &&
                     console.log(
                       "Successfully Deleted Test `bookings` Document",
-                      doc.id
-                    )
+                      doc.id,
+                    ),
                 )
                 .catch((error: any) => DEBUG && console.error(error));
-            })
+            }),
           )
           .catch((error: any) => DEBUG && console.error(error));
         await admin
@@ -357,11 +361,11 @@ export const resetTestData: Promise<Response> = functions
                     DEBUG &&
                     console.log(
                       "Successfully Deleted Test `k9_smiles` Document",
-                      doc.id
-                    )
+                      doc.id,
+                    ),
                 )
                 .catch((error: any) => DEBUG && console.error(error));
-            })
+            }),
           )
           .catch((error: any) => DEBUG && console.error(error));
         await admin
@@ -378,11 +382,11 @@ export const resetTestData: Promise<Response> = functions
                     DEBUG &&
                     console.log(
                       "Successfully Deleted Test `contact` Document",
-                      doc.id
-                    )
+                      doc.id,
+                    ),
                 )
                 .catch((error: any) => DEBUG && console.error(error));
-            })
+            }),
           )
           .catch((error: any) => DEBUG && console.error(error));
       }
@@ -405,6 +409,6 @@ const disableWinterMode = async () =>
         },
         updatedOn: new Date(),
       },
-      { merge: true }
+      { merge: true },
     )
     .catch((error: any) => DEBUG && console.error(error));
