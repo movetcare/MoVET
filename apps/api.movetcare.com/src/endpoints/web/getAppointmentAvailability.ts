@@ -19,12 +19,12 @@ import { formatTimeHoursToString } from "../../utils/formatTimeHoursToString";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
 const DEBUG = true;
+const DEBUG_SUMMARY = true;
 const DEBUG_ASSIGN_CONFIG = false;
 const DEBUG_VERIFY_SCHEDULE = false;
 const DEBUG_EXISTING_APPOINTMENTS = false;
 const DEBUG_CALCULATE_APPOINTMENTS = false;
 const DEBUG_FORCED_OPENINGS = false;
-const DEBUG_SUMMARY = false;
 interface Appointment {
   start: any;
   end: any;
@@ -46,15 +46,17 @@ export const getAppointmentAvailability = functions
       schedule,
       patients,
     }: {
-      date: any;
+      date: string;
       schedule: AppointmentScheduleTypes;
       patients: Array<string>;
     }): Promise<any> => {
+      const dateObject = new Date(date.slice(0, -13) + "24:00:00.000Z");
       if (DEBUG) {
         console.log("---------- getAppointmentAvailability ARGS ----------");
-        console.log("date", date);
-        console.log("patients", patients);
-        console.log("schedule", schedule);
+        console.log("date       => ", date);
+        console.log("dateObject => ", dateObject);
+        console.log("patients   => ", patients);
+        console.log("schedule   => ", schedule);
       }
       if (patients && patients.length > 0) {
         const {
@@ -66,11 +68,15 @@ export const getAppointmentAvailability = functions
           sameDayAppointmentLeadTime,
           resources,
           appointmentDuration,
-        } = await assignConfiguration({ schedule, patients, date });
+        } = await assignConfiguration({
+          schedule,
+          patients,
+          weekdayNumber: dateObject.getDay(),
+        });
         const { isOpenOnDate, closedReason } = await verifyScheduleIsOpen(
           schedule,
           patients,
-          date,
+          dateObject,
         );
         if (isOpenOnDate && closedReason === null) {
           const allAvailableAppointmentTimes: any = [];
@@ -81,7 +87,7 @@ export const getAppointmentAvailability = functions
                 end: any;
               }> = [];
               existingAppointmentsForResource = await getExistingAppointments({
-                date,
+                date: dateObject,
                 schedule,
                 resource,
                 standardLunchTime,
@@ -184,7 +190,7 @@ export const getAppointmentAvailability = functions
                       }> = [];
                       existingAppointmentsForResource =
                         await getExistingAppointments({
-                          date,
+                          date: dateObject,
                           schedule,
                           resource,
                           standardLunchTime,
@@ -194,7 +200,7 @@ export const getAppointmentAvailability = functions
                         await calculateAvailableAppointments({
                           schedule,
                           existingAppointmentsForResource,
-                          date,
+                          date: dateObject,
                           resource,
                           standardOpenTime: opening?.startTime,
                           standardCloseTime: opening?.endTime,
@@ -263,11 +269,11 @@ const getConfiguration = async () =>
 const assignConfiguration = async ({
   schedule,
   patients,
-  date,
+  weekdayNumber,
 }: {
   schedule: AppointmentScheduleTypes;
   patients: Array<string>;
-  date: any;
+  weekdayNumber: number;
 }): Promise<{
   standardOpenTime: any;
   standardCloseTime: any;
@@ -279,10 +285,9 @@ const assignConfiguration = async ({
   appointmentDuration: any;
 }> => {
   const configuration = await getConfiguration();
-  const weekdayNumber = new Date(date).getDay(); //+ 1;
   if (DEBUG_ASSIGN_CONFIG) {
     console.log("---------- assignConfiguration ----------");
-    console.log("ARGS => ", { configuration, weekdayNumber, date });
+    console.log("ARGS => ", { configuration, weekdayNumber });
     console.log("-----------------------------------------");
   }
   let standardOpenTime: any,
@@ -447,7 +452,7 @@ const assignConfiguration = async ({
 const verifyScheduleIsOpen = async (
   schedule: string,
   patients: Array<string>,
-  date: string,
+  date: Date,
 ): Promise<{ isOpenOnDate: boolean; closedReason: string | null }> => {
   if (DEBUG_VERIFY_SCHEDULE) {
     console.log("---------- verifyScheduleIsOpen ----------");
@@ -457,14 +462,13 @@ const verifyScheduleIsOpen = async (
   let isOpenOnDate = false;
   let vcprRequired = false;
   const calendarDay = Number(
-    new Date(date.slice(0, -13) + "24:00:00.000Z")?.toLocaleDateString(
-      "en-US",
-      { timeZone: "America/Denver", day: "numeric" },
-    ),
+    new Date(date)?.toLocaleDateString("en-US", {
+      timeZone: "America/Denver",
+      day: "numeric",
+    }),
   );
-  const monthNumber =
-    new Date(date.slice(0, -13) + "24:00:00.000Z").getMonth() + 1;
-  const weekdayNumber = new Date(date.slice(0, -13) + "24:00:00.000Z").getDay();
+  const monthNumber = new Date(date).getMonth() + 1;
+  const weekdayNumber = new Date(date).getDay();
   const configuration = await getConfiguration();
   const globalClosures = await admin
     .firestore()
@@ -475,16 +479,13 @@ const verifyScheduleIsOpen = async (
     .catch((error: any) => throwError(error));
   if (DEBUG_VERIFY_SCHEDULE) {
     console.log("calendarDay                => ", calendarDay);
-    console.log(
-      "exactDateString            => ",
-      date.slice(0, -13) + "24:00:00.000Z",
-    );
+    console.log("exactDateString            => ", date);
     console.log(
       "exactDateString.toLocaleDateString() => ",
-      new Date(date.slice(0, -13) + "24:00:00.000Z")?.toLocaleDateString(
-        "en-US",
-        { timeZone: "America/Denver", day: "numeric" },
-      ),
+      new Date(date)?.toLocaleDateString("en-US", {
+        timeZone: "America/Denver",
+        day: "numeric",
+      }),
     );
     console.log("monthNumber                => ", monthNumber);
     console.log("weekdayNumber              => ", weekdayNumber);
@@ -707,7 +708,7 @@ const getExistingAppointments = async ({
   standardLunchTime,
   standardLunchDuration,
 }: {
-  date: string;
+  date: Date;
   schedule: AppointmentScheduleTypes;
   resource: ActiveResource;
   standardLunchTime: number;
@@ -722,13 +723,12 @@ const getExistingAppointments = async ({
     .get()
     .then(async (querySnapshot: any) => {
       const calendarDay = Number(
-        new Date(date.slice(0, -13) + "24:00:00.000Z")?.toLocaleDateString(
-          "en-US",
-          { timeZone: "America/Denver", day: "numeric" },
-        ),
+        new Date(date)?.toLocaleDateString("en-US", {
+          timeZone: "America/Denver",
+          day: "numeric",
+        }),
       );
-      const monthNumber =
-        new Date(date.slice(0, -13) + "24:00:00.000Z").getMonth() + 1;
+      const monthNumber = new Date(date).getMonth() + 1;
 
       const existingAppointments: Array<Appointment> = [];
       const scheduleClosures = await getScheduledClosures(schedule);
@@ -873,19 +873,13 @@ const calculateAvailableAppointments = async ({
   resource,
 }: any) => {
   const calendarDay = Number(
-    new Date(date.slice(0, -13) + "24:00:00.000Z")?.toLocaleDateString(
-      "en-US",
-      {
-        timeZone: "America/Denver",
-        day: "numeric",
-      },
-    ),
+    new Date(date)?.toLocaleDateString("en-US", {
+      timeZone: "America/Denver",
+      day: "numeric",
+    }),
   );
-  const monthNumber =
-    new Date(date.slice(0, -13) + "24:00:00.000Z").getMonth() + 1;
-  const yearNumber = new Date(
-    date.slice(0, -13) + "24:00:00.000Z",
-  ).getFullYear();
+  const monthNumber = new Date(date).getMonth() + 1;
+  const yearNumber = new Date(date).getFullYear();
   const appointmentSlotsToRemove: any = [];
   let availableAppointmentSlots = [];
   let staggeredOpenTime: null | number = null;

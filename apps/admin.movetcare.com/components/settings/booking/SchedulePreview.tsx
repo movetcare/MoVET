@@ -2,7 +2,7 @@ import { httpsCallable } from "firebase/functions";
 import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import { functions } from "services/firebase";
-import { Button, Loader } from "ui";
+import { Button } from "ui";
 import Error from "components/Error";
 
 const formatTime = (time: string): string => {
@@ -53,6 +53,13 @@ export const SchedulePreview = ({
   >("new");
   useEffect(() => {
     const fetchAppointmentAvailability = async () => {
+      console.log("selectedDate", selectedDate);
+      console.log(
+        "selectedDate in MST",
+        selectedDate.toLocaleString("en-US", {
+          timeZone: "America/Denver",
+        }),
+      );
       const { data: result }: any = await httpsCallable(
         functions,
         "getAppointmentAvailability",
