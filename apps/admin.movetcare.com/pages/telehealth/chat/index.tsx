@@ -92,8 +92,9 @@ const ChatSession = () => {
       !didEndChat
     ) {
       toast(
-        `${session.data()?.client?.firstName} ${session.data()?.client
-          ?.lastName} ended chat session`,
+        `${session.data()?.client?.firstName} ${
+          session.data()?.client?.lastName
+        } ended chat session`,
         {
           icon: <FontAwesomeIcon icon={faDoorClosed} size="sm" />,
         },
@@ -324,43 +325,49 @@ const ChatSession = () => {
               <div className="flex items-center space-x-2">
                 {patients && patients.docs.length <= 5 ? (
                   <ul>
-                    {patients.docs.map((patient: any) => (
-                      <li key={patient.data()?.id}>
-                        <a
-                          href={`https://us.provetcloud.com/4285/client/${patient.data()
-                            ?.client}/tabs/?patient_id=${patient.data()?.id}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="hover:underline hover:text-movet-red italic"
-                        >
-                          {patient
-                            .data()
-                            ?.species?.toLowerCase()
-                            ?.includes("cat") ? (
-                            <FontAwesomeIcon
-                              icon={faCat}
-                              size="sm"
-                              className="mr-1"
-                            />
-                          ) : (
-                            <FontAwesomeIcon
-                              icon={faDog}
-                              size="sm"
-                              className="mr-1"
-                            />
-                          )}
-                          {patient.data()?.name}
-                        </a>
-                      </li>
-                    ))}
+                    {patients.docs.map((patient: any) =>
+                      patient.data()?.archived === false ? (
+                        <li key={patient.data()?.id}>
+                          <a
+                            href={`https://us.provetcloud.com/4285/client/${
+                              patient.data()?.client
+                            }/tabs/?patient_id=${patient.data()?.id}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="hover:underline hover:text-movet-red italic"
+                          >
+                            {patient
+                              .data()
+                              ?.species?.toLowerCase()
+                              ?.includes("cat") ? (
+                              <FontAwesomeIcon
+                                icon={faCat}
+                                size="sm"
+                                className="mr-1"
+                              />
+                            ) : (
+                              <FontAwesomeIcon
+                                icon={faDog}
+                                size="sm"
+                                className="mr-1"
+                              />
+                            )}
+                            {patient.data()?.name}
+                          </a>
+                        </li>
+                      ) : (
+                        <></>
+                      ),
+                    )}
                   </ul>
                 ) : patients && patients.docs.length > 5 ? (
                   <>
                     <b className="flex flex-row items-center justify-center">
                       Patients:
                       <a
-                        href={`https://us.provetcloud.com/4285/client/${patients.docs[0].data()
-                          ?.client}/`}
+                        href={`https://us.provetcloud.com/4285/client/${
+                          patients.docs[0].data()?.client
+                        }/`}
                         target="_blank"
                         rel="noreferrer"
                         className="hover:underline hover:text-movet-red text-lg font-extrabold ml-1"
