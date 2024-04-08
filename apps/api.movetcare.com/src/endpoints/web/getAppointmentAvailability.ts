@@ -22,7 +22,7 @@ const DEBUG = true;
 const DEBUG_SUMMARY = true;
 const DEBUG_ASSIGN_CONFIG = false;
 const DEBUG_VERIFY_SCHEDULE = false;
-const DEBUG_EXISTING_APPOINTMENTS = false;
+const DEBUG_EXISTING_APPOINTMENTS = true;
 const DEBUG_CALCULATE_APPOINTMENTS = false;
 const DEBUG_FORCED_OPENINGS = false;
 interface Appointment {
@@ -713,12 +713,14 @@ const getExistingAppointments = async ({
   resource: ActiveResource;
   standardLunchTime: number;
   standardLunchDuration: number;
-}) =>
-  await admin
+}) => {
+  const updatedDate = new Date(date);
+  updatedDate.setDate(updatedDate.getDate() - 1);
+  return await admin
     .firestore()
     .collection("appointments")
     .where("active", "==", 1)
-    .where("start", ">=", new Date(date))
+    .where("start", ">=", updatedDate)
     .orderBy("start", "asc")
     .get()
     .then(async (querySnapshot: any) => {
@@ -729,12 +731,13 @@ const getExistingAppointments = async ({
         }),
       );
       const monthNumber = new Date(date).getMonth() + 1;
-
       const existingAppointments: Array<Appointment> = [];
       const scheduleClosures = await getScheduledClosures(schedule);
 
       if (DEBUG_EXISTING_APPOINTMENTS) {
         console.log("---------- getExistingAppointments ----------");
+        console.log("date              => ", date);
+        console.log("queryDate         => ", updatedDate);
         console.log("appointmentsCount => ", querySnapshot?.docs?.length);
         console.log("calendarDay       =>", calendarDay);
         console.log("monthNumber       =>", monthNumber);
@@ -744,14 +747,19 @@ const getExistingAppointments = async ({
       if (querySnapshot?.docs?.length > 0) {
         const reasons = await getReasons(schedule);
         querySnapshot.forEach(async (doc: any) => {
-          if (DEBUG_EXISTING_APPOINTMENTS) {
-            console.log("appointmentId   => ", doc.id);
-            console.log("resource        => ", resource);
-            console.log("resources       => ", doc.data()?.resources);
+          if (
+            DEBUG_EXISTING_APPOINTMENTS &&
+            doc.data()?.resources &&
+            doc.data()?.resources.includes(resource.id)
+          ) {
+            console.log("appointmentId         => ", doc.id);
             console.log(
-              "resourceMatches => ",
-              doc.data()?.resources &&
-                doc.data()?.resources.includes(resource.id),
+              "appointmentStartDate  => ",
+              doc.data()?.start?.toDate().getDate(),
+            );
+            console.log(
+              "appointmentStartMonth => ",
+              doc.data()?.start?.toDate().getMonth() + 1,
             );
           }
           if (
@@ -830,6 +838,7 @@ const getExistingAppointments = async ({
       return existingAppointments;
     })
     .catch((error: any) => throwError(error));
+};
 const getReasons = async (schedule: AppointmentScheduleTypes) =>
   await admin
     .firestore()

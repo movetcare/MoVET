@@ -29,16 +29,16 @@ export const Ad = ({ content }: { content: Ad }): ReactNode => {
       }
     >
       <View
-        style={tw`flex-row mb-4 shadow-lg shadow-movet-black dark:shadow-movet-white rounded-xl bg-transparent`}
+        style={tw`flex-row mb-4`}
         noDarkMode
       >
         <View
-          style={tw`bg-transparent rounded-xl flex-row items-center w-full px-4 shadow-lg shadow-movet-black dark:shadow-movet-white`}
+          style={tw` flex-row items-center w-full`}
           noDarkMode
         >
           <Image
-            style={tw`flex-1 bg-movet-black/10 w-full rounded-xl ${
-              LayoutDimensions.window.width > 600 ? "h-180" : "h-80"
+            style={tw`flex-1 bg-movet-black/10 w-full ${
+              LayoutDimensions.window.width > 600 ? "h-180" : "h-90"
             }`}
             source={{ uri: "https://movetcare.com/" + imagePath }}
             resizeMode="cover"

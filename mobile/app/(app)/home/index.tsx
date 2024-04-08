@@ -197,7 +197,7 @@ const Home = () => {
   ) : (
     <Screen withBackground="pets">
       <Animated.View
-          style={[tw`w-full`, showAnnouncements ? tw`flex-grow` : tw`flex-1`, animatedStyle]}
+        style={[tw`w-full`, tw`flex-1`, animatedStyle]}
       >
         <View
           style={tw`
@@ -210,7 +210,7 @@ const Home = () => {
             override={isDarkMode ? "white" : "default"}
             height={isTablet ? 160 : 100}
             width={isTablet ? 260 : 200}
-            style={tw`bg-transparent -mb-4`}
+            style={tw`bg-transparent`}
           />
         </View>
         {patients && patients.length ? (
@@ -218,55 +218,22 @@ const Home = () => {
             style={tw`flex-grow w-full justify-center items-center bg-transparent`}
             noDarkMode
           >
-            {(announcement?.isActiveMobile || ad?.isActive) && (
-              <Pressable
-                onPress={() => setShowAnnouncements(!showAnnouncements)}
-                style={tw`w-full flex-row justify-center items-center`}
-              >
-                <SectionHeading
-                  iconName={"bullhorn"}
-                  text={
-                    announcement?.isActiveMobile && ad?.isActive
-                      ? "Latest Announcements"
-                      : "Latest Announcement"
-                  }
-                  containerStyle={tw`mb-2 mt-2`}
-                  textStyle={tw`text-lg sm:text-2xl`}
-                />
-                <Icon
-                  name={showAnnouncements ? "chevron-down" : "chevron-up"}
-                  size="xs"
-                />
-              </Pressable>
+            {ad?.isActive && <Ad content={ad} />}
+            {announcement?.isActiveMobile && (
+              <Announcement announcement={announcement} />
             )}
-            {showAnnouncements && (
+            {!announcement?.isActiveMobile && !ad?.isActive && (
+              <View noDarkMode style={tw`h-4 bg-transparent`} />
+            )}
+            {vcprPatients && vcprPatients?.length > 0 && (
               <>
-                {announcement?.isActiveMobile && (
-                  <Announcement announcement={announcement} />
-                )}
-                {ad?.isActive && <Ad content={ad} />}
-                {!announcement?.isActiveMobile && !ad?.isActive && (
+                <VcprAlert patients={vcprPatients} />
+                {(announcement?.isActiveMobile || ad?.isActive) && upcomingAppointments && (
                   <View noDarkMode style={tw`h-4 bg-transparent`} />
                 )}
               </>
-              )}
-              {patients && patients.length > 0 && telehealthStatus?.isOnline && (
-              <>
-                  {!announcement?.isActiveMobile && !ad?.isActive && (
-                  <View noDarkMode style={tw`h-4 bg-transparent`} />
-                )}
-                  <TelehealthStatus status={telehealthStatus} />
-              </>
             )}
-              {vcprPatients && vcprPatients?.length > 0 && (
-              <>
-                  <VcprAlert patients={vcprPatients} />
-                  {(announcement?.isActiveMobile || ad?.isActive) && upcomingAppointments && (
-                  <View noDarkMode style={tw`h-4 bg-transparent`} />
-                  )}
-              </>
-            )}
-              {upcomingAppointments !== null && <PaymentMethodSummary />}
+            {upcomingAppointments !== null && <PaymentMethodSummary />}
             <AppointmentsList source="home" />
           </View>
         ) : (

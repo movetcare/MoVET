@@ -287,7 +287,55 @@ export default function DateTime() {
                               </div>
                             )}
                             <div className="flex flex-row w-full mx-auto">
-                              {appointmentAvailability &&
+                              <ul className="w-full">
+                                {appointmentAvailability?.map(
+                                  (
+                                    appointmentSlot: {
+                                      resource: number;
+                                      start: string;
+                                      end: string;
+                                    },
+                                    index: number,
+                                  ) => (
+                                    <li
+                                      key={index}
+                                      className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
+                                        selectedTime ===
+                                        `${formatTime(
+                                          appointmentSlot.start,
+                                        )} - ${formatTime(appointmentSlot.end)}`
+                                          ? " bg-movet-red text-white border-movet-white"
+                                          : " bg-movet-gray/20"
+                                      }`}
+                                      onClick={() => {
+                                        setSelectedTime(
+                                          `${formatTime(
+                                            appointmentSlot.start,
+                                          )} - ${formatTime(
+                                            appointmentSlot.end,
+                                          )}`,
+                                        );
+                                        setSelectedResource(
+                                          appointmentSlot?.resource,
+                                        );
+                                        window.scrollTo(0, 0);
+                                      }}
+                                    >
+                                      {environment === "production" ? (
+                                        <p>
+                                          {formatTime(appointmentSlot.start)}
+                                        </p>
+                                      ) : (
+                                        <p>
+                                          {formatTime(appointmentSlot.start)} -{" "}
+                                          {formatTime(appointmentSlot.end)}
+                                        </p>
+                                      )}
+                                    </li>
+                                  ),
+                                )}
+                              </ul>
+                              {/* {appointmentAvailability &&
                               appointmentAvailability.length < 6 ? (
                                 <ul className="w-full">
                                   {appointmentAvailability?.map(
@@ -458,7 +506,7 @@ export default function DateTime() {
                                     )}
                                   </ul>
                                 </>
-                              )}
+                              )} */}
                             </div>
                           </div>
                           <Button

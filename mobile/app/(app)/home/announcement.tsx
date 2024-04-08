@@ -10,6 +10,9 @@ import { ApplicationTypes, getPlatformUrl } from "utils/getPlatformUrl";
 const Announcement = () => {
   const { path, applicationSource } = useLocalSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  console.log(getPlatformUrl(applicationSource as ApplicationTypes || "website") +
+            path +
+            "?mode=app")
   return (
     <>
       {isLoading && (
