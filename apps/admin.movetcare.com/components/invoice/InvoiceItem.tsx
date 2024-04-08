@@ -1046,13 +1046,19 @@ const InvoiceDetails = ({
                             {client &&
                               paymentMethods?.docs?.length > 0 &&
                               invoice?.client_due_sum !== 0 &&
-                              invoice?.paymentStatus !== "succeeded" && (
-                                <h2 className="font-extrabold text-center mt-10 -mb-1 text-2xl">
-                                  <FontAwesomeIcon icon={faWallet} />
-                                  <span className="ml-2">
-                                    Saved Payment Methods
-                                  </span>
-                                </h2>
+                              invoice?.paymentStatus !== "succeeded" &&
+                              paymentMethods &&
+                              paymentMethods.docs.map(
+                                (paymentMethod: any, index: number) =>
+                                  paymentMethod.data()?.active &&
+                                  index === 0 && (
+                                    <h2 className="font-extrabold text-center mt-10 -mb-1 text-2xl">
+                                      <FontAwesomeIcon icon={faWallet} />
+                                      <span className="ml-2">
+                                        Saved Payment Methods
+                                      </span>
+                                    </h2>
+                                  ),
                               )}
                             {invoice?.client_due_sum !== 0 &&
                               invoice?.paymentStatus !== "succeeded" &&

@@ -47,7 +47,6 @@ export const newClientTelehealthMessage = functions.firestore
         type: "email",
         payload: {
           to: "info@movetcare.com",
-          bcc: "alex.rodriguez@movetcare.com",
           subject: `New Telehealth Chat Message from ${displayName}`,
           message: text
             ? `<p>"${text}"</p><p></p><a href="https://admin.movetcare.com/telehealth/chat/?id=${context.params.clientId}"><b>Reply to Message</b></a>`
