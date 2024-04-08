@@ -43,6 +43,15 @@ export const newClientTelehealthMessage = functions.firestore
           path: `/telehealth/chat/?id=${context.params.clientId}`,
         },
       });
+      sendNotification({
+        type: "email",
+        payload: {
+          to: "info@movetcare.com",
+          bcc: "alex.rodriguez@movetcare.com",
+          subject: `New Telehealth Chat Message from ${displayName}`,
+          message: `<p>"${text}"</p><p></p><a href="https://admin.movetcare.com/telehealth/chat/?id=${context.params.clientId}><b>Reply to Message</b></a>`,
+        },
+      });
     } else
       sendNotification({
         type: "push",
