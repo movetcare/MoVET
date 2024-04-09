@@ -20,7 +20,7 @@ import {
   doc,
   serverTimestamp,
   setDoc,
-  where,
+  //where,
 } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { firestore, functions } from "services/firebase";
@@ -28,12 +28,15 @@ import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 
 const GeneralSettings = () => {
+  // const [reasonGroups, loadingReasonGroups, errorReasonGroups] = useCollection(
+  //   query(
+  //     collection(firestore, "reason_groups"),
+  //     where("isVisible", "==", true),
+  //     orderBy("name", "asc"),
+  //   ),
+  // );
   const [reasonGroups, loadingReasonGroups, errorReasonGroups] = useCollection(
-    query(
-      collection(firestore, "reason_groups"),
-      where("isVisible", "==", true),
-      orderBy("name", "asc"),
-    ),
+    query(collection(firestore, "reason_groups"), orderBy("isVisible", "desc")),
   );
   const [reasons, loadingReasons, errorReasons] = useCollection(
     query(collection(firestore, "reasons"), orderBy("name", "asc")),
