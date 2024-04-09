@@ -6,12 +6,13 @@ import { fetchEntity } from "../fetchEntity";
 
 const visibleReasonsInApp = [
   99, 98, 97, 96, 95, 94, 93, 92, 91, 89, 88, 87, 81, 121, 119, 118, 117, 116,
-  115, 114, 113, 108, 107, 104, 103, 102, 101, 100, 123, 90, 112, 124, 125,
+  115, 114, 113, 108, 107, 104, 103, 102, 101, 100, 123, 90, 112, 124, 125, 130,
+  111, 110, 109,
 ];
 export const configureReasons = async (): Promise<boolean> => {
   console.log("STARTING REASONS CONFIGURATION");
   await deleteCollection("reasons").then(
-    () => DEBUG && console.log("DELETED ALL REASONS!")
+    () => DEBUG && console.log("DELETED ALL REASONS!"),
   );
   const reasons: Array<Reason> = await fetchEntity("reason");
   if (reasons) return await saveReasonsData(reasons);
@@ -58,31 +59,31 @@ const saveReasonsData = async (reasons: Array<Reason>): Promise<boolean> =>
                   reason?.data_excluded_from_communication?.hide_veterinarian,
               },
               defaultClinicalNote: getProVetIdFromUrl(
-                reason?.default_clinical_note
+                reason?.default_clinical_note,
               ),
               shiftTypes: reason.shift_types.map((type: string) =>
-                getProVetIdFromUrl(type)
+                getProVetIdFromUrl(type),
               ),
               defaultResources: reason.default_resources.map(
-                (resource: string) => getProVetIdFromUrl(resource)
+                (resource: string) => getProVetIdFromUrl(resource),
               ),
               group: getProVetIdFromUrl(reason?.group),
               proficientStaff: reason?.proficient_staff.map((user: string) =>
-                getProVetIdFromUrl(user)
+                getProVetIdFromUrl(user),
               ),
               defaultItems: reason?.default_items.map((item: string) =>
-                getProVetIdFromUrl(item)
+                getProVetIdFromUrl(item),
               ),
               species: reason?.species.map((specie: string) =>
-                getProVetIdFromUrl(specie)
+                getProVetIdFromUrl(specie),
               ),
               updatedOn: new Date(),
             } as Reason,
-            { merge: true }
+            { merge: true },
           )
           .then(() => true)
-          .catch((error: any) => throwError(error))
-    )
+          .catch((error: any) => throwError(error)),
+    ),
   )
     .then(async () => true)
     .catch((error: any) => throwError(error));
