@@ -16,6 +16,7 @@ import { processGoToWebhook } from "../../integrations/goto/processGoToWebhook";
 import { getClosingsConfiguration } from "../../config/getClosingsConfiguration";
 import { getOpeningsConfiguration } from "../../config/getOpeningsConfiguration";
 import { getBookingsConfiguration } from "../../config/getBookingsConfiguration";
+import { getReasonsConfiguration } from "../../config/getReasonsConfiguration";
 
 const decodeJWT = async (
   req: Request,
@@ -67,6 +68,7 @@ app.get("/goto/login/", runAsync(processGoToWebhook));
 app.get("/configuration/bookings/", runAsync(getBookingsConfiguration));
 app.get("/configuration/openings/", runAsync(getOpeningsConfiguration));
 app.get("/configuration/closings/", runAsync(getClosingsConfiguration));
+app.get("/configuration/reasons/", runAsync(getReasonsConfiguration));
 
 export const incomingWebhook: Promise<Response> = functions
   .runWith({

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breadcrumbs from "components/Breadcrumbs";
 import { subNavigation } from "./SubNavigation";
 import AppointmentBufferSettings from "./AppointmentBufferSettings";
-import { ClosuresSettings } from "./ClosuresSettings";
+//import { ClosuresSettings } from "./ClosuresSettings";
 import LunchSettings from "./LunchSettings";
 import MultiPatientSettings from "./MultiPatientSettings";
 import OperatingHoursSettings from "./OperatingHoursSettings";
@@ -12,7 +12,7 @@ import { SchedulePreview } from "./SchedulePreview";
 import { ScheduleResourcesSettings } from "./ScheduleResourcesSettings";
 import VcprReasonSettings from "./VcprReasonSettings";
 import { WinterModeControls } from "../WinterModeControls";
-import { OpeningsSettings } from "./OpeningsSettings";
+//import { OpeningsSettings } from "./OpeningsSettings";
 const PAGE_NAME = subNavigation[2].name;
 const ManageHousecall = () => {
   return (
@@ -83,8 +83,8 @@ const ManageHousecall = () => {
                   className="mt-4 mb-8 divide-y divide-movet-gray"
                 >
                   <WinterModeControls />
-                  <ClosuresSettings schedule="housecall" />
-                  <OpeningsSettings schedule="housecall" />
+                  {/* <ClosuresSettings schedule="housecall" />
+                  <OpeningsSettings schedule="housecall" /> */}
                   <OperatingHoursSettings schedule="housecall" />
                   <ScheduleResourcesSettings schedule="housecall" />
                   <AppointmentBufferSettings schedule="housecall" />

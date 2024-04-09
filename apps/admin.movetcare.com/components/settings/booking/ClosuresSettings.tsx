@@ -124,14 +124,14 @@ export const ClosuresSettings = ({
             updatedOn: serverTimestamp(),
           }
         : schedule === "housecall"
-        ? {
-            closureDatesHousecall: closures?.filter((_, i) => i !== index),
-            updatedOn: serverTimestamp(),
-          }
-        : {
-            closureDatesVirtual: closures?.filter((_, i) => i !== index),
-            updatedOn: serverTimestamp(),
-          },
+          ? {
+              closureDatesHousecall: closures?.filter((_, i) => i !== index),
+              updatedOn: serverTimestamp(),
+            }
+          : {
+              closureDatesVirtual: closures?.filter((_, i) => i !== index),
+              updatedOn: serverTimestamp(),
+            },
       { merge: true },
     )
       .then(() =>
@@ -178,22 +178,22 @@ export const ClosuresSettings = ({
             updatedOn: serverTimestamp(),
           }
         : schedule === "housecall"
-        ? {
-            closureDatesHousecall: arrayUnion({
-              ...data,
-              startTime: Number(data.startTime),
-              endTime: Number(data.endTime),
-            }),
-            updatedOn: serverTimestamp(),
-          }
-        : {
-            closureDatesVirtual: arrayUnion({
-              ...data,
-              startTime: Number(data.startTime),
-              endTime: Number(data.endTime),
-            }),
-            updatedOn: serverTimestamp(),
-          },
+          ? {
+              closureDatesHousecall: arrayUnion({
+                ...data,
+                startTime: Number(data.startTime),
+                endTime: Number(data.endTime),
+              }),
+              updatedOn: serverTimestamp(),
+            }
+          : {
+              closureDatesVirtual: arrayUnion({
+                ...data,
+                startTime: Number(data.startTime),
+                endTime: Number(data.endTime),
+              }),
+              updatedOn: serverTimestamp(),
+            },
       { merge: true },
     )
       .then(() =>
@@ -293,68 +293,71 @@ export const ClosuresSettings = ({
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
                 {closures &&
-                  closures.map((closure: Closure, index: number) => (
-                    <tr key={index}>
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-movet-black sm:pl-0">
-                        {closure.name}
-                      </td>
-                      <td className="whitespace-nowrap py-4 px-3 text-sm">
-                        <p>
-                          {closure?.date &&
-                            closure?.date
-                              ?.toDate()
-                              ?.toLocaleDateString("en-us", {
-                                weekday: "short",
-                                year: "numeric",
-                                month: "numeric",
-                                day: "numeric",
-                              })}
-                        </p>
-                      </td>
-                      <td className="whitespace-nowrap py-4 px-3 text-sm">
-                        {closure?.startTime && (
-                          <p>{`${new Date(
-                            "February 04, 2022 " +
-                              [
-                                closure?.startTime.slice(0, 2),
-                                ":",
-                                closure?.startTime.slice(2),
-                              ].join("") +
-                              ":00",
-                          ).toLocaleString("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                          })}`}</p>
-                        )}
-                      </td>
-                      <td className="whitespace-nowrap py-4 px-3 text-sm">
-                        {closure?.endTime && (
-                          <p>{`${new Date(
-                            "February 04, 2022 " +
-                              [
-                                closure?.endTime.slice(0, 2),
-                                ":",
-                                closure?.endTime.slice(2),
-                              ].join("") +
-                              ":00",
-                          ).toLocaleString("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                          })}`}</p>
-                        )}
-                      </td>
-                      <td
-                        className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0"
-                        onClick={async () =>
-                          await deleteClosureFromFirestore(index)
-                        }
-                      >
-                        <FontAwesomeIcon icon={faTrash} />
-                      </td>
-                    </tr>
-                  ))}
+                  closures.map((closure: Closure, index: number) => {
+                    return closure?.date?.toDate() >= new Date() ? (
+                      <tr key={index}>
+                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-movet-black sm:pl-0">
+                          {closure.name}
+                        </td>
+                        <td className="whitespace-nowrap py-4 px-3 text-sm">
+                          <p>
+                            {closure?.date &&
+                              closure?.date
+                                ?.toDate()
+                                ?.toLocaleDateString("en-us", {
+                                  timezone: "America/Denver",
+                                  weekday: "short",
+                                  year: "numeric",
+                                  month: "numeric",
+                                  day: "numeric",
+                                })}
+                          </p>
+                        </td>
+                        <td className="whitespace-nowrap py-4 px-3 text-sm">
+                          {closure?.startTime && (
+                            <p>{`${new Date(
+                              "February 04, 2022 " +
+                                [
+                                  closure?.startTime.slice(0, 2),
+                                  ":",
+                                  closure?.startTime.slice(2),
+                                ].join("") +
+                                ":00",
+                            ).toLocaleString("en-US", {
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })}`}</p>
+                          )}
+                        </td>
+                        <td className="whitespace-nowrap py-4 px-3 text-sm">
+                          {closure?.endTime && (
+                            <p>{`${new Date(
+                              "February 04, 2022 " +
+                                [
+                                  closure?.endTime.slice(0, 2),
+                                  ":",
+                                  closure?.endTime.slice(2),
+                                ].join("") +
+                                ":00",
+                            ).toLocaleString("en-US", {
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })}`}</p>
+                          )}
+                        </td>
+                        <td
+                          className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0"
+                          onClick={async () =>
+                            await deleteClosureFromFirestore(index)
+                          }
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </td>
+                      </tr>
+                    ) : null;
+                  })}
               </tbody>
             </table>
           )}

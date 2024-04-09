@@ -14,7 +14,7 @@ export const syncData = functions.runWith(defaultRuntimeOptions).https.onCall(
       type,
     }: {
       environment: "production";
-      type: "bookings" | "closures" | "openings";
+      type: "bookings" | "closures" | "openings" | "reasons";
     },
     context: any,
   ): Promise<any> => {
@@ -69,6 +69,23 @@ export const syncData = functions.runWith(defaultRuntimeOptions).https.onCall(
               if (DEBUG)
                 console.log(
                   "API Response: POST https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/closings/ =>",
+                  data,
+                );
+              return status !== 200 && status !== 201
+                ? { error: { code: status }, data }
+                : data;
+            })
+            .catch((error: any) => error);
+        case "reasons":
+          return await axios
+            .get(
+              "https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/reasons/",
+            )
+            .then(async (response: any) => {
+              const { data, status } = response;
+              if (DEBUG)
+                console.log(
+                  "API Response: POST https://us-central1-movet-care.cloudfunctions.net/incomingWebhook/configuration/reasons/ =>",
                   data,
                 );
               return status !== 200 && status !== 201

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breadcrumbs from "components/Breadcrumbs";
 import { subNavigation } from "./SubNavigation";
 import AppointmentBufferSettings from "./AppointmentBufferSettings";
-import { ClosuresSettings } from "./ClosuresSettings";
+//import { ClosuresSettings } from "./ClosuresSettings";
 import LunchSettings from "./LunchSettings";
 import MultiPatientSettings from "./MultiPatientSettings";
 import OperatingHoursSettings from "./OperatingHoursSettings";
@@ -11,7 +11,7 @@ import { SameDayAppointmentSettings } from "./SameDayAppointmentSettings";
 import { SchedulePreview } from "./SchedulePreview";
 import { ScheduleResourcesSettings } from "./ScheduleResourcesSettings";
 import VcprReasonSettings from "./VcprReasonSettings";
-import { OpeningsSettings } from "./OpeningsSettings";
+//import { OpeningsSettings } from "./OpeningsSettings";
 const PAGE_NAME = subNavigation[3].name;
 const ManageTelehealth = () => {
   return (
@@ -81,8 +81,8 @@ const ManageTelehealth = () => {
                   role="list"
                   className="mt-4 mb-8 divide-y divide-movet-gray"
                 >
-                  <ClosuresSettings schedule="virtual" />
-                  <OpeningsSettings schedule="virtual" />
+                  {/* <ClosuresSettings schedule="virtual" />
+                  <OpeningsSettings schedule="virtual" /> */}
                   <OperatingHoursSettings schedule="virtual" />
                   <ScheduleResourcesSettings schedule="virtual" />
                   <AppointmentBufferSettings schedule="virtual" />

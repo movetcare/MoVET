@@ -67,7 +67,7 @@ const Testing = () => {
     type,
   }: {
     environment: "production";
-    type: "bookings" | "closures" | "openings";
+    type: "bookings" | "closures" | "openings" | "reasons";
   }) => {
     toast(
       `Syncing ${type.toUpperCase()} Configuration Data from ${environment.toUpperCase()}...`,
@@ -273,6 +273,70 @@ const Testing = () => {
                   },
                 ),
               );
+          } else if (type === "reasons") {
+            result?.data?.reasonGroups?.forEach(
+              async (reasonGroup: any) =>
+                await setDoc(
+                  doc(firestore, "reason_groups", `${reasonGroup?.id}`),
+                  {
+                    ...reasonGroup,
+                    updatedOn: serverTimestamp(),
+                  },
+                  { merge: true },
+                ).catch((error: any) =>
+                  toast(
+                    `${type.toUpperCase()} Data Sync FAILED: "${JSON.stringify(error)}"`,
+                    {
+                      duration: 5000,
+                      icon: (
+                        <FontAwesomeIcon
+                          icon={faCircleExclamation}
+                          size="sm"
+                          className="text-movet-red"
+                        />
+                      ),
+                    },
+                  ),
+                ),
+            );
+            result?.data?.reasons?.forEach(
+              async (reason: any) =>
+                await setDoc(
+                  doc(firestore, "reasons", `${reason?.id}`),
+                  {
+                    ...reason,
+                    updatedOn: serverTimestamp(),
+                  },
+                  { merge: true },
+                ).catch((error: any) =>
+                  toast(
+                    `${type.toUpperCase()} Data Sync FAILED: "${JSON.stringify(error)}"`,
+                    {
+                      duration: 5000,
+                      icon: (
+                        <FontAwesomeIcon
+                          icon={faCircleExclamation}
+                          size="sm"
+                          className="text-movet-red"
+                        />
+                      ),
+                    },
+                  ),
+                ),
+            );
+            toast(
+              `FINISHED Syncing ${type.toUpperCase()} Configuration Data from ${environment.toUpperCase()}!`,
+              {
+                duration: 3500,
+                icon: (
+                  <FontAwesomeIcon
+                    icon={faCheckCircle}
+                    size="sm"
+                    className="text-movet-green"
+                  />
+                ),
+              },
+            );
           } else
             await setDoc(
               doc(firestore, "configuration", type),
@@ -571,6 +635,21 @@ const Testing = () => {
             className="divide-y divide-movet-gray border-t border-movet-gray mt-2"
           >
             <li className="flex flex-col sm:flex-row text-center p-4">
+              <Button
+                className="m-4"
+                color="black"
+                onClick={async () => {
+                  await syncData({
+                    environment: "production",
+                    type: "reasons",
+                  });
+                }}
+              >
+                <span className="flex-shrink-0 cursor-pointer mr-2">
+                  <FontAwesomeIcon icon={faRedo} className="text-movet-white" />
+                </span>
+                Sync Reasons Configuration
+              </Button>
               <Button
                 className="m-4"
                 color="black"

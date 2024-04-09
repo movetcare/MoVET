@@ -20,6 +20,7 @@ import {
   doc,
   serverTimestamp,
   setDoc,
+  where,
 } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { firestore, functions } from "services/firebase";
@@ -28,7 +29,11 @@ import { httpsCallable } from "firebase/functions";
 
 const GeneralSettings = () => {
   const [reasonGroups, loadingReasonGroups, errorReasonGroups] = useCollection(
-    query(collection(firestore, "reason_groups"), orderBy("isVisible", "desc")),
+    query(
+      collection(firestore, "reason_groups"),
+      where("isVisible", "==", true),
+      orderBy("name", "asc"),
+    ),
   );
   const [reasons, loadingReasons, errorReasons] = useCollection(
     query(collection(firestore, "reasons"), orderBy("name", "asc")),
@@ -242,7 +247,7 @@ const GeneralSettings = () => {
                                     {reason.data()?.name && (
                                       <Switch.Label
                                         as="h3"
-                                        className="text-xs font-medium text-movet-black italic"
+                                        className={`text-xs font-medium text-movet-black italic${reason.data()?.name.toLowerCase().includes("office use only") ? " text-movet-gray" : ""}`}
                                         passive
                                       >
                                         <FontAwesomeIcon
@@ -260,16 +265,25 @@ const GeneralSettings = () => {
                                   </div>
                                   <Switch
                                     checked={reason.data()?.isVisible}
+                                    disabled={reason
+                                      .data()
+                                      ?.name.toLowerCase()
+                                      .includes("office use only")}
                                     onChange={async () =>
                                       await toggleReasonVisibility(
                                         reason.data(),
                                       )
                                     }
                                     className={classNames(
-                                      reason.data()?.isVisible
-                                        ? "bg-movet-green"
-                                        : "bg-movet-gray",
                                       "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray",
+                                      reason.data()?.isVisible
+                                        ? reason
+                                            .data()
+                                            ?.name.toLowerCase()
+                                            .includes("office use only")
+                                          ? "bg-movet-green/50"
+                                          : "bg-movet-green"
+                                        : "bg-movet-gray",
                                     )}
                                   >
                                     <span

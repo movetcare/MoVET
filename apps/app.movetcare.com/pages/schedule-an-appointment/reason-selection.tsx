@@ -65,7 +65,15 @@ export default function ReasonSelection() {
         )?.locationId,
       });
       if (result?.error !== true || result?.error === undefined) {
-        setReasons(result);
+        const reasons: any = [];
+        result.forEach((reason: any) => {
+          if (!reason.label?.toLowerCase().includes("office use only"))
+            reasons.push({
+              label: reason?.label,
+              value: reason?.value,
+            });
+        });
+        setReasons(reasons);
         setIsLoading(false);
       } else handleError(result);
     };

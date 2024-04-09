@@ -2,7 +2,7 @@ import { classNames } from "utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breadcrumbs from "components/Breadcrumbs";
 import { subNavigation } from "./SubNavigation";
-import { ClosuresSettings } from "./ClosuresSettings";
+//import { ClosuresSettings } from "./ClosuresSettings";
 import MultiPatientSettings from "./MultiPatientSettings";
 import { SameDayAppointmentSettings } from "./SameDayAppointmentSettings";
 import { SchedulePreview } from "./SchedulePreview";
@@ -11,7 +11,7 @@ import VcprReasonSettings from "./VcprReasonSettings";
 import OperatingHoursSettings from "./OperatingHoursSettings";
 import AppointmentBufferSettings from "./AppointmentBufferSettings";
 import LunchSettings from "./LunchSettings";
-import { OpeningsSettings } from "./OpeningsSettings";
+//import { OpeningsSettings } from "./OpeningsSettings";
 const PAGE_NAME = subNavigation[1].name;
 const ManageClinic = () => {
   return (
@@ -81,8 +81,8 @@ const ManageClinic = () => {
                   role="list"
                   className="mt-4 mb-8 divide-y divide-movet-gray"
                 >
-                  <ClosuresSettings schedule="clinic" />
-                  <OpeningsSettings schedule="clinic" />
+                  {/* <ClosuresSettings schedule="clinic" />
+                  <OpeningsSettings schedule="clinic" /> */}
                   <OperatingHoursSettings schedule="clinic" />
                   <ScheduleResourcesSettings schedule="clinic" />
                   <AppointmentBufferSettings schedule="clinic" />
