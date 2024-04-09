@@ -247,7 +247,7 @@ const GeneralSettings = () => {
                                     {reason.data()?.name && (
                                       <Switch.Label
                                         as="h3"
-                                        className={`text-xs font-medium text-movet-black italic${reason.data()?.name.toLowerCase().includes("office use only") ? " text-movet-gray" : ""}`}
+                                        className={`text-xs font-medium text-movet-black italic${reason.data()?.name?.toLowerCase()?.includes("office use only") ? " text-movet-gray" : ""}`}
                                         passive
                                       >
                                         <FontAwesomeIcon
@@ -267,8 +267,8 @@ const GeneralSettings = () => {
                                     checked={reason.data()?.isVisible}
                                     disabled={reason
                                       .data()
-                                      ?.name.toLowerCase()
-                                      .includes("office use only")}
+                                      ?.name?.toLowerCase()
+                                      ?.includes("office use only")}
                                     onChange={async () =>
                                       await toggleReasonVisibility(
                                         reason.data(),
@@ -279,8 +279,8 @@ const GeneralSettings = () => {
                                       reason.data()?.isVisible
                                         ? reason
                                             .data()
-                                            ?.name.toLowerCase()
-                                            .includes("office use only")
+                                            ?.name?.toLowerCase()
+                                            ?.includes("office use only")
                                           ? "bg-movet-green/50"
                                           : "bg-movet-green"
                                         : "bg-movet-gray",
