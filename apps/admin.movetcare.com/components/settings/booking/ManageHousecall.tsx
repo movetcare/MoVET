@@ -4,7 +4,7 @@ import Breadcrumbs from "components/Breadcrumbs";
 import { subNavigation } from "./SubNavigation";
 import AppointmentBufferSettings from "./AppointmentBufferSettings";
 //import { ClosuresSettings } from "./ClosuresSettings";
-import LunchSettings from "./LunchSettings";
+//import LunchSettings from "./LunchSettings";
 import MultiPatientSettings from "./MultiPatientSettings";
 import OperatingHoursSettings from "./OperatingHoursSettings";
 import { SameDayAppointmentSettings } from "./SameDayAppointmentSettings";
@@ -88,7 +88,7 @@ const ManageHousecall = () => {
                   <OperatingHoursSettings schedule="housecall" />
                   <ScheduleResourcesSettings schedule="housecall" />
                   <AppointmentBufferSettings schedule="housecall" />
-                  <LunchSettings schedule="housecall" />
+                  {/* <LunchSettings schedule="housecall" /> */}
                   <MultiPatientSettings schedule="housecall" />
                   <SameDayAppointmentSettings schedule="housecall" />
                   <VcprReasonSettings schedule="housecall" />

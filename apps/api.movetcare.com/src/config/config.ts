@@ -30,16 +30,16 @@ export const throwError = (error: any): false => {
         )}\`\`\``,
       },
     });
-    sendNotification({
-      type: "email",
-      payload: {
-        to: "alex.rodriguez+error@movetcare.com",
-        subject: error?.message
-          ? "NEW ERROR => " + JSON.stringify(error?.message)
-          : "NEW ERROR",
-        message: JSON.stringify(error),
-      },
-    });
+    // sendNotification({
+    //   type: "email",
+    //   payload: {
+    //     to: "alex.rodriguez+error@movetcare.com",
+    //     subject: error?.message
+    //       ? "NEW ERROR => " + JSON.stringify(error?.message)
+    //       : "NEW ERROR",
+    //     message: JSON.stringify(error),
+    //   },
+    // });
   } else console.error("UNKNOWN ERROR", error);
   console.error("FULL ERROR", JSON.stringify(error));
   if (error?.response) {

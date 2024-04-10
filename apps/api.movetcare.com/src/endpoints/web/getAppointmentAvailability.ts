@@ -62,8 +62,8 @@ export const getAppointmentAvailability = functions
         const {
           standardOpenTime,
           standardCloseTime,
-          standardLunchTime,
-          standardLunchDuration,
+          // standardLunchTime,
+          // standardLunchDuration,
           appointmentBuffer,
           sameDayAppointmentLeadTime,
           resources,
@@ -90,8 +90,8 @@ export const getAppointmentAvailability = functions
                 date: dateObject,
                 schedule,
                 resource,
-                standardLunchTime,
-                standardLunchDuration,
+                // standardLunchTime,
+                // standardLunchDuration,
               });
               allAvailableAppointmentTimes.push(
                 await calculateAvailableAppointments({
@@ -278,8 +278,8 @@ const assignConfiguration = async ({
 }): Promise<{
   standardOpenTime: any;
   standardCloseTime: any;
-  standardLunchTime: any;
-  standardLunchDuration: any;
+  // standardLunchTime: any;
+  // standardLunchDuration: any;
   appointmentBuffer: any;
   sameDayAppointmentLeadTime: any;
   resources: any;
@@ -293,16 +293,16 @@ const assignConfiguration = async ({
   }
   let standardOpenTime: any,
     standardCloseTime: any,
-    standardLunchTime: any,
-    standardLunchDuration: any,
+    // standardLunchTime: any,
+    // standardLunchDuration: any,
     appointmentBuffer: any,
     sameDayAppointmentLeadTime: any,
     resources: any,
     appointmentDuration: any = null;
   switch (schedule) {
     case "clinic":
-      standardLunchTime = configuration?.clinicLunchTime;
-      standardLunchDuration = configuration?.clinicLunchDuration;
+      // standardLunchTime = configuration?.clinicLunchTime;
+      // standardLunchDuration = configuration?.clinicLunchDuration;
       sameDayAppointmentLeadTime =
         configuration?.clinicSameDayAppointmentLeadTime;
       appointmentBuffer = configuration?.clinicAppointmentBufferTime;
@@ -315,8 +315,8 @@ const assignConfiguration = async ({
             : configuration?.clinicOnePatientDuration;
       break;
     case "housecall":
-      standardLunchTime = configuration?.housecallLunchTime;
-      standardLunchDuration = configuration?.housecallLunchDuration;
+      // standardLunchTime = configuration?.housecallLunchTime;
+      // standardLunchDuration = configuration?.housecallLunchDuration;
       appointmentBuffer = configuration?.housecallAppointmentBufferTime;
       sameDayAppointmentLeadTime =
         configuration?.housecallSameDayAppointmentLeadTime;
@@ -329,8 +329,8 @@ const assignConfiguration = async ({
             : configuration?.housecallOnePatientDuration;
       break;
     case "virtual":
-      standardLunchTime = configuration?.virtualLunchTime;
-      standardLunchDuration = configuration?.virtualLunchDuration;
+      // standardLunchTime = configuration?.virtualLunchTime;
+      // standardLunchDuration = configuration?.virtualLunchDuration;
       sameDayAppointmentLeadTime =
         configuration?.virtualSameDayAppointmentLeadTime;
       appointmentBuffer = configuration?.virtualAppointmentBufferTime;
@@ -346,8 +346,8 @@ const assignConfiguration = async ({
       break;
   }
   if (DEBUG_ASSIGN_CONFIG) {
-    console.log("standardLunchTime          => ", standardLunchTime);
-    console.log("standardLunchDuration      => ", standardLunchDuration);
+    // console.log("standardLunchTime          => ", standardLunchTime);
+    // console.log("standardLunchDuration      => ", standardLunchDuration);
     console.log("sameDayAppointmentLeadTime => ", sameDayAppointmentLeadTime);
     console.log("appointmentBuffer          => ", appointmentBuffer);
     console.log("resources                  => ", resources);
@@ -433,8 +433,8 @@ const assignConfiguration = async ({
   if (DEBUG_ASSIGN_CONFIG) {
     console.log("standardOpenTime      => ", standardOpenTime);
     console.log("standardCloseTime     => ", standardCloseTime);
-    console.log("standardLunchTime     => ", standardLunchTime);
-    console.log("standardLunchDuration => ", standardLunchDuration);
+    // console.log("standardLunchTime     => ", standardLunchTime);
+    // console.log("standardLunchDuration => ", standardLunchDuration);
     console.log("appointmentDuration   => ", appointmentDuration);
     console.log("appointmentBuffer     =>", appointmentBuffer);
     console.log("-----------------------------------------");
@@ -442,8 +442,8 @@ const assignConfiguration = async ({
   return {
     standardOpenTime,
     standardCloseTime,
-    standardLunchTime,
-    standardLunchDuration,
+    // standardLunchTime,
+    // standardLunchDuration,
     appointmentBuffer,
     sameDayAppointmentLeadTime,
     resources,
@@ -706,14 +706,14 @@ const getExistingAppointments = async ({
   date,
   schedule,
   resource,
-  standardLunchTime,
-  standardLunchDuration,
+  // standardLunchTime,
+  // standardLunchDuration,
 }: {
   date: Date;
   schedule: AppointmentScheduleTypes;
   resource: ActiveResource;
-  standardLunchTime: number;
-  standardLunchDuration: number;
+  // standardLunchTime: number;
+  // standardLunchDuration: number;
 }) => {
   const updatedDate = new Date(date);
   updatedDate.setDate(updatedDate.getDate() - 1);
@@ -790,21 +790,21 @@ const getExistingAppointments = async ({
         });
       }
       //if (environment.type === "production")
-      existingAppointments.push({
-        id: null,
-        reason: null,
-        resources: [resource?.id],
-        start: formatTimeHoursToString(standardLunchTime),
-        end: addMinutes(
-          standardLunchDuration,
-          formatTimeHoursToDate(standardLunchTime),
-        ).toLocaleString("en-US", {
-          timeZone: "America/Denver",
-          hour: "numeric",
-          minute: "numeric",
-          hour12: false,
-        }),
-      });
+      // existingAppointments.push({
+      //   id: null,
+      //   reason: null,
+      //   resources: [resource?.id],
+      //   start: formatTimeHoursToString(standardLunchTime),
+      //   end: addMinutes(
+      //     standardLunchDuration,
+      //     formatTimeHoursToDate(standardLunchTime),
+      //   ).toLocaleString("en-US", {
+      //     timeZone: "America/Denver",
+      //     hour: "numeric",
+      //     minute: "numeric",
+      //     hour12: false,
+      //   }),
+      // });
       // if (scheduleClosures && scheduleClosures.length > 0)
       //   scheduleClosures.map((closure: any) => {
       //     if (DEBUG_EXISTING_APPOINTMENTS) {

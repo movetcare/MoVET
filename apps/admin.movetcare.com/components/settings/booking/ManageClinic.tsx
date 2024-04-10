@@ -10,7 +10,7 @@ import { ScheduleResourcesSettings } from "./ScheduleResourcesSettings";
 import VcprReasonSettings from "./VcprReasonSettings";
 import OperatingHoursSettings from "./OperatingHoursSettings";
 import AppointmentBufferSettings from "./AppointmentBufferSettings";
-import LunchSettings from "./LunchSettings";
+//import LunchSettings from "./LunchSettings";
 //import { OpeningsSettings } from "./OpeningsSettings";
 const PAGE_NAME = subNavigation[1].name;
 const ManageClinic = () => {
@@ -86,7 +86,7 @@ const ManageClinic = () => {
                   <OperatingHoursSettings schedule="clinic" />
                   <ScheduleResourcesSettings schedule="clinic" />
                   <AppointmentBufferSettings schedule="clinic" />
-                  <LunchSettings schedule="clinic" />
+                  {/* <LunchSettings schedule="clinic" /> */}
                   <MultiPatientSettings schedule="clinic" />
                   <SameDayAppointmentSettings schedule="clinic" />
                   <VcprReasonSettings schedule="clinic" />

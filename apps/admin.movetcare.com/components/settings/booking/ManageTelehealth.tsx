@@ -4,7 +4,7 @@ import Breadcrumbs from "components/Breadcrumbs";
 import { subNavigation } from "./SubNavigation";
 import AppointmentBufferSettings from "./AppointmentBufferSettings";
 //import { ClosuresSettings } from "./ClosuresSettings";
-import LunchSettings from "./LunchSettings";
+//import LunchSettings from "./LunchSettings";
 import MultiPatientSettings from "./MultiPatientSettings";
 import OperatingHoursSettings from "./OperatingHoursSettings";
 import { SameDayAppointmentSettings } from "./SameDayAppointmentSettings";
@@ -86,7 +86,7 @@ const ManageTelehealth = () => {
                   <OperatingHoursSettings schedule="virtual" />
                   <ScheduleResourcesSettings schedule="virtual" />
                   <AppointmentBufferSettings schedule="virtual" />
-                  <LunchSettings schedule="virtual" />
+                  {/* <LunchSettings schedule="virtual" /> */}
                   <MultiPatientSettings schedule="virtual" />
                   <SameDayAppointmentSettings schedule="virtual" />
                   <VcprReasonSettings schedule="virtual" />

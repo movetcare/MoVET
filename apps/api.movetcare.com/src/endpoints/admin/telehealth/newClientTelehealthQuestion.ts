@@ -14,11 +14,12 @@ import { truncateString } from "../../../utils/truncateString";
 import { getClientFirstNameFromDisplayName } from "../../../utils/getClientFirstNameFromDisplayName";
 import type { PatientBookingData } from "../../../types/booking";
 import { getAllActivePatients } from "../../../utils/getAllActivePatients";
+import { createProVetNote } from "../../../integrations/provet/entities/note/createProVetNote";
 const DEBUG = false;
 export const newClientTelehealthMessage = functions.firestore
   .document("/telehealth_chat/{clientId}/log/{messageId}")
   .onCreate(async (snapshot: any, context: any) => {
-    const { user, text, startNewThread } = snapshot.data();
+    const { user, text, startNewThread, image } = snapshot.data();
     const channelId: any = await findSlackChannel("telehealth-alerts");
     const { email, displayName, phoneNumber } = await getAuthUserById(
       context.params.clientId,
@@ -47,10 +48,12 @@ export const newClientTelehealthMessage = functions.firestore
         type: "email",
         payload: {
           to: "info@movetcare.com",
-          subject: `New Telehealth Chat Message from ${displayName}`,
+          bcc: "alex.rodriguez@movetcare.com",
+          replyTo: email,
+          subject: `New Telehealth Chat Message from ${displayName} (#${context.params.clientId})`,
           message: text
             ? `<p>"${text}"</p><p></p><a href="https://admin.movetcare.com/telehealth/chat/?id=${context.params.clientId}"><b>Reply to Message</b></a>`
-            : `<a href="https://admin.movetcare.com/telehealth/chat/?id=${context.params.clientId}"><b>View Image</b></a>`,
+            : `<img src="${image}" alt="image"/><p></p><a href="https://admin.movetcare.com/telehealth/chat/?id=${context.params.clientId}"><b>Reply to Message</b></a>`,
         },
       });
     } else
@@ -75,7 +78,7 @@ export const newClientTelehealthMessage = functions.firestore
           `:question: @channel New Telehealth Inquiry: ${
             text
               ? `*"${text}"* :question:`
-              : "No Question Provided!? :question:"
+              : "Image Uploaded: " + image + " :question:"
           }\n\n\`${displayName ? `Name: ${displayName}` : "No Name Found!"} | ${
             context.params.clientId
               ? `ProVet ID: ${context.params.clientId}`
@@ -106,6 +109,14 @@ export const newClientTelehealthMessage = functions.firestore
             )
             .catch((error: any) => throwError(error));
       }
+      if (image)
+        createProVetNote({
+          type: 12,
+          subject: "Telehealth Chat - Image Uploaded",
+          message: image,
+          client: context.params.clientId,
+          patients: [],
+        });
       const patients: Array<PatientBookingData> | any =
         await getAllActivePatients(context.params.clientId);
       const patientQuestion =

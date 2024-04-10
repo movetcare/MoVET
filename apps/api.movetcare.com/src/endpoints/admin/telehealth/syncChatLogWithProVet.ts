@@ -49,12 +49,12 @@ export const syncChatLogWithProVet = functions.firestore
                     ?.createdAt?.toDate()
                     ?.toLocaleTimeString("en-US")}) ${
                     displayName ? displayName : "Client"
-                  }: ${doc.data()?.text}<br/>`
+                  }: ${doc.data()?.text || doc.data()?.image}<br/>`
                 : `(${doc
                     .data()
                     ?.createdAt?.toDate()
                     ?.toLocaleTimeString("en-US")}) MoVET Support: ${
-                    doc.data()?.text
+                    doc.data()?.text || doc.data()?.image
                   }<br/>`;
           });
           return messages;
