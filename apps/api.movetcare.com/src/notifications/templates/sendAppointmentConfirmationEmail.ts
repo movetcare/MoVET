@@ -56,7 +56,7 @@ export const sendAppointmentConfirmationEmail = async (
 
   if (DEBUG) console.log("appointment -> ", appointment);
 
-  const isNewFlow = appointment?.user ? false : true;
+  //const isNewFlow = appointment?.user ? false : true;
 
   let petNames = null;
   const customerId = await getCustomerId(`${clientId}`);
@@ -66,57 +66,52 @@ export const sendAppointmentConfirmationEmail = async (
       `${clientId}`,
       customerId,
     );
-  if (isNewFlow) {
-    const patientRecords: any = [];
-    await Promise.all(
-      appointment?.patients.map(
-        async (patient: any) =>
-          await admin
-            .firestore()
-            .collection("patients")
-            .doc(`${patient?.id}`)
-            .get()
-            .then((patient: any) => patientRecords.push(patient.data()))
-            .catch((error: any) => throwError(error)),
-      ),
-    );
-    petNames = patientRecords?.map(
-      (patient: any) => `<li>${patient?.name}</li>`,
-    );
-    if (DEBUG) console.log("petNames -> ", petNames);
-  } else
-    petNames = appointment?.patients.map((patient: any) =>
-      `<li>${patient?.name}${
-        patient?.minorIllness !== undefined &&
-        patient?.minorIllness !== "No Symptoms of Illness"
-          ? `${
-              Array.isArray(patient?.minorIllness)
-                ? `  is showing symptoms of ${JSON.parse(
-                    patient?.minorIllness,
-                  ).map((symptoms: any) => {
-                    if (symptoms?.id === patient?.id)
-                      return `${symptoms?.minorIllness?.toLowerCase()} - "${symptoms?.other}"`;
-                    else return;
-                  })}`
-                : " - " + patient?.minorIllness
-            }`
-          : (patient?.minorIllness &&
-                patient?.minorIllness === "No Symptoms of Illness") ||
-              patient?.minorIllness === undefined
-            ? " needs a general checkup"
-            : ` is showing symptoms of ${patient?.minorIllness?.toLowerCase()} - "${patient?.other}"`
-      }</li>`.replace(",", ""),
-    );
+  //if (isNewFlow) {
+  const patientRecords: any = [];
+  await Promise.all(
+    appointment?.patients.map(
+      async (patient: any) =>
+        await admin
+          .firestore()
+          .collection("patients")
+          .doc(`${patient?.id}`)
+          .get()
+          .then((patient: any) => patientRecords.push(patient.data()))
+          .catch((error: any) => throwError(error)),
+    ),
+  );
+  petNames = patientRecords?.map((patient: any) => `<li>${patient?.name}</li>`);
+  if (DEBUG) console.log("petNames -> ", petNames);
+  // } else
+  //   petNames = appointment?.patients.map((patient: any) =>
+  //     `<li>${patient?.name}${
+  //       patient?.minorIllness !== undefined &&
+  //       patient?.minorIllness !== "No Symptoms of Illness"
+  //         ? `${
+  //             Array.isArray(patient?.minorIllness)
+  //               ? `  is showing symptoms of ${JSON.parse(
+  //                   patient?.minorIllness,
+  //                 ).map((symptoms: any) => {
+  //                   if (symptoms?.id === patient?.id)
+  //                     return `${symptoms?.minorIllness?.toLowerCase()} - "${symptoms?.other}"`;
+  //                   else return;
+  //                 })}`
+  //               : " - " + patient?.minorIllness
+  //           }`
+  //         : (patient?.minorIllness &&
+  //               patient?.minorIllness === "No Symptoms of Illness") ||
+  //             patient?.minorIllness === undefined
+  //           ? " needs a general checkup"
+  //           : ` is showing symptoms of ${patient?.minorIllness?.toLowerCase()} - "${patient?.other}"`
+  //     }</li>`.replace(",", ""),
+  //   );
 
   if (DEBUG) console.log("petNames -> ", petNames);
   let reason: any = null;
-  if (isNewFlow) {
-    reason = await fetchEntity(
-      "reason",
-      getProVetIdFromUrl(appointment?.reason),
-    );
-    if (DEBUG) console.log("reason", reason);
-  }
+  // if (isNewFlow) {
+  reason = await fetchEntity("reason", getProVetIdFromUrl(appointment?.reason));
+  if (DEBUG) console.log("reason", reason);
+  // }
 
   let emailTextClient,
     emailText = "";
@@ -153,17 +148,17 @@ export const sendAppointmentConfirmationEmail = async (
             doc.data()?.zipCode,
         )
         .catch((error: any) => throwError(error));
-  if (isNewFlow) {
-    if (DEBUG) console.log("SENDING NEW FLOW EMAIL TEMPLATE");
-    if (DEBUG) {
-      console.log("appointmentAddress", appointmentAddress);
-      console.log("vcprRequired", vcprRequired);
-    }
-    emailTextClient = `${
-      displayName
-        ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
-        : ""
-    }<p>Thank you for reaching out to MoVET!</p><p>We see you have scheduled a new appointment for:</p><ul>${petNames}</ul><p></p><p><b><i>Please confirm we have the right information:</i></b></p>
+  //if (isNewFlow) {
+  if (DEBUG) console.log("SENDING NEW FLOW EMAIL TEMPLATE");
+  if (DEBUG) {
+    console.log("appointmentAddress", appointmentAddress);
+    console.log("vcprRequired", vcprRequired);
+  }
+  emailTextClient = `${
+    displayName
+      ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
+      : ""
+  }<p>Thank you for reaching out to MoVET!</p><p>We see you have scheduled a new appointment for:</p><ul>${petNames}</ul><p></p><p><b><i>Please confirm we have the right information:</i></b></p>
   ${
     appointment?.locationType === "Home" && appointmentAddress
       ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
@@ -233,11 +228,11 @@ export const sendAppointmentConfirmationEmail = async (
   }<p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.
   </p><p></p><p>Looking forward to seeing you,</p><p>- <a href="https://www.instagram.com/drlexiabramson/">Dr. A</a>, <a href="https://www.instagram.com/nessie_themovetpup/">Nessie</a>, and the <a href="https://www.facebook.com/MOVETCARE/">MoVET Team</a></p>`;
 
-    emailText = `<p>New Appointment Scheduled:</p><p><b>Client</b>: <a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">${
-      email ? email : ""
-    }${
-      phoneNumber ? ` - ${phoneNumber}` : ""
-    }</a></p><ul>${petNames}</ul><p></p><p><b><i>Appointment Details:</i></b></p>
+  emailText = `<p>New Appointment Scheduled:</p><p><b>Client</b>: <a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">${
+    email ? email : ""
+  }${
+    phoneNumber ? ` - ${phoneNumber}` : ""
+  }</a></p><ul>${petNames}</ul><p></p><p><b><i>Appointment Details:</i></b></p>
   ${
     appointment?.locationType === "Home" && appointmentAddress
       ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
@@ -291,165 +286,165 @@ export const sendAppointmentConfirmationEmail = async (
       ? "<p></p><p><b>Waiver:</b> Required"
       : "<p></p><p><b>Waiver:</b> Not Required"
   }<p></p><p></p><p><b><a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">EDIT APPOINTMENT</a></b></p>`;
-  } else {
-    const clientProvetRecord = await fetchEntity("client", Number(clientId));
-    emailTextClient = `${
-      displayName
-        ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
-        : ""
-    }<p>Thank you for reaching out to MoVET!</p><p>We see you have scheduled a new appointment for:</p><ul>${petNames}</ul><p></p><p><b><i>Please confirm we have the right information:</i></b></p>
-  ${
-    appointment?.locationType === "Home" && appointmentAddress
-      ? `<p></p><p><b>Appointment Location</b>: ${
-          appointmentAddress ||
-          `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
-            clientProvetRecord?.city || "CITY UNKNOWN"
-          }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
-            clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
-          }`
-        }</p>`
-      : appointment?.locationType === "Virtually"
-        ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-        : appointment?.user === 8
-          ? `<p></p><p><b>Appointment Location</b>: ${
-              appointmentAddress ||
-              `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
-                clientProvetRecord?.city || "CITY UNKNOWN"
-              }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
-                clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
-              }`
-            }</p>`
-          : appointment?.user === 7
-            ? // eslint-disable-next-line quotes
-              '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-            : appointment?.user === 9
-              ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-              : newLocationType === "HOUSECALL" && appointmentAddress
-                ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
-                : newLocationType === "TELEHEALTH"
-                  ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-                  : newLocationType === "CLINIC"
-                    ? // eslint-disable-next-line quotes
-                      '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-                    : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
-  }${
-    appointment?.start
-      ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
-          appointment?.start.toDate(),
-        )}`
-      : ""
-  }${
-    isNewFlow && reason
-      ? `<p></p><p><b>Reason:</b> ${reason?.name || reason}</p>`
-      : ""
-  }${
-    appointment?.instructions !== undefined
-      ? `<p></p><p><b>Instructions: </b>${appointment?.instructions}</p>`
-      : ""
-  }
-  ${
-    vcprRequired
-      ? // eslint-disable-next-line quotes
-        '<p></p><p><b>Medical Records:</b> Please email (or have your previous vet email) their vaccine and medical records to <a href="mailto://info@movetcare.com" target="_blank">info@movetcare.com</a> <b>prior</b> to your appointment.</p>'
-      : ""
-  }${
-    phoneNumber &&
-    (appointment?.locationType === "Home" ||
-      appointment?.locationType === "Virtually")
-      ? `<p></p><p><b>Contact Phone Number</b>: ${phoneNumber}</p><p><i>*Please keep your phone handy the day of the ${
-          appointment?.locationType === "Virtually"
-            ? "consultation."
-            : "appointment. We will text you when we are on our way."
-        }</i></p>`
-      : ""
-  }${
-    appointment?.locationType === "Home"
-      ? "<p></p><p><b>Home Visit Trip Fee</b>: $60</p><p><b>*Additional charges will apply for add-on diagnostics, medications, pampering, etc.</b></p><p><i>A $60 cancellation fee will be charged if cancellation occurs within 24 hours of your appointment</i></p>"
-      : ""
-  }${
-    doesHaveValidPaymentOnFile !== false &&
-    doesHaveValidPaymentOnFile.length > 0
-      ? ""
-      : `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-          email as string
-        )?.replaceAll(
-          "+",
-          "%2B",
-        )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-  }${
-    vcprRequired
-      ? // eslint-disable-next-line quotes
-        `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a></p>`
-      : ""
-  }<p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.<p></p><p>Looking forward to seeing you,</p><p>- <a href="https://www.instagram.com/drlexiabramson/">Dr. A</a>, <a href="https://www.instagram.com/nessie_themovetpup/">Nessie</a>, and the <a href="https://www.facebook.com/MOVETCARE/">MoVET Team</a></p>`;
+  //   } else {
+  //     const clientProvetRecord = await fetchEntity("client", Number(clientId));
+  //     emailTextClient = `${
+  //       displayName
+  //         ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
+  //         : ""
+  //     }<p>Thank you for reaching out to MoVET!</p><p>We see you have scheduled a new appointment for:</p><ul>${petNames}</ul><p></p><p><b><i>Please confirm we have the right information:</i></b></p>
+  //   ${
+  //     appointment?.locationType === "Home" && appointmentAddress
+  //       ? `<p></p><p><b>Appointment Location</b>: ${
+  //           appointmentAddress ||
+  //           `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
+  //             clientProvetRecord?.city || "CITY UNKNOWN"
+  //           }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
+  //             clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
+  //           }`
+  //         }</p>`
+  //       : appointment?.locationType === "Virtually"
+  //         ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+  //         : appointment?.user === 8
+  //           ? `<p></p><p><b>Appointment Location</b>: ${
+  //               appointmentAddress ||
+  //               `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
+  //                 clientProvetRecord?.city || "CITY UNKNOWN"
+  //               }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
+  //                 clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
+  //               }`
+  //             }</p>`
+  //           : appointment?.user === 7
+  //             ? // eslint-disable-next-line quotes
+  //               '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+  //             : appointment?.user === 9
+  //               ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+  //               : newLocationType === "HOUSECALL" && appointmentAddress
+  //                 ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
+  //                 : newLocationType === "TELEHEALTH"
+  //                   ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+  //                   : newLocationType === "CLINIC"
+  //                     ? // eslint-disable-next-line quotes
+  //                       '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+  //                     : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
+  //   }${
+  //     appointment?.start
+  //       ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
+  //           appointment?.start.toDate(),
+  //         )}`
+  //       : ""
+  //   }${
+  //     isNewFlow && reason
+  //       ? `<p></p><p><b>Reason:</b> ${reason?.name || reason}</p>`
+  //       : ""
+  //   }${
+  //     appointment?.instructions !== undefined
+  //       ? `<p></p><p><b>Instructions: </b>${appointment?.instructions}</p>`
+  //       : ""
+  //   }
+  //   ${
+  //     vcprRequired
+  //       ? // eslint-disable-next-line quotes
+  //         '<p></p><p><b>Medical Records:</b> Please email (or have your previous vet email) their vaccine and medical records to <a href="mailto://info@movetcare.com" target="_blank">info@movetcare.com</a> <b>prior</b> to your appointment.</p>'
+  //       : ""
+  //   }${
+  //     phoneNumber &&
+  //     (appointment?.locationType === "Home" ||
+  //       appointment?.locationType === "Virtually")
+  //       ? `<p></p><p><b>Contact Phone Number</b>: ${phoneNumber}</p><p><i>*Please keep your phone handy the day of the ${
+  //           appointment?.locationType === "Virtually"
+  //             ? "consultation."
+  //             : "appointment. We will text you when we are on our way."
+  //         }</i></p>`
+  //       : ""
+  //   }${
+  //     appointment?.locationType === "Home"
+  //       ? "<p></p><p><b>Home Visit Trip Fee</b>: $60</p><p><b>*Additional charges will apply for add-on diagnostics, medications, pampering, etc.</b></p><p><i>A $60 cancellation fee will be charged if cancellation occurs within 24 hours of your appointment</i></p>"
+  //       : ""
+  //   }${
+  //     doesHaveValidPaymentOnFile !== false &&
+  //     doesHaveValidPaymentOnFile.length > 0
+  //       ? ""
+  //       : `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+  //           email as string
+  //         )?.replaceAll(
+  //           "+",
+  //           "%2B",
+  //         )}`}" target="_blank">Add a Form of Payment</a></b></p>`
+  //   }${
+  //     vcprRequired
+  //       ? // eslint-disable-next-line quotes
+  //         `<p></p><p><b>Waiver:</b> Please complete this form prior to your appointment: <a href="https://docs.google.com/forms/d/1ZrbaOEzckSNNS1fk2PATocViVFTkVwcyF_fZBlCrTkY/">MoVET's Waiver / Release form</a></p>`
+  //       : ""
+  //   }<p></p><p>Please be sure to reply to this email if you have any questions or need to make changes to your scheduled appointment.<p></p><p>Looking forward to seeing you,</p><p>- <a href="https://www.instagram.com/drlexiabramson/">Dr. A</a>, <a href="https://www.instagram.com/nessie_themovetpup/">Nessie</a>, and the <a href="https://www.facebook.com/MOVETCARE/">MoVET Team</a></p>`;
 
-    emailText = `<p>New Appointment Scheduled:</p><p><b>Client</b>: <a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">${
-      email ? email : ""
-    }${phoneNumber ? ` - ${phoneNumber}` : ""}</a></p><ul>${petNames}</ul>
-${
-  appointment?.locationType === "Home" && appointmentAddress
-    ? `<p></p><p><b>Appointment Location</b>: ${
-        appointmentAddress ||
-        `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
-          clientProvetRecord?.city || "CITY UNKNOWN"
-        }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
-          clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
-        }`
-      }</p>`
-    : appointment?.locationType === "Virtually"
-      ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-      : appointment?.user === 8
-        ? `<p></p><p><b>Appointment Location</b>: ${
-            appointmentAddress ||
-            `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
-              clientProvetRecord?.city || "CITY UNKNOWN"
-            }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
-              clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
-            }`
-          }</p>`
-        : appointment?.user === 7
-          ? // eslint-disable-next-line quotes
-            '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-          : appointment?.user === 9
-            ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-            : newLocationType === "HOUSECALL" && appointmentAddress
-              ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
-              : newLocationType === "TELEHEALTH"
-                ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-                : newLocationType === "CLINIC"
-                  ? // eslint-disable-next-line quotes
-                    '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
-                  : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
-}${
-      appointment?.start
-        ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
-            appointment?.start?.toDate(),
-          )}`
-        : ""
-    }${reason ? `<p></p><p><b>Reason:</b> ${reason?.name || reason}</p>` : ""}${
-      appointment?.instructions
-        ? `<p></p><p><b>Instructions: </b>${appointment?.instructions}</p>`
-        : ""
-    }${
-      doesHaveValidPaymentOnFile !== false &&
-      doesHaveValidPaymentOnFile.length > 0
-        ? `<p></p><p><b>Payment on File:</b> ${JSON.stringify(
-            doesHaveValidPaymentOnFile,
-          )}</p>`
-        : "<p></p><p><b>Payment on File:</b><b> NONE</b></p>"
-    }
-  ${
-    vcprRequired
-      ? // eslint-disable-next-line quotes
-        "<p></p><p><b>Medical Records:</b> Waiting on Client to email medical records from previous provider.</p>"
-      : ""
-  }${
-    vcprRequired
-      ? "<p></p><p><b>Waiver:</b> Required"
-      : "<p></p><p><b>Waiver:</b> Not Required"
-  }<p></p><p></p><p><b><a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">EDIT APPOINTMENT</a></b></p>
-    `;
-  }
+  //     emailText = `<p>New Appointment Scheduled:</p><p><b>Client</b>: <a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">${
+  //       email ? email : ""
+  //     }${phoneNumber ? ` - ${phoneNumber}` : ""}</a></p><ul>${petNames}</ul>
+  // ${
+  //   appointment?.locationType === "Home" && appointmentAddress
+  //     ? `<p></p><p><b>Appointment Location</b>: ${
+  //         appointmentAddress ||
+  //         `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
+  //           clientProvetRecord?.city || "CITY UNKNOWN"
+  //         }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
+  //           clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
+  //         }`
+  //       }</p>`
+  //     : appointment?.locationType === "Virtually"
+  //       ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+  //       : appointment?.user === 8
+  //         ? `<p></p><p><b>Appointment Location</b>: ${
+  //             appointmentAddress ||
+  //             `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
+  //               clientProvetRecord?.city || "CITY UNKNOWN"
+  //             }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
+  //               clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
+  //             }`
+  //           }</p>`
+  //         : appointment?.user === 7
+  //           ? // eslint-disable-next-line quotes
+  //             '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+  //           : appointment?.user === 9
+  //             ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+  //             : newLocationType === "HOUSECALL" && appointmentAddress
+  //               ? `<p></p><p><b>Appointment Location</b>: ${appointmentAddress}</p>`
+  //               : newLocationType === "TELEHEALTH"
+  //                 ? "<p></p><p><b>Appointment Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
+  //                 : newLocationType === "CLINIC"
+  //                   ? // eslint-disable-next-line quotes
+  //                     '<p></p><p><b>Appointment Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
+  //                   : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
+  // }${
+  //       appointment?.start
+  //         ? `<p></p><p><b>Appointment Date & Time</b>: ${getDateStringFromDate(
+  //             appointment?.start?.toDate(),
+  //           )}`
+  //         : ""
+  //     }${reason ? `<p></p><p><b>Reason:</b> ${reason?.name || reason}</p>` : ""}${
+  //       appointment?.instructions
+  //         ? `<p></p><p><b>Instructions: </b>${appointment?.instructions}</p>`
+  //         : ""
+  //     }${
+  //       doesHaveValidPaymentOnFile !== false &&
+  //       doesHaveValidPaymentOnFile.length > 0
+  //         ? `<p></p><p><b>Payment on File:</b> ${JSON.stringify(
+  //             doesHaveValidPaymentOnFile,
+  //           )}</p>`
+  //         : "<p></p><p><b>Payment on File:</b><b> NONE</b></p>"
+  //     }
+  //   ${
+  //     vcprRequired
+  //       ? // eslint-disable-next-line quotes
+  //         "<p></p><p><b>Medical Records:</b> Waiting on Client to email medical records from previous provider.</p>"
+  //       : ""
+  //   }${
+  //     vcprRequired
+  //       ? "<p></p><p><b>Waiver:</b> Required"
+  //       : "<p></p><p><b>Waiver:</b> Not Required"
+  //   }<p></p><p></p><p><b><a href="https://us.provetcloud.com/4285/client/${clientId}/tabs/" target="_blank">EDIT APPOINTMENT</a></b></p>
+  //     `;
+  //   }
   if (DEBUG) {
     console.log("emailTextClient -> ", emailTextClient);
     console.log("emailText -> ", emailText);
