@@ -113,8 +113,7 @@ export const sendAppointmentConfirmationEmail = async (
   if (DEBUG) console.log("reason", reason);
   // }
 
-  let emailTextClient,
-    emailText = "";
+  let emailText = "";
 
   const vcprRequired = await admin
     .firestore()
@@ -154,7 +153,7 @@ export const sendAppointmentConfirmationEmail = async (
     console.log("appointmentAddress", appointmentAddress);
     console.log("vcprRequired", vcprRequired);
   }
-  emailTextClient = `${
+  const emailTextClient = `${
     displayName
       ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
       : ""
