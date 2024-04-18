@@ -5,8 +5,6 @@ export { resetTestData } from "./endpoints/development/resetTestData";
 export { syncData } from "./endpoints/development/syncData";
 
 export { taskRunner } from "./cron/taskRunner";
-export { updateTelehealthChatStatusToOffline } from "./cron/updateTelehealthChatStatusToOffline";
-export { updateTelehealthChatStatusToOnline } from "./cron/updateTelehealthChatStatusToOnline";
 export { rebuildStaticSites as rebuildStaticWebsite } from "./cron/rebuildStaticSites";
 
 export { handleBookingUpdate } from "./triggers/handleBookingUpdate";

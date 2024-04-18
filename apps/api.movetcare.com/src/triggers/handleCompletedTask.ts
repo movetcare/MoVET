@@ -1,5 +1,6 @@
 import { sendNotification } from "../notifications/sendNotification";
 import { functions, admin, throwError } from "../config/config";
+import { todayIsAGlobalClosure } from "../utils/todayIsAGlobalClosure";
 
 const DEBUG = false;
 export const handleCompletedTask = functions.firestore
@@ -68,6 +69,77 @@ export const handleCompletedTask = functions.firestore
           ],
         },
       });
+      if (type === "clinic" && action === "close")
+        admin
+          .firestore()
+          .collection("alerts")
+          .doc("telehealth")
+          .set(
+            {
+              isOnline: false,
+              queueSize: 0,
+              waitTime: 5,
+              updatedOn: new Date(),
+            },
+            { merge: true },
+          )
+          .then(() =>
+            sendNotification({
+              type: "slack",
+              payload: {
+                message: ":robot_face: Telehealth status changed to OFFLINE",
+              },
+            }),
+          )
+          .catch((error: any) => throwError(error));
+      else if (type === "clinic" && action === "open")
+        if (await todayIsAGlobalClosure())
+          admin
+            .firestore()
+            .collection("alerts")
+            .doc("telehealth")
+            .set(
+              {
+                isOnline: false,
+                queueSize: 0,
+                waitTime: 1,
+                updatedOn: new Date(),
+              },
+              { merge: true },
+            )
+            .then(() =>
+              sendNotification({
+                type: "slack",
+                payload: {
+                  message:
+                    ":robot_face: Telehealth status changed to OFFLINE - Global Closure",
+                },
+              }),
+            )
+            .catch((error: any) => throwError(error));
+        else
+          admin
+            .firestore()
+            .collection("alerts")
+            .doc("telehealth")
+            .set(
+              {
+                isOnline: true,
+                queueSize: 0,
+                waitTime: 1,
+                updatedOn: new Date(),
+              },
+              { merge: true },
+            )
+            .then(() =>
+              sendNotification({
+                type: "slack",
+                payload: {
+                  message: ":robot_face: Telehealth status changed to ONLINE",
+                },
+              }),
+            )
+            .catch((error: any) => throwError(error));
     }
     return true;
   });
@@ -97,8 +169,8 @@ const updateAutomationTask = async (
     automatedOpenTime.toString().length === 3
       ? `0${automatedOpenTime}`.slice(2)
       : `${automatedOpenTime}`.slice(3)?.length === 1
-      ? `0${automatedOpenTime}`.slice(3)
-      : `${automatedOpenTime}`.slice(3);
+        ? `0${automatedOpenTime}`.slice(3)
+        : `${automatedOpenTime}`.slice(3);
   const closeHours =
     automatedCloseTime.toString().length === 3
       ? `0${automatedCloseTime}`.slice(0, 2)
@@ -107,8 +179,8 @@ const updateAutomationTask = async (
     automatedCloseTime.toString().length === 3
       ? `0${automatedCloseTime}`.slice(2)
       : `${automatedCloseTime}`.slice(3)?.length === 1
-      ? `0${automatedCloseTime}`.slice(3)
-      : `${automatedCloseTime}`.slice(3);
+        ? `0${automatedCloseTime}`.slice(3)
+        : `${automatedCloseTime}`.slice(3);
   const openDate = new Date(
     nextDateMonth +
       " " +
