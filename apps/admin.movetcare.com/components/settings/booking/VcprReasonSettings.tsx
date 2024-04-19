@@ -86,20 +86,20 @@ const VcprReasonSettings = ({
             updatedOn: serverTimestamp(),
           }
         : schedule === "housecall"
-        ? {
-            housecallStandardVcprReason: {
-              label: selectedStandardVcprReason,
-              value: reasonId,
+          ? {
+              housecallStandardVcprReason: {
+                label: selectedStandardVcprReason,
+                value: reasonId,
+              },
+              updatedOn: serverTimestamp(),
+            }
+          : {
+              virtualStandardVcprReason: {
+                label: selectedStandardVcprReason,
+                value: reasonId,
+              },
+              updatedOn: serverTimestamp(),
             },
-            updatedOn: serverTimestamp(),
-          }
-        : {
-            virtualStandardVcprReason: {
-              label: selectedStandardVcprReason,
-              value: reasonId,
-            },
-            updatedOn: serverTimestamp(),
-          },
       { merge: true },
     )
       .then(() =>
@@ -155,8 +155,7 @@ const VcprReasonSettings = ({
               </h3>
               <p className="text-sm">
                 This is the reason assigned to appointments when a 1st time
-                client (or existing client with a new pet) books an appointment
-                and does not indicate their pet(s) have a minor illness.
+                client (or existing client with a new pet) books an appointment.
               </p>
             </div>
             <Listbox

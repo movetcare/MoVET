@@ -3,6 +3,7 @@ import {
   faHouse,
   faHeadset,
   faCalendarCheck,
+  faFlag,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const subNavigation = [
@@ -25,5 +26,10 @@ export const subNavigation = [
     name: "Telehealth",
     href: "/settings/booking/telehealth",
     icon: faHeadset,
+  },
+  {
+    name: "Pop-Up Clinics",
+    href: "/settings/booking/pop-up-clinics",
+    icon: faFlag,
   },
 ];

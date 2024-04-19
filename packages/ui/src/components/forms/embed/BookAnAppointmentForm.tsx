@@ -6,11 +6,7 @@ import { Button } from "../../elements";
 import { EmailInput } from "../inputs";
 import { environment } from "utilities";
 
-export const BookAnAppointmentForm = ({
-  autoFocus = false,
-}: {
-  autoFocus?: boolean;
-}) => {
+export const BookAnAppointmentForm = () => {
   const {
     control,
     handleSubmit,
@@ -22,7 +18,7 @@ export const BookAnAppointmentForm = ({
         email: string()
           .email("Email must be a valid email address")
           .required("An email address is required"),
-      })
+      }),
     ),
     defaultValues: {
       email: "",
@@ -33,10 +29,10 @@ export const BookAnAppointmentForm = ({
       (environment === "production"
         ? "https://app.movetcare.com"
         : window.location.hostname === "localhost"
-        ? `http://localhost:3001`
-        : "https://stage.app.movetcare.com") +
+          ? `http://localhost:3001`
+          : "https://stage.app.movetcare.com") +
         `?email=${data.email?.toLowerCase()?.replaceAll("+", "%2B")}`,
-      "_blank"
+      "_blank",
     );
   };
   return (

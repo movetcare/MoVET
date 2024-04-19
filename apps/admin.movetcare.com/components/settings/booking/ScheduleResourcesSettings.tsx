@@ -40,15 +40,15 @@ export const ScheduleResourcesSettings = ({
           schedule === "clinic"
             ? doc.data()?.clinicActiveResources
             : schedule === "housecall"
-            ? doc.data()?.housecallActiveResources
-            : doc.data()?.virtualActiveResources,
+              ? doc.data()?.housecallActiveResources
+              : doc.data()?.virtualActiveResources,
         );
         setActiveResourcesStaggerTimes(
           schedule === "clinic"
             ? doc.data()?.clinicActiveResources
             : schedule === "housecall"
-            ? doc.data()?.housecallActiveResources
-            : doc.data()?.virtualActiveResources,
+              ? doc.data()?.housecallActiveResources
+              : doc.data()?.virtualActiveResources,
         );
       },
       (error: any) => {
@@ -121,14 +121,14 @@ export const ScheduleResourcesSettings = ({
             updatedOn: serverTimestamp(),
           }
         : schedule === "housecall"
-        ? {
-            housecallActiveResources: activeResourcesStaggerTimes,
-            updatedOn: serverTimestamp(),
-          }
-        : {
-            virtualActiveResources: activeResourcesStaggerTimes,
-            updatedOn: serverTimestamp(),
-          },
+          ? {
+              housecallActiveResources: activeResourcesStaggerTimes,
+              updatedOn: serverTimestamp(),
+            }
+          : {
+              virtualActiveResources: activeResourcesStaggerTimes,
+              updatedOn: serverTimestamp(),
+            },
       { merge: true },
     )
       .then(() =>
@@ -180,14 +180,14 @@ export const ScheduleResourcesSettings = ({
             updatedOn: serverTimestamp(),
           }
         : schedule === "housecall"
-        ? {
-            housecallActiveResources: resources,
-            updatedOn: serverTimestamp(),
-          }
-        : {
-            virtualActiveResources: resources,
-            updatedOn: serverTimestamp(),
-          },
+          ? {
+              housecallActiveResources: resources,
+              updatedOn: serverTimestamp(),
+            }
+          : {
+              virtualActiveResources: resources,
+              updatedOn: serverTimestamp(),
+            },
       { merge: true },
     )
       .then(() =>
@@ -225,7 +225,7 @@ export const ScheduleResourcesSettings = ({
     <li className="py-4 flex-col sm:flex-row items-center justify-center">
       <div className="flex flex-col mr-4">
         <h3>
-          Concurrent Schedules -{" "}
+          Assigned Resources -{" "}
           <span className="font-extrabold text-lg">
             {activeResources && activeResources.length}
           </span>
