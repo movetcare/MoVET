@@ -20,7 +20,6 @@ const ManagePopUpClinics = () => {
     const unsubscribe = onSnapshot(
       doc(firestore, "configuration", "pop_up_clinics"),
       (doc: any) => {
-        console.log("doc.data()?.popUpClinics", doc.data()?.popUpClinics);
         setPopUpClinics(doc.data()?.popUpClinics);
         setIsLoading(false);
       },
@@ -99,20 +98,13 @@ const ManagePopUpClinics = () => {
                     </h2>
                   )}
                   {popUpClinics &&
-                    popUpClinics?.map(
-                      (popUpConfiguration: {
-                        name: string;
-                        description: string;
-                        id: string;
-                        resourceIds: Array<any> | undefined;
-                      }) => (
-                        <PopUpClinicConfiguration
-                          key={popUpConfiguration?.id}
-                          configuration={popUpConfiguration}
-                          popUpClinics={popUpClinics}
-                        />
-                      ),
-                    )}
+                    popUpClinics?.map((popUpConfiguration: any) => (
+                      <PopUpClinicConfiguration
+                        key={popUpConfiguration?.id}
+                        configuration={popUpConfiguration}
+                        popUpClinics={popUpClinics}
+                      />
+                    ))}
                   <NewPopUpClinic />
                 </div>
               )}
