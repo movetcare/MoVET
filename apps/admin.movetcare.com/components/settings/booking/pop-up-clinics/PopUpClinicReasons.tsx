@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   collection,
   doc,
-  onSnapshot,
   orderBy,
   query,
   serverTimestamp,
@@ -16,7 +15,7 @@ import {
 } from "firebase/firestore";
 import { firestore } from "services/firebase";
 import toast from "react-hot-toast";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { Button, Loader } from "ui";
 import { Listbox, Transition } from "@headlessui/react";
 import Error from "../../../Error";
@@ -32,104 +31,61 @@ const PopUpClinicReasons = ({
     description: string;
     id: string;
     isActive?: boolean;
-    resourceConfiguration?:
-      | Array<{
-          id: string;
-          staggerTime: number;
-        }>
-      | undefined;
+    vcprRequiredReason: string;
+    noVcprRequiredReason: string;
   };
   popUpClinics: any;
 }) => {
-  const schedule = "clinic";
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
-  const [selectedStandardVcprReason, setSelectedStandardVcprReason] =
-    useState<string>("Select a Reason...");
-  const [didTouchStandardVcprReason, setDidTouchStandardVcprReason] =
+  const [selectedVcprRequiredReason, setSelectedVcprRequiredReason] =
+    useState<string>(configuration?.vcprRequiredReason || "Select a Reason...");
+  const [didTouchVcprRequiredReason, setDidTouchVcprRequiredReason] =
+    useState<boolean>(false);
+  const [selectedNoVcprRequiredReason, setSelectedNoVcprRequiredReason] =
+    useState<string>(
+      configuration?.noVcprRequiredReason || "Select a Reason...",
+    );
+  const [didTouchNoVcprRequiredReason, setDidTouchNoVcprRequiredReason] =
     useState<boolean>(false);
   const [reasons, loadingReasons, errorReasons] = useCollection(
     query(collection(firestore, "reasons"), orderBy("name", "asc")),
   );
-  useEffect(() => {
-    if (reasons) {
-      const unsubscribe = onSnapshot(
-        doc(firestore, "configuration", "bookings"),
-        (doc: any) => {
-          reasons.docs.forEach((reason: any) => {
-            if (
-              schedule === "clinic" &&
-              reason.data()?.id === doc.data()?.clinicStandardVcprReason?.value
-            )
-              setSelectedStandardVcprReason(reason.data()?.name);
-          });
-          setIsLoading(false);
-        },
-        (error: any) => {
-          setError(error?.message || error);
-          setIsLoading(false);
-        },
-      );
-      return () => unsubscribe();
-    } else return;
-  }, [reasons, schedule]);
 
   const saveChanges = async () => {
-    let reasonId: number | null = null;
-    if (reasons)
-      reasons.docs.forEach((reason: any) =>
-        reason.data()?.name === selectedStandardVcprReason
-          ? (reasonId = reason.data()?.id)
-          : null,
-      );
+    const newPopUpClinics = popUpClinics.map((clinic: any) => {
+      if (clinic.id === configuration?.id)
+        return {
+          ...clinic,
+          vcprRequiredReason: selectedVcprRequiredReason,
+          noVcprRequiredReason: selectedNoVcprRequiredReason,
+        };
+      else return clinic;
+    });
     await setDoc(
-      doc(firestore, "configuration/bookings"),
-      schedule === "clinic"
-        ? {
-            clinicStandardVcprReason: {
-              label: selectedStandardVcprReason,
-              value: reasonId,
-            },
-            updatedOn: serverTimestamp(),
-          }
-        : schedule === "housecall"
-          ? {
-              housecallStandardVcprReason: {
-                label: selectedStandardVcprReason,
-                value: reasonId,
-              },
-              updatedOn: serverTimestamp(),
-            }
-          : {
-              virtualStandardVcprReason: {
-                label: selectedStandardVcprReason,
-                value: reasonId,
-              },
-              updatedOn: serverTimestamp(),
-            },
+      doc(firestore, "configuration/pop_up_clinics"),
+      {
+        popUpClinics: newPopUpClinics,
+        updatedOn: serverTimestamp(),
+      },
       { merge: true },
     )
       .then(() =>
-        toast(
-          `Default ${schedule?.toUpperCase()} VCPR Reason Updated to "${selectedStandardVcprReason}"`,
-          {
-            position: "top-center",
-            icon: (
-              <FontAwesomeIcon
-                icon={faCheckCircle}
-                size="sm"
-                className="text-movet-green"
-              />
-            ),
-          },
-        ),
+        toast(`"${configuration?.name}" Days & Hours of Operation Updated!`, {
+          position: "top-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              size="sm"
+              className="text-movet-green"
+            />
+          ),
+        }),
       )
-      .catch((error: any) =>
+      .catch((error: any) => {
         toast(
-          `Default ${schedule?.toUpperCase()} VCPR Reason Update FAILED: ${error?.message}`,
+          `"${configuration?.name}" Days & Hours of Operation Updated FAILED: ${error?.message}`,
           {
             duration: 5000,
-
             icon: (
               <FontAwesomeIcon
                 icon={faCircleExclamation}
@@ -138,15 +94,18 @@ const PopUpClinicReasons = ({
               />
             ),
           },
-        ),
-      )
+        );
+        setError(error);
+      })
       .finally(() => {
-        setDidTouchStandardVcprReason(false);
+        setDidTouchVcprRequiredReason(false);
+        setDidTouchNoVcprRequiredReason(false);
       });
   };
+
   return (
     <>
-      {loadingReasons || isLoading ? (
+      {loadingReasons ? (
         <Loader />
       ) : errorReasons || error ? (
         <div className="my-4">
@@ -167,8 +126,8 @@ const PopUpClinicReasons = ({
                 </p>
               </div>
               <Listbox
-                value={selectedStandardVcprReason}
-                onChange={setSelectedStandardVcprReason}
+                value={selectedVcprRequiredReason}
+                onChange={setSelectedVcprRequiredReason}
               >
                 {({ open }) => (
                   <>
@@ -182,13 +141,13 @@ const PopUpClinicReasons = ({
                           "border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm"
                         }
                       >
-                        {selectedStandardVcprReason && (
+                        {selectedVcprRequiredReason && (
                           <span
                             className={
                               "text-movet-black block truncate font-abside-smooth text-base h-7 mt-1 ml-1"
                             }
                           >
-                            {selectedStandardVcprReason}
+                            {selectedVcprRequiredReason}
                           </span>
                         )}
                         <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -218,7 +177,7 @@ const PopUpClinicReasons = ({
                               <Listbox.Option
                                 key={item.data()?.id}
                                 onClick={() =>
-                                  setDidTouchStandardVcprReason(true)
+                                  setDidTouchVcprRequiredReason(true)
                                 }
                                 className={({ active }) =>
                                   classNames(
@@ -269,7 +228,7 @@ const PopUpClinicReasons = ({
                 )}
               </Listbox>
               <Transition
-                show={didTouchStandardVcprReason}
+                show={didTouchVcprRequiredReason}
                 enter="transition ease-in duration-500"
                 leave="transition ease-out duration-64"
                 leaveTo="opacity-10"
@@ -298,8 +257,8 @@ const PopUpClinicReasons = ({
                 </p>
               </div>
               <Listbox
-                value={selectedStandardVcprReason}
-                onChange={setSelectedStandardVcprReason}
+                value={selectedNoVcprRequiredReason}
+                onChange={setSelectedNoVcprRequiredReason}
               >
                 {({ open }) => (
                   <>
@@ -313,13 +272,13 @@ const PopUpClinicReasons = ({
                           "border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm"
                         }
                       >
-                        {selectedStandardVcprReason && (
+                        {selectedNoVcprRequiredReason && (
                           <span
                             className={
                               "text-movet-black block truncate font-abside-smooth text-base h-7 mt-1 ml-1"
                             }
                           >
-                            {selectedStandardVcprReason}
+                            {selectedNoVcprRequiredReason}
                           </span>
                         )}
                         <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -349,7 +308,7 @@ const PopUpClinicReasons = ({
                               <Listbox.Option
                                 key={item.data()?.id}
                                 onClick={() =>
-                                  setDidTouchStandardVcprReason(true)
+                                  setDidTouchNoVcprRequiredReason(true)
                                 }
                                 className={({ active }) =>
                                   classNames(
@@ -400,7 +359,7 @@ const PopUpClinicReasons = ({
                 )}
               </Listbox>
               <Transition
-                show={didTouchStandardVcprReason}
+                show={didTouchNoVcprRequiredReason}
                 enter="transition ease-in duration-500"
                 leave="transition ease-out duration-64"
                 leaveTo="opacity-10"

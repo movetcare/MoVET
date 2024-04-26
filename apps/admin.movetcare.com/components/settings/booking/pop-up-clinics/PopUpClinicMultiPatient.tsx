@@ -4,10 +4,10 @@ import {
   faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { doc, onSnapshot, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { firestore } from "services/firebase";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { Button } from "ui";
 import { Transition } from "@headlessui/react";
@@ -22,95 +22,52 @@ export const PopUpClinicMultiPatient = ({
     description: string;
     id: string;
     isActive?: boolean;
-    resourceConfiguration?:
-      | Array<{
-          id: string;
-          staggerTime: number;
-        }>
-      | undefined;
+    onePatientDuration: number;
+    twoPatientDuration: number;
+    threePatientDuration: number;
   };
   popUpClinics: any;
 }) => {
-  const schedule = "clinic";
   const [selectedOnePatientDuration, setSelectedOnePatientDuration] = useState<
     string | null
-  >(null);
+  >(String(configuration?.onePatientDuration) || null);
   const [didTouchOnePatientDuration, setDidTouchOnePatientDuration] =
     useState<boolean>(false);
   const [selectedTwoPatientDuration, setSelectedTwoPatientDuration] = useState<
     string | null
-  >(null);
+  >(String(configuration?.twoPatientDuration) || null);
   const [didTouchTwoPatientDuration, setDidTouchTwoPatientDuration] =
     useState<boolean>(false);
   const [selectedThreePatientDuration, setSelectedThreePatientDuration] =
-    useState<string | null>(null);
+    useState<string | null>(
+      String(configuration?.threePatientDuration) || null,
+    );
   const [didTouchThreePatientDuration, setDidTouchThreePatientDuration] =
     useState<boolean>(false);
   const [error, setError] = useState<any>(null);
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(firestore, "configuration", "bookings"),
-      (doc: any) => {
-        setSelectedOnePatientDuration(
-          schedule === "clinic"
-            ? doc.data()?.clinicOnePatientDuration
-            : schedule === "housecall"
-              ? doc.data()?.housecallOnePatientDuration
-              : doc.data()?.virtualOnePatientDuration,
-        );
-        setSelectedTwoPatientDuration(
-          schedule === "clinic"
-            ? doc.data()?.clinicTwoPatientDuration
-            : schedule === "housecall"
-              ? doc.data()?.housecallTwoPatientDuration
-              : doc.data()?.virtualTwoPatientDuration,
-        );
-        setSelectedThreePatientDuration(
-          schedule === "clinic"
-            ? doc.data()?.clinicThreePatientDuration
-            : schedule === "housecall"
-              ? doc.data()?.housecallThreePatientDuration
-              : doc.data()?.virtualThreePatientDuration,
-        );
-      },
-      (error: any) => {
-        setError(error?.message || error);
-      },
-    );
-    return () => unsubscribe();
-  }, [schedule]);
-
   const saveChanges = async () => {
+    const newPopUpClinics = popUpClinics.map((clinic: any) => {
+      if (clinic.id === configuration?.id)
+        return {
+          ...clinic,
+          onePatientDuration: selectedOnePatientDuration,
+          twoPatientDuration: selectedTwoPatientDuration,
+          threePatientDuration: selectedThreePatientDuration,
+        };
+      else return clinic;
+    });
     await setDoc(
-      doc(firestore, "configuration/bookings"),
-      schedule === "clinic"
-        ? {
-            clinicOnePatientDuration: Number(selectedOnePatientDuration),
-            clinicTwoPatientDuration: Number(selectedTwoPatientDuration),
-            clinicThreePatientDuration: Number(selectedThreePatientDuration),
-            updatedOn: serverTimestamp(),
-          }
-        : schedule === "housecall"
-          ? {
-              housecallOnePatientDuration: Number(selectedOnePatientDuration),
-              housecallTwoPatientDuration: Number(selectedTwoPatientDuration),
-              housecallThreePatientDuration: Number(
-                selectedThreePatientDuration,
-              ),
-              updatedOn: serverTimestamp(),
-            }
-          : {
-              virtualOnePatientDuration: Number(selectedOnePatientDuration),
-              virtualTwoPatientDuration: Number(selectedTwoPatientDuration),
-              virtualThreePatientDuration: Number(selectedThreePatientDuration),
-              updatedOn: serverTimestamp(),
-            },
+      doc(firestore, "configuration/pop_up_clinics"),
+      {
+        popUpClinics: newPopUpClinics,
+        updatedOn: serverTimestamp(),
+      },
       { merge: true },
     )
       .then(() =>
         toast(
-          `Updated ${schedule?.toUpperCase()} Multi-Patient Appointment Duration`,
+          `Updated ${configuration?.name} Multi-Patient Appointment Duration`,
           {
             position: "top-center",
             icon: (
@@ -123,9 +80,9 @@ export const PopUpClinicMultiPatient = ({
           },
         ),
       )
-      .catch((error: any) =>
+      .catch((error: any) => {
         toast(
-          `${schedule?.toUpperCase()} Multi-Patient Appointment Duration Updated FAILED: ${error?.message}`,
+          `${configuration?.name} Multi-Patient Appointment Duration Updated FAILED: ${error?.message}`,
           {
             duration: 5000,
 
@@ -137,8 +94,9 @@ export const PopUpClinicMultiPatient = ({
               />
             ),
           },
-        ),
-      )
+        );
+        setError(error);
+      })
       .finally(() => {
         setDidTouchOnePatientDuration(false);
         setDidTouchTwoPatientDuration(false);

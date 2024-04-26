@@ -17,6 +17,9 @@ import PopUpClinicReasons from "./PopUpClinicReasons";
 import { PopUpClinicSameDay } from "./PopUpClinicSameDay";
 import { PopUpClinicBuffer } from "./PopUpClinicBuffer";
 import { PopUpClinicMultiPatient } from "./PopUpClinicMultiPatient";
+import { PopUpClinicDescription } from "./PopUpClinicDescription";
+import kebabCase from "lodash.kebabcase";
+import PopUpClinicSchedule from "./PopUpClinicSchedule";
 
 export const PopUpClinicConfiguration = ({
   configuration,
@@ -27,6 +30,38 @@ export const PopUpClinicConfiguration = ({
     description: string;
     id: string;
     isActive?: boolean;
+    vcprRequiredReason: string;
+    noVcprRequiredReason: string;
+    standardAppointmentBuffer: number;
+    appointmentBufferTime: boolean;
+    sameDayAppointmentVcprRequired: boolean;
+    sameDayAppointmentLeadTime: number;
+    onePatientDuration: number;
+    twoPatientDuration: number;
+    threePatientDuration: number;
+    schedule?: {
+      openMonday: boolean;
+      openMondayTime: number;
+      closedMondayTime: number;
+      openTuesday: boolean;
+      openTuesdayTime: number;
+      closedTuesdayTime: number;
+      openWednesday: boolean;
+      openWednesdayTime: number;
+      closedWednesdayTime: number;
+      openThursday: boolean;
+      openThursdayTime: number;
+      closedThursdayTime: number;
+      openFriday: boolean;
+      openFridayTime: number;
+      closedFridayTime: number;
+      openSaturday: boolean;
+      openSaturdayTime: number;
+      closedSaturdayTime: number;
+      openSunday: boolean;
+      openSundayTime: number;
+      closedSundayTime: number;
+    };
     resourceConfiguration?:
       | Array<{
           id: string;
@@ -143,7 +178,7 @@ export const PopUpClinicConfiguration = ({
     <div key={id}>
       <hr className="text-movet-gray" />
       <div
-        className={`flex flex-row items-center w-full${isConfigured ? " cursor-pointer hover:bg-movet-white" : " opacity-50"}`}
+        className={`flex flex-row items-center w-full${isConfigured ? " cursor-pointer hover:bg-movet-white" : " opacity-50"}${showConfigurationOptions ? " bg-movet-white" : ""}`}
       >
         <Switch.Group
           as="div"
@@ -170,6 +205,20 @@ export const PopUpClinicConfiguration = ({
                   </>
                 )}
               </span>
+              {isActive && (
+                <p className="text-xs text-movet-black/70 italic mt-2">
+                  <b>
+                    <a
+                      href={`https://app.movetcare.com/book-an-appointment/${kebabCase(name)}`}
+                      target="_blank"
+                      className="hover:text-movet-red hover:underline"
+                    >
+                      https://app.movetcare.com/book-an-appointment/
+                      {kebabCase(name)}
+                    </a>
+                  </b>
+                </p>
+              )}
               <p className="text-sm text-movet-black mt-1 mb-3">
                 {description}
               </p>
@@ -222,6 +271,14 @@ export const PopUpClinicConfiguration = ({
       {(!isConfigured || showConfigurationOptions) && (
         <>
           <hr className="text-movet-gray" />
+          <PopUpClinicDescription
+            configuration={configuration}
+            popUpClinics={popUpClinics}
+          />
+          <PopUpClinicSchedule
+            configuration={configuration}
+            popUpClinics={popUpClinics}
+          />
           <PopUpClinicReasons
             configuration={configuration}
             popUpClinics={popUpClinics}

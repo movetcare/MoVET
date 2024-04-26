@@ -5,8 +5,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Switch, Transition } from "@headlessui/react";
-import { setDoc, doc, serverTimestamp, onSnapshot } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { setDoc, doc, serverTimestamp } from "firebase/firestore";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { firestore } from "services/firebase";
 import { Button } from "ui";
@@ -23,73 +23,43 @@ export const PopUpClinicSameDay = ({
     description: string;
     id: string;
     isActive?: boolean;
-    resourceConfiguration?:
-      | Array<{
-          id: string;
-          staggerTime: number;
-        }>
-      | undefined;
+    sameDayAppointmentVcprRequired: boolean;
+    sameDayAppointmentLeadTime: number;
   };
   popUpClinics: any;
 }) => {
-  const schedule = "clinic";
-  const [vcprRequired, setVcprRequired] = useState<boolean>(false);
-  const [selectedLeadTime, setSelectedLeadTime] = useState<string | null>(null);
+  const [vcprRequired, setVcprRequired] = useState<boolean>(
+    configuration?.sameDayAppointmentVcprRequired || false,
+  );
+  const [selectedLeadTime, setSelectedLeadTime] = useState<string | null>(
+    String(configuration?.sameDayAppointmentLeadTime) || null,
+  );
   const [didTouchLeadTime, setDidTouchOneLeadTime] = useState<boolean>(false);
   const [didTouchVcprRequired, setDidTouchVcprRequired] =
     useState<boolean>(false);
   const [error, setError] = useState<any>(null);
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(firestore, "configuration", "bookings"),
-      (doc: any) => {
-        setVcprRequired(
-          schedule === "clinic"
-            ? doc.data()?.clinicSameDayAppointmentVcprRequired
-            : schedule === "housecall"
-              ? doc.data()?.housecallSameDayAppointmentVcprRequired
-              : doc.data()?.virtualSameDayAppointmentVcprRequired,
-        );
-        setSelectedLeadTime(
-          schedule === "clinic"
-            ? doc.data()?.clinicSameDayAppointmentLeadTime
-            : schedule === "housecall"
-              ? doc.data()?.housecallSameDayAppointmentLeadTime
-              : doc.data()?.virtualSameDayAppointmentLeadTime,
-        );
-      },
-      (error: any) => {
-        setError(error?.message || error);
-      },
-    );
-    return () => unsubscribe();
-  }, [schedule]);
 
-  const saveChanges = async () =>
+  const saveChanges = async () => {
+    const newPopUpClinics = popUpClinics.map((clinic: any) => {
+      if (clinic.id === configuration?.id)
+        return {
+          ...clinic,
+          sameDayAppointmentVcprRequired: vcprRequired,
+          sameDayAppointmentLeadTime: selectedLeadTime,
+        };
+      else return clinic;
+    });
     await setDoc(
-      doc(firestore, "configuration/bookings"),
-      schedule === "clinic"
-        ? {
-            clinicSameDayAppointmentVcprRequired: vcprRequired,
-            clinicSameDayAppointmentLeadTime: Number(selectedLeadTime),
-            updatedOn: serverTimestamp(),
-          }
-        : schedule === "housecall"
-          ? {
-              housecallSameDayAppointmentVcprRequired: vcprRequired,
-              housecallSameDayAppointmentLeadTime: Number(selectedLeadTime),
-              updatedOn: serverTimestamp(),
-            }
-          : {
-              virtualSameDayAppointmentVcprRequired: vcprRequired,
-              virtualSameDayAppointmentLeadTime: Number(selectedLeadTime),
-              updatedOn: serverTimestamp(),
-            },
+      doc(firestore, "configuration/pop_up_clinics"),
+      {
+        popUpClinics: newPopUpClinics,
+        updatedOn: serverTimestamp(),
+      },
       { merge: true },
     )
       .then(() =>
         toast(
-          `${schedule.toUpperCase()} Same Day Appointment Settings Updated!`,
+          `"${configuration?.name}" Same Day Appointment Setting Updated"`,
           {
             position: "top-center",
             icon: (
@@ -102,12 +72,11 @@ export const PopUpClinicSameDay = ({
           },
         ),
       )
-      .catch((error: any) =>
+      .catch((error: any) => {
         toast(
-          `${schedule.toUpperCase()} Same Day Appointment Settings Update FAILED: ${error?.message}`,
+          `"${configuration?.name}" Same Day Appointment Setting Update FAILED: ${error?.message}`,
           {
             duration: 5000,
-
             icon: (
               <FontAwesomeIcon
                 icon={faCircleExclamation}
@@ -116,12 +85,14 @@ export const PopUpClinicSameDay = ({
               />
             ),
           },
-        ),
-      )
+        );
+        setError(error);
+      })
       .finally(() => {
-        setDidTouchVcprRequired(false);
         setDidTouchOneLeadTime(false);
+        setDidTouchVcprRequired(false);
       });
+  };
   return error ? (
     <Error error={error} />
   ) : (

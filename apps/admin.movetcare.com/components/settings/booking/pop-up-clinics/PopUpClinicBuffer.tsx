@@ -4,10 +4,10 @@ import {
   faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { doc, onSnapshot, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { firestore } from "services/firebase";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { Button } from "ui";
 import { Transition } from "@headlessui/react";
@@ -22,61 +22,37 @@ export const PopUpClinicBuffer = ({
     description: string;
     id: string;
     isActive?: boolean;
-    resourceConfiguration?:
-      | Array<{
-          id: string;
-          staggerTime: number;
-        }>
-      | undefined;
+    appointmentBufferTime: boolean;
   };
   popUpClinics: any;
 }) => {
-  const schedule = "clinic";
   const [selectedBufferTime, setSelectedBufferTime] = useState<string | null>(
-    null,
+    String(configuration?.appointmentBufferTime) || null,
   );
   const [didTouchBufferTime, setDidTouchBufferTime] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(firestore, "configuration", "bookings"),
-      (doc: any) =>
-        setSelectedBufferTime(
-          schedule === "clinic"
-            ? doc.data()?.clinicAppointmentBufferTime
-            : schedule === "housecall"
-              ? doc.data()?.housecallAppointmentBufferTime
-              : doc.data()?.virtualAppointmentBufferTime,
-        ),
-      (error: any) => setError(error?.message || error),
-    );
-    return () => unsubscribe();
-  }, [schedule]);
-
   const saveChanges = async () => {
-    if (didTouchBufferTime && selectedBufferTime && selectedBufferTime !== "")
+    if (didTouchBufferTime && selectedBufferTime && selectedBufferTime !== "") {
+      const newPopUpClinics = popUpClinics.map((clinic: any) => {
+        if (clinic.id === configuration?.id)
+          return {
+            ...clinic,
+            appointmentBufferTime: selectedBufferTime,
+          };
+        else return clinic;
+      });
       await setDoc(
-        doc(firestore, "configuration/bookings"),
-        schedule === "clinic"
-          ? {
-              clinicAppointmentBufferTime: Number(selectedBufferTime),
-              updatedOn: serverTimestamp(),
-            }
-          : schedule === "housecall"
-            ? {
-                housecallAppointmentBufferTime: Number(selectedBufferTime),
-                updatedOn: serverTimestamp(),
-              }
-            : {
-                virtualAppointmentBufferTime: Number(selectedBufferTime),
-                updatedOn: serverTimestamp(),
-              },
+        doc(firestore, "configuration/pop_up_clinics"),
+        {
+          popUpClinics: newPopUpClinics,
+          updatedOn: serverTimestamp(),
+        },
         { merge: true },
       )
         .then(() =>
           toast(
-            `${schedule?.toUpperCase()} Appointment Buffer Time Update to "${selectedBufferTime}"`,
+            `${configuration?.name} Appointment Buffer Time Update to "${selectedBufferTime}"`,
             {
               position: "top-center",
               icon: (
@@ -89,9 +65,9 @@ export const PopUpClinicBuffer = ({
             },
           ),
         )
-        .catch((error: any) =>
+        .catch((error: any) => {
           toast(
-            `${schedule?.toUpperCase()} Appointment Buffer Time Update FAILED: ${error?.message}`,
+            `${configuration?.name} Appointment Buffer Time Update FAILED: ${error?.message}`,
             {
               duration: 5000,
               icon: (
@@ -102,9 +78,11 @@ export const PopUpClinicBuffer = ({
                 />
               ),
             },
-          ),
-        );
-    setDidTouchBufferTime(false);
+          );
+          setError(error);
+        })
+        .finally(() => setDidTouchBufferTime(false));
+    }
   };
 
   return error ? (
