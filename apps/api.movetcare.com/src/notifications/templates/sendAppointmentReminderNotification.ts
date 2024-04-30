@@ -22,7 +22,6 @@ interface AppointmentDetails {
   client: number;
   send30MinReminder: boolean;
   send24HourReminder: boolean;
-  user?: 7 | 8 | 9; // 7 = Clinic, 8 = Mobile, 9 = Virtual
   start: any;
   instructions: string;
   notes: string;
@@ -137,7 +136,6 @@ const send24HourAppointmentNotification = async (
   const {
     id,
     client,
-    user,
     start,
     notes,
     instructions,
@@ -150,7 +148,6 @@ const send24HourAppointmentNotification = async (
     console.log("sendAppointmentReminderNotification => APPOINTMENT DETAILS", {
       id,
       client,
-      user,
       start,
       instructions,
       patients,
@@ -159,12 +156,7 @@ const send24HourAppointmentNotification = async (
       resources,
       doesHaveValidPaymentOnFile,
     });
-  const locationType = notes?.includes("Appointment Location: Home -")
-    ? "Home"
-    : notes?.includes("Virtual")
-      ? "Virtually"
-      : "Clinic";
-  const newLocationType =
+  const appointmentType =
     resources?.includes(6) || // Exam Room 1
     resources?.includes(7) || // Exam Room 2
     resources?.includes(8) || // Exam Room 3
@@ -228,19 +220,17 @@ const send24HourAppointmentNotification = async (
         vcprRequired,
       );
     }
-    //if (isNewFlow) {
     emailText = `${
       displayName
         ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
         : "<p>Hey there!</p>"
     }<p>This email contains important information about your upcoming appointment with MoVET.</p>
       ${
-        (locationType === "Home" || newLocationType === "HOUSECALL") &&
-        appointmentAddress
+        appointmentType === "HOUSECALL" && appointmentAddress
           ? `<p></p><p><b>Location</b>: ${appointmentAddress}</p>`
-          : locationType === "Virtually" || newLocationType === "TELEHEALTH"
+          : appointmentType === "TELEHEALTH"
             ? "<p></p><p><b>Location</b>: Virtual - We will send you a link to the virtual meeting room on the day of your appointment.</p>"
-            : locationType === "Clinic" || newLocationType === "CLINIC"
+            : appointmentType === "CLINIC"
               ? // eslint-disable-next-line quotes
                 '<p></p><p><b>Location</b>: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a></p>'
               : "<p></p><p><b>Appointment Location</b>: Walk In Appointment</p>"
@@ -262,20 +252,17 @@ const send24HourAppointmentNotification = async (
       : ""
   }${
     phoneNumber &&
-    (locationType === "Home" ||
-      locationType === "Virtually" ||
-      newLocationType === "HOUSECALL" ||
-      newLocationType === "TELEHEALTH")
+    (appointmentType === "HOUSECALL" || appointmentType === "TELEHEALTH")
       ? `<p></p><p><b>Contact Phone Number</b>: ${phoneNumber}</p><p>*Please keep your phone handy the day of the ${
-          locationType === "Virtually" || newLocationType === "TELEHEALTH"
+          appointmentType === "TELEHEALTH"
             ? "consultation."
             : "appointment. We will text you when we are on our way.</p>"
         }`
       : ""
   }${
-    locationType === "Home" || newLocationType === "HOUSECALL"
+    appointmentType === "HOUSECALL"
       ? "<p></p><p><b>Home Visit Trip Fee</b>: $60</p><p><b>*Additional charges will apply for add-on diagnostics, medications, pampering, etc.</b></p><p><i>A $60 cancellation fee will be charged if cancellation occurs within 24 hours of your appointment</i></p>"
-      : "" // TODO: Convert waiver text to be conditional based on VCPR status - If VCPR is not established, then include waiver text.
+      : ""
   }${
     doesHaveValidPaymentOnFile !== false &&
     doesHaveValidPaymentOnFile.length > 0
@@ -295,7 +282,7 @@ const send24HourAppointmentNotification = async (
     doesHaveValidPaymentOnFile !== false &&
     doesHaveValidPaymentOnFile.length > 0
       ? ""
-      : user === 8
+      : appointmentType === "HOUSECALL"
         ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll(
@@ -320,74 +307,6 @@ comfortable with us for their visit would be great! We can offer anti-anxiety me
 appointments for some patients that might need a little help relaxing around us.</p><p><i>Please reply to this email <b>before your appointment</b> should 
 you feel your pet(s) needs more options, such as anxiolytics and / or supplements to continue to 
 make your pet's visit more comfortable. We thank you in advance for keeping our staff safe!</i></p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
-    //     } else {
-    //       const clientProvetRecord = await fetchEntity("client", client);
-    //       emailText = `${
-    //         displayName
-    //           ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
-    //           : "<p>Hey there!</p>"
-    //       }<p>This email contains important information about your upcoming appointment with MoVET.</p>${
-    //         user
-    //           ? `<p><b>Location: </b>${
-    //               user === 8
-    //                 ? appointmentAddress
-    //                   ? `Housecall - ${appointmentAddress}`
-    //                   : `${
-    //                       clientProvetRecord?.street_address || "STREET UNKNOWN"
-    //                     } ${clientProvetRecord?.city || "CITY UNKNOWN"}, ${
-    //                       clientProvetRecord?.state || "STATE UNKNOWN"
-    //                     } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
-    //                 : user === 7
-    //                   ? 'MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)'
-    //                   : user === 9
-    //                     ? "Virtual - We'll email you a link when it's time for your consultation"
-    //                     : 'MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)'
-    //             }</p>`
-    //           : ""
-    //       }<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p><p><b>Pet${
-    //         patients.length > 1 ? "s" : ""
-    //       }: </b>${petNames}</p>${
-    //         reasonName !== null ? `<p><b>Reason: </b>${reasonName}</p>` : ""
-    //       }${
-    //         instructions !== undefined
-    //           ? `<p></p><p><b>Instructions: </b>${instructions}</p>`
-    //           : ""
-    //       }
-    //   ${
-    //     vcprRequired
-    //       ? // eslint-disable-next-line quotes
-    //         '<p></p><p><b>Medical Records:</b> Please email (or have your previous vet email) their vaccine and medical records to <a href="mailto://info@movetcare.com" target="_blank">info@movetcare.com</a> <b>prior</b> to your appointment.</p>'
-    //       : ""
-    //   }${
-    //     doesHaveValidPaymentOnFile !== false &&
-    //     doesHaveValidPaymentOnFile.length > 0
-    //       ? ""
-    //       : user === 8
-    //         ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-    //             email as string
-    //           )?.replaceAll(
-    //             "+",
-    //             "%2B",
-    //           )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-    //         : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-    //             email as string
-    //           )?.replaceAll(
-    //             "+",
-    //             "%2B",
-    //           )}`}" target="_blank">add a form of payment</a></b></p>`
-    //   }<p><b> Handling Tips for your Pet${
-    //     patients.length > 1 ? "s" : ""
-    //   }:</b> Pets can get nervous and anxious about visiting the
-    // veterinarian. We want to prevent any nervous behaviors that can later create fearful or even
-    // aggressive behaviors. Once this happens, veterinary visits can become very unpleasant for both
-    // owner and pet that we often resign to just not taking them to the vet's office at all anymore.</p><p>Please let us know in advance of any favorite treat, scratching spot, or any behavioral
-    // issues you may have encountered with your pet previously. Are they food motivated, territorial,
-    // or aggressive towards humans or other pets? Anything that would make your pet more
-    // comfortable with us for their visit would be great! We can offer anti-anxiety medications ahead of
-    // appointments for some patients that might need a little help relaxing around us.</p><p><i>Please reply to this email <b>before your appointment</b> should
-    // you feel your pet(s) needs more options, such as anxiolytics and / or supplements to continue to
-    // make your pet's visit more comfortable. We thank you in advance for keeping our staff safe!</i></p><p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
-    //     }
     if (DEBUG)
       console.log(
         "sendAppointmentReminderNotification => emailText -> ",
@@ -431,7 +350,6 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
       console.log(
         "sendAppointmentReminderNotification => SENDING SMS APPOINTMENT NOTIFICATION",
       );
-    //const isNewFlow = user ? false : true;
     const appointmentAddress = notes?.includes("Appointment Address")
       ? notes?.split("-")[1]?.split("|")[0]?.trim()
       : await admin
@@ -469,12 +387,7 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
         petNames,
       );
     const reasonName = reason ? await getReasonName(reason) : null;
-    const locationType = notes?.includes("Appointment Location: Home -")
-      ? "Home"
-      : notes?.includes("Virtual")
-        ? "Virtually"
-        : "Clinic";
-    const newLocationType =
+    const appointmentType =
       resources?.includes(6) || // Exam Room 1
       resources?.includes(7) || // Exam Room 2
       resources?.includes(8) || // Exam Room 3
@@ -494,14 +407,13 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
         ? `Hi ${getClientFirstNameFromDisplayName(displayName)}. `
         : "Hey there! "
     }\n\nThis is MoVET reaching out to remind you of your upcoming appointment.\n\nAPPOINTMENT DETAILS:\n${
-      (locationType === "Home" || newLocationType === "HOUSECALL") &&
-      appointmentAddress
+      appointmentType === "HOUSECALL" && appointmentAddress
         ? `Location: ${appointmentAddress}`
-        : locationType === "Virtually" || newLocationType === "TELEHEALTH"
+        : appointmentType === "TELEHEALTH"
           ? "Location: Virtual - We will send you a link to the virtual meeting room on the day of your appointment."
-          : locationType === "Clinic" || newLocationType === "CLINIC"
+          : appointmentType === "CLINIC"
             ? // eslint-disable-next-line quotes
-              'Location: MoVET Clinic @ <a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>'
+              "Location: MoVET Clinic @ 4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9"
             : "Location: Walk In Appointment"
     }\nTime: ${getDateStringFromDate(start?.toDate())}\nPet${
       patients.length > 1 ? "s" : ""
@@ -515,47 +427,6 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
             email as string
           )?.replaceAll("+", "%2B")}`}\n`
     }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
-    // else {
-    //   const clientProvetRecord = await fetchEntity("client", client);
-    //   smsText = `${
-    //     displayName
-    //       ? `Hi ${getClientFirstNameFromDisplayName(displayName)}. `
-    //       : "Hey there! "
-    //   }\n\nThis is MoVET reaching out to remind you of your upcoming appointment.\n\nAPPOINTMENT DETAILS:\n${
-    //     user
-    //       ? `Location: ${
-    //           user === 8
-    //             ? appointmentAddress
-    //               ? `Housecall - ${appointmentAddress}`
-    //               : `${
-    //                   clientProvetRecord?.street_address || "STREET UNKNOWN"
-    //                 } ${clientProvetRecord?.city || "CITY UNKNOWN"}, ${
-    //                   clientProvetRecord?.state || "STATE UNKNOWN"
-    //                 } ${clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"}`
-    //             : user === 7
-    //               ? "MoVET Clinic @ 4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9"
-    //               : user === 9
-    //                 ? "Virtual - We'll email you a link when it's time for your consultation"
-    //                 : "UNKNOWN"
-    //         }`
-    //       : ""
-    //   }\nTime: ${getDateStringFromDate(start?.toDate())}\nPet${
-    //     patients.length > 1 ? "s" : ""
-    //   }: ${petNames}\n${
-    //     reasonName !== null ? `\nReason: ${reasonName}\n` : ""
-    //   }${instructions ? `Instructions: ${instructions}\n` : ""}${
-    //     doesHaveValidPaymentOnFile !== false &&
-    //     doesHaveValidPaymentOnFile.length > 0
-    //       ? ""
-    //       : user === 8
-    //         ? `\nOur records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment. Please use the link below to add a new form of payment to your account:\n\n${`https://app.movetcare.com/update-payment-method?email=${(
-    //             email as string
-    //           )?.replaceAll("+", "%2B")}`}\n`
-    //         : `\nOur records indicate that you do not have a form of payment on file. Please add a payment source: ${`https://app.movetcare.com/update-payment-method?email=${(
-    //             email as string
-    //           )?.replaceAll("+", "%2B")}`}\n`
-    //   }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
-    // }
     if (DEBUG)
       console.log(
         "sendAppointmentReminderNotification => smsText -> ",
@@ -617,7 +488,6 @@ const send30MinAppointmentNotification = async (
   const {
     id,
     client,
-    user,
     start,
     instructions,
     patients,
@@ -631,7 +501,7 @@ const send30MinAppointmentNotification = async (
     console.log("sendAppointmentReminderNotification => APPOINTMENT DETAILS", {
       id,
       client,
-      user,
+
       start,
       instructions,
       patients,
@@ -650,7 +520,6 @@ const send30MinAppointmentNotification = async (
       displayName,
     });
   if (email) {
-    //const isNewFlow = user ? false : true;
     const appointmentAddress = notes?.includes("Appointment Address")
       ? notes?.split("-")[1]?.split("|")[0]?.trim()
       : await admin
@@ -693,12 +562,7 @@ const send30MinAppointmentNotification = async (
         "sendAppointmentReminderNotification => petNames -> ",
         petNames,
       );
-    const locationType = notes?.includes("Appointment Location: Home -")
-      ? "Home"
-      : notes?.includes("Virtual")
-        ? "Virtually"
-        : "Clinic";
-    const newLocationType =
+    const appointmentType =
       resources?.includes(6) || // Exam Room 1
       resources?.includes(7) || // Exam Room 2
       resources?.includes(8) || // Exam Room 3
@@ -712,31 +576,26 @@ const send30MinAppointmentNotification = async (
             ? "TELEHEALTH"
             : null;
     let emailText = "";
-    //if (isNewFlow)
     emailText = `${
       displayName
         ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
         : "<p>Hey there!</p>"
     }${
-      (locationType === "Home" || newLocationType === "HOUSECALL") &&
-      appointmentAddress
+      appointmentType === "HOUSECALL" && appointmentAddress
         ? `<p>A MoVET Expert is on their way to ${
             appointmentAddress || "UNKNOWN"
           } for your ${getDateStringFromDate(
             start?.toDate(),
             "timeOnly",
           )} appointment today.</p>`
-        : locationType === "Clinic" || newLocationType === "CLINIC"
+        : appointmentType === "CLINIC"
           ? "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
-          : locationType === "Virtually" || newLocationType === "TELEHEALTH"
+          : appointmentType === "TELEHEALTH"
             ? "<p>Dr. MoVET has invited you to join a secure video call:</p>"
             : "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
     }<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p>
     ${
-      locationType !== "Virtually" &&
-      newLocationType !== "TELEHEALTH" &&
-      locationType !== "Home" &&
-      newLocationType !== "HOUSECALL"
+      appointmentType !== "TELEHEALTH" && appointmentType !== "HOUSECALL"
         ? `<p><b>Location: </b> MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)</p>`
         : ""
     }${
@@ -751,9 +610,7 @@ const send30MinAppointmentNotification = async (
       : ""
   }
     ${
-      user === 9 ||
-      locationType === "Virtually" ||
-      newLocationType === "TELEHEALTH"
+      appointmentType === "TELEHEALTH"
         ? `<p>Please tap the "START CONSULTATION" button in our <a href="https://movetcare.com/get-the-app" target="_blank">mobile app</a> to start your Virtual Consultation session for ${petNames}. <i>You can also use <b><a href="${telemedicineUrl}" target="_blank">this link</a></b> to start your session via web browser.</p>
         <p>Please reply to this message if you have any pictures or videos that you'd like to share with us prior to our consultation.</p>
         <p>Make sure you are using a device with good internet connection and access to camera/audio. Our telehealth platform allows you to test your device prior to starting the consultation. We highly suggest you run those diagnostic tests prior to connecting with us.</p>
@@ -764,7 +621,7 @@ const send30MinAppointmentNotification = async (
       doesHaveValidPaymentOnFile !== false &&
       doesHaveValidPaymentOnFile.length > 0
         ? ""
-        : user === 8 || user === 9
+        : appointmentType !== "TELEHEALTH"
           ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
               email as string
             )?.replaceAll(
@@ -778,70 +635,6 @@ const send30MinAppointmentNotification = async (
               "%2B",
             )}`}" target="_blank">add a form of payment</a></b></p>`
     }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
-    //   else
-    //     emailText = `${
-    //       displayName
-    //         ? `<p>Hi ${getClientFirstNameFromDisplayName(displayName)},</p>`
-    //         : "<p>Hey there!</p>"
-    //     }${
-    //       user === 8
-    //         ? `<p>A MoVET Expert is on their way to ${
-    //             appointmentAddress || "UNKNOWN"
-    //           } for your ${getDateStringFromDate(
-    //             start?.toDate(),
-    //             "timeOnly",
-    //           )} appointment today.</p>`
-    //         : user === 7
-    //           ? "<p>We are reaching out to remind you of your upcoming appointment with MoVET today.</p>"
-    //           : user === 9
-    //             ? "<p>Dr. MoVET has invited you to join a secure video call:</p>"
-    //             : ""
-    //     }${
-    //       user === 7 || user === 9
-    //         ? `<p><b>Time: </b>${getDateStringFromDate(start?.toDate())}</p>`
-    //         : ""
-    //     }
-    //   ${
-    //     user === 7
-    //       ? `<p><b>Location: </b> MoVET Clinic @ Belleview Station (<a href="https://goo.gl/maps/GxPDfsCfdXhbmZVe9" target="_blank">4912 S Newport St Denver, CO 80237</a>)</p>`
-    //       : ""
-    //   }${
-    //     instructions !== undefined
-    //       ? `<p></p><p><b>Instructions: </b>${instructions}</p>`
-    //       : ""
-    //   }
-    // ${
-    //   vcprRequired
-    //     ? // eslint-disable-next-line quotes
-    //       '<p></p><p><b>Medical Records:</b> Please email (or have your previous vet email) their vaccine and medical records to <a href="mailto://info@movetcare.com" target="_blank">info@movetcare.com</a> <b>prior</b> to your appointment.</p>'
-    //     : ""
-    // }${
-    //   user === 9
-    //     ? `<p>Please tap the "START CONSULTATION" button in our <a href="https://movetcare.com/get-the-app" target="_blank">mobile app</a> to start your Virtual Consultation session for ${petNames}. <i>You can also use <b><a href="${telemedicineUrl}" target="_blank">this link</a></b> to start your session via web browser.</p>
-    //       <p>Please reply to this message if you have any pictures or videos that you'd like to share with us prior to our consultation.</p>
-    //       <p>Make sure you are using a device with good internet connection and access to camera/audio. Our telehealth platform allows you to test your device prior to starting the consultation. We highly suggest you run those diagnostic tests prior to connecting with us.</p>
-    //       <p><b>The cost of this service is between $32.00 - $50 per consultation.</b></p>`
-    //     : ""
-    // }
-    //   ${
-    //     doesHaveValidPaymentOnFile !== false &&
-    //     doesHaveValidPaymentOnFile.length > 0
-    //       ? ""
-    //       : user === 8 || user === 9
-    //         ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-    //             email as string
-    //           )?.replaceAll(
-    //             "+",
-    //             "%2B",
-    //           )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-    //         : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
-    //             email as string
-    //           )?.replaceAll(
-    //             "+",
-    //             "%2B",
-    //           )}`}" target="_blank">add a form of payment</a></b></p>`
-    //   }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
-
     if (DEBUG)
       console.log(
         "sendAppointmentReminderNotification => emailText -> ",
@@ -891,7 +684,6 @@ const send30MinAppointmentNotification = async (
         "sendAppointmentReminderNotification => petNames -> ",
         petNames,
       );
-    //const isNewFlow = user ? false : true;
     const appointmentAddress = notes?.includes("Appointment Address")
       ? notes?.split("-")[1]?.split("|")[0]?.trim()
       : await admin
@@ -934,12 +726,7 @@ const send30MinAppointmentNotification = async (
         "sendAppointmentReminderNotification => petNames -> ",
         petNames,
       );
-    const locationType = notes?.includes("Appointment Location: Home -")
-      ? "Home"
-      : notes?.includes("Virtual")
-        ? "Virtually"
-        : "Clinic";
-    const newLocationType =
+    const appointmentType =
       resources?.includes(6) || // Exam Room 1
       resources?.includes(7) || // Exam Room 2
       resources?.includes(8) || // Exam Room 3
@@ -959,21 +746,20 @@ const send30MinAppointmentNotification = async (
         ? `Hi ${getClientFirstNameFromDisplayName(displayName)},\n\n`
         : "Hey there!\n\n"
     }${
-      (locationType === "Home" || newLocationType === "HOUSECALL") &&
-      appointmentAddress
+      appointmentType === "HOUSECALL" && appointmentAddress
         ? `A MoVET Expert is on their way to ${
             appointmentAddress || "UNKNOWN"
           } for your ${getDateStringFromDate(
             start?.toDate(),
             "timeOnly",
           )} appointment today.\n`
-        : locationType === "Clinic" || newLocationType === "CLINIC"
+        : appointmentType === "CLINIC"
           ? "We are reaching out to remind you of your upcoming appointment with MoVET today.\n\nAPPOINTMENT DETAILS:\n"
-          : locationType === "Virtually" || newLocationType === "TELEHEALTH"
+          : appointmentType === "TELEHEALTH"
             ? "Dr. MoVET has invited you to join a secure video call:\n\n"
             : ""
     }Time: ${getDateStringFromDate(start?.toDate())}\n${
-      locationType === "Clinic" || newLocationType === "CLINIC"
+      appointmentType === "CLINIC"
         ? `Location: MoVET Clinic @ Belleview Station (4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9)\n`
         : ""
     }${instructions !== undefined ? `Instructions: ${instructions}` : ""}
@@ -983,7 +769,7 @@ const send30MinAppointmentNotification = async (
         "Medical Records: Please email (or have your previous vet email) their vaccine and medical records to info@movetcare.com prior to your appointment."
       : ""
   }${
-    locationType === "Virtually" || newLocationType === "TELEHEALTH"
+    appointmentType === "TELEHEALTH"
       ? `\nPlease tap the "START CONSULTATION" button in our mobile app to start your Virtual Consultation session for ${petNames}. You can also use the link below to start your Virtual Consultation session via web browser:\n\n${telemedicineUrl}\n\nPlease email info@movetcare.com if you have any pictures or videos that you'd like to share with us prior to our consultation.\n\n Make sure you are using a device with good internet connection and access to camera/audio. Our telehealth platform allows you to test your device prior to starting the consultation. We highly suggest you run those diagnostic tests prior to connecting with us.\n\nThe cost of this service is  between $32.00 - $50 per consultation.\n\n`
       : ""
   }${
@@ -994,62 +780,6 @@ const send30MinAppointmentNotification = async (
           email as string
         )?.replaceAll("+", "%2B")}\n\n`
   }\nPlease email info@movetcare.com, text (720) 507-7387 us, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
-    //   else {
-    //     const clientProvetRecord = await fetchEntity("client", client);
-    //     smsText = `${
-    //       displayName
-    //         ? `Hi ${getClientFirstNameFromDisplayName(displayName)},\n\n`
-    //         : "Hey there!\n\n"
-    //     }${
-    //       user === 8
-    //         ? `A MoVET Expert is on their way to ${
-    //             appointmentAddress || appointmentAddress
-    //               ? `Housecall - ${appointmentAddress}`
-    //               : `${clientProvetRecord?.street_address || "STREET UNKNOWN"} ${
-    //                   clientProvetRecord?.city || "CITY UNKNOWN"
-    //                 }, ${clientProvetRecord?.state || "STATE UNKNOWN"} ${
-    //                   clientProvetRecord?.zip_code || "ZIPCODE UNKNOWN"
-    //                 }`
-    //           } for your ${getDateStringFromDate(
-    //             start?.toDate(),
-    //             "timeOnly",
-    //           )} appointment today.\n`
-    //         : user === 7
-    //           ? "We are reaching out to remind you of your upcoming appointment with MoVET today.\n\nAPPOINTMENT DETAILS:\n"
-    //           : user === 9
-    //             ? "Dr. MoVET has invited you to join a secure video call:\n\n"
-    //             : ""
-    //     }${
-    //       user === 7 || user === 9
-    //         ? `Time: ${getDateStringFromDate(start?.toDate())}\n`
-    //         : ""
-    //     }${
-    //       user === 7
-    //         ? `Location: MoVET Clinic @ Belleview Station (4912 S Newport St Denver, CO 80237 - https://goo.gl/maps/GxPDfsCfdXhbmZVe9)\n`
-    //         : ""
-    //     }${instructions !== undefined ? `Instructions: ${instructions}` : ""}
-    // ${
-    //   vcprRequired
-    //     ? // eslint-disable-next-line quotes
-    //       "Medical Records: Please email (or have your previous vet email) their vaccine and medical records to info@movetcare.com prior to your appointment."
-    //     : ""
-    // }${
-    //   user === 9
-    //     ? `\nPlease tap the "START CONSULTATION" button in our mobile app to start your Virtual Consultation session for ${petNames}. You can also use the link below to start your Virtual Consultation session via web browser:\n\n${telemedicineUrl}\n\nPlease email info@movetcare.com if you have any pictures or videos that you'd like to share with us prior to our consultation.\n\n Make sure you are using a device with good internet connection and access to camera/audio. Our telehealth platform allows you to test your device prior to starting the consultation. We highly suggest you run those diagnostic tests prior to connecting with us.\n\nThe cost of this service is  between $32.00 - $50 per consultation.\n\n`
-    //     : ""
-    // }${
-    //   doesHaveValidPaymentOnFile !== false &&
-    //   doesHaveValidPaymentOnFile.length > 0
-    //     ? ""
-    //     : user === 8 || user === 9
-    //       ? `Payment on File: Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment:\n\n Add a Payment Method\nhttps://app.movetcare.com/update-payment-method?email=${(
-    //           email as string
-    //         )?.replaceAll("+", "%2B")}\n\n`
-    //       : `Our records indicate that you do not have a form of payment on file. Please add a payment method.\nhttps://app.movetcare.com/update-payment-method?email=${(
-    //           email as string
-    //         )?.replaceAll("+", "%2B")}\n\n`
-    // }\nPlease email info@movetcare.com, text (720) 507-7387 us, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
-    //   }
     if (DEBUG)
       console.log(
         "sendAppointmentReminderNotification => smsText -> ",

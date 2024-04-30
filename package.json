@@ -60,7 +60,9 @@
     "turbo": "^1.13.3",
     "typescript": "^5.4.5",
     "typescript-coverage-report": "^1.0.0",
-    "x2js": "^3.4.4"
+    "x2js": "^3.4.4",
+    "farmhash": "3.3.1",
+    "google-gax": "4.3.2"
   },
   "typeCoverage": {
     "atLeast": 75,
