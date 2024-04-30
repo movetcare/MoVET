@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { firestore } from "services/firebase";
 import { Button, Loader } from "ui";
-import { TextInput } from "ui/src/components/forms/inputs";
+import { SelectInput, TextInput } from "ui/src/components/forms/inputs";
 import { classNames } from "utilities";
 import Error from "../../../Error";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -37,11 +37,15 @@ export const NewPopUpClinic = () => {
         description: string().required(
           "A description for the pop up clinic is required",
         ),
+        scheduleType: object().required(
+          "A schedule type is required",
+        ),
       }),
     ),
     defaultValues: {
       name: "",
       description: "",
+      scheduleType: ""
     },
   });
 
@@ -50,7 +54,7 @@ export const NewPopUpClinic = () => {
     await setDoc(
       doc(firestore, "configuration/pop_up_clinics"),
       {
-        popUpClinics: arrayUnion({ id: kebabCase(data?.name), ...data }),
+        popUpClinics: arrayUnion({ id: kebabCase(data?.name), scheduleType:data?.scheduleType?.id, ...data }),
         updatedOn: serverTimestamp(),
       },
       { merge: true },
@@ -130,6 +134,33 @@ export const NewPopUpClinic = () => {
                   control={control}
                   multiline
                   numberOfLines={3}
+                />
+              </div>
+              <div className="flex-col justify-center items-center mx-4 w-full mt-4">
+                <span className="sm:mr-2">
+                  Schedule Type <span className="text-sm text-movet-red">*</span>
+                </span>
+                <SelectInput
+                  label=""
+                  name="scheduleType"
+                  required
+                  values={[
+                    {
+                      id: "ONCE",
+                      name: "One Time Clinic",
+                    },
+                    {
+                      id: "WEEKLY",
+                      name: "Weekly Clinic",
+                    },
+                    {
+                      id: "MONTHLY",
+                      name: "Monthly Clinic",
+                    },
+                    { id: "YEARLY", name: "Yearly Clinic" },
+                  ]}
+                  errors={errors}
+                  control={control}
                 />
               </div>
               <button

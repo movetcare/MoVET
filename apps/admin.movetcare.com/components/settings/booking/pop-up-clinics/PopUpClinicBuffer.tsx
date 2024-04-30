@@ -38,7 +38,7 @@ export const PopUpClinicBuffer = ({
         if (clinic.id === configuration?.id)
           return {
             ...clinic,
-            appointmentBufferTime: selectedBufferTime,
+            appointmentBufferTime: Number(selectedBufferTime),
           };
         else return clinic;
       });

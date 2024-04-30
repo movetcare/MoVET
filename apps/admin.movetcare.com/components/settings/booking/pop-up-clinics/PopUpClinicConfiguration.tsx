@@ -39,6 +39,7 @@ export const PopUpClinicConfiguration = ({
     onePatientDuration: number;
     twoPatientDuration: number;
     threePatientDuration: number;
+    scheduleType: "ONCE" | "WEEKLY" | "MONTHLY" | "YEARLY" | "CUSTOM";
     schedule?: {
       openMonday: boolean;
       openMondayTime: number;

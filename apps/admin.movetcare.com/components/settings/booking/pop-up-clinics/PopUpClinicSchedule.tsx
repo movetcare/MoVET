@@ -2,18 +2,25 @@ import {
   faCheck,
   faCheckCircle,
   faCircleExclamation,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { firestore } from "services/firebase";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
-import { Button } from "ui";
-import { Switch, Transition } from "@headlessui/react";
+import { Fragment, useEffect, useState } from "react";
+import { Button, ErrorMessage } from "ui";
+import { Listbox, Switch, Transition } from "@headlessui/react";
 import Error from "../../../Error";
 import { classNames } from "utilities";
 import { PatternFormat } from "react-number-format";
+import { Controller, useForm } from "react-hook-form";
+import DateInput from "components/inputs/DateInput";
 
+const scheduleTypes = [{id: "ONCE", name: "Once"}, {id: "WEEKLY", name: "Weekly"}, {id: "MONTHLY", name: "Monthly"}, {id: "YEARLY", name: "Yearly"}];
+   const formatTime = (time: string) =>
+        time?.toString()?.length === 3 ? `0${time}` : `${time}`;
+   
 const PopUpClinicSchedule = ({
   configuration,
   popUpClinics,
@@ -22,8 +29,14 @@ const PopUpClinicSchedule = ({
     name: string;
     description: string;
     id: string;
-    isActive?: boolean;
-    schedule?: {
+    isActive: boolean;
+    scheduleType: "ONCE" | "WEEKLY" | "MONTHLY" | "YEARLY" | "CUSTOM";
+    schedule: {
+      date: any;
+      startDate: string;
+      endDate: string;
+      startTime: number;
+      endTime: number;
       openMonday: boolean;
       openMondayTime: number;
       closedMondayTime: number;
@@ -49,6 +62,9 @@ const PopUpClinicSchedule = ({
   };
   popUpClinics: any;
 }) => {
+  const [selectedScheduleType, setSelectedScheduleType] = useState<
+    string | null
+  >(configuration?.scheduleType || null);
   const [isOpenMonday, setIsOpenMonday] = useState<boolean>(false);
   const [didTouchIsOpenMonday, setDidTouchIsOpenMonday] =
     useState<boolean>(false);
@@ -141,11 +157,28 @@ const PopUpClinicSchedule = ({
   const [didTouchEndTimeMonday, setDidTouchEndTimeMonday] =
     useState<boolean>(false);
   const [error, setError] = useState<any>(null);
+  const {
+    handleSubmit,
+    control,
+    watch,
+    reset,
+    formState: { errors, isDirty, isSubmitting },
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      date: configuration?.schedule?.date?.toDate()?.toString() || "",
+      startTime: formatTime(String(configuration?.schedule?.startTime || "") ) || "",
+      endTime: formatTime(String(configuration?.schedule?.endTime|| "")) || "",
+    },
+  });
+
+  const date = watch("date");
+  const startTime = watch("startTime");
+  const endTime = watch("endTime");
 
   useEffect(() => {
-    if (configuration?.schedule) {
-      const formatTime = (time: string) =>
-        time?.toString()?.length === 3 ? `0${time}` : `${time}`;
+    if (configuration?.schedule ) {
+      console.log("configuration?.schedule?.openMonday", configuration?.schedule?.openMonday)
       setIsOpenMonday(configuration?.schedule?.openMonday);
       setIsOpenTuesday(configuration?.schedule?.openTuesday);
       setIsOpenWednesday(configuration?.schedule?.openWednesday);
@@ -198,11 +231,63 @@ const PopUpClinicSchedule = ({
     }
   }, [configuration?.schedule]);
 
+  const onSubmit = async (data: any) => {
+  const newPopUpClinics = popUpClinics.map((clinic: any) => {
+      if (clinic.id === configuration?.id)
+        return {
+          ...clinic,
+          scheduleType: selectedScheduleType,
+          schedule: {
+            date: new Date(data?.date),
+            startTime: Number(data?.startTime),
+            endTime: Number(data?.endTime),
+          },
+        };
+      else return clinic;
+    });
+    await setDoc(
+      doc(firestore, "configuration/pop_up_clinics"),
+      {
+        popUpClinics: newPopUpClinics,
+        updatedOn: serverTimestamp(),
+      },
+      { merge: true },
+    )
+      .then(() =>
+        toast(`"${configuration?.name}" Days & Hours of Operation Updated!`, {
+          position: "top-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              size="sm"
+              className="text-movet-green"
+            />
+          ),
+        }),
+      )
+      .catch((error: any) => {
+        toast(
+          `"${configuration?.name}" Days & Hours of Operation Updated FAILED: ${error?.message}`,
+          {
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                size="sm"
+                className="text-movet-red"
+              />
+            ),
+          },
+        );
+        setError(error)
+      }).finally(() => reset({date: data?.date, startTime: formatTime(data?.startTime), endTime: formatTime(data?.endTime)}))
+  }
   const saveChanges = async () => {
     const newPopUpClinics = popUpClinics.map((clinic: any) => {
       if (clinic.id === configuration?.id)
         return {
           ...clinic,
+          scheduleType: selectedScheduleType,
           schedule: {
             openMonday: isOpenMonday,
             openMondayTime: Number(selectedStartTimeMonday),
@@ -301,8 +386,267 @@ const PopUpClinicSchedule = ({
             Use these options to control the days and hours of operation for the
             clinic. Hours are in 24 hour format.
           </p>
-        </div>
+        </div> <section className="px-10 py-4 flex-col sm:flex-row items-center justify-center">
+         <Listbox
+                value={selectedScheduleType}
+                onChange={setSelectedScheduleType}
+              >
+                {({ open }: any) => (
+                  <>
+                    <div
+                      className={
+                        "relative bg-white w-full sm:w-2/3 mx-auto my-4"
+                      }
+                    >
+                      <Listbox.Button
+                        className={
+                          "border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm"
+                        }
+                      >
+                        {selectedScheduleType && (
+                          <span
+                            className={
+                              "text-movet-black block truncate font-abside-smooth text-base h-7 mt-1 ml-1"
+                            }
+                          >
+                            {selectedScheduleType}
+                          </span>
+                        )}
+                        <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                          {false && (
+                            <FontAwesomeIcon
+                              icon={faList}
+                              className="h-4 w-4 mr-2"
+                              size="sm"
+                            />
+                          )}
+                        </span>
+                      </Listbox.Button>
+                      <Transition
+                        show={open}
+                        as={Fragment}
+                        enter="transition duration-100 ease-out"
+                        enterFrom="transform scale-95 opacity-0"
+                        enterTo="transform scale-100 opacity-100"
+                        leave="transition duration-75 ease-out"
+                        leaveFrom="transform scale-100 opacity-100"
+                        leaveTo="transform scale-95 opacity-0"
+                      >
+                        <Listbox.Options className="absolute z-50 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-movet-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                          {scheduleTypes &&
+                            scheduleTypes.length > 0 &&
+                            scheduleTypes.map((item: any) => (
+                              <Listbox.Option
+                                key={item?.id}
+                                // onClick={() =>
+                                //   setDidTouchScheduleType(true)
+                                // }
+                                className={({ active }) =>
+                                  classNames(
+                                    active
+                                      ? "text-movet-white bg-movet-brown"
+                                      : "text-movet-black",
+                                    "text-left cursor-default select-none relative py-2 pl-4 pr-4",
+                                  )
+                                }
+                                value={item?.name}
+                              >
+                                {({ active, selected }) => (
+                                  <>
+                                    <span
+                                      className={classNames(
+                                        selected
+                                          ? "font-semibold"
+                                          : "font-normal",
+                                        "block truncate ml-2",
+                                      )}
+                                    >
+                                      {item?.name}
+                                    </span>
+                                    {selected ? (
+                                      <span
+                                        className={classNames(
+                                          active
+                                            ? "text-white"
+                                            : "text-movet-black",
+                                          "absolute inset-y-0 left-0 flex items-center pl-1.5",
+                                        )}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faCheck}
+                                          className="h-4 w-4"
+                                          size="sm"
+                                        />
+                                      </span>
+                                    ) : null}
+                                  </>
+                                )}
+                              </Listbox.Option>
+                            ))}
+                        </Listbox.Options>
+                      </Transition>
+                    </div>
+                  </>
+                )}
+              </Listbox>
+      </section>
+        {selectedScheduleType === "Once" ? <>
+        
+                    <div
+                      className={
+                        "flex flex-col items-center px-4 sm:px-6 group mx-auto max-w-xl mb-4"
+                      }
+                    ><hr className="mb-4 text-movet-gray w-full"/>
+                      <div className="min-w-0 flex-col w-full justify-center">
+                        <div className="text-center text-sm cursor-pointer">
+                         
+                          <div className="flex flex-col sm:flex-row items-center w-full mx-auto py-2 pl-4">
+                            <span className="font-extrabold sm:mr-2">
+                              Date:
+                            </span>{" "}
+                            <DateInput
+                              required
+                              name="date"
+                              label=""
+                              errors={errors}
+                              control={control}
+                            />
+                          </div>
+                          {errors["date"]?.message && (
+                            <ErrorMessage
+                              errorMessage={errors["date"].message}
+                            />
+                          )}
+                          <div className="flex flex-row justify-center items-center w-full mx-auto py-2">
+                            <div className="flex flex-col mr-2 sm:mr-0 sm:flex-row justify-between items-center">
+                              <span className="font-extrabold">
+                                Start Time:
+                              </span>{" "}
+                              <Controller
+                                name={"startTime"}
+                                control={control}
+                                rules={{
+                                  required: "Field is required",
+                                  minLength: {
+                                    value: 4,
+                                    message:
+                                      "Must be a 4 digit number - 24 Hour Time",
+                                  },
+                                  maxLength: {
+                                    value: 4,
+                                    message:
+                                      "Must be a 4 digit number - 24 Hour Time",
+                                  },
+                                }}
+                                render={({
+                                  field: { onChange, onBlur, value },
+                                }) => (
+                                  <PatternFormat
+                                    name={`startTime`}
+                                    allowEmptyFormatting
+                                    valueIsNumericString
+                                    patternChar="#"
+                                    format="##:##"
+                                    mask="_"
+                                    onBlur={onBlur}
+                                    value={value}
+                                    onValueChange={(target: any) => {
+                                      onChange(target.value);
+                                    }}
+                                    required={true}
+                                    className={classNames(
+                                      "focus:ring-movet-brown focus:border-movet-brown",
+                                      "py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth",
+                                    )}
+                                  />
+                                )}
+                              />
+                            </div>
+                            <div className="flex flex-col ml-2 sm:ml-0 sm:flex-row justify-between items-center">
+                              <span className="font-extrabold">End Time:</span>{" "}
+                              <Controller
+                                name={"endTime"}
+                                control={control}
+                                rules={{
+                                  required: "Field is required",
+                                  minLength: {
+                                    value: 4,
+                                    message:
+                                      "Must be a 4 digit number - 24 Hour Time",
+                                  },
+                                  maxLength: {
+                                    value: 4,
+                                    message:
+                                      "Must be a 4 digit number - 24 Hour Time",
+                                  },
+                                }}
+                                render={({
+                                  field: { onChange, onBlur, value },
+                                }) => (
+                                  <PatternFormat
+                                    name={`endTime`}
+                                    allowEmptyFormatting
+                                    valueIsNumericString
+                                    patternChar="#"
+                                    format="##:##"
+                                    mask="_"
+                                    onBlur={onBlur}
+                                    value={value}
+                                    onValueChange={(target: any) => {
+                                      onChange(target.value);
+                                    }}
+                                    required={true}
+                                    className={classNames(
+                                      "focus:ring-movet-brown focus:border-movet-brown",
+                                      "py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth",
+                                    )}
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                          {errors["startTime"]?.message && (
+                            <ErrorMessage
+                              errorMessage={errors["startTime"].message}
+                            />
+                          )}
+                          {errors["endTime"]?.message && (
+                            <ErrorMessage
+                              errorMessage={errors["endTime"].message}
+                            />
+                          )}      <Transition
+          show={
+          isDirty
+          }
+          enter="transition ease-in duration-500"
+          leave="transition ease-out duration-64"
+          leaveTo="opacity-10"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leaveFrom="opacity-100"
+        >
+                          <Button
+                            type="submit"
+                            onClick={handleSubmit(onSubmit)}
+                            color="red"
+                            disabled={
+                              !isDirty ||
+                              isSubmitting ||
+                              date === "" ||
+                              startTime === "" ||
+                              endTime === ""
+                            }
+                            className={"mt-8"}
+                            icon={faCheck}
+                            text="Save"
+                          /></Transition>
+                        </div>
+                      </div>
+                    </div>
+                  
+        </>: selectedScheduleType === "Weekly"  ? <>
         <div className="flex flex-col items-center justify-center">
+          <hr className="mb-4 text-movet-gray w-full"/>
           <div className="flex justify-center items-center my-4">
             <div className="flex flex-col justify-center items-center mx-4">
               <p className="text-center my-2">MONDAY</p>
@@ -916,7 +1260,7 @@ const PopUpClinicSchedule = ({
             onClick={() => saveChanges()}
             className="mb-8"
           />
-        </Transition>
+        </Transition></> : <></>}
       </section>
       <hr className=" text-movet-gray" />
     </>
@@ -924,3 +1268,4 @@ const PopUpClinicSchedule = ({
 };
 
 export default PopUpClinicSchedule;
+

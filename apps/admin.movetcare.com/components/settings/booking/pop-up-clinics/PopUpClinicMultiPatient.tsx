@@ -51,9 +51,9 @@ export const PopUpClinicMultiPatient = ({
       if (clinic.id === configuration?.id)
         return {
           ...clinic,
-          onePatientDuration: selectedOnePatientDuration,
-          twoPatientDuration: selectedTwoPatientDuration,
-          threePatientDuration: selectedThreePatientDuration,
+          onePatientDuration: Number(selectedOnePatientDuration),
+          twoPatientDuration: Number(selectedTwoPatientDuration),
+          threePatientDuration:Number( selectedThreePatientDuration),
         };
       else return clinic;
     });
