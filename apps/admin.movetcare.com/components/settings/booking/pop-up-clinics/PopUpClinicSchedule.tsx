@@ -29,7 +29,6 @@ const PopUpClinicSchedule = ({
     name: string;
     description: string;
     id: string;
-    isActive: boolean;
     scheduleType: "ONCE" | "WEEKLY" | "MONTHLY" | "YEARLY" | "CUSTOM";
     schedule: {
       date: any;

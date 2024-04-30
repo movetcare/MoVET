@@ -29,7 +29,7 @@ export const PopUpClinicConfiguration = ({
     name: string;
     description: string;
     id: string;
-    isActive?: boolean;
+    isActive: boolean;
     vcprRequiredReason: string;
     noVcprRequiredReason: string;
     standardAppointmentBuffer: number;
@@ -40,7 +40,7 @@ export const PopUpClinicConfiguration = ({
     twoPatientDuration: number;
     threePatientDuration: number;
     scheduleType: "ONCE" | "WEEKLY" | "MONTHLY" | "YEARLY" | "CUSTOM";
-    schedule?: {
+    schedule: {
       openMonday: boolean;
       openMondayTime: number;
       closedMondayTime: number;
@@ -277,7 +277,7 @@ export const PopUpClinicConfiguration = ({
             popUpClinics={popUpClinics}
           />
           <PopUpClinicSchedule
-            configuration={configuration}
+            configuration={configuration as any}
             popUpClinics={popUpClinics}
           />
           <PopUpClinicReasons
