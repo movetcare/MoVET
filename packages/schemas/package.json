@@ -4,7 +4,7 @@
   "main": "index.ts",
   "scripts": {
     "lint": "eslint *.ts*",
-    "update": "ncu -u"
+    "update": "ncu -u --reject eslint"
   },
   "devDependencies": {
     "yup": "^1.4.0"

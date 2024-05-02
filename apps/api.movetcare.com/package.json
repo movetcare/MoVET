@@ -7,7 +7,7 @@
     "node": "20"
   },
   "scripts": {
-    "update": "ncu -u --reject axios",
+    "update": "ncu -u --reject 'axios,eslint'",
     "lint": "eslint src/",
     "fix": "eslint src/ --fix",
     "build": "tsc",
@@ -60,7 +60,7 @@
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
-    "eslint": "^9.1.1",
+    "eslint": "8.57.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
