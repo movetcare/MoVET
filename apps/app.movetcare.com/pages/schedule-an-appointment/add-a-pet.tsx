@@ -30,7 +30,7 @@ import { RadioInput } from "components/inputs/RadioInput";
 import { SearchInput } from "components/inputs/SearchInput";
 import SwitchInput from "components/inputs/SwitchInput";
 import { ToggleInput } from "components/inputs/ToggleInput";
-import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { getUrlQueryStringFromObject } from "utilities";
 
 addMethod(string as any, "isBeforeToday", function (errorMessage: string) {
   return (this as any).test(

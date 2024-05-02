@@ -15,7 +15,7 @@ import { BookingHeader } from "components/BookingHeader";
 import { BookingFooter } from "components/BookingFooter";
 import Image from "next/image";
 import { Staff } from "types/Staff";
-import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { getUrlQueryStringFromObject } from "utilities";
 
 export default function StaffSelection() {
   const router = useRouter();

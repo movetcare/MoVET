@@ -19,7 +19,7 @@ import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { capitalizeFirstLetter } from "utilities";
-import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { getUrlQueryStringFromObject } from "utilities";
 
 export default function PetSelection() {
   const router = useRouter();

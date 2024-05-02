@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
-import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { getUrlQueryStringFromObject } from "utilities";
 
 export default function ScheduleAnAppointment() {
   const router = useRouter();

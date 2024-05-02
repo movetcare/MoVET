@@ -37,25 +37,27 @@ export const NewPopUpClinic = () => {
         description: string().required(
           "A description for the pop up clinic is required",
         ),
-        scheduleType: object().required(
-          "A schedule type is required",
-        ),
+        scheduleType: object().required("A schedule type is required"),
       }),
     ),
     defaultValues: {
       name: "",
       description: "",
-      scheduleType: ""
+      scheduleType: "",
     },
   });
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log("data?.scheduleType", data?.scheduleType)
     await setDoc(
       doc(firestore, "configuration/pop_up_clinics"),
       {
-        popUpClinics: arrayUnion({ id: kebabCase(data?.name), name: data?.name, description: data?.description, scheduleType:data?.scheduleType?.id, }),
+        popUpClinics: arrayUnion({
+          id: kebabCase(data?.name),
+          name: data?.name,
+          description: data?.description,
+          scheduleType: data?.scheduleType?.id,
+        }),
         updatedOn: serverTimestamp(),
       },
       { merge: true },
@@ -139,7 +141,7 @@ export const NewPopUpClinic = () => {
               </div>
               <div className="flex-col justify-center items-center mx-4 w-full mt-4">
                 <span className="sm:mr-2">
-                  Schedule Type <span className="text-sm text-movet-red">*</span>
+                  Recurrence <span className="text-sm text-movet-red">*</span>
                 </span>
                 <SelectInput
                   label=""

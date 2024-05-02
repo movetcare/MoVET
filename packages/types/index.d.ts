@@ -9,3 +9,4 @@ export * from "./src/closures";
 export * from "./src/hours";
 export * from "./src/hours-status";
 export * from "./src/pop-up-ad";
+export * from "./src/clinicConfig";

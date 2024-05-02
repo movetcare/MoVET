@@ -10,7 +10,7 @@ import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { firestore } from "services/firebase";
 import { Modal } from "ui";
-import { classNames } from "utilities";
+import { classNames, environment } from "utilities";
 import { Tooltip } from "react-tooltip";
 import { PopUpClinicResources } from "./PopUpClinicResources";
 import PopUpClinicReasons from "./PopUpClinicReasons";
@@ -20,60 +20,32 @@ import { PopUpClinicMultiPatient } from "./PopUpClinicMultiPatient";
 import { PopUpClinicDescription } from "./PopUpClinicDescription";
 import kebabCase from "lodash.kebabcase";
 import PopUpClinicSchedule from "./PopUpClinicSchedule";
+import { ClinicConfig } from "types";
 
 export const PopUpClinicConfiguration = ({
   configuration,
   popUpClinics,
 }: {
-  configuration: {
-    name: string;
-    description: string;
-    id: string;
-    isActive: boolean;
-    vcprRequiredReason: string;
-    noVcprRequiredReason: string;
-    standardAppointmentBuffer: number;
-    appointmentBufferTime: boolean;
-    sameDayAppointmentVcprRequired: boolean;
-    sameDayAppointmentLeadTime: number;
-    onePatientDuration: number;
-    twoPatientDuration: number;
-    threePatientDuration: number;
-    scheduleType: "ONCE" | "WEEKLY" | "MONTHLY" | "YEARLY" | "CUSTOM";
-    schedule: {
-      openMonday: boolean;
-      openMondayTime: number;
-      closedMondayTime: number;
-      openTuesday: boolean;
-      openTuesdayTime: number;
-      closedTuesdayTime: number;
-      openWednesday: boolean;
-      openWednesdayTime: number;
-      closedWednesdayTime: number;
-      openThursday: boolean;
-      openThursdayTime: number;
-      closedThursdayTime: number;
-      openFriday: boolean;
-      openFridayTime: number;
-      closedFridayTime: number;
-      openSaturday: boolean;
-      openSaturdayTime: number;
-      closedSaturdayTime: number;
-      openSunday: boolean;
-      openSundayTime: number;
-      closedSundayTime: number;
-    };
-    resourceConfiguration?:
-      | Array<{
-          id: string;
-          staggerTime: number;
-        }>
-      | undefined;
-  };
+  configuration: ClinicConfig;
   popUpClinics: any;
 }) => {
-  const { name, description, id, resourceConfiguration, isActive } =
-    configuration || {};
+  const {
+    name,
+    description,
+    id,
+    resourceConfiguration,
+    isActive,
+    onePatientDuration,
+    twoPatientDuration,
+    threePatientDuration,
+    appointmentBufferTime,
+    noVcprRequiredReason,
+    vcprRequiredReason,
+    sameDayAppointmentLeadTime,
+    sameDayAppointmentVcprRequired,
+    schedule,
+    scheduleType,
+  } = configuration || {};
   const [isPopUpActive, setIsPopUpActive] = useState<boolean>(!!isActive);
 
   const [popUpToDelete, setPopUpToDelete] = useState<any>(null);
@@ -85,11 +57,36 @@ export const PopUpClinicConfiguration = ({
     useState<boolean>(false);
 
   useEffect(() => {
-    if (resourceConfiguration === undefined) {
+    if (
+      resourceConfiguration === undefined ||
+      onePatientDuration === undefined ||
+      twoPatientDuration === undefined ||
+      threePatientDuration === undefined ||
+      appointmentBufferTime === undefined ||
+      noVcprRequiredReason === undefined ||
+      vcprRequiredReason === undefined ||
+      sameDayAppointmentLeadTime === undefined ||
+      sameDayAppointmentVcprRequired === undefined ||
+      schedule === undefined ||
+      scheduleType === undefined
+    ) {
       if (isConfigured === null) setShowConfigurationOptions(true);
       setIsConfigured(false);
     } else setIsConfigured(true);
-  }, [resourceConfiguration, isConfigured]);
+  }, [
+    resourceConfiguration,
+    isConfigured,
+    onePatientDuration,
+    twoPatientDuration,
+    threePatientDuration,
+    appointmentBufferTime,
+    noVcprRequiredReason,
+    vcprRequiredReason,
+    sameDayAppointmentLeadTime,
+    sameDayAppointmentVcprRequired,
+    schedule,
+    scheduleType,
+  ]);
 
   const deletePopUpClinic = async (id: string) =>
     await setDoc(
@@ -210,11 +207,14 @@ export const PopUpClinicConfiguration = ({
                 <p className="text-xs text-movet-black/70 italic mt-2">
                   <b>
                     <a
-                      href={`https://app.movetcare.com/book-a-clinic/${kebabCase(name)}`}
+                      href={`${environment === "development" ? "http://localhost:3001" : "https://app.movetcare.com"}/book-a-clinic/${kebabCase(name)}`}
                       target="_blank"
                       className="hover:text-movet-red hover:underline"
                     >
-                      https://app.movetcare.com/book-a-clinic/
+                      {environment === "development"
+                        ? "http://localhost:3001"
+                        : "https://app.movetcare.com"}
+                      /book-a-clinic/
                       {kebabCase(name)}
                     </a>
                   </b>

@@ -42,7 +42,6 @@ import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 import { formatPhoneNumber } from "utils/formatPhoneNumber";
 import { ClientSearch } from "components/ClientSearch";
-import { isNumeric } from "utilities";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
@@ -65,6 +64,11 @@ const Client = () => {
   );
   const [smsMessage, setSmsMessage] = useState<string>("");
   const [showSmsModal, setShowSmsModal] = useState<boolean>(false);
+
+  const isNumeric = (string: string) => {
+    if (typeof string != "string") return false;
+    return !isNaN(string as any) && !isNaN(parseFloat(string));
+  };
 
   useEffect(() => {
     if (query.id) {

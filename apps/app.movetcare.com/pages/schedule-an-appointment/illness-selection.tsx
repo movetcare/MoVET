@@ -13,7 +13,7 @@ import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import { BookingFooter } from "components/BookingFooter";
 import TextInput from "components/inputs/TextInput";
-import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { getUrlQueryStringFromObject } from "utilities";
 import { UAParser } from "ua-parser-js";
 
 const symptoms = [

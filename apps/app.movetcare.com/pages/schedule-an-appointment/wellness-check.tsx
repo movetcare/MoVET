@@ -20,7 +20,7 @@ import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { capitalizeFirstLetter } from "utilities";
 import { BookingFooter } from "components/BookingFooter";
-import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { getUrlQueryStringFromObject } from "utilities";
 
 export default function WellnessCheck() {
   const router = useRouter();

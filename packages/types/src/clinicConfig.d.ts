@@ -1,0 +1,48 @@
+export type ClinicConfig = {
+  name: string;
+  description: string;
+  id: string;
+  isActive: boolean;
+  vcprRequiredReason: string;
+  noVcprRequiredReason: string;
+  standardAppointmentBuffer: number;
+  appointmentBufferTime: boolean;
+  sameDayAppointmentVcprRequired: boolean;
+  sameDayAppointmentLeadTime: number;
+  onePatientDuration: number;
+  twoPatientDuration: number;
+  threePatientDuration: number;
+  scheduleType: "ONCE" | "WEEKLY" | "MONTHLY" | "YEARLY" | "CUSTOM";
+  schedule: {
+    date?: any;
+    startTime?: number;
+    endTime?: number;
+    openMonday?: boolean;
+    openMondayTime?: number;
+    closedMondayTime?: number;
+    openTuesday?: boolean;
+    openTuesdayTime?: number;
+    closedTuesdayTime?: number;
+    openWednesday?: boolean;
+    openWednesdayTime?: number;
+    closedWednesdayTime?: number;
+    openThursday?: boolean;
+    openThursdayTime?: number;
+    closedThursdayTime?: number;
+    openFriday?: boolean;
+    openFridayTime?: number;
+    closedFridayTime?: number;
+    openSaturday?: boolean;
+    openSaturdayTime?: number;
+    closedSaturdayTime?: number;
+    openSunday?: boolean;
+    openSundayTime?: number;
+    closedSundayTime?: number;
+  };
+  resourceConfiguration:
+    | Array<{
+        id: string;
+        staggerTime: number;
+      }>
+    | undefined;
+};

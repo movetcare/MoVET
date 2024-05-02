@@ -16,6 +16,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string } from "yup";
 import kebabCase from "lodash.kebabcase";
 import { Button } from "ui";
+import { environment } from "utilities";
 
 export const PopUpClinicDescription = ({
   configuration,
@@ -140,11 +141,18 @@ export const PopUpClinicDescription = ({
             Clinic Schedule URL:{" "}
             <b>
               <a
-                href={`https://app.movetcare.com/book-a-clinic/${kebabCase(name)}`}
+                href={`${
+                  environment === "development"
+                    ? "http://localhost:3001"
+                    : "https://app.movetcare.com"
+                }/book-a-clinic/${kebabCase(name)}`}
                 target="_blank"
                 className="hover:text-movet-red hover:underline"
               >
-                https://app.movetcare.com/book-a-clinic/{kebabCase(name)}
+                {environment === "development"
+                  ? "http://localhost:3001"
+                  : "https://app.movetcare.com"}
+                /book-a-clinic/{kebabCase(name)}
               </a>
             </b>
           </p>

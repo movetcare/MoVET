@@ -15,7 +15,7 @@ import {
   faCalendarCheck,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
-import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { getUrlQueryStringFromObject } from "utilities";
 import { environment } from "utilities";
 import { useForm } from "react-hook-form";
 import { TextInput } from "ui/src/components/forms/inputs";

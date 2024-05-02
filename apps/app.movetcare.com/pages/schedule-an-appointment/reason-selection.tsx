@@ -14,7 +14,7 @@ import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import { BookingFooter } from "components/BookingFooter";
 import { SearchInput } from "components/inputs/SearchInput";
-import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { getUrlQueryStringFromObject } from "utilities";
 
 export default function ReasonSelection() {
   const router = useRouter();

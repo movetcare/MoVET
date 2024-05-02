@@ -14,7 +14,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import PhoneInput from "ui/src/components/forms/inputs/PhoneInput";
-import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { getUrlQueryStringFromObject } from "utilities";
 
 export default function ContactInfo() {
   const router = useRouter();

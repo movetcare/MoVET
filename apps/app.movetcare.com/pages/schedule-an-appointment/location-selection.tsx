@@ -30,7 +30,7 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useGoogleMaps } from "providers/GoogleMapsProvider";
 import { getWinterMode } from "server";
 import type { WinterMode as WinterModeType } from "types";
-import getUrlQueryStringFromObject from "utilities/src/getUrlQueryStringFromObject";
+import { getUrlQueryStringFromObject } from "utilities";
 
 const containerStyle = {
   width: "100%",
