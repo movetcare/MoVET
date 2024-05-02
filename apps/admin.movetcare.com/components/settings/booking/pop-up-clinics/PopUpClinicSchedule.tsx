@@ -17,10 +17,10 @@ import { PatternFormat } from "react-number-format";
 import { Controller, useForm } from "react-hook-form";
 import DateInput from "components/inputs/DateInput";
 
-const scheduleTypes = [{id: "ONCE", name: "Once"}, {id: "WEEKLY", name: "Weekly"}, {id: "MONTHLY", name: "Monthly"}, {id: "YEARLY", name: "Yearly"}];
-   const formatTime = (time: string) =>
-        time?.toString()?.length === 3 ? `0${time}` : `${time}`;
-   
+const scheduleTypes = [{ id: "ONCE", name: "Once" }, { id: "WEEKLY", name: "Weekly" }, { id: "MONTHLY", name: "Monthly" }, { id: "YEARLY", name: "Yearly" }];
+const formatTime = (time: string) =>
+  time?.toString()?.length === 3 ? `0${time}` : `${time}`;
+
 const PopUpClinicSchedule = ({
   configuration,
   popUpClinics,
@@ -166,8 +166,8 @@ const PopUpClinicSchedule = ({
     mode: "onSubmit",
     defaultValues: {
       date: configuration?.schedule?.date?.toDate()?.toString() || "",
-      startTime: formatTime(String(configuration?.schedule?.startTime || "") ) || "",
-      endTime: formatTime(String(configuration?.schedule?.endTime|| "")) || "",
+      startTime: formatTime(String(configuration?.schedule?.startTime || "")) || "",
+      endTime: formatTime(String(configuration?.schedule?.endTime || "")) || "",
     },
   });
 
@@ -176,8 +176,8 @@ const PopUpClinicSchedule = ({
   const endTime = watch("endTime");
 
   useEffect(() => {
-    if (configuration?.schedule ) {
-      console.log("configuration?.schedule?.openMonday", configuration?.schedule?.openMonday)
+    if (configuration?.schedule) {
+      console.log("configuration?.schedule?.openMonday", configuration?.schedule?.openMonday);
       setIsOpenMonday(configuration?.schedule?.openMonday);
       setIsOpenTuesday(configuration?.schedule?.openTuesday);
       setIsOpenWednesday(configuration?.schedule?.openWednesday);
@@ -231,7 +231,7 @@ const PopUpClinicSchedule = ({
   }, [configuration?.schedule]);
 
   const onSubmit = async (data: any) => {
-  const newPopUpClinics = popUpClinics.map((clinic: any) => {
+    const newPopUpClinics = popUpClinics.map((clinic: any) => {
       if (clinic.id === configuration?.id)
         return {
           ...clinic,
@@ -278,9 +278,9 @@ const PopUpClinicSchedule = ({
             ),
           },
         );
-        setError(error)
-      }).finally(() => reset({date: data?.date, startTime: formatTime(data?.startTime), endTime: formatTime(data?.endTime)}))
-  }
+        setError(error);
+      }).finally(() => reset({ date: data?.date, startTime: formatTime(data?.startTime), endTime: formatTime(data?.endTime) }));
+  };
   const saveChanges = async () => {
     const newPopUpClinics = popUpClinics.map((clinic: any) => {
       if (clinic.id === configuration?.id)
@@ -386,880 +386,881 @@ const PopUpClinicSchedule = ({
             clinic. Hours are in 24 hour format.
           </p>
         </div> <section className="px-10 py-4 flex-col sm:flex-row items-center justify-center">
-         <Listbox
-                value={selectedScheduleType}
-                onChange={setSelectedScheduleType}
-              >
-                {({ open }: any) => (
-                  <>
-                    <div
-                      className={
-                        "relative bg-white w-full sm:w-2/3 mx-auto my-4"
-                      }
-                    >
-                      <Listbox.Button
+          <Listbox
+            value={selectedScheduleType}
+            onChange={setSelectedScheduleType}
+            disabled
+          >
+            {({ open }: any) => (
+              <>
+                <div
+                  className={
+                    "relative bg-white w-full sm:w-2/3 mx-auto my-4"
+                  }
+                >
+                  <Listbox.Button
+                    className={
+                      "border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm"
+                    }
+                  >
+                    {selectedScheduleType && (
+                      <span
                         className={
-                          "border-movet-black focus:outline-none focus:ring-1 focus:ring-movet-brown focus:border-movet-brown relative border w-full bg-white rounded-md pl-3 pr-10 py-2 text-left cursor-default sm:text-sm"
+                          "text-movet-black block truncate font-abside-smooth text-base h-7 mt-1 ml-1 text-movet-gray"
                         }
                       >
-                        {selectedScheduleType && (
-                          <span
-                            className={
-                              "text-movet-black block truncate font-abside-smooth text-base h-7 mt-1 ml-1"
+                        {selectedScheduleType}
+                      </span>
+                    )}
+                    <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                      {false && (
+                        <FontAwesomeIcon
+                          icon={faList}
+                          className="h-4 w-4 mr-2"
+                          size="sm"
+                        />
+                      )}
+                    </span>
+                  </Listbox.Button>
+                  <Transition
+                    show={open}
+                    as={Fragment}
+                    enter="transition duration-100 ease-out"
+                    enterFrom="transform scale-95 opacity-0"
+                    enterTo="transform scale-100 opacity-100"
+                    leave="transition duration-75 ease-out"
+                    leaveFrom="transform scale-100 opacity-100"
+                    leaveTo="transform scale-95 opacity-0"
+                  >
+                    <Listbox.Options className="absolute z-50 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-movet-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                      {scheduleTypes &&
+                        scheduleTypes.length > 0 &&
+                        scheduleTypes.map((item: any) => (
+                          <Listbox.Option
+                            key={item?.id}
+                            // onClick={() =>
+                            //   setDidTouchScheduleType(true)
+                            // }
+                            className={({ active }) =>
+                              classNames(
+                                active
+                                  ? "text-movet-white bg-movet-brown"
+                                  : "text-movet-black",
+                                "text-left cursor-default select-none relative py-2 pl-4 pr-4",
+                              )
                             }
+                            value={item?.name}
                           >
-                            {selectedScheduleType}
-                          </span>
-                        )}
-                        <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                          {false && (
-                            <FontAwesomeIcon
-                              icon={faList}
-                              className="h-4 w-4 mr-2"
-                              size="sm"
-                            />
-                          )}
-                        </span>
-                      </Listbox.Button>
-                      <Transition
-                        show={open}
-                        as={Fragment}
-                        enter="transition duration-100 ease-out"
-                        enterFrom="transform scale-95 opacity-0"
-                        enterTo="transform scale-100 opacity-100"
-                        leave="transition duration-75 ease-out"
-                        leaveFrom="transform scale-100 opacity-100"
-                        leaveTo="transform scale-95 opacity-0"
-                      >
-                        <Listbox.Options className="absolute z-50 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-movet-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                          {scheduleTypes &&
-                            scheduleTypes.length > 0 &&
-                            scheduleTypes.map((item: any) => (
-                              <Listbox.Option
-                                key={item?.id}
-                                // onClick={() =>
-                                //   setDidTouchScheduleType(true)
-                                // }
-                                className={({ active }) =>
-                                  classNames(
-                                    active
-                                      ? "text-movet-white bg-movet-brown"
-                                      : "text-movet-black",
-                                    "text-left cursor-default select-none relative py-2 pl-4 pr-4",
-                                  )
-                                }
-                                value={item?.name}
-                              >
-                                {({ active, selected }) => (
-                                  <>
-                                    <span
-                                      className={classNames(
-                                        selected
-                                          ? "font-semibold"
-                                          : "font-normal",
-                                        "block truncate ml-2",
-                                      )}
-                                    >
-                                      {item?.name}
-                                    </span>
-                                    {selected ? (
-                                      <span
-                                        className={classNames(
-                                          active
-                                            ? "text-white"
-                                            : "text-movet-black",
-                                          "absolute inset-y-0 left-0 flex items-center pl-1.5",
-                                        )}
-                                      >
-                                        <FontAwesomeIcon
-                                          icon={faCheck}
-                                          className="h-4 w-4"
-                                          size="sm"
-                                        />
-                                      </span>
-                                    ) : null}
-                                  </>
-                                )}
-                              </Listbox.Option>
-                            ))}
-                        </Listbox.Options>
-                      </Transition>
-                    </div>
-                  </>
+                            {({ active, selected }) => (
+                              <>
+                                <span
+                                  className={classNames(
+                                    selected
+                                      ? "font-semibold"
+                                      : "font-normal",
+                                    "block truncate ml-2",
+                                  )}
+                                >
+                                  {item?.name}
+                                </span>
+                                {selected ? (
+                                  <span
+                                    className={classNames(
+                                      active
+                                        ? "text-white"
+                                        : "text-movet-black",
+                                      "absolute inset-y-0 left-0 flex items-center pl-1.5",
+                                    )}
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faCheck}
+                                      className="h-4 w-4"
+                                      size="sm"
+                                    />
+                                  </span>
+                                ) : null}
+                              </>
+                            )}
+                          </Listbox.Option>
+                        ))}
+                    </Listbox.Options>
+                  </Transition>
+                </div>
+              </>
+            )}
+          </Listbox>
+        </section>
+        {selectedScheduleType?.toLowerCase() === "once" ? <>
+
+          <div
+            className={
+              "flex flex-col items-center px-4 sm:px-6 group mx-auto max-w-xl mb-4"
+            }
+          ><hr className="mb-4 text-movet-gray w-full" />
+            <div className="min-w-0 flex-col w-full justify-center">
+              <div className="text-center text-sm cursor-pointer">
+
+                <div className="flex flex-col sm:flex-row items-center w-full mx-auto py-2 pl-4">
+                  <span className="font-extrabold sm:mr-2">
+                    Date:
+                  </span>{" "}
+                  <DateInput
+                    required
+                    name="date"
+                    label=""
+                    errors={errors}
+                    control={control}
+                  />
+                </div>
+                {errors["date"]?.message && (
+                  <ErrorMessage
+                    errorMessage={errors["date"].message}
+                  />
                 )}
-              </Listbox>
-      </section>
-        {selectedScheduleType === "Once" ? <>
-        
-                    <div
-                      className={
-                        "flex flex-col items-center px-4 sm:px-6 group mx-auto max-w-xl mb-4"
+                <div className="flex flex-row justify-center items-center w-full mx-auto py-2">
+                  <div className="flex flex-col mr-2 sm:mr-0 sm:flex-row justify-between items-center">
+                    <span className="font-extrabold">
+                      Start Time:
+                    </span>{" "}
+                    <Controller
+                      name={"startTime"}
+                      control={control}
+                      rules={{
+                        required: "Field is required",
+                        minLength: {
+                          value: 4,
+                          message:
+                            "Must be a 4 digit number - 24 Hour Time",
+                        },
+                        maxLength: {
+                          value: 4,
+                          message:
+                            "Must be a 4 digit number - 24 Hour Time",
+                        },
+                      }}
+                      render={({
+                        field: { onChange, onBlur, value },
+                      }) => (
+                        <PatternFormat
+                          name={`startTime`}
+                          allowEmptyFormatting
+                          valueIsNumericString
+                          patternChar="#"
+                          format="##:##"
+                          mask="_"
+                          onBlur={onBlur}
+                          value={value}
+                          onValueChange={(target: any) => {
+                            onChange(target.value);
+                          }}
+                          required={true}
+                          className={classNames(
+                            "focus:ring-movet-brown focus:border-movet-brown",
+                            "py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth",
+                          )}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col ml-2 sm:ml-0 sm:flex-row justify-between items-center">
+                    <span className="font-extrabold">End Time:</span>{" "}
+                    <Controller
+                      name={"endTime"}
+                      control={control}
+                      rules={{
+                        required: "Field is required",
+                        minLength: {
+                          value: 4,
+                          message:
+                            "Must be a 4 digit number - 24 Hour Time",
+                        },
+                        maxLength: {
+                          value: 4,
+                          message:
+                            "Must be a 4 digit number - 24 Hour Time",
+                        },
+                      }}
+                      render={({
+                        field: { onChange, onBlur, value },
+                      }) => (
+                        <PatternFormat
+                          name={`endTime`}
+                          allowEmptyFormatting
+                          valueIsNumericString
+                          patternChar="#"
+                          format="##:##"
+                          mask="_"
+                          onBlur={onBlur}
+                          value={value}
+                          onValueChange={(target: any) => {
+                            onChange(target.value);
+                          }}
+                          required={true}
+                          className={classNames(
+                            "focus:ring-movet-brown focus:border-movet-brown",
+                            "py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth",
+                          )}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                {errors["startTime"]?.message && (
+                  <ErrorMessage
+                    errorMessage={errors["startTime"].message}
+                  />
+                )}
+                {errors["endTime"]?.message && (
+                  <ErrorMessage
+                    errorMessage={errors["endTime"].message}
+                  />
+                )}      <Transition
+                  show={
+                    isDirty
+                  }
+                  enter="transition ease-in duration-500"
+                  leave="transition ease-out duration-64"
+                  leaveTo="opacity-10"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leaveFrom="opacity-100"
+                >
+                  <Button
+                    type="submit"
+                    onClick={handleSubmit(onSubmit)}
+                    color="red"
+                    disabled={
+                      !isDirty ||
+                      isSubmitting ||
+                      date === "" ||
+                      startTime === "" ||
+                      endTime === ""
+                    }
+                    className={"mt-8"}
+                    icon={faCheck}
+                    text="Save"
+                  /></Transition>
+              </div>
+            </div>
+          </div>
+
+        </> : selectedScheduleType === "Weekly" ? <>
+          <div className="flex flex-col items-center justify-center">
+            <hr className="mb-4 text-movet-gray w-full" />
+            <div className="flex justify-center items-center my-4">
+              <div className="flex flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">MONDAY</p>
+                <Switch
+                  checked={isOpenMonday}
+                  onChange={() => {
+                    setIsOpenMonday(!isOpenMonday);
+                    setDidTouchIsOpenMonday(true);
+                  }}
+                  className={classNames(
+                    isOpenMonday ? "bg-movet-green" : "bg-movet-red",
+                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
+                  )}
+                >
+                  <span
+                    aria-hidden="true"
+                    className={classNames(
+                      isOpenMonday ? "translate-x-5" : "translate-x-0",
+                      "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    )}
+                  />
+                </Switch>
+              </div>
+              {isOpenMonday ? (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">Start Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"start-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedStartTimeMonday}
+                      onBlur={() => setDidTouchStartTimeMonday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedStartTimeMonday(target.value)
                       }
-                    ><hr className="mb-4 text-movet-gray w-full"/>
-                      <div className="min-w-0 flex-col w-full justify-center">
-                        <div className="text-center text-sm cursor-pointer">
-                         
-                          <div className="flex flex-col sm:flex-row items-center w-full mx-auto py-2 pl-4">
-                            <span className="font-extrabold sm:mr-2">
-                              Date:
-                            </span>{" "}
-                            <DateInput
-                              required
-                              name="date"
-                              label=""
-                              errors={errors}
-                              control={control}
-                            />
-                          </div>
-                          {errors["date"]?.message && (
-                            <ErrorMessage
-                              errorMessage={errors["date"].message}
-                            />
-                          )}
-                          <div className="flex flex-row justify-center items-center w-full mx-auto py-2">
-                            <div className="flex flex-col mr-2 sm:mr-0 sm:flex-row justify-between items-center">
-                              <span className="font-extrabold">
-                                Start Time:
-                              </span>{" "}
-                              <Controller
-                                name={"startTime"}
-                                control={control}
-                                rules={{
-                                  required: "Field is required",
-                                  minLength: {
-                                    value: 4,
-                                    message:
-                                      "Must be a 4 digit number - 24 Hour Time",
-                                  },
-                                  maxLength: {
-                                    value: 4,
-                                    message:
-                                      "Must be a 4 digit number - 24 Hour Time",
-                                  },
-                                }}
-                                render={({
-                                  field: { onChange, onBlur, value },
-                                }) => (
-                                  <PatternFormat
-                                    name={`startTime`}
-                                    allowEmptyFormatting
-                                    valueIsNumericString
-                                    patternChar="#"
-                                    format="##:##"
-                                    mask="_"
-                                    onBlur={onBlur}
-                                    value={value}
-                                    onValueChange={(target: any) => {
-                                      onChange(target.value);
-                                    }}
-                                    required={true}
-                                    className={classNames(
-                                      "focus:ring-movet-brown focus:border-movet-brown",
-                                      "py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth",
-                                    )}
-                                  />
-                                )}
-                              />
-                            </div>
-                            <div className="flex flex-col ml-2 sm:ml-0 sm:flex-row justify-between items-center">
-                              <span className="font-extrabold">End Time:</span>{" "}
-                              <Controller
-                                name={"endTime"}
-                                control={control}
-                                rules={{
-                                  required: "Field is required",
-                                  minLength: {
-                                    value: 4,
-                                    message:
-                                      "Must be a 4 digit number - 24 Hour Time",
-                                  },
-                                  maxLength: {
-                                    value: 4,
-                                    message:
-                                      "Must be a 4 digit number - 24 Hour Time",
-                                  },
-                                }}
-                                render={({
-                                  field: { onChange, onBlur, value },
-                                }) => (
-                                  <PatternFormat
-                                    name={`endTime`}
-                                    allowEmptyFormatting
-                                    valueIsNumericString
-                                    patternChar="#"
-                                    format="##:##"
-                                    mask="_"
-                                    onBlur={onBlur}
-                                    value={value}
-                                    onValueChange={(target: any) => {
-                                      onChange(target.value);
-                                    }}
-                                    required={true}
-                                    className={classNames(
-                                      "focus:ring-movet-brown focus:border-movet-brown",
-                                      "py-3 px-4 block w-full rounded-lg placeholder-movet-gray font-abside-smooth",
-                                    )}
-                                  />
-                                )}
-                              />
-                            </div>
-                          </div>
-                          {errors["startTime"]?.message && (
-                            <ErrorMessage
-                              errorMessage={errors["startTime"].message}
-                            />
-                          )}
-                          {errors["endTime"]?.message && (
-                            <ErrorMessage
-                              errorMessage={errors["endTime"].message}
-                            />
-                          )}      <Transition
-          show={
-          isDirty
-          }
-          enter="transition ease-in duration-500"
-          leave="transition ease-out duration-64"
-          leaveTo="opacity-10"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leaveFrom="opacity-100"
-        >
-                          <Button
-                            type="submit"
-                            onClick={handleSubmit(onSubmit)}
-                            color="red"
-                            disabled={
-                              !isDirty ||
-                              isSubmitting ||
-                              date === "" ||
-                              startTime === "" ||
-                              endTime === ""
-                            }
-                            className={"mt-8"}
-                            icon={faCheck}
-                            text="Save"
-                          /></Transition>
-                        </div>
-                      </div>
-                    </div>
-                  
-        </>: selectedScheduleType === "Weekly"  ? <>
-        <div className="flex flex-col items-center justify-center">
-          <hr className="mb-4 text-movet-gray w-full"/>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">MONDAY</p>
-              <Switch
-                checked={isOpenMonday}
-                onChange={() => {
-                  setIsOpenMonday(!isOpenMonday);
-                  setDidTouchIsOpenMonday(true);
-                }}
-                className={classNames(
-                  isOpenMonday ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
-                )}
-              >
-                <span
-                  aria-hidden="true"
-                  className={classNames(
-                    isOpenMonday ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
-                  )}
-                />
-              </Switch>
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">End Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"end-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedEndTimeMonday}
+                      onBlur={() => setDidTouchEndTimeMonday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedEndTimeMonday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+                  </div>
+                </div>
+              )}
             </div>
-            {isOpenMonday ? (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">Start Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"start-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedStartTimeMonday}
-                    onBlur={() => setDidTouchStartTimeMonday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedStartTimeMonday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">End Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"end-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedEndTimeMonday}
-                    onBlur={() => setDidTouchEndTimeMonday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedEndTimeMonday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">TUESDAY</p>
-              <Switch
-                checked={isOpenTuesday}
-                onChange={() => {
-                  setIsOpenTuesday(!isOpenTuesday);
-                  setDidTouchIsOpenTuesday(true);
-                }}
-                className={classNames(
-                  isOpenTuesday ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
-                )}
-              >
-                <span
-                  aria-hidden="true"
+            <div className="flex justify-center items-center my-4">
+              <div className="flex flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">TUESDAY</p>
+                <Switch
+                  checked={isOpenTuesday}
+                  onChange={() => {
+                    setIsOpenTuesday(!isOpenTuesday);
+                    setDidTouchIsOpenTuesday(true);
+                  }}
                   className={classNames(
-                    isOpenTuesday ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    isOpenTuesday ? "bg-movet-green" : "bg-movet-red",
+                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                   )}
-                />
-              </Switch>
+                >
+                  <span
+                    aria-hidden="true"
+                    className={classNames(
+                      isOpenTuesday ? "translate-x-5" : "translate-x-0",
+                      "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    )}
+                  />
+                </Switch>
+              </div>
+              {isOpenTuesday ? (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">Start Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"start-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedStartTimeTuesday}
+                      onBlur={() => setDidTouchStartTimeTuesday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedStartTimeTuesday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">End Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"end-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedEndTimeTuesday}
+                      onBlur={() => setDidTouchEndTimeTuesday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedEndTimeTuesday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+                  </div>
+                </div>
+              )}
             </div>
-            {isOpenTuesday ? (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">Start Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"start-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedStartTimeTuesday}
-                    onBlur={() => setDidTouchStartTimeTuesday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedStartTimeTuesday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">End Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"end-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedEndTimeTuesday}
-                    onBlur={() => setDidTouchEndTimeTuesday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedEndTimeTuesday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">WEDNESDAY</p>
-              <Switch
-                checked={isOpenWednesday}
-                onChange={() => {
-                  setIsOpenWednesday(!isOpenWednesday);
-                  setDidTouchIsOpenWednesday(true);
-                }}
-                className={classNames(
-                  isOpenWednesday ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
-                )}
-              >
-                <span
-                  aria-hidden="true"
+            <div className="flex justify-center items-center my-4">
+              <div className="flex flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">WEDNESDAY</p>
+                <Switch
+                  checked={isOpenWednesday}
+                  onChange={() => {
+                    setIsOpenWednesday(!isOpenWednesday);
+                    setDidTouchIsOpenWednesday(true);
+                  }}
                   className={classNames(
-                    isOpenWednesday ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    isOpenWednesday ? "bg-movet-green" : "bg-movet-red",
+                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                   )}
-                />
-              </Switch>
+                >
+                  <span
+                    aria-hidden="true"
+                    className={classNames(
+                      isOpenWednesday ? "translate-x-5" : "translate-x-0",
+                      "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    )}
+                  />
+                </Switch>
+              </div>
+              {isOpenWednesday ? (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">Start Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"start-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedStartTimeWednesday}
+                      onBlur={() => setDidTouchStartTimeWednesday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedStartTimeWednesday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">End Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"end-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedEndTimeWednesday}
+                      onBlur={() => setDidTouchEndTimeWednesday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedEndTimeWednesday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+                  </div>
+                </div>
+              )}
             </div>
-            {isOpenWednesday ? (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">Start Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"start-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedStartTimeWednesday}
-                    onBlur={() => setDidTouchStartTimeWednesday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedStartTimeWednesday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">End Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"end-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedEndTimeWednesday}
-                    onBlur={() => setDidTouchEndTimeWednesday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedEndTimeWednesday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">THURSDAY</p>
-              <Switch
-                checked={isOpenThursday}
-                onChange={() => {
-                  setIsOpenThursday(!isOpenThursday);
-                  setDidTouchIsOpenThursday(true);
-                }}
-                className={classNames(
-                  isOpenThursday ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
-                )}
-              >
-                <span
-                  aria-hidden="true"
+            <div className="flex justify-center items-center my-4">
+              <div className="flex flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">THURSDAY</p>
+                <Switch
+                  checked={isOpenThursday}
+                  onChange={() => {
+                    setIsOpenThursday(!isOpenThursday);
+                    setDidTouchIsOpenThursday(true);
+                  }}
                   className={classNames(
-                    isOpenThursday ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    isOpenThursday ? "bg-movet-green" : "bg-movet-red",
+                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                   )}
-                />
-              </Switch>
+                >
+                  <span
+                    aria-hidden="true"
+                    className={classNames(
+                      isOpenThursday ? "translate-x-5" : "translate-x-0",
+                      "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    )}
+                  />
+                </Switch>
+              </div>
+              {isOpenThursday ? (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">Start Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"start-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedStartTimeThursday}
+                      onBlur={() => setDidTouchStartTimeThursday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedStartTimeThursday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">End Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"end-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedEndTimeThursday}
+                      onBlur={() => setDidTouchEndTimeThursday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedEndTimeThursday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+                  </div>
+                </div>
+              )}
             </div>
-            {isOpenThursday ? (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">Start Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"start-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedStartTimeThursday}
-                    onBlur={() => setDidTouchStartTimeThursday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedStartTimeThursday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">End Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"end-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedEndTimeThursday}
-                    onBlur={() => setDidTouchEndTimeThursday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedEndTimeThursday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">FRIDAY</p>
-              <Switch
-                checked={isOpenFriday}
-                onChange={() => {
-                  setIsOpenFriday(!isOpenFriday);
-                  setDidTouchIsOpenFriday(true);
-                }}
-                className={classNames(
-                  isOpenFriday ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
-                )}
-              >
-                <span
-                  aria-hidden="true"
+            <div className="flex justify-center items-center my-4">
+              <div className="flex flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">FRIDAY</p>
+                <Switch
+                  checked={isOpenFriday}
+                  onChange={() => {
+                    setIsOpenFriday(!isOpenFriday);
+                    setDidTouchIsOpenFriday(true);
+                  }}
                   className={classNames(
-                    isOpenFriday ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    isOpenFriday ? "bg-movet-green" : "bg-movet-red",
+                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                   )}
-                />
-              </Switch>
+                >
+                  <span
+                    aria-hidden="true"
+                    className={classNames(
+                      isOpenFriday ? "translate-x-5" : "translate-x-0",
+                      "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    )}
+                  />
+                </Switch>
+              </div>
+              {isOpenFriday ? (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">Start Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"start-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedStartTimeFriday}
+                      onBlur={() => setDidTouchStartTimeFriday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedStartTimeFriday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">End Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"end-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedEndTimeFriday}
+                      onBlur={() => setDidTouchEndTimeFriday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedEndTimeFriday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+                  </div>
+                </div>
+              )}
             </div>
-            {isOpenFriday ? (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">Start Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"start-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedStartTimeFriday}
-                    onBlur={() => setDidTouchStartTimeFriday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedStartTimeFriday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">End Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"end-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedEndTimeFriday}
-                    onBlur={() => setDidTouchEndTimeFriday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedEndTimeFriday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">SATURDAY</p>
-              <Switch
-                checked={isOpenSaturday}
-                onChange={() => {
-                  setIsOpenSaturday(!isOpenSaturday);
-                  setDidTouchIsOpenSaturday(true);
-                }}
-                className={classNames(
-                  isOpenSaturday ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
-                )}
-              >
-                <span
-                  aria-hidden="true"
+            <div className="flex justify-center items-center my-4">
+              <div className="flex flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">SATURDAY</p>
+                <Switch
+                  checked={isOpenSaturday}
+                  onChange={() => {
+                    setIsOpenSaturday(!isOpenSaturday);
+                    setDidTouchIsOpenSaturday(true);
+                  }}
                   className={classNames(
-                    isOpenSaturday ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    isOpenSaturday ? "bg-movet-green" : "bg-movet-red",
+                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                   )}
-                />
-              </Switch>
+                >
+                  <span
+                    aria-hidden="true"
+                    className={classNames(
+                      isOpenSaturday ? "translate-x-5" : "translate-x-0",
+                      "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    )}
+                  />
+                </Switch>
+              </div>
+              {isOpenSaturday ? (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">Start Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"start-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedStartTimeSaturday}
+                      onBlur={() => setDidTouchStartTimeSaturday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedStartTimeSaturday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">End Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"end-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedEndTimeSaturday}
+                      onBlur={() => setDidTouchEndTimeSaturday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedEndTimeSaturday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+                  </div>
+                </div>
+              )}
             </div>
-            {isOpenSaturday ? (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">Start Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"start-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedStartTimeSaturday}
-                    onBlur={() => setDidTouchStartTimeSaturday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedStartTimeSaturday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">End Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"end-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedEndTimeSaturday}
-                    onBlur={() => setDidTouchEndTimeSaturday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedEndTimeSaturday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="flex justify-center items-center my-4">
-            <div className="flex flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">SUNDAY</p>
-              <Switch
-                checked={isOpenSunday}
-                onChange={() => {
-                  setIsOpenSunday(!isOpenSunday);
-                  setDidTouchIsOpenSunday(true);
-                }}
-                className={classNames(
-                  isOpenSunday ? "bg-movet-green" : "bg-movet-red",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
-                )}
-              >
-                <span
-                  aria-hidden="true"
+            <div className="flex justify-center items-center my-4">
+              <div className="flex flex-col justify-center items-center mx-4">
+                <p className="text-center my-2">SUNDAY</p>
+                <Switch
+                  checked={isOpenSunday}
+                  onChange={() => {
+                    setIsOpenSunday(!isOpenSunday);
+                    setDidTouchIsOpenSunday(true);
+                  }}
                   className={classNames(
-                    isOpenSunday ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    isOpenSunday ? "bg-movet-green" : "bg-movet-red",
+                    "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                   )}
-                />
-              </Switch>
+                >
+                  <span
+                    aria-hidden="true"
+                    className={classNames(
+                      isOpenSunday ? "translate-x-5" : "translate-x-0",
+                      "inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200",
+                    )}
+                  />
+                </Switch>
+              </div>
+              {isOpenSunday ? (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">Start Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"start-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedStartTimeSunday}
+                      onBlur={() => setDidTouchStartTimeSunday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedStartTimeSunday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                  <div className="flex-col justify-center items-center mx-4">
+                    <p className="text-center my-2">End Time</p>
+                    <PatternFormat
+                      isAllowed={(values: any) => {
+                        const { value } = values;
+                        return value <= 2400;
+                      }}
+                      format={"##:##"}
+                      mask="_"
+                      patternChar="#"
+                      name={"end-time"}
+                      type="text"
+                      valueIsNumericString
+                      value={selectedEndTimeSunday}
+                      onBlur={() => setDidTouchEndTimeSunday(true)}
+                      onValueChange={(target: any) =>
+                        setSelectedEndTimeSunday(target.value)
+                      }
+                      className={
+                        "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
+                      }
+                    />
+                    <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-center items-center my-4">
+                  <div className="flex-col justify-center items-center mx-4">
+                    <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
+                  </div>
+                </div>
+              )}
             </div>
-            {isOpenSunday ? (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">Start Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"start-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedStartTimeSunday}
-                    onBlur={() => setDidTouchStartTimeSunday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedStartTimeSunday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-                <div className="flex-col justify-center items-center mx-4">
-                  <p className="text-center my-2">End Time</p>
-                  <PatternFormat
-                    isAllowed={(values: any) => {
-                      const { value } = values;
-                      return value <= 2400;
-                    }}
-                    format={"##:##"}
-                    mask="_"
-                    patternChar="#"
-                    name={"end-time"}
-                    type="text"
-                    valueIsNumericString
-                    value={selectedEndTimeSunday}
-                    onBlur={() => setDidTouchEndTimeSunday(true)}
-                    onValueChange={(target: any) =>
-                      setSelectedEndTimeSunday(target.value)
-                    }
-                    className={
-                      "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-20"
-                    }
-                  />
-                  <p className="text-center mt-2 italic text-xs">(24 Hour)</p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex justify-center items-center my-4">
-                <div className="flex-col justify-center items-center mx-4">
-                  <h1 className="text-center my-2 italic text-lg">CLOSED</h1>
-                </div>
-              </div>
-            )}
           </div>
-        </div>
-        <Transition
-          show={
-            didTouchIsOpenMonday ||
-            didTouchIsOpenTuesday ||
-            didTouchIsOpenWednesday ||
-            didTouchIsOpenThursday ||
-            didTouchIsOpenFriday ||
-            didTouchIsOpenSaturday ||
-            didTouchIsOpenSunday ||
-            didTouchStartTimeMonday ||
-            didTouchStartTimeTuesday ||
-            didTouchStartTimeWednesday ||
-            didTouchStartTimeThursday ||
-            didTouchStartTimeFriday ||
-            didTouchStartTimeSaturday ||
-            didTouchStartTimeSunday ||
-            didTouchEndTimeMonday ||
-            didTouchEndTimeTuesday ||
-            didTouchEndTimeWednesday ||
-            didTouchEndTimeThursday ||
-            didTouchEndTimeFriday ||
-            didTouchEndTimeSaturday ||
-            didTouchEndTimeSunday
-          }
-          enter="transition ease-in duration-500"
-          leave="transition ease-out duration-64"
-          leaveTo="opacity-10"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leaveFrom="opacity-100"
-        >
-          <Button
-            text="SAVE"
-            color="red"
-            icon={faCheck}
-            onClick={() => saveChanges()}
-            className="mb-8"
-          />
-        </Transition></> : <></>}
+          <Transition
+            show={
+              didTouchIsOpenMonday ||
+              didTouchIsOpenTuesday ||
+              didTouchIsOpenWednesday ||
+              didTouchIsOpenThursday ||
+              didTouchIsOpenFriday ||
+              didTouchIsOpenSaturday ||
+              didTouchIsOpenSunday ||
+              didTouchStartTimeMonday ||
+              didTouchStartTimeTuesday ||
+              didTouchStartTimeWednesday ||
+              didTouchStartTimeThursday ||
+              didTouchStartTimeFriday ||
+              didTouchStartTimeSaturday ||
+              didTouchStartTimeSunday ||
+              didTouchEndTimeMonday ||
+              didTouchEndTimeTuesday ||
+              didTouchEndTimeWednesday ||
+              didTouchEndTimeThursday ||
+              didTouchEndTimeFriday ||
+              didTouchEndTimeSaturday ||
+              didTouchEndTimeSunday
+            }
+            enter="transition ease-in duration-500"
+            leave="transition ease-out duration-64"
+            leaveTo="opacity-10"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leaveFrom="opacity-100"
+          >
+            <Button
+              text="SAVE"
+              color="red"
+              icon={faCheck}
+              onClick={() => saveChanges()}
+              className="mb-8"
+            />
+          </Transition></> : <></>}
       </section>
       <hr className=" text-movet-gray" />
     </>

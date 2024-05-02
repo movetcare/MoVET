@@ -210,11 +210,11 @@ export const PopUpClinicConfiguration = ({
                 <p className="text-xs text-movet-black/70 italic mt-2">
                   <b>
                     <a
-                      href={`https://app.movetcare.com/book-an-appointment/${kebabCase(name)}`}
+                      href={`https://app.movetcare.com/book-a-clinic/${kebabCase(name)}`}
                       target="_blank"
                       className="hover:text-movet-red hover:underline"
                     >
-                      https://app.movetcare.com/book-an-appointment/
+                      https://app.movetcare.com/book-a-clinic/
                       {kebabCase(name)}
                     </a>
                   </b>

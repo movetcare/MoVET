@@ -140,11 +140,11 @@ export const PopUpClinicDescription = ({
             Clinic Schedule URL:{" "}
             <b>
               <a
-                href={`https://app.movetcare.com/book-an-appointment/${kebabCase(name)}`}
+                href={`https://app.movetcare.com/book-a-clinic/${kebabCase(name)}`}
                 target="_blank"
                 className="hover:text-movet-red hover:underline"
               >
-                https://app.movetcare.com/book-an-appointment/{kebabCase(name)}
+                https://app.movetcare.com/book-a-clinic/{kebabCase(name)}
               </a>
             </b>
           </p>

@@ -51,10 +51,11 @@ export const NewPopUpClinic = () => {
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
+    console.log("data?.scheduleType", data?.scheduleType)
     await setDoc(
       doc(firestore, "configuration/pop_up_clinics"),
       {
-        popUpClinics: arrayUnion({ id: kebabCase(data?.name), scheduleType:data?.scheduleType?.id, ...data }),
+        popUpClinics: arrayUnion({ id: kebabCase(data?.name), name: data?.name, description: data?.description, scheduleType:data?.scheduleType?.id, }),
         updatedOn: serverTimestamp(),
       },
       { merge: true },
@@ -149,15 +150,15 @@ export const NewPopUpClinic = () => {
                       id: "ONCE",
                       name: "One Time Clinic",
                     },
-                    {
-                      id: "WEEKLY",
-                      name: "Weekly Clinic",
-                    },
-                    {
-                      id: "MONTHLY",
-                      name: "Monthly Clinic",
-                    },
-                    { id: "YEARLY", name: "Yearly Clinic" },
+                    // {
+                    //   id: "WEEKLY",
+                    //   name: "Weekly Clinic",
+                    // },
+                    // {
+                    //   id: "MONTHLY",
+                    //   name: "Monthly Clinic",
+                    // },
+                    // { id: "YEARLY", name: "Yearly Clinic" },
                   ]}
                   errors={errors}
                   control={control}

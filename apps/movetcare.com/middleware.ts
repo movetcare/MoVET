@@ -113,20 +113,4 @@ export function middleware(request: NextRequest) {
       "?email=" +
       getEmailAddressFromUrl(request),
     );
-  else if (
-    request.nextUrl.pathname === "/booking/" ||
-    request.nextUrl.pathname === "/schedule/" ||
-    request.nextUrl.pathname === "/book-an-appointment/" ||
-    request.nextUrl.pathname === "/schedule-an-appointment/" ||
-    request.nextUrl.pathname === "/appointment-booking/"
-  )
-    return NextResponse.redirect(
-      (request.nextUrl.hostname === "localhost"
-        ? "http://localhost:3001/schedule-an-appointment"
-        : request.nextUrl.hostname.includes("stage.")
-          ? "https://stage.app.movetcare.com/schedule-an-appointment"
-          : "https://app.movetcare.com/schedule-an-appointment") +
-      "?email=" +
-      getEmailAddressFromUrl(request),
-    );
 }
