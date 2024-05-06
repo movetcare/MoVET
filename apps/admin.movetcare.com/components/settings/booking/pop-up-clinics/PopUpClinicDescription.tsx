@@ -145,14 +145,14 @@ export const PopUpClinicDescription = ({
                   environment === "development"
                     ? "http://localhost:3001"
                     : "https://app.movetcare.com"
-                }/book-a-clinic/${kebabCase(name)}`}
+                }/booking/${kebabCase(name)}`}
                 target="_blank"
                 className="hover:text-movet-red hover:underline"
               >
                 {environment === "development"
                   ? "http://localhost:3001"
                   : "https://app.movetcare.com"}
-                /book-a-clinic/{kebabCase(name)}
+                /booking/{kebabCase(name)}
               </a>
             </b>
           </p>

@@ -107,3 +107,25 @@ export type Booking = {
   cancelReason?: string;
   cancelDetails?: string;
 };
+
+export type ClinicBooking = {
+  client?: ClientBookingData;
+  step?:
+    | "started"
+    | "contact-info"
+    | "pet-selection"
+    | "add-a-pet"
+    | "datetime-selection"
+    | "payment-confirmation"
+    | "success"
+    | "complete"
+    | "restart"
+    | "cancelled-client";
+  patients?: Array<PatientBookingData>;
+  id?: string;
+  clinicId?: string;
+  selectedPatients?: Array<string>;
+  isActive?: boolean;
+  device?: string;
+  requestedDateTime?: { date: any; time: string };
+};

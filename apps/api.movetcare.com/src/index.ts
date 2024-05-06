@@ -32,6 +32,7 @@ export { getAppointmentAvailability } from "./endpoints/web/getAppointmentAvaila
 export { reportABug } from "./endpoints/web/reportABug";
 export { updatePaymentMethod } from "./endpoints/web/updatePaymentMethod";
 export { scheduleAppointment } from "./endpoints/web/scheduleAppointment";
+export { scheduleClinic } from "./endpoints/web/scheduleClinic";
 export { getBreedsData } from "./endpoints/web/getBreedsData";
 export { getAppointmentLocations } from "./endpoints/web/getAppointmentLocations";
 export { getReasons } from "./endpoints/web/getReasons";

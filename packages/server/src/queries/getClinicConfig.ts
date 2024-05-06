@@ -21,20 +21,25 @@ export const getClinicConfig = async ({ id }: { id: string }) => {
             params: { id: clinic?.id },
           });
       });
+      if (DEBUG) console.log("paths", paths);
       return paths.length ? paths : [{ params: { id: "" } }];
     } else if (id) {
       const clinicConfig: ClinicConfig = clinicConfigs.find(
         (clinic: ClinicConfig) => clinic?.id === id,
       );
-      if (clinicConfig?.schedule?.date)
-        clinicConfig.schedule.date = clinicConfig.schedule.date
-          .toDate()
-          ?.toLocaleDateString("en-us", {
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-          });
-      return clinicConfig;
+      // if (clinicConfig?.schedule?.date)
+      //   clinicConfig.schedule.date = clinicConfig.schedule.date
+      //     .toDate()
+      //     ?.toLocaleDateString("en-us", {
+      //       year: "numeric",
+      //       month: "numeric",
+      //       day: "numeric",
+      //     });
+      return {
+        id: clinicConfig?.id,
+        name: clinicConfig?.name,
+        description: clinicConfig?.description,
+      };
     }
   } catch (error) {
     console.error(error);

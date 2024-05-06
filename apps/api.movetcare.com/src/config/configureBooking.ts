@@ -51,7 +51,7 @@ export const configureBooking = async (): Promise<boolean> => {
             description:
               "We want to make sure ALL dogs are protected this Spring from Heartworm disease. MoVET is offering a Heartworm 'Spot Check' Clinic on Sunday, May 19th. Clinic includes a Heartworm Test ($45) and Monthly Heartworm Parasite Prevention. Flea/Tick prevention will also be available.",
             noVcprRequiredReason: "Annual Spring Heartworm Clinic",
-            onePatientDuration: 0,
+            onePatientDuration: 30,
             resourceConfiguration: [{ id: 16, staggerTime: 0 }],
             sameDayAppointmentLeadTime: 0,
             sameDayAppointmentVcprRequired: false,

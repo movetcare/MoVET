@@ -207,14 +207,14 @@ export const PopUpClinicConfiguration = ({
                 <p className="text-xs text-movet-black/70 italic mt-2">
                   <b>
                     <a
-                      href={`${environment === "development" ? "http://localhost:3001" : "https://app.movetcare.com"}/book-a-clinic/${kebabCase(name)}`}
+                      href={`${environment === "development" ? "http://localhost:3001" : "https://app.movetcare.com"}/booking/${kebabCase(name)}`}
                       target="_blank"
                       className="hover:text-movet-red hover:underline"
                     >
                       {environment === "development"
                         ? "http://localhost:3001"
                         : "https://app.movetcare.com"}
-                      /book-a-clinic/
+                      /booking/
                       {kebabCase(name)}
                     </a>
                   </b>
