@@ -122,6 +122,7 @@ export type ClinicBooking = {
     | "restart"
     | "cancelled-client";
   patients?: Array<PatientBookingData>;
+  reason: string;
   id?: string;
   clinicId?: string;
   selectedPatients?: Array<string>;

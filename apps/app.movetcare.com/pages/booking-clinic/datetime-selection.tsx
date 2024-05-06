@@ -15,7 +15,6 @@ import {
   faCalendarCheck,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
-import { getUrlQueryStringFromObject } from "utilities";
 import { environment } from "utilities";
 import { useForm } from "react-hook-form";
 import { TextInput } from "ui/src/components/forms/inputs";
@@ -99,10 +98,10 @@ export default function DateTime() {
       setClosedReason(null);
       const { data: result }: any = await httpsCallable(
         functions,
-        "getClinicAvailability",
+        "getAppointmentAvailability",
       )({
         date: selectedDate,
-        schedule: session?.clinicId,
+        schedule: "clinic", //session?.clinicId,
         patients: session?.selectedPatients,
       });
       if (Array.isArray(result)) {
@@ -330,188 +329,21 @@ export default function DateTime() {
                                   ),
                                 )}
                               </ul>
-                              {/* {appointmentAvailability &&
-                              appointmentAvailability.length < 6 ? (
-                                <ul className="w-full">
-                                  {appointmentAvailability?.map(
-                                    (
-                                      appointmentSlot: {
-                                        resource: number;
-                                        start: string;
-                                        end: string;
-                                      },
-                                      index: number,
-                                    ) => (
-                                      <li
-                                        key={index}
-                                        className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
-                                          selectedTime ===
-                                          `${formatTime(
-                                            appointmentSlot.start,
-                                          )} - ${formatTime(appointmentSlot.end)}`
-                                            ? " bg-movet-red text-white border-movet-white"
-                                            : " bg-movet-gray/20"
-                                        }`}
-                                        onClick={() => {
-                                          setSelectedTime(
-                                            `${formatTime(
-                                              appointmentSlot.start,
-                                            )} - ${formatTime(
-                                              appointmentSlot.end,
-                                            )}`,
-                                          );
-                                          setSelectedResource(
-                                            appointmentSlot?.resource,
-                                          );
-                                          window.scrollTo(0, 0);
-                                        }}
-                                      >
-                                        {environment === "production" ? (
-                                          <p>
-                                            {formatTime(appointmentSlot.start)}
-                                          </p>
-                                        ) : (
-                                          <p>
-                                            {formatTime(appointmentSlot.start)}{" "}
-                                            - {formatTime(appointmentSlot.end)}
-                                          </p>
-                                        )}
-                                      </li>
-                                    ),
-                                  )}
-                                </ul>
-                              ) : (
-                                <>
-                                  <ul className="w-1/2">
-                                    {appointmentAvailability?.map(
-                                      (
-                                        appointmentSlot: {
-                                          resource: number;
-                                          start: string;
-                                          end: string;
-                                        },
-                                        index: number,
-                                      ) =>
-                                        index <
-                                        appointmentAvailability.length / 2 ? (
-                                          <li
-                                            key={index}
-                                            className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
-                                              selectedTime ===
-                                              `${formatTime(
-                                                appointmentSlot.start,
-                                              )} - ${formatTime(
-                                                appointmentSlot.end,
-                                              )}`
-                                                ? " bg-movet-red text-white border-movet-white"
-                                                : " bg-movet-gray/20"
-                                            }`}
-                                            onClick={() => {
-                                              setSelectedTime(
-                                                `${formatTime(
-                                                  appointmentSlot.start,
-                                                )} - ${formatTime(
-                                                  appointmentSlot.end,
-                                                )}`,
-                                              );
-                                              setSelectedResource(
-                                                appointmentSlot?.resource,
-                                              );
-                                              window.scrollTo(0, 0);
-                                            }}
-                                          >
-                                            {environment === "production" ? (
-                                              <p>
-                                                {formatTime(
-                                                  appointmentSlot.start,
-                                                )}
-                                              </p>
-                                            ) : (
-                                              <p>
-                                                {formatTime(
-                                                  appointmentSlot.start,
-                                                )}{" "}
-                                                -{" "}
-                                                {formatTime(
-                                                  appointmentSlot.end,
-                                                )}
-                                              </p>
-                                            )}
-                                          </li>
-                                        ) : null,
-                                    )}
-                                  </ul>
-                                  <ul className="w-1/2">
-                                    {appointmentAvailability?.map(
-                                      (
-                                        appointmentSlot: {
-                                          resource: number;
-                                          start: string;
-                                          end: string;
-                                        },
-                                        index: number,
-                                      ) =>
-                                        index >=
-                                        appointmentAvailability.length / 2 ? (
-                                          <li
-                                            key={index}
-                                            className={`flex flex-row items-center justify-center py-4 px-2 my-4 mx-2 rounded-xl cursor-pointer hover:bg-movet-brown hover:text-white duration-300 ease-in-out${
-                                              selectedTime ===
-                                              `${formatTime(
-                                                appointmentSlot.start,
-                                              )} - ${formatTime(
-                                                appointmentSlot.end,
-                                              )}`
-                                                ? " bg-movet-red text-white border-movet-white"
-                                                : " bg-movet-gray/20"
-                                            }`}
-                                            onClick={() => {
-                                              setSelectedTime(
-                                                `${formatTime(
-                                                  appointmentSlot.start,
-                                                )} - ${formatTime(
-                                                  appointmentSlot.end,
-                                                )}`,
-                                              );
-                                              setSelectedResource(
-                                                appointmentSlot?.resource,
-                                              );
-                                              window.scrollTo(0, 0);
-                                            }}
-                                          >
-                                            {environment === "production" ? (
-                                              <p>
-                                                {formatTime(
-                                                  appointmentSlot.start,
-                                                )}
-                                              </p>
-                                            ) : (
-                                              <p>
-                                                {formatTime(
-                                                  appointmentSlot.start,
-                                                )}{" "}
-                                                -{" "}
-                                                {formatTime(
-                                                  appointmentSlot.end,
-                                                )}
-                                              </p>
-                                            )}
-                                          </li>
-                                        ) : null,
-                                    )}
-                                  </ul>
-                                </>
-                              )} */}
                             </div>
                           </div>
                           <Button
                             text="Schedule My Appointment"
-                            type="submit"
-                            disabled={!selectedTime || !selectedDate}
+                            // type="submit"
+                            // disabled={!selectedTime || !selectedDate}
                             className="mt-8"
                             icon={faCalendarCheck}
                             color="black"
-                            onClick={handleSubmit(onSubmit)}
+                            // onClick={handleSubmit(onSubmit)}
+                            onClick={() =>
+                              router.push(
+                                "/booking-clinic/payment-confirmation",
+                              )
+                            }
                           />
                         </>
                       )}
@@ -549,43 +381,12 @@ export default function DateTime() {
                         })}{" "}
                         - {selectedTime && selectedTime.split("-")[0].trim()}
                       </p>
-                      <label className="block text-sm font-medium text-movet-black font-abside mt-2 -mb-2">
-                        Location
-                      </label>
-                      <p className="italic font-extrabold">
-                        {session?.location === "Home" ? (
-                          `Housecall @ ${session?.address?.full}`
-                        ) : session?.location === "Clinic" ? (
-                          <>
-                            <span>MoVET @ Belleview Station</span>
-                            <br />
-                            <a
-                              className=" font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
-                              target="_blank"
-                              href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
-                              rel="noopener noreferrer"
-                            >
-                              4912 S Newport St, Denver, CO 80237
-                            </a>
-                          </>
-                        ) : (
-                          <>
-                            <span>Virtual Telehealth Consultation</span>
-                          </>
-                        )}
-                      </p>
-                      {session?.address?.info && (
-                        <p className="-mt-2 italic text-sm">
-                          Note: {session?.address?.info}
-                        </p>
-                      )}
+
                       <label className="block text-sm font-medium text-movet-black font-abside mt-2 -mb-2">
                         Reason
                       </label>
                       <p className="italic font-extrabold">
-                        {session?.establishCareExamRequired
-                          ? "Establish Care Exam"
-                          : session?.reason?.label}
+                        {session?.clinicId}
                       </p>
                       <label className="block text-sm font-medium text-movet-black font-abside mt-2 -mb-2">
                         Pet

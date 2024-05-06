@@ -15,11 +15,15 @@ export default function BookingSuccess() {
   const router = useRouter();
   const { mode } = router.query || {};
   const isAppMode = mode === "app";
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
+  // const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
+  //   null,
+  // );
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
-    null,
+    true,
   );
   useEffect(() => {
     if (window.localStorage.getItem("clinicBookingSession") !== null && router)
@@ -30,32 +34,32 @@ export default function BookingSuccess() {
       );
     else setSubmissionSuccess(false);
   }, [router]);
-  useEffect(() => {
-    if (session?.id) {
-      const processClinicBooking = async () =>
-        (
-          await fetch("/api/schedule-a-clinic", {
-            method: "POST",
-            body: JSON.stringify({ id: session?.id, step: "complete" }),
-          })
-        ).json();
-      processClinicBooking()
-        .then((response: ServerResponse) => {
-          if (response.error) handleError({ message: response.error });
-          else {
-            if (environment === "production") {
-              localStorage.removeItem("clinicEmail");
-              localStorage.removeItem("clinicBookingSession");
-            }
-            setSubmissionSuccess(true);
-          }
-        })
-        .catch((error) => handleError(error))
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (session?.id) {
+  //     const processClinicBooking = async () =>
+  //       (
+  //         await fetch("/api/schedule-a-clinic", {
+  //           method: "POST",
+  //           body: JSON.stringify({ id: session?.id, step: "complete" }),
+  //         })
+  //       ).json();
+  //     processClinicBooking()
+  //       .then((response: ServerResponse) => {
+  //         if (response.error) handleError({ message: response.error });
+  //         else {
+  //           if (environment === "production") {
+  //             localStorage.removeItem("clinicEmail");
+  //             localStorage.removeItem("clinicBookingSession");
+  //           }
+  //           setSubmissionSuccess(true);
+  //         }
+  //       })
+  //       .catch((error) => handleError(error))
+  //       .finally(() => {
+  //         setIsLoading(false);
+  //       });
+  //   }
+  // }, [session]);
   const handleError = (error: any) => {
     console.error(error);
     setError(error);
@@ -86,7 +90,7 @@ export default function BookingSuccess() {
                   <FontAwesomeIcon
                     icon={faCheckCircle}
                     size="4x"
-                    className="text-movet-green mx-auto w-full mb-4 mt-8"
+                    className="text-movet-blue mx-auto w-full mb-4 mt-8"
                   />
                   {isAppMode && (
                     <h2
@@ -102,7 +106,7 @@ export default function BookingSuccess() {
                       "We can't wait to see you and your fur-family again!"
                     }
                   />
-                  <div className="w-full flex flex-col my-4 items-center text-center">
+                  {/* <div className="w-full flex flex-col my-4 items-center text-center">
                     <h3 className="mb-2 text-lg">Appointment Details: </h3>
                     <h5 className="font-bold -mb-2">Date & Time</h5>
                     <p className="italic">
@@ -181,7 +185,7 @@ export default function BookingSuccess() {
                           );
                       }),
                     )}
-                  </div>
+                  </div> */}
                   {!isAppMode && (
                     <p className="text-xs italic text-center mt-4 px-4 sm:px-8">
                       We will send you an email confirmation shortly. Please{" "}

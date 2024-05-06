@@ -4,10 +4,9 @@ import { handleFailedBooking } from "../../booking/session/handleFailedBooking";
 import type { BookingError, ClinicBooking } from "../../types/booking";
 import { setupNewClinicBookingSession } from "../../booking/clinic/session/setupNewClinicBookingSession";
 import { processClinicContactInfo } from "../../booking/clinic/session/processClinicContactInfo";
-//import { processContactInfo } from "../../booking/session/processContactInfo";
-// import { processAddAPet } from "../../booking/session/processAddAPet";
-// import { processPetSelection } from "../../booking/session/processPetSelection";
-// import { processDateTime } from "../../booking/session/processDateTime";
+import { processClinicAddAPet } from "../../booking/clinic/session/processClinicAddAPet";
+import { processClinicPetSelection } from "../../booking/clinic/session/processClinicPetSelection";
+import { processClinicDateTime } from "../../booking/clinic/session/processClinicDateTime";
 const DEBUG = true;
 export const scheduleClinic = functions
   .runWith(defaultRuntimeOptions)
@@ -23,10 +22,10 @@ export const scheduleClinic = functions
       clinicId,
       id,
       contactInfo,
-      //   addAPet,
-      //   petSelection,
-      //   establishCareExamRequired,
-      //   requestedDateTime,
+      addAPet,
+      vcprRequired,
+      petSelection,
+      requestedDateTime,
     } = data || {};
     if (token) {
       if (await recaptchaIsVerified(token)) {
@@ -45,33 +44,32 @@ export const scheduleClinic = functions
                 contactInfo,
               );
             return await processClinicContactInfo(id, contactInfo);
-          }
-          //   else if (addAPet) {
-          //     if (DEBUG)
-          //       console.log("scheduleClinic => processAddAPet => ", addAPet);
-          //     return await processAddAPet(id, addAPet);
-          //   } else if (petSelection) {
-          //     if (DEBUG)
-          //       console.log(
-          //         "scheduleClinic => processPetSelection => ",
-          //         petSelection,
-          //       );
-          //     return await processPetSelection(
-          //       id,
-          //       Array.isArray(petSelection.pets)
-          //         ? petSelection.pets
-          //         : [petSelection.pets],
-          //       establishCareExamRequired,
-          //     );
-          //   } else if (requestedDateTime) {
-          //     if (DEBUG)
-          //       console.log(
-          //         "scheduleClinic => processDateTime => ",
-          //         requestedDateTime,
-          //       );
-          //     return await processDateTime(id, requestedDateTime);
-          //   } else
-          //     return await handleFailedBooking(data, "FAILED TO HANDLE REQUEST");
+          } else if (addAPet) {
+            if (DEBUG)
+              console.log("scheduleClinic => processAddAPet => ", addAPet);
+            return await processClinicAddAPet(id, addAPet);
+          } else if (petSelection && vcprRequired) {
+            if (DEBUG)
+              console.log(
+                "scheduleClinic => processPetSelection => ",
+                petSelection,
+              );
+            return await processClinicPetSelection(
+              id,
+              Array.isArray(petSelection.pets)
+                ? petSelection.pets
+                : [petSelection.pets],
+              vcprRequired,
+            );
+          } else if (requestedDateTime) {
+            if (DEBUG)
+              console.log(
+                "scheduleClinic => processDateTime => ",
+                requestedDateTime,
+              );
+            return await processClinicDateTime(id, requestedDateTime);
+          } else
+            return await handleFailedBooking(data, "FAILED TO HANDLE REQUEST");
         }
         return await handleFailedBooking(data, "FAILED TO GET SESSION");
       } else return await handleFailedBooking(data, "FAILED TO PASS CAPTCHA");

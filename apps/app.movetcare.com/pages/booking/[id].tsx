@@ -173,7 +173,7 @@ export default function PopUpClinic({
             ) : (
               <>
                 {!isAppMode && (
-                  <h2 className="text-2xl font-extrabold tracking-tight text-center text-movet-blue font-parkinson">
+                  <h2 className="text-2xl font-extrabold tracking-tight text-center text-movet-blue">
                     {clinicConfig?.name}
                   </h2>
                 )}

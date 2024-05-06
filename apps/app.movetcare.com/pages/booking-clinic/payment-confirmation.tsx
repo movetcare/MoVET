@@ -75,13 +75,13 @@ export default function ContactInfo() {
                   <FontAwesomeIcon
                     icon={faCreditCard}
                     size="4x"
-                    className="text-movet-black mx-auto w-full mb-2"
+                    className="text-movet-blue mx-auto w-full mb-2"
                   />
                   <BookingHeader
                     isAppMode={isAppMode}
                     title="Form of Payment Required"
                     description={
-                      "Having a payment source on file allows you to receive expedited service and skip the checkout lines when visiting our clinic and boutique."
+                      "Having a payment source on file is allows you to receive expedited service and skip the checkout lines when visiting our clinic and boutique."
                     }
                   />
                   <form onSubmit={onSubmit}>
@@ -90,16 +90,23 @@ export default function ContactInfo() {
                       charged until your appointment is completed.
                     </p>
                     <Button
-                      type="submit"
+                      //type="submit"
                       icon={faCreditCard}
-                      disabled={
-                        session?.checkoutSession === null ||
-                        session?.checkoutSession === undefined
-                      }
+                      // disabled={
+                      //   session?.checkoutSession === null ||
+                      //   session?.checkoutSession === undefined
+                      // }
                       iconSize={"sm"}
                       color="black"
                       text="Add Payment"
                       className="mt-6 mb-4"
+                      onClick={() =>
+                        router.push(
+                          isAppMode
+                            ? "/booking-clinic/success?mode=app"
+                            : "/booking-clinic/success",
+                        )
+                      }
                     />
                     <a
                       href="https://stripe.com/payments"

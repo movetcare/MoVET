@@ -2,14 +2,9 @@ import { UAParser } from "ua-parser-js";
 import { AppHeader } from "components/AppHeader";
 import { useRouter } from "next/router";
 import { Error } from "components/Error";
-import { useEffect, useRef, useState } from "react";
-import { Button, ErrorMessage, Loader, Modal } from "ui";
-import {
-  faArrowRight,
-  faInfoCircle,
-  faPlusCircle,
-  faStethoscope,
-} from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import { Button, ErrorMessage, Loader } from "ui";
+import { faArrowRight, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
@@ -17,26 +12,19 @@ import { array, object, string, lazy } from "yup";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { capitalizeFirstLetter } from "utilities";
-import { getUrlQueryStringFromObject } from "utilities";
 
 export default function PetSelection() {
   const router = useRouter();
   const { mode, housecallRequest } = router.query || {};
   const isAppMode = mode === "app";
   const isHousecallRequest = Boolean(Number(housecallRequest));
-  const cancelButtonRef = useRef(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
   const [pets, setPets] = useState<any>(null);
   const [loadingMessage, setLoadingMessage] = useState<string | null>(null);
   const [vcprRequiredError, setVcprRequiredError] = useState<boolean>(false);
-  const [showVcprDescription, setShowVcprDescription] =
-    useState<boolean>(false);
-  const [establishCareExamRequired, setEstablishCareExamRequired] =
-    useState<boolean>(false);
-  const [showExplainer, setShowExplainer] = useState<boolean>(false);
+  const [vcprRequired, setVcprRequired] = useState<boolean>(false);
   const [session, setSession] = useState<any>();
   const { executeRecaptcha } = useGoogleReCaptcha();
   const {
@@ -79,9 +67,7 @@ export default function PetSelection() {
   useEffect(() => {
     if (pets !== null && pets?.length > 0) {
       let vcprPetMatchCount = 0;
-      let vcprPetCount = 0;
       pets.forEach((pet: any) => {
-        if (pet.vcprRequired) vcprPetCount++;
         if (selectedPets !== null) {
           if (Array.isArray(selectedPets))
             selectedPets.map((selectedPet: any) => {
@@ -105,12 +91,10 @@ export default function PetSelection() {
           vcprPetMatchCount === selectedPets.length) ||
         (selectedPets === pets[0].id && pets[0].vcprRequired)
       )
-        setEstablishCareExamRequired(true);
-      else setEstablishCareExamRequired(false);
-      if (vcprPetCount > 0) setShowVcprDescription(true);
+        setVcprRequired(true);
+      else setVcprRequired(false);
     }
   }, [selectedPets, pets]);
-
   useEffect(() => {
     if (
       window.localStorage.getItem("clinicBookingSession") !== null &&
@@ -149,7 +133,7 @@ export default function PetSelection() {
             petSelection: {
               ...data,
             },
-            establishCareExamRequired,
+            vcprRequired,
             id: session?.id,
             device: JSON.parse(
               JSON.stringify(UAParser(), function (key: any, value: any) {
@@ -207,8 +191,7 @@ export default function PetSelection() {
                   title={`Select ${pets.length > 1 ? "Your Pets" : "a Pet"}`}
                   description={`Which ${
                     pets.length > 1 ? "pets" : "pet"
-                  } would you like to book an
-              appointment for?`}
+                  } would you like to book the clinic for?`}
                 />
                 {pets
                   .sort(
@@ -256,15 +239,9 @@ export default function PetSelection() {
                           {pet.species.includes("Dog") ? "🐶" : "🐱"}{" "}
                           {capitalizeFirstLetter(pet.name)}
                         </p>
-                        {pet.vcprRequired ? (
-                          <span className="text-xs italic text-movet-red ml-2 text-right grow font-extrabold">
-                            * Requires Establish Care Exam
-                          </span>
-                        ) : (
-                          <span className="text-xs italic text-movet-red ml-2 text-center grow">
-                            {""}
-                          </span>
-                        )}
+                        <span className="text-xs italic text-movet-red ml-2 text-center grow">
+                          {""}
+                        </span>
                         <div className="ml-3 flex items-center h-5 flex-none">
                           <input
                             id={`${pet.name}`}
@@ -284,62 +261,6 @@ export default function PetSelection() {
                       : (errors?.pets?.message as string)
                   }
                 />
-                {showVcprDescription && (
-                  <>
-                    <span
-                      className="text-center text-gray mt-8 flex justify-center items-center text-xs cursor-pointer italic hover:text-movet-brown ease-in-out duration-500"
-                      onClick={() => setShowExplainer(!showExplainer)}
-                    >
-                      <FontAwesomeIcon
-                        icon={faInfoCircle}
-                        size="lg"
-                        className="mr-2 text-movet-brown -mt-1"
-                      />
-                      What are Establish Care Exams?
-                    </span>
-                  </>
-                )}
-                <Modal
-                  showModal={showExplainer}
-                  setShowModal={setShowExplainer}
-                  cancelButtonRef={cancelButtonRef}
-                  isLoading={isLoading}
-                  error={error ? <Error message={error} /> : undefined}
-                  content={
-                    <>
-                      <p>
-                        Establish Care Exams are used to start a
-                        Veterinarian-Client-Patient Relationship
-                        (&quot;VCPR&quot;).
-                      </p>
-                      <p>
-                        A VCPR is established only when your veterinarian
-                        examines your pet in person, and is maintained by
-                        regular veterinary visits as needed to monitor your
-                        pet&apos;s health.
-                      </p>
-                      <p>
-                        If a VCPR is established but your veterinarian does not
-                        regularly see your pet afterward, the VCPR is no longer
-                        valid and it would be illegal (and unethical) for your
-                        veterinarian to dispense or prescribe medications or
-                        recommend treatment without recently examining your pet.
-                      </p>
-                      <p>
-                        A valid VCPR cannot be established online, via email, or
-                        over the phone. However, once a VCPR is established, it
-                        may be able to be maintained between medically necessary
-                        examinations via telephone or other types of
-                        consultations; but it&apos;s up to your
-                        veterinarian&apos; discretion to determine if this is
-                        appropriate and in the best interests of your pets&apos;
-                        health.
-                      </p>
-                    </>
-                  }
-                  title="What are Establish Care Exams?"
-                  icon={faStethoscope}
-                />
                 <div className="flex flex-col sm:flex-row mt-12 mb-6">
                   <Button
                     icon={faPlusCircle}
@@ -351,8 +272,8 @@ export default function PetSelection() {
                       setIsLoading(true);
                       router.push(
                         isAppMode
-                          ? "/schedule-an-appointment/add-a-pet?mode=app"
-                          : "/schedule-an-appointment/add-a-pet",
+                          ? "/booking-clinic/add-a-pet?mode=app"
+                          : "/booking-clinic/add-a-pet",
                       );
                     }}
                   />

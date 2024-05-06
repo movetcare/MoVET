@@ -29,7 +29,6 @@ import { RadioInput } from "components/inputs/RadioInput";
 import { SearchInput } from "components/inputs/SearchInput";
 import SwitchInput from "components/inputs/SwitchInput";
 import { ToggleInput } from "components/inputs/ToggleInput";
-import { getUrlQueryStringFromObject } from "utilities";
 
 addMethod(string as any, "isBeforeToday", function (errorMessage: string) {
   return (this as any).test(
@@ -265,20 +264,17 @@ export default function AddAPet() {
                 "clinicBookingSession",
                 JSON.stringify(result),
               );
+              const appModeQueryString = isAppMode ? "?mode=app" : "";
               if (result?.client?.requiresInfo)
                 router.push(
-                  "/booking-clinic/contact-info" +
-                    (isAppMode ? "?mode=app" : ""),
+                  "/booking-clinic/contact-info" + appModeQueryString,
                 );
               else if (result?.patients?.length > 0)
                 router.push(
-                  "/booking-clinic/pet-selection" +
-                    (isAppMode ? "?mode=app" : ""),
+                  "/booking-clinic/pet-selection" + appModeQueryString,
                 );
               else if (result?.patients?.length === 0)
-                router.push(
-                  "/booking-clinic/add-a-pet" + (isAppMode ? "?mode=app" : ""),
-                );
+                router.push("/booking-clinic/add-a-pet" + appModeQueryString);
             } else handleError(result);
           } else handleError(result);
         } catch (error) {
@@ -310,7 +306,9 @@ export default function AddAPet() {
                   {session?.patients.length > 0 && (
                     <div
                       className="text-right cursor-pointer hover:text-movet-red mr-4 -mb-12 z-50 relative ease-in-out duration-500"
-                      onClick={() => router.back()}
+                      onClick={() =>
+                        router.push("/booking-clinic/pet-selection")
+                      }
                     >
                       <FontAwesomeIcon icon={faTimes} size="2x" />
                     </div>
