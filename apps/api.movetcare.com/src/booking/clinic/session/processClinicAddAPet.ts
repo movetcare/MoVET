@@ -199,7 +199,7 @@ export const processClinicAddAPet = async (
             uid: session?.client?.uid,
             requiresInfo: session?.client?.requiresInfo,
           },
-        };
+        } as any;
       }
       return await handleFailedBooking(data, "FAILED TO GET PATIENTS");
     } else return await handleFailedBooking(data, "FAILED TO CREATE NEW PET");

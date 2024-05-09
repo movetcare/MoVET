@@ -118,7 +118,7 @@ export const processClinicContactInfo = async (
           .catch(async (error: any) => throwError(error)),
         id,
         client: { uid, requiresInfo: false },
-      };
+      } as any;
     } else
       return await handleFailedBooking(data, "FAILED TO PROCESS CLIENT INFO");
   } else

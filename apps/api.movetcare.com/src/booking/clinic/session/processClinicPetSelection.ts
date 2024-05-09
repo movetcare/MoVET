@@ -117,7 +117,7 @@ export const processClinicPetSelection = async (
         uid: session?.client?.uid,
         requiresInfo: session?.client?.requiresInfo,
       },
-    };
+    } as any;
   } else
     return await handleFailedBooking(data, "FAILED TO HANDLE PET SELECTION");
 };
