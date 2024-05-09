@@ -26,7 +26,7 @@ export function middleware(request: NextRequest) {
           : request.nextUrl.hostname.includes("stage.")
             ? "https://stage.app.mocetcare.com"
             : "https://app.movetcare.com") +
-        `/account/?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`,
+          `/account/?mode=${linkParams?.mode}&oobCode=${linkParams?.oobCode}&continueUrl=${linkParams?.continueUrl}&lang=${linkParams?.lang}&apiKey=${linkParams?.apiKey}`,
       );
   }
   if (
@@ -53,25 +53,23 @@ export function middleware(request: NextRequest) {
       (request.nextUrl.hostname === "localhost"
         ? "http://localhost:3000"
         : "https://movetcare.com") +
-      "/blog/k9-smiles-clinic-for-cats-and-dogs/",
+        "/blog/k9-smiles-clinic-for-cats-and-dogs/",
     );
   if (
     request.nextUrl.pathname === "/spot-check/" ||
     request.nextUrl.pathname === "/spotcheck/" ||
     request.nextUrl.pathname === "/heartworm/" ||
+    request.nextUrl.pathname === "/hw-clinic/" ||
     request.nextUrl.pathname === "/spot-check-clinic/" ||
     request.nextUrl.pathname === "/heartworm-clinic/" ||
-    request.nextUrl.pathname === "/heartworm-spot-check/"
-    ||
-    request.nextUrl.pathname === "/heartworm-spotcheck/"
-    ||
+    request.nextUrl.pathname === "/heartworm-spot-check/" ||
+    request.nextUrl.pathname === "/heartworm-spotcheck/" ||
     request.nextUrl.pathname === "/spotcheck-heartworm/"
   )
     return NextResponse.redirect(
       (request.nextUrl.hostname === "localhost"
         ? "http://localhost:3000"
-        : "https://movetcare.com") +
-      "/blog/spot-check-heartworm-clinic/",
+        : "https://movetcare.com") + "/blog/spot-check-heartworm-clinic/",
     );
   if (
     request.nextUrl.pathname === "/howloween/" ||
@@ -96,8 +94,8 @@ export function middleware(request: NextRequest) {
         : request.nextUrl.hostname.includes("stage.")
           ? "https://stage.app.mocetcare.com/appointment-check-in"
           : "https://app.movetcare.com/appointment-check-in") +
-      "?email=" +
-      getEmailAddressFromUrl(request),
+        "?email=" +
+        getEmailAddressFromUrl(request),
     );
   else if (
     request.nextUrl.pathname === "/payment/" ||
@@ -110,7 +108,7 @@ export function middleware(request: NextRequest) {
         : request.nextUrl.hostname.includes("stage.")
           ? "https://stage.app.movetcare.com/update-payment-method"
           : "https://app.movetcare.com/update-payment-method") +
-      "?email=" +
-      getEmailAddressFromUrl(request),
+        "?email=" +
+        getEmailAddressFromUrl(request),
     );
 }
