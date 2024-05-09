@@ -5,7 +5,7 @@
   "license": "NONE",
   "private": true,
   "scripts": {
-    "update": "ncu -u --reject eslint"
+    "update": "ncu -u --reject 'eslint,@headlessui/react'"
   },
   "devDependencies": {
     "typescript": "^5.4.5",

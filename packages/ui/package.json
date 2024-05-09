@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint *.ts*",
-    "update": "ncu -u --reject eslint"
+    "update": "ncu -u --reject 'eslint,@headlessui/react'"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",

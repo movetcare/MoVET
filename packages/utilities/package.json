@@ -6,7 +6,7 @@
     "build": "tsc",
     "watch": "tsc --watch --preserveWatchOutput",
     "lint": "eslint *.ts*",
-    "update": "ncu -u --reject eslint"
+    "update": "ncu -u --reject 'eslint,@headlessui/react'"
   },
   "private": true,
   "license": "NONE",

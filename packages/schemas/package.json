@@ -4,7 +4,7 @@
   "main": "index.ts",
   "scripts": {
     "lint": "eslint *.ts*",
-    "update": "ncu -u --reject eslint"
+    "update": "ncu -u --reject 'eslint,@headlessui/react'"
   },
   "devDependencies": {
     "yup": "^1.4.0"

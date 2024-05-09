@@ -12,7 +12,7 @@
     "build:android": "eas build --profile release --platform android",
     "clean": "rm -rf node_modules && watchman watch-del-all && rm -fr $TMPDIR/haste-map-* && rm -rf $TMPDIR/metro-cache && npm i && npx expo install --fix && npx expo-doctor",
     "check:deps": "npx expo install --check",
-    "update": "ncu -u --reject eslint && npm i && npm run clean",
+    "update": "ncu -u --reject 'eslint,@headlessui/react' && npm i && npm run clean",
     "update:version": "node ./incrementVersion.js",
     "build:all": "npm run build:ios && npm run build:android",
     "deploy:ios": "eas submit --platform ios --latest --profile release",

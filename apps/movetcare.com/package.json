@@ -9,7 +9,7 @@
     "build:prod": "next build",
     "start": "next start",
     "lint": "next lint",
-    "update": "ncu -u --reject eslint"
+    "update": "ncu -u --reject 'eslint,@headlessui/react'"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
