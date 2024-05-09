@@ -73,7 +73,7 @@
   "engines": {
     "node": ">= 16.18.1"
   },
-  "packageManager": "pnpm@9.0.6",
+  "packageManager": "pnpm@9.1.0",
   "lint-staged": {
     "apps/**/*.{js,ts,jsx,tsx}": [
       "prettier --write",

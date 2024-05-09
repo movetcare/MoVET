@@ -119,7 +119,7 @@ export default function SpotCheckHeartwormClinic() {
         <Image
           className="rounded-xl cursor-pointer"
           src="/images/blog/spot-check-cta.png"
-          alt="2023 Spring Heartworm Clinic"
+          alt="Spot Check Heartworm Clinic"
           height={300}
           width={900}
           onClick={() =>
@@ -151,7 +151,7 @@ export default function SpotCheckHeartwormClinic() {
           <Image
             className="rounded-xl cursor-pointer hidden sm:block"
             src="/images/blog/spot-check-cta-1.png"
-            alt="2023 Spring Heartworm Clinic"
+            alt="Spot Check Heartworm Clinic"
             height={300}
             width={900}
             onClick={() =>
@@ -164,7 +164,7 @@ export default function SpotCheckHeartwormClinic() {
           <Image
             className="rounded-xl cursor-pointer sm:hidden"
             src="/images/blog/spot-check-cta-1-mobile.png"
-            alt="2023 Spring Heartworm Clinic"
+            alt="Spot Check Heartworm Clinic"
             height={300}
             width={900}
             onClick={() =>
