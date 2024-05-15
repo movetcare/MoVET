@@ -5,7 +5,7 @@ import { enforceOnlyOneActiveAppointmentBooking } from "../../verification/enfor
 import { startNewClinicBooking } from "../session/startNewClinicBooking";
 
 export const getActiveClinicBookingSession = async (
-  clinicId: string,
+  clinic: ClinicBooking["clinic"],
   user: UserRecord,
   device: string,
 ): Promise<ClinicBooking | false> =>
@@ -17,12 +17,12 @@ export const getActiveClinicBookingSession = async (
     .get()
     .then(
       async (snapshot: any) =>
-        await getActiveClinicBooking(clinicId, user, snapshot, device),
+        await getActiveClinicBooking(clinic, user, snapshot, device),
     )
     .catch((error: any) => throwError(error));
 
 const getActiveClinicBooking = async (
-  clinicId: string,
+  clinic: ClinicBooking["clinic"],
   user: UserRecord,
   snapshot: any,
   device: string,
@@ -59,17 +59,17 @@ const getActiveClinicBooking = async (
               return { id: bookingDocument?.id, ...document.data() };
             } else
               return {
-                id: (await startNewClinicBooking(clinicId, user, device))?.id,
+                id: (await startNewClinicBooking(clinic, user, device))?.id,
               };
           })
           .catch((error: any) => throwError(error))),
       };
     } else
       return {
-        id: (await startNewClinicBooking(clinicId, user, device))?.id,
+        id: (await startNewClinicBooking(clinic, user, device))?.id,
       };
   } else
     return {
-      id: (await startNewClinicBooking(clinicId, user, device))?.id,
+      id: (await startNewClinicBooking(clinic, user, device))?.id,
     };
 };

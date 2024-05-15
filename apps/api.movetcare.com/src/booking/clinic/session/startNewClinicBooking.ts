@@ -1,15 +1,19 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { admin, throwError, DEBUG } from "../../../config/config";
 import { sendNotification } from "../../../notifications/sendNotification";
-import type { PatientBookingData, BookingError } from "../../../types/booking";
+import type {
+  PatientBookingData,
+  BookingError,
+  ClinicBooking,
+} from "../../../types/booking";
 import { verifyClientDataExists } from "../../../utils/auth/verifyClientDataExists";
 import { getAllActivePatients } from "../../../utils/getAllActivePatients";
 //import { createBookingAbandonmentNotifications } from "../../abandonment/createBookingAbandonmentNotifications";
 
 export const startNewClinicBooking = async (
-  clinicId: string,
+  clinic: ClinicBooking["clinic"],
   client: UserRecord,
-  device: string,
+  device: any,
 ): Promise<any> => {
   const patients: Array<PatientBookingData> | BookingError | any =
     await getAllActivePatients(client?.uid);
@@ -18,7 +22,7 @@ export const startNewClinicBooking = async (
     .firestore()
     .collection("clinic_bookings")
     .add({
-      clinicId,
+      clinic,
       client: {
         uid: client?.uid,
         email: client?.email,
@@ -45,7 +49,7 @@ export const startNewClinicBooking = async (
         {
           type: "section",
           text: {
-            text: `:book: _Clinic Booking_ *STARTED* (${clinicId}:${newBookingSession?.id})`,
+            text: `:book: _Clinic Booking_ *STARTED* (${clinic?.name}:${newBookingSession?.id})`,
             type: "mrkdwn",
           },
           fields: [

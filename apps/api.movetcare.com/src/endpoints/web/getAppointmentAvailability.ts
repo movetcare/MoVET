@@ -18,11 +18,11 @@ import { formatTimeHoursToDate } from "../../utils/formatTimeHoursToDate";
 import { formatTimeHoursToString } from "../../utils/formatTimeHoursToString";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
-const DEBUG = true;
-const DEBUG_SUMMARY = true;
+const DEBUG = false;
+const DEBUG_SUMMARY = false;
 const DEBUG_ASSIGN_CONFIG = false;
 const DEBUG_VERIFY_SCHEDULE = false;
-const DEBUG_EXISTING_APPOINTMENTS = true;
+const DEBUG_EXISTING_APPOINTMENTS = false;
 const DEBUG_CALCULATE_APPOINTMENTS = false;
 //const DEBUG_FORCED_OPENINGS = false;
 interface Appointment {

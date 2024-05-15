@@ -213,9 +213,10 @@ export const PopUpClinicConfiguration = ({
                   </b>
                 </p>
               )}
-              <p className="text-sm text-movet-black mt-1 mb-3">
-                {description}
-              </p>
+              <div
+                className="text-sm text-movet-black mt-1 mb-3"
+                dangerouslySetInnerHTML={{ __html: description }}
+              />
             </Switch.Label>
           </div>
           <div className="flex flex-row justify-right items-center">

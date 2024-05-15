@@ -19,7 +19,7 @@ export const scheduleClinic = functions
     const {
       token,
       email,
-      clinicId,
+      clinic,
       id,
       contactInfo,
       addAPet,
@@ -29,7 +29,7 @@ export const scheduleClinic = functions
     } = data || {};
     if (token) {
       if (await recaptchaIsVerified(token)) {
-        if (email && clinicId) {
+        if (email && clinic) {
           if (DEBUG)
             console.log(
               "scheduleClinic => setupNewClinicBookingSession => ",

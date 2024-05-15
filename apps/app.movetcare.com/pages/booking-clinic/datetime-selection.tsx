@@ -101,7 +101,7 @@ export default function DateTime() {
         "getAppointmentAvailability",
       )({
         date: selectedDate,
-        schedule: "clinic", //session?.clinicId,
+        schedule: "clinic", //session?.clinic?.id,
         patients: session?.selectedPatients,
       });
       if (Array.isArray(result)) {
@@ -386,7 +386,7 @@ export default function DateTime() {
                         Reason
                       </label>
                       <p className="italic font-extrabold">
-                        {session?.clinicId}
+                        {session?.clinic?.name}
                       </p>
                       <label className="block text-sm font-medium text-movet-black font-abside mt-2 -mb-2">
                         Pet

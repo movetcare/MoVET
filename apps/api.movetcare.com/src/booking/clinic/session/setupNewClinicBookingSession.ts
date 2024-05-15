@@ -14,7 +14,7 @@ import type {
 } from "../../../types/booking";
 import { getActiveClinicBookingSession } from "../verification/getActiveClinicBookingSession";
 
-const DEBUG = true;
+const DEBUG = false;
 export const setupNewClinicBookingSession = async ({
   clinic,
   email,
@@ -72,7 +72,7 @@ const startNewSession = async ({
   const authUser: UserRecord | null = await getAuthUserByEmail(email);
   if (authUser) {
     const session: ClinicBooking | false = await getActiveClinicBookingSession(
-      clinic?.id,
+      clinic,
       authUser,
       device,
     );

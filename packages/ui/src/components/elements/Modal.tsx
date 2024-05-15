@@ -19,7 +19,7 @@ export const Modal = ({
   noButtonText = "CLOSE",
 }: any) => {
   return (
-    <Transition.Root show={showModal} as="div">
+    <Transition.Root show={showModal} as={Fragment}>
       <Dialog
         as="div"
         className="fixed z-50 inset-0 overflow-y-auto"
@@ -28,14 +28,16 @@ export const Modal = ({
       >
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
-            as="div"
+            as={Fragment}
             enter="ease-out duration-500"
             enterFrom="opacity-0"
             enterTo="opacity-100"
             leave="ease-in duration-500"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
-          ></Transition.Child>
+          >
+            <Dialog.Overlay className="fixed inset-0 bg-movet-white bg-opacity-50 transition-opacity" />
+          </Transition.Child>
           <span
             className="hidden sm:inline-block sm:align-middle sm:h-screen"
             aria-hidden="true"
@@ -43,7 +45,7 @@ export const Modal = ({
             &#8203;
           </span>
           <Transition.Child
-            as="div"
+            as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             enterTo="opacity-100 translate-y-0 sm:scale-100"

@@ -109,12 +109,12 @@ export const processClinicContactInfo = async (
       });
       return {
         patients,
-        clinicId: await admin
+        clinic: await admin
           .firestore()
           .collection("clinic_bookings")
           .doc(id)
           .get()
-          .then((doc: any) => doc.data()?.clinicId)
+          .then((doc: any) => doc.data()?.clinic)
           .catch(async (error: any) => throwError(error)),
         id,
         client: { uid, requiresInfo: false },

@@ -1,6 +1,6 @@
 import type { ClinicConfig } from "types";
 import { firestore } from "../firebase";
-const DEBUG = true;
+const DEBUG = false;
 export const getClinicConfig = async ({ id }: { id: string }) => {
   try {
     const clinicConfigs = await firestore

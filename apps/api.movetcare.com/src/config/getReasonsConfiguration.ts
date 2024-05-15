@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { admin, throwError } from "./config";
-const DEBUG = true;
+import { DEBUG, admin, throwError } from "./config";
 export const getReasonsConfiguration = async (
   request: Request,
   response: Response,

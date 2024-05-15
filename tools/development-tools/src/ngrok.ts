@@ -3,7 +3,7 @@ const app = require("./utils/initApp");
 const publicIp = require("public-ip");
 const firebaseConfig = require("./utils/firebase.json");
 
-const DEBUG = true;
+const LOG = true;
 
 (async () => {
   const admin = app.initializeApp("admin", "staging");
@@ -14,12 +14,11 @@ const DEBUG = true;
     authtoken: process.env.NGROK_AUTH_TOKEN,
     region: "us",
     onStatusChange: (status) =>
-      DEBUG && console.log(`\n\nSTATUS CHANGED: ${status.toUpperCase()}\n\n`),
+      LOG && console.log(`\n\nSTATUS CHANGED: ${status.toUpperCase()}\n\n`),
     onLogEvent: (data) =>
-      DEBUG && console.log(`NGROK EVENT: ${JSON.stringify(data)}`),
+      LOG && console.log(`NGROK EVENT: ${JSON.stringify(data)}`),
   });
-  if (DEBUG)
-    console.log("\n\nTUNNEL URLS: ", await ngrok.getApi().listTunnels());
+  if (LOG) console.log("\n\nTUNNEL URLS: ", await ngrok.getApi().listTunnels());
   await admin
     .firestore()
     .collection("configuration")

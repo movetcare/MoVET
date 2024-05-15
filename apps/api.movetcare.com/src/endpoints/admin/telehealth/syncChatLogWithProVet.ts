@@ -1,9 +1,8 @@
 import { sendNotification } from "./../../../notifications/sendNotification";
-import { throwError, functions, admin } from "./../../../config/config";
+import { throwError, functions, admin, DEBUG } from "./../../../config/config";
 import { getAuthUserById } from "../../../utils/auth/getAuthUserById";
 import { createProVetNote } from "../../../integrations/provet/entities/note/createProVetNote";
 import { getClientFirstNameFromDisplayName } from "../../../utils/getClientFirstNameFromDisplayName";
-const DEBUG = true;
 export const syncChatLogWithProVet = functions.firestore
   .document("/telehealth_chat/{clientId}")
   .onWrite(async (change: any, context: any) => {

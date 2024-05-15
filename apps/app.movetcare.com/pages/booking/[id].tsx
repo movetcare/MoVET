@@ -85,7 +85,11 @@ export default function PopUpClinic({
             functions,
             "scheduleClinic",
           )({
-            clinicId: clinicConfig?.id,
+            clinic: {
+              name: clinicConfig?.name,
+              description: clinicConfig?.description,
+              id: clinicConfig?.id,
+            },
             email: data.email?.toLowerCase(),
             device: JSON.parse(
               JSON.stringify(UAParser(), function (key: any, value: any) {

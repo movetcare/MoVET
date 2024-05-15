@@ -2,7 +2,7 @@ import { admin, throwError } from "../../config/config";
 
 import * as func from "firebase-functions";
 const axios = require("axios").default;
-const DEBUG = true;
+const DEBUG = false;
 
 axios.defaults.baseURL = func.config()?.provet_cloud?.api_base;
 // (axios.defaults.headers as any).common["Authorization"] =
