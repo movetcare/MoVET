@@ -12,37 +12,18 @@ import { NumericFormat } from "react-number-format";
 import { Button } from "ui";
 import { Transition } from "@headlessui/react";
 import Error from "../../../Error";
+import type { ClinicConfig } from "types";
 
 export const PopUpClinicMultiPatient = ({
   configuration,
   popUpClinics,
 }: {
-  configuration: {
-    name: string;
-    description: string;
-    id: string;
-    isActive?: boolean;
-    onePatientDuration: number;
-    twoPatientDuration: number;
-    threePatientDuration: number;
-  };
+  configuration: ClinicConfig;
   popUpClinics: any;
 }) => {
-  const [selectedOnePatientDuration, setSelectedOnePatientDuration] = useState<
-    string | null
-  >(String(configuration?.onePatientDuration) || null);
-  const [didTouchOnePatientDuration, setDidTouchOnePatientDuration] =
-    useState<boolean>(false);
-  const [selectedTwoPatientDuration, setSelectedTwoPatientDuration] = useState<
-    string | null
-  >(String(configuration?.twoPatientDuration) || null);
-  const [didTouchTwoPatientDuration, setDidTouchTwoPatientDuration] =
-    useState<boolean>(false);
-  const [selectedThreePatientDuration, setSelectedThreePatientDuration] =
-    useState<string | null>(
-      String(configuration?.threePatientDuration) || null,
-    );
-  const [didTouchThreePatientDuration, setDidTouchThreePatientDuration] =
+  const [selectedAppointmentDuration, setSelectedAppointmentDuration] =
+    useState<string | null>(String(configuration?.appointmentDuration) || null);
+  const [didTouchAppointmentDuration, setDidTouchAppointmentDuration] =
     useState<boolean>(false);
   const [error, setError] = useState<any>(null);
 
@@ -51,9 +32,7 @@ export const PopUpClinicMultiPatient = ({
       if (clinic.id === configuration?.id)
         return {
           ...clinic,
-          onePatientDuration: Number(selectedOnePatientDuration),
-          twoPatientDuration: Number(selectedTwoPatientDuration),
-          threePatientDuration:Number( selectedThreePatientDuration),
+          appointmentDuration: Number(selectedAppointmentDuration),
         };
       else return clinic;
     });
@@ -66,23 +45,20 @@ export const PopUpClinicMultiPatient = ({
       { merge: true },
     )
       .then(() =>
-        toast(
-          `Updated ${configuration?.name} Multi-Patient Appointment Duration`,
-          {
-            position: "top-center",
-            icon: (
-              <FontAwesomeIcon
-                icon={faCheckCircle}
-                size="sm"
-                className="text-movet-green"
-              />
-            ),
-          },
-        ),
+        toast(`Updated ${configuration?.name} Appointment Duration`, {
+          position: "top-center",
+          icon: (
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              size="sm"
+              className="text-movet-green"
+            />
+          ),
+        }),
       )
       .catch((error: any) => {
         toast(
-          `${configuration?.name} Multi-Patient Appointment Duration Updated FAILED: ${error?.message}`,
+          `${configuration?.name} Appointment Duration Updated FAILED: ${error?.message}`,
           {
             duration: 5000,
 
@@ -98,9 +74,7 @@ export const PopUpClinicMultiPatient = ({
         setError(error);
       })
       .finally(() => {
-        setDidTouchOnePatientDuration(false);
-        setDidTouchTwoPatientDuration(false);
-        setDidTouchThreePatientDuration(false);
+        setDidTouchAppointmentDuration(false);
       });
   };
 
@@ -110,7 +84,10 @@ export const PopUpClinicMultiPatient = ({
     <>
       <section className="px-10 py-4 flex-col sm:flex-row items-center justify-center">
         <div className="flex flex-col mr-4">
-          <h3>Multi-Patient Appointment Durations</h3>
+          <span className="sm:mr-2 mt-4">
+            Appointment Duration{" "}
+            <span className="text-sm text-movet-red">*</span>
+          </span>
           <p className="text-sm">
             This controls the duration of appointments depending on the number
             of patients selected.
@@ -129,56 +106,10 @@ export const PopUpClinicMultiPatient = ({
               name={"one-patient-duration"}
               type="text"
               valueIsNumericString
-              value={selectedOnePatientDuration}
-              onBlur={() => setDidTouchOnePatientDuration(true)}
+              value={selectedAppointmentDuration}
+              onBlur={() => setDidTouchAppointmentDuration(true)}
               onValueChange={(target: any) =>
-                setSelectedOnePatientDuration(target.value)
-              }
-              className={
-                "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-14"
-              }
-            />
-            <p className="text-center mt-2 italic text-xs">Minutes</p>
-          </div>
-          <div className="flex-col justify-center items-center mx-4">
-            <p className="text-center my-2">2 Patients</p>
-            <NumericFormat
-              isAllowed={(values: any) => {
-                const { value } = values;
-                return value < 181;
-              }}
-              allowLeadingZeros={false}
-              allowNegative={false}
-              name={"two-patient-duration"}
-              type="text"
-              valueIsNumericString
-              value={selectedTwoPatientDuration}
-              onBlur={() => setDidTouchTwoPatientDuration(true)}
-              onValueChange={(target: any) =>
-                setSelectedTwoPatientDuration(target.value)
-              }
-              className={
-                "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-14"
-              }
-            />
-            <p className="text-center mt-2 italic text-xs">Minutes</p>
-          </div>
-          <div className="flex-col justify-center items-center mx-4">
-            <p className="text-center my-2">3 Patients</p>
-            <NumericFormat
-              isAllowed={(values: any) => {
-                const { value } = values;
-                return value < 181;
-              }}
-              allowLeadingZeros={false}
-              allowNegative={false}
-              name={"three-patient-duration"}
-              type="text"
-              valueIsNumericString
-              value={selectedThreePatientDuration}
-              onBlur={() => setDidTouchThreePatientDuration(true)}
-              onValueChange={(target: any) =>
-                setSelectedThreePatientDuration(target.value)
+                setSelectedAppointmentDuration(target.value)
               }
               className={
                 "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-14"
@@ -188,11 +119,7 @@ export const PopUpClinicMultiPatient = ({
           </div>
         </div>
         <Transition
-          show={
-            didTouchOnePatientDuration ||
-            didTouchTwoPatientDuration ||
-            didTouchThreePatientDuration
-          }
+          show={didTouchAppointmentDuration}
           enter="transition ease-in duration-500"
           leave="transition ease-out duration-64"
           leaveTo="opacity-10"

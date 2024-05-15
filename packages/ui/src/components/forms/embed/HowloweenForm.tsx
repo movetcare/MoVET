@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ServerResponse } from "types";
+import type { ServerResponse } from "types";
 import {
   faCat,
   faCheckCircle,

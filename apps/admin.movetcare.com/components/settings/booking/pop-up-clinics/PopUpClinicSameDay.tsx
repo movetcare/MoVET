@@ -12,27 +12,17 @@ import { firestore } from "services/firebase";
 import { Button } from "ui";
 import { classNames } from "utilities";
 import Error from "../../../Error";
-import { NumericFormat } from "react-number-format";
+import type { ClinicConfig } from "types";
 
 export const PopUpClinicSameDay = ({
   configuration,
   popUpClinics,
 }: {
-  configuration: {
-    name: string;
-    description: string;
-    id: string;
-    isActive?: boolean;
-    sameDayAppointmentVcprRequired: boolean;
-    sameDayAppointmentLeadTime: number;
-  };
+  configuration: ClinicConfig;
   popUpClinics: any;
 }) => {
   const [vcprRequired, setVcprRequired] = useState<boolean>(
-    configuration?.sameDayAppointmentVcprRequired || false,
-  );
-  const [selectedLeadTime, setSelectedLeadTime] = useState<string | null>(
-    String(configuration?.sameDayAppointmentLeadTime) || null,
+    configuration?.vcprRequired || false,
   );
   const [didTouchLeadTime, setDidTouchOneLeadTime] = useState<boolean>(false);
   const [didTouchVcprRequired, setDidTouchVcprRequired] =
@@ -44,8 +34,7 @@ export const PopUpClinicSameDay = ({
       if (clinic.id === configuration?.id)
         return {
           ...clinic,
-          sameDayAppointmentVcprRequired: vcprRequired,
-          sameDayAppointmentLeadTime: selectedLeadTime,
+          vcprRequired: vcprRequired,
         };
       else return clinic;
     });
@@ -99,7 +88,9 @@ export const PopUpClinicSameDay = ({
     <>
       <section className="px-10 py-4 flex-col sm:flex-row items-center justify-center">
         <div className="flex flex-col mr-4">
-          <h3 className="m-0">Same Day Appointments</h3>
+          <span className="sm:mr-2 mt-4">
+            VCPR Required <span className="text-sm text-movet-red">*</span>
+          </span>
           <p className="text-sm">
             This controls whether new/existing patients can book same day
             appointments and how many minutes past now (AKA &quot;Lead
@@ -129,29 +120,6 @@ export const PopUpClinicSameDay = ({
                   )}
                 />
               </Switch>
-            </div>
-            <div className="flex-col justify-center items-center mx-4">
-              <p className="text-center my-2">Lead Time</p>
-              <NumericFormat
-                isAllowed={(values: any) => {
-                  const { value } = values;
-                  return value < 181;
-                }}
-                allowLeadingZeros={false}
-                allowNegative={false}
-                name={"one-patient-duration"}
-                type="text"
-                valueIsNumericString
-                value={selectedLeadTime}
-                onBlur={() => setDidTouchOneLeadTime(true)}
-                onValueChange={(target: any) =>
-                  setSelectedLeadTime(target.value)
-                }
-                className={
-                  "focus:ring-movet-brown focus:border-movet-brown py-3 px-3.5 block w-full rounded-lg placeholder-movet-gray font-abside-smooth sm:w-14 mx-auto"
-                }
-              />
-              <p className="text-center mt-2 italic text-xs">Minutes</p>
             </div>
           </div>
         </div>

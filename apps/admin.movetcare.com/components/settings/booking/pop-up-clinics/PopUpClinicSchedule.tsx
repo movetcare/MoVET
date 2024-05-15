@@ -8,16 +8,22 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { firestore } from "services/firebase";
 import toast from "react-hot-toast";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { Button, ErrorMessage } from "ui";
-import { Listbox, Switch, Transition } from "@headlessui/react";
+import { Listbox, Transition } from "@headlessui/react";
 import Error from "../../../Error";
 import { classNames } from "utilities";
 import { PatternFormat } from "react-number-format";
 import { Controller, useForm } from "react-hook-form";
 import DateInput from "components/inputs/DateInput";
+import type { ClinicConfig } from "types";
 
-const scheduleTypes = [{ id: "ONCE", name: "Once" }, { id: "WEEKLY", name: "Weekly" }, { id: "MONTHLY", name: "Monthly" }, { id: "YEARLY", name: "Yearly" }];
+const scheduleTypes = [
+  { id: "ONCE", name: "Once" },
+  { id: "WEEKLY", name: "Weekly" },
+  { id: "MONTHLY", name: "Monthly" },
+  { id: "YEARLY", name: "Yearly" },
+];
 const formatTime = (time: string) =>
   time?.toString()?.length === 3 ? `0${time}` : `${time}`;
 
@@ -25,136 +31,103 @@ const PopUpClinicSchedule = ({
   configuration,
   popUpClinics,
 }: {
-  configuration: {
-    name: string;
-    description: string;
-    id: string;
-    scheduleType: "ONCE" | "WEEKLY" | "MONTHLY" | "YEARLY" | "CUSTOM";
-    schedule: {
-      date: any;
-      startDate: string;
-      endDate: string;
-      startTime: number;
-      endTime: number;
-      openMonday: boolean;
-      openMondayTime: number;
-      closedMondayTime: number;
-      openTuesday: boolean;
-      openTuesdayTime: number;
-      closedTuesdayTime: number;
-      openWednesday: boolean;
-      openWednesdayTime: number;
-      closedWednesdayTime: number;
-      openThursday: boolean;
-      openThursdayTime: number;
-      closedThursdayTime: number;
-      openFriday: boolean;
-      openFridayTime: number;
-      closedFridayTime: number;
-      openSaturday: boolean;
-      openSaturdayTime: number;
-      closedSaturdayTime: number;
-      openSunday: boolean;
-      openSundayTime: number;
-      closedSundayTime: number;
-    };
-  };
+  configuration: ClinicConfig;
   popUpClinics: any;
 }) => {
   const [selectedScheduleType, setSelectedScheduleType] = useState<
     string | null
   >(configuration?.scheduleType || null);
-  const [isOpenMonday, setIsOpenMonday] = useState<boolean>(false);
-  const [didTouchIsOpenMonday, setDidTouchIsOpenMonday] =
-    useState<boolean>(false);
-  const [isOpenTuesday, setIsOpenTuesday] = useState<boolean>(false);
-  const [didTouchIsOpenTuesday, setDidTouchIsOpenTuesday] =
-    useState<boolean>(false);
-  const [isOpenWednesday, setIsOpenWednesday] = useState<boolean>(false);
-  const [didTouchIsOpenWednesday, setDidTouchIsOpenWednesday] =
-    useState<boolean>(false);
-  const [isOpenThursday, setIsOpenThursday] = useState<boolean>(false);
-  const [didTouchIsOpenThursday, setDidTouchIsOpenThursday] =
-    useState<boolean>(false);
-  const [isOpenFriday, setIsOpenFriday] = useState<boolean>(false);
-  const [didTouchIsOpenFriday, setDidTouchIsOpenFriday] =
-    useState<boolean>(false);
-  const [isOpenSaturday, setIsOpenSaturday] = useState<boolean>(false);
-  const [didTouchIsOpenSaturday, setDidTouchIsOpenSaturday] =
-    useState<boolean>(false);
-  const [isOpenSunday, setIsOpenSunday] = useState<boolean>(false);
-  const [didTouchIsOpenSunday, setDidTouchIsOpenSunday] =
-    useState<boolean>(false);
-  const [selectedStartTimeTuesday, setSelectedStartTimeTuesday] = useState<
-    string | null
-  >(null);
-  const [didTouchStartTimeTuesday, setDidTouchStartTimeTuesday] =
-    useState<boolean>(false);
-  const [selectedEndTimeTuesday, setSelectedEndTimeTuesday] = useState<
-    string | null
-  >(null);
-  const [didTouchEndTimeTuesday, setDidTouchEndTimeTuesday] =
-    useState<boolean>(false);
-  const [selectedStartTimeWednesday, setSelectedStartTimeWednesday] = useState<
-    string | null
-  >(null);
-  const [didTouchStartTimeWednesday, setDidTouchStartTimeWednesday] =
-    useState<boolean>(false);
-  const [selectedEndTimeWednesday, setSelectedEndTimeWednesday] = useState<
-    string | null
-  >(null);
-  const [didTouchEndTimeWednesday, setDidTouchEndTimeWednesday] =
-    useState<boolean>(false);
-  const [selectedStartTimeThursday, setSelectedStartTimeThursday] = useState<
-    string | null
-  >(null);
-  const [didTouchStartTimeThursday, setDidTouchStartTimeThursday] =
-    useState<boolean>(false);
-  const [selectedEndTimeThursday, setSelectedEndTimeThursday] = useState<
-    string | null
-  >(null);
-  const [didTouchEndTimeThursday, setDidTouchEndTimeThursday] =
-    useState<boolean>(false);
-  const [selectedStartTimeFriday, setSelectedStartTimeFriday] = useState<
-    string | null
-  >(null);
-  const [didTouchStartTimeFriday, setDidTouchStartTimeFriday] =
-    useState<boolean>(false);
-  const [selectedEndTimeFriday, setSelectedEndTimeFriday] = useState<
-    string | null
-  >(null);
-  const [didTouchEndTimeFriday, setDidTouchEndTimeFriday] =
-    useState<boolean>(false);
-  const [selectedStartTimeSaturday, setSelectedStartTimeSaturday] = useState<
-    string | null
-  >(null);
-  const [didTouchStartTimeSaturday, setDidTouchStartTimeSaturday] =
-    useState<boolean>(false);
-  const [selectedEndTimeSaturday, setSelectedEndTimeSaturday] = useState<
-    string | null
-  >(null);
-  const [didTouchEndTimeSaturday, setDidTouchEndTimeSaturday] =
-    useState<boolean>(false);
-  const [selectedStartTimeSunday, setSelectedStartTimeSunday] = useState<
-    string | null
-  >(null);
-  const [didTouchStartTimeSunday, setDidTouchStartTimeSunday] =
-    useState<boolean>(false);
-  const [selectedEndTimeSunday, setSelectedEndTimeSunday] = useState<
-    string | null
-  >(null);
-  const [didTouchEndTimeSunday, setDidTouchEndTimeSunday] =
-    useState<boolean>(false);
-  const [selectedStartTimeMonday, setSelectedStartTimeMonday] = useState<
-    string | null
-  >(null);
-  const [didTouchStartTimeMonday, setDidTouchStartTimeMonday] =
-    useState<boolean>(false);
-  const [selectedEndTimeMonday, setSelectedEndTimeMonday] = useState<
-    string | null
-  >(null);
-  const [didTouchEndTimeMonday, setDidTouchEndTimeMonday] =
-    useState<boolean>(false);
+  // const [isOpenMonday, setIsOpenMonday] = useState<boolean>(false);
+  // const [didTouchIsOpenMonday, setDidTouchIsOpenMonday] =
+  //   useState<boolean>(false);
+  // const [isOpenTuesday, setIsOpenTuesday] = useState<boolean>(false);
+  // const [didTouchIsOpenTuesday, setDidTouchIsOpenTuesday] =
+  //   useState<boolean>(false);
+  // const [isOpenWednesday, setIsOpenWednesday] = useState<boolean>(false);
+  // const [didTouchIsOpenWednesday, setDidTouchIsOpenWednesday] =
+  //   useState<boolean>(false);
+  // const [isOpenThursday, setIsOpenThursday] = useState<boolean>(false);
+  // const [didTouchIsOpenThursday, setDidTouchIsOpenThursday] =
+  //   useState<boolean>(false);
+  // const [isOpenFriday, setIsOpenFriday] = useState<boolean>(false);
+  // const [didTouchIsOpenFriday, setDidTouchIsOpenFriday] =
+  //   useState<boolean>(false);
+  // const [isOpenSaturday, setIsOpenSaturday] = useState<boolean>(false);
+  // const [didTouchIsOpenSaturday, setDidTouchIsOpenSaturday] =
+  //   useState<boolean>(false);
+  // const [isOpenSunday, setIsOpenSunday] = useState<boolean>(false);
+  // const [didTouchIsOpenSunday, setDidTouchIsOpenSunday] =
+  //   useState<boolean>(false);
+  // const [selectedStartTimeTuesday, setSelectedStartTimeTuesday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchStartTimeTuesday, setDidTouchStartTimeTuesday] =
+  //   useState<boolean>(false);
+  // const [selectedEndTimeTuesday, setSelectedEndTimeTuesday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchEndTimeTuesday, setDidTouchEndTimeTuesday] =
+  //   useState<boolean>(false);
+  // const [selectedStartTimeWednesday, setSelectedStartTimeWednesday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchStartTimeWednesday, setDidTouchStartTimeWednesday] =
+  //   useState<boolean>(false);
+  // const [selectedEndTimeWednesday, setSelectedEndTimeWednesday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchEndTimeWednesday, setDidTouchEndTimeWednesday] =
+  //   useState<boolean>(false);
+  // const [selectedStartTimeThursday, setSelectedStartTimeThursday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchStartTimeThursday, setDidTouchStartTimeThursday] =
+  //   useState<boolean>(false);
+  // const [selectedEndTimeThursday, setSelectedEndTimeThursday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchEndTimeThursday, setDidTouchEndTimeThursday] =
+  //   useState<boolean>(false);
+  // const [selectedStartTimeFriday, setSelectedStartTimeFriday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchStartTimeFriday, setDidTouchStartTimeFriday] =
+  //   useState<boolean>(false);
+  // const [selectedEndTimeFriday, setSelectedEndTimeFriday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchEndTimeFriday, setDidTouchEndTimeFriday] =
+  //   useState<boolean>(false);
+  // const [selectedStartTimeSaturday, setSelectedStartTimeSaturday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchStartTimeSaturday, setDidTouchStartTimeSaturday] =
+  //   useState<boolean>(false);
+  // const [selectedEndTimeSaturday, setSelectedEndTimeSaturday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchEndTimeSaturday, setDidTouchEndTimeSaturday] =
+  //   useState<boolean>(false);
+  // const [selectedStartTimeSunday, setSelectedStartTimeSunday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchStartTimeSunday, setDidTouchStartTimeSunday] =
+  //   useState<boolean>(false);
+  // const [selectedEndTimeSunday, setSelectedEndTimeSunday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchEndTimeSunday, setDidTouchEndTimeSunday] =
+  //   useState<boolean>(false);
+  // const [selectedStartTimeMonday, setSelectedStartTimeMonday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchStartTimeMonday, setDidTouchStartTimeMonday] =
+  //   useState<boolean>(false);
+  // const [selectedEndTimeMonday, setSelectedEndTimeMonday] = useState<
+  //   string | null
+  // >(null);
+  // const [didTouchEndTimeMonday, setDidTouchEndTimeMonday] =
+  //   useState<boolean>(false);
   const [error, setError] = useState<any>(null);
   const {
     handleSubmit,
@@ -166,7 +139,8 @@ const PopUpClinicSchedule = ({
     mode: "onSubmit",
     defaultValues: {
       date: configuration?.schedule?.date?.toDate()?.toString() || "",
-      startTime: formatTime(String(configuration?.schedule?.startTime || "")) || "",
+      startTime:
+        formatTime(String(configuration?.schedule?.startTime || "")) || "",
       endTime: formatTime(String(configuration?.schedule?.endTime || "")) || "",
     },
   });
@@ -175,60 +149,59 @@ const PopUpClinicSchedule = ({
   const startTime = watch("startTime");
   const endTime = watch("endTime");
 
-  useEffect(() => {
-    if (configuration?.schedule) {
-      console.log("configuration?.schedule?.openMonday", configuration?.schedule?.openMonday);
-      setIsOpenMonday(configuration?.schedule?.openMonday);
-      setIsOpenTuesday(configuration?.schedule?.openTuesday);
-      setIsOpenWednesday(configuration?.schedule?.openWednesday);
-      setIsOpenThursday(configuration?.schedule?.openThursday);
-      setIsOpenFriday(configuration?.schedule?.openFriday);
-      setIsOpenSaturday(configuration?.schedule?.openSaturday);
-      setIsOpenSunday(configuration?.schedule?.openSunday);
-      setSelectedEndTimeFriday(
-        formatTime(String(configuration?.schedule?.closedFridayTime)),
-      );
-      setSelectedEndTimeMonday(
-        formatTime(String(configuration?.schedule?.closedMondayTime)),
-      );
-      setSelectedEndTimeSaturday(
-        formatTime(String(configuration?.schedule?.closedSaturdayTime)),
-      );
-      setSelectedEndTimeSunday(
-        formatTime(String(configuration?.schedule?.closedSundayTime)),
-      );
-      setSelectedEndTimeThursday(
-        formatTime(String(configuration?.schedule?.closedThursdayTime)),
-      );
-      setSelectedEndTimeTuesday(
-        formatTime(String(configuration?.schedule?.closedTuesdayTime)),
-      );
-      setSelectedEndTimeWednesday(
-        formatTime(String(configuration?.schedule?.closedWednesdayTime)),
-      );
-      setSelectedStartTimeFriday(
-        formatTime(String(configuration?.schedule?.openFridayTime)),
-      );
-      setSelectedStartTimeMonday(
-        formatTime(String(configuration?.schedule?.openMondayTime)),
-      );
-      setSelectedStartTimeSaturday(
-        formatTime(String(configuration?.schedule?.openSaturdayTime)),
-      );
-      setSelectedStartTimeSunday(
-        formatTime(String(configuration?.schedule?.openSundayTime)),
-      );
-      setSelectedStartTimeThursday(
-        formatTime(String(configuration?.schedule?.openThursdayTime)),
-      );
-      setSelectedStartTimeTuesday(
-        formatTime(String(configuration?.schedule?.openTuesdayTime)),
-      );
-      setSelectedStartTimeWednesday(
-        formatTime(String(configuration?.schedule?.openWednesdayTime)),
-      );
-    }
-  }, [configuration?.schedule]);
+  // useEffect(() => {
+  //   if (configuration?.schedule) {
+  //     setIsOpenMonday(configuration?.schedule?.openMonday);
+  //     setIsOpenTuesday(configuration?.schedule?.openTuesday);
+  //     setIsOpenWednesday(configuration?.schedule?.openWednesday);
+  //     setIsOpenThursday(configuration?.schedule?.openThursday);
+  //     setIsOpenFriday(configuration?.schedule?.openFriday);
+  //     setIsOpenSaturday(configuration?.schedule?.openSaturday);
+  //     setIsOpenSunday(configuration?.schedule?.openSunday);
+  //     setSelectedEndTimeFriday(
+  //       formatTime(String(configuration?.schedule?.closedFridayTime)),
+  //     );
+  //     setSelectedEndTimeMonday(
+  //       formatTime(String(configuration?.schedule?.closedMondayTime)),
+  //     );
+  //     setSelectedEndTimeSaturday(
+  //       formatTime(String(configuration?.schedule?.closedSaturdayTime)),
+  //     );
+  //     setSelectedEndTimeSunday(
+  //       formatTime(String(configuration?.schedule?.closedSundayTime)),
+  //     );
+  //     setSelectedEndTimeThursday(
+  //       formatTime(String(configuration?.schedule?.closedThursdayTime)),
+  //     );
+  //     setSelectedEndTimeTuesday(
+  //       formatTime(String(configuration?.schedule?.closedTuesdayTime)),
+  //     );
+  //     setSelectedEndTimeWednesday(
+  //       formatTime(String(configuration?.schedule?.closedWednesdayTime)),
+  //     );
+  //     setSelectedStartTimeFriday(
+  //       formatTime(String(configuration?.schedule?.openFridayTime)),
+  //     );
+  //     setSelectedStartTimeMonday(
+  //       formatTime(String(configuration?.schedule?.openMondayTime)),
+  //     );
+  //     setSelectedStartTimeSaturday(
+  //       formatTime(String(configuration?.schedule?.openSaturdayTime)),
+  //     );
+  //     setSelectedStartTimeSunday(
+  //       formatTime(String(configuration?.schedule?.openSundayTime)),
+  //     );
+  //     setSelectedStartTimeThursday(
+  //       formatTime(String(configuration?.schedule?.openThursdayTime)),
+  //     );
+  //     setSelectedStartTimeTuesday(
+  //       formatTime(String(configuration?.schedule?.openTuesdayTime)),
+  //     );
+  //     setSelectedStartTimeWednesday(
+  //       formatTime(String(configuration?.schedule?.openWednesdayTime)),
+  //     );
+  //   }
+  // }, [configuration?.schedule]);
 
   const onSubmit = async (data: any) => {
     const newPopUpClinics = popUpClinics.map((clinic: any) => {
@@ -279,100 +252,107 @@ const PopUpClinicSchedule = ({
           },
         );
         setError(error);
-      }).finally(() => reset({ date: data?.date, startTime: formatTime(data?.startTime), endTime: formatTime(data?.endTime) }));
-  };
-  const saveChanges = async () => {
-    const newPopUpClinics = popUpClinics.map((clinic: any) => {
-      if (clinic.id === configuration?.id)
-        return {
-          ...clinic,
-          scheduleType: selectedScheduleType,
-          schedule: {
-            openMonday: isOpenMonday,
-            openMondayTime: Number(selectedStartTimeMonday),
-            closedMondayTime: Number(selectedEndTimeMonday),
-            openTuesday: isOpenTuesday,
-            openTuesdayTime: Number(selectedStartTimeTuesday),
-            closedTuesdayTime: Number(selectedEndTimeTuesday),
-            openWednesday: isOpenWednesday,
-            openWednesdayTime: Number(selectedStartTimeWednesday),
-            closedWednesdayTime: Number(selectedEndTimeWednesday),
-            openThursday: isOpenThursday,
-            openThursdayTime: Number(selectedStartTimeThursday),
-            closedThursdayTime: Number(selectedEndTimeThursday),
-            openFriday: isOpenFriday,
-            openFridayTime: Number(selectedStartTimeFriday),
-            closedFridayTime: Number(selectedEndTimeFriday),
-            openSaturday: isOpenSaturday,
-            openSaturdayTime: Number(selectedStartTimeSaturday),
-            closedSaturdayTime: Number(selectedEndTimeSaturday),
-            openSunday: isOpenSunday,
-            openSundayTime: Number(selectedStartTimeSunday),
-            closedSundayTime: Number(selectedEndTimeSunday),
-          },
-        };
-      else return clinic;
-    });
-    await setDoc(
-      doc(firestore, "configuration/pop_up_clinics"),
-      {
-        popUpClinics: newPopUpClinics,
-        updatedOn: serverTimestamp(),
-      },
-      { merge: true },
-    )
-      .then(() =>
-        toast(`"${configuration?.name}" Days & Hours of Operation Updated!`, {
-          position: "top-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCheckCircle}
-              size="sm"
-              className="text-movet-green"
-            />
-          ),
-        }),
-      )
-      .catch((error: any) => {
-        toast(
-          `"${configuration?.name}" Days & Hours of Operation Updated FAILED: ${error?.message}`,
-          {
-            duration: 5000,
-            icon: (
-              <FontAwesomeIcon
-                icon={faCircleExclamation}
-                size="sm"
-                className="text-movet-red"
-              />
-            ),
-          },
-        );
-        setError(error);
       })
-      .finally(() => {
-        setDidTouchIsOpenMonday(false);
-        setDidTouchIsOpenTuesday(false);
-        setDidTouchIsOpenWednesday(false);
-        setDidTouchIsOpenThursday(false);
-        setDidTouchIsOpenFriday(false);
-        setDidTouchIsOpenSaturday(false);
-        setDidTouchIsOpenSunday(false);
-        setDidTouchStartTimeMonday(false);
-        setDidTouchEndTimeMonday(false);
-        setDidTouchStartTimeTuesday(false);
-        setDidTouchEndTimeTuesday(false);
-        setDidTouchStartTimeWednesday(false);
-        setDidTouchEndTimeWednesday(false);
-        setDidTouchStartTimeThursday(false);
-        setDidTouchEndTimeThursday(false);
-        setDidTouchStartTimeFriday(false);
-        setDidTouchEndTimeFriday(false);
-        setDidTouchStartTimeSaturday(false);
-        setDidTouchEndTimeSaturday(false);
-        setDidTouchStartTimeSunday(false);
-        setDidTouchEndTimeSunday(false);
-      });
+      .finally(() =>
+        reset({
+          date: data?.date,
+          startTime: formatTime(data?.startTime),
+          endTime: formatTime(data?.endTime),
+        }),
+      );
   };
+  // const saveChanges = async () => {
+  //   const newPopUpClinics = popUpClinics.map((clinic: any) => {
+  //     if (clinic.id === configuration?.id)
+  //       return {
+  //         ...clinic,
+  //         scheduleType: selectedScheduleType,
+  //         schedule: {
+  //           openMonday: isOpenMonday,
+  //           openMondayTime: Number(selectedStartTimeMonday),
+  //           closedMondayTime: Number(selectedEndTimeMonday),
+  //           openTuesday: isOpenTuesday,
+  //           openTuesdayTime: Number(selectedStartTimeTuesday),
+  //           closedTuesdayTime: Number(selectedEndTimeTuesday),
+  //           openWednesday: isOpenWednesday,
+  //           openWednesdayTime: Number(selectedStartTimeWednesday),
+  //           closedWednesdayTime: Number(selectedEndTimeWednesday),
+  //           openThursday: isOpenThursday,
+  //           openThursdayTime: Number(selectedStartTimeThursday),
+  //           closedThursdayTime: Number(selectedEndTimeThursday),
+  //           openFriday: isOpenFriday,
+  //           openFridayTime: Number(selectedStartTimeFriday),
+  //           closedFridayTime: Number(selectedEndTimeFriday),
+  //           openSaturday: isOpenSaturday,
+  //           openSaturdayTime: Number(selectedStartTimeSaturday),
+  //           closedSaturdayTime: Number(selectedEndTimeSaturday),
+  //           openSunday: isOpenSunday,
+  //           openSundayTime: Number(selectedStartTimeSunday),
+  //           closedSundayTime: Number(selectedEndTimeSunday),
+  //         },
+  //       };
+  //     else return clinic;
+  //   });
+  //   await setDoc(
+  //     doc(firestore, "configuration/pop_up_clinics"),
+  //     {
+  //       popUpClinics: newPopUpClinics,
+  //       updatedOn: serverTimestamp(),
+  //     },
+  //     { merge: true },
+  //   )
+  //     .then(() =>
+  //       toast(`"${configuration?.name}" Days & Hours of Operation Updated!`, {
+  //         position: "top-center",
+  //         icon: (
+  //           <FontAwesomeIcon
+  //             icon={faCheckCircle}
+  //             size="sm"
+  //             className="text-movet-green"
+  //           />
+  //         ),
+  //       }),
+  //     )
+  //     .catch((error: any) => {
+  //       toast(
+  //         `"${configuration?.name}" Days & Hours of Operation Updated FAILED: ${error?.message}`,
+  //         {
+  //           duration: 5000,
+  //           icon: (
+  //             <FontAwesomeIcon
+  //               icon={faCircleExclamation}
+  //               size="sm"
+  //               className="text-movet-red"
+  //             />
+  //           ),
+  //         },
+  //       );
+  //       setError(error);
+  //     })
+  //     .finally(() => {
+  //       setDidTouchIsOpenMonday(false);
+  //       setDidTouchIsOpenTuesday(false);
+  //       setDidTouchIsOpenWednesday(false);
+  //       setDidTouchIsOpenThursday(false);
+  //       setDidTouchIsOpenFriday(false);
+  //       setDidTouchIsOpenSaturday(false);
+  //       setDidTouchIsOpenSunday(false);
+  //       setDidTouchStartTimeMonday(false);
+  //       setDidTouchEndTimeMonday(false);
+  //       setDidTouchStartTimeTuesday(false);
+  //       setDidTouchEndTimeTuesday(false);
+  //       setDidTouchStartTimeWednesday(false);
+  //       setDidTouchEndTimeWednesday(false);
+  //       setDidTouchStartTimeThursday(false);
+  //       setDidTouchEndTimeThursday(false);
+  //       setDidTouchStartTimeFriday(false);
+  //       setDidTouchEndTimeFriday(false);
+  //       setDidTouchStartTimeSaturday(false);
+  //       setDidTouchEndTimeSaturday(false);
+  //       setDidTouchStartTimeSunday(false);
+  //       setDidTouchEndTimeSunday(false);
+  //     });
+  // };
 
   return error ? (
     <Error error={error} />
@@ -380,12 +360,15 @@ const PopUpClinicSchedule = ({
     <>
       <section className="px-10 py-4 flex-col sm:flex-row items-center justify-center">
         <div className="flex flex-col mr-4">
-          <h3 className="mt-4">Schedule</h3>
+          <span className="sm:mr-2 mt-4">
+            Schedule <span className="text-sm text-movet-red">*</span>
+          </span>
           <p className="text-sm">
             Use these options to control the days and hours of operation for the
             clinic. Hours are in 24 hour format.
           </p>
-        </div> <section className="px-10 py-4 flex-col sm:flex-row items-center justify-center">
+        </div>{" "}
+        <section className="px-10 py-4 flex-col sm:flex-row items-center justify-center hidden">
           <Listbox
             value={selectedScheduleType}
             onChange={setSelectedScheduleType}
@@ -394,9 +377,7 @@ const PopUpClinicSchedule = ({
             {({ open }: any) => (
               <>
                 <div
-                  className={
-                    "relative bg-white w-full sm:w-2/3 mx-auto my-4"
-                  }
+                  className={"relative bg-white w-full sm:w-2/3 mx-auto my-4"}
                 >
                   <Listbox.Button
                     className={
@@ -455,9 +436,7 @@ const PopUpClinicSchedule = ({
                               <>
                                 <span
                                   className={classNames(
-                                    selected
-                                      ? "font-semibold"
-                                      : "font-normal",
+                                    selected ? "font-semibold" : "font-normal",
                                     "block truncate ml-2",
                                   )}
                                 >
@@ -490,20 +469,18 @@ const PopUpClinicSchedule = ({
             )}
           </Listbox>
         </section>
-        {selectedScheduleType?.toLowerCase() === "once" ? <>
-
+        {/* {selectedScheduleType?.toLowerCase() === "once" ?  */}
+        <>
           <div
             className={
               "flex flex-col items-center px-4 sm:px-6 group mx-auto max-w-xl mb-4"
             }
-          ><hr className="mb-4 text-movet-gray w-full" />
-            <div className="min-w-0 flex-col w-full justify-center">
+          >
+            {/* <hr className="mb-4 text-movet-gray w-full" /> */}
+            <div className="min-w-0 flex-col w-full justify-center mt-4">
               <div className="text-center text-sm cursor-pointer">
-
                 <div className="flex flex-col sm:flex-row items-center w-full mx-auto py-2 pl-4">
-                  <span className="font-extrabold sm:mr-2">
-                    Date:
-                  </span>{" "}
+                  <span className="font-extrabold sm:mr-2">Date:</span>{" "}
                   <DateInput
                     required
                     name="date"
@@ -513,15 +490,11 @@ const PopUpClinicSchedule = ({
                   />
                 </div>
                 {errors["date"]?.message && (
-                  <ErrorMessage
-                    errorMessage={errors["date"].message}
-                  />
+                  <ErrorMessage errorMessage={errors["date"].message} />
                 )}
                 <div className="flex flex-row justify-center items-center w-full mx-auto py-2">
                   <div className="flex flex-col mr-2 sm:mr-0 sm:flex-row justify-between items-center">
-                    <span className="font-extrabold">
-                      Start Time:
-                    </span>{" "}
+                    <span className="font-extrabold">Start Time:</span>{" "}
                     <Controller
                       name={"startTime"}
                       control={control}
@@ -529,18 +502,14 @@ const PopUpClinicSchedule = ({
                         required: "Field is required",
                         minLength: {
                           value: 4,
-                          message:
-                            "Must be a 4 digit number - 24 Hour Time",
+                          message: "Must be a 4 digit number - 24 Hour Time",
                         },
                         maxLength: {
                           value: 4,
-                          message:
-                            "Must be a 4 digit number - 24 Hour Time",
+                          message: "Must be a 4 digit number - 24 Hour Time",
                         },
                       }}
-                      render={({
-                        field: { onChange, onBlur, value },
-                      }) => (
+                      render={({ field: { onChange, onBlur, value } }) => (
                         <PatternFormat
                           name={`startTime`}
                           allowEmptyFormatting
@@ -571,18 +540,14 @@ const PopUpClinicSchedule = ({
                         required: "Field is required",
                         minLength: {
                           value: 4,
-                          message:
-                            "Must be a 4 digit number - 24 Hour Time",
+                          message: "Must be a 4 digit number - 24 Hour Time",
                         },
                         maxLength: {
                           value: 4,
-                          message:
-                            "Must be a 4 digit number - 24 Hour Time",
+                          message: "Must be a 4 digit number - 24 Hour Time",
                         },
                       }}
-                      render={({
-                        field: { onChange, onBlur, value },
-                      }) => (
+                      render={({ field: { onChange, onBlur, value } }) => (
                         <PatternFormat
                           name={`endTime`}
                           allowEmptyFormatting
@@ -606,18 +571,13 @@ const PopUpClinicSchedule = ({
                   </div>
                 </div>
                 {errors["startTime"]?.message && (
-                  <ErrorMessage
-                    errorMessage={errors["startTime"].message}
-                  />
+                  <ErrorMessage errorMessage={errors["startTime"].message} />
                 )}
                 {errors["endTime"]?.message && (
-                  <ErrorMessage
-                    errorMessage={errors["endTime"].message}
-                  />
-                )}      <Transition
-                  show={
-                    isDirty
-                  }
+                  <ErrorMessage errorMessage={errors["endTime"].message} />
+                )}{" "}
+                <Transition
+                  show={isDirty}
                   enter="transition ease-in duration-500"
                   leave="transition ease-out duration-64"
                   leaveTo="opacity-10"
@@ -639,12 +599,13 @@ const PopUpClinicSchedule = ({
                     className={"mt-8"}
                     icon={faCheck}
                     text="Save"
-                  /></Transition>
+                  />
+                </Transition>
               </div>
             </div>
           </div>
-
-        </> : selectedScheduleType === "Weekly" ? <>
+        </>
+        {/* : selectedScheduleType === "Weekly" ? <>
           <div className="flex flex-col items-center justify-center">
             <hr className="mb-4 text-movet-gray w-full" />
             <div className="flex justify-center items-center my-4">
@@ -1260,7 +1221,7 @@ const PopUpClinicSchedule = ({
               onClick={() => saveChanges()}
               className="mb-8"
             />
-          </Transition></> : <></>}
+          </Transition></> : <></>} */}
       </section>
       <hr className=" text-movet-gray" />
     </>
@@ -1268,4 +1229,3 @@ const PopUpClinicSchedule = ({
 };
 
 export default PopUpClinicSchedule;
-

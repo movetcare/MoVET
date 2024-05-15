@@ -1,4 +1,4 @@
-import { Booking } from "types";
+import type { Booking } from "types";
 import { firestore } from "../firebase";
 const DEBUG = false;
 export const setBooking = async (payload: Booking) => {

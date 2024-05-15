@@ -4,7 +4,7 @@ import {} from "@headlessui/react";
 import { useRef, useState } from "react";
 import { Modal } from "ui";
 import { useRouter } from "next/router";
-import { ServerResponse } from "types";
+import type { ServerResponse } from "types";
 import { Error } from "components/Error";
 
 export const BookingFooter = () => {

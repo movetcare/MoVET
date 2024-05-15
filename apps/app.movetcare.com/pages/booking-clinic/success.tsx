@@ -8,7 +8,7 @@ import { AppHeader } from "components/AppHeader";
 import { Error } from "components/Error";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ServerResponse } from "types";
+import type { ServerResponse } from "types";
 import { environment } from "utilities";
 
 export default function BookingSuccess() {

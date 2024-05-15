@@ -15,7 +15,7 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { getClinicConfig } from "server";
 import { functions } from "services/firebase";
-import { ClinicConfig } from "types";
+import type { ClinicConfig } from "types";
 import UAParser from "ua-parser-js";
 import { Loader, Button, AppLinks } from "ui";
 import { object, string } from "yup";
@@ -177,9 +177,12 @@ export default function PopUpClinic({
                     {clinicConfig?.name}
                   </h2>
                 )}
-                <p className="text-center mb-4 w-full mx-auto">
-                  {clinicConfig?.description}
-                </p>
+                <div
+                  className="text-center mb-4 w-full mx-auto"
+                  dangerouslySetInnerHTML={{
+                    __html: clinicConfig?.description,
+                  }}
+                />
                 <form className="group grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 pb-4 mb-4 w-full sm:w-2/3 mx-auto">
                   <div className="sm:col-span-2 my-2">
                     <h3 className="-mb-5 text-xl text-movet-red text-center font-source-sans-pro">

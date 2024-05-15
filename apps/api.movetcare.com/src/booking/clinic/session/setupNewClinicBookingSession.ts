@@ -16,11 +16,11 @@ import { getActiveClinicBookingSession } from "../verification/getActiveClinicBo
 
 const DEBUG = true;
 export const setupNewClinicBookingSession = async ({
-  clinicId,
+  clinic,
   email,
   device,
 }: {
-  clinicId: string;
+  clinic: ClinicBooking["clinic"];
   email: string;
   device: string;
   token: string;
@@ -32,7 +32,7 @@ export const setupNewClinicBookingSession = async ({
         "setupNewClinicBookingSession => isExistingClient => startNewSession",
         email,
       );
-    return await startNewSession({ clinicId, email, device });
+    return await startNewSession({ clinic, email, device });
   } else {
     if (DEBUG)
       console.log("setupNewClinicBookingSession => createNewClient", email);
@@ -46,7 +46,7 @@ export const setupNewClinicBookingSession = async ({
         password: null,
       });
       if (didCreateNewClient)
-        return await startNewSession({ clinicId, email, device });
+        return await startNewSession({ clinic, email, device });
       else
         return await handleFailedBooking(
           { email, device },
@@ -61,18 +61,18 @@ export const setupNewClinicBookingSession = async ({
 };
 
 const startNewSession = async ({
-  clinicId,
+  clinic,
   email,
   device,
 }: {
-  clinicId: string;
+  clinic: ClinicBooking["clinic"];
   email: string;
   device: string;
 }): Promise<ClinicBooking | BookingError> => {
   const authUser: UserRecord | null = await getAuthUserByEmail(email);
   if (authUser) {
     const session: ClinicBooking | false = await getActiveClinicBookingSession(
-      clinicId,
+      clinic?.id,
       authUser,
       device,
     );
@@ -82,7 +82,7 @@ const startNewSession = async ({
     if (session && patients) {
       return {
         ...session,
-        clinicId,
+        clinic,
         patients,
         client: {
           uid: authUser?.uid,

@@ -2,7 +2,7 @@ import { contactSchema } from "schemas";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { setContact } from "../../queries/setContact";
 import { sendResponse } from "../sendResponse";
-import { ContactFormSources } from "types";
+import type { ContactFormSources } from "types";
 const DEBUG = false;
 
 const logSource = "(API) /contact -> processContactRequest()";
@@ -10,7 +10,7 @@ const allowedMethods = ["POST"];
 export const processContactRequest = (
   req: NextApiRequest,
   res: NextApiResponse,
-  source: ContactFormSources
+  source: ContactFormSources,
 ) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

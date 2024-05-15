@@ -109,8 +109,8 @@ export type Booking = {
 };
 
 export type ClinicBooking = {
-  client?: ClientBookingData;
-  step?:
+  client: ClientBookingData;
+  step:
     | "started"
     | "contact-info"
     | "pet-selection"
@@ -121,12 +121,14 @@ export type ClinicBooking = {
     | "complete"
     | "restart"
     | "cancelled-client";
-  patients?: Array<PatientBookingData>;
-  reason: string;
-  id?: string;
-  clinicId?: string;
-  selectedPatients?: Array<string>;
-  isActive?: boolean;
-  device?: string;
-  requestedDateTime?: { date: any; time: string };
+  patients: Array<PatientBookingData>;
+  id: string;
+  clinic: {
+    id: string;
+    name: string;
+    description: string;
+  };
+  selectedPatients: Array<string>;
+  isActive: boolean;
+  requestedDateTime: { date: any; time: string };
 };

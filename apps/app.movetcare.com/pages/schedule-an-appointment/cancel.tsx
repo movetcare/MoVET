@@ -6,7 +6,7 @@ import { Error } from "components/Error";
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBan, faPaw } from "@fortawesome/free-solid-svg-icons";
-import { ServerResponse } from "types";
+import type { ServerResponse } from "types";
 import { AppHeader } from "components/AppHeader";
 import { SearchInput } from "components/inputs/SearchInput";
 import { yupResolver } from "@hookform/resolvers/yup";

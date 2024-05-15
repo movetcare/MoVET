@@ -20,7 +20,7 @@ import { PopUpClinicMultiPatient } from "./PopUpClinicMultiPatient";
 import { PopUpClinicDescription } from "./PopUpClinicDescription";
 import kebabCase from "lodash.kebabcase";
 import PopUpClinicSchedule from "./PopUpClinicSchedule";
-import { ClinicConfig } from "types";
+import type { ClinicConfig } from "types";
 
 export const PopUpClinicConfiguration = ({
   configuration,
@@ -35,19 +35,14 @@ export const PopUpClinicConfiguration = ({
     id,
     resourceConfiguration,
     isActive,
-    onePatientDuration,
-    twoPatientDuration,
-    threePatientDuration,
+    appointmentDuration,
     appointmentBufferTime,
-    noVcprRequiredReason,
-    vcprRequiredReason,
-    sameDayAppointmentLeadTime,
-    sameDayAppointmentVcprRequired,
+    reason,
+    vcprRequired,
     schedule,
     scheduleType,
   } = configuration || {};
   const [isPopUpActive, setIsPopUpActive] = useState<boolean>(!!isActive);
-
   const [popUpToDelete, setPopUpToDelete] = useState<any>(null);
   const [showDeletePopUpModal, setShowDeletePopUpModal] =
     useState<boolean>(false);
@@ -58,15 +53,14 @@ export const PopUpClinicConfiguration = ({
 
   useEffect(() => {
     if (
+      name === undefined ||
+      description === undefined ||
+      id === undefined ||
+      reason === undefined ||
       resourceConfiguration === undefined ||
-      onePatientDuration === undefined ||
-      twoPatientDuration === undefined ||
-      threePatientDuration === undefined ||
+      appointmentDuration === undefined ||
       appointmentBufferTime === undefined ||
-      noVcprRequiredReason === undefined ||
-      vcprRequiredReason === undefined ||
-      sameDayAppointmentLeadTime === undefined ||
-      sameDayAppointmentVcprRequired === undefined ||
+      vcprRequired === undefined ||
       schedule === undefined ||
       scheduleType === undefined
     ) {
@@ -76,16 +70,15 @@ export const PopUpClinicConfiguration = ({
   }, [
     resourceConfiguration,
     isConfigured,
-    onePatientDuration,
-    twoPatientDuration,
-    threePatientDuration,
+    appointmentDuration,
     appointmentBufferTime,
-    noVcprRequiredReason,
-    vcprRequiredReason,
-    sameDayAppointmentLeadTime,
-    sameDayAppointmentVcprRequired,
+    vcprRequired,
+    reason,
     schedule,
     scheduleType,
+    name,
+    description,
+    id,
   ]);
 
   const deletePopUpClinic = async (id: string) =>

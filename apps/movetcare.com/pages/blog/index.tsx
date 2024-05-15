@@ -2,7 +2,7 @@ import Layout from "components/Layout";
 import Image from "next/image";
 import Link from "next/link";
 import { classNames } from "utilities";
-import { BlogPost } from "types";
+import type { BlogPost } from "types";
 import Head from "next/head";
 import { Fragment } from "react";
 import { CallToAction, PopUpAd } from "ui";
@@ -14,7 +14,11 @@ const posts: Array<BlogPost> = [
     isFeatured: true,
     title: "Spot Check Heartworm Clinic - May 19th",
     href: "/blog/spot-check-heartworm-clinic",
-    category: { name: "Health & Wellness", href: "#", color: "bg-movet-yellow" },
+    category: {
+      name: "Health & Wellness",
+      href: "#",
+      color: "bg-movet-yellow",
+    },
     description:
       "We want to make sure ALL dogs are protected this Spring from Heartworm disease. MoVET is offering a Heartworm 'Spot Check' Clinic on Sunday, May 19th. Clinic includes a Heartworm Test ($45) and Monthly Heartworm Parasite Prevention. Flea/Tick prevention will also be available.",
     date: "April 30th, 2024",
@@ -26,7 +30,8 @@ const posts: Array<BlogPost> = [
       href: "#",
       imageUrl: "/images/blog/dr-a.png",
     },
-  }, {
+  },
+  {
     isFeatured: true,
     title: "Puppy Love Valentines Photo Event - Saturday, Feb 3rd  10AM-12PM",
     href: "/blog/puppy-love-photo-shoot",

@@ -17,23 +17,13 @@ import { object, string } from "yup";
 import kebabCase from "lodash.kebabcase";
 import { Button } from "ui";
 import { environment } from "utilities";
+import type { ClinicConfig } from "types";
 
 export const PopUpClinicDescription = ({
   configuration,
   popUpClinics,
 }: {
-  configuration: {
-    name: string;
-    description: string;
-    id: string;
-    isActive?: boolean;
-    resourceConfiguration?:
-      | Array<{
-          id: string;
-          staggerTime: number;
-        }>
-      | undefined;
-  };
+  configuration: ClinicConfig;
   popUpClinics: any;
 }) => {
   const [error, setError] = useState<any>(null);
@@ -107,7 +97,8 @@ export const PopUpClinicDescription = ({
           ),
         });
         setError(error);
-      });
+      })
+      .finally(() => reset(data));
   };
 
   return error ? (
@@ -125,9 +116,7 @@ export const PopUpClinicDescription = ({
           </p>
         </div>
         <div className="flex-col justify-center items-center mx-4 w-full mt-4">
-          <span className="sm:mr-2">
-            Name of Clinic <span className="text-sm text-movet-red">*</span>
-          </span>
+          <span className="sm:mr-2">Name of Clinic</span>
           <TextInput
             required
             name="name"
@@ -158,9 +147,7 @@ export const PopUpClinicDescription = ({
           </p>
         </div>
         <div className="flex-col justify-center items-center mx-4 w-full mt-4 mb-6">
-          <span className="sm:mr-2">
-            Description <span className="text-sm text-movet-red">*</span>
-          </span>
+          <span className="sm:mr-2">Description</span>
           <TextInput
             required
             name="description"
@@ -172,6 +159,17 @@ export const PopUpClinicDescription = ({
             multiline
             numberOfLines={3}
           />
+          <p className="text-xs text-movet-black/70 italic mt-2">
+            <b>
+              <a
+                href={`https://www.w3schools.com/html/html_intro.asp`}
+                target="_blank"
+                className="hover:text-movet-red hover:underline"
+              >
+                *Supports HTML Tags
+              </a>
+            </b>
+          </p>
         </div>
         <div className="flex flex-col justify-center items-center mx-4 w-full mb-2">
           <Transition

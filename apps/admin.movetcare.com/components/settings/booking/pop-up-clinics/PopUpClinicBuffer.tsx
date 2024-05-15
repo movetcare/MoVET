@@ -12,18 +12,13 @@ import { NumericFormat } from "react-number-format";
 import { Button } from "ui";
 import { Transition } from "@headlessui/react";
 import Error from "../../../Error";
+import type { ClinicConfig } from "types";
 
 export const PopUpClinicBuffer = ({
   configuration,
   popUpClinics,
 }: {
-  configuration: {
-    name: string;
-    description: string;
-    id: string;
-    isActive?: boolean;
-    appointmentBufferTime: boolean;
-  };
+  configuration: ClinicConfig;
   popUpClinics: any;
 }) => {
   const [selectedBufferTime, setSelectedBufferTime] = useState<string | null>(
@@ -91,7 +86,9 @@ export const PopUpClinicBuffer = ({
     <>
       <section className="px-10 py-4 flex-col sm:flex-row items-center justify-center">
         <div className="flex flex-col mr-4">
-          <h3>Standard Appointment Buffer</h3>
+          <span className="sm:mr-2 mt-4">
+            Appointment Buffer <span className="text-sm text-movet-red">*</span>
+          </span>
           <p className="text-sm">
             This controls how many minutes of buffer time is added between all
             appointments.

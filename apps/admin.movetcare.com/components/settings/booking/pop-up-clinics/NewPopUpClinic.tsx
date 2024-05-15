@@ -43,7 +43,7 @@ export const NewPopUpClinic = () => {
     defaultValues: {
       name: "",
       description: "",
-      scheduleType: "",
+      scheduleType: "ONCE",
     },
   });
 
@@ -138,8 +138,19 @@ export const NewPopUpClinic = () => {
                   multiline
                   numberOfLines={3}
                 />
+                <p className="text-xs text-movet-black/70 italic mt-2">
+                  <b>
+                    <a
+                      href={`https://www.w3schools.com/html/html_intro.asp`}
+                      target="_blank"
+                      className="hover:text-movet-red hover:underline"
+                    >
+                      *Supports HTML Tags
+                    </a>
+                  </b>
+                </p>
               </div>
-              <div className="flex-col justify-center items-center mx-4 w-full mt-4">
+              <div className="flex-col justify-center items-center mx-4 w-full mt-4 hidden">
                 <span className="sm:mr-2">
                   Recurrence <span className="text-sm text-movet-red">*</span>
                 </span>

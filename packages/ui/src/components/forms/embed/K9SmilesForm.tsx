@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ServerResponse } from "types";
+import type { ServerResponse } from "types";
 import { faPaw } from "@fortawesome/free-solid-svg-icons";
 import { Loader, ErrorMessage, Button } from "../../elements";
 import { TextInput, EmailInput } from "../inputs";
@@ -29,7 +29,7 @@ export const K9SmilesForm = () => {
         firstName: string().required("A First Name is required"),
         lastName: string().required("A last name is required"),
         phone: string().required("A phone number is required"),
-      })
+      }),
     ),
     defaultValues: {
       firstName: "",

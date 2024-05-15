@@ -2,7 +2,7 @@ import { faCircleExclamation, faRedo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { ServerResponse } from "types";
+import type { ServerResponse } from "types";
 import { Loader } from "ui";
 
 export const Error = ({ error }: any) => {
@@ -20,7 +20,7 @@ export const Error = ({ error }: any) => {
           method: "POST",
           body: JSON.stringify({
             id: JSON.parse(
-              window.localStorage.getItem("bookingSession") as string
+              window.localStorage.getItem("bookingSession") as string,
             )?.id,
             step: "restart",
           }),

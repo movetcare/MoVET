@@ -1,4 +1,4 @@
-import { ClinicConfig } from "types";
+import type { ClinicConfig } from "types";
 import { firestore } from "../firebase";
 const DEBUG = true;
 export const getClinicConfig = async ({ id }: { id: string }) => {

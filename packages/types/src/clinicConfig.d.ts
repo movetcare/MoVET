@@ -3,15 +3,11 @@ export type ClinicConfig = {
   description: string;
   id: string;
   isActive: boolean;
-  vcprRequiredReason: string;
-  noVcprRequiredReason: string;
-  standardAppointmentBuffer: number;
-  appointmentBufferTime: boolean;
-  sameDayAppointmentVcprRequired: boolean;
-  sameDayAppointmentLeadTime: number;
-  onePatientDuration: number;
-  twoPatientDuration: number;
-  threePatientDuration: number;
+  reason: string;
+  // timeSlots: Array<string>;
+  appointmentBufferTime: number;
+  vcprRequired: boolean;
+  appointmentDuration: number;
   scheduleType: "ONCE" | "WEEKLY" | "MONTHLY" | "YEARLY" | "CUSTOM";
   schedule: {
     date?: any;
@@ -39,10 +35,8 @@ export type ClinicConfig = {
     openSundayTime?: number;
     closedSundayTime?: number;
   };
-  resourceConfiguration:
-    | Array<{
-        id: string;
-        staggerTime: number;
-      }>
-    | undefined;
+  resourceConfiguration: Array<{
+    id: string;
+    staggerTime: number;
+  }>;
 };
