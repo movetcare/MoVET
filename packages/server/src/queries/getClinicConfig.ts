@@ -43,7 +43,7 @@ export const getClinicConfig = async ({
         id: clinicConfig?.id,
         name: clinicConfig?.name,
         description: clinicConfig?.description,
-        vcprRequired: clinicConfig?.vcprRequired,
+        vcprRequired: clinicConfig?.vcprRequired || null,
         schedule: {
           date: clinicConfig?.schedule?.date
             ? clinicConfig.schedule.date.toDate().toLocaleDateString("en-us", {
