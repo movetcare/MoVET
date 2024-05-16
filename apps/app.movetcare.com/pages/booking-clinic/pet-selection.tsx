@@ -7,6 +7,7 @@ import { Button, ErrorMessage, Loader, Modal } from "ui";
 import {
   faArrowRight,
   faInfoCircle,
+  faPlusCircle,
   faStethoscope,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
@@ -33,6 +34,9 @@ export default function PetSelection() {
   const [showVcprDescription, setShowVcprDescription] =
     useState<boolean>(false);
   const [showExplainer, setShowExplainer] = useState<boolean>(false);
+  const [clinicRequiresVcpr, setClinicRequiresVcpr] = useState<boolean | null>(
+    null,
+  );
   const cancelButtonRef = useRef(null);
   const [session, setSession] = useState<any>();
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -42,7 +46,7 @@ export default function PetSelection() {
     reset,
     watch,
     setValue,
-    formState: { isValid, errors },
+    formState: { isValid, errors, isSubmitting },
   } = useForm({
     mode: "all",
     resolver: yupResolver(
@@ -51,7 +55,7 @@ export default function PetSelection() {
           Array.isArray(val)
             ? array()
                 .min(1, "A pet selection is required")
-                .max(3, "Only 3 pets are allowed per appointment")
+                .max(1, "Only 1 pet is allowed per appointment")
                 .of(string())
                 .required("A pet selection is required")
             : string()
@@ -66,71 +70,6 @@ export default function PetSelection() {
   });
   const selectedPets: Array<string> | string | null = watch("pets") as any;
 
-  useEffect(() => {
-    if (pets && vcprRequired === false && vcprCount && vcprCount < pets.length)
-      setValue("pets", pets[0].id as any, {
-        shouldTouch: true,
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-    if (vcprCount && pets && vcprCount === pets.length) setShowExplainer(true);
-  }, [pets, vcprRequired, setValue, vcprCount]);
-
-  useEffect(() => {
-    if (pets !== null && pets?.length > 0) {
-      let vcprPetMatchCount = 0;
-      let vcprPetCount = 0;
-      pets.forEach((pet: any) => {
-        if (pet.vcprRequired) vcprPetCount++;
-        if (selectedPets !== null) {
-          if (Array.isArray(selectedPets))
-            selectedPets.map((selectedPet: any) => {
-              if (selectedPet === pet.id && pet.vcprRequired)
-                vcprPetMatchCount++;
-            });
-          else if (selectedPets === pet.id && pet.vcprRequired)
-            vcprPetMatchCount++;
-        } else if (selectedPets === pet.id && pet.vcprRequired)
-          vcprPetMatchCount++;
-      });
-      if (
-        (Array.isArray(selectedPets) &&
-          selectedPets !== null &&
-          vcprPetMatchCount > 0 &&
-          vcprPetMatchCount === selectedPets.length) ||
-        (selectedPets === pets[0].id && pets[0].vcprRequired)
-      )
-        setVcprRequired(true);
-      else setVcprRequired(false);
-      if (vcprPetCount > 0) setShowVcprDescription(true);
-      setVcprCount(vcprPetCount);
-    }
-  }, [selectedPets, pets]);
-
-  useEffect(() => {
-    if (
-      window.localStorage.getItem("clinicBookingSession") !== null &&
-      router
-    ) {
-      setSession(
-        JSON.parse(
-          window.localStorage.getItem("clinicBookingSession") as string,
-        ),
-      );
-      setPets(
-        JSON.parse(
-          window.localStorage.getItem("clinicBookingSession") as string,
-        )?.patients,
-      );
-      setIsLoading(false);
-    } else setLoadingMessage("Invalid Data. Please try again...");
-  }, [router]);
-  const handleError = (error: any) => {
-    console.error(error);
-    setError(error);
-    reset();
-    setIsLoading(false);
-  };
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     setLoadingMessage("Saving Your Selection...");
@@ -145,7 +84,6 @@ export default function PetSelection() {
             petSelection: {
               ...data,
             },
-            vcprRequired,
             id: session?.id,
             device: JSON.parse(
               JSON.stringify(UAParser(), (_key: any, value: any) => {
@@ -175,6 +113,101 @@ export default function PetSelection() {
       }
     } else handleError({ message: "FAILED CAPTCHA" });
   };
+
+  useEffect(() => {
+    if (clinicRequiresVcpr) {
+      if (
+        pets &&
+        vcprRequired === false &&
+        vcprCount &&
+        vcprCount < pets.length
+      )
+        setValue("pets", pets[0].id as any, {
+          shouldTouch: true,
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      if (
+        pets &&
+        pets.length === 1 &&
+        vcprRequired === false &&
+        !isSubmitting
+      ) {
+        setValue("pets", pets[0].id as any, {
+          shouldTouch: true,
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+        handleSubmit(onSubmit)();
+      }
+      if (vcprCount && pets && vcprCount === pets.length)
+        setShowExplainer(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pets, vcprRequired, setValue, vcprCount, clinicRequiresVcpr]);
+
+  useEffect(() => {
+    if (clinicRequiresVcpr && pets !== null && pets?.length > 0) {
+      let vcprPetMatchCount = 0;
+      let vcprPetCount = 0;
+      pets.forEach((pet: any) => {
+        if (pet.vcprRequired) vcprPetCount++;
+        if (selectedPets !== null) {
+          if (Array.isArray(selectedPets))
+            selectedPets.map((selectedPet: any) => {
+              if (selectedPet === pet.id && pet.vcprRequired)
+                vcprPetMatchCount++;
+            });
+          else if (selectedPets === pet.id && pet.vcprRequired)
+            vcprPetMatchCount++;
+        } else if (selectedPets === pet.id && pet.vcprRequired)
+          vcprPetMatchCount++;
+      });
+      if (
+        (Array.isArray(selectedPets) &&
+          selectedPets !== null &&
+          vcprPetMatchCount > 0 &&
+          vcprPetMatchCount === selectedPets.length) ||
+        (selectedPets === pets[0].id && pets[0].vcprRequired)
+      )
+        setVcprRequired(true);
+      else setVcprRequired(false);
+      if (vcprPetCount > 0) setShowVcprDescription(true);
+      setVcprCount(vcprPetCount);
+    }
+  }, [selectedPets, pets, clinicRequiresVcpr]);
+
+  useEffect(() => {
+    if (
+      window.localStorage.getItem("clinicBookingSession") !== null &&
+      router
+    ) {
+      setSession(
+        JSON.parse(
+          window.localStorage.getItem("clinicBookingSession") as string,
+        ),
+      );
+      setPets(
+        JSON.parse(
+          window.localStorage.getItem("clinicBookingSession") as string,
+        )?.patients,
+      );
+      setClinicRequiresVcpr(
+        JSON.parse(
+          window.localStorage.getItem("clinicBookingSession") as string,
+        )?.clinic?.vcprRequired,
+      );
+      setIsLoading(false);
+    } else setLoadingMessage("Invalid Data. Please try again...");
+  }, [router]);
+
+  const handleError = (error: any) => {
+    console.error(error);
+    setError(error);
+    reset();
+    setIsLoading(false);
+  };
+
   return (
     <section className="w-full flex-1">
       <AppHeader />
@@ -200,11 +233,21 @@ export default function PetSelection() {
               <div className="flex-col w-full mx-2">
                 <BookingHeader
                   isAppMode={isAppMode}
-                  title={`Select ${pets.length > 1 ? "Your Pets" : "a Pet"}`}
-                  description={`Which ${
-                    pets.length > 1 ? "pets" : "pet"
-                  } would you like to book the clinic for?`}
+                  title={`Select Your Pet`}
+                  description={`Which  pet
+                         would you like to book the clinic for?`}
                 />
+                <p className="text-center text-xs m-0 italic text-movet-black/60 sm:w-2/3 mx-auto">
+                  * Please schedule multiple appointments or{" "}
+                  <a
+                    href="/contact"
+                    target="_blank"
+                    className="underline hover:text-movet-red text-movet-black/60 cursor-pointer"
+                  >
+                    contact us
+                  </a>{" "}
+                  if you would like to have more than one pet attend the clinic.
+                </p>
                 {pets
                   .sort(
                     (item: any, nextItem: any) =>
@@ -247,22 +290,7 @@ export default function PetSelection() {
                           size={"lg"}
                           className="mr-2 h-8 w-8 text-movet-brown flex-none"
                         /> */}
-                        {pet.vcprRequired ? (
-                          <>
-                            <p className="text-movet-black/50">
-                              {pet.species.includes("Dog") ? "🐶" : "🐱"}{" "}
-                              {capitalizeFirstLetter(pet.name)}
-                            </p>
-                            <span className="text-xs italic text-movet-red/70 ml-2 text-right grow font-extrabold">
-                              * Requires Establish Care Exam
-                            </span>
-                            <FontAwesomeIcon
-                              icon={faTimes}
-                              size={"lg"}
-                              className="ml-2 h-8 w-8 text-movet-red/70 flex-none"
-                            />
-                          </>
-                        ) : (
+                        {!clinicRequiresVcpr ? (
                           <>
                             <p>
                               {pet.species.includes("Dog") ? "🐶" : "🐱"}{" "}
@@ -281,6 +309,44 @@ export default function PetSelection() {
                               />
                             </div>
                           </>
+                        ) : (
+                          <>
+                            {pet.vcprRequired ? (
+                              <>
+                                <p className="text-movet-black/50 cursor-not-allowed">
+                                  {pet.species.includes("Dog") ? "🐶" : "🐱"}{" "}
+                                  {capitalizeFirstLetter(pet.name)}
+                                </p>
+                                <span className="text-xs italic text-movet-red/70 ml-2 text-right grow font-extrabold cursor-not-allowed">
+                                  * Requires Establish Care Exam
+                                </span>
+                                <FontAwesomeIcon
+                                  icon={faTimes}
+                                  size={"lg"}
+                                  className="ml-2 h-8 w-8 text-movet-red/70 flex-none cursor-not-allowed"
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <p>
+                                  {pet.species.includes("Dog") ? "🐶" : "🐱"}{" "}
+                                  {capitalizeFirstLetter(pet.name)}
+                                </p>
+                                <span className="text-xs italic text-movet-red ml-2 text-center grow">
+                                  {""}
+                                </span>
+                                <div className="ml-3 flex items-center h-5 flex-none">
+                                  <input
+                                    id={`${pet.name}`}
+                                    {...register("pets")}
+                                    value={`${pet.id}`}
+                                    type="checkbox"
+                                    className="focus:ring-movet-brown h-6 w-6 text-movet-brown border-movet-gray rounded-full ease-in-out duration-500"
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </>
                         )}
                       </label>
                     </div>
@@ -289,7 +355,7 @@ export default function PetSelection() {
                 {showVcprDescription && (
                   <>
                     <span
-                      className="text-center text-gray mt-8 flex justify-center items-center text-xs cursor-pointer italic hover:text-movet-brown ease-in-out duration-500"
+                      className="text-center text-gray mt-4 flex justify-center items-center text-xs cursor-pointer italic hover:text-movet-brown ease-in-out duration-500"
                       onClick={() => setShowExplainer(!showExplainer)}
                     >
                       <FontAwesomeIcon
@@ -310,9 +376,10 @@ export default function PetSelection() {
                   content={
                     <>
                       <h2 className="m-0 italic text-base">
-                        Only pets with an established VCPR may attend this
-                        clinic.
+                        Only pets that have completed an Establish Care Exam may
+                        attend this clinic.
                       </h2>
+                      <hr className="border-movet-gray w-full my-4" />
                       <p>
                         Establish Care Exams are used to start a
                         Veterinarian-Client-Patient Relationship
@@ -338,39 +405,118 @@ export default function PetSelection() {
                         appropriate and in the best interests of your pets&apos;
                         health.
                       </p>
+                      <hr className="border-movet-gray w-full my-4" />
+                      <p className="italic text-movet-black text-sm">
+                        * Please{" "}
+                        <a
+                          href="/contact"
+                          target="_blank"
+                          className="underline hover:text-movet-red text-movet-black cursor-pointer"
+                        >
+                          contact us
+                        </a>{" "}
+                        if you believe there is an error and your pet has
+                        completed an establish care exam.
+                      </p>
                     </>
                   }
-                  title="VCPR is Required..."
+                  title="VCPR is Required for this Clinic"
                   icon={faStethoscope}
                 />
-                {vcprCount && pets && vcprCount === pets.length ? (
+                {clinicRequiresVcpr ? (
+                  <>
+                    {vcprCount && pets && vcprCount === pets.length ? (
+                      <div className="flex flex-col sm:flex-row mt-12 mb-6">
+                        <Button
+                          icon={faArrowRight}
+                          iconSize={"sm"}
+                          color="black"
+                          text="Continue"
+                          disabled
+                          className={"w-full sm:w-1/2 mr-0 sm:mr-4"}
+                        />
+                        <Button
+                          type="submit"
+                          icon={faStethoscope}
+                          iconSize={"sm"}
+                          color="red"
+                          text="Establish VCPR"
+                          className={
+                            "w-full sm:w-1/2 ml-0 sm:ml-4 mt-4 sm:mt-0"
+                          }
+                          onClick={() => {
+                            window.localStorage.setItem(
+                              "email",
+                              window.localStorage.getItem(
+                                "clinicEmail",
+                              ) as string,
+                            );
+                            router.push("/schedule-an-appointment");
+                          }}
+                        />
+                      </div>
+                    ) : vcprCount && pets && vcprCount < pets.length ? (
+                      <div className="flex flex-col sm:flex-row mt-12 mb-6">
+                        <Button
+                          icon={faStethoscope}
+                          iconSize={"sm"}
+                          color="black"
+                          text="Establish VCPR"
+                          className={
+                            "w-full sm:w-1/2 mr-0 sm:mr-4 mt-4 sm:mt-0"
+                          }
+                          onClick={() => {
+                            window.localStorage.setItem(
+                              "email",
+                              window.localStorage.getItem(
+                                "clinicEmail",
+                              ) as string,
+                            );
+                            router.push("/schedule-an-appointment");
+                          }}
+                        />
+                        <Button
+                          type="submit"
+                          icon={faArrowRight}
+                          iconSize={"sm"}
+                          disabled={!isValid}
+                          color="red"
+                          text="Continue"
+                          onClick={handleSubmit(onSubmit)}
+                          className={"w-full sm:w-1/2 ml-0 sm:ml-4"}
+                        />
+                      </div>
+                    ) : (
+                      <div className="mt-12 mb-6">
+                        <Button
+                          type="submit"
+                          icon={faArrowRight}
+                          iconSize={"sm"}
+                          disabled={!isValid}
+                          color="red"
+                          text="Continue"
+                          onClick={handleSubmit(onSubmit)}
+                        />
+                      </div>
+                    )}
+                  </>
+                ) : (
                   <div className="flex flex-col sm:flex-row mt-12 mb-6">
                     <Button
-                      icon={faArrowRight}
+                      icon={faPlusCircle}
                       iconSize={"sm"}
                       color="black"
-                      text="Continue"
-                      disabled
+                      text="Add a Pet"
                       className={"w-full sm:w-1/2 mr-0 sm:mr-4"}
-                    />
-                    <Button
-                      type="submit"
-                      icon={faStethoscope}
-                      iconSize={"sm"}
-                      color="red"
-                      text="Establish VCPR"
-                      className={"w-full sm:w-1/2 ml-0 sm:ml-4 mt-4 sm:mt-0"}
                       onClick={() => {
-                        window.localStorage.setItem(
-                          "email",
-                          window.localStorage.getItem("clinicEmail") as string,
+                        setIsLoading(true);
+                        router.push(
+                          isAppMode
+                            ? "/booking-clinic/add-a-pet?mode=app"
+                            : "/booking-clinic/add-a-pet",
                         );
-                        router.push("/schedule-an-appointment");
                       }}
                     />
-                  </div>
-                ) : (
-                  <div className="mt-12 mb-6">
                     <Button
                       type="submit"
                       icon={faArrowRight}
@@ -378,6 +524,7 @@ export default function PetSelection() {
                       disabled={!isValid}
                       color="red"
                       text="Continue"
+                      className={"w-full sm:w-1/2 ml-0 sm:ml-4 mt-4 sm:mt-0"}
                       onClick={handleSubmit(onSubmit)}
                     />
                   </div>

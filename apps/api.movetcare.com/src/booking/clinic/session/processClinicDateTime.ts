@@ -9,13 +9,8 @@ import { handleFailedBooking } from "../../session/handleFailedBooking";
 
 const DEBUG = true;
 export const processClinicDateTime = async (
-  id: string,
-  requestedDateTime: {
-    resource: number;
-    date: string;
-    time: string;
-    notes: string | null;
-  },
+  id: ClinicBooking["id"],
+  requestedDateTime: ClinicBooking["requestedDateTime"],
 ): Promise<ClinicBooking | BookingError> => {
   if (DEBUG) console.log("DATE TIME DATA", requestedDateTime);
   if (requestedDateTime && id) {

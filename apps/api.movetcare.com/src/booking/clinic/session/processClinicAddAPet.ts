@@ -13,7 +13,7 @@ import { getAllActivePatients } from "../../../utils/getAllActivePatients";
 import { handleFailedBooking } from "../../session/handleFailedBooking";
 
 export const processClinicAddAPet = async (
-  id: string,
+  id: ClinicBooking["id"],
   {
     name,
     type,
@@ -191,7 +191,6 @@ export const processClinicAddAPet = async (
           id,
           step: "pet-selection",
           vcprRequired: null,
-          schedule: null,
           selectedPatients: null,
           requestedDateTime: null,
           clinic: session.clinic,
@@ -199,7 +198,7 @@ export const processClinicAddAPet = async (
             uid: session?.client?.uid,
             requiresInfo: session?.client?.requiresInfo,
           },
-        } as any;
+        };
       }
       return await handleFailedBooking(data, "FAILED TO GET PATIENTS");
     } else return await handleFailedBooking(data, "FAILED TO CREATE NEW PET");

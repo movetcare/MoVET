@@ -13,12 +13,14 @@ import Calendar from "react-calendar";
 import {
   faArrowLeft,
   faCalendarCheck,
+  faEdit,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { environment } from "utilities";
 import { useForm } from "react-hook-form";
 import { TextInput } from "ui/src/components/forms/inputs";
 import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const formatTime = (time: string): string => {
   const hours =
@@ -50,8 +52,6 @@ const formatTime = (time: string): string => {
 
 export default function DateTime() {
   const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
   const [session, setSession] = useState<any>();
   const [selectedResource, setSelectedResource] = useState<number | null>(null);
   const [selectedDate, onDateChange] = useState<Date>(today);
@@ -88,8 +88,17 @@ export default function DateTime() {
           window.localStorage.getItem("clinicBookingSession") as string,
         ),
       );
-    else setLoadingMessage("Invalid Data. Please try again...");
+    else {
+      setIsLoadingFull(true);
+      setLoadingMessage("Invalid Data. Please try again...");
+    }
   }, [router]);
+
+  useEffect(() => {
+    if (session?.clinic?.schedule?.date) {
+      onDateChange(new Date(session?.clinic?.schedule?.date));
+    }
+  }, [session]);
 
   useEffect(() => {
     const fetchAppointmentAvailability = async (): Promise<void> => {
@@ -208,12 +217,27 @@ export default function DateTime() {
                   <div className="flex-col">
                     <BookingHeader
                       isAppMode={isAppMode}
-                      title="Choose a Day & Time"
-                      description={
-                        "What day and time would you like to schedule an appointment for?"
-                      }
+                      title={`Choose a Time on ${selectedDate?.toLocaleDateString(
+                        "en-us",
+                        {
+                          month: "long",
+                          day: "numeric",
+                        },
+                      )}`}
+                      description={`What time would you like to schedule ${session?.selectedPatients.map((patientId: string) => session?.patients?.find((patient: any) => patient?.id === patientId)?.name)}'s appointment for?`}
                     />
                     <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
+                      <a
+                        href="/booking-clinic/pet-selection"
+                        className="mt-2 mb-8 text-xs"
+                      >
+                        <FontAwesomeIcon
+                          icon={faEdit}
+                          size="sm"
+                          className="mr-2"
+                        />
+                        Change Pet
+                      </a>
                       <Modal
                         showModal={retryRequired}
                         setShowModal={setRetryRequired}
@@ -229,16 +253,6 @@ export default function DateTime() {
                         }
                         title="Something Went Wrong..."
                         icon={faExclamationTriangle}
-                      />
-                      <Calendar
-                        onChange={(value: any) => {
-                          setIsLoading(true);
-                          onDateChange(value);
-                        }}
-                        value={selectedDate}
-                        minDate={today}
-                        minDetail="month"
-                        className="flex-1 justify-center items-center my-8 w-full mx-auto"
                       />
                       {isLoading ? (
                         <div className="w-full mx-auto">
@@ -331,20 +345,6 @@ export default function DateTime() {
                               </ul>
                             </div>
                           </div>
-                          <Button
-                            text="Schedule My Appointment"
-                            // type="submit"
-                            // disabled={!selectedTime || !selectedDate}
-                            className="mt-8"
-                            icon={faCalendarCheck}
-                            color="black"
-                            // onClick={handleSubmit(onSubmit)}
-                            onClick={() =>
-                              router.push(
-                                "/booking-clinic/payment-confirmation",
-                              )
-                            }
-                          />
                         </>
                       )}
                     </div>

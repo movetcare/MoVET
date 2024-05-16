@@ -7,7 +7,7 @@ export type BookingError = {
 export type ClientBookingData = {
   firstName?: string;
   lastName?: string;
-  email?: string;
+  email?: string | undefined;
   phone?: string;
   requiresInfo: boolean;
   uid: string;
@@ -121,14 +121,20 @@ export type ClinicBooking = {
     | "complete"
     | "restart"
     | "cancelled-client";
-  patients: Array<PatientBookingData>;
+  patients: Array<PatientBookingData> | null;
   id: string;
   clinic: {
     id: string;
     name: string;
     description: string;
+    schedule: {
+      date: string;
+      startTime: number;
+      endTime: number;
+    };
   };
-  selectedPatients: Array<string>;
-  isActive: boolean;
-  requestedDateTime: { date: any; time: string };
+  vcprRequired: boolean | null;
+  selectedPatients: Array<string> | null;
+  isActive?: boolean;
+  requestedDateTime: { date: any; time: string } | null;
 };

@@ -1,7 +1,11 @@
-import type { ClinicConfig } from "types";
+import type { ClinicBooking, ClinicConfig } from "types";
 import { firestore } from "../firebase";
 const DEBUG = false;
-export const getClinicConfig = async ({ id }: { id: string }) => {
+export const getClinicConfig = async ({
+  id,
+}: {
+  id: string;
+}): Promise<ClinicBooking["clinic"] | any> => {
   try {
     const clinicConfigs = await firestore
       .collection("configuration")
@@ -39,10 +43,22 @@ export const getClinicConfig = async ({ id }: { id: string }) => {
         id: clinicConfig?.id,
         name: clinicConfig?.name,
         description: clinicConfig?.description,
+        vcprRequired: clinicConfig?.vcprRequired,
+        schedule: {
+          date: clinicConfig?.schedule?.date
+            ? clinicConfig.schedule.date.toDate().toLocaleDateString("en-us", {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+              })
+            : null,
+          startTime: clinicConfig?.schedule?.startTime,
+          endTime: clinicConfig?.schedule?.endTime,
+        },
       };
     }
   } catch (error) {
     console.error(error);
-    return { error: (error as any)?.message || JSON.stringify(error) };
+    return { error: (error as any)?.message || JSON.stringify(error) } as any;
   }
 };

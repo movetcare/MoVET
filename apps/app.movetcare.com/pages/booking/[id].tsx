@@ -1,4 +1,4 @@
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faStethoscope } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AppHeader } from "components/AppHeader";
 import EmailInput from "components/inputs/EmailInput";
@@ -10,14 +10,14 @@ import type {
 } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { getClinicConfig } from "server";
 import { functions } from "services/firebase";
 import type { ClinicConfig } from "types";
 import UAParser from "ua-parser-js";
-import { Loader, Button, AppLinks } from "ui";
+import { Loader, Button, AppLinks, Modal } from "ui";
 import { object, string } from "yup";
 import { Error } from "components/Error";
 
@@ -41,7 +41,9 @@ export default function PopUpClinic({
   const { email, mode } = router.query || {};
   const isAppMode = mode === "app";
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showExplainer, setShowExplainer] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
+  const cancelButtonRef = useRef(null);
   const [loadingMessage, setLoadingMessage] = useState<string | null>(
     "Loading, please wait...",
   );
@@ -85,11 +87,7 @@ export default function PopUpClinic({
             functions,
             "scheduleClinic",
           )({
-            clinic: {
-              name: clinicConfig?.name,
-              description: clinicConfig?.description,
-              id: clinicConfig?.id,
-            },
+            clinic: clinicConfig,
             email: data.email?.toLowerCase(),
             device: JSON.parse(
               JSON.stringify(UAParser(), function (key: any, value: any) {
@@ -157,6 +155,9 @@ export default function PopUpClinic({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email, executeRecaptcha]);
 
+  const formatTime = (time: string) =>
+    time?.toString()?.length === 3 ? `0${time}` : `${time}`;
+
   return (
     <section className="w-full flex-1">
       <AppHeader />
@@ -176,11 +177,98 @@ export default function PopUpClinic({
               <Error error={error} isAppMode={isAppMode} />
             ) : (
               <>
-                {!isAppMode && (
-                  <h2 className="text-2xl font-extrabold tracking-tight text-center text-movet-blue">
-                    {clinicConfig?.name}
-                  </h2>
+                <h2 className="text-2xl font-extrabold tracking-tight text-center text-movet-blue mb-0">
+                  {clinicConfig?.name}
+                </h2>
+                <h3 className="text-lg italic text-center text-movet-blue font-source-sans-pro">
+                  {new Date(
+                    "1970-01-01T" +
+                      formatTime(clinicConfig?.schedule?.startTime).slice(
+                        0,
+                        2,
+                      ) +
+                      ":" +
+                      formatTime(clinicConfig?.schedule?.startTime).slice(2) +
+                      ":00Z",
+                  ).toLocaleTimeString("en-US", {
+                    timeZone: "UTC",
+                    hour12: true,
+                    hour: "numeric",
+                    minute: "numeric",
+                  })}{" "}
+                  -{" "}
+                  {new Date(
+                    "1970-01-01T" +
+                      formatTime(clinicConfig?.schedule?.endTime).slice(0, 2) +
+                      ":" +
+                      formatTime(clinicConfig?.schedule?.endTime).slice(2) +
+                      ":00Z",
+                  ).toLocaleTimeString("en-US", {
+                    timeZone: "UTC",
+                    hour12: true,
+                    hour: "numeric",
+                    minute: "numeric",
+                  })}{" "}
+                  on{" "}
+                  {new Date(clinicConfig?.schedule?.date)?.toLocaleDateString(
+                    "en-us",
+                    {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                    },
+                  )}
+                </h3>
+                {clinicConfig?.vcprRequired && (
+                  <h4
+                    onClick={() => setShowExplainer(!showExplainer)}
+                    className="m-0 text-sm text-center text-movet-red uppercase font-source-sans-pro-italic hover:underline cursor-pointer"
+                  >
+                    * VCPR Required
+                  </h4>
                 )}
+                <Modal
+                  showModal={showExplainer}
+                  setShowModal={setShowExplainer}
+                  cancelButtonRef={cancelButtonRef}
+                  isLoading={isLoading}
+                  error={error ? <Error message={error} /> : undefined}
+                  content={
+                    <>
+                      <h2 className="m-0 italic text-base">
+                        Only pets that have completed an Establish Care Exam may
+                        attend this clinic.
+                      </h2>
+                      <p>
+                        Establish Care Exams are used to start a
+                        Veterinarian-Client-Patient Relationship
+                        (&quot;VCPR&quot;). A VCPR is established only when your
+                        veterinarian examines your pet in person, and is
+                        maintained by regular veterinary visits as needed to
+                        monitor your pet&apos;s health.
+                      </p>
+                      <p>
+                        If a VCPR is established but your veterinarian does not
+                        regularly see your pet afterward, the VCPR is no longer
+                        valid and it would be illegal (and unethical) for your
+                        veterinarian to dispense or prescribe medications or
+                        recommend treatment without recently examining your pet.
+                      </p>
+                      <p>
+                        A valid VCPR cannot be established online, via email, or
+                        over the phone. However, once a VCPR is established, it
+                        may be able to be maintained between medically necessary
+                        examinations via telephone or other types of
+                        consultations; but it&apos;s up to your
+                        veterinarian&apos; discretion to determine if this is
+                        appropriate and in the best interests of your pets&apos;
+                        health.
+                      </p>
+                    </>
+                  }
+                  title="VCPR is Required for this Clinic"
+                  icon={faStethoscope}
+                />
                 <div
                   className="text-center mb-4 w-full mx-auto"
                   dangerouslySetInnerHTML={{

@@ -11,18 +11,8 @@ import { getAllActivePatients } from "../../../utils/getAllActivePatients";
 import { handleFailedBooking } from "../../session/handleFailedBooking";
 
 export const processClinicContactInfo = async (
-  id: string,
-  {
-    firstName,
-    lastName,
-    phone,
-    uid,
-  }: {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    uid: string;
-  },
+  id: ClinicBooking["id"],
+  { firstName, lastName, phone, uid }: ClinicBooking["client"],
 ): Promise<ClinicBooking | BookingError> => {
   const data = { firstName, lastName, phone, uid, id };
   if (DEBUG) console.log("CONTACT INFO DATA", data);
@@ -109,6 +99,10 @@ export const processClinicContactInfo = async (
       });
       return {
         patients,
+        selectedPatients: null,
+        requestedDateTime: null,
+        vcprRequired: null,
+        step: "contact-info",
         clinic: await admin
           .firestore()
           .collection("clinic_bookings")
@@ -118,7 +112,7 @@ export const processClinicContactInfo = async (
           .catch(async (error: any) => throwError(error)),
         id,
         client: { uid, requiresInfo: false },
-      } as any;
+      };
     } else
       return await handleFailedBooking(data, "FAILED TO PROCESS CLIENT INFO");
   } else

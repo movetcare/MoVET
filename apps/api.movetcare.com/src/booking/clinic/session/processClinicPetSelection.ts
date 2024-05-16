@@ -4,23 +4,21 @@ import { sendNotification } from "../../../notifications/sendNotification";
 import type { BookingError, ClinicBooking } from "../../../types/booking";
 
 export const processClinicPetSelection = async (
-  id: string,
-  selectedPets: Array<string>,
-  vcprRequired: boolean,
+  id: ClinicBooking["id"],
+  selectedPets: ClinicBooking["selectedPatients"],
 ): Promise<ClinicBooking | BookingError> => {
   const data = {
     id,
     selectedPets,
   };
   if (DEBUG) console.log("PET SELECTION DATA", data);
-  if (selectedPets?.length > 0) {
+  if (selectedPets && selectedPets?.length > 0) {
     const bookingRef = admin.firestore().collection("clinic_bookings").doc(id);
     await bookingRef
       .set(
         {
           selectedPatients: selectedPets,
           step: "pet-selection" as ClinicBooking["step"],
-          vcprRequired,
           updatedOn: new Date(),
         },
         { merge: true },
@@ -72,52 +70,19 @@ export const processClinicPetSelection = async (
         ],
       },
     });
-    let schedule = null;
-    await admin
-      .firestore()
-      .collection("configuration")
-      .doc("pop_up_clinics")
-      .get()
-      .then(async (doc: any) => {
-        if (doc.data()?.popUpClinics) {
-          doc.data()?.popUpClinics.forEach((config: any) => {
-            if (config?.id === session?.clinic?.id)
-              schedule = {
-                date: config?.schedule?.date
-                  ?.toDate()
-                  ?.toLocaleDateString("en-us", {
-                    year: "numeric",
-                    month: "numeric",
-                    day: "numeric",
-                  }),
-                startTime: config?.schedule?.startTime,
-                endTime: config?.schedule?.endTime,
-              };
-          });
-        } else
-          await handleFailedBooking(
-            "UNABLE TO LOCATE REASONS",
-            "GET DEFAULT REASONS FAILED",
-          );
-      })
-      .catch(async (error: any) => {
-        throwError(error);
-        await handleFailedBooking(error, "GET DEFAULT REASONS FAILED");
-      });
     return {
       patients: session.patients,
       selectedPatients: session.selectedPatients,
       step: "pet-selection",
       requestedDateTime: null,
       id,
-      vcprRequired,
-      schedule,
+      vcprRequired: session?.vcprRequired,
       clinic: session?.clinic,
       client: {
         uid: session?.client?.uid,
         requiresInfo: session?.client?.requiresInfo,
       },
-    } as any;
+    };
   } else
     return await handleFailedBooking(data, "FAILED TO HANDLE PET SELECTION");
 };

@@ -23,7 +23,6 @@ export const scheduleClinic = functions
       id,
       contactInfo,
       addAPet,
-      vcprRequired,
       petSelection,
       requestedDateTime,
     } = data || {};
@@ -48,7 +47,7 @@ export const scheduleClinic = functions
             if (DEBUG)
               console.log("scheduleClinic => processAddAPet => ", addAPet);
             return await processClinicAddAPet(id, addAPet);
-          } else if (petSelection && vcprRequired) {
+          } else if (petSelection) {
             if (DEBUG)
               console.log(
                 "scheduleClinic => processPetSelection => ",
@@ -59,7 +58,6 @@ export const scheduleClinic = functions
               Array.isArray(petSelection.pets)
                 ? petSelection.pets
                 : [petSelection.pets],
-              vcprRequired,
             );
           } else if (requestedDateTime) {
             if (DEBUG)

@@ -468,6 +468,7 @@ export default function RequestAnAppointment({
           </div>
         )}
         <label className="block text-sm font-medium text-movet-black font-abside mb-4 mt-10 text-center">
+          {locationSelection?.toLowerCase() === "home" && "Home Address & "}
           Additional Notes / Promo Code
         </label>
         <TextInput
@@ -475,7 +476,13 @@ export default function RequestAnAppointment({
           name="trackingCode"
           control={control}
           errors={errors}
-          placeholder="Enter any additional notes or a promo code"
+          multiline
+          numberOfLines={3}
+          placeholder={
+            locationSelection?.toLowerCase() === "home"
+              ? "Please provide us with an address for the appointment and any other additional notes or promo codes. "
+              : "Enter any additional notes or a promo code"
+          }
         />
         <div className="group flex flex-col justify-center items-center sm:col-span-2 mb-4 mt-10">
           <Button

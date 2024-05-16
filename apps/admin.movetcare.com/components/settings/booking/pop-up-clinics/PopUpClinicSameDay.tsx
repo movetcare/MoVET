@@ -92,9 +92,7 @@ export const PopUpClinicSameDay = ({
             VCPR Required <span className="text-sm text-movet-red">*</span>
           </span>
           <p className="text-sm">
-            This controls whether new/existing patients can book same day
-            appointments and how many minutes past now (AKA &quot;Lead
-            Time&quot;) is required.
+            This controls whether new patients can book this clinic or not.
           </p>
         </div>
         <div className="flex flex-col md:flex-row items-center justify-center">
