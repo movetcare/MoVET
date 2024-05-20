@@ -42,11 +42,10 @@ jobs:
         uses: actions/checkout@master
       - uses: pnpm/action-setup@master
         with:
-          version: latest
+          version: 9.1.1
       - uses: actions/setup-node@master
         with:
           node-version: latest
-          cache: 'pnpm'
       - name: Install Global Dependencies
         id: install-global-dependencies
         run: pnpm add -g firebase-tools
@@ -82,11 +81,10 @@ jobs:
         uses: actions/checkout@master
       - uses: pnpm/action-setup@master
         with:
-          version: latest
+          version: 9.1.1
       - uses: actions/setup-node@master
         with:
           node-version: latest
-          cache: 'pnpm'
       - name: Cypress run
         uses: cypress-io/github-action@master
         with:
