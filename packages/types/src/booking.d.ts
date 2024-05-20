@@ -136,5 +136,5 @@ export type ClinicBooking = {
   vcprRequired: boolean | null;
   selectedPatients: Array<string> | null;
   isActive?: boolean;
-  requestedDateTime: { date: any; time: string } | null;
+  requestedDateTime: { date: any; time: string; notes: string | null } | null;
 };
