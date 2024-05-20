@@ -20,6 +20,7 @@ import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import { capitalizeFirstLetter } from "utilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { BookingFooter } from "components/BookingFooter";
 
 export default function PetSelection() {
   const router = useRouter();
@@ -55,7 +56,10 @@ export default function PetSelection() {
           Array.isArray(val)
             ? array()
                 .min(1, "A pet selection is required")
-                .max(1, "Only 1 pet is allowed per appointment")
+                .max(
+                  1,
+                  "Only 1 pet is allowed per appointment. Please schedule multiple appointments or contact us if you would like to have more than one pet attend the clinic.",
+                )
                 .of(string())
                 .required("A pet selection is required")
             : string()
@@ -532,6 +536,9 @@ export default function PetSelection() {
               </div>
             </div>
           )}
+          <div className="mt-8">
+            <BookingFooter isClinic />
+          </div>
         </section>
       </div>
     </section>

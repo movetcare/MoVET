@@ -14,6 +14,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import PhoneInput from "ui/src/components/forms/inputs/PhoneInput";
+import { BookingFooter } from "components/BookingFooter";
 
 export default function ContactInfo() {
   const router = useRouter();
@@ -192,6 +193,9 @@ export default function ContactInfo() {
                 </div>
               </div>
             )}
+            <div className="mt-4">
+              <BookingFooter isClinic />
+            </div>
           </section>
         </div>
       </div>

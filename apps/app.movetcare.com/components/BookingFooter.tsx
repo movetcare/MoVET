@@ -1,13 +1,12 @@
 import { faRedo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {} from "@headlessui/react";
 import { useRef, useState } from "react";
 import { Modal } from "ui";
 import { useRouter } from "next/router";
 import type { ServerResponse } from "types";
 import { Error } from "components/Error";
 
-export const BookingFooter = () => {
+export const BookingFooter = ({ isClinic }: { isClinic?: boolean }) => {
   const cancelButtonRef = useRef(null);
   const router = useRouter();
   const { mode } = router.query || {};
@@ -19,15 +18,24 @@ export const BookingFooter = () => {
     setIsLoading(true);
     const processAppointmentBookingRestart = async () =>
       (
-        await fetch("/api/schedule-an-appointment", {
-          method: "POST",
-          body: JSON.stringify({
-            id: JSON.parse(
-              window.localStorage.getItem("bookingSession") as string,
-            )?.id,
-            step: "restart",
-          }),
-        })
+        await fetch(
+          `/api/schedule-${isClinic ? "a-clinic" : "an-appointment"}`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              id: isClinic
+                ? JSON.parse(
+                    window.localStorage.getItem(
+                      "clinicBookingSession",
+                    ) as string,
+                  )?.id
+                : JSON.parse(
+                    window.localStorage.getItem("bookingSession") as string,
+                  )?.id,
+              step: "restart",
+            }),
+          },
+        )
       ).json();
     processAppointmentBookingRestart()
       .then((response: ServerResponse) => {
@@ -35,19 +43,33 @@ export const BookingFooter = () => {
           handleError({ message: response.error });
         } else {
           if (isAppMode) {
-            localStorage.removeItem("bookingSession");
-            router.replace("/schedule-an-appointment?mode=app");
+            if (isClinic) {
+              const clinicId = JSON.parse(
+                window.localStorage.getItem("clinicBookingSession") as string,
+              )?.clinic?.id;
+              localStorage.removeItem("clinicBookingSession");
+              router.replace(`/booking/${clinicId}?mode=app`);
+            } else {
+              localStorage.removeItem("bookingSession");
+              router.replace("/schedule-an-appointment?mode=app");
+            }
           } else {
-            localStorage.removeItem("email");
-            localStorage.removeItem("bookingSession");
-            router.replace("/schedule-an-appointment");
+            if (isClinic) {
+              const clinicId = JSON.parse(
+                window.localStorage.getItem("clinicBookingSession") as string,
+              )?.clinic?.id;
+              localStorage.removeItem("clinicEmail");
+              localStorage.removeItem("clinicBookingSession");
+              router.replace(`/booking/${clinicId}`);
+            } else {
+              localStorage.removeItem("email");
+              localStorage.removeItem("bookingSession");
+              router.replace("/schedule-an-appointment");
+            }
           }
         }
       })
-      .catch((error) => handleError(error))
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .catch((error) => handleError(error));
   };
   const handleError = (error: any) => {
     console.error(error);
@@ -73,14 +95,15 @@ export const BookingFooter = () => {
             <Error error={error} />
           ) : (
             <p className="text-lg">
-              Are you sure you want to restart your appointment booking?{" "}
+              Are you sure you want to restart your{" "}
+              {isClinic ? "clinic" : "appointment"} booking?{" "}
               <span className="text-lg italic font-bold">
                 This action cannot be undone!
               </span>
             </p>
           )
         }
-        title="Restart Appointment Booking?"
+        title={`Restart ${isClinic ? "Clinic" : "Appointment"} Booking?`}
         icon={faRedo}
         action={restartBooking}
         yesButtonText="YES"

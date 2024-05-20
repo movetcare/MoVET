@@ -29,6 +29,7 @@ import { RadioInput } from "components/inputs/RadioInput";
 import { SearchInput } from "components/inputs/SearchInput";
 import SwitchInput from "components/inputs/SwitchInput";
 import { ToggleInput } from "components/inputs/ToggleInput";
+import { BookingFooter } from "components/BookingFooter";
 
 addMethod(string as any, "isBeforeToday", function (errorMessage: string) {
   return (this as any).test(
@@ -116,7 +117,7 @@ export default function AddAPet() {
     watch,
     reset,
     getValues,
-    formState: { errors, isSubmitted },
+    formState: { errors, isSubmitted, isDirty },
   } = useForm({
     mode: "all",
     resolver: yupResolver(
@@ -513,6 +514,7 @@ export default function AddAPet() {
                     <Button
                       type="submit"
                       icon={faArrowRight}
+                      disabled={!isDirty}
                       iconSize={"sm"}
                       color="red"
                       text="Continue"
@@ -528,6 +530,9 @@ export default function AddAPet() {
                 </form>
               </div>
             )}
+            <div className="mt-8">
+              <BookingFooter isClinic />
+            </div>
           </section>
         </div>
       </div>

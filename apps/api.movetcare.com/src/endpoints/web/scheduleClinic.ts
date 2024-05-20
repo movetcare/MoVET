@@ -7,7 +7,7 @@ import { processClinicContactInfo } from "../../booking/clinic/session/processCl
 import { processClinicAddAPet } from "../../booking/clinic/session/processClinicAddAPet";
 import { processClinicPetSelection } from "../../booking/clinic/session/processClinicPetSelection";
 import { processClinicDateTime } from "../../booking/clinic/session/processClinicDateTime";
-const DEBUG = true;
+const DEBUG = false;
 export const scheduleClinic = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<ClinicBooking | BookingError> => {

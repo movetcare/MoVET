@@ -9,7 +9,6 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "services/firebase";
 import { BookingHeader } from "components/BookingHeader";
 import { BookingFooter } from "components/BookingFooter";
-import Calendar from "react-calendar";
 import {
   faArrowLeft,
   faCalendarCheck,
@@ -227,17 +226,19 @@ export default function DateTime() {
                       description={`What time would you like to schedule ${session?.selectedPatients.map((patientId: string) => session?.patients?.find((patient: any) => patient?.id === patientId)?.name)}'s appointment for?`}
                     />
                     <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
-                      <a
-                        href="/booking-clinic/pet-selection"
-                        className="mt-2 mb-8 text-xs"
-                      >
-                        <FontAwesomeIcon
-                          icon={faEdit}
-                          size="sm"
-                          className="mr-2"
-                        />
-                        Change Pet
-                      </a>
+                      {session?.patients?.length > 1 && (
+                        <a
+                          href="/booking-clinic/pet-selection"
+                          className="mt-2 mb-8 text-xs"
+                        >
+                          <FontAwesomeIcon
+                            icon={faEdit}
+                            size="sm"
+                            className="mr-2"
+                          />
+                          Change Pet
+                        </a>
+                      )}
                       <Modal
                         showModal={retryRequired}
                         setShowModal={setRetryRequired}
@@ -275,7 +276,7 @@ export default function DateTime() {
                               </div>
                             ) : appointmentAvailability &&
                               appointmentAvailability?.length > 0 ? (
-                              <div className="bg-movet-blue p-2 rounded-xl">
+                              <div className="bg-movet-blue p-2 rounded-xl mt-4">
                                 <p className="italic text-center text-movet-white font-extrabold m-0 text-lg">
                                   {appointmentAvailability?.length} Available
                                   Appointment
@@ -349,7 +350,7 @@ export default function DateTime() {
                       )}
                     </div>
                     <div className="mt-8">
-                      <BookingFooter />
+                      <BookingFooter isClinic />
                     </div>
                   </div>
                 ) : (
@@ -381,7 +382,6 @@ export default function DateTime() {
                         })}{" "}
                         - {selectedTime && selectedTime.split("-")[0].trim()}
                       </p>
-
                       <label className="block text-sm font-medium text-movet-black font-abside mt-2 -mb-2">
                         Reason
                       </label>
@@ -448,7 +448,7 @@ export default function DateTime() {
                       />
                     </div>
                     <div className="mt-8">
-                      <BookingFooter />
+                      <BookingFooter isClinic />
                     </div>
                   </div>
                 )}

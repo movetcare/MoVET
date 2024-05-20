@@ -79,7 +79,7 @@ export const updateBookingCancellation = async (
       selectedStaff
         ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
         : ""
-    }<p></p><p>We look forward to seeing you soon!</p><p>- The MoVET Team</p>`;
+    }<p></p>`;
 
     const subject = `Appointment Booking Request Cancellation Reason Provided: "${cancelReason?.toUpperCase()}"`;
     sendNotification({

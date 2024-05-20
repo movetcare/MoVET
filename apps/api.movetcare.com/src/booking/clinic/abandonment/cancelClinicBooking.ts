@@ -1,31 +1,29 @@
-import { admin, throwError, DEBUG } from "../../config/config";
-import { createProVetNote } from "../../integrations/provet/entities/note/createProVetNote";
-import { sendNotification } from "../../notifications/sendNotification";
-import type { Booking } from "../../types/booking";
-import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
-import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
-export const cancelBooking = (
+import { DEBUG, admin, throwError } from "../../../config/config";
+import { createProVetNote } from "../../../integrations/provet/entities/note/createProVetNote";
+import { sendNotification } from "../../../notifications/sendNotification";
+import type { ClinicBooking } from "../../../types/booking";
+import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
+import { getYYMMDDFromString } from "../../../utils/getYYMMDDFromString";
+
+export const cancelClinicBooking = (
   id: string,
   {
     client,
     createdAt,
     patients,
-    reason,
+    clinic,
     requestedDateTime,
-    location,
-    address,
-    selectedStaff,
     step,
     selectedPatients,
-  }: Booking,
+  }: ClinicBooking,
 ) => {
   if (DEBUG)
-    console.log("ARCHIVING BOOKING DATA", {
+    console.log("ARCHIVING CLINIC BOOKING DATA", {
       id,
     });
   admin
     .firestore()
-    .collection("bookings")
+    .collection("clinic_bookings")
     .doc(id)
     .set(
       {
@@ -80,11 +78,7 @@ export const cancelBooking = (
                 )}</a></p>`
               : ""
           }${allPatients}
-   ${
-     reason
-       ? `<p><b>Reason:</b> ${reason.label}</p>`
-       : "<p><b>Reason:</b> Establish Care Exam</p>"
-   }
+    <p><b>Reason:</b> ${clinic?.name}</p>
     ${
       requestedDateTime?.date
         ? `<p><b>Requested Date:</b> ${getYYMMDDFromString(
@@ -95,16 +89,6 @@ export const cancelBooking = (
       requestedDateTime?.time
         ? `<p><b>Requested Time:</b> ${requestedDateTime?.time}</p>`
         : ""
-    }${
-      location
-        ? `<p><b>Requested Location:</b> ${location} ${
-            address ? `- ${address?.full} (${address?.info})` : ""
-          }</p>`
-        : ""
-    }${
-      selectedStaff
-        ? `<p><b>Requested Expert:</b> ${selectedStaff?.title} ${selectedStaff?.firstName} ${selectedStaff?.lastName}</p>`
-        : ""
     }<p></p><p></p><p>CANCELLATION REASON: NOT PROVIDED</p><p>CANCELLATION DETAILS: NOT PROVIDED</p>`;
 
         const subject = `${
@@ -113,7 +97,7 @@ export const cancelBooking = (
             : client?.email
               ? client?.email
               : "Unknown Client"
-        } has Cancelled their Appointment Booking Request`;
+        } has Cancelled their "${clinic?.name}" Clinic Booking Request`;
 
         const allPatientIds: any = [];
         if (Array.isArray(selectedPatients) && Array.isArray(patients))
@@ -148,7 +132,7 @@ export const cancelBooking = (
               {
                 type: "section",
                 text: {
-                  text: ":book: _Appointment Booking_ *CANCELLED*",
+                  text: `:book: _"${clinic?.name}" Clinic Booking_ *CANCELLED*`,
                   type: "mrkdwn",
                 },
                 fields: [
@@ -189,7 +173,7 @@ export const cancelBooking = (
               {
                 type: "section",
                 text: {
-                  text: ":book: _Appointment Booking_ *RESTARTED*",
+                  text: `:book: _"${clinic?.name}" Clinic Booking_ *RESTARTED*`,
                   type: "mrkdwn",
                 },
                 fields: [

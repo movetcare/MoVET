@@ -8,6 +8,7 @@ export { taskRunner } from "./cron/taskRunner";
 export { rebuildStaticSites as rebuildStaticWebsite } from "./cron/rebuildStaticSites";
 
 export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
+export { handleClinicBookingUpdate } from "./triggers/handleClinicBookingUpdate";
 export { handleContactSubmission } from "./triggers/handleContactSubmission";
 export { handleAnnouncementBannerUpdate } from "./triggers/handleAnnouncementBannerUpdate";
 export { handleBookingConfigUpdate } from "./triggers/handleBookingConfigUpdate";

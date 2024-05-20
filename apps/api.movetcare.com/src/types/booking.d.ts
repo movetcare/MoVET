@@ -52,7 +52,7 @@ export type Booking = {
   checkoutSession?: string;
   client?: ClientBookingData;
   createdAt?: any;
-  device?: string;
+  device?: any;
   establishCareExamRequired?: boolean;
   patients?: Array<PatientBookingData>;
   id: string;
@@ -137,4 +137,7 @@ export type ClinicBooking = {
   selectedPatients: Array<string> | null;
   isActive?: boolean;
   requestedDateTime: { date: any; time: string; notes: string | null } | null;
+  cancelReason?: string;
+  createdAt?: any;
+  updatedOn?: any;
 };
