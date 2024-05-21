@@ -37,13 +37,13 @@ export const NewPopUpClinic = () => {
         description: string().required(
           "A description for the pop up clinic is required",
         ),
-        scheduleType: object().required("A schedule type is required"),
+        //scheduleType: object().required("A schedule type is required"),
       }),
     ),
     defaultValues: {
       name: "",
       description: "",
-      scheduleType: "ONCE",
+      // scheduleType: "ONCE",
     },
   });
 
@@ -56,7 +56,7 @@ export const NewPopUpClinic = () => {
           id: kebabCase(data?.name),
           name: data?.name,
           description: data?.description,
-          scheduleType: data?.scheduleType?.id,
+          scheduleType: "ONCE",
         }),
         updatedOn: serverTimestamp(),
       },
@@ -150,7 +150,7 @@ export const NewPopUpClinic = () => {
                   </b>
                 </p>
               </div>
-              <div className="flex-col justify-center items-center mx-4 w-full mt-4 hidden">
+              {/* <div className="flex-col justify-center items-center mx-4 w-full mt-4 hidden">
                 <span className="sm:mr-2">
                   Recurrence <span className="text-sm text-movet-red">*</span>
                 </span>
@@ -176,7 +176,7 @@ export const NewPopUpClinic = () => {
                   errors={errors}
                   control={control}
                 />
-              </div>
+              </div> */}
               <button
                 type="submit"
                 onClick={handleSubmit(onSubmit as any)}

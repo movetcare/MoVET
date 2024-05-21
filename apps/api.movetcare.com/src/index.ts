@@ -30,6 +30,7 @@ export { updateAppointment } from "./endpoints/mobile/updateAppointment";
 export { refreshCustomerToken } from "./endpoints/mobile/refreshCustomerToken";
 export { getWinterMode } from "./endpoints/web/getWinterMode";
 export { getAppointmentAvailability } from "./endpoints/web/getAppointmentAvailability";
+export { getClinicAvailability } from "./endpoints/web/getClinicAvailability";
 
 export { reportABug } from "./endpoints/web/reportABug";
 export { updatePaymentMethod } from "./endpoints/web/updatePaymentMethod";

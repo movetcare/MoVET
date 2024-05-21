@@ -106,7 +106,7 @@ export default function DateTime() {
       setClosedReason(null);
       const { data: result }: any = await httpsCallable(
         functions,
-        "getAppointmentAvailability",
+        "getClinicAvailability",
       )({
         date: selectedDate,
         schedule: "clinic", //session?.clinic?.id,
