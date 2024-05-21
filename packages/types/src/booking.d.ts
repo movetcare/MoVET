@@ -131,12 +131,17 @@ export type ClinicBooking = {
       date: string;
       startTime: number;
       endTime: number;
+      vcprRequired: boolean | null;
     };
   };
-  vcprRequired: boolean | null;
   selectedPatients: Array<string> | null;
   isActive?: boolean;
-  requestedDateTime: { date: any; time: string; notes: string | null } | null;
+  requestedDateTime: {
+    date: any;
+    time: string;
+    notes: string | null;
+    resource: number;
+  } | null;
   cancelReason?: string;
   createdAt?: any;
   updatedOn?: any;

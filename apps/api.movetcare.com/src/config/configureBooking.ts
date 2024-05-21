@@ -56,7 +56,7 @@ export const configureBooking = async (): Promise<boolean> => {
             vcprRequired: true,
             scheduleType: "ONCE",
             schedule: {
-              date: new Date(),
+              date: new Date(today.setDate(today.getDate() + 28)),
               startTime: 900,
               endTime: 1700,
             },

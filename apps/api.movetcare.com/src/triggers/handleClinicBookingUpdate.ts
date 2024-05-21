@@ -1,4 +1,4 @@
-import { functions } from "../config/config";
+import { admin, functions, throwError } from "../config/config";
 import type { ClinicBooking } from "../types/booking";
 import { cancelClinicBooking } from "../booking/clinic/abandonment/cancelClinicBooking";
 import { archiveClinicBooking } from "../booking/clinic/session/archiveClinicBooking";
@@ -24,6 +24,18 @@ export const handleClinicBookingUpdate = functions.firestore
           //     `REMOVING CLINIC BOOKING ABANDONMENT AUTOMATION TASK FROM QUEUE FOR ${id}`,
           //   );
           // await removeClinicBookingAbandonmentNotifications(id);
+          admin
+            .firestore()
+            .collection("clinic_bookings")
+            .doc(id)
+            .set(
+              {
+                isActive: false,
+                updatedOn: new Date(),
+              },
+              { merge: true },
+            )
+            .catch((error: any) => throwError(error));
         }
         if (step === "success") await archiveClinicBooking(id);
         else if (step === "restart" || step === "cancelled-client")

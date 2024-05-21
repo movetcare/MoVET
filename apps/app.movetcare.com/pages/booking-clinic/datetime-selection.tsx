@@ -76,7 +76,7 @@ export default function DateTime() {
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
-      notes: null,
+      notes: "",
     },
   });
 
@@ -229,7 +229,7 @@ export default function DateTime() {
                       {session?.patients?.length > 1 && (
                         <a
                           href="/booking-clinic/pet-selection"
-                          className="mt-2 mb-8 text-xs"
+                          className="mt-2 mb-4 text-xs"
                         >
                           <FontAwesomeIcon
                             icon={faEdit}

@@ -7,7 +7,8 @@ import { getCustomerId } from "../../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
 import { handleFailedBooking } from "../../session/handleFailedBooking";
 
-const DEBUG = false;
+const DEBUG = true;
+
 export const processClinicDateTime = async (
   id: ClinicBooking["id"],
   requestedDateTime: ClinicBooking["requestedDateTime"],
@@ -81,11 +82,11 @@ export const processClinicDateTime = async (
             client: session?.client?.uid,
             time: requestedDateTime?.time,
             date: requestedDateTime?.date,
+            resource: requestedDateTime?.resource,
             additionalNotes: requestedDateTime?.notes,
             sessionId: id,
             patients: session?.patients,
             patientSelection: session?.selectedPatients,
-            vcprRequired: session?.vcprRequired,
             totalPatients: session?.selectedPatients?.length,
             clinic: session?.clinic,
           });
@@ -93,11 +94,11 @@ export const processClinicDateTime = async (
           client: session?.client?.uid,
           time: requestedDateTime?.time,
           date: requestedDateTime?.date,
+          resource: requestedDateTime?.resource,
           additionalNotes: requestedDateTime?.notes,
           sessionId: id,
           patients: session?.patients,
           patientSelection: session?.selectedPatients,
-          vcprRequired: session?.vcprRequired,
           totalPatients: session?.selectedPatients?.length,
           clinic: session?.clinic,
         });
@@ -296,7 +297,6 @@ const formatAppointmentData = async (appointment: any) => {
     console.log("DURATION", duration);
   }
   let notes = "*";
-  if (appointment?.vcprRequired) notes += "VCPR REQUIRED!";
   if (appointment?.additionalNotes)
     notes += ` | Client Notes / Promo: ${appointment?.additionalNotes?.substring(
       0,
@@ -304,7 +304,7 @@ const formatAppointmentData = async (appointment: any) => {
     )}`;
 
   notes += ` | Clinic Booking Session ID: ${appointment?.sessionId}`;
-  let reason = "";
+  let configReason = null;
   await admin
     .firestore()
     .collection("configuration")
@@ -313,39 +313,52 @@ const formatAppointmentData = async (appointment: any) => {
     .then(async (doc: any) => {
       if (doc.data()?.popUpClinics) {
         doc.data()?.popUpClinics.forEach((config: any) => {
-          if (config?.clinic === appointment?.clinic) reason = config?.reason;
+          if (config?.id === appointment?.clinic?.id)
+            configReason = config?.reason;
         });
       } else
         await handleFailedBooking(
-          "UNABLE TO LOCATE REASONS",
-          "GET DEFAULT REASONS FAILED",
+          "UNABLE TO LOCATE CLINIC CONFIG REASON",
+          "GET DEFAULT CONFIG REASON FAILED",
         );
     })
     .catch(async (error: any) => {
       throwError(error);
-      await handleFailedBooking(error, "GET DEFAULT REASONS FAILED");
+      await handleFailedBooking(error, "GET DEFAULT CONFIG REASON FAILED");
     });
-
-  const complaint = reason;
+  if (DEBUG) console.log("configReason", configReason);
+  const reason = await admin
+    .firestore()
+    .collection("reasons")
+    .where("name", "==", configReason)
+    .limit(1)
+    .get()
+    .then((snapshot: any) => {
+      let id = null;
+      snapshot.forEach(async (doc: any) => {
+        id = doc.data()?.id;
+      });
+      return id;
+    })
+    .catch(async (error: any) => {
+      throwError(error);
+      await handleFailedBooking(error, "GET REASONS FAILED");
+    });
+  if (DEBUG) console.log("reason", reason);
   if (DEBUG)
     console.log("appointment RETURN", {
       proVetData: {
         client: appointment?.client,
-        title: `${
-          appointment?.locationType === "Home"
-            ? "Housecall Appointment"
-            : appointment?.locationType === "Virtual"
-              ? "Virtual Telehealth Consultation"
-              : "Clinic"
-        } Appointment (${
+        title: `${appointment?.clinic?.name} Appointment (${
           appointment.totalPatients === 1
             ? "1 Patient"
             : appointment.totalPatients + " Patients"
         })`,
         start: formatToProVetTimestamp(start),
         end: formatToProVetTimestamp(end),
-        complaint,
+        complaint: configReason,
         resources: [appointment?.resource],
+        reason,
         notes,
         patients: appointment.patientSelection,
         duration,
@@ -357,15 +370,16 @@ const formatAppointmentData = async (appointment: any) => {
   return {
     proVetData: {
       client: appointment?.client,
-      title: `Clinic (${
+      title: `${appointment?.clinic?.name} Appointment (${
         appointment.totalPatients === 1
           ? "1 Patient"
           : appointment.totalPatients + " Patients"
       })`,
       start: formatToProVetTimestamp(start),
       end: formatToProVetTimestamp(end),
-      complaint,
+      complaint: configReason,
       resources: [appointment?.resource],
+      reason,
       notes,
       patients: appointment.patientSelection,
       duration,

@@ -76,7 +76,6 @@ export const processClinicPetSelection = async (
       step: "pet-selection",
       requestedDateTime: null,
       id,
-      vcprRequired: session?.vcprRequired,
       clinic: session?.clinic,
       client: {
         uid: session?.client?.uid,

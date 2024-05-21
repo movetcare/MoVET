@@ -15,15 +15,11 @@ export default function BookingSuccess() {
   const router = useRouter();
   const { mode } = router.query || {};
   const isAppMode = mode === "app";
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
-  // const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
-  //   null,
-  // );
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(
-    true,
+    null,
   );
   useEffect(() => {
     if (window.localStorage.getItem("clinicBookingSession") !== null && router)
@@ -34,32 +30,32 @@ export default function BookingSuccess() {
       );
     else setSubmissionSuccess(false);
   }, [router]);
-  // useEffect(() => {
-  //   if (session?.id) {
-  //     const processClinicBooking = async () =>
-  //       (
-  //         await fetch("/api/schedule-a-clinic", {
-  //           method: "POST",
-  //           body: JSON.stringify({ id: session?.id, step: "complete" }),
-  //         })
-  //       ).json();
-  //     processClinicBooking()
-  //       .then((response: ServerResponse) => {
-  //         if (response.error) handleError({ message: response.error });
-  //         else {
-  //           if (environment === "production") {
-  //             localStorage.removeItem("clinicEmail");
-  //             localStorage.removeItem("clinicBookingSession");
-  //           }
-  //           setSubmissionSuccess(true);
-  //         }
-  //       })
-  //       .catch((error) => handleError(error))
-  //       .finally(() => {
-  //         setIsLoading(false);
-  //       });
-  //   }
-  // }, [session]);
+  useEffect(() => {
+    if (session?.id) {
+      const processClinicBooking = async () =>
+        (
+          await fetch("/api/schedule-a-clinic", {
+            method: "POST",
+            body: JSON.stringify({ id: session?.id, step: "complete" }),
+          })
+        ).json();
+      processClinicBooking()
+        .then((response: ServerResponse) => {
+          if (response.error) handleError({ message: response.error });
+          else {
+            if (environment === "production") {
+              localStorage.removeItem("clinicEmail");
+              localStorage.removeItem("clinicBookingSession");
+            }
+            setSubmissionSuccess(true);
+          }
+        })
+        .catch((error) => handleError(error))
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [session]);
   const handleError = (error: any) => {
     console.error(error);
     setError(error);
@@ -103,11 +99,29 @@ export default function BookingSuccess() {
                     isAppMode={isAppMode}
                     title="Your Appointment is Scheduled"
                     description={
-                      "We can't wait to see you and your fur-family again!"
+                      "We can't wait to see you and your fur-family!"
                     }
                   />
-                  {/* <div className="w-full flex flex-col my-4 items-center text-center">
-                    <h3 className="mb-2 text-lg">Appointment Details: </h3>
+                  <div className="w-full flex flex-col my-4 items-center text-center">
+                    <h5 className="font-extrabold font-source-sans-pro mb-2 text-xl">
+                      {session?.clinic?.name}
+                    </h5>
+                    <hr className="mb-4 text-movet-gray w-2/3" />
+                    <h5 className="font-bold -mb-2">
+                      Pet{session?.selectedPatients.length > 1 && "s"}
+                    </h5>
+                    {session?.selectedPatients?.map((patientId: string) =>
+                      session?.patients?.map((patient: any, index: number) => {
+                        if (patientId === patient?.id)
+                          return (
+                            <div key={index + "-" + patient?.name}>
+                              <p className="italic font-extrabold">
+                                {patient?.name}
+                              </p>
+                            </div>
+                          );
+                      }),
+                    )}
                     <h5 className="font-bold -mb-2">Date & Time</h5>
                     <p className="italic">
                       {new Date(
@@ -122,70 +136,18 @@ export default function BookingSuccess() {
                     </p>
                     <h5 className="font-bold -mb-2">Location</h5>
                     <p className="italic font-extrabold">
-                      {session?.location === "Home" ? (
-                        `Housecall @ ${session?.address?.full}`
-                      ) : session?.location === "Clinic" ? (
-                        <>
-                          <span>MoVET @ Belleview Station</span>
-                          <br />
-                          <a
-                            className=" font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
-                            target="_blank"
-                            href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
-                            rel="noopener noreferrer"
-                          >
-                            4912 S Newport St, Denver, CO 80237
-                          </a>
-                        </>
-                      ) : (
-                        <>
-                          <span>Virtual Telehealth Consultation</span>
-                          <br />
-                          <span className="text-sm">
-                            We&apos;ll send you a link when it&apos;s time!
-                          </span>
-                        </>
-                      )}
+                      <span>MoVET @ Belleview Station</span>
+                      <br />
+                      <a
+                        className=" font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                        target="_blank"
+                        href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
+                        rel="noopener noreferrer"
+                      >
+                        4912 S Newport St, Denver, CO 80237
+                      </a>
                     </p>
-                    {session?.address?.info && (
-                      <p className="-mt-2 italic text-sm">
-                        Note: {session?.address?.info}
-                      </p>
-                    )}
-                    <h5 className="font-bold -mb-2">Reason</h5>
-                    <p className="italic font-extrabold">
-                      {session?.establishCareExamRequired
-                        ? "Establish Care Exam"
-                        : session?.reason?.label}
-                    </p>
-                    <h5 className="font-bold -mb-2">
-                      Pet{session?.selectedPatients.length > 1 && "s"}
-                    </h5>
-                    {session?.selectedPatients?.map((patientId: string) =>
-                      session?.patients?.map((patient: any, index: number) => {
-                        if (patientId === patient?.id)
-                          return (
-                            <div key={index + "-" + patient?.name}>
-                              <p className="italic font-extrabold">
-                                {patient?.name}
-                              </p>
-                              {patient?.illnessDetails && (
-                                <>
-                                  <p className="italic -mt-2 text-sm">
-                                    {patient?.illnessDetails?.symptoms}
-                                  </p>
-                                  <p className="italic -mt-2 text-sm">
-                                    {JSON.stringify(
-                                      patient?.illnessDetails?.notes,
-                                    )}
-                                  </p>
-                                </>
-                              )}
-                            </div>
-                          );
-                      }),
-                    )}
-                  </div> */}
+                  </div>
                   {!isAppMode && (
                     <p className="text-xs italic text-center mt-4 px-4 sm:px-8">
                       We will send you an email confirmation shortly. Please{" "}

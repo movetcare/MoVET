@@ -270,7 +270,7 @@ export default function PopUpClinic({
                   icon={faStethoscope}
                 />
                 <div
-                  className="text-center mb-4 w-full mx-auto"
+                  className="text-center my-4 w-full mx-auto"
                   dangerouslySetInnerHTML={{
                     __html: clinicConfig?.description,
                   }}

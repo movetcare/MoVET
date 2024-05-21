@@ -101,7 +101,6 @@ export const processClinicContactInfo = async (
         patients,
         selectedPatients: null,
         requestedDateTime: null,
-        vcprRequired: null,
         step: "contact-info",
         clinic: await admin
           .firestore()

@@ -81,32 +81,25 @@ export default function ContactInfo() {
                     isAppMode={isAppMode}
                     title="Form of Payment Required"
                     description={
-                      "Having a payment source on file is allows you to receive expedited service and skip the checkout lines when visiting our clinic and boutique."
+                      "Having a payment source on file allows you to receive expedited service and skip the checkout lines when visiting our clinic and boutique."
                     }
                   />
                   <form onSubmit={onSubmit}>
-                    <p className="text-center font-extrabold italic mt-4">
+                    <p className="text-center font-extrabold italic mt-4 text-lg">
                       * You will <span className="underline">not</span> be
                       charged until your appointment is completed.
                     </p>
                     <Button
-                      //type="submit"
+                      type="submit"
                       icon={faCreditCard}
-                      // disabled={
-                      //   session?.checkoutSession === null ||
-                      //   session?.checkoutSession === undefined
-                      // }
+                      disabled={
+                        session?.checkoutSession === null ||
+                        session?.checkoutSession === undefined
+                      }
                       iconSize={"sm"}
                       color="black"
                       text="Add Payment"
                       className="mt-6 mb-4"
-                      onClick={() =>
-                        router.push(
-                          isAppMode
-                            ? "/booking-clinic/success?mode=app"
-                            : "/booking-clinic/success",
-                        )
-                      }
                     />
                     <a
                       href="https://stripe.com/payments"

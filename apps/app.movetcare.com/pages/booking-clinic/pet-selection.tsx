@@ -125,12 +125,17 @@ export default function PetSelection() {
         vcprRequired === false &&
         vcprCount &&
         vcprCount < pets.length
-      )
-        setValue("pets", pets[0].id as any, {
-          shouldTouch: true,
-          shouldDirty: true,
-          shouldValidate: true,
-        });
+      ) {
+        setValue(
+          "pets",
+          pets?.find((pet: any) => pet?.vcprRequired === false)?.id as any,
+          {
+            shouldTouch: true,
+            shouldDirty: true,
+            shouldValidate: true,
+          },
+        );
+      }
       if (
         pets &&
         pets.length === 1 &&

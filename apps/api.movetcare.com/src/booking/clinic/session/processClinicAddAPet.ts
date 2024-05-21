@@ -190,7 +190,6 @@ export const processClinicAddAPet = async (
           patients,
           id,
           step: "pet-selection",
-          vcprRequired: null,
           selectedPatients: null,
           requestedDateTime: null,
           clinic: session.clinic,

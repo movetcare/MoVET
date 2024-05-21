@@ -1,0 +1,60 @@
+import { sendNotification } from "../notifications/sendNotification";
+import { environment, functions, request, DEBUG } from "../config/config";
+
+export const handleClinicBookingConfigUpdate = functions.firestore
+  .document("configuration/pop_up_clinics")
+  .onUpdate(async (change: any, context: any) => {
+    const { id } = context.params || {};
+    const data = change.after.data();
+    if (DEBUG)
+      console.log("handleBookingConfigUpdate => DATA", {
+        id,
+        data,
+      });
+    if (data !== undefined) {
+      const didTriggerVercelBuildWebhookForWebApp =
+        environment.type === "production"
+          ? await request
+              .post(
+                "https://api.vercel.com/v1/integrations/deploy/prj_da86e8MG9HWaYYjOhzhDRwznKPtc/Kv7tDyrjjO?buildCache=false",
+              )
+              .then(async (response: any) => {
+                const { data, status } = response;
+                if (DEBUG)
+                  console.log(
+                    "API Response: POST https://api.vercel.com/v1/integrations/deploy/prj_da86e8MG9HWaYYjOhzhDRwznKPtc/Kv7tDyrjjO?buildCache=false =>",
+                    data,
+                  );
+                return status !== 200 && status !== 201 ? "ERROR" : data;
+              })
+              .catch(() => false)
+          : false;
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: [
+            {
+              type: "section",
+              text: {
+                text: ":robot_face: _Pop Up Clinic Configuration Updated!_",
+                type: "mrkdwn",
+              },
+              fields: [
+                {
+                  type: "mrkdwn",
+                  text: "*BUILD TRIGGERED:*",
+                },
+                {
+                  type: "plain_text",
+                  text: didTriggerVercelBuildWebhookForWebApp
+                    ? "Web App: :white_check_mark: "
+                    : "Web App: :red_circle: ",
+                },
+              ],
+            },
+          ],
+        },
+      });
+    }
+    return true;
+  });
