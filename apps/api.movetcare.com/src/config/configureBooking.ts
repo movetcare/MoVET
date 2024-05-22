@@ -46,6 +46,14 @@ export const configureBooking = async (): Promise<boolean> => {
           {
             id: "spot-check-heartworm-clinic",
             name: "Spot Check Heartworm Clinic",
+            address: "4912 South Newport Street, Denver, CO, USA",
+            addressInfo:
+              "This is testing address information. Can you see it? Yes, you can! AWESOME!",
+            addressLatLon: {
+              lat: 39.6252377,
+              lng: -104.9067478,
+            },
+            zipcode: 80237,
             isActive: true,
             appointmentBufferTime: 0,
             description:

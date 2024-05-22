@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import { firestore } from "services/firebase";
 import { Button, Loader } from "ui";
 import { SelectInput, TextInput } from "ui/src/components/forms/inputs";
-import { classNames } from "utilities";
+import { classNames, environment } from "utilities";
 import Error from "../../../Error";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string } from "yup";
@@ -28,6 +28,7 @@ export const NewPopUpClinic = () => {
     handleSubmit,
     control,
     reset,
+    watch,
     formState: { errors, isDirty, isSubmitting },
   } = useForm({
     mode: "onSubmit",
@@ -47,6 +48,7 @@ export const NewPopUpClinic = () => {
     },
   });
 
+  const name = watch("name");
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     await setDoc(
@@ -122,6 +124,17 @@ export const NewPopUpClinic = () => {
                   errors={errors}
                   control={control}
                 />
+                {name && name?.length > 0 && (
+                  <p className="text-xs text-movet-black/70 italic mt-2">
+                    Clinic Booking URL:{" "}
+                    <b>
+                      {environment === "development"
+                        ? "http://localhost:3001"
+                        : "https://app.movetcare.com"}
+                      /booking/{kebabCase(name)}
+                    </b>
+                  </p>
+                )}
               </div>
               <div className="flex-col justify-center items-center mx-4 w-full mt-4">
                 <span className="sm:mr-2">

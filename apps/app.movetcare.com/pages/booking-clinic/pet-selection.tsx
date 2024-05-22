@@ -135,12 +135,13 @@ export default function PetSelection() {
             shouldValidate: true,
           },
         );
-      }
-      if (
+      } else if (
         pets &&
         pets.length === 1 &&
+        vcprCount === 0 &&
         vcprRequired === false &&
-        !isSubmitting
+        !isSubmitting &&
+        executeRecaptcha
       ) {
         setValue("pets", pets[0].id as any, {
           shouldTouch: true,
@@ -153,7 +154,14 @@ export default function PetSelection() {
         setShowExplainer(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pets, vcprRequired, setValue, vcprCount, clinicRequiresVcpr]);
+  }, [
+    pets,
+    vcprRequired,
+    setValue,
+    vcprCount,
+    clinicRequiresVcpr,
+    executeRecaptcha,
+  ]);
 
   useEffect(() => {
     if (clinicRequiresVcpr && pets !== null && pets?.length > 0) {

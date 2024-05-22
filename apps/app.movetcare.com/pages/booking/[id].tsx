@@ -180,7 +180,10 @@ export default function PopUpClinic({
                 <h2 className="text-2xl font-extrabold tracking-tight text-center text-movet-blue mb-0">
                   {clinicConfig?.name}
                 </h2>
-                <h3 className="text-lg italic text-center text-movet-blue font-source-sans-pro">
+                <h3 className="text-lg text-center text-movet-blue font-source-sans-pro">
+                  {clinicConfig?.address}
+                </h3>
+                <h3 className=" italic text-center text-movet-blue font-source-sans-pro">
                   {new Date(
                     "1970-01-01T" +
                       formatTime(clinicConfig?.schedule?.startTime).slice(
@@ -269,12 +272,26 @@ export default function PopUpClinic({
                   title="VCPR is Required for this Clinic"
                   icon={faStethoscope}
                 />
+                <iframe
+                  title="Google Map of MoVET @ Belleview Station"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={`https://www.google.com/maps/embed/v1/place?q=place_id:${clinicConfig?.placeId}&key=AIzaSyD-8-Mxe05Y1ySHD7XoDcumWt3vjA-URF0`}
+                  className="w-full h-80 rounded-xl my-4"
+                />
+                {clinicConfig?.addressInfo && (
+                  <p className="text-center italic text-xs">
+                    {clinicConfig?.addressInfo}
+                  </p>
+                )}
                 <div
                   className="text-center my-4 w-full mx-auto"
                   dangerouslySetInnerHTML={{
                     __html: clinicConfig?.description,
                   }}
                 />
+                <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mb-2" />
                 <form className="group grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 pb-4 mb-4 w-full sm:w-2/3 mx-auto">
                   <div className="sm:col-span-2 my-2">
                     <h3 className="-mb-5 text-xl text-movet-red text-center font-source-sans-pro">

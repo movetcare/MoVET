@@ -44,6 +44,15 @@ export const getClinicConfig = async ({
         name: clinicConfig?.name,
         description: clinicConfig?.description,
         vcprRequired: clinicConfig?.vcprRequired || null,
+        address: clinicConfig?.remoteLocation
+          ? clinicConfig?.address
+          : "MoVET @ Belleview Station",
+        addressInfo: clinicConfig?.remoteLocation
+          ? clinicConfig?.addressInfo
+          : null,
+        placeId: clinicConfig?.remoteLocation
+          ? clinicConfig?.placeId
+          : "ChIJ9aCJc9mHbIcRu0B0dJWB4x8",
         schedule: {
           date: clinicConfig?.schedule?.date
             ? clinicConfig.schedule.date.toDate().toLocaleDateString("en-us", {
