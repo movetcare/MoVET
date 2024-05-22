@@ -41,7 +41,7 @@ export const processClinicPetSelection = async (
           {
             type: "section",
             text: {
-              text: `:book: Clinic Booking_ *UPDATED* (${id})`,
+              text: `:book:_Clinic Booking_ *UPDATED* (${id})`,
               type: "mrkdwn",
             },
             fields: [
