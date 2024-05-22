@@ -62,26 +62,26 @@ export const configureSchedule = async (): Promise<boolean> => {
         name: "Test Hidden Holiday",
       },
     ];
-    const closureDatesClinic = [
-      {
-        name: "Test Closure for Development - 1",
-        startTime: 930,
-        endTime: 1200,
-        date: new Date(),
-      },
-      {
-        name: "Test Closure for Development - 2",
-        startTime: 1300,
-        endTime: 1500,
-        date: new Date(today.setDate(today.getDate() + 1)),
-      },
-      {
-        name: "Test Closure for Development - 3",
-        startTime: 1000,
-        endTime: 1500,
-        date: new Date(today.setDate(today.getDate() + 1)),
-      },
-    ];
+    // const closureDatesClinic = [
+    //   {
+    //     name: "Test Closure for Development - 1",
+    //     startTime: 930,
+    //     endTime: 1200,
+    //     date: new Date(),
+    //   },
+    //   {
+    //     name: "Test Closure for Development - 2",
+    //     startTime: 1300,
+    //     endTime: 1500,
+    //     date: new Date(today.setDate(today.getDate() + 1)),
+    //   },
+    //   {
+    //     name: "Test Closure for Development - 3",
+    //     startTime: 1000,
+    //     endTime: 1500,
+    //     date: new Date(today.setDate(today.getDate() + 1)),
+    //   },
+    // ];
     await admin
       .firestore()
       .collection("configuration")
@@ -89,9 +89,9 @@ export const configureSchedule = async (): Promise<boolean> => {
       .set(
         {
           closureDates,
-          closureDatesClinic,
-          closureDatesHousecall: [],
-          closureDatesVirtual: [],
+          // closureDatesClinic,
+          // closureDatesHousecall: [],
+          // closureDatesVirtual: [],
           updatedOn: new Date(),
         },
         { merge: true },
@@ -101,9 +101,9 @@ export const configureSchedule = async (): Promise<boolean> => {
           DEBUG &&
           console.log("Closures Configured => ", {
             closureDates,
-            closureDatesClinic,
-            closureDatesHousecall: [],
-            closureDatesVirtual: [],
+            // closureDatesClinic,
+            // closureDatesHousecall: [],
+            // closureDatesVirtual: [],
           }),
       )
       .catch((error: any) => throwError(error));
@@ -159,26 +159,26 @@ export const configureSchedule = async (): Promise<boolean> => {
       { days: "Mon - FRI", times: " 9am TO 5PM", type: "Housecalls" },
       { days: "Sat & sun", times: "CLOSed", type: "Housecalls" },
     ];
-    const openingDatesClinic = [
-      {
-        name: "Test Opening for Development - 1",
-        startTime: 1300,
-        endTime: 1500,
-        date: new Date(),
-      },
-      {
-        name: "Test Opening for Development - 2",
-        startTime: 1300,
-        endTime: 1500,
-        date: new Date(today.setDate(today.getDate() + 1)),
-      },
-      {
-        name: "Test Opening for Development - 3",
-        startTime: 1000,
-        endTime: 1400,
-        date: new Date(today.setDate(today.getDate() + 1)),
-      },
-    ];
+    // const openingDatesClinic = [
+    //   {
+    //     name: "Test Opening for Development - 1",
+    //     startTime: 1300,
+    //     endTime: 1500,
+    //     date: new Date(),
+    //   },
+    //   {
+    //     name: "Test Opening for Development - 2",
+    //     startTime: 1300,
+    //     endTime: 1500,
+    //     date: new Date(today.setDate(today.getDate() + 1)),
+    //   },
+    //   {
+    //     name: "Test Opening for Development - 3",
+    //     startTime: 1000,
+    //     endTime: 1400,
+    //     date: new Date(today.setDate(today.getDate() + 1)),
+    //   },
+    // ];
     await admin
       .firestore()
       .collection("configuration")
@@ -186,7 +186,7 @@ export const configureSchedule = async (): Promise<boolean> => {
       .set(
         {
           openingDates,
-          openingDatesClinic,
+          //openingDatesClinic,
           updatedOn: new Date(),
         },
         { merge: true },

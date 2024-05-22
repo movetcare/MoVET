@@ -471,9 +471,7 @@ export default function PetSelection() {
                           iconSize={"sm"}
                           color="black"
                           text="Establish VCPR"
-                          className={
-                            "w-full sm:w-1/2 mr-0 sm:mr-4 mt-4 sm:mt-0"
-                          }
+                          className={"w-full sm:w-1/2 mr-0 sm:mr-4"}
                           onClick={() => {
                             window.localStorage.setItem(
                               "email",
@@ -492,7 +490,9 @@ export default function PetSelection() {
                           color="red"
                           text="Continue"
                           onClick={handleSubmit(onSubmit)}
-                          className={"w-full sm:w-1/2 ml-0 sm:ml-4"}
+                          className={
+                            "w-full mt-4 sm:mt-0 sm:w-1/2 ml-0 sm:ml-4"
+                          }
                         />
                       </div>
                     ) : (

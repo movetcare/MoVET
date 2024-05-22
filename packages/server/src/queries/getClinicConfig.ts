@@ -26,7 +26,7 @@ export const getClinicConfig = async ({
           });
       });
       if (DEBUG) console.log("paths", paths);
-      return paths.length ? paths : [{ params: { id: "" } }];
+      return paths?.length ? paths : [{ params: { id: "404" } }];
     } else if (id) {
       const clinicConfig: ClinicConfig = clinicConfigs.find(
         (clinic: ClinicConfig) => clinic?.id === id,

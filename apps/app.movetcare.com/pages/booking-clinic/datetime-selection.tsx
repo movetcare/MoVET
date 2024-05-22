@@ -53,7 +53,7 @@ export default function DateTime() {
   const today = new Date();
   const [session, setSession] = useState<any>();
   const [selectedResource, setSelectedResource] = useState<number | null>(null);
-  const [selectedDate, onDateChange] = useState<Date>(today);
+  const [selectedDate, onDateChange] = useState<Date | null>(null);
   const [appointmentAvailability, setAppointmentAvailability] =
     useState<Array<any> | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -100,7 +100,7 @@ export default function DateTime() {
   }, [session]);
 
   useEffect(() => {
-    const fetchAppointmentAvailability = async (): Promise<void> => {
+    const fetchClinicAvailability = async (): Promise<void> => {
       setSelectedTime(null);
       setAppointmentAvailability(null);
       setClosedReason(null);
@@ -122,7 +122,10 @@ export default function DateTime() {
       } else setError(result);
       setIsLoading(false);
     };
-    if (selectedDate) fetchAppointmentAvailability();
+    if (selectedDate) {
+      console.log("selectedDate", selectedDate);
+      fetchClinicAvailability();
+    }
   }, [selectedDate, session]);
 
   const handleError = (error: any) => {
@@ -374,12 +377,13 @@ export default function DateTime() {
                         Date & Time
                       </label>
                       <p className="italic">
-                        {selectedDate.toLocaleString("en-US", {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}{" "}
+                        {selectedDate &&
+                          selectedDate.toLocaleString("en-US", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}{" "}
                         - {selectedTime && selectedTime.split("-")[0].trim()}
                       </p>
                       <label className="block text-sm font-medium text-movet-black font-abside mt-2 -mb-2">
