@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { ServerResponse } from "types";
 import { Loader } from "ui";
 
-export const Error = ({ error }: any) => {
+export const Error = ({ error, type }: any) => {
   const router = useRouter();
   const { mode } = router.query || {};
   const isAppMode = mode === "app";
@@ -16,20 +16,33 @@ export const Error = ({ error }: any) => {
     setIsLoading(true);
     const processAppointmentBookingRestart = async () =>
       (
-        await fetch("/api/schedule-an-appointment", {
-          method: "POST",
-          body: JSON.stringify({
-            id: JSON.parse(
-              window.localStorage.getItem("bookingSession") as string,
-            )?.id,
-            step: "restart",
-          }),
-        })
+        await fetch(
+          `/api/schedule-${type === "clinic" ? `a-clinic` : "an-appointment"}`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              id: JSON.parse(
+                window.localStorage.getItem(
+                  type === "clinic" ? "clinicBookingSession" : "bookingSession",
+                ) as string,
+              )?.id,
+              step: "restart",
+            }),
+          },
+        )
       ).json();
     processAppointmentBookingRestart()
       .then((response: ServerResponse) => {
         if (response.error) {
           handleError({ message: response.error });
+        }
+        if (type === "clinic") {
+          const clinicId = JSON.parse(
+            window.localStorage.getItem("clinicBookingSession") as any,
+          )?.clinic?.id;
+          localStorage.removeItem("clinicEmail");
+          localStorage.removeItem("clinicBookingSession");
+          router.push("/booking/" + clinicId);
         } else {
           localStorage.removeItem("email");
           localStorage.removeItem("bookingSession");
@@ -51,7 +64,7 @@ export const Error = ({ error }: any) => {
       {isLoading ? (
         <Loader message={"Loading, please wait..."} />
       ) : restartError ? (
-        <Error error={restartError} isAppMode={isAppMode} />
+        <Error error={restartError} />
       ) : (
         <>
           <FontAwesomeIcon

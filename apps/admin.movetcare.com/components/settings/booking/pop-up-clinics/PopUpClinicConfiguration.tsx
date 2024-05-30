@@ -165,6 +165,9 @@ export const PopUpClinicConfiguration = ({
       );
   };
 
+  const formatTime = (time: string) =>
+    time?.toString()?.length === 3 ? `0${time}` : `${time}`;
+
   return (
     <div key={id}>
       <hr className="text-movet-gray" />
@@ -196,8 +199,46 @@ export const PopUpClinicConfiguration = ({
                   </>
                 )}
               </span>
+              {schedule?.date && schedule?.startTime && schedule?.endTime && (
+                <p className="text-sm text-movet-black mt-1">
+                  {schedule.date?.toDate()?.toLocaleDateString("en-us", {
+                    weekday: "long",
+                    year: "2-digit",
+                    month: "numeric",
+                    day: "numeric",
+                  })}{" "}
+                  @{" "}
+                  <span>
+                    {new Date(
+                      "1970-01-01T" +
+                        formatTime(String(schedule?.startTime)).slice(0, 2) +
+                        ":" +
+                        formatTime(String(schedule?.startTime)).slice(2) +
+                        ":00Z",
+                    ).toLocaleTimeString("en-US", {
+                      timeZone: "UTC",
+                      hour12: true,
+                      hour: "numeric",
+                      minute: "numeric",
+                    })}{" "}
+                    -{" "}
+                    {new Date(
+                      "1970-01-01T" +
+                        formatTime(String(schedule?.endTime)).slice(0, 2) +
+                        ":" +
+                        formatTime(String(schedule?.endTime)).slice(2) +
+                        ":00Z",
+                    ).toLocaleTimeString("en-US", {
+                      timeZone: "UTC",
+                      hour12: true,
+                      hour: "numeric",
+                      minute: "numeric",
+                    })}
+                  </span>
+                </p>
+              )}
               {isActive && (
-                <p className="text-xs text-movet-black/70 italic mt-2">
+                <p className="text-xs text-movet-black/70 italic mt-1 mb-2">
                   <b>
                     <a
                       href={`${environment === "development" ? "http://localhost:3001" : "https://app.movetcare.com"}/booking/${kebabCase(name)}`}
@@ -213,6 +254,7 @@ export const PopUpClinicConfiguration = ({
                   </b>
                 </p>
               )}
+
               <div
                 className="text-sm text-movet-black mt-1 mb-3"
                 dangerouslySetInnerHTML={{ __html: description }}

@@ -132,7 +132,7 @@ export default function ContactInfo() {
                 isAppMode={isAppMode}
               />
             ) : error ? (
-              <Error error={error} isAppMode={isAppMode} />
+              <Error error={error} type="clinic" />
             ) : (
               <div
                 className={

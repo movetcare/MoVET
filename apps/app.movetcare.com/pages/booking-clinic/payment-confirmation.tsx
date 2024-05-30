@@ -69,7 +69,10 @@ export default function ContactInfo() {
                   />
                 </>
               ) : error ? (
-                <Error errorMessage={error?.message || "Unknown Error"} />
+                <Error
+                  errorMessage={error?.message || "Unknown Error"}
+                  type="clinic"
+                />
               ) : (
                 <>
                   <FontAwesomeIcon

@@ -73,7 +73,7 @@ export default function BookingSuccess() {
             {isLoading || submissionSuccess === null ? (
               <Loader message="Loading Confirmation..." isAppMode={isAppMode} />
             ) : error ? (
-              <Error error={error} isAppMode={isAppMode} />
+              <Error error={error} type="clinic" />
             ) : (
               <div
                 className={

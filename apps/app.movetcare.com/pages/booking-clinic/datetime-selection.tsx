@@ -50,7 +50,6 @@ const formatTime = (time: string): string => {
 };
 
 export default function DateTime() {
-  const today = new Date();
   const [session, setSession] = useState<any>();
   const [selectedResource, setSelectedResource] = useState<number | null>(null);
   const [selectedDate, onDateChange] = useState<Date | null>(null);
@@ -108,9 +107,7 @@ export default function DateTime() {
         functions,
         "getClinicAvailability",
       )({
-        date: selectedDate,
-        schedule: "clinic", //session?.clinic?.id,
-        patients: session?.selectedPatients,
+        id: session?.clinic?.id,
       });
       if (Array.isArray(result)) {
         setAppointmentAvailability(result);
@@ -122,10 +119,7 @@ export default function DateTime() {
       } else setError(result);
       setIsLoading(false);
     };
-    if (selectedDate) {
-      console.log("selectedDate", selectedDate);
-      fetchClinicAvailability();
-    }
+    if (selectedDate) fetchClinicAvailability();
   }, [selectedDate, session]);
 
   const handleError = (error: any) => {
@@ -222,11 +216,27 @@ export default function DateTime() {
                       title={`Choose a Time on ${selectedDate?.toLocaleDateString(
                         "en-us",
                         {
+                          weekday: "long",
                           month: "long",
                           day: "numeric",
                         },
                       )}`}
-                      description={`What time would you like to schedule ${session?.selectedPatients.map((patientId: string) => session?.patients?.find((patient: any) => patient?.id === patientId)?.name)}'s appointment for?`}
+                      customDescription={
+                        <p
+                          className={`text-lg leading-6 text-movet-black${isAppMode ? " mt-8" : ""}`}
+                        >
+                          What time would you like to schedule{" "}
+                          <span className="underline italic text-lg font-extrabold">
+                            {session?.selectedPatients.map(
+                              (patientId: string) =>
+                                session?.patients?.find(
+                                  (patient: any) => patient?.id === patientId,
+                                )?.name,
+                            )}
+                          </span>
+                          &apos;s appointment for?
+                        </p>
+                      }
                     />
                     <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
                       {session?.patients?.length > 1 && (
@@ -247,7 +257,11 @@ export default function DateTime() {
                         setShowModal={setRetryRequired}
                         cancelButtonRef={cancelButtonRef}
                         isLoading={isLoading}
-                        error={error ? <Error message={error} /> : undefined}
+                        error={
+                          error ? (
+                            <Error message={error} type="clinic" />
+                          ) : undefined
+                        }
                         content={
                           <p>
                             We&apos;re sorry, but there is already an
@@ -267,7 +281,7 @@ export default function DateTime() {
                           </div>
                         </div>
                       ) : error ? (
-                        <Error error={error} isAppMode={isAppMode} />
+                        <Error error={error} type={"clinic"} />
                       ) : (
                         <>
                           <div className="w-full mx-auto">

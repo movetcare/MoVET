@@ -45,7 +45,7 @@ export type ClinicConfig = {
     closedSundayTime?: number;
   };
   resourceConfiguration: Array<{
-    id: string;
+    id: number;
     staggerTime: number;
   }>;
 };

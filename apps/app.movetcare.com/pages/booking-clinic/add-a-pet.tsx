@@ -300,7 +300,7 @@ export default function AddAPet() {
                 isAppMode={isAppMode}
               />
             ) : error ? (
-              <Error error={error} isAppMode={isAppMode} />
+              <Error error={error} type="clinic" />
             ) : (
               <div>
                 <div className="text-center mt-4">

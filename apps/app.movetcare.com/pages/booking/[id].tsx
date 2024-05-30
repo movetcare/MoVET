@@ -267,6 +267,19 @@ export default function PopUpClinic({
                         appropriate and in the best interests of your pets&apos;
                         health.
                       </p>
+                      <hr className="border-movet-gray w-full my-4" />
+                      <p className="italic text-movet-black text-sm">
+                        * Please{" "}
+                        <a
+                          href="/contact"
+                          target="_blank"
+                          className="underline hover:text-movet-red text-movet-black cursor-pointer"
+                        >
+                          contact us
+                        </a>{" "}
+                        if you believe there is an error and your pet has
+                        completed an establish care exam.
+                      </p>
                     </>
                   }
                   title="VCPR is Required for this Clinic"
