@@ -38,7 +38,7 @@
     "axios": "0.27.2",
     "csvtojson": "^2.0.10",
     "dotenv": "^16.4.5",
-    "firebase": "^10.12.1",
+    "firebase": "^10.12.2",
     "firebase-admin": "^12.1.1",
     "firebase-functions": "^5.0.1",
     "fs-extra": "^11.2.0",
@@ -47,7 +47,7 @@
     "watch": "^1.0.2"
   },
   "devDependencies": {
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.12.13",
     "typescript": "^5.4.5"
   }
 }
