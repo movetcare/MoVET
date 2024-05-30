@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { firestore } from "services/firebase";
 import { Button, Loader } from "ui";
-import { SelectInput, TextInput } from "ui/src/components/forms/inputs";
+import { TextInput } from "ui/src/components/forms/inputs";
 import { classNames, environment } from "utilities";
 import Error from "../../../Error";
 import { yupResolver } from "@hookform/resolvers/yup";

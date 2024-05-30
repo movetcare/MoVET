@@ -76,7 +76,7 @@ export const PopUpClinicDescription = ({
     control,
     reset,
     watch,
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isDirty },
   } = useForm({
     mode: "onSubmit",
     resolver: yupResolver(

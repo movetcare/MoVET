@@ -18,23 +18,13 @@ import { functions, firestore } from "services/firebase";
 import { Button } from "ui";
 import { classNames } from "utilities";
 import Error from "../../../Error";
+import type { ClinicConfig } from "types";
 
 export const PopUpClinicResources = ({
   configuration,
   popUpClinics,
 }: {
-  configuration: {
-    name: string;
-    description: string;
-    id: string;
-    isActive?: boolean;
-    resourceConfiguration?:
-      | Array<{
-          id: string;
-          staggerTime: number;
-        }>
-      | undefined;
-  };
+  configuration: ClinicConfig;
   popUpClinics: any;
 }) => {
   const [resources, setResources] = useState<any>(null);
