@@ -109,17 +109,20 @@ export const PopUpClinicResources = ({
       { merge: true },
     )
       .then(() =>
-        toast(`"${name}" Pop-Up Clinic Resource has been updated`, {
-          position: "top-center",
-          duration: 5000,
-          icon: (
-            <FontAwesomeIcon
-              icon={faTrash}
-              size="lg"
-              className="text-movet-green"
-            />
-          ),
-        }),
+        toast(
+          `"${configuration?.name}" Pop-Up Clinic Resource has been updated. Please allow ~5 minutes for changes to be reflected.`,
+          {
+            position: "top-center",
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faTrash}
+                size="lg"
+                className="text-movet-green"
+              />
+            ),
+          },
+        ),
       )
       .catch((error: any) =>
         toast(error?.message, {
@@ -164,7 +167,7 @@ export const PopUpClinicResources = ({
     )
       .then(() =>
         toast(
-          `"${configuration.name}" Pop-Up Clinic Resource has been updated`,
+          `"${configuration.name}" Pop-Up Clinic Resource has been updated. Please allow ~5 minutes for changes to be reflected.`,
           {
             position: "top-center",
             duration: 5000,

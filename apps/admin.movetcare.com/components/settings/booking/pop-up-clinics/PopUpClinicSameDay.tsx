@@ -48,7 +48,7 @@ export const PopUpClinicSameDay = ({
     )
       .then(() =>
         toast(
-          `"${configuration?.name}" Same Day Appointment Setting Updated"`,
+          `"${configuration?.name}" Same Day Appointment Setting Updated. Please allow ~5 minutes for changes to be reflected.`,
           {
             position: "top-center",
             icon: (

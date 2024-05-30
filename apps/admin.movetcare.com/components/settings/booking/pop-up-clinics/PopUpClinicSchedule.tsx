@@ -226,16 +226,19 @@ const PopUpClinicSchedule = ({
       { merge: true },
     )
       .then(() =>
-        toast(`"${configuration?.name}" Days & Hours of Operation Updated!`, {
-          position: "top-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCheckCircle}
-              size="sm"
-              className="text-movet-green"
-            />
-          ),
-        }),
+        toast(
+          `"${configuration?.name}" Days & Hours of Operation Updated. Please allow ~5 minutes for changes to be reflected.`,
+          {
+            position: "top-center",
+            icon: (
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                size="sm"
+                className="text-movet-green"
+              />
+            ),
+          },
+        ),
       )
       .catch((error: any) => {
         toast(

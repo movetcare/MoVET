@@ -105,7 +105,6 @@ export const PopUpClinicDescription = ({
   const address = watch("address");
 
   const onSubmit = async (data: any) => {
-    console.log("address", data.address);
     const newPopUpClinics = popUpClinics.map((clinic: any) => {
       if (clinic.id === configuration?.id)
         return {
@@ -123,7 +122,6 @@ export const PopUpClinicDescription = ({
         };
       else return clinic;
     });
-    console.log("newPopUpClinics", newPopUpClinics);
     await setDoc(
       doc(firestore, "configuration/pop_up_clinics"),
       {
@@ -133,17 +131,20 @@ export const PopUpClinicDescription = ({
       { merge: true },
     )
       .then(() => {
-        toast(`"${configuration?.name}" Pop-Up Clinic has been updated`, {
-          position: "top-center",
-          duration: 5000,
-          icon: (
-            <FontAwesomeIcon
-              icon={faTrash}
-              size="lg"
-              className="text-movet-green"
-            />
-          ),
-        });
+        toast(
+          `"${configuration?.name}" Pop-Up Clinic has been updated. Please allow ~5 minutes for changes to be reflected.`,
+          {
+            position: "top-center",
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faTrash}
+                size="lg"
+                className="text-movet-green"
+              />
+            ),
+          },
+        );
         reset();
       })
       .catch((error: any) => {

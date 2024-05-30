@@ -45,16 +45,19 @@ export const PopUpClinicMultiPatient = ({
       { merge: true },
     )
       .then(() =>
-        toast(`Updated ${configuration?.name} Appointment Duration`, {
-          position: "top-center",
-          icon: (
-            <FontAwesomeIcon
-              icon={faCheckCircle}
-              size="sm"
-              className="text-movet-green"
-            />
-          ),
-        }),
+        toast(
+          `Updated ${configuration?.name} Appointment Duration. Please allow ~5 minutes for changes to be reflected.`,
+          {
+            position: "top-center",
+            icon: (
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                size="sm"
+                className="text-movet-green"
+              />
+            ),
+          },
+        ),
       )
       .catch((error: any) => {
         toast(

@@ -47,7 +47,7 @@ export const PopUpClinicBuffer = ({
       )
         .then(() =>
           toast(
-            `${configuration?.name} Appointment Buffer Time Update to "${selectedBufferTime}"`,
+            `${configuration?.name} Appointment Buffer Time Update to "${selectedBufferTime}". Please allow ~5 minutes for changes to be reflected.`,
             {
               position: "top-center",
               icon: (

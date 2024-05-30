@@ -93,17 +93,20 @@ export const PopUpClinicConfiguration = ({
       { merge: true },
     )
       .then(() =>
-        toast(`POP-UP CLINIC #${id} HAS BEEN DELETED!`, {
-          position: "top-center",
-          duration: 5000,
-          icon: (
-            <FontAwesomeIcon
-              icon={faTrash}
-              size="lg"
-              className="text-movet-red"
-            />
-          ),
-        }),
+        toast(
+          `POP-UP CLINIC #${id} HAS BEEN DELETED! Please allow ~5 minutes for changes to be reflected.`,
+          {
+            position: "top-center",
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faTrash}
+                size="lg"
+                className="text-movet-red"
+              />
+            ),
+          },
+        ),
       )
       .catch((error: any) =>
         toast(error?.message, {
@@ -137,7 +140,7 @@ export const PopUpClinicConfiguration = ({
     )
       .then(() =>
         toast(
-          `"${name}" Pop-Up Clinic is now ${!isPopUpActive ? "ACTIVE" : "INACTIVE"}!`,
+          `"${name}" Pop-Up Clinic is now ${!isPopUpActive ? "ACTIVE" : "INACTIVE"}! Please allow ~5 minutes for changes to be reflected.`,
           {
             position: "top-center",
             duration: 5000,
