@@ -7,7 +7,7 @@ import { getCustomerId } from "../../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../../utils/verifyValidPaymentSource";
 import { handleFailedBooking } from "../../session/handleFailedBooking";
 
-const DEBUG = true;
+const DEBUG = false;
 
 export const processClinicDateTime = async (
   id: ClinicBooking["id"],

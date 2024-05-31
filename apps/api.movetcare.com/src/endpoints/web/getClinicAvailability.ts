@@ -16,7 +16,7 @@ import { formatTimeHoursToDate } from "../../utils/formatTimeHoursToDate";
 import { formatTimeHoursToString } from "../../utils/formatTimeHoursToString";
 import { getTimeHoursFromDate } from "../../utils/getTimeHoursFromDate";
 
-const DEBUG = true;
+const DEBUG = false;
 
 interface Appointment {
   start: any;
