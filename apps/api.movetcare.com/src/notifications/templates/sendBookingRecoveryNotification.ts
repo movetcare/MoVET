@@ -1,6 +1,6 @@
 import { environment, admin } from "../../config/config";
 import type { Booking } from "../../types/booking";
-import type { EmailConfiguration } from "../../types/email.d";
+import type { EmailConfiguration } from "../../types/email";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
 import {

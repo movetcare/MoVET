@@ -8,7 +8,7 @@ import type {
 } from "../../../types/booking";
 import { verifyClientDataExists } from "../../../utils/auth/verifyClientDataExists";
 import { getAllActivePatients } from "../../../utils/getAllActivePatients";
-//import { createBookingAbandonmentNotifications } from "../../abandonment/createBookingAbandonmentNotifications";
+import { createClinicBookingAbandonmentNotifications } from "../abandonment/createClinicBookingAbandonmentNotifications";
 
 export const startNewClinicBooking = async (
   clinic: ClinicBooking["clinic"],
@@ -41,7 +41,7 @@ export const startNewClinicBooking = async (
     console.log(
       `ADDING BOOKING ABANDONMENT AUTOMATION TASK TO QUEUE FOR ${newBookingSession?.id}`,
     );
-  //createBookingAbandonmentNotifications(newBookingSession?.id);
+  createClinicBookingAbandonmentNotifications(newBookingSession?.id);
   sendNotification({
     type: "slack",
     payload: {
