@@ -112,8 +112,8 @@ export const PopUpClinicDescription = ({
           id: kebabCase(data?.name),
           name: data.name,
           description: data.description,
-          address: data.address.label || configuration?.address,
-          addressInfo: data.addressInfo,
+          address: data.address.label || configuration?.address || null,
+          addressInfo: data.addressInfo || null,
           addressLatLon,
           remoteLocation,
           placeId:
@@ -122,6 +122,7 @@ export const PopUpClinicDescription = ({
         };
       else return clinic;
     });
+    console.log("newPopUpClinics", newPopUpClinics);
     await setDoc(
       doc(firestore, "configuration/pop_up_clinics"),
       {

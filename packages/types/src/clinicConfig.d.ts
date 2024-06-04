@@ -13,36 +13,14 @@ export type ClinicConfig = {
   id: string;
   isActive: boolean;
   reason: string;
-  // timeSlots: Array<string>;
   appointmentBufferTime: number;
   vcprRequired: boolean;
   appointmentDuration: number;
-  scheduleType: "ONCE" | "WEEKLY" | "MONTHLY" | "YEARLY" | "CUSTOM";
+  scheduleType: "ONCE";
   schedule: {
     date?: any;
     startTime?: number;
     endTime?: number;
-    openMonday?: boolean;
-    openMondayTime?: number;
-    closedMondayTime?: number;
-    openTuesday?: boolean;
-    openTuesdayTime?: number;
-    closedTuesdayTime?: number;
-    openWednesday?: boolean;
-    openWednesdayTime?: number;
-    closedWednesdayTime?: number;
-    openThursday?: boolean;
-    openThursdayTime?: number;
-    closedThursdayTime?: number;
-    openFriday?: boolean;
-    openFridayTime?: number;
-    closedFridayTime?: number;
-    openSaturday?: boolean;
-    openSaturdayTime?: number;
-    closedSaturdayTime?: number;
-    openSunday?: boolean;
-    openSundayTime?: number;
-    closedSundayTime?: number;
   };
   resourceConfiguration: Array<{
     id: number;

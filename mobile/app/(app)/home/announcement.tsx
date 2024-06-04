@@ -8,11 +8,13 @@ import tw from "tailwind";
 import { ApplicationTypes, getPlatformUrl } from "utils/getPlatformUrl";
 
 const Announcement = () => {
-  const { path, applicationSource } = useLocalSearchParams();
+  const { path, applicationSource, email } = useLocalSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  console.log(getPlatformUrl(applicationSource as ApplicationTypes || "website") +
-            path +
-            "?mode=app")
+  console.log(
+    getPlatformUrl((applicationSource as ApplicationTypes) || "website") +
+      path +
+      (email ? `?mode=app&email=${email}` : "?mode=app"),
+  );
   return (
     <>
       {isLoading && (
@@ -23,9 +25,11 @@ const Announcement = () => {
       <DefaultWebView
         source={{
           uri:
-            getPlatformUrl(applicationSource as ApplicationTypes || "website") +
+            getPlatformUrl(
+              (applicationSource as ApplicationTypes) || "website",
+            ) +
             path +
-            "?mode=app",
+            (email ? `?mode=app&email=${email}` : "?mode=app"),
         }}
         startInLoadingState
         onLoad={() => setTimeout(() => setIsLoading(false), 1500)}

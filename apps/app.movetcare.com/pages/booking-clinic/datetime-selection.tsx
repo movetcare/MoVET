@@ -388,6 +388,23 @@ export default function DateTime() {
                         Please confirm your appointment details below
                       </p>
                       <label className="block text-sm font-medium text-movet-black font-abside -mb-2">
+                        Location
+                      </label>
+                      <p>{JSON.stringify(session)}</p>
+                      {session?.remoteLocation ? (
+                        <p className="italic">
+                          <span>{session?.address}</span>
+                          <br />
+                          {session?.addressInfo}
+                        </p>
+                      ) : (
+                        <p className="italic">
+                          <span>MoVET @ Belleview Station</span>
+                          <br />
+                          4912 S Newport St, Denver, CO 80237
+                        </p>
+                      )}
+                      <label className="block text-sm font-medium text-movet-black font-abside -mb-2 mt-2">
                         Date & Time
                       </label>
                       <p className="italic">
@@ -403,9 +420,7 @@ export default function DateTime() {
                       <label className="block text-sm font-medium text-movet-black font-abside mt-2 -mb-2">
                         Reason
                       </label>
-                      <p className="italic font-extrabold">
-                        {session?.clinic?.name}
-                      </p>
+                      <p className="italic">{session?.clinic?.name}</p>
                       <label className="block text-sm font-medium text-movet-black font-abside mt-2 -mb-2">
                         Pet
                         {session?.selectedPatients.length > 1 && "s"}
@@ -416,9 +431,7 @@ export default function DateTime() {
                             if (patientId === patient?.id)
                               return (
                                 <div key={index + "-" + patient?.name}>
-                                  <p className="italic font-extrabold">
-                                    {patient?.name}
-                                  </p>
+                                  <p className="italic">{patient?.name}</p>
                                   {patient?.illnessDetails && (
                                     <>
                                       <p className="italic -mt-2 text-sm">

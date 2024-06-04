@@ -1,5 +1,12 @@
 import { sendNotification } from "../notifications/sendNotification";
-import { environment, functions, request, DEBUG } from "../config/config";
+import {
+  environment,
+  functions,
+  request,
+  DEBUG,
+  admin,
+  throwError,
+} from "../config/config";
 
 export const handleClinicBookingConfigUpdate = functions.firestore
   .document("configuration/pop_up_clinics")
@@ -12,6 +19,18 @@ export const handleClinicBookingConfigUpdate = functions.firestore
         data,
       });
     if (data !== undefined) {
+      admin
+        .firestore()
+        .collection("alerts")
+        .doc("pop_up_clinics")
+        .set(
+          {
+            ...data,
+            updatedOn: new Date(),
+          },
+          { merge: true },
+        )
+        .catch((error: any) => throwError(error));
       const didTriggerVercelBuildWebhookForWebApp =
         environment.type === "production"
           ? await request

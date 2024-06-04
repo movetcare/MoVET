@@ -4,7 +4,7 @@ import { SectionHeading } from "components/SectionHeading";
 import { Ad } from "components/home/Ad";
 import { Announcement } from "components/home/Announcement";
 import { AppointmentsList } from "components/home/AppointmentsList";
-import { TelehealthStatus } from "components/home/TelehealthStatus";
+import { PopUpClinic, PopUpClinics } from "components/home/PopUpClinics";
 import { VcprAlert } from "components/VcprAlert";
 import {
   ActionButton,
@@ -24,7 +24,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Pressable, useColorScheme } from "react-native";
+import { useColorScheme } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -49,11 +49,11 @@ const Home = () => {
   const isDarkMode = useColorScheme() !== "light";
   const { patients } = PatientsStore.useState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [showAnnouncements, setShowAnnouncements] = useState<boolean>(true);
   const [announcement, setAnnouncement] = useState<null | Announcement>(null);
   const [ad, setAd] = useState<null | Ad>(null);
-  const [telehealthStatus, setTelehealthStatus] =
-    useState<null | TelehealthStatus>(null);
+  const [popUpClinics, setPopUpClinics] = useState<null | Array<PopUpClinic>>(
+    null,
+  );
   const [vcprPatients, setVcprPatients] = useState<Patient[] | null>(null);
   const { user } = AuthStore.useState();
   const fadeInOpacity = useSharedValue(0);
@@ -116,10 +116,14 @@ const Home = () => {
               if (DEBUG_DATA) console.log("DATA => AD: ", doc.data());
               setAd(doc.data());
               break;
-            case "telehealth":
+            case "pop_up_clinics":
               if (DEBUG_DATA)
-                console.log("DATA => TELEHEALTH STATUS: ", doc.data());
-              setTelehealthStatus(doc.data());
+                console.log("DATA => POP UP CLINICS: ", doc.data());
+              setPopUpClinics(
+                doc
+                  .data()
+                  .popUpClinics.filter((clinic: any) => clinic?.isActive),
+              );
               break;
             default:
               break;
@@ -196,9 +200,7 @@ const Home = () => {
     <Loader />
   ) : (
     <Screen withBackground="pets">
-      <Animated.View
-        style={[tw`w-full`, tw`flex-1`, animatedStyle]}
-      >
+      <Animated.View style={[tw`w-full`, tw`flex-1`, animatedStyle]}>
         <View
           style={tw`
               w-full justify-center items-center bg-transparent
@@ -225,12 +227,16 @@ const Home = () => {
             {!announcement?.isActiveMobile && !ad?.isActive && (
               <View noDarkMode style={tw`h-4 bg-transparent`} />
             )}
+            {popUpClinics && popUpClinics?.length > 0 && (
+              <PopUpClinics popUpClinics={popUpClinics} />
+            )}
             {vcprPatients && vcprPatients?.length > 0 && (
               <>
                 <VcprAlert patients={vcprPatients} />
-                {(announcement?.isActiveMobile || ad?.isActive) && upcomingAppointments && (
-                  <View noDarkMode style={tw`h-4 bg-transparent`} />
-                )}
+                {(announcement?.isActiveMobile || ad?.isActive) &&
+                  upcomingAppointments && (
+                    <View noDarkMode style={tw`h-4 bg-transparent`} />
+                  )}
               </>
             )}
             {upcomingAppointments !== null && <PaymentMethodSummary />}

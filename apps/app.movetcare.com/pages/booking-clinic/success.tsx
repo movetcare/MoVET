@@ -135,18 +135,26 @@ export default function BookingSuccess() {
                       @ {session?.requestedDateTime?.time.split("-")[0].trim()}
                     </p>
                     <h5 className="font-bold -mb-2">Location</h5>
-                    <p className="italic font-extrabold">
-                      <span>MoVET @ Belleview Station</span>
-                      <br />
-                      <a
-                        className=" font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
-                        target="_blank"
-                        href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
-                        rel="noopener noreferrer"
-                      >
-                        4912 S Newport St, Denver, CO 80237
-                      </a>
-                    </p>
+                    {session?.remoteLocation ? (
+                      <p className="italic font-extrabold">
+                        <span>{session?.address}</span>
+                        <br />
+                        {session?.addressInfo}
+                      </p>
+                    ) : (
+                      <p className="italic font-extrabold">
+                        <span>MoVET @ Belleview Station</span>
+                        <br />
+                        <a
+                          className=" font-extrabold mb-2 w-full text-movet-black hover:text-movet-red duration-300 ease-in-out"
+                          target="_blank"
+                          href="https://goo.gl/maps/h8eUvU7nsZTDEwHW9"
+                          rel="noopener noreferrer"
+                        >
+                          4912 S Newport St, Denver, CO 80237
+                        </a>
+                      </p>
+                    )}
                   </div>
                   {!isAppMode && (
                     <p className="text-xs italic text-center mt-4 px-4 sm:px-8">
