@@ -32,7 +32,7 @@
     "react-hook-form": "^7.51.5",
     "react-hot-toast": "^2.4.1",
     "react-json-formatter": "^0.4.0",
-    "react-number-format": "^5.3.4",
+    "react-number-format": "^5.4.0",
     "react-tooltip": "^5.26.4",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@types/lodash.kebabcase": "^4.1.9",
-    "@types/node": "^20.12.13",
+    "@types/node": "^20.14.1",
     "@types/react": "18.3.3",
     "@types/react-datepicker": "^6.2.0",
     "@types/ua-parser-js": "^0.7.39",
