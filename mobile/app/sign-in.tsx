@@ -1,10 +1,5 @@
 import * as SplashScreen from "expo-splash-screen";
-import {
-  Alert,
-  ImageBackground,
-  Pressable,
-  useColorScheme,
-} from "react-native";
+import { ImageBackground, Pressable, useColorScheme } from "react-native";
 import { useEffect, useState } from "react";
 import { signIn, signInWithLink } from "services/Auth";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
