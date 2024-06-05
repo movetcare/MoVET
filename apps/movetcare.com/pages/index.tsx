@@ -5,6 +5,7 @@ import {
   getWinterMode,
   getHoursStatus,
   getPopUpAd,
+  getClinicConfig,
 } from "server";
 import {
   Hero,
@@ -26,6 +27,7 @@ import type {
   Hours as HoursType,
   HoursStatus as HoursStatusType,
   PopUpAd as PopUpAdType,
+  ClinicConfig,
 } from "types";
 import Link from "next/link";
 import Image from "next/image";
@@ -38,6 +40,7 @@ export async function getStaticProps() {
       hours: (await getHours()) || null,
       hoursStatus: (await getHoursStatus()) || null,
       popUpAd: (await getPopUpAd()) || null,
+      clinicsConfig: await getClinicConfig({ id: "summary" }),
     } as any,
   };
 }
@@ -48,12 +51,14 @@ export default function Home({
   hours,
   hoursStatus,
   popUpAd,
+  clinicsConfig,
 }: {
   announcement: AnnouncementType;
   winterMode: WinterModeType;
   hours: Array<HoursType>;
   hoursStatus: HoursStatusType;
   popUpAd: PopUpAdType;
+  clinicsConfig: Array<ClinicConfig>;
 }) {
   return (
     <Layout announcement={announcement}>
@@ -82,6 +87,7 @@ export default function Home({
             </>
           }
           imageUrl="/images/pets/home-appointment-2.jpg"
+          clinicsConfig={clinicsConfig}
         />
         <ServiceTypes />
         <Amenities />

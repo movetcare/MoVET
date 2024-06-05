@@ -10,4 +10,13 @@ export type PopUpAd = {
   height?: number;
   width?: number;
   adComponent?: any;
+  popUpClinics?: Array<{
+    name: string;
+    id: string;
+    schedule: {
+      date: any;
+      startTime: number;
+      endTime: number;
+    };
+  }>;
 };

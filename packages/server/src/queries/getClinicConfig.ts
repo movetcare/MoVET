@@ -27,6 +27,32 @@ export const getClinicConfig = async ({
       });
       if (DEBUG) console.log("paths", paths);
       return paths?.length ? paths : [{ params: { id: "404" } }];
+    } else if (id === "summary") {
+      const activePopUpClinics: any = [];
+      clinicConfigs.forEach((clinic: ClinicConfig) => {
+        console.log("clinic?.isTestClinic", clinic?.isTestClinic);
+        if (
+          clinic?.isActive &&
+          (clinic?.isTestClinic !== true ||
+            typeof clinic?.isTestClinic === "undefined")
+        )
+          activePopUpClinics.push({
+            id: clinic?.id,
+            name: clinic?.name,
+            schedule: {
+              date: clinic?.schedule?.date
+                ? clinic.schedule.date.toDate()?.toLocaleDateString("en-us", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                  })
+                : null,
+              startTime: clinic?.schedule?.startTime,
+              endTime: clinic?.schedule?.endTime,
+            },
+          });
+      });
+      return activePopUpClinics;
     } else if (id) {
       const clinicConfig: ClinicConfig = clinicConfigs.find(
         (clinic: ClinicConfig) => clinic?.id === id,

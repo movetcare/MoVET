@@ -1,5 +1,11 @@
+import { faSyringe } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import type { ClinicConfig } from "types";
+
+const formatTime = (time: string) =>
+  time?.toString()?.length === 3 ? `0${time}` : `${time}`;
 
 export const Hero = ({
   title,
@@ -7,12 +13,14 @@ export const Hero = ({
   description,
   callToAction,
   imageUrl,
+  clinicsConfig,
 }: {
   title: string;
   secondTitle: string;
   description: any;
   callToAction: any;
   imageUrl: string;
+  clinicsConfig?: Array<ClinicConfig>;
 }) => {
   const router = useRouter();
   return (
@@ -54,9 +62,69 @@ export const Hero = ({
                   height={340}
                   priority
                 />
+                {clinicsConfig &&
+                  clinicsConfig.map((clinic: ClinicConfig) => (
+                    <a
+                      href={`https://app.movetcare.com/booking/${clinic?.id}`}
+                      target="_blank"
+                      className="hover:no-underline group"
+                    >
+                      <div className="rounded-full bg-movet-brown mx-auto mt-4 group-hover:bg-movet-blue">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0">
+                            <FontAwesomeIcon
+                              icon={faSyringe}
+                              className="text-movet-white text-xl ml-6"
+                            />
+                          </div>
+                          <div className="ml-6 flex-1 mb-1">
+                            <p className="-mb-2 text-movet-white">
+                              {clinic?.name}
+                            </p>
+                            <p className="text-xs text-movet-white italic">
+                              {new Date(
+                                "1970-01-01T" +
+                                  formatTime(
+                                    clinic?.schedule?.startTime as any,
+                                  ).slice(0, 2) +
+                                  ":" +
+                                  formatTime(
+                                    clinic?.schedule?.startTime as any,
+                                  ).slice(2) +
+                                  ":00Z",
+                              ).toLocaleTimeString("en-US", {
+                                timeZone: "UTC",
+                                hour12: true,
+                                hour: "numeric",
+                                minute: "numeric",
+                              })}{" "}
+                              -{" "}
+                              {new Date(
+                                "1970-01-01T" +
+                                  formatTime(
+                                    clinic?.schedule?.endTime as any,
+                                  ).slice(0, 2) +
+                                  ":" +
+                                  formatTime(
+                                    clinic?.schedule?.endTime as any,
+                                  ).slice(2) +
+                                  ":00Z",
+                              ).toLocaleTimeString("en-US", {
+                                timeZone: "UTC",
+                                hour12: true,
+                                hour: "numeric",
+                                minute: "numeric",
+                              })}{" "}
+                              on {clinic?.schedule?.date}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
               </div>
             </div>
-            <div className="absolute right-0 bottom-0 w-[25%] sm:hidden">
+            {/* <div className="absolute right-0 bottom-0 w-[25%] sm:hidden">
               <div className="absolute w-full h-[132%] -bottom-12">
                 <svg
                   className="fill-current text-movet-tan w-[62%] h-[45%] absolute right-0 bottom-[84%]"
@@ -74,9 +142,71 @@ export const Hero = ({
                 height={340}
                 priority
               />
-            </div>
+            </div> */}
           </>
         )}
+      </div>
+      <div className="block z-100 sm:hidden mb-24 -mt-16 mx-8">
+        {clinicsConfig &&
+          clinicsConfig.map((clinic: ClinicConfig) => (
+            <a
+              href={`https://app.movetcare.com/booking/${clinic?.id}`}
+              target="_blank"
+              className="hover:no-underline group"
+            >
+              <div className="rounded-full bg-movet-brown mx-auto mt-4 group-hover:bg-movet-blue">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <FontAwesomeIcon
+                      icon={faSyringe}
+                      className="text-movet-white text-xl ml-6"
+                    />
+                  </div>
+                  <div className="ml-6 flex-1 mb-1">
+                    <p className="-mb-2 text-movet-white">{clinic?.name}</p>
+                    <p className="text-xs text-movet-white italic">
+                      {new Date(
+                        "1970-01-01T" +
+                          formatTime(clinic?.schedule?.startTime as any).slice(
+                            0,
+                            2,
+                          ) +
+                          ":" +
+                          formatTime(clinic?.schedule?.startTime as any).slice(
+                            2,
+                          ) +
+                          ":00Z",
+                      ).toLocaleTimeString("en-US", {
+                        timeZone: "UTC",
+                        hour12: true,
+                        hour: "numeric",
+                        minute: "numeric",
+                      })}{" "}
+                      -{" "}
+                      {new Date(
+                        "1970-01-01T" +
+                          formatTime(clinic?.schedule?.endTime as any).slice(
+                            0,
+                            2,
+                          ) +
+                          ":" +
+                          formatTime(clinic?.schedule?.endTime as any).slice(
+                            2,
+                          ) +
+                          ":00Z",
+                      ).toLocaleTimeString("en-US", {
+                        timeZone: "UTC",
+                        hour12: true,
+                        hour: "numeric",
+                        minute: "numeric",
+                      })}{" "}
+                      on {clinic?.schedule?.date}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          ))}
       </div>
       {imageUrl && (
         <div className="sm:hidden curve h-16 before:bg-movet-white before:translate-x-[-7%] before:translate-y-[30%] after:bg-movet-tan after:translate-x-[85%] after:translate-y-[70%]">

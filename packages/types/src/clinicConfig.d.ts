@@ -26,4 +26,5 @@ export type ClinicConfig = {
     id: number;
     staggerTime: number;
   }>;
+  isTestClinic?: boolean;
 };

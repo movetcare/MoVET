@@ -34,6 +34,7 @@ export const PopUpClinics = ({
   const { user } = AuthStore.useState();
   return popUpClinics.map(({ name, id, schedule }: PopUpClinic) => (
     <TouchableOpacity
+      key={id}
       onPress={() =>
         router.navigate({
           pathname: "/(app)/home/announcement",
