@@ -31,6 +31,23 @@ export const handleClinicBookingConfigUpdate = functions.firestore
           { merge: true },
         )
         .catch((error: any) => throwError(error));
+      const didTriggerVercelBuildWebhookForMarketingWebsite =
+        environment.type === "production"
+          ? await request
+              .post(
+                "https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false",
+              )
+              .then(async (response: any) => {
+                const { data, status } = response;
+                if (DEBUG)
+                  console.log(
+                    "API Response: POST https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false =>",
+                    data,
+                  );
+                return status !== 200 && status !== 201 ? "ERROR" : data;
+              })
+              .catch(() => false)
+          : false;
       const didTriggerVercelBuildWebhookForWebApp =
         environment.type === "production"
           ? await request
@@ -65,9 +82,13 @@ export const handleClinicBookingConfigUpdate = functions.firestore
                 },
                 {
                   type: "plain_text",
-                  text: didTriggerVercelBuildWebhookForWebApp
-                    ? "Web App: :white_check_mark: "
-                    : "Web App: :red_circle: ",
+                  text:
+                    (didTriggerVercelBuildWebhookForWebApp
+                      ? "Web App: :white_check_mark: "
+                      : "Web App: :red_circle: ") +
+                    (didTriggerVercelBuildWebhookForMarketingWebsite
+                      ? "Website: :white_check_mark: "
+                      : "Website: :red_circle: "),
                 },
               ],
             },

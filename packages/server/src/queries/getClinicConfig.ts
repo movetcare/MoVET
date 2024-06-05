@@ -1,6 +1,6 @@
 import type { ClinicBooking, ClinicConfig } from "types";
 import { firestore } from "../firebase";
-const DEBUG = false;
+const DEBUG = true;
 export const getClinicConfig = async ({
   id,
 }: {
@@ -30,7 +30,6 @@ export const getClinicConfig = async ({
     } else if (id === "summary") {
       const activePopUpClinics: any = [];
       clinicConfigs.forEach((clinic: ClinicConfig) => {
-        console.log("clinic?.isTestClinic", clinic?.isTestClinic);
         if (
           clinic?.isActive &&
           (clinic?.isTestClinic !== true ||
@@ -52,19 +51,11 @@ export const getClinicConfig = async ({
             },
           });
       });
-      return activePopUpClinics;
+      return activePopUpClinics.length > 0 ? activePopUpClinics : null;
     } else if (id) {
       const clinicConfig: ClinicConfig = clinicConfigs.find(
         (clinic: ClinicConfig) => clinic?.id === id,
       );
-      // if (clinicConfig?.schedule?.date)
-      //   clinicConfig.schedule.date = clinicConfig.schedule.date
-      //     .toDate()
-      //     ?.toLocaleDateString("en-us", {
-      //       year: "numeric",
-      //       month: "numeric",
-      //       day: "numeric",
-      //     });
       return {
         id: clinicConfig?.id,
         name: clinicConfig?.name,

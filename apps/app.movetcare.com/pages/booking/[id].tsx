@@ -22,13 +22,14 @@ import { object, string } from "yup";
 import { Error } from "components/Error";
 
 export const getStaticPaths = (async () => ({
-  paths: await getClinicConfig({ id: "all" }),
+  paths: (await getClinicConfig({ id: "all" })) || null,
   fallback: false,
 })) satisfies GetStaticPaths;
 
 export const getStaticProps = (async (context) => ({
   props: {
-    clinicConfig: await getClinicConfig({ id: context.params?.id as string }),
+    clinicConfig:
+      (await getClinicConfig({ id: context.params?.id as string })) || null,
   },
 })) satisfies GetStaticProps<{
   clinicConfig: ClinicConfig;

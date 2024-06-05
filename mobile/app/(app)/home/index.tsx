@@ -122,7 +122,12 @@ const Home = () => {
               setPopUpClinics(
                 doc
                   .data()
-                  .popUpClinics.filter((clinic: any) => clinic?.isActive),
+                  .popUpClinics.filter(
+                    (clinic: any) =>
+                      clinic?.isActive &&
+                      (clinic?.isTestClinic !== true ||
+                        typeof clinic?.isTestClinic === "undefined"),
+                  ),
               );
               break;
             default:
