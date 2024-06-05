@@ -47,7 +47,7 @@
     "watch": "^1.0.2"
   },
   "devDependencies": {
-    "@types/node": "^20.14.1",
+    "@types/node": "^20.14.2",
     "typescript": "^5.4.5"
   }
 }
