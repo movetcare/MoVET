@@ -41,6 +41,7 @@ export const PopUpClinicConfiguration = ({
     vcprRequired,
     schedule,
     scheduleType,
+    isTestClinic,
   } = configuration || {};
   const [isPopUpActive, setIsPopUpActive] = useState<boolean>(!!isActive);
   const [popUpToDelete, setPopUpToDelete] = useState<any>(null);
@@ -175,13 +176,13 @@ export const PopUpClinicConfiguration = ({
     <div key={id}>
       <hr className="text-movet-gray" />
       <div
-        className={`flex flex-row items-center w-full${isConfigured ? " cursor-pointer hover:bg-movet-white" : " opacity-50"}${showConfigurationOptions ? " bg-movet-white" : ""}`}
+        className={`flex flex-row items-center w-full${isTestClinic ? " cursor-default" : isConfigured ? " cursor-pointer hover:bg-movet-white" : " opacity-50"}${showConfigurationOptions ? " bg-movet-white" : ""}`}
       >
         <Switch.Group
           as="div"
           className="flex items-center justify-between px-6 sm:px-8 w-full"
           onClick={() => {
-            if (isConfigured)
+            if (isConfigured && isTestClinic !== true)
               setShowConfigurationOptions(!showConfigurationOptions);
           }}
         >
@@ -202,6 +203,12 @@ export const PopUpClinicConfiguration = ({
                   </>
                 )}
               </span>
+              {isTestClinic && (
+                <p className="text-xs text-movet-red italic mt-1">
+                  * This clinic is required for automated testing. It can not be
+                  disabled or deleted.
+                </p>
+              )}
               {schedule?.date && schedule?.startTime && schedule?.endTime && (
                 <p className="text-sm text-movet-black mt-1">
                   {schedule.date?.toDate()?.toLocaleDateString("en-us", {
@@ -257,7 +264,6 @@ export const PopUpClinicConfiguration = ({
                   </b>
                 </p>
               )}
-
               <div
                 className="text-sm text-movet-black mt-1 mb-3"
                 dangerouslySetInnerHTML={{ __html: description }}
@@ -266,11 +272,15 @@ export const PopUpClinicConfiguration = ({
           </div>
           <div className="flex flex-row justify-right items-center">
             <Switch
-              checked={isActive}
-              disabled={!isConfigured}
+              checked={isActive || isTestClinic}
+              disabled={!isConfigured || isTestClinic}
               onChange={() => updateActiveStatus()}
               className={classNames(
-                isActive ? "bg-movet-green" : "bg-movet-gray",
+                isTestClinic
+                  ? "bg-movet-green/50"
+                  : isActive
+                    ? "bg-movet-green"
+                    : "bg-movet-gray",
                 "ml-4 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-gray",
               )}
             >
@@ -285,11 +295,12 @@ export const PopUpClinicConfiguration = ({
             <Tooltip id="editPopUpClinic" />
             <div
               onClick={() => {
-                setShowConfigurationOptions(!showConfigurationOptions);
+                if (isTestClinic) console.log("CAN NOT EDIT TEST CLINICS!");
+                else setShowConfigurationOptions(!showConfigurationOptions);
               }}
               data-tooltip-id="editPopUpClinic"
               data-tooltip-content="Edit Pop-Up Clinic Configuration"
-              className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red ml-4"
+              className={`cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red ml-4 ${isTestClinic ? "text-movet-gray" : ""}`}
             >
               <FontAwesomeIcon icon={faEdit} />
             </div>
@@ -298,14 +309,20 @@ export const PopUpClinicConfiguration = ({
         <Tooltip id="deletePopUp" />
         <div
           onClick={() => {
-            setShowDeletePopUpModal(true);
-            setPopUpToDelete(configuration);
+            if (isTestClinic) console.log("CAN NOT DELETE TEST CLINICS!");
+            else {
+              setShowDeletePopUpModal(true);
+              setPopUpToDelete(configuration);
+            }
           }}
           data-tooltip-id="deletePopUp"
           data-tooltip-content="Delete Pop-Up Clinic"
           className="cursor-pointer inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red -ml-4 mr-4"
         >
-          <FontAwesomeIcon icon={faTrash} />
+          <FontAwesomeIcon
+            icon={faTrash}
+            className={`${isTestClinic ? "text-movet-gray" : ""}`}
+          />
         </div>
       </div>
       {(!isConfigured || showConfigurationOptions) && (
