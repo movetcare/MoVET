@@ -23,6 +23,8 @@ import {
   arrayUnion,
   getDoc,
   serverTimestamp,
+  DocumentData,
+  QuerySnapshot,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { firestore, storage } from "firebase-config";
@@ -32,7 +34,7 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import { Platform, useColorScheme } from "react-native";
 import * as Notifications from "expo-notifications";
-import { Icon, View, Screen, Container } from "components/themed";
+import { Icon, View, Screen, Container, ItalicText } from "components/themed";
 import { isTablet } from "utils/isTablet";
 
 const registerForPushNotificationsAsync = async () => {
@@ -74,6 +76,11 @@ const defaultMessages: IMessage[] = [
 ];
 const ChatIndex = () => {
   const { user } = AuthStore.useState();
+  const [telehealthStatus, setTelehealthStatus] = useState<{
+    isOnline: boolean;
+    queueSize: number;
+    waitTime: number;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const isDarkMode = useColorScheme() !== "light";
@@ -207,8 +214,37 @@ const ChatIndex = () => {
           setMessages(previousMessages);
           setIsLoading(false);
         },
+        (error: any) => {
+          setIsLoading(false);
+          ErrorStore.update((s: any) => {
+            s.currentError = error;
+          });
+        },
       );
-      return () => unsubscribeChatLogDocuments();
+
+      const unsubscribeAlerts = onSnapshot(
+        query(collection(firestore, "alerts")),
+        (querySnapshot: QuerySnapshot) => {
+          if (querySnapshot.empty) {
+            setIsLoading(false);
+            return;
+          }
+          querySnapshot.forEach((doc: DocumentData) => {
+            if (doc.id === "telehealth") setTelehealthStatus(doc.data());
+          });
+          setIsLoading(false);
+        },
+        (error: any) => {
+          setIsLoading(false);
+          ErrorStore.update((s: any) => {
+            s.currentError = error;
+          });
+        },
+      );
+      return () => {
+        unsubscribeChatLogDocuments();
+        unsubscribeAlerts();
+      };
     }
   }, [user?.uid]);
 
@@ -384,6 +420,42 @@ const ChatIndex = () => {
   return (
     <Screen withBackground="pets" noScroll>
       <View noDarkMode style={tw`flex-1 bg-transparent -mb-1 w-full`}>
+        <View
+          noDarkMode
+          style={tw`${telehealthStatus?.isOnline ? "bg-movet-green" : "bg-movet-red"} px-4 py-1 flex flex-row items-center justify-center`}
+        >
+          <ItalicText style={tw`text-movet-white text-sm`} noDarkMode>
+            MoVET is Currently{" "}
+            {telehealthStatus?.isOnline ? "Online!" : "Offline..."}
+          </ItalicText>
+        </View>
+        {telehealthStatus?.isOnline && telehealthStatus?.queueSize > 0 && (
+          <View
+            noDarkMode
+            style={tw`bg-movet-yellow px-4 py-1 flex flex-row items-center justify-center`}
+          >
+            <ItalicText style={tw`text-movet-white text-xs`} noDarkMode>
+              There{" "}
+              {telehealthStatus?.queueSize === 1
+                ? "is 1 person"
+                : "are " + telehealthStatus?.queueSize + " people"}{" "}
+              ahead of you.
+            </ItalicText>
+            <ItalicText style={tw`text-movet-white text-xs`} noDarkMode>
+              Estimated response ~{telehealthStatus?.waitTime + " minutes"}
+            </ItalicText>
+          </View>
+        )}
+        {!telehealthStatus?.isOnline && (
+          <View
+            noDarkMode
+            style={tw`bg-movet-yellow px-4 py-1 flex flex-row items-center justify-center`}
+          >
+            <ItalicText style={tw`text-movet-white text-xs`} noDarkMode>
+              Leave us a message and we&apos;ll get back to you ASAP
+            </ItalicText>
+          </View>
+        )}
         <GiftedChat
           infiniteScroll
           scrollToBottom

@@ -52,6 +52,7 @@ export default function PopUpClinic({
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { isDirty, errors },
   } = useForm({
     mode: "onSubmit",
@@ -139,17 +140,26 @@ export default function PopUpClinic({
       executeRecaptcha
     ) {
       setIsLoading(true);
-      if (email)
-        onSubmit({
-          email: (email as string)
+      if (email) {
+        setValue(
+          "email",
+          (email as string)
             ?.toLowerCase()
             ?.replaceAll(" ", "+")
             ?.replaceAll("%20", "+")
             ?.replaceAll("%40", "@"),
-        });
-      else if (window.localStorage.getItem("clinicEmail"))
+          {
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true,
+          },
+        );
+        setIsLoading(false);
+      } else if (window.localStorage.getItem("clinicEmail"))
         onSubmit({
-          email: window.localStorage.getItem("clinicEmail") as string,
+          email: (
+            window.localStorage.getItem("clinicEmail") as string
+          )?.replaceAll("?mode=app", ""),
         });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -304,61 +314,69 @@ export default function PopUpClinic({
                     __html: clinicConfig?.description,
                   }}
                 />
-                <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mb-2" />
+                {!email && (
+                  <hr className="border-movet-gray w-full sm:w-2/3 mx-auto mb-2" />
+                )}
                 <form className="group grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 pb-4 mb-4 w-full sm:w-2/3 mx-auto">
                   <div className="sm:col-span-2 my-2">
-                    <h3 className="-mb-5 text-xl text-movet-red text-center font-source-sans-pro">
+                    <h3
+                      className={`${email ? "" : "-mb-5"} text-xl text-movet-red text-center font-source-sans-pro`}
+                    >
                       Reserve Your Spot Today
                     </h3>
                   </div>
-                  <div className="sm:col-span-2 my-2">
-                    <EmailInput
-                      autoFocus
-                      required
-                      label=""
-                      name="email"
-                      errors={errors}
-                      control={control}
-                      placeholder={"Your Email Address"}
-                    />
-                  </div>
+                  {!email && (
+                    <div className="sm:col-span-2 my-2">
+                      <EmailInput
+                        autoFocus
+                        required
+                        label=""
+                        name="email"
+                        errors={errors}
+                        control={control}
+                        placeholder={"Your Email Address"}
+                      />
+                    </div>
+                  )}
                   <div className="flex justify-center items-center sm:col-span-2">
                     <Button
                       type="submit"
                       icon={faArrowRight}
                       iconSize={"lg"}
                       disabled={!isDirty && email === undefined}
-                      text="Continue"
+                      text="Sign Up"
                       className={"w-full md:w-2/3"}
                       color="red"
                       onClick={handleSubmit(onSubmit)}
                     />
                   </div>
-                  <div className="hidden group-hover:flex sm:col-span-2 -mt-0 mx-auto">
-                    <div className="flex items-center justify-center text-center">
-                      <p className="text-xs italic text-movet-black">
-                        By clicking the &quot;Continue&quot; button above,
-                        <br />
-                        you agree to the{" "}
-                        <span className="font-medium font-abside text-center md:text-left hover:underline  ease-in-out duration-500 mb-2">
-                          <Link href="/privacy-policy?mode=app">
-                            <span className="text-movet-brown hover:underline  ease-in-out duration-500 cursor-pointer">
-                              privacy policy
-                            </span>
-                          </Link>
-                        </span>{" "}
-                        and{" "}
-                        <span className="font-medium font-abside text-center md:text-left hover:underline  ease-in-out duration-500 mb-2">
-                          <Link href="/terms-and-conditions?mode=app">
-                            <span className="text-movet-brown hover:underline  ease-in-out duration-500 cursor-pointer">
-                              terms of service
-                            </span>
-                          </Link>
-                        </span>
-                        .
-                      </p>
+                  {!email && (
+                    <div className="hidden group-hover:flex sm:col-span-2 -mt-0 mx-auto">
+                      <div className="flex items-center justify-center text-center">
+                        <p className="text-xs italic text-movet-black">
+                          By clicking the &quot;Continue&quot; button above,
+                          <br />
+                          you agree to the{" "}
+                          <span className="font-medium font-abside text-center md:text-left hover:underline  ease-in-out duration-500 mb-2">
+                            <Link href="/privacy-policy?mode=app">
+                              <span className="text-movet-brown hover:underline  ease-in-out duration-500 cursor-pointer">
+                                privacy policy
+                              </span>
+                            </Link>
+                          </span>{" "}
+                          and{" "}
+                          <span className="font-medium font-abside text-center md:text-left hover:underline  ease-in-out duration-500 mb-2">
+                            <Link href="/terms-and-conditions?mode=app">
+                              <span className="text-movet-brown hover:underline  ease-in-out duration-500 cursor-pointer">
+                                terms of service
+                              </span>
+                            </Link>
+                          </span>
+                          .
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </form>
                 {!isAppMode && (
                   <>

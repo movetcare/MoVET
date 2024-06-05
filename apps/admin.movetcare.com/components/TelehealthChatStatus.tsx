@@ -537,7 +537,7 @@ const TelehealthChatStatus = () => {
               className="mb-4 w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 bg-white rounded-lg"
               {...register("message")}
             />
-            <div className="flex flex-row">
+            <div className="flex flex-row hidden">
               <div className="mr-2 w-1/2">
                 <label className="italic mt-2 mb-4 text-sm">
                   <FontAwesomeIcon icon={faUsers} size="sm" />

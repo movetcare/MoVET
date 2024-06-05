@@ -8,6 +8,34 @@ export const syncChatLogWithProVet = functions.firestore
   .onWrite(async (change: any, context: any) => {
     const document = change.after.exists ? change.after.data() : null;
     const { status } = document || {};
+    const activeChatCount = await admin
+      .firestore()
+      .collection("telehealth_chat")
+      .where("status", "==", "active")
+      .get()
+      .then((snapshot: any) => {
+        return snapshot.size;
+      })
+      .catch((error: any) => throwError(error));
+    if (DEBUG) console.log("ACTIVE CHAT COUNT", activeChatCount);
+    admin
+      .firestore()
+      .collection("alerts")
+      .doc("telehealth")
+      .set(
+        {
+          queueSize:
+            status === "active" && activeChatCount === 1
+              ? 0
+              : activeChatCount - 1,
+          waitTime:
+            status === "active" && activeChatCount === 1
+              ? 0
+              : (activeChatCount - 1) * 3,
+          updatedOn: new Date(),
+        },
+        { merge: true },
+      );
     if (status === "complete") {
       const { email, displayName, phoneNumber } = await getAuthUserById(
         context.params.clientId,

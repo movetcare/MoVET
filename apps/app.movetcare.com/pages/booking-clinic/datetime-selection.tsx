@@ -390,12 +390,13 @@ export default function DateTime() {
                       <label className="block text-sm font-medium text-movet-black font-abside -mb-2">
                         Location
                       </label>
-                      <p>{JSON.stringify(session)}</p>
-                      {session?.remoteLocation ? (
+                      {session?.clinic?.address ? (
                         <p className="italic">
-                          <span>{session?.address}</span>
+                          <span>{session?.clinic?.address}</span>
                           <br />
-                          {session?.addressInfo}
+                          <span className="text-sm">
+                            {session?.clinic?.addressInfo}
+                          </span>
                         </p>
                       ) : (
                         <p className="italic">
