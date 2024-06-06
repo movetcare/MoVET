@@ -1,6 +1,11 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "ui": "stream",
+  "globalEnv": [
+    "FIREBASE_PRIVATE_KEY",
+    "FIREBASE_CLIENT_EMAIL",
+    "NEXT_PUBLIC_*"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
