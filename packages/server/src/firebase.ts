@@ -3,14 +3,20 @@ const environment =
   typeof window !== "undefined" && window.location.hostname === "movetcare.com"
     ? "production"
     : typeof window !== "undefined" && window.location.hostname === "localhost"
-    ? "development"
-    : process.env.NODE_ENV === "development"
-    ? "development"
-    : "production";
+      ? "development"
+      : process.env.NODE_ENV === "development"
+        ? "development"
+        : "production";
 
 if (environment === "development")
   process.env.FIRESTORE_EMULATOR_HOST = `localhost:8080`;
-
+console.log("DEBUG ENVIRONMENT", environment);
+console.log("DEBUG FIREBASE_PRIVATE_KEY", process.env.FIREBASE_PRIVATE_KEY);
+console.log(
+  "DEBUG FIREBASE_PRIVATE_KEY PARSED",
+  process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+);
+console.log("DEBUG FIREBASE_CLIENT_EMAIL", process.env.FIREBASE_CLIENT_EMAIL);
 if (environment === "production") {
   if (!admin.apps.length) {
     admin.initializeApp({
@@ -32,7 +38,7 @@ if (environment === "production") {
         project_id: "movet-care-staging",
         private_key: process.env.STAGING_FIREBASE_PRIVATE_KEY?.replace(
           /\\n/g,
-          "\n"
+          "\n",
         ),
         client_email: process.env.STAGING_FIREBASE_CLIENT_EMAIL,
       } as any),
