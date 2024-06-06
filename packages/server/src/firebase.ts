@@ -10,13 +10,7 @@ const environment =
 
 if (environment === "development")
   process.env.FIRESTORE_EMULATOR_HOST = `localhost:8080`;
-console.log("DEBUG ENVIRONMENT", environment);
-console.log("DEBUG FIREBASE_PRIVATE_KEY", process.env.FIREBASE_PRIVATE_KEY);
-console.log(
-  "DEBUG FIREBASE_PRIVATE_KEY PARSED",
-  process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-);
-console.log("DEBUG FIREBASE_CLIENT_EMAIL", process.env.FIREBASE_CLIENT_EMAIL);
+
 if (environment === "production") {
   if (!admin.apps.length) {
     admin.initializeApp({
