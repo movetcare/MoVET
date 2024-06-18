@@ -267,7 +267,7 @@ const send24HourAppointmentNotification = async (
     doesHaveValidPaymentOnFile !== false &&
     doesHaveValidPaymentOnFile.length > 0
       ? ""
-      : `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+      : `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. MoVET does not accept cash payments. We must have a digital form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
           email as string
         )?.replaceAll(
           "+",
@@ -283,18 +283,18 @@ const send24HourAppointmentNotification = async (
     doesHaveValidPaymentOnFile.length > 0
       ? ""
       : appointmentType === "HOUSECALL"
-        ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+        ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. MoVET does not accept cash payments. We must have a digital form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll(
             "+",
             "%2B",
           )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-        : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+        : `<p><b>Our records indicate that you do not have a form of payment on file. MoVET does not accept cash payments. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll(
             "+",
             "%2B",
-          )}`}" target="_blank">add a form of payment</a></b></p>`
+          )}`}" target="_blank">add a digital form of payment</a></b>.</p>`
   }<p><b> Handling Tips for your Pet${
     patients.length > 1 ? "s" : ""
   }:</b> Pets can get nervous and anxious about visiting the 
@@ -423,7 +423,7 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
       doesHaveValidPaymentOnFile !== false &&
       doesHaveValidPaymentOnFile.length > 0
         ? ""
-        : `\nOur records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment. Please use the link below to add a new form of payment to your account:\n\n${`https://app.movetcare.com/update-payment-method?email=${(
+        : `\nOur records indicate that you do not have a form of payment on file. MoVET does not accept cash payments. We must have a digital form of payment on file prior to your appointment. Please use the link below to add a new form of payment to your account:\n\n${`https://app.movetcare.com/update-payment-method?email=${(
             email as string
           )?.replaceAll("+", "%2B")}`}\n`
     }\nPlease be sure to read our appointment prep guide prior to your appointment - https://movetcare.com/appointment-prep \n\nEmail info@movetcare.com, text (720) 507-7387, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;
@@ -622,18 +622,18 @@ const send30MinAppointmentNotification = async (
       doesHaveValidPaymentOnFile.length > 0
         ? ""
         : appointmentType !== "TELEHEALTH"
-          ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+          ? `<p><b>Payment on File:</b><b> Our records indicate that you do not have a form of payment on file. MoVET does not accept cash payments. We must have a digital form of payment on file prior to your appointment: <a href="${`https://app.movetcare.com/update-payment-method?email=${(
               email as string
             )?.replaceAll(
               "+",
               "%2B",
             )}`}" target="_blank">Add a Form of Payment</a></b></p>`
-          : `<p><b>Our records indicate that you do not have a form of payment on file. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
+          : `<p><b>Our records indicate that you do not have a form of payment on file. MoVET does not accept cash payments. Please <a href="${`https://app.movetcare.com/update-payment-method?email=${(
               email as string
             )?.replaceAll(
               "+",
               "%2B",
-            )}`}" target="_blank">add a form of payment</a></b></p>`
+            )}`}" target="_blank">add a digital form of payment</a></b>.</p>`
     }<p>Please reply to this email, <a href="tel://7205077387">text us</a> us, or chat with us via our <a href="https://movetcare.com/get-the-app">mobile app</a> if you have any questions or need assistance!</p><p>We look forward to seeing you soon,</p><p>- The MoVET Team</p>`;
     if (DEBUG)
       console.log(
@@ -776,7 +776,7 @@ const send30MinAppointmentNotification = async (
     doesHaveValidPaymentOnFile !== false &&
     doesHaveValidPaymentOnFile.length > 0
       ? ""
-      : `Payment on File: Our records indicate that you do not have a form of payment on file. We must have a form of payment on file prior to your appointment:\n\n Add a Payment Method\nhttps://app.movetcare.com/update-payment-method?email=${(
+      : `Payment on File: Our records indicate that you do not have a form of payment on file. MoVET does not accept cash payments. We must have a digital form of payment on file prior to your appointment:\n\n Add a Payment Method\nhttps://app.movetcare.com/update-payment-method?email=${(
           email as string
         )?.replaceAll("+", "%2B")}\n\n`
   }\nPlease email info@movetcare.com, text (720) 507-7387 us, or chat with us via our mobile app if you have any questions or need assistance!\n\nWe look forward to seeing you soon,\n- The MoVET Team\n\nhttps://movetcare.com/get-the-app`;

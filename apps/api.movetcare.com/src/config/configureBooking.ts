@@ -37,39 +37,49 @@ export const configureBooking = async (): Promise<boolean> => {
         walkinsStatus: false,
       })
       .catch((error: any) => throwError(error));
+    const popUpClinics = [
+      {
+        id: "spot-check-heartworm-clinic",
+        name: "Spot Check Heartworm Clinic",
+        address: "4912 South Newport Street, Denver, CO, USA",
+        addressInfo:
+          "This is testing address information. Can you see it? Yes, you can! AWESOME!",
+        addressLatLon: {
+          lat: 39.6252377,
+          lng: -104.9067478,
+        },
+        zipcode: 80237,
+        isActive: true,
+        appointmentBufferTime: 0,
+        description:
+          "We want to make sure ALL dogs are protected this Spring from Heartworm disease. MoVET is offering a Heartworm 'Spot Check' Clinic on Sunday, May 19th. Clinic includes a Heartworm Test ($45) and Monthly Heartworm Parasite Prevention. Flea/Tick prevention will also be available.",
+        reason: "Annual Spring Heartworm Clinic",
+        appointmentDuration: 30,
+        resourceConfiguration: [{ id: 16, staggerTime: 0 }],
+        vcprRequired: true,
+        scheduleType: "ONCE",
+        schedule: {
+          date: new Date(today.setDate(today.getDate() + 28)),
+          startTime: 900,
+          endTime: 1700,
+        },
+      },
+    ];
+    await admin
+      .firestore()
+      .collection("alerts")
+      .doc("pop_up_clinics")
+      .set({
+        popUpClinics,
+        updatedOn: new Date(),
+      })
+      .catch((error: any) => throwError(error));
     await admin
       .firestore()
       .collection("configuration")
       .doc("pop_up_clinics")
       .set({
-        popUpClinics: [
-          {
-            id: "spot-check-heartworm-clinic",
-            name: "Spot Check Heartworm Clinic",
-            address: "4912 South Newport Street, Denver, CO, USA",
-            addressInfo:
-              "This is testing address information. Can you see it? Yes, you can! AWESOME!",
-            addressLatLon: {
-              lat: 39.6252377,
-              lng: -104.9067478,
-            },
-            zipcode: 80237,
-            isActive: true,
-            appointmentBufferTime: 0,
-            description:
-              "We want to make sure ALL dogs are protected this Spring from Heartworm disease. MoVET is offering a Heartworm 'Spot Check' Clinic on Sunday, May 19th. Clinic includes a Heartworm Test ($45) and Monthly Heartworm Parasite Prevention. Flea/Tick prevention will also be available.",
-            reason: "Annual Spring Heartworm Clinic",
-            appointmentDuration: 30,
-            resourceConfiguration: [{ id: 16, staggerTime: 0 }],
-            vcprRequired: true,
-            scheduleType: "ONCE",
-            schedule: {
-              date: new Date(today.setDate(today.getDate() + 28)),
-              startTime: 900,
-              endTime: 1700,
-            },
-          },
-        ],
+        popUpClinics,
         updatedOn: new Date(),
       })
       .catch((error: any) => throwError(error));

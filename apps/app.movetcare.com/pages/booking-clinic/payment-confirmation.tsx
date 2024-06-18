@@ -8,7 +8,7 @@ import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 
-export default function ContactInfo() {
+export default function PaymentConfirmation() {
   const router = useRouter();
   const { mode } = router.query || {};
   const isAppMode = mode === "app";
@@ -89,8 +89,8 @@ export default function ContactInfo() {
                   />
                   <form onSubmit={onSubmit}>
                     <p className="text-center font-extrabold italic mt-4 text-lg">
-                      * You will <span className="underline">not</span> be
-                      charged until your appointment is completed.
+                      You will <span className="underline">not</span> be charged
+                      until your appointment is completed.
                     </p>
                     <Button
                       type="submit"
@@ -118,6 +118,10 @@ export default function ContactInfo() {
                         className="mx-auto"
                       />
                     </a>
+                    <p className="text-center italic mt-4 text-sm">
+                      * MoVET does <span className="underline">not</span> accept
+                      cash payments
+                    </p>
                   </form>
                 </>
               )}
