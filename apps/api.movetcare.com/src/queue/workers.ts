@@ -23,13 +23,9 @@ export const workers: Workers = {
       ? await createNewClientTask(options)
       : true,
   "30_min_appointment_notification": async (options: any) =>
-    await sendAppointmentReminderNotification({
-      ...options,
-    }),
+    await sendAppointmentReminderNotification(options),
   "24_hour_appointment_notification": async (options: any) =>
-    await sendAppointmentReminderNotification({
-      ...options,
-    }),
+    await sendAppointmentReminderNotification(options),
   clinic_booking_abandonment_notification_1_hour: async (options: any) =>
     await sendClinicBookingRecoveryNotification({ ...options, type: "1_HOUR" }),
   booking_abandonment_notification_1_hour: async (options: any) =>

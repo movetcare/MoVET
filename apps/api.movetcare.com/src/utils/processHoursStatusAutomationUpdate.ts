@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import { DEBUG, admin } from "../config/config";
 import { sendNotification } from "../notifications/sendNotification";
 import { todayIsAGlobalClosure } from "./todayIsAGlobalClosure";
@@ -76,6 +77,28 @@ export const processHoursStatusAutomationUpdate = async (options: {
       default:
         break;
     }
+    if (todayIsAClosure === false)
+      sendNotification({
+        type: "email",
+        payload: {
+          to: "info@movetcare.com",
+          replyTo: "alex.rodriguez@movetcare.com",
+          subject: `${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
+          message:
+            '<p>No further action is required. This is just an alert to let you know the hours automation has run successfully.</p><p><a href="https://admin.movetcare.com/settings/manage-hours/" target="_blank">View Hours Automation Settings</a></p>',
+        },
+      });
+    else
+      sendNotification({
+        type: "email",
+        payload: {
+          to: "info@movetcare.com",
+          replyTo: "alex.rodriguez@movetcare.com",
+          subject: `SKIPPED ${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATE`,
+          message:
+            '<p>This automation has been skipped because today is marked as a global closure. No further action is required.</p><p><a href="https://admin.movetcare.com/settings/manage-hours/" target="_blank">View Hours Automation Settings</a></p>',
+        },
+      });
   } else if (action === "close") {
     switch (type) {
       case "clinic":
@@ -133,6 +156,16 @@ export const processHoursStatusAutomationUpdate = async (options: {
       default:
         break;
     }
+    sendNotification({
+      type: "email",
+      payload: {
+        to: "info@movetcare.com",
+        replyTo: "alex.rodriguez@movetcare.com",
+        subject: `${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
+        message:
+          '<p>No further action is required. This is just an alert to let you know the hours automation has run successfully.</p><p><a href="https://admin.movetcare.com/settings/manage-hours/" target="_blank">View Hours Automation Settings</a></p>',
+      },
+    });
   }
   sendNotification({
     type: "slack",

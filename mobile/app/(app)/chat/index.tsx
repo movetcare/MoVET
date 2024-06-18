@@ -467,7 +467,6 @@ const ChatIndex = () => {
             name: user?.displayName,
             avatar: user?.photoURL,
           }}
-          renderAvatar={null}
           renderActions={renderCustomActions}
           renderSystemMessage={renderSystemMessage}
           renderSend={renderSend}
