@@ -1,9 +1,9 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-import { admin, throwError, DEBUG } from "../../../config/config";
+import { admin, throwError } from "../../../config/config";
 import type { ClinicBooking } from "../../../types/booking";
-import { enforceOnlyOneActiveAppointmentBooking } from "../../verification/enforceOnlyOneActiveAppointmentBooking";
 import { startNewClinicBooking } from "../session/startNewClinicBooking";
-
+import { enforceOnlyOneActiveClinicBooking } from "./enforceOnlyOneActiveClinicBooking";
+const DEBUG = true;
 export const getActiveClinicBookingSession = async (
   clinic: ClinicBooking["clinic"],
   user: UserRecord,
@@ -38,16 +38,17 @@ const getActiveClinicBooking = async (
       console.log("getActiveClinicBooking => activeBookings", activeBookings);
     if (activeBookings) {
       if (activeBookings.length > 1)
-        enforceOnlyOneActiveAppointmentBooking(activeBookings);
+        enforceOnlyOneActiveClinicBooking(activeBookings);
       const bookingDocument = await admin
         .firestore()
         .collection("clinic_bookings")
         .doc(`${activeBookings[0]}`);
+      if (DEBUG) console.log("getActiveClinicBooking => CLINIC", clinic);
+      await bookingDocument
+        .set({ clinic }, { merge: true })
+        .catch((error: any) => throwError(error));
       return {
-        ...(await admin
-          .firestore()
-          .collection("clinic_bookings")
-          .doc(`${activeBookings[0]}`)
+        ...(await bookingDocument
           .get()
           .then(async (document: any) => {
             if (document.exists) {
@@ -56,7 +57,7 @@ const getActiveClinicBooking = async (
                   "getActiveClinicBooking => BOOKING DOCUMENT",
                   document.data(),
                 );
-              return { id: bookingDocument?.id, ...document.data() };
+              return { id: bookingDocument?.id, ...document.data(), clinic };
             } else
               return {
                 id: (await startNewClinicBooking(clinic, user, device))?.id,
