@@ -37,7 +37,7 @@ const DateInput = ({
           control={control}
           render={({ field: { onChange, value } }) => (
             <DatePicker
-              required={required}
+              required={required as any}
               name={name}
               selected={value || new Date()}
               disabled={disabled}
@@ -46,7 +46,7 @@ const DateInput = ({
                 disabled
                   ? "border-movet-gray text-movet-gray"
                   : "focus:ring-movet-brown focus:border-movet-brown",
-                "py-3 px-4 block w-full rounded-lg font-abside-smooth"
+                "py-3 px-4 block w-full rounded-lg font-abside-smooth",
               )}
             />
           )}
