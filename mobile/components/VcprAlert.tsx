@@ -47,7 +47,7 @@ export const VcprAlert = ({
           ]}
         >
           <View
-            style={tw`px-4 py-2 text-movet-white dark:border-2 dark:border-movet-white rounded-xl flex-row items-center w-full ${
+            style={tw`px-4 py-2 text-movet-white rounded-xl flex-row items-center w-full ${
               patients && patients.length > 1
                 ? "bg-movet-red"
                 : "bg-movet-yellow"
