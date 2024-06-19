@@ -3,7 +3,6 @@ import { MoVETLogo } from "components/MoVETLogo";
 import { SectionHeading } from "components/SectionHeading";
 import { Ad } from "components/home/Ad";
 import { Announcement } from "components/home/Announcement";
-import { AppointmentsList } from "components/home/AppointmentsList";
 import { PopUpClinic, PopUpClinics } from "components/home/PopUpClinics";
 import { VcprAlert } from "components/VcprAlert";
 import {
@@ -42,6 +41,7 @@ import {
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 import { PaymentMethodSummary } from "components/home/PaymentMethodSummary";
+import { QuickBookWidget } from "components/home/QuickBookWidget";
 
 const DEBUG_DATA = false;
 
@@ -245,7 +245,7 @@ const Home = () => {
               </>
             )}
             {upcomingAppointments !== null && <PaymentMethodSummary />}
-            <AppointmentsList source="home" />
+            <QuickBookWidget />
           </View>
         ) : (
           <OnboardingFlow />

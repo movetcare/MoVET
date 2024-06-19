@@ -59,7 +59,7 @@
     "react-native-svg": "15.2.0",
     "react-native-webview": "13.8.6",
     "tailwindcss": "^3.4.4",
-    "twrnc": "^4.2.0",
+    "twrnc": "^4.3.0",
     "uuid": "^10.0.0",
     "yup": "^1.4.0"
   },

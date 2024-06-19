@@ -33,7 +33,7 @@ export const TelehealthStatus = ({
         noDarkMode
       >
         <View
-          style={tw`pr-4 pt-2 pb-3 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white `}
+          style={tw`pr-4 pt-2 pb-3 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`}
         >
           <Container>
             <Icon
