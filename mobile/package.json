@@ -68,7 +68,7 @@
     "@expo/metro-config": "~0.18.7",
     "@types/lodash.debounce": "^4.0.9",
     "@types/react": "~18.2.79",
-    "@types/uuid": "^9.0.8",
+    "@types/uuid": "^10.0.0",
     "babel-plugin-module-resolver": "^5.0.2",
     "react-native-svg-transformer": "^1.4.0",
     "semver": "^7.6.2",
