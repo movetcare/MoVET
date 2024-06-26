@@ -1,23 +1,22 @@
-import {
-  Container,
-  HeadingText,
-  Icon,
-  SubHeadingText,
-  View,
-} from "components/themed";
+import { HeadingText, Icon, SubHeadingText, View } from "components/themed";
+import { router } from "expo-router";
+import { TouchableOpacity } from "react-native";
+import { AuthStore } from "stores/AuthStore";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
+import * as Linking from "expo-linking";
 
 export const QuickBookWidget = () => {
+  const { client } = AuthStore.useState();
   return (
     <View
       style={[
         isTablet ? tw`px-16` : tw`px-4`,
-        tw`flex-col my-4 rounded-xl bg-transparent`,
+        tw`flex-col my-4 rounded-xl bg-transparent mx-auto w-full`,
       ]}
     >
       <View
-        style={tw`flex-row bg-movet-blue rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white p-2`}
+        style={tw`flex-row bg-movet-black/90 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white p-2 w-full`}
         noDarkMode
       >
         <HeadingText
@@ -27,26 +26,124 @@ export const QuickBookWidget = () => {
           Book an Appointment
         </HeadingText>
       </View>
-      <View
-        style={tw`flex-row bg-movet-blue/70 rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white p-2 mt-2 items-center w-full`}
-        noDarkMode
-      >
-        <Container style={tw`mr-2`}>
-          <HeadingText
-            style={tw`text-movet-white text-lg w-full text-center`}
+      <View noDarkMode style={tw`sm:flex-row sm:w-1/2 items-center`}>
+        <View noDarkMode style={tw`sm:mr-2`}>
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: `/(app)/home/quick-book-appointment/`,
+                params: { location: "belleview-station" },
+              })
+            }
+            style={tw`rounded-xl`}
+          >
+            <View
+              style={tw`flex-row rounded-t-xl p-4 mt-2 items-center w-full bg-movet-red justify-between`}
+              noDarkMode
+            >
+              <View style={tw`bg-movet-red flex-1 justify-start`} noDarkMode>
+                <HeadingText
+                  style={tw`text-movet-white text-lg w-full`}
+                  noDarkMode
+                >
+                  Clinic @ Belleview Station
+                </HeadingText>
+                <SubHeadingText noDarkMode style={tw`text-movet-white`}>
+                  4912 S Newport Street, Denver
+                </SubHeadingText>
+              </View>
+              <View
+                style={tw`bg-movet-black/50 items-center justify-center ml-4 py-4 pl-4 pr-3 rounded-xl`}
+                noDarkMode
+              >
+                <Icon
+                  name="calendar-plus"
+                  height={30}
+                  width={30}
+                  color="white"
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+          <View
+            style={tw`flex-row items-center justify-center rounded-b-xl bg-movet-red`}
             noDarkMode
           >
-            MoVET @ Belleview Station
-          </HeadingText>
-          <SubHeadingText noDarkMode style={tw`text-movet-white`}>
-            4912 S Newport Street, Denver
-          </SubHeadingText>
-        </Container>
-        <Container
-          style={tw`bg-movet-red/75 items-center justify-center ml-4 py-4 pl-4 pr-3 rounded-xl`}
+            <TouchableOpacity
+              onPress={() => Linking.openURL(`tel:+17205077387`)}
+              style={tw`w-4/12 pb-2`}
+            >
+              <View
+                style={tw`flex-row px-4 py-2 items-center bg-movet-red justify-center`}
+                noDarkMode
+              >
+                <Icon name="phone" height={20} width={20} color="white" />
+                <View style={tw`bg-movet-red ml-4`} noDarkMode>
+                  <SubHeadingText
+                    style={tw`text-movet-white text-sm`}
+                    noDarkMode
+                  >
+                    Call
+                  </SubHeadingText>
+                </View>
+              </View>
+            </TouchableOpacity>
+            <View style={tw`w-2/12`} noDarkMode />
+            <TouchableOpacity
+              onPress={() => Linking.openURL(`sms:+17205077387`)}
+              style={tw`w-4/12 pb-2`}
+            >
+              <View
+                style={tw`flex-row px-4 py-2 items-center bg-movet-red justify-center `}
+                noDarkMode
+              >
+                <Icon name="sms" height={20} width={20} color="white" />
+                <View style={tw`bg-movet-red ml-4`} noDarkMode>
+                  <SubHeadingText
+                    style={tw`text-movet-white text-sm`}
+                    noDarkMode
+                  >
+                    Text
+                  </SubHeadingText>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <TouchableOpacity
+          onPress={() =>
+            router.push({
+              pathname: `/(app)/home/quick-book-appointment/`,
+              params: { location: "housecall" },
+            })
+          }
+          style={tw`rounded-xl sm:ml-2`}
         >
-          <Icon name="calendar-plus" height={30} width={30} color="white" />
-        </Container>
+          <View
+            style={tw`flex-row bg-movet-blue rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white p-4 mt-2 items-center w-full justify-between`}
+            noDarkMode
+          >
+            <View style={tw`bg-movet-blue flex-1 justify-start`} noDarkMode>
+              <HeadingText
+                style={tw`text-movet-white text-lg w-full`}
+                noDarkMode
+              >
+                Housecall Appointment
+              </HeadingText>
+              <SubHeadingText noDarkMode style={tw`text-movet-white`}>
+                {client?.address
+                  ? client?.address
+                  : "at the location of your choosing"}
+              </SubHeadingText>
+            </View>
+            <View
+              style={tw`bg-movet-black/50 items-center justify-center ml-4 py-4 pl-4 pr-3 rounded-xl`}
+              noDarkMode
+            >
+              <Icon name="calendar-plus" height={30} width={30} color="white" />
+            </View>
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

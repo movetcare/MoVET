@@ -164,7 +164,7 @@ export const PaymentMethodSummary = ({
       onPress={() =>
         router.replace({
           pathname: `/(app)/settings/payment-methods/`,
-          params: { autoOpen: true },
+          params: { autoOpen: true as any },
         })
       }
       style={tw`rounded-xl`}
@@ -172,7 +172,7 @@ export const PaymentMethodSummary = ({
       <View
         style={[
           isTablet ? tw`px-16` : tw`px-4`,
-            tw`flex-row rounded-xl bg-transparent`,
+          tw`flex-row rounded-xl bg-transparent`,
         ]}
         noDarkMode
       >
@@ -180,7 +180,7 @@ export const PaymentMethodSummary = ({
           style={[
             isLoading ? tw`bg-movet-black/60` : tw`bg-movet-yellow`,
             showExpiredWarning && tw`bg-movet-red`,
-              tw`pr-4 pt-2 pb-3 rounded-xl flex-row items-center dark:border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`,
+            tw`pr-4 pt-2 pb-3 rounded-xl flex-row items-center dark:border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`,
           ]}
           noDarkMode
         >

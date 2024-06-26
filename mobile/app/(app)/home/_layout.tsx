@@ -54,7 +54,17 @@ export default function Layout() {
         canGoBack: true,
       });
       //}, 180);
-    } else if (segments && segments.includes("appointment-detail")) {
+    } else if (segments && segments.includes("quick-book-appointment")) {
+      //setTimeout(() => {
+      setNavigationDetails({
+        title:
+          (!upcomingAppointments && !pastAppointments
+            ? "Request"
+            : "Schedule") + " an Appointment",
+        iconName: "calendar-plus",
+        canGoBack: true,
+      }); }
+      else if (segments && segments.includes("appointment-detail")) {
       //setTimeout(() => {
       setNavigationDetails({
         title: "Appointment Summary",

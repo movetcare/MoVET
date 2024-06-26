@@ -116,6 +116,8 @@ import LinkIcon from "assets/icons/svgs/font-awesome/link.svg";
 import LinkIconDark from "assets/icons/svgs/font-awesome/link-dark.svg";
 import BrokenHeartIcon from "assets/icons/svgs/font-awesome/broken-heart.svg";
 import BrokenHeartIconDark from "assets/icons/svgs/font-awesome/broken-heart-dark.svg";
+import PhoneIcon from "assets/icons/svgs/font-awesome/phone.svg";
+import PhoneIconDark from "assets/icons/svgs/font-awesome/phone-dark.svg";
 import { ReactNode } from "react";
 import { useColorScheme } from "react-native";
 
@@ -178,7 +180,8 @@ export type SupportedIcons =
   | "sad-face"
   | "bug"
   | "broken-heart"
-  | "link";
+  | "link"
+  | "phone";
 
 export const Icon = ({
   name = "poo",
@@ -675,6 +678,12 @@ export const Icon = ({
         />
       ) : (
         <BrokenHeartIcon height={iconHeight} width={iconWidth} style={style} />
+      );
+    case "phone":
+      return showWhiteIcon ? (
+        <PhoneIconDark height={iconHeight} width={iconWidth} style={style} />
+      ) : (
+        <PhoneIcon height={iconHeight} width={iconWidth} style={style} />
       );
     default:
       return showWhiteIcon ? (
