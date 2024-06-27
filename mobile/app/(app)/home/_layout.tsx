@@ -20,7 +20,7 @@ export default function Layout() {
 
   useEffect(() => {
     if (segments && segments.includes("announcement")) {
-    //setTimeout(() => {
+      //setTimeout(() => {
       setNavigationDetails({
         title: "Announcement",
         iconName: "bullhorn",
@@ -63,27 +63,27 @@ export default function Layout() {
             : "Schedule") + " an Appointment",
         iconName: "calendar-plus",
         canGoBack: true,
-      }); }
-      else if (segments && segments.includes("appointment-detail")) {
-      //setTimeout(() => {
+      });
+    } else if (
+      segments.includes("appointment-detail") &&
+      !segments.includes("pet")
+    ) {
+      console.log("segments", segments);
       setNavigationDetails({
-        title: "Appointment Summary",
+        title: "Upcoming Appointment",
         iconName: "calendar-heart",
         canGoBack: true,
       });
-      //}, 180);
     } else setNavigationDetails(null);
-  }, [
-    pastAppointments,
-    segments,
-    upcomingAppointments,
-  ]);
+  }, [pastAppointments, segments, upcomingAppointments]);
 
   return (
     <Container
       style={[
         tw`flex-1 `,
-        !navigationDetails ? tw`bg-transparent dark:bg-movet-black` : tw`bg-movet-red`,
+        !navigationDetails && !segments.includes("pet")
+          ? tw`bg-transparent dark:bg-movet-black`
+          : tw`bg-movet-red`,
         { paddingTop: insets.top },
       ]}
     >

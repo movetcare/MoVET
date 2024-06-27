@@ -22,7 +22,7 @@ export const ActionButton = ({
 }: {
   title: string;
   onPress: any;
-  color?: "red" | "black" | "brown";
+  color?: "red" | "black" | "brown" | "blue";
   style?: any;
   iconName?: SupportedIcons;
   disabled?: boolean;
@@ -42,7 +42,9 @@ export const ActionButton = ({
           ? tw`bg-movet-red border-movet-red`
           : color === "brown"
             ? tw`bg-movet-brown border-movet-brown`
-            : tw`bg-movet-black dark:bg-movet-white border-movet-black dark:border-movet-white`,
+            : color === "blue"
+              ? tw`bg-movet-blue border-movet-blue`
+              : tw`bg-movet-black dark:bg-movet-white border-movet-black dark:border-movet-white`,
         disabled && tw`opacity-50`,
         type === "text" && tw`bg-transparent border-0 shadow-none`,
         style,

@@ -42,6 +42,7 @@ import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 import { PaymentMethodSummary } from "components/home/PaymentMethodSummary";
 import { QuickBookWidget } from "components/home/QuickBookWidget";
+import { PetSummary } from "components/home/PetSummary";
 
 const DEBUG_DATA = false;
 
@@ -245,7 +246,17 @@ const Home = () => {
               </>
             )}
             {upcomingAppointments !== null && <PaymentMethodSummary />}
-            <QuickBookWidget />
+            {upcomingAppointments !== null ? (
+              <>
+                <PetSummary />
+                <QuickBookWidget />
+              </>
+            ) : (
+              <>
+                <QuickBookWidget />
+                <PetSummary />
+              </>
+            )}
           </View>
         ) : (
           <OnboardingFlow />

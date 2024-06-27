@@ -140,7 +140,7 @@ const PetDetail = () => {
         <TouchableOpacity
           onPress={() =>
             router.navigate({
-              pathname: "/(app)/pets/detail/edit",
+              pathname: "/(app)/home/pet/edit",
               params: { id: patient?.id },
             })
           }
@@ -263,7 +263,7 @@ const PetDetail = () => {
                           key={appointment.id}
                           onPress={() =>
                             router.navigate({
-                              pathname: `/(app)/pets/detail/appointment-detail/`,
+                              pathname: `/(app)/home/pet/appointment-detail/`,
                               params: { id: appointment?.id },
                             })
                           }
@@ -361,7 +361,7 @@ const PetDetail = () => {
                         key={appointment.id}
                         onPress={() =>
                           router.navigate({
-                            pathname: `/(app)/pets/detail/appointment-detail/`,
+                            pathname: `/(app)/home/pet/appointment-detail/`,
                             params: { id: appointment?.id },
                           })
                         }
@@ -415,7 +415,7 @@ const PetDetail = () => {
                         key={appointment.id}
                         onPress={() =>
                           router.navigate({
-                            pathname: `/(app)/pets/detail/appointment-detail/`,
+                            pathname: `/(app)/home/pet/appointment-detail/`,
                             params: { id: appointment?.id },
                           })
                         }
@@ -487,7 +487,7 @@ const PetDetail = () => {
           <TouchableOpacity
             onPress={() =>
               router.navigate({
-                pathname: "/(app)/pets/detail/edit",
+                pathname: "/(app)/home/pet/edit",
                 params: { id: patient?.id },
               })
             }
@@ -627,7 +627,7 @@ const PetDetail = () => {
                     iconName="calendar-plus"
                     onPress={() => {
                       setShowVcprModal(false);
-                      router.navigate("/(app)/pets/new-appointment");
+                      router.navigate("/(app)/home/pet/new-appointment");
                     }}
                   />
                 </Container>
@@ -646,7 +646,7 @@ const PetDetail = () => {
             iconName="calendar-plus"
             onPress={() =>
               router.navigate({
-                pathname: "/(app)/pets/detail/new-appointment",
+                pathname: "/(app)/home/new-appointment",
                 params: {
                   id: patient?.id,
                 },
@@ -671,7 +671,7 @@ const PetDetail = () => {
                 }
                 onPress={() => {
                   router.navigate({
-                    pathname: "/(app)/pets/detail/web-view",
+                    pathname: "/(app)/home/pet/web-view",
                     params: {
                       path: "/contact",
                       screenTitle: "Medication Refill Request",
@@ -698,6 +698,7 @@ const PetDetail = () => {
               />
               <RequestRecords
                 patientName={patient?.name as string}
+                source="home"
                 color="brown"
               />
             </>
@@ -708,7 +709,7 @@ const PetDetail = () => {
             iconName="pencil"
             onPress={() =>
               router.navigate({
-                pathname: "/(app)/pets/detail/edit",
+                pathname: "/(app)/home/pet/edit",
                 params: { id: patient?.id },
               })
             }
