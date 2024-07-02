@@ -64,11 +64,7 @@ export default function Layout() {
         iconName: "calendar-plus",
         canGoBack: true,
       });
-    } else if (
-      segments.includes("appointment-detail") &&
-      !segments.includes("pet")
-    ) {
-      console.log("segments", segments);
+    } else if (segments.includes("appointment-detail") && !segments.includes("pet")) {
       setNavigationDetails({
         title: "Upcoming Appointment",
         iconName: "calendar-heart",

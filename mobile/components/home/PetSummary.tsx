@@ -31,6 +31,7 @@ import {
 } from "firebase/firestore";
 import { getProVetIdFromUrl } from "utils/getProVetIdFromUrl";
 
+
 export const PetSummary = () => {
   const { patients } = PatientsStore.useState();
   const { upcomingAppointments } = AppointmentsStore.useState();
@@ -161,24 +162,28 @@ export const PetSummary = () => {
                     )}
                   </TouchableOpacity>
                 </View>
-                {appointmentCounts &&
-                  appointmentCounts?.map(
-                    (patientAppointments: { count: number; id: number }) => {
-                      if (
-                        patientAppointments?.id === patient?.id &&
-                        patientAppointments?.count > 0
-                      ) {
-                        return (
-                          <SubHeadingText
-                            style={tw`text-base w-full mb-2 text-center`}
-                          >
-                            Upcoming Appointment
-                            {patientAppointments?.count > 1 && "s"}
-                          </SubHeadingText>
-                        );
-                      }
-                    },
-                  )}
+                {
+                  appointmentCounts &&
+                    appointmentCounts?.map(
+                      (patientAppointments: { count: number; id: number }) => {
+                        if (
+                          patientAppointments?.id === patient?.id &&
+                          patientAppointments?.count > 0
+                        ) {
+                          return (
+                            <SubHeadingText
+                              style={tw`text-base w-full mb-2 text-center`}
+                              key={patientAppointments?.id}
+                            >
+                              Upcoming Appointment
+                              {patientAppointments?.count > 1 && "s"}
+                            </SubHeadingText>
+                          );
+                        } else return null;
+                      },
+                      //stop
+                    ) // stop
+                }
                 {upcomingAppointments?.map(
                   (appointment: any, index: number) => (
                     <View key={index}>
@@ -214,7 +219,7 @@ export const PetSummary = () => {
                                           ? "telehealth"
                                           : "clinic-alt"
                                     }
-                                    size="lg"
+                                    size="xl"
                                   />
                                   <View style={tw`flex-col ml-2`}>
                                     <SubHeadingText>{reason}</SubHeadingText>
@@ -253,7 +258,9 @@ export const PetSummary = () => {
                       )}
                     </View>
                   ),
-                )}
+                  // stop
+                ) // stop
+                }
                 {index !== patients.length - 1 &&
                   upcomingAppointments?.length === 0 && (
                     <View style={tw`border-t-2 border-movet-gray my-4`} />
