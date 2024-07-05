@@ -1,11 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendarPlus,
+  faCheckCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { AppHeader } from "components/AppHeader";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { AppLinks } from "ui";
+import { AppLinks, Button } from "ui";
 
 export default function RequestSuccess() {
   const router = useRouter();
@@ -51,6 +54,13 @@ export default function RequestSuccess() {
               Please allow 1 business day for a response. All appointment
               requests are responded to in the order they are received.
             </p>
+            <Button
+              text="Book Another Appointment"
+              onClick={() => router.push(`/${isAppMode ? "?mode=app" : ""}`)}
+              color="black"
+              className="mb-8"
+              icon={faCalendarPlus}
+            />
           </section>
           {!isAppMode && submissionSuccess && (
             <section>

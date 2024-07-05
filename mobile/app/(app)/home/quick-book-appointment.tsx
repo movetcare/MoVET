@@ -24,8 +24,7 @@ const QuickBookAppointment = () => {
             getPlatformUrl() +
             "?mode=app&email=" +
             user.email +
-            `${location ? `&location=${client?.location}` : ""}
-            ${client?.firstName ? `&firstName=${client?.firstName}` : ""}${
+            `${location ? `&location=${location === "housecall" ? `${client?.address ? client?.address : ""}` : location}` : ""}${client?.firstName ? `&firstName=${client?.firstName}` : ""}${
               client?.lastName ? `&lastName=${client?.lastName}` : ""
             }${
               client?.phone

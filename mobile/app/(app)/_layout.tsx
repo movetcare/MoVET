@@ -294,43 +294,6 @@ const TabsLayout = (props: any) => {
         }}
       />
       <Tabs.Screen
-        name="pets"
-        options={
-          patientsCount
-            ? {
-                title: "Pets",
-                tabBarIcon: (navigationOptions: any) =>
-                  navigationOptions.focused ? (
-                    <Icon
-                      color="black"
-                      noDarkMode
-                      name="paw"
-                      height={iconHeight}
-                      width={iconWidth}
-                    />
-                  ) : isDarkMode ? (
-                    <Icon
-                      color="white"
-                      noDarkMode
-                      name="paw"
-                      height={iconHeight}
-                      width={iconWidth}
-                    />
-                  ) : (
-                    <Icon
-                      color="black"
-                      noDarkMode
-                      name="paw"
-                      height={iconHeight}
-                      width={iconWidth}
-                    />
-                  ),
-                ...tabBarStyle,
-              }
-            : { href: null }
-        }
-      />
-      <Tabs.Screen
         name="chat"
         options={{
           title: "Chat",
@@ -363,6 +326,43 @@ const TabsLayout = (props: any) => {
             ),
           ...tabBarStyle,
         }}
+      />
+      <Tabs.Screen
+        name="book"
+        options={
+          patientsCount
+            ? {
+                title: "Book Now",
+                tabBarIcon: (navigationOptions: any) =>
+                  navigationOptions.focused ? (
+                    <Icon
+                      color="black"
+                      noDarkMode
+                      name="calendar-heart"
+                      height={iconHeight}
+                      width={iconWidth}
+                    />
+                  ) : isDarkMode ? (
+                    <Icon
+                      color="white"
+                      noDarkMode
+                      name="calendar-heart"
+                      height={iconHeight}
+                      width={iconWidth}
+                    />
+                  ) : (
+                    <Icon
+                      color="black"
+                      noDarkMode
+                      name="calendar-heart"
+                      height={iconHeight}
+                      width={iconWidth}
+                    />
+                  ),
+                ...tabBarStyle,
+              }
+            : { href: null }
+        }
       />
       <Tabs.Screen
         name="shop"

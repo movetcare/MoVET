@@ -20,7 +20,7 @@ const NewAppointment = () => {
         source={{
           uri:
             getPlatformUrl() +
-            "?mode=app&email=" +
+            "?mode=app&restartAvailable=true&email=" +
             user.email +
             `${client?.firstName ? `&firstName=${client?.firstName}` : ""}${
               client?.lastName ? `&lastName=${client?.lastName}` : ""

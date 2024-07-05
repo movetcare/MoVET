@@ -1,9 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from "next/router";
-import { AppLinks, Loader } from "ui";
+import { AppLinks, Button, Loader } from "ui";
 import { BookingHeader } from "components/BookingHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendarPlus,
+  faCheckCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { AppHeader } from "components/AppHeader";
 import { Error } from "components/Error";
 import { useEffect, useState } from "react";
@@ -180,6 +183,15 @@ export default function BookingSuccess() {
                       }),
                     )}
                   </div>
+                  <Button
+                    text="Book Another Appointment"
+                    onClick={() =>
+                      router.push(`/${isAppMode ? "?mode=app" : ""}`)
+                    }
+                    color="black"
+                    className="mb-8"
+                    icon={faCalendarPlus}
+                  />
                   {!isAppMode && (
                     <p className="text-xs italic text-center mt-4 px-4 sm:px-8">
                       We will send you an email confirmation shortly. Please{" "}
