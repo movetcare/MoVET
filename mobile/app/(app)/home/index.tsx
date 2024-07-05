@@ -43,7 +43,7 @@ import { isTablet } from "utils/isTablet";
 import { PaymentMethodSummary } from "components/home/PaymentMethodSummary";
 import { QuickBookWidget } from "components/home/QuickBookWidget";
 import { PetSummary } from "components/home/PetSummary";
-import { TodaysAppointments } from "components/home/TodaysAppointments";
+// import { TodaysAppointments } from "components/home/TodaysAppointments";
 
 const DEBUG_DATA = false;
 
@@ -249,7 +249,7 @@ const Home = () => {
             {upcomingAppointments !== null && <PaymentMethodSummary />}
             {upcomingAppointments !== null ? (
               <>
-                <TodaysAppointments />
+                {/* <TodaysAppointments /> */}
                 <PetSummary />
                 <QuickBookWidget />
               </>
