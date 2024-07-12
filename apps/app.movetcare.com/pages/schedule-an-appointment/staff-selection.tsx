@@ -150,10 +150,6 @@ export default function StaffSelection() {
                                 </div>
                                 <h2 className="text-2xl text-center my-4">
                                   {expert?.title ? `${expert?.title} ` : ""}
-                                  {expert?.firstName
-                                    ? `${expert?.firstName} `
-                                    : ""}
-                                  {expert?.lastName ? expert?.lastName : ""}
                                 </h2>
                                 {expert?.qualifications && (
                                   <>

@@ -25,8 +25,40 @@ export const saveAppointment = async (
       data.requestHash = proVetAppointmentData?.request_hash;
     if (proVetAppointmentData?.instructions)
       data.instructions = proVetAppointmentData?.instructions;
-    if (proVetAppointmentData?.user)
-      data.user = getProVetIdFromUrl(proVetAppointmentData?.user);
+    if (proVetAppointmentData?.user) {
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(`${getProVetIdFromUrl(proVetAppointmentData?.user)}`)
+        .get()
+        .then((doc: any) => {
+          if (doc.exists)
+            data.user = {
+              name: doc.data()?.title,
+              picture: doc.data()?.picture,
+              bio: doc.data()?.areasOfExpertise,
+            };
+        });
+    }
+    if (proVetAppointmentData?.additional_users) {
+      const additionalUsers: any = [];
+      proVetAppointmentData?.additional_users.forEach(async (user: any) => {
+        await admin
+          .firestore()
+          .collection("users")
+          .doc(`${getProVetIdFromUrl(user)}`)
+          .get()
+          .then((doc: any) => {
+            if (doc.exists)
+              additionalUsers.push({
+                name: doc.data()?.title,
+                picture: doc.data()?.picture,
+                bio: doc.data()?.areasOfExpertise,
+              });
+          });
+      });
+      data.additionalUsers = additionalUsers;
+    }
     if (proVetAppointmentData?.reason)
       data.reason = proVetAppointmentData?.reason;
     if (proVetAppointmentData?.notes) data.notes = proVetAppointmentData?.notes;

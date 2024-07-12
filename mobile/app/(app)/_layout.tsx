@@ -27,12 +27,15 @@ import { useEffect, useState } from "react";
 import { ErrorStore } from "stores";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 import tw from "tailwind";
+import { getProVetIdFromUrl } from "utils/getProVetIdFromUrl";
 
 const DEBUG_DATA = false;
 
 const TabsLayout = (props: any) => {
   const { user, initialized, isLoggedIn } = AuthStore.useState();
+  const { patients } = PatientsStore.useState();
   const [patientsCount, setPatientsCount] = useState<number | null>(null);
+  const [reasons, setReasons] = useState<Array<any> | null>(null);
   const [loadedUser, setLoadedUser] = useState<boolean>(false);
   const [loadedPastAppointments, setLoadedPastAppointments] =
     useState<boolean>(false);
@@ -77,7 +80,7 @@ const TabsLayout = (props: any) => {
   };
 
   useEffect(() => {
-    if (!isLoggedIn || !initialized || !user?.uid) {
+    if (!isLoggedIn || !initialized || !user?.uid || !reasons || !patients) {
       if (!isLoggedIn) router.replace("/sign-in");
       return;
     }
@@ -132,8 +135,28 @@ const TabsLayout = (props: any) => {
         querySnapshot.forEach((doc: DocumentData) => {
           if (DEBUG_DATA)
             console.log("UPCOMING APPOINTMENT DATA => ", doc.data());
-          if (doc.data()?.active)
-            appointments.push({ id: doc.id, ...doc.data() });
+          if (doc.data()?.active) {
+            const appointmentPatients: any[] = [];
+            doc.data()?.patients.forEach((patient: any) => {
+              patients.forEach((fullPatient: any) => {
+                if (fullPatient.id === patient.id) {
+                  appointmentPatients.push(fullPatient);
+                }
+              });
+            });
+            let reasonText = "Medical Examination";
+            reasons.forEach((reason) => {
+              if (reason.id === getProVetIdFromUrl(doc.data()?.reason)) {
+                reasonText = reason.name;
+              }
+            });
+            appointments.push({
+              ...doc.data(),
+              id: doc.id,
+              reason: reasonText,
+              patients: appointmentPatients,
+            });
+          }
         });
         if (appointments.length > 0)
           AppointmentsStore.update((store: any) => {
@@ -169,8 +192,29 @@ const TabsLayout = (props: any) => {
         const appointments: Appointment[] = [];
         querySnapshot.forEach((doc: DocumentData) => {
           if (DEBUG_DATA) console.log("PAST APPOINTMENT DATA => ", doc.data());
-          if (doc.data()?.active)
+          if (doc.data()?.active) {
+            const appointmentPatients: any[] = [];
+            doc.data()?.patients.forEach((patient: any) => {
+              patients.forEach((fullPatient: any) => {
+                if (fullPatient.id === patient.id) {
+                  appointmentPatients.push(fullPatient);
+                }
+              });
+            });
+            let reasonText = "Medical Examination";
+            reasons.forEach((reason) => {
+              if (reason.id === getProVetIdFromUrl(doc.data()?.reason)) {
+                reasonText = reason.name;
+              }
+            });
+            appointments.push({
+              ...doc.data(),
+              id: doc.id,
+              reason: reasonText,
+              patients: appointmentPatients,
+            });
             appointments.push({ id: doc.id, ...doc.data() });
+          }
         });
         if (appointments.length > 0)
           AppointmentsStore.update((store: any) => {
@@ -187,6 +231,18 @@ const TabsLayout = (props: any) => {
         setError({ ...error, source: "unsubscribePastAppointments" });
       },
     );
+
+    return () => {
+      unsubscribeUser();
+      unsubscribeUpcomingAppointments();
+      unsubscribePastAppointments();
+    };
+  }, [user?.uid, initialized, isLoggedIn, user?.email, reasons, patients]);
+
+  useEffect(() => {
+    if (!user?.uid) {
+      return;
+    }
     const unsubscribePatients = onSnapshot(
       query(
         collection(firestore, "patients"),
@@ -223,13 +279,23 @@ const TabsLayout = (props: any) => {
         setError({ ...error, source: "unsubscribePatients" });
       },
     );
-    return () => {
-      unsubscribeUser();
-      unsubscribePatients();
-      unsubscribeUpcomingAppointments();
-      unsubscribePastAppointments();
-    };
-  }, [user?.uid, initialized, isLoggedIn, user?.email]);
+    return () => unsubscribePatients();
+  }, [user.uid]);
+  useEffect(() => {
+    const unsubscribeReasons = onSnapshot(
+      query(collection(firestore, "reasons")),
+      (querySnapshot: QuerySnapshot) => {
+        if (querySnapshot.empty) return;
+        const reasons: Array<any> = [];
+        querySnapshot.forEach((doc: DocumentData) => {
+          reasons.push(doc.data());
+        });
+        setReasons(reasons);
+      },
+      (error: any) => setError({ ...error, source: "unsubscribeReasons" }),
+    );
+    return () => unsubscribeReasons();
+  }, []);
 
   useEffect(() => {
     if (

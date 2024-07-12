@@ -50,7 +50,6 @@ export const AppointmentDetail = () => {
   const { client } = AuthStore.useState();
   const { patients: patientsData } = PatientsStore.useState();
   const [appointment, setAppointment] = useState<Appointment | null>(null);
-  const [reasons, setReasons] = useState<Array<any> | null>(null);
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
   const isDarkMode = useColorScheme() !== "light";
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -80,8 +79,11 @@ export const AppointmentDetail = () => {
       setIsLoading(true);
       fetch(
         `https://maps.google.com/maps/api/geocode/json?address=${encodeURI(
-          appointment?.notes?.split("-")[1]?.split("|")[0].split("(")[0]?.trim() ||
-          client?.address,
+          appointment?.notes
+            ?.split("-")[1]
+            ?.split("|")[0]
+            .split("(")[0]
+            ?.trim() || client?.address,
         )}&key=${Constants.expoConfig?.extra?.google_maps_geocode_key}`,
       )
         .then((response: any) => response.json())
@@ -101,7 +103,7 @@ export const AppointmentDetail = () => {
   ]);
 
   useEffect(() => {
-    if (id && reasons) {
+    if (id) {
       const allAppointments: Array<Appointment> =
         upcomingAppointments && pastAppointments
           ? [...upcomingAppointments, ...pastAppointments]
@@ -113,57 +115,36 @@ export const AppointmentDetail = () => {
       allAppointments.map((appointment: Appointment) => {
         if (String(appointment?.id) === id) {
           const appointmentPatients: Array<Patient> = [];
-          appointment?.patients?.forEach(
-            (patient: any) =>
-              patientsData?.forEach((patientData: Patient) => {
-                if (patientData?.id === patient.id) {
-                  appointmentPatients.push(patientData);
-                }
-              }),
+          appointment?.patients?.forEach((patient: any) =>
+            patientsData?.forEach((patientData: Patient) => {
+              if (patientData?.id === patient.id) {
+                appointmentPatients.push(patientData);
+              }
+            }),
           );
           setAppointment({
             ...appointment,
-            reason: reasons.find(
-              (reason: any) =>
-                reason.id === getProVetIdFromUrl(appointment.reason as string),
-            ) as { name: string; instructions: string; },
             patients: appointmentPatients,
             location:
               appointment.resources.includes(6) || // Exam Room 1
-                appointment.resources.includes(7) || // Exam Room 2
-                appointment.resources.includes(8) || // Exam Room 3
-                appointment.resources.includes(14) || // Exam Room 1
-                appointment.resources.includes(15) || // Exam Room 2
-                appointment.resources.includes(16) // Exam Room 3
+              appointment.resources.includes(7) || // Exam Room 2
+              appointment.resources.includes(8) || // Exam Room 3
+              appointment.resources.includes(14) || // Exam Room 1
+              appointment.resources.includes(15) || // Exam Room 2
+              appointment.resources.includes(16) // Exam Room 3
                 ? "CLINIC"
                 : appointment.resources.includes(3) || // Truck 1
-                  appointment.resources.includes(9) // Truck 2
+                    appointment.resources.includes(9) // Truck 2
                   ? "HOUSECALL"
                   : appointment.resources.includes(11) || // Virtual Room 1
-                    appointment.resources.includes(18) // Virtual Room 2
+                      appointment.resources.includes(18) // Virtual Room 2
                     ? "TELEHEALTH"
                     : "UNKNOWN APPOINTMENT TYPE",
           });
         }
       });
     }
-  }, [id, pastAppointments, upcomingAppointments, reasons, patientsData]);
-
-  useEffect(() => {
-    const unsubscribeReasons = onSnapshot(
-      query(collection(firestore, "reasons")),
-      (querySnapshot: QuerySnapshot) => {
-        if (querySnapshot.empty) return;
-        const reasons: Array<any> = [];
-        querySnapshot.forEach((doc: DocumentData) => {
-          reasons.push(doc.data());
-        });
-        setReasons(reasons);
-      },
-      (error: any) => setError({ ...error, source: "unsubscribeReasons" }),
-    );
-    return () => unsubscribeReasons();
-  }, []);
+  }, [id, pastAppointments, upcomingAppointments, patientsData]);
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
@@ -233,10 +214,7 @@ export const AppointmentDetail = () => {
           />
         </Container>
         <HeadingText style={tw`text-center mb-2`}>
-          {
-            (appointment?.reason as { name: string; instructions: string })
-              ?.name
-          }
+          {appointment?.reason as string}
         </HeadingText>
         <SubHeadingText style={tw`text-lg mb-2`}>
           {appointment?.start?.toDate()?.toLocaleString("en-US", {

@@ -21,16 +21,6 @@ import { isTablet } from "utils/isTablet";
 import { Image, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
 import { Modal } from "components/Modal";
-import { firestore } from "firebase-config";
-import {
-  onSnapshot,
-  query,
-  collection,
-  QuerySnapshot,
-  DocumentData,
-} from "firebase/firestore";
-import { getProVetIdFromUrl } from "utils/getProVetIdFromUrl";
-
 
 export const PetSummary = () => {
   const { patients } = PatientsStore.useState();
@@ -41,23 +31,6 @@ export const PetSummary = () => {
   }> | null>(null);
   const [showVcprModal, setShowVcprModal] = useState<boolean>(false);
   const textStyles = [isTablet ? tw`text-lg` : tw`text-sm`, tw`mb-2`];
-  const [reasons, setReasons] = useState<Array<any> | null>(null);
-
-  useEffect(() => {
-    const unsubscribeReasons = onSnapshot(
-      query(collection(firestore, "reasons")),
-      (querySnapshot: QuerySnapshot) => {
-        if (querySnapshot.empty) return;
-        const reasons: Array<any> = [];
-        querySnapshot.forEach((doc: DocumentData) => {
-          reasons.push(doc.data());
-        });
-        setReasons(reasons);
-      },
-      (error: any) => setError({ ...error, source: "unsubscribeReasons" }),
-    );
-    return () => unsubscribeReasons();
-  }, []);
 
   useEffect(() => {
     if (patients) {
@@ -189,13 +162,6 @@ export const PetSummary = () => {
                     <View key={index}>
                       {appointment?.patients?.map(
                         (appointmentPatient: any, index: number) => {
-                          const reason = reasons?.map((reason: any) => {
-                            if (
-                              reason.id ===
-                              getProVetIdFromUrl(appointment.reason as any)
-                            )
-                              return reason.name;
-                          });
                           if (appointmentPatient?.id === patient?.id)
                             return (
                               <TouchableOpacity
@@ -222,7 +188,9 @@ export const PetSummary = () => {
                                     size="xl"
                                   />
                                   <View style={tw`flex-col ml-2`}>
-                                    <SubHeadingText>{reason}</SubHeadingText>
+                                    <SubHeadingText>
+                                      {appointment.reason}
+                                    </SubHeadingText>
                                     <BodyText>
                                       {appointment.start
                                         .toDate()

@@ -20,20 +20,11 @@ import {
   Appointment,
   AppointmentsStore,
   AuthStore,
-  ErrorStore,
   Patient,
   PatientsStore,
 } from "stores";
 import { isTablet } from "utils/isTablet";
 import { SectionHeading } from "components/SectionHeading";
-import { firestore } from "firebase-config";
-import {
-  onSnapshot,
-  query,
-  collection,
-  QuerySnapshot,
-  DocumentData,
-} from "firebase/firestore";
 import { getProVetIdFromUrl } from "utils/getProVetIdFromUrl";
 import { RequestRecords } from "components/RequestRecords";
 
@@ -43,7 +34,6 @@ const PetDetail = () => {
   const { patients } = PatientsStore.useState();
   const { upcomingAppointments, pastAppointments } =
     AppointmentsStore.useState();
-  const [reasons, setReasons] = useState<Array<any> | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [upcomingPatientAppointments, setUpcomingPatientAppointments] =
     useState<Array<Appointment> | null>(null);
@@ -105,27 +95,6 @@ const PetDetail = () => {
       if (vcprPatients.length > 0) setVcprPatients(vcprPatients);
     }
   }, [id, patients, upcomingAppointments, pastAppointments]);
-
-  useEffect(() => {
-    const unsubscribeReasons = onSnapshot(
-      query(collection(firestore, "reasons")),
-      (querySnapshot: QuerySnapshot) => {
-        if (querySnapshot.empty) return;
-        const reasons: Array<any> = [];
-        querySnapshot.forEach((doc: DocumentData) => {
-          reasons.push(doc.data());
-        });
-        setReasons(reasons);
-      },
-      (error: any) => setError({ ...error, source: "unsubscribeReasons" }),
-    );
-    return () => unsubscribeReasons();
-  }, []);
-
-  const setError = (error: any) =>
-    ErrorStore.update((s: any) => {
-      s.currentError = error;
-    });
 
   return (
     <Screen withBackground={backgroundImage}>
@@ -233,87 +202,77 @@ const PetDetail = () => {
                 style={tw`flex-col rounded-xl bg-transparent w-full`}
                 noDarkMode
               >
-                {reasons &&
-                  upcomingPatientAppointments.map(
-                    (appointment: Appointment) => {
-                      const location =
-                        appointment.resources.includes(6) || // Exam Room 1
-                        appointment.resources.includes(7) || // Exam Room 2
-                        appointment.resources.includes(8) || // Exam Room 3
-                        appointment.resources.includes(14) || // Exam Room 1
-                        appointment.resources.includes(15) || // Exam Room 2
-                        appointment.resources.includes(16) // Exam Room 3
-                          ? "CLINIC"
-                          : appointment.resources.includes(3) || // Truck 1
-                              appointment.resources.includes(9) // Truck 2
-                            ? "HOUSECALL"
-                            : appointment.resources.includes(11) || // Virtual Room 1
-                                appointment.resources.includes(18) // Virtual Room 2
-                              ? "TELEHEALTH"
-                              : "UNKNOWN APPOINTMENT TYPE";
-                      const reason = reasons?.map((reason: any) => {
-                        if (
-                          reason.id ===
-                          getProVetIdFromUrl(appointment.reason as any)
-                        )
-                          return reason.name;
-                      });
-                      return (
-                        <TouchableOpacity
-                          key={appointment.id}
-                          onPress={() =>
-                            router.navigate({
-                              pathname: `/(app)/home/pet/appointment-detail/`,
-                              params: { id: appointment?.id },
-                            })
-                          }
-                        >
-                          <View
-                            style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`}
-                          >
-                            <Container style={tw`px-3`}>
-                              <Icon
-                                name={
-                                  location === "CLINIC"
-                                    ? "clinic-alt"
-                                    : location === "HOUSECALL"
-                                      ? "mobile"
-                                      : location === "TELEHEALTH"
-                                        ? "telehealth"
-                                        : "question"
-                                }
-                                height={50}
-                                width={50}
-                              />
-                            </Container>
-                            <Container style={tw`flex-shrink`}>
-                              <HeadingText style={tw`text-lg`}>
-                                {reason}
-                              </HeadingText>
-                              <BodyText style={tw`text-sm -mt-0.5`}>
-                                {appointment.start
-                                  .toDate()
-                                  .toLocaleDateString("en-us", {
-                                    weekday: "long",
-                                    year: "2-digit",
-                                    month: "numeric",
-                                    day: "numeric",
-                                  })}{" "}
-                                @{" "}
-                                {appointment.start
-                                  .toDate()
-                                  .toLocaleString("en-US", {
-                                    hour: "numeric",
-                                    minute: "numeric",
-                                    hour12: true,
-                                  })}
-                              </BodyText>
-                            </Container>
-                          </View>
-                        </TouchableOpacity>
-                      );
-                    },
-                  )}
+                {upcomingPatientAppointments.map((appointment: Appointment) => {
+                  const location =
+                    appointment.resources.includes(6) || // Exam Room 1
+                    appointment.resources.includes(7) || // Exam Room 2
+                    appointment.resources.includes(8) || // Exam Room 3
+                    appointment.resources.includes(14) || // Exam Room 1
+                    appointment.resources.includes(15) || // Exam Room 2
+                    appointment.resources.includes(16) // Exam Room 3
+                      ? "CLINIC"
+                      : appointment.resources.includes(3) || // Truck 1
+                          appointment.resources.includes(9) // Truck 2
+                        ? "HOUSECALL"
+                        : appointment.resources.includes(11) || // Virtual Room 1
+                            appointment.resources.includes(18) // Virtual Room 2
+                          ? "TELEHEALTH"
+                          : "UNKNOWN APPOINTMENT TYPE";
+                  return (
+                    <TouchableOpacity
+                      key={appointment.id}
+                      onPress={() =>
+                        router.navigate({
+                          pathname: `/(app)/home/pet/appointment-detail/`,
+                          params: { id: appointment?.id },
+                        })
+                      }
+                    >
+                      <View
+                        style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`}
+                      >
+                        <Container style={tw`px-3`}>
+                          <Icon
+                            name={
+                              location === "CLINIC"
+                                ? "clinic-alt"
+                                : location === "HOUSECALL"
+                                  ? "mobile"
+                                  : location === "TELEHEALTH"
+                                    ? "telehealth"
+                                    : "question"
+                            }
+                            height={50}
+                            width={50}
+                          />
+                        </Container>
+                        <Container style={tw`flex-shrink`}>
+                          <HeadingText style={tw`text-lg`}>
+                            {appointment.reason as string}
+                          </HeadingText>
+                          <BodyText style={tw`text-sm -mt-0.5`}>
+                            {appointment.start
+                              .toDate()
+                              .toLocaleDateString("en-us", {
+                                weekday: "long",
+                                year: "2-digit",
+                                month: "numeric",
+                                day: "numeric",
+                              })}{" "}
+                            @{" "}
+                            {appointment.start
+                              .toDate()
+                              .toLocaleString("en-US", {
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              })}
+                          </BodyText>
+                        </Container>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
             </>
           )}
@@ -331,142 +290,134 @@ const PetDetail = () => {
               style={tw`flex-col rounded-xl bg-transparent w-full`}
               noDarkMode
             >
-              {reasons &&
-                pastPatientAppointments.map(
-                  (appointment: Appointment, index: number) => {
-                    const location =
-                      appointment.resources.includes(6) || // Exam Room 1
-                      appointment.resources.includes(7) || // Exam Room 2
-                      appointment.resources.includes(8) || // Exam Room 3
-                      appointment.resources.includes(14) || // Exam Room 1
-                      appointment.resources.includes(15) || // Exam Room 2
-                      appointment.resources.includes(16) // Exam Room 3
-                        ? "CLINIC"
-                        : appointment.resources.includes(3) || // Truck 1
-                            appointment.resources.includes(9) // Truck 2
-                          ? "HOUSECALL"
-                          : appointment.resources.includes(11) || // Virtual Room 1
-                              appointment.resources.includes(18) // Virtual Room 2
-                            ? "TELEHEALTH"
-                            : "UNKNOWN APPOINTMENT TYPE";
-                    const reason = reasons?.map((reason: any) => {
-                      if (
-                        reason.id ===
-                        getProVetIdFromUrl(appointment.reason as any)
-                      )
-                        return reason.name;
-                    });
-                    return !showAllPastAppointments && index < 3 ? (
-                      <TouchableOpacity
+              {pastPatientAppointments.map(
+                (appointment: Appointment, index: number) => {
+                  const location =
+                    appointment.resources.includes(6) || // Exam Room 1
+                    appointment.resources.includes(7) || // Exam Room 2
+                    appointment.resources.includes(8) || // Exam Room 3
+                    appointment.resources.includes(14) || // Exam Room 1
+                    appointment.resources.includes(15) || // Exam Room 2
+                    appointment.resources.includes(16) // Exam Room 3
+                      ? "CLINIC"
+                      : appointment.resources.includes(3) || // Truck 1
+                          appointment.resources.includes(9) // Truck 2
+                        ? "HOUSECALL"
+                        : appointment.resources.includes(11) || // Virtual Room 1
+                            appointment.resources.includes(18) // Virtual Room 2
+                          ? "TELEHEALTH"
+                          : "UNKNOWN APPOINTMENT TYPE";
+                  return !showAllPastAppointments && index < 3 ? (
+                    <TouchableOpacity
+                      key={appointment.id}
+                      onPress={() =>
+                        router.navigate({
+                          pathname: `/(app)/home/pet/appointment-detail/`,
+                          params: { id: appointment?.id },
+                        })
+                      }
+                    >
+                      <View
                         key={appointment.id}
-                        onPress={() =>
-                          router.navigate({
-                            pathname: `/(app)/home/pet/appointment-detail/`,
-                            params: { id: appointment?.id },
-                          })
-                        }
+                        style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`}
                       >
-                        <View
-                          key={appointment.id}
-                          style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`}
-                        >
-                          <Container style={tw`p-2`}>
-                            <Icon
-                              name={
-                                location === "CLINIC"
-                                  ? "clinic-alt"
-                                  : location === "HOUSECALL"
-                                    ? "mobile"
-                                    : location === "TELEHEALTH"
-                                      ? "telehealth"
-                                      : "question"
-                              }
-                              height={50}
-                              width={50}
-                            />
-                          </Container>
-                          <Container style={tw`flex-shrink`}>
-                            <HeadingText style={tw`text-lg`}>
-                              {reason}
-                            </HeadingText>
-                            <BodyText style={tw`text-sm -mt-0.5`}>
-                              {appointment.start
-                                .toDate()
-                                .toLocaleDateString("en-us", {
-                                  weekday: "long",
-                                  year: "2-digit",
-                                  month: "numeric",
-                                  day: "numeric",
-                                })}{" "}
-                              @{" "}
-                              {appointment.start
-                                .toDate()
-                                .toLocaleString("en-US", {
-                                  hour: "numeric",
-                                  minute: "numeric",
-                                  hour12: true,
-                                })}
-                            </BodyText>
-                          </Container>
-                        </View>
-                      </TouchableOpacity>
-                    ) : showAllPastAppointments ? (
-                      <TouchableOpacity
+                        <Container style={tw`p-2`}>
+                          <Icon
+                            name={
+                              location === "CLINIC"
+                                ? "clinic-alt"
+                                : location === "HOUSECALL"
+                                  ? "mobile"
+                                  : location === "TELEHEALTH"
+                                    ? "telehealth"
+                                    : "question"
+                            }
+                            height={50}
+                            width={50}
+                          />
+                        </Container>
+                        <Container style={tw`flex-shrink`}>
+                          <HeadingText style={tw`text-lg`}>
+                            {appointment.reason as string}
+                          </HeadingText>
+                          <BodyText style={tw`text-sm -mt-0.5`}>
+                            {appointment.start
+                              .toDate()
+                              .toLocaleDateString("en-us", {
+                                weekday: "long",
+                                year: "2-digit",
+                                month: "numeric",
+                                day: "numeric",
+                              })}{" "}
+                            @{" "}
+                            {appointment.start
+                              .toDate()
+                              .toLocaleString("en-US", {
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              })}
+                          </BodyText>
+                        </Container>
+                      </View>
+                    </TouchableOpacity>
+                  ) : showAllPastAppointments ? (
+                    <TouchableOpacity
+                      key={appointment.id}
+                      onPress={() =>
+                        router.navigate({
+                          pathname: `/(app)/home/pet/appointment-detail/`,
+                          params: { id: appointment?.id },
+                        })
+                      }
+                    >
+                      <View
                         key={appointment.id}
-                        onPress={() =>
-                          router.navigate({
-                            pathname: `/(app)/home/pet/appointment-detail/`,
-                            params: { id: appointment?.id },
-                          })
-                        }
+                        style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
                       >
-                        <View
-                          key={appointment.id}
-                          style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
-                        >
-                          <Container style={tw`p-2`}>
-                            <Icon
-                              name={
-                                location === "CLINIC"
-                                  ? "clinic-alt"
-                                  : location === "HOUSECALL"
-                                    ? "mobile"
-                                    : location === "TELEHEALTH"
-                                      ? "telehealth"
-                                      : "question"
-                              }
-                              height={50}
-                              width={50}
-                            />
-                          </Container>
-                          <Container style={tw`flex-shrink`}>
-                            <HeadingText style={tw`text-lg`}>
-                              {reason}
-                            </HeadingText>
-                            <BodyText style={tw`text-sm -mt-0.5`}>
-                              {appointment.start
-                                .toDate()
-                                .toLocaleDateString("en-us", {
-                                  weekday: "long",
-                                  year: "2-digit",
-                                  month: "numeric",
-                                  day: "numeric",
-                                })}{" "}
-                              @{" "}
-                              {appointment.start
-                                .toDate()
-                                .toLocaleString("en-US", {
-                                  hour: "numeric",
-                                  minute: "numeric",
-                                  hour12: true,
-                                })}
-                            </BodyText>
-                          </Container>
-                        </View>
-                      </TouchableOpacity>
-                    ) : null;
-                  },
-                )}
+                        <Container style={tw`p-2`}>
+                          <Icon
+                            name={
+                              location === "CLINIC"
+                                ? "clinic-alt"
+                                : location === "HOUSECALL"
+                                  ? "mobile"
+                                  : location === "TELEHEALTH"
+                                    ? "telehealth"
+                                    : "question"
+                            }
+                            height={50}
+                            width={50}
+                          />
+                        </Container>
+                        <Container style={tw`flex-shrink`}>
+                          <HeadingText style={tw`text-lg`}>
+                            {appointment.reason as string}
+                          </HeadingText>
+                          <BodyText style={tw`text-sm -mt-0.5`}>
+                            {appointment.start
+                              .toDate()
+                              .toLocaleDateString("en-us", {
+                                weekday: "long",
+                                year: "2-digit",
+                                month: "numeric",
+                                day: "numeric",
+                              })}{" "}
+                            @{" "}
+                            {appointment.start
+                              .toDate()
+                              .toLocaleString("en-US", {
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              })}
+                          </BodyText>
+                        </Container>
+                      </View>
+                    </TouchableOpacity>
+                  ) : null;
+                },
+              )}
               {pastPatientAppointments &&
                 pastPatientAppointments.length > 3 && (
                   <ActionButton
