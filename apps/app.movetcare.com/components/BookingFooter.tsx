@@ -42,6 +42,7 @@ export const BookingFooter = ({ isClinic }: { isClinic?: boolean }) => {
         if (response.error) {
           handleError({ message: response.error });
         } else {
+          localStorage.removeItem("location");
           if (isAppMode) {
             if (isClinic) {
               const clinicId = JSON.parse(

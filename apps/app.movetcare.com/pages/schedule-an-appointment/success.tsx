@@ -46,6 +46,7 @@ export default function BookingSuccess() {
           else {
             if (environment === "production") {
               localStorage.removeItem("email");
+              localStorage.removeItem("location");
               localStorage.removeItem("bookingSession");
             }
             setSubmissionSuccess(true);

@@ -11,6 +11,24 @@ const QuickBookAppointment = () => {
   const { location } = useLocalSearchParams();
   const { user, client } = AuthStore.useState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  console.log(
+    "url: ",
+    getPlatformUrl() +
+      "?mode=app&email=" +
+      user.email +
+      `${location ? `&location=${location === "housecall" ? `${client?.address ? client?.address : ""}` : location}` : ""}${client?.firstName ? `&firstName=${client?.firstName}` : ""}${
+        client?.lastName ? `&lastName=${client?.lastName}` : ""
+      }${
+        client?.phone
+          ? `&phone=${client?.phone
+              ?.replaceAll(" ", "")
+              ?.replaceAll("(", "")
+              ?.replaceAll(")", "")
+              ?.replaceAll("-", "")}`
+          : ""
+      }`,
+  );
+
   return (
     <>
       {isLoading && (

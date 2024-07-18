@@ -60,6 +60,7 @@ export default function LocationSelection({
   const { mode, housecallRequest } = router.query || {};
   const isAppMode = mode === "app";
   const isHousecallRequest = Boolean(Number(housecallRequest));
+  const [preselectedLocation, setPreselectedLocation] = useState<any>(null);
   const [loadingMessage, setLoadingMessage] = useState<string>(
     "Loading, Please Wait...",
   );
@@ -85,6 +86,7 @@ export default function LocationSelection({
     handleSubmit,
     watch,
     control,
+    setValue,
     formState: { errors, isDirty },
   } = useForm({
     mode: "all",
@@ -180,10 +182,37 @@ export default function LocationSelection({
       setSession(
         JSON.parse(window.localStorage.getItem("bookingSession") as string),
       );
-      // if (isLoaded) setIsLoading(false);
-      // else if (!isLoaded && !isLoading) setIsLoading(true);
     } else router.push("/schedule-an-appointment");
-  }, [router]);
+    if (window.localStorage.getItem("location") !== null && router) {
+      const location = JSON.parse(
+        window.localStorage.getItem("location") as string,
+      );
+      if (location === "belleview-station") {
+        setValue("location", "Clinic", {
+          shouldValidate: true,
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+      } else if (location === "virtually") {
+        setValue("location", "Virtually", {
+          shouldValidate: true,
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+      } else if (location !== null && location !== undefined) {
+        setValue("location", "Home", {
+          shouldValidate: true,
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+        setValue("address", "location", {
+          shouldValidate: true,
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+      }
+    }
+  }, [router, setValue]);
   const handleError = (error: any) => {
     console.error(error);
     setError(error);

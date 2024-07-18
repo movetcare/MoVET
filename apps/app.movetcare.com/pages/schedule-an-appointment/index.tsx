@@ -17,7 +17,7 @@ import { getUrlQueryStringFromObject } from "utilities";
 
 export default function ScheduleAnAppointment() {
   const router = useRouter();
-  const { email, mode } = router.query || {};
+  const { email, mode, location } = router.query || {};
   const isAppMode = mode === "app";
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
@@ -43,6 +43,13 @@ export default function ScheduleAnAppointment() {
       email: "",
     } as any,
   });
+
+  useEffect(() => {
+    if (location) {
+      window.localStorage.setItem("location", JSON.stringify(location));
+    }
+  }, [location]);
+
   const handleError = (error: any) => {
     setError(error);
     reset();
