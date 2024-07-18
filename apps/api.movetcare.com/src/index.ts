@@ -28,6 +28,7 @@ export { updatePatient } from "./endpoints/mobile/updatePatient";
 export { updateClient } from "./endpoints/mobile/updateClient";
 export { updateAppointment } from "./endpoints/mobile/updateAppointment";
 export { refreshCustomerToken } from "./endpoints/mobile/refreshCustomerToken";
+export { clearAppointmentBookingSessions } from "./endpoints/mobile/clearAppointmentBookingSessions";
 export { getWinterMode } from "./endpoints/web/getWinterMode";
 export { getAppointmentAvailability } from "./endpoints/web/getAppointmentAvailability";
 export { getClinicAvailability } from "./endpoints/web/getClinicAvailability";

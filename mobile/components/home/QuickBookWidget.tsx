@@ -132,8 +132,40 @@ export const QuickBookWidget = () => {
               </HeadingText>
               <SubHeadingText noDarkMode style={tw`text-movet-white`}>
                 {client?.address
-                  ? client?.address
+                  ? client?.address.split(",", 2).join(",")
                   : "at the location of your choosing"}
+              </SubHeadingText>
+            </View>
+            <View
+              style={tw`bg-movet-black/50 items-center justify-center ml-4 py-4 pl-4 pr-3 rounded-xl`}
+              noDarkMode
+            >
+              <Icon name="calendar-plus" height={30} width={30} color="white" />
+            </View>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            router.push({
+              pathname: `/(app)/home/quick-book-appointment/`,
+              params: { location: "virtually" },
+            })
+          }
+          style={tw`rounded-xl sm:ml-2`}
+        >
+          <View
+            style={tw`flex-row bg-movet-yellow rounded-xl shadow-lg shadow-movet-black dark:shadow-movet-white p-4 mt-2 items-center w-full justify-between`}
+            noDarkMode
+          >
+            <View style={tw`bg-movet-yellow flex-1 justify-start`} noDarkMode>
+              <HeadingText
+                style={tw`text-movet-white text-lg w-full`}
+                noDarkMode
+              >
+                Virtual Consultation
+              </HeadingText>
+              <SubHeadingText noDarkMode style={tw`text-movet-white`}>
+                Video Chat with a MoVET Expert!
               </SubHeadingText>
             </View>
             <View

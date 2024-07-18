@@ -1,37 +1,40 @@
 import { Loader } from "components/Loader";
 import { View } from "components/themed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthStore } from "stores/AuthStore";
 import tw from "tailwind";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { WebView as DefaultWebView } from "react-native-webview";
 import { useLocalSearchParams } from "expo-router";
+import { functions } from "firebase-config";
+import { httpsCallable } from "firebase/functions";
 
 const QuickBookAppointment = () => {
   const { location } = useLocalSearchParams();
   const { user, client } = AuthStore.useState();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  console.log(
-    "url: ",
-    getPlatformUrl() +
-      "?mode=app&email=" +
-      user.email +
-      `${location ? `&location=${location === "housecall" ? `${client?.address ? client?.address : ""}` : location}` : ""}${client?.firstName ? `&firstName=${client?.firstName}` : ""}${
-        client?.lastName ? `&lastName=${client?.lastName}` : ""
-      }${
-        client?.phone
-          ? `&phone=${client?.phone
-              ?.replaceAll(" ", "")
-              ?.replaceAll("(", "")
-              ?.replaceAll(")", "")
-              ?.replaceAll("-", "")}`
-          : ""
-      }`,
-  );
+  const [isLoadingSession, setIsLoadingSession] = useState<boolean>(true);
+  const [isLoadingWeb, setIsLoadingWeb] = useState<boolean>(true);
 
-  return (
+  useEffect(() => {
+    const clearExistingAppointmentBookingSessions = async () => {
+      const clearAppointmentBookingSessions = httpsCallable(
+        functions,
+        "clearAppointmentBookingSessions",
+      );
+      await clearAppointmentBookingSessions().finally(() =>
+        setIsLoadingSession(false),
+      );
+    };
+    clearExistingAppointmentBookingSessions();
+  }, []);
+
+  return isLoadingSession ? (
+    <View style={tw`h-screen -mt-12`}>
+      <Loader />
+    </View>
+  ) : (
     <>
-      {isLoading && (
+      {isLoadingWeb && (
         <View style={tw`h-screen -mt-20`}>
           <Loader />
         </View>
@@ -55,8 +58,8 @@ const QuickBookAppointment = () => {
             }`,
         }}
         startInLoadingState
-        onLoad={() => setTimeout(() => setIsLoading(false), 1500)}
-        style={tw`${isLoading ? "hidden" : "flex-1"}`}
+        onLoad={() => setTimeout(() => setIsLoadingWeb(false), 1500)}
+        style={tw`${isLoadingWeb ? "hidden" : "flex-1"}`}
       />
     </>
   );

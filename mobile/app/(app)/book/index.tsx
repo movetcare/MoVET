@@ -1,17 +1,38 @@
 import { Loader } from "components/Loader";
 import { View } from "components/themed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthStore } from "stores/AuthStore";
 import tw from "tailwind";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { WebView as DefaultWebView } from "react-native-webview";
+import { functions } from "firebase-config";
+import { httpsCallable } from "firebase/functions";
 
 const NewAppointment = () => {
   const { user, client } = AuthStore.useState();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  return (
+  const [isLoadingSession, setIsLoadingSession] = useState<boolean>(true);
+  const [isLoadingWeb, setIsLoadingWeb] = useState<boolean>(true);
+
+  useEffect(() => {
+    const clearExistingAppointmentBookingSessions = async () => {
+      const clearAppointmentBookingSessions = httpsCallable(
+        functions,
+        "clearAppointmentBookingSessions",
+      );
+      await clearAppointmentBookingSessions().finally(() =>
+        setIsLoadingSession(false),
+      );
+    };
+    clearExistingAppointmentBookingSessions();
+  }, []);
+
+  return isLoadingSession ? (
+    <View style={tw`h-screen -mt-12`}>
+      <Loader />
+    </View>
+  ) : (
     <>
-      {isLoading && (
+      {isLoadingWeb && (
         <View style={tw`h-screen -mt-20`}>
           <Loader />
         </View>
@@ -34,9 +55,10 @@ const NewAppointment = () => {
                 : ""
             }`,
         }}
+        incognito
         startInLoadingState
-        onLoad={() => setTimeout(() => setIsLoading(false), 1500)}
-        style={tw`${isLoading ? "hidden" : "flex-1"}`}
+        onLoad={() => setTimeout(() => setIsLoadingWeb(false), 1500)}
+        style={tw`${isLoadingWeb ? "hidden" : "flex-1"}`}
       />
     </>
   );

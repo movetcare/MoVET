@@ -135,7 +135,7 @@ export default function StaffSelection() {
                                       height={80}
                                       width={80}
                                       className="rounded-full mx-auto"
-                                      alt={`Photo of ${expert?.firstName} ${expert?.lastName}`}
+                                      alt={`Photo of ${expert?.title}`}
                                     />
                                   ) : (
                                     <Image
@@ -144,7 +144,7 @@ export default function StaffSelection() {
                                       height={80}
                                       width={80}
                                       className="rounded-full mx-auto"
-                                      alt={`MoVET Logo Placeholder Image for ${expert?.firstName} ${expert?.lastName}`}
+                                      alt={`MoVET Logo Placeholder Image for ${expert?.title}`}
                                     />
                                   )}
                                 </div>
@@ -170,7 +170,7 @@ export default function StaffSelection() {
                                 iconSize={"lg"}
                                 color="black"
                                 text={`Request 
-                          ${expert?.firstName ? `${expert?.firstName}` : " "}`}
+                          ${expert?.title ? `${expert?.title}` : " "}`}
                                 className={"w-full sm:w-2/3 mx-auto mt-4"}
                                 onClick={() => onSubmit(expert)}
                               />

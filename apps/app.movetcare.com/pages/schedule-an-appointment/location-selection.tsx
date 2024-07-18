@@ -31,6 +31,7 @@ import { useGoogleMaps } from "providers/GoogleMapsProvider";
 import { getWinterMode } from "server";
 import type { WinterMode as WinterModeType } from "types";
 import { getUrlQueryStringFromObject } from "utilities";
+import { geocodeByAddress, getLatLng } from "react-google-places-autocomplete";
 
 const containerStyle = {
   width: "100%",
@@ -60,11 +61,13 @@ export default function LocationSelection({
   const { mode, housecallRequest } = router.query || {};
   const isAppMode = mode === "app";
   const isHousecallRequest = Boolean(Number(housecallRequest));
-  const [preselectedLocation, setPreselectedLocation] = useState<any>(null);
   const [loadingMessage, setLoadingMessage] = useState<string>(
     "Loading, Please Wait...",
   );
   const [session, setSession] = useState<any>();
+  const [placeholderLocation, setPlaceholderLocation] = useState<null | string>(
+    null,
+  );
   const { executeRecaptcha } = useGoogleReCaptcha();
   const cancelButtonRef = useRef(null);
   const [showExplainer, setShowExplainer] = useState<boolean>(false);
@@ -178,12 +181,21 @@ export default function LocationSelection({
   }, [zipcode]);
 
   useEffect(() => {
+    setIsLoading(true);
     if (window.localStorage.getItem("bookingSession") !== null && router) {
       setSession(
         JSON.parse(window.localStorage.getItem("bookingSession") as string),
       );
+      setIsLoading(false);
     } else router.push("/schedule-an-appointment");
-    if (window.localStorage.getItem("location") !== null && router) {
+  }, [router]);
+  useEffect(() => {
+    if (
+      window.localStorage.getItem("location") !== null &&
+      executeRecaptcha &&
+      reasonGroups &&
+      session
+    ) {
       const location = JSON.parse(
         window.localStorage.getItem("location") as string,
       );
@@ -193,26 +205,72 @@ export default function LocationSelection({
           shouldDirty: true,
           shouldTouch: true,
         });
+        handleSubmit(onSubmit)();
       } else if (location === "virtually") {
         setValue("location", "Virtually", {
           shouldValidate: true,
           shouldDirty: true,
           shouldTouch: true,
         });
+        handleSubmit(onSubmit)();
       } else if (location !== null && location !== undefined) {
         setValue("location", "Home", {
-          shouldValidate: true,
+          shouldValidate: false,
           shouldDirty: true,
           shouldTouch: true,
         });
-        setValue("address", "location", {
-          shouldValidate: true,
-          shouldDirty: true,
-          shouldTouch: true,
-        });
+        setPlaceholderLocation(location);
+        const fetchLatLon = (address: string, setLatLon: any) =>
+          geocodeByAddress(address)
+            .then((results) => {
+              let zipcode: string | null = null;
+              results[0]?.address_components.forEach(
+                (
+                  component: {
+                    long_name: string;
+                    short_name: string;
+                    types: Array<string>;
+                  },
+                  index: number,
+                ) =>
+                  component?.types.forEach((type: string) =>
+                    type === "postal_code"
+                      ? (zipcode =
+                          results[0]?.address_components[index]?.long_name)
+                      : null,
+                  ),
+              );
+              setZipcode(zipcode);
+              if (setValue)
+                setValue(
+                  "address",
+                  {
+                    label: results[0]?.formatted_address,
+                    value: {
+                      description: results[0]?.formatted_address,
+                      terms: results[0]?.address_components,
+                      place_id: results[0]?.place_id,
+                    },
+                  } as any,
+                  {
+                    shouldValidate: false,
+                    shouldDirty: false,
+                    shouldTouch: false,
+                  },
+                );
+              return getLatLng(results[0]);
+            })
+            .then(({ lat, lng }) =>
+              setLatLon({
+                lat,
+                lng,
+              }),
+            );
+        fetchLatLon(location, setAddressLetLon);
       }
     }
-  }, [router, setValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [executeRecaptcha, handleSubmit, reasonGroups, session, setValue]);
   const handleError = (error: any) => {
     console.error(error);
     setError(error);
@@ -336,7 +394,7 @@ export default function LocationSelection({
                     }
                   />
                   <form className={isHousecallRequest ? "" : "mt-8"}>
-                    {!isHousecallRequest && (
+                    {!isHousecallRequest && !placeholderLocation && (
                       <>
                         {options && (
                           <ToggleInput
@@ -372,7 +430,7 @@ export default function LocationSelection({
                           <PlacesInput
                             label="Home Address"
                             name="address"
-                            placeholder="Search for an address"
+                            placeholder={"Search for an address"}
                             errors={errors}
                             control={control}
                             setValue={null}
