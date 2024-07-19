@@ -528,20 +528,25 @@ export default function LocationSelection({
                           At MoVET, we offer multiple types of Virtual
                           Consultations:
                         </p>
-                        <ul className="text-sm px-8 italic">
+                        <ul className="text-sm px-4 italic">
                           <li className="my-2">
                             <span className="font-extrabold">Triage</span>: We
                             can offer general advice, but a diagnosis is not
                             rendered, nor can we prescribe medications. Great
                             for new clients to get to know us!
                           </li>
-                          <li>
+                          <li className="my-2">
                             <span className="font-extrabold">Telemedicine</span>
                             : We can diagnose, treat and prescribe medication
-                            for existing patients non-urgent conditions. Virtual
-                            Coaching Sessions: Live virtual demos are a simple
-                            and stress-free way to learn how to do procedures
-                            for your pet in the comfort of your home.
+                            for existing patients non-urgent conditions.
+                          </li>
+                          <li>
+                            <span className="font-extrabold">
+                              Virtual Coaching Sessions
+                            </span>
+                            : Live virtual demos are a simple and stress-free
+                            way to learn how to do procedures for your pet in
+                            the comfort of your home.
                             <p className="text-xs italic text-center">
                               * Telemedicine is only available to existing
                               clients with an established VCPR

@@ -94,7 +94,7 @@ export const TodaysAppointments = () => {
 };
 
 const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
-  console.log("appointment", appointment.patients);
+  //console.log("appointment", appointment.patients);
   return (
     <View noDarkMode style={tw`mb-4`}>
       <TouchableOpacity
