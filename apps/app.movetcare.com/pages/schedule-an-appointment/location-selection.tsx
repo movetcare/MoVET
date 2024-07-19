@@ -213,6 +213,13 @@ export default function LocationSelection({
           shouldTouch: true,
         });
         handleSubmit(onSubmit)();
+      } else if (location === "first-housecall") {
+        setValue("location", "Home", {
+          shouldValidate: false,
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+        setPlaceholderLocation(location);
       } else if (location !== null && location !== undefined) {
         setValue("location", "Home", {
           shouldValidate: false,

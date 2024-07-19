@@ -45,9 +45,8 @@ export default function ScheduleAnAppointment() {
   });
 
   useEffect(() => {
-    if (location) {
+    if (location)
       window.localStorage.setItem("location", JSON.stringify(location));
-    }
   }, [location]);
 
   const handleError = (error: any) => {

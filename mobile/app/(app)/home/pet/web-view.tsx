@@ -12,7 +12,9 @@ const WebView = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   return (
     <>
-      {screenTitle && <Stack.Screen options={{ title: screenTitle as string }} />}
+      {screenTitle && (
+        <Stack.Screen options={{ title: screenTitle as string }} />
+      )}
       {isLoading && (
         <View style={tw`h-screen -mt-12`}>
           <Loader />
@@ -28,6 +30,7 @@ const WebView = () => {
               "?mode=app" +
               queryString || "",
         }}
+        incognito
         startInLoadingState
         onLoad={() => setTimeout(() => setIsLoading(false), 1500)}
         style={tw`${isLoading ? "hidden" : "flex-1"}`}

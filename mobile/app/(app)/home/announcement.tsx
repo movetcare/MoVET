@@ -26,6 +26,7 @@ const Announcement = () => {
             path +
             (email ? `?mode=app&email=${email}` : "?mode=app"),
         }}
+        incognito
         startInLoadingState
         onLoad={() => setTimeout(() => setIsLoading(false), 1500)}
         style={tw`${isLoading ? "hidden" : "flex-1"}`}

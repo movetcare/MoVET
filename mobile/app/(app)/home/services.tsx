@@ -20,10 +20,13 @@ const Services = () => {
       <DefaultWebView
         source={{
           uri:
-            getPlatformUrl(applicationSource as ApplicationTypes || "website") +
+            getPlatformUrl(
+              (applicationSource as ApplicationTypes) || "website",
+            ) +
             path +
             "?mode=app",
         }}
+        incognito
         startInLoadingState
         onLoad={() => setTimeout(() => setIsLoading(false), 1500)}
         style={tw`${isLoading ? "hidden" : "flex-1"}`}

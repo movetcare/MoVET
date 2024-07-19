@@ -19,6 +19,7 @@ const PrivacyPolicy = () => {
         source={{
           uri: getPlatformUrl("website") + "/privacy-policy" + "?mode=app",
         }}
+        incognito
         startInLoadingState
         onLoad={() => setTimeout(() => setIsLoading(false), 1500)}
         style={tw`${isLoading ? "hidden" : "flex-1"}`}

@@ -27,6 +27,7 @@ const WebView = () => {
             "?mode=app" +
             (queryString as string),
         }}
+        incognito
         startInLoadingState
         onLoad={() => setTimeout(() => setIsLoading(false), 1500)}
         style={tw`${isLoading ? "hidden" : "flex-1"}`}

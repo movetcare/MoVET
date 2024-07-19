@@ -45,7 +45,7 @@ const QuickBookAppointment = () => {
             getPlatformUrl() +
             "?mode=app&email=" +
             user.email +
-            `${location ? `&location=${location === "housecall" ? `${client?.address ? client?.address : ""}` : location}` : ""}${client?.firstName ? `&firstName=${client?.firstName}` : ""}${
+            `${location ? `&location=${location === "housecall" ? `${client?.address ? client?.address : "first-housecall"}` : location}` : ""}${client?.firstName ? `&firstName=${client?.firstName}` : ""}${
               client?.lastName ? `&lastName=${client?.lastName}` : ""
             }${
               client?.phone
@@ -57,6 +57,7 @@ const QuickBookAppointment = () => {
                 : ""
             }`,
         }}
+        incognito
         startInLoadingState
         onLoad={() => setTimeout(() => setIsLoadingWeb(false), 1500)}
         style={tw`${isLoadingWeb ? "hidden" : "flex-1"}`}
