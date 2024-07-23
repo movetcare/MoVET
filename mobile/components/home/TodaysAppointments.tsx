@@ -40,13 +40,13 @@ interface Appointment {
     bio: string;
     name: string;
     picture: string;
+    id: number;
   };
   additionalUsers: Array<{
-    user: {
-      bio: string;
-      name: string;
-      picture: string;
-    };
+    bio: string;
+    name: string;
+    picture: string;
+    id: number;
   }>;
 }
 
@@ -94,14 +94,14 @@ export const TodaysAppointments = () => {
 };
 
 const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
-  //console.log("appointment", appointment.patients);
+  console.log("appointment", appointment);
   return (
     <View noDarkMode style={tw`mb-4`}>
       <TouchableOpacity
         onPress={() =>
           router.navigate({
             pathname: `/(app)/home/appointment-detail/`,
-            params: { id: 4410 },
+            params: { id: appointment.id },
           })
         }
         style={tw`rounded-xl w-full px-4`}
@@ -157,7 +157,7 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
               style={tw`my-4 flex-row items-center justify-center bg-movet-blue`}
               noDarkMode
             >
-              <BodyText>{appointment?.user?.picture}</BodyText>
+              {/* <BodyText>{appointment?.user?.picture}</BodyText> */}
               {appointment?.user?.picture ? (
                 <Image
                   source={{
@@ -188,7 +188,8 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
               style={tw`text-movet-white text-center mb-2`}
               noDarkMode
             >
-              with Barbra Caldwell & Dawn Brackpool
+              with {appointment.user.name} &{" "}
+              {appointment.additionalUsers[0]?.name}
             </SubHeadingText>
           </View>
         </View>

@@ -16,6 +16,9 @@ export const saveAppointment = async (
   const data: any = {};
 
   if (proVetAppointmentData) {
+    if (proVetAppointmentData?.id) data.id = proVetAppointmentData?.id;
+    if (proVetAppointmentData?.confirmed)
+      data.confirmed = proVetAppointmentData?.confirmed;
     if (
       proVetAppointmentData?.active === 1 ||
       proVetAppointmentData?.active === 0
@@ -35,8 +38,9 @@ export const saveAppointment = async (
           if (doc.exists)
             data.user = {
               name: doc.data()?.title,
-              picture: doc.data()?.picture,
+              picture: doc.data()?.picture || null,
               bio: doc.data()?.areasOfExpertise,
+              id: doc.data()?.id,
             };
         });
     }
@@ -52,8 +56,9 @@ export const saveAppointment = async (
             if (doc.exists)
               additionalUsers.push({
                 name: doc.data()?.title,
-                picture: doc.data()?.picture,
+                picture: doc.data()?.picture || null,
                 bio: doc.data()?.areasOfExpertise,
+                id: doc.data()?.id,
               });
           });
       });

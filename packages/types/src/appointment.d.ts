@@ -36,4 +36,5 @@ export type Appointment = {
   no_show: boolean;
   client_notes: string | null;
   invoice_extras: string | null;
+  confirmed: boolean;
 };
