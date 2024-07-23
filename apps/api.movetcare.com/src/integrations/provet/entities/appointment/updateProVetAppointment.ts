@@ -26,6 +26,9 @@ export const updateProVetAppointment = async (data: any): Promise<any> => {
       case "end":
         requestPayload.end = value;
         break;
+      case "confirmed":
+        requestPayload.confirmed = value;
+        break;
       case "title":
         requestPayload.title = value;
         break;

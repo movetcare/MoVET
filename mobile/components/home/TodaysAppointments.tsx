@@ -6,49 +6,29 @@ import {
   ItalicText,
   Container,
   BodyText,
+  ActionButton,
+  SubmitButton,
+  TextInput,
 } from "components/themed";
 import { router } from "expo-router";
-import { TouchableOpacity, useColorScheme, Image } from "react-native";
+import {
+  TouchableOpacity,
+  useColorScheme,
+  Image,
+  Platform,
+} from "react-native";
 import * as Linking from "expo-linking";
 import tw from "tailwind";
 import Constants from "expo-constants";
 import { useState, useEffect } from "react";
-import { AppointmentsStore, ErrorStore } from "stores";
+import { Appointment, AppointmentsStore, ErrorStore } from "stores";
 import MapView, { Marker } from "react-native-maps";
-
-const appointmentStatus: "pending" | "active" | "complete" = "pending";
-
-interface Appointment {
-  id: number;
-  start: any;
-  end: any;
-  client: number;
-  location: string;
-  address?: string;
-  notes: string;
-  locationType: "Home" | "Clinic" | "Virtually";
-  patients: Array<{
-    gender: string;
-    name: string;
-    id: number;
-    species: string;
-  }>;
-  resources: Array<number>;
-  reason: string;
-  type: number;
-  user: {
-    bio: string;
-    name: string;
-    picture: string;
-    id: number;
-  };
-  additionalUsers: Array<{
-    bio: string;
-    name: string;
-    picture: string;
-    id: number;
-  }>;
-}
+import { isTablet } from "utils/isTablet";
+import { functions } from "firebase-config";
+import { httpsCallable } from "firebase/functions";
+import { useForm } from "react-hook-form";
+import { Modal } from "components/Modal";
+import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 
 export const TodaysAppointments = () => {
   const { upcomingAppointments }: any = AppointmentsStore.useState();
@@ -75,8 +55,8 @@ export const TodaysAppointments = () => {
 
   return todaysAppointments && todaysAppointments.length > 0 ? (
     <>
-      <SubHeadingText style={tw`text-2xl w-full mb-2 text-center`}>
-        Today&apos;s Appointment
+      <SubHeadingText style={tw`text-2xl w-full mb-2 mt-4 text-center`}>
+        Today&apos;s Appointment{todaysAppointments.length > 1 && "s"}
       </SubHeadingText>
       {todaysAppointments.map((appointment: Appointment, index: number) => (
         <Container key={index} style={tw`w-full`}>
@@ -94,7 +74,81 @@ export const TodaysAppointments = () => {
 };
 
 const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
-  console.log("appointment", appointment);
+  const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [didConfirm, setDidConfirm] = useState<boolean>(false);
+  const isDarkMode = useColorScheme() !== "light";
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty, errors },
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      reasonId: 1,
+      cancellationReason: null,
+    },
+  });
+
+  useEffect(() => {
+    if (didConfirm) {
+      setIsLoading(true);
+      const updateAppointmentStatus = async () => {
+        const updateAppointment = httpsCallable(functions, "updateAppointment");
+        await updateAppointment({
+          confirmed: true,
+          id: appointment.id,
+        })
+          .then(async (result: any) => {
+            if (!result.data)
+              setError({
+                message: "Failed to confirm appointment, please try again",
+                source: "updateAppointment",
+              });
+          })
+          .catch((error: any) =>
+            setError({ ...error, source: "updateAppointment" }),
+          )
+          .finally(() => {
+            setShowCancelModal(false);
+            setIsLoading(false);
+          });
+      };
+      updateAppointmentStatus();
+    }
+  }, [didConfirm]);
+
+  const onSubmit = async (data: any) => {
+    setIsLoading(true);
+    const updateAppointment = httpsCallable(functions, "updateAppointment");
+    await updateAppointment({
+      cancellation_reason_text: data.cancellationReason,
+      cancellation_reason: data.reasonId,
+      active: 0,
+      id: appointment.id,
+    })
+      .then(async (result: any) => {
+        if (result.data) router.back();
+        else
+          setError({
+            message: "Failed to cancel appointment, please try again",
+            source: "updateAppointment",
+          });
+      })
+      .catch((error: any) =>
+        setError({ ...error, source: "updateAppointment" }),
+      )
+      .finally(() => {
+        setShowCancelModal(false);
+        setIsLoading(false);
+      });
+  };
+
+  const setError = (error: any) =>
+    ErrorStore.update((s: any) => {
+      s.currentError = error;
+    });
+
   return (
     <View noDarkMode style={tw`mb-4`}>
       <TouchableOpacity
@@ -104,7 +158,7 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
             params: { id: appointment.id },
           })
         }
-        style={tw`rounded-xl w-full px-4`}
+        style={tw`rounded-xl w-full ${isTablet ? "px-16" : "px-4"}`}
       >
         <View
           style={tw`flex-row rounded-t-xl p-4 mt-2 items-center w-full bg-movet-blue justify-between`}
@@ -118,24 +172,45 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
               style={tw`my-4 flex-row items-center justify-center bg-movet-blue`}
               noDarkMode
             >
-              {appointment.patients.map((patient: any, index: number) => (
-                <Image
-                  key={index}
-                  source={{
-                    uri: patient.photoUrl,
-                  }}
-                  alt={`${patient.name}'s photo`}
-                  height={75}
-                  width={75}
-                  style={tw`rounded-full mx-2`}
-                />
-              ))}
+              {appointment.patients.map((patient: any, index: number) =>
+                patient.photoUrl ? (
+                  <Image
+                    key={index}
+                    source={{
+                      uri: patient.photoUrl,
+                    }}
+                    alt={`${patient.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : (
+                  <View
+                    key={index}
+                    style={tw`flex-col items-center justify-center bg-transparent`}
+                    noDarkMode
+                  >
+                    <View
+                      style={tw`bg-movet-white/90 rounded-full p-4`}
+                      noDarkMode
+                    >
+                      <Icon key={index} name="dog" size="lg" />
+                    </View>
+                    <SubHeadingText
+                      noDarkMode
+                      style={tw`text-movet-white mt-1 -mb-2`}
+                    >
+                      {patient.name}
+                    </SubHeadingText>
+                  </View>
+                ),
+              )}
             </View>
             <HeadingText
               style={tw`text-movet-white text-xl text-center`}
               noDarkMode
             >
-              {appointment.reason}
+              {appointment.reason as any}
             </HeadingText>
             <SubHeadingText
               style={tw`text-movet-white text-lg text-center`}
@@ -145,57 +220,132 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
                 hour: "numeric",
                 minute: "numeric",
                 hour12: true,
-              })}{" "}
-              @{" "}
-              {appointment?.locationType?.toLowerCase() === "home"
-                ? appointment?.address
+              })}
+              {appointment?.locationType === "Home"
+                ? ` @ ${appointment?.address?.split(",")?.slice(0, 1)?.join(",")}`
                 : appointment?.locationType === "Clinic"
-                  ? "Belleview Station"
-                  : "Virtually"}
+                  ? " @ Belleview Station"
+                  : ""}
             </SubHeadingText>
-            <View
-              style={tw`my-4 flex-row items-center justify-center bg-movet-blue`}
-              noDarkMode
-            >
-              {/* <BodyText>{appointment?.user?.picture}</BodyText> */}
-              {appointment?.user?.picture ? (
-                <Image
-                  source={{
-                    uri: appointment?.user?.picture,
-                  }}
-                  alt={"'s photo"}
-                  height={75}
-                  width={75}
-                  style={tw`rounded-full mx-2`}
-                />
-              ) : null}
-              {appointment?.additionalUsers &&
-                appointment?.additionalUsers.map((user: any) =>
-                  user?.picture ? (
-                    <Image
-                      source={{
-                        uri: user?.picture,
-                      }}
-                      alt={"'s photo"}
-                      height={75}
-                      width={75}
-                      style={tw`rounded-full mx-2`}
-                    />
-                  ) : null,
-                )}
-            </View>
-            <SubHeadingText
-              style={tw`text-movet-white text-center mb-2`}
-              noDarkMode
-            >
-              with {appointment.user.name} &{" "}
-              {appointment.additionalUsers[0]?.name}
+            {appointment?.user?.picture && (
+              <View
+                style={tw`my-4 flex-row items-center justify-center bg-movet-blue`}
+                noDarkMode
+              >
+                {/* <BodyText>{appointment?.user?.picture}</BodyText> */}
+                {appointment?.user?.picture ? (
+                  <Image
+                    source={{
+                      uri: appointment?.user?.picture,
+                    }}
+                    alt={`${appointment?.user?.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : null}
+                {appointment?.additionalUsers &&
+                appointment?.additionalUsers[0]?.picture ? (
+                  <Image
+                    source={{
+                      uri: appointment?.additionalUsers[0]?.picture,
+                    }}
+                    alt={`${appointment?.user?.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : null}
+              </View>
+            )}
+            <SubHeadingText style={tw`text-movet-white text-center`} noDarkMode>
+              with{" "}
+              {appointment?.user?.name
+                ? appointment.user.name
+                : "a MoVET Expert"}
+              {appointment?.additionalUsers[0]?.name
+                ? ` & ${appointment?.additionalUsers[0]?.name}`
+                : ""}
             </SubHeadingText>
+            {appointment.confirmed && (
+              <View
+                style={tw`flex-row items-center justify-center bg-movet-blue mt-2`}
+                noDarkMode
+              >
+                <Icon name="check" size="xxs" color="white" />
+                <ItalicText
+                  style={tw`text-movet-white text-center ml-0.5 text-sm`}
+                  noDarkMode
+                >
+                  {appointment?.locationType !== "Virtually"
+                    ? "Appointment"
+                    : "Consultation"}{" "}
+                  Confirmed
+                </ItalicText>
+              </View>
+            )}
           </View>
         </View>
       </TouchableOpacity>
+      {!appointment.confirmed && (
+        <View
+          style={tw`bg-movet-blue px-8 pb-4 flex-col items-center justify-center ${isTablet ? "mx-16" : "mx-4"}`}
+          noDarkMode
+        >
+          <ActionButton
+            title={`Confirm ${
+              appointment?.locationType !== "Virtually"
+                ? "Appointment"
+                : "Consultation"
+            }`}
+            iconName={"paw"}
+            color={"red"}
+            onPress={() => setDidConfirm(!appointment.confirmed)}
+            loading={isLoading}
+          />
+          {!appointment.confirmed && (
+            <ActionButton
+              type="text"
+              title={`Cancel ${
+                appointment?.locationType !== "Virtually"
+                  ? "Appointment"
+                  : "Consultation"
+              }`}
+              iconName="cancel"
+              onPress={() => setShowCancelModal(true)}
+              textStyle={tw`text-movet-white/50 text-sm`}
+              style={tw`mt-2`}
+            />
+          )}
+        </View>
+      )}
+      {appointment?.telemedicineUrl && (
+        <View
+          style={tw`bg-movet-blue px-8 pb-4 flex-col items-center justify-center ${isTablet ? "mx-16" : "mx-4"}`}
+          noDarkMode
+        >
+          <ActionButton
+            title="Start Consultation"
+            iconName="paw"
+            onPress={() =>
+              openUrlInWebBrowser(
+                appointment?.telemedicineUrl as string,
+                isDarkMode,
+                {
+                  dismissButtonStyle: "close",
+                  enableBarCollapsing: true,
+                  enableDefaultShareMenuItem: false,
+                  readerMode: true,
+                  showTitle: false,
+                },
+              )
+            }
+            style={tw`sm:w-2.75/6`}
+          />
+        </View>
+      )}
       <View
-        style={tw`flex-row mx-4 items-center justify-center rounded-b-xl bg-movet-${appointmentStatus === "pending" ? "blue" : appointmentStatus === "active" ? "green" : appointmentStatus === "complete" ? "red" : "black"}`}
+        style={tw`flex-row items-center justify-center rounded-b-xl bg-movet-blue ${isTablet ? "mx-16" : "mx-4"}`}
         noDarkMode
       >
         <TouchableOpacity
@@ -203,41 +353,135 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
           style={tw`w-4/12 pb-2`}
         >
           <View
-            style={tw`flex-row px-4 py-2 items-center bg-movet-${appointmentStatus === "pending" ? "blue" : appointmentStatus === "active" ? "green" : appointmentStatus === "complete" ? "red" : "black"} justify-center`}
+            style={tw`flex-row px-4 py-2 items-center bg-movet-blue justify-center`}
             noDarkMode
           >
             <Icon name="phone" height={20} width={20} color="white" />
-            <View
-              style={tw`bg-movet-${appointmentStatus === "pending" ? "blue" : appointmentStatus === "active" ? "green" : appointmentStatus === "complete" ? "red" : "black"} ml-4`}
-              noDarkMode
-            >
+            <View style={tw`bg-movet-blue ml-4`} noDarkMode>
               <SubHeadingText style={tw`text-movet-white text-sm`} noDarkMode>
                 Call
               </SubHeadingText>
             </View>
           </View>
         </TouchableOpacity>
-        <View style={tw`w-2/12`} noDarkMode />
+        {appointment?.locationType !== "Clinic" && (
+          <View style={tw`w-2/12`} noDarkMode />
+        )}
         <TouchableOpacity
           onPress={() => Linking.openURL(`sms:+17205077387`)}
           style={tw`w-4/12 pb-2`}
         >
           <View
-            style={tw`flex-row px-4 py-2 items-center bg-movet-${appointmentStatus === "pending" ? "blue" : appointmentStatus === "active" ? "green" : appointmentStatus === "complete" ? "red" : "black"} justify-center `}
+            style={tw`flex-row px-4 py-2 items-center bg-movet-blue justify-center `}
             noDarkMode
           >
             <Icon name="sms" height={20} width={20} color="white" />
-            <View
-              style={tw`bg-movet-${appointmentStatus === "pending" ? "blue" : appointmentStatus === "active" ? "green" : appointmentStatus === "complete" ? "red" : "black"} ml-4`}
-              noDarkMode
-            >
+            <View style={tw`bg-movet-blue ml-4`} noDarkMode>
               <SubHeadingText style={tw`text-movet-white text-sm`} noDarkMode>
                 Text
               </SubHeadingText>
             </View>
           </View>
         </TouchableOpacity>
+        {appointment?.locationType === "Clinic" && (
+          <TouchableOpacity
+            onPress={() => {
+              const scheme = Platform.select({
+                ios: "maps:0,0?q=",
+                android: "geo:0,0?q=",
+              });
+              const latLng = "39.6252378,-104.9067691";
+              const label = "MoVET Clinic - 4912 S Newport St Denver, CO 80237";
+              const url: any = Platform.select({
+                ios: `${scheme}${label}@${latLng}`,
+                android: `${scheme}${latLng}(${label})`,
+              });
+              Linking.canOpenURL(url).then((supported) => {
+                if (supported) Linking.openURL(url);
+              });
+            }}
+            style={tw`w-4/12 pb-2`}
+          >
+            <View
+              style={tw`flex-row px-4 py-2 items-center bg-movet-blue justify-center `}
+              noDarkMode
+            >
+              <Icon name="map" height={20} width={20} color="white" />
+              <View style={tw`bg-movet-blue ml-4`} noDarkMode>
+                <SubHeadingText style={tw`text-movet-white text-sm`} noDarkMode>
+                  Map
+                </SubHeadingText>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
+      <Modal
+        isVisible={showCancelModal}
+        onClose={() => {
+          setShowCancelModal(false);
+        }}
+        title={isLoading ? "Canceling Appointment" : "Cancel Appointment"}
+      >
+        {isLoading ? (
+          <ItalicText
+            style={[isTablet ? tw`text-base` : tw`text-sm`, tw`text-center`]}
+          >
+            We are canceling your appointment. Please wait...
+          </ItalicText>
+        ) : (
+          <>
+            <BodyText
+              style={[isTablet ? tw`text-xl` : tw`text-lg`, tw`text-center`]}
+            >
+              Are you sure you want to cancel this appointment?
+            </BodyText>
+            <BodyText
+              style={[
+                isTablet ? tw`text-lg` : tw`text-sm`,
+                tw`text-center mt-2 mb-4`,
+              ]}
+            >
+              If so, please let us know why you are canceling:
+            </BodyText>
+            <TextInput
+              editable={!isLoading}
+              control={control}
+              error={(errors["cancellationReason"] as any)?.message as string}
+              name="cancellationReason"
+              required={false}
+              multiline
+              numberOfLines={4}
+              placeholder="Reason for Cancelation..."
+            />
+            <ItalicText
+              style={[
+                isTablet ? tw`text-base` : tw`text-sm`,
+                tw`mt-4 text-center text-movet-red`,
+              ]}
+              noDarkMode
+            >
+              * A $60 cancellation fee will be charged if cancellation occurs
+              within 24 hours of your appointment.
+            </ItalicText>
+            <Container style={[tw`flex-row justify-center sm:mb-2 mt-4`]}>
+              <SubmitButton
+                handleSubmit={handleSubmit}
+                onSubmit={onSubmit}
+                disabled={!isDirty || isLoading}
+                loading={isLoading}
+                title={
+                  isLoading
+                    ? "Canceling Appointment..."
+                    : "Yes, Cancel My Appointment"
+                }
+                color="red"
+                iconName="check"
+              />
+            </Container>
+          </>
+        )}
+      </Modal>
     </View>
   );
 };

@@ -203,21 +203,6 @@ const PetDetail = () => {
                 noDarkMode
               >
                 {upcomingPatientAppointments.map((appointment: Appointment) => {
-                  const location =
-                    appointment.resources.includes(6) || // Exam Room 1
-                    appointment.resources.includes(7) || // Exam Room 2
-                    appointment.resources.includes(8) || // Exam Room 3
-                    appointment.resources.includes(14) || // Exam Room 1
-                    appointment.resources.includes(15) || // Exam Room 2
-                    appointment.resources.includes(16) // Exam Room 3
-                      ? "CLINIC"
-                      : appointment.resources.includes(3) || // Truck 1
-                          appointment.resources.includes(9) // Truck 2
-                        ? "HOUSECALL"
-                        : appointment.resources.includes(11) || // Virtual Room 1
-                            appointment.resources.includes(18) // Virtual Room 2
-                          ? "TELEHEALTH"
-                          : "UNKNOWN APPOINTMENT TYPE";
                   return (
                     <TouchableOpacity
                       key={appointment.id}
@@ -234,11 +219,11 @@ const PetDetail = () => {
                         <Container style={tw`px-3`}>
                           <Icon
                             name={
-                              location === "CLINIC"
+                              appointment?.locationType === "Clinic"
                                 ? "clinic-alt"
-                                : location === "HOUSECALL"
+                                : appointment?.locationType === "Home"
                                   ? "mobile"
-                                  : location === "TELEHEALTH"
+                                  : appointment?.locationType === "Virtually"
                                     ? "telehealth"
                                     : "question"
                             }
@@ -292,21 +277,6 @@ const PetDetail = () => {
             >
               {pastPatientAppointments.map(
                 (appointment: Appointment, index: number) => {
-                  const location =
-                    appointment.resources.includes(6) || // Exam Room 1
-                    appointment.resources.includes(7) || // Exam Room 2
-                    appointment.resources.includes(8) || // Exam Room 3
-                    appointment.resources.includes(14) || // Exam Room 1
-                    appointment.resources.includes(15) || // Exam Room 2
-                    appointment.resources.includes(16) // Exam Room 3
-                      ? "CLINIC"
-                      : appointment.resources.includes(3) || // Truck 1
-                          appointment.resources.includes(9) // Truck 2
-                        ? "HOUSECALL"
-                        : appointment.resources.includes(11) || // Virtual Room 1
-                            appointment.resources.includes(18) // Virtual Room 2
-                          ? "TELEHEALTH"
-                          : "UNKNOWN APPOINTMENT TYPE";
                   return !showAllPastAppointments && index < 3 ? (
                     <TouchableOpacity
                       key={appointment.id}
@@ -324,11 +294,11 @@ const PetDetail = () => {
                         <Container style={tw`p-2`}>
                           <Icon
                             name={
-                              location === "CLINIC"
+                              appointment?.locationType === "Clinic"
                                 ? "clinic-alt"
-                                : location === "HOUSECALL"
+                                : appointment?.locationType === "Home"
                                   ? "mobile"
-                                  : location === "TELEHEALTH"
+                                  : appointment?.locationType === "Virtually"
                                     ? "telehealth"
                                     : "question"
                             }
@@ -378,11 +348,11 @@ const PetDetail = () => {
                         <Container style={tw`p-2`}>
                           <Icon
                             name={
-                              location === "CLINIC"
+                              appointment?.locationType === "Clinic"
                                 ? "clinic-alt"
-                                : location === "HOUSECALL"
+                                : appointment?.locationType === "Home"
                                   ? "mobile"
-                                  : location === "TELEHEALTH"
+                                  : appointment?.locationType === "Virtually"
                                     ? "telehealth"
                                     : "question"
                             }

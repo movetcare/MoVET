@@ -16,9 +16,8 @@ export const saveAppointment = async (
   const data: any = {};
 
   if (proVetAppointmentData) {
+    data.confirmed = proVetAppointmentData?.confirmed;
     if (proVetAppointmentData?.id) data.id = proVetAppointmentData?.id;
-    if (proVetAppointmentData?.confirmed)
-      data.confirmed = proVetAppointmentData?.confirmed;
     if (
       proVetAppointmentData?.active === 1 ||
       proVetAppointmentData?.active === 0

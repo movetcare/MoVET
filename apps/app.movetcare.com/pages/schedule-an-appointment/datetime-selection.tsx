@@ -623,11 +623,11 @@ export default function DateTime() {
                         ),
                       )}
                       <TextInput
-                        label="Additional Notes / Promo Code"
+                        label="Pet Concerns / Additional Notes /Promo Code"
                         name="notes"
                         control={control}
                         errors={errors}
-                        placeholder="Enter any additional notes or a promo code"
+                        placeholder="Enter any concerns for your pet, additional notes, or a promo code."
                         multiline
                         numberOfLines={2}
                         className="my-4 w-full"

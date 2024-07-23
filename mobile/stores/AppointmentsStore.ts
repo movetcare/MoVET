@@ -14,13 +14,28 @@ export interface Appointment {
   resources: Array<number>;
   start: any;
   type: 1 | 2 | 3 | 4;
-  user: number;
-  location?: string;
   instructions?: string;
   telemedicineUrl?: string;
   additionalNotes?: string;
   illnessDetails?: string;
+  address?: string;
+  locationType: "Home" | "Clinic" | "Virtually";
+  user: {
+    bio: string;
+    name: string;
+    picture: string;
+    id: number;
+  };
+  additionalUsers: Array<{
+    bio: string;
+    name: string;
+    picture: string;
+    id: number;
+  }>;
+  confirmed: boolean;
 }
+
+
 
 export const AppointmentsStore = new Store({
   upcomingAppointments: null as Appointment[] | null,

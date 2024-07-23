@@ -20,18 +20,10 @@ import {
   useColorScheme,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { firestore, functions } from "firebase-config";
-import {
-  onSnapshot,
-  query,
-  collection,
-  QuerySnapshot,
-  DocumentData,
-} from "firebase/firestore";
+import { functions } from "firebase-config";
 import { ErrorStore } from "stores/ErrorStore";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
-import { getProVetIdFromUrl } from "utils/getProVetIdFromUrl";
 import { Patient, PatientsStore } from "stores/PatientsStore";
 import { Modal } from "./Modal";
 import MapView, { Marker } from "react-native-maps";
@@ -53,6 +45,7 @@ export const AppointmentDetail = () => {
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
   const isDarkMode = useColorScheme() !== "light";
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [didConfirm, setDidConfirm] = useState<boolean>(false);
   const [mapCoordinates, setMapCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -71,9 +64,37 @@ export const AppointmentDetail = () => {
   });
 
   useEffect(() => {
+    if (didConfirm && appointment) {
+      setIsLoading(true);
+      const updateAppointmentStatus = async () => {
+        const updateAppointment = httpsCallable(functions, "updateAppointment");
+        await updateAppointment({
+          confirmed: true,
+          id: appointment.id,
+        })
+          .then(async (result: any) => {
+            if (!result.data)
+              setError({
+                message: "Failed to confirm appointment, please try again",
+                source: "updateAppointment",
+              });
+          })
+          .catch((error: any) =>
+            setError({ ...error, source: "updateAppointment" }),
+          )
+          .finally(() => {
+            setShowCancelModal(false);
+            setIsLoading(false);
+          });
+      };
+      updateAppointmentStatus();
+    }
+  }, [didConfirm]);
+
+  useEffect(() => {
     if (
       mapCoordinates === null &&
-      appointment?.location === "HOUSECALL" &&
+      appointment?.locationType === "Home" &&
       (appointment?.notes?.includes("Appointment Location:") || client?.address)
     ) {
       setIsLoading(true);
@@ -99,7 +120,7 @@ export const AppointmentDetail = () => {
     mapCoordinates,
     appointment?.notes,
     client?.address,
-    appointment?.location,
+    appointment?.locationType,
   ]);
 
   useEffect(() => {
@@ -125,21 +146,6 @@ export const AppointmentDetail = () => {
           setAppointment({
             ...appointment,
             patients: appointmentPatients,
-            location:
-              appointment.resources.includes(6) || // Exam Room 1
-              appointment.resources.includes(7) || // Exam Room 2
-              appointment.resources.includes(8) || // Exam Room 3
-              appointment.resources.includes(14) || // Exam Room 1
-              appointment.resources.includes(15) || // Exam Room 2
-              appointment.resources.includes(16) // Exam Room 3
-                ? "CLINIC"
-                : appointment.resources.includes(3) || // Truck 1
-                    appointment.resources.includes(9) // Truck 2
-                  ? "HOUSECALL"
-                  : appointment.resources.includes(11) || // Virtual Room 1
-                      appointment.resources.includes(18) // Virtual Room 2
-                    ? "TELEHEALTH"
-                    : "UNKNOWN APPOINTMENT TYPE",
           });
         }
       });
@@ -179,7 +185,7 @@ export const AppointmentDetail = () => {
 
   return (
     <Screen>
-      {appointment?.location === "TELEHEALTH" && (
+      {appointment?.locationType === "Home" && (
         <Stack.Screen options={{ title: "Virtual Consultation" }} />
       )}
       {appointment?.start?.toDate() >= new Date() && (
@@ -201,11 +207,11 @@ export const AppointmentDetail = () => {
         <Container style={tw`p-3`}>
           <Icon
             name={
-              appointment?.location === "CLINIC"
+              appointment?.locationType === "Clinic"
                 ? "clinic-alt"
-                : appointment?.location === "HOUSECALL"
+                : appointment?.locationType === "Home"
                   ? "mobile"
-                  : appointment?.location === "TELEHEALTH"
+                  : appointment?.locationType === "Virtually"
                     ? "telehealth"
                     : "question"
             }
@@ -213,10 +219,10 @@ export const AppointmentDetail = () => {
             width={100}
           />
         </Container>
-        <HeadingText style={tw`text-center mb-2`}>
+        <HeadingText style={tw`text-center mb-1`}>
           {appointment?.reason as string}
         </HeadingText>
-        <SubHeadingText style={tw`text-lg mb-2`}>
+        <SubHeadingText style={tw`text-lg mb-1`}>
           {appointment?.start?.toDate()?.toLocaleString("en-US", {
             timeZone: "America/Denver",
             month: "long",
@@ -230,6 +236,26 @@ export const AppointmentDetail = () => {
             hour12: true,
           })}
         </SubHeadingText>
+        <SubHeadingText
+          style={tw`text-center${appointment?.confirmed ? " mb-1" : " mb-4"}`}
+        >
+          with{" "}
+          {appointment?.user?.name ? appointment.user.name : "a MoVET Expert"}
+          {appointment?.additionalUsers[0]?.name
+            ? ` & ${appointment?.additionalUsers[0]?.name}`
+            : ""}
+        </SubHeadingText>
+        {appointment?.confirmed && (
+          <View style={tw`flex-row items-center justify-center mb-4`}>
+            <Icon name="check" size="xxs" />
+            <ItalicText style={tw`text-center ml-0.5 text-sm`}>
+              {appointment?.locationType !== "Virtually"
+                ? "Appointment"
+                : "Consultation"}{" "}
+              Confirmed
+            </ItalicText>
+          </View>
+        )}
         {appointment?.notes?.includes("Appointment Location:") ? (
           <>
             <SubHeadingText style={tw`mt-2`}>
@@ -303,7 +329,7 @@ export const AppointmentDetail = () => {
               </View>
             )}
           </>
-        ) : appointment?.location === "HOUSECALL" && client?.address ? (
+        ) : appointment?.locationType === "Home" && client?.address ? (
           <>
             <SubHeadingText style={tw`mt-2`}>
               APPOINTMENT LOCATION
@@ -349,7 +375,7 @@ export const AppointmentDetail = () => {
               </View>
             )}
           </>
-        ) : appointment?.location === "HOUSECALL" && !client?.address ? (
+        ) : appointment?.locationType === "Home" && !client?.address ? (
           <>
             <SubHeadingText style={tw`mt-2`}>
               APPOINTMENT LOCATION
@@ -482,7 +508,7 @@ export const AppointmentDetail = () => {
             </ItalicText>
           </>
         )}
-        {appointment?.location === "TELEHEALTH" &&
+        {appointment?.locationType === "Virtually" &&
           appointment?.start?.toDate() >= new Date() && (
             <ItalicText style={tw`text-sm text-center mt-4`}>
               * Virtual Consultations are performed via a secure third party web
@@ -555,7 +581,20 @@ export const AppointmentDetail = () => {
             </>
           )}
         </Modal>
-        {appointment?.location === "CLINIC" &&
+        {appointment && !appointment.confirmed && (
+          <ActionButton
+            color="blue"
+            title={`Confirm ${
+              appointment?.locationType !== "Virtually"
+                ? "Appointment"
+                : "Consultation"
+            }`}
+            iconName={"paw"}
+            onPress={() => setDidConfirm(!appointment.confirmed)}
+            loading={isLoading}
+          />
+        )}
+        {appointment?.locationType === "Clinic" &&
         appointment?.start?.toDate() >= new Date() ? (
           <Container
             style={tw`flex-col sm:flex-row justify-around w-full mt-4 mb-8`}
@@ -589,19 +628,19 @@ export const AppointmentDetail = () => {
               style={tw`sm:w-2.75/6`}
             />
           </Container>
-        ) : appointment?.location === "TELEHEALTH" &&
+        ) : appointment?.locationType === "Virtually" &&
           appointment?.start?.toDate() >= new Date() ? (
           <Container
             style={
               appointment?.telemedicineUrl
-                ? tw`flex-col sm:flex-row justify-around w-full mt-4 mb-8`
+                ? tw`flex-col sm:flex-row sm:flex-row-reverse justify-around w-full mt-4 mb-8`
                 : tw`w-full flex-col items-center justify-center mt-4 mb-8`
             }
           >
             {appointment?.telemedicineUrl && (
               <ActionButton
-                title="START CONSULTATION"
-                iconName="arrow-right"
+                title="Start Consultation"
+                iconName="paw"
                 onPress={() =>
                   openUrlInWebBrowser(
                     appointment?.telemedicineUrl as string,

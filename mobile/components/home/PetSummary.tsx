@@ -9,13 +9,7 @@ import {
   SubHeadingText,
 } from "components/themed";
 import { router } from "expo-router";
-import {
-  Appointment,
-  AppointmentsStore,
-  ErrorStore,
-  Patient,
-  PatientsStore,
-} from "stores";
+import { Appointment, AppointmentsStore, Patient, PatientsStore } from "stores";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 import { Image, TouchableOpacity } from "react-native";
@@ -52,11 +46,6 @@ export const PetSummary = () => {
       if (appointmentCounts.length > 0) setAppointmentCounts(appointmentCounts);
     }
   }, [patients, upcomingAppointments]);
-
-  const setError = (error: any) =>
-    ErrorStore.update((s: any) => {
-      s.currentError = error;
-    });
 
   return (
     <View
@@ -177,11 +166,10 @@ export const PetSummary = () => {
                                 <View style={tw`flex-row w-full items-center`}>
                                   <Icon
                                     name={
-                                      appointment?.locationType?.toLowerCase() ===
-                                      "home"
+                                      appointment?.locationType === "Home"
                                         ? "mobile"
-                                        : appointment?.locationType?.toLowerCase() ===
-                                            "virtually"
+                                        : appointment?.locationType ===
+                                            "Virtually"
                                           ? "telehealth"
                                           : "clinic-alt"
                                     }
@@ -210,11 +198,12 @@ export const PetSummary = () => {
                                         })}
                                     </BodyText>
                                     <ItalicText style={tw`text-sm`}>
-                                      {appointment?.locationType?.toLowerCase() ===
-                                      "home"
+                                      {appointment?.locationType === "Home"
                                         ? appointment?.address
-                                        : appointment?.locationType?.toLowerCase() ===
-                                            "clinic"
+                                            ?.split(",")
+                                            ?.slice(0, 1)
+                                            ?.join(",")
+                                        : appointment?.locationType === "Clinic"
                                           ? "MoVET @ Belleview Station"
                                           : "Virtually - In App"}
                                     </ItalicText>

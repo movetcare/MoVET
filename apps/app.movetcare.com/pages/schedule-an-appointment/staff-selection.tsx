@@ -175,21 +175,21 @@ export default function StaffSelection() {
                                 onClick={() => onSubmit(expert)}
                               />
                               {index !== staff?.length - 1 && (
-                                <hr className="text-movet-gray border rounded-full my-8" />
+                                <hr className="text-movet-gray border rounded-full my-4" />
                               )}
                             </div>
                           ) : (
                             <div key={index}></div>
                           ),
                         )}
-                      <hr className="text-movet-gray border rounded-full my-8" />
+                      <hr className="text-movet-gray border rounded-full" />
                       <Button
                         type="submit"
                         icon={faArrowRight}
                         iconSize={"lg"}
                         color="red"
                         text="SKIP"
-                        className={"w-full sm:w-2/3 mx-auto mt-4 sm:mt-0"}
+                        className={"w-full sm:w-2/3 mx-auto"}
                         onClick={() => onSubmit("NONE")}
                       />
                     </div>
