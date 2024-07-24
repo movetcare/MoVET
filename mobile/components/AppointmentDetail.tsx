@@ -95,16 +95,18 @@ export const AppointmentDetail = () => {
     if (
       mapCoordinates === null &&
       appointment?.locationType === "Home" &&
-      (appointment?.notes?.includes("Appointment Location:") || client?.address)
+      (appointment?.notes?.includes("Appointment Location:") ||
+        appointment?.address)
     ) {
       setIsLoading(true);
       fetch(
         `https://maps.google.com/maps/api/geocode/json?address=${encodeURI(
-          appointment?.notes
-            ?.split("-")[1]
-            ?.split("|")[0]
-            .split("(")[0]
-            ?.trim() || client?.address,
+          appointment?.address ||
+            appointment?.notes
+              ?.split("-")[1]
+              ?.split("|")[0]
+              .split("(")[0]
+              ?.trim(),
         )}&key=${Constants.expoConfig?.extra?.google_maps_geocode_key}`,
       )
         .then((response: any) => response.json())
@@ -185,7 +187,7 @@ export const AppointmentDetail = () => {
 
   return (
     <Screen>
-      {appointment?.locationType === "Home" && (
+      {appointment?.locationType === "Virtually" && (
         <Stack.Screen options={{ title: "Virtual Consultation" }} />
       )}
       {appointment?.start?.toDate() >= new Date() && (
@@ -196,6 +198,48 @@ export const AppointmentDetail = () => {
             message="Tap here to add a payment method to your account before your appointment begins."
           />
         </Container>
+      )}
+      {appointment?.status === "IN-ROUTE" && (
+        <View
+          style={[
+            isTablet ? tw`px-16` : tw`px-4`,
+            tw`flex-row rounded-xl bg-transparent`,
+          ]}
+          noDarkMode
+        >
+          <View
+            style={[
+              isLoading ? tw`bg-movet-black/60` : tw`bg-movet-yellow`,
+              tw`pr-4 pt-2 pb-3 rounded-xl flex-row items-center dark:border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`,
+            ]}
+            noDarkMode
+          >
+            <Container style={tw`px-4`}>
+              {isLoading ? (
+                <ActivityIndicator
+                  size="small"
+                  color={tw.color("movet-white")}
+                />
+              ) : (
+                <Icon name="user-medical-message" size="sm" color="white" />
+              )}
+            </Container>
+            <Container style={tw`flex-shrink`}>
+              <HeadingText style={tw`text-movet-white text-base`} noDarkMode>
+                We're on our way!
+              </HeadingText>
+              <BodyText style={tw`text-movet-white text-sm -mt-0.5`} noDarkMode>
+                {appointment?.user?.name
+                  ? appointment.user.name
+                  : "a MoVET Expert"}
+                {appointment?.additionalUsers[0]?.name
+                  ? ` & ${appointment?.additionalUsers[0]?.name}`
+                  : ""}{" "}
+                is on their way to your location. See you soon!
+              </BodyText>
+            </Container>
+          </View>
+        </View>
       )}
       <View
         style={[
@@ -250,13 +294,15 @@ export const AppointmentDetail = () => {
           <View style={tw`flex-row items-center justify-center mb-4`}>
             <Icon name="check" size="xxs" />
             <ItalicText style={tw`text-center ml-0.5 text-sm`}>
-              {appointment?.locationType !== "Virtually"
-                ? "Appointment"
-                : "Consultation"}{" "}
-              Confirmed
+              {appointment?.locationType === "Clinic"
+                ? "Checked In"
+                : (appointment?.locationType !== "Virtually"
+                    ? "Appointment"
+                    : "Consultation") + " Confirmed"}
             </ItalicText>
           </View>
         )}
+
         {appointment?.notes?.includes("Appointment Location:") ? (
           <>
             <SubHeadingText style={tw`mt-2`}>
@@ -587,12 +633,16 @@ export const AppointmentDetail = () => {
           appointment?.start?.toDate() >= new Date() && (
             <ActionButton
               color="blue"
-              title={`Confirm ${
-                appointment?.locationType !== "Virtually"
-                  ? "Appointment"
-                  : "Consultation"
-              }`}
-              iconName={"paw"}
+              title={
+                appointment?.locationType === "Clinic"
+                  ? "Check In"
+                  : `Confirm ${
+                      appointment?.locationType !== "Virtually"
+                        ? "Appointment"
+                        : "Consultation"
+                    }`
+              }
+              iconName={"check"}
               onPress={() => setDidConfirm(!appointment.confirmed)}
               loading={isLoading}
             />

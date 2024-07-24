@@ -33,6 +33,13 @@ export interface Appointment {
     id: number;
   }>;
   confirmed: boolean;
+  status:
+    | "PENDING"
+    | "IN-ROUTE"
+    | "IN-PROGRESS"
+    | "AWAITING-PAYMENT"
+    | "COMPLETE"
+    | undefined;
 }
 
 

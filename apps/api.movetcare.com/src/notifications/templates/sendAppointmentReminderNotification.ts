@@ -15,6 +15,7 @@ import type { EmailConfiguration } from "../../types/email.d";
 import { sendNotification } from "../sendNotification";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
 import { truncateString } from "../../utils/truncateString";
+import { subtractMinutesFromDate } from "../../utils/subtractMinutesFromDate";
 
 interface AppointmentDetails {
   active: boolean;
@@ -115,7 +116,32 @@ export const sendAppointmentReminderNotification = async (
         doesHaveValidPaymentOnFile,
         petNames,
       );
-    if (send30MinReminder)
+    if (send30MinReminder) {
+      if (
+        appointmentDetails?.resources?.includes(3) ||
+        appointmentDetails?.resources?.includes(9)
+      )
+        admin
+          .firestore()
+          .collection("appointments")
+          .doc(`${id}`)
+          .set({ status: "IN-ROUTE", updatedOn: new Date() }, { merge: true });
+      admin
+        .firestore()
+        .collection("tasks_queue")
+        .doc(`${appointmentDetails?.id}_update_appointment_to_in_progress`)
+        .set(
+          {
+            options: {
+              id: appointmentDetails?.id,
+            },
+            worker: "update_appointment_to_in_progress",
+            status: "scheduled",
+            performAt: subtractMinutesFromDate(appointmentDetails?.start, 3),
+            createdOn: new Date(),
+          },
+          { merge: true },
+        );
       await send30MinAppointmentNotification(
         appointmentDetails,
         userDetails,
@@ -123,6 +149,7 @@ export const sendAppointmentReminderNotification = async (
         doesHaveValidPaymentOnFile,
         petNames,
       );
+    }
   }
 };
 
@@ -501,7 +528,6 @@ const send30MinAppointmentNotification = async (
     console.log("sendAppointmentReminderNotification => APPOINTMENT DETAILS", {
       id,
       client,
-
       start,
       instructions,
       patients,
@@ -801,19 +827,38 @@ const send30MinAppointmentNotification = async (
         phoneNumber,
       },
     );
-  if (userNotificationSettings && userNotificationSettings?.sendPush && client)
-    sendNotification({
-      type: "push",
-      payload: {
-        user: { uid: client },
-        category: "client-appointment",
-        title: "It's almost time for your appointment w/ MoVET!",
-        message: truncateString(
-          "Please reach out if you have any questions or need assistance!",
-        ),
-        path: `/home/appointment-detail?id=${id}`,
-      },
-    });
+  if (
+    userNotificationSettings &&
+    userNotificationSettings?.sendPush &&
+    client
+  ) {
+    if (resources?.includes(3) || resources?.includes(9))
+      sendNotification({
+        type: "push",
+        payload: {
+          user: { uid: client },
+          category: "client-appointment",
+          title: "A MoVET Expert is on their way to your location!",
+          message: truncateString(
+            "Please reach out if you have any questions or need assistance!",
+          ),
+          path: `/home/`,
+        },
+      });
+    else
+      sendNotification({
+        type: "push",
+        payload: {
+          user: { uid: client },
+          category: "client-appointment",
+          title: "It's almost time for your appointment w/ MoVET!",
+          message: truncateString(
+            "Please reach out if you have any questions or need assistance!",
+          ),
+          path: `/home/appointment-detail?id=${id}`,
+        },
+      });
+  }
 };
 
 const getReasonName = async (reason: string) =>

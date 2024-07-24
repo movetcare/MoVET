@@ -387,6 +387,7 @@ const formatAppointmentData = async (appointment: any) => {
     movetData: {
       patients: appointment.patientSelection,
       notes: appointment?.additionalNotes,
+      status: "PENDING",
     },
   };
 };

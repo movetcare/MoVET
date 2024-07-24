@@ -424,6 +424,7 @@ const formatAppointmentData = async (appointment: any) => {
         locationType: appointment?.locationType,
         address: appointment?.address,
         patients: appointment.patientSelection,
+        status: "PENDING",
       },
     });
   return {

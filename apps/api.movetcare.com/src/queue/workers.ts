@@ -7,7 +7,7 @@ import { sendAppointmentReminderNotification } from "../notifications/templates/
 import { environment } from "../config/config";
 import { processHoursStatusAutomationUpdate } from "../utils/processHoursStatusAutomationUpdate";
 import { sendClinicBookingRecoveryNotification } from "../notifications/templates/sendClinicBookingRecoveryNotification";
-
+import { updateAppointmentToInProgress } from "../integrations/provet/entities/appointment/updateAppointmentToInProgress";
 interface Workers {
   [key: string]: (options: any) => Promise<any>;
 }
@@ -36,4 +36,6 @@ export const workers: Workers = {
     await sendBookingRecoveryNotification({ ...options, type: "72_HOUR" }),
   hours_status_automation: async (options: any) =>
     await processHoursStatusAutomationUpdate(options),
+  update_appointment_to_in_progress: async (options: any) =>
+    await updateAppointmentToInProgress(options),
 };

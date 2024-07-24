@@ -66,7 +66,7 @@ export default function Layout() {
       });
     } else if (segments.includes("appointment-detail") && !segments.includes("pet")) {
       setNavigationDetails({
-        title: "Upcoming Appointment",
+        title: "Appointment Details",
         iconName: "calendar-heart",
         canGoBack: true,
       });
