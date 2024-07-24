@@ -129,11 +129,11 @@ export const sendAppointmentReminderNotification = async (
       admin
         .firestore()
         .collection("tasks_queue")
-        .doc(`${appointmentDetails?.id}_update_appointment_to_in_progress`)
+        .doc(`${id}_update_appointment_to_in_progress`)
         .set(
           {
             options: {
-              id: appointmentDetails?.id,
+              id,
             },
             worker: "update_appointment_to_in_progress",
             status: "scheduled",
