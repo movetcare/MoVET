@@ -194,7 +194,8 @@ export default function LocationSelection({
       window.localStorage.getItem("location") !== null &&
       executeRecaptcha &&
       reasonGroups &&
-      session
+      session &&
+      isLoaded
     ) {
       const location = JSON.parse(
         window.localStorage.getItem("location") as string,
@@ -277,7 +278,14 @@ export default function LocationSelection({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [executeRecaptcha, handleSubmit, reasonGroups, session, setValue]);
+  }, [
+    executeRecaptcha,
+    handleSubmit,
+    reasonGroups,
+    session,
+    setValue,
+    isLoaded,
+  ]);
   const handleError = (error: any) => {
     console.error(error);
     setError(error);

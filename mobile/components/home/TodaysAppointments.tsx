@@ -169,7 +169,7 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
             noDarkMode
           >
             <View
-              style={tw`my-4 flex-row items-center justify-center bg-movet-blue`}
+              style={tw`my-4 flex-row justify-center bg-movet-blue`}
               noDarkMode
             >
               {appointment.patients.map((patient: any, index: number) =>
@@ -196,12 +196,12 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
                     >
                       <Icon key={index} name="dog" size="lg" />
                     </View>
-                    <SubHeadingText
+                    <ItalicText
                       noDarkMode
                       style={tw`text-movet-white mt-1 -mb-2`}
                     >
                       {patient.name}
-                    </SubHeadingText>
+                    </ItalicText>
                   </View>
                 ),
               )}

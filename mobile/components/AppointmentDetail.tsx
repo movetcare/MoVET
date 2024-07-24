@@ -219,6 +219,7 @@ export const AppointmentDetail = () => {
             width={100}
           />
         </Container>
+        {__DEV__ && <BodyText>ID: {appointment?.id}</BodyText>}
         <HeadingText style={tw`text-center mb-1`}>
           {appointment?.reason as string}
         </HeadingText>
@@ -581,19 +582,21 @@ export const AppointmentDetail = () => {
             </>
           )}
         </Modal>
-        {appointment && !appointment.confirmed && (
-          <ActionButton
-            color="blue"
-            title={`Confirm ${
-              appointment?.locationType !== "Virtually"
-                ? "Appointment"
-                : "Consultation"
-            }`}
-            iconName={"paw"}
-            onPress={() => setDidConfirm(!appointment.confirmed)}
-            loading={isLoading}
-          />
-        )}
+        {appointment &&
+          !appointment.confirmed &&
+          appointment?.start?.toDate() >= new Date() && (
+            <ActionButton
+              color="blue"
+              title={`Confirm ${
+                appointment?.locationType !== "Virtually"
+                  ? "Appointment"
+                  : "Consultation"
+              }`}
+              iconName={"paw"}
+              onPress={() => setDidConfirm(!appointment.confirmed)}
+              loading={isLoading}
+            />
+          )}
         {appointment?.locationType === "Clinic" &&
         appointment?.start?.toDate() >= new Date() ? (
           <Container

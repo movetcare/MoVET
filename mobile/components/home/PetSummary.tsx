@@ -29,19 +29,25 @@ export const PetSummary = () => {
   useEffect(() => {
     if (patients) {
       const appointmentCounts: any = [];
+      const appointmentsAfterToday = upcomingAppointments?.filter(
+        (appointment: Appointment) =>
+          appointment?.start?.toDate()?.setHours(0, 0, 0, 0) !=
+          new Date().setHours(0, 0, 0, 0),
+      );
       patients?.forEach((patient: Patient) => {
         let upcomingPatientAppointments = 0;
-        if (upcomingAppointments)
-          upcomingAppointments.forEach((appointment: Appointment) => {
+        if (appointmentsAfterToday) {
+          appointmentsAfterToday.forEach((appointment: Appointment) => {
             appointment?.patients?.forEach((patientData: Patient) => {
               if (patientData.id === patient.id)
                 upcomingPatientAppointments += 1;
             });
           });
-        appointmentCounts.push({
-          id: patient?.id,
-          count: upcomingPatientAppointments,
-        });
+          appointmentCounts.push({
+            id: patient?.id,
+            count: upcomingPatientAppointments,
+          });
+        }
       });
       if (appointmentCounts.length > 0) setAppointmentCounts(appointmentCounts);
     }
@@ -62,7 +68,7 @@ export const PetSummary = () => {
             return (
               <View key={index} style={tw`bg-transparent`} noDarkMode>
                 <View
-                  style={tw`flex-row w-full items-center my-2 bg-transparent justify-between`}
+                  style={tw`flex-row w-full items-center my-2 bg-transparent justify-between${index !== patients.length - 1 ? " border-b-2 border-movet-gray pb-4" : ""}`}
                   noDarkMode
                 >
                   <TouchableOpacity
@@ -134,7 +140,7 @@ export const PetSummary = () => {
                         ) {
                           return (
                             <SubHeadingText
-                              style={tw`text-base w-full mb-2 text-center`}
+                              style={tw`text-base w-full mb-2 text-center mt-1 mb-4`}
                               key={patientAppointments?.id}
                             >
                               Upcoming Appointment
@@ -151,7 +157,13 @@ export const PetSummary = () => {
                     <View key={index}>
                       {appointment?.patients?.map(
                         (appointmentPatient: any, index: number) => {
-                          if (appointmentPatient?.id === patient?.id)
+                          if (
+                            appointmentPatient?.id === patient?.id &&
+                            appointment?.start
+                              ?.toDate()
+                              ?.setHours(0, 0, 0, 0) !=
+                              new Date().setHours(0, 0, 0, 0)
+                          )
                             return (
                               <TouchableOpacity
                                 onPress={() =>
@@ -161,7 +173,7 @@ export const PetSummary = () => {
                                   })
                                 }
                                 key={index}
-                                style={tw`p-2 bg-movet-white rounded-xl items-center border-2 dark:bg-movet-black dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white my-2`}
+                                style={tw`p-2 bg-movet-white rounded-xl items-center border-2 dark:bg-movet-black dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white mb-4`}
                               >
                                 <View style={tw`flex-row w-full items-center`}>
                                   <Icon
