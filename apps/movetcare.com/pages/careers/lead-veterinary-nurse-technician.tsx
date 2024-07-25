@@ -1,5 +1,7 @@
+import { faPaw } from "@fortawesome/free-solid-svg-icons";
 import Layout from "components/Layout";
 import Head from "next/head";
+import { Button } from "ui";
 
 export default function LeadNurseListing() {
   return (
@@ -291,21 +293,15 @@ export default function LeadNurseListing() {
             veterinary boutique, and the self-serve dog wash are open (11am to
             3pm) on weekends, and would be required to help with initially.
           </p>
-          <p>
-            To apply, send an email to{" "}
-            <a
-              href="mailto://admin@movetcare.com"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:underline  ease-in-out duration-500 text-movet-brown italic"
-            >
-              admin@movetcare.com
-            </a>{" "}
-            with “Lead Veterinary Nurse / Technician Application” in the subject
-            line. Include a resume and a cover letter describing your current
-            and past experience and why you think you would be a good fit for
-            the position.
-          </p>
+          <Button
+            text="Apply Today"
+            icon={faPaw}
+            color="black"
+            className="self-center mt-8"
+            onClick={() =>
+              window.open("https://forms.gle/1btXB63xE5RgB9G16", "_blank")
+            }
+          />
         </div>
       </section>
     </Layout>

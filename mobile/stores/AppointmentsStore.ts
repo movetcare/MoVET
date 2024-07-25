@@ -40,6 +40,8 @@ export interface Appointment {
     | "AWAITING-PAYMENT"
     | "COMPLETE"
     | undefined;
+  consultation: number;
+  invoice: number;
 }
 
 

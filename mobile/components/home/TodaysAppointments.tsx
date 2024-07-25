@@ -29,6 +29,7 @@ import { httpsCallable } from "firebase/functions";
 import { useForm } from "react-hook-form";
 import { Modal } from "components/Modal";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
+import { getPlatformUrl } from "utils/getPlatformUrl";
 
 export const TodaysAppointments = () => {
   const { upcomingAppointments }: any = AppointmentsStore.useState();
@@ -48,10 +49,6 @@ export const TodaysAppointments = () => {
       setTodaysAppointments(todaysAppointments);
     }
   }, [upcomingAppointments]);
-
-  // useEffect(() => {
-  //   if (todaysAppointments) console.log(todaysAppointments[0]?.patients);
-  // }, [todaysAppointments]);
 
   return todaysAppointments && todaysAppointments.length > 0 ? (
     <>
@@ -198,10 +195,10 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
                     noDarkMode
                   >
                     <View
-                      style={tw`bg-movet-white/90 rounded-full p-4`}
+                      style={tw`bg-movet-white/90 rounded-full p-4 mx-2`}
                       noDarkMode
                     >
-                      <Icon key={index} name="dog" size="lg" />
+                      <Icon key={index} name="dog" size="lg" noDarkMode />
                     </View>
                     <ItalicText
                       noDarkMode
@@ -958,7 +955,7 @@ const InProgressAppointment = ({
         onPress={() =>
           router.navigate({
             pathname: `/(app)/home/appointment-detail/`,
-            params: { id: 4410 },
+            params: { id: appointment.id },
           })
         }
         style={tw`rounded-xl w-full px-4`}
@@ -975,74 +972,102 @@ const InProgressAppointment = ({
               style={tw`my-4 flex-row items-center justify-center bg-movet-green`}
               noDarkMode
             >
-              <Image
-                source={{
-                  uri: "http://127.0.0.1:9199/v0/b/movet-care-staging.appspot.com/o/clients%2F5769%2Fpatients%2F7383%2Fprofile?alt=media&token=7def96c7-1d02-44f4-a5cf-f9c3e8f0be0c",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
-              <Image
-                source={{
-                  uri: "http://127.0.0.1:9199/v0/b/movet-care-staging.appspot.com/o/clients%2F5769%2Fpatients%2F7388%2Fprofile?alt=media&token=426012a2-42aa-4416-ba07-4d176c28e8c3",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
-              <Image
-                source={{
-                  uri: "http://127.0.0.1:9199/v0/b/movet-care-staging.appspot.com/o/clients%2F5769%2Fpatients%2F7383%2Fprofile?alt=media&token=7def96c7-1d02-44f4-a5cf-f9c3e8f0be0c",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
+              {appointment.patients.map((patient: any, index: number) =>
+                patient.photoUrl ? (
+                  <Image
+                    key={index}
+                    source={{
+                      uri: patient.photoUrl,
+                    }}
+                    alt={`${patient.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : (
+                  <View
+                    key={index}
+                    style={tw`flex-col items-center justify-center bg-transparent`}
+                    noDarkMode
+                  >
+                    <View
+                      style={tw`bg-movet-white/90 rounded-full p-4 mx-2`}
+                      noDarkMode
+                    >
+                      <Icon key={index} name="dog" size="lg" noDarkMode />
+                    </View>
+                    <ItalicText
+                      noDarkMode
+                      style={tw`text-movet-white mt-1 -mb-2`}
+                    >
+                      {patient.name}
+                    </ItalicText>
+                  </View>
+                ),
+              )}
             </View>
             <HeadingText
               style={tw`text-movet-white text-xl text-center`}
               noDarkMode
             >
-              Exam - Medical / Sick
+              {appointment.reason as any}
             </HeadingText>
             <SubHeadingText
               style={tw`text-movet-white text-lg text-center`}
               noDarkMode
             >
-              1:00PM @ 4246 Mcree Ave
+              {appointment?.start?.toDate()?.toLocaleString("en-US", {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              })}
+              {appointment?.locationType === "Home"
+                ? ` @ ${appointment?.address?.split(",")?.slice(0, 1)?.join(",")}`
+                : appointment?.locationType === "Clinic"
+                  ? " @ Belleview Station"
+                  : ""}
             </SubHeadingText>
-            <View
-              style={tw`my-4 flex-row items-center justify-center bg-movet-green`}
-              noDarkMode
-            >
-              <Image
-                source={{
-                  uri: "https://storage-us.provetcloud.com/provet/4285/users/2112c3c9a9544b3480f5350b9a9f17f0.jpeg?Expires=1720029050&Signature=UpvxoRrX6MRGbGV-xBbqsWGUGAbLfsNYAJBFiEHqGKENBnymrNWEbesHqMCupcUp4MKLc7EFWFWASMR8Mqzxqd~7amoThUcIYm1IS4gCwdqyRPoOjCpy1JE5f8-zhIqhZdaql1reuScUXRP03Pj7grcLi8jHhmpsRK8SgXesEXnG-KMmYLiYoIcgmlesm01Dvn8tef54VhaSKamhYvUKSUUCXCHINhueO~MrjfX8QIwnh6-eq5MFI7CJX8paungewySrbLKap7ZO8N-bL-hpY-~wkE8V9Uy6uOKEMoEvqM3pWrC66hIP6pe9apOIRiUHHtEpDhGKpnyzZf1cTiqubQ__&Key-Pair-Id=KU10BOFVSBLS3",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
-              <Image
-                source={{
-                  uri: "https://storage-us.provetcloud.com/provet/4285/users/5c312b4e179f48b2be77724fc1ff630b.jpeg?Expires=1720029050&Signature=Q2cDT9bfOziXQ4BoFuOFMvh0X~-xlRJ~3cXs14D8JH162B0cXQ7tNcYWLVj956~t1bjJuxgGFcvlCzAoTVfjt2pDGfZG5aGOnzLvwZrBq4IsWK929FhMuroz70A5bY4IUn2nZl1dF800Lo~zb4H7YtgnhDeJr0Z30jgGN1QyrhfQr4aIACqI9pr4jVl0h6O9tnF7ynsUfBue~oNXhULtU84~l1tJwkYuZ4fdhIXDqDu8SC9HHUOTJPDM9PIdl6VIO1VbjqE2h3MP9l9q-TSk~1sA4pH9FAcFMnuDUKcJabSAC2AtSDWKxNrciiL81GzrUcWmMlXP3aJEbQMWxaqkdw__&Key-Pair-Id=KU10BOFVSBLS3",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
-            </View>
+            {appointment?.user?.picture && (
+              <View
+                style={tw`my-4 flex-row items-center justify-center bg-movet-green`}
+                noDarkMode
+              >
+                {appointment?.user?.picture ? (
+                  <Image
+                    source={{
+                      uri: appointment?.user?.picture,
+                    }}
+                    alt={`${appointment?.user?.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : null}
+                {appointment?.additionalUsers &&
+                appointment?.additionalUsers[0]?.picture ? (
+                  <Image
+                    source={{
+                      uri: appointment?.additionalUsers[0]?.picture,
+                    }}
+                    alt={`${appointment?.user?.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : null}
+              </View>
+            )}
             <SubHeadingText
               style={tw`text-movet-white text-center mb-2`}
               noDarkMode
             >
-              with Barbra Caldwell & Dawn Brackpool
+              with{" "}
+              {appointment?.user?.name
+                ? appointment.user.name
+                : "a MoVET Expert"}
+              {appointment?.additionalUsers[0]?.name
+                ? ` & ${appointment?.additionalUsers[0]?.name}`
+                : ""}
             </SubHeadingText>
             <View style={tw`my-2 border-t-2 border-movet-gray w-full`} />
             <SubHeadingText
@@ -1051,7 +1076,7 @@ const InProgressAppointment = ({
             >
               Current Status
             </SubHeadingText>
-            <ItalicText style={tw`text-xl text-movet-white mb-4`} noDarkMode>
+            <ItalicText style={tw`text-xl text-movet-white mb-2`} noDarkMode>
               Appointment in Progress...
             </ItalicText>
           </View>
@@ -1068,7 +1093,7 @@ const InvoiceReady = ({ appointment }: { appointment: Appointment }) => {
         onPress={() =>
           router.navigate({
             pathname: `/(app)/home/appointment-detail/`,
-            params: { id: 4410 },
+            params: { id: appointment.id },
           })
         }
         style={tw`rounded-xl w-full px-4`}
@@ -1085,74 +1110,102 @@ const InvoiceReady = ({ appointment }: { appointment: Appointment }) => {
               style={tw`my-4 flex-row items-center justify-center bg-movet-red`}
               noDarkMode
             >
-              <Image
-                source={{
-                  uri: "http://127.0.0.1:9199/v0/b/movet-care-staging.appspot.com/o/clients%2F5769%2Fpatients%2F7383%2Fprofile?alt=media&token=7def96c7-1d02-44f4-a5cf-f9c3e8f0be0c",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
-              <Image
-                source={{
-                  uri: "http://127.0.0.1:9199/v0/b/movet-care-staging.appspot.com/o/clients%2F5769%2Fpatients%2F7388%2Fprofile?alt=media&token=426012a2-42aa-4416-ba07-4d176c28e8c3",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
-              <Image
-                source={{
-                  uri: "http://127.0.0.1:9199/v0/b/movet-care-staging.appspot.com/o/clients%2F5769%2Fpatients%2F7383%2Fprofile?alt=media&token=7def96c7-1d02-44f4-a5cf-f9c3e8f0be0c",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
+              {appointment.patients.map((patient: any, index: number) =>
+                patient.photoUrl ? (
+                  <Image
+                    key={index}
+                    source={{
+                      uri: patient.photoUrl,
+                    }}
+                    alt={`${patient.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : (
+                  <View
+                    key={index}
+                    style={tw`flex-col items-center justify-center bg-transparent`}
+                    noDarkMode
+                  >
+                    <View
+                      style={tw`bg-movet-white/90 rounded-full p-4 mx-2`}
+                      noDarkMode
+                    >
+                      <Icon key={index} name="dog" size="lg" noDarkMode />
+                    </View>
+                    <ItalicText
+                      noDarkMode
+                      style={tw`text-movet-white mt-1 -mb-2`}
+                    >
+                      {patient.name}
+                    </ItalicText>
+                  </View>
+                ),
+              )}
             </View>
             <HeadingText
               style={tw`text-movet-white text-xl text-center`}
               noDarkMode
             >
-              Exam - Medical / Sick
+              {appointment.reason as any}
             </HeadingText>
             <SubHeadingText
               style={tw`text-movet-white text-lg text-center`}
               noDarkMode
             >
-              1:00PM @ 4246 Mcree Ave
+              {appointment?.start?.toDate()?.toLocaleString("en-US", {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              })}
+              {appointment?.locationType === "Home"
+                ? ` @ ${appointment?.address?.split(",")?.slice(0, 1)?.join(",")}`
+                : appointment?.locationType === "Clinic"
+                  ? " @ Belleview Station"
+                  : ""}
             </SubHeadingText>
-            {/* <View
+            {appointment?.user?.picture && (
+              <View
                 style={tw`my-4 flex-row items-center justify-center bg-movet-red`}
                 noDarkMode
               >
-                <Image
-                  source={{
-                    uri: "https://storage-us.provetcloud.com/provet/4285/users/2112c3c9a9544b3480f5350b9a9f17f0.jpeg?Expires=1720029050&Signature=UpvxoRrX6MRGbGV-xBbqsWGUGAbLfsNYAJBFiEHqGKENBnymrNWEbesHqMCupcUp4MKLc7EFWFWASMR8Mqzxqd~7amoThUcIYm1IS4gCwdqyRPoOjCpy1JE5f8-zhIqhZdaql1reuScUXRP03Pj7grcLi8jHhmpsRK8SgXesEXnG-KMmYLiYoIcgmlesm01Dvn8tef54VhaSKamhYvUKSUUCXCHINhueO~MrjfX8QIwnh6-eq5MFI7CJX8paungewySrbLKap7ZO8N-bL-hpY-~wkE8V9Uy6uOKEMoEvqM3pWrC66hIP6pe9apOIRiUHHtEpDhGKpnyzZf1cTiqubQ__&Key-Pair-Id=KU10BOFVSBLS3",
-                  }}
-                  alt={"'s photo"}
-                  height={75}
-                  width={75}
-                  style={tw`rounded-full mx-2`}
-                />
-                <Image
-                  source={{
-                    uri: "https://storage-us.provetcloud.com/provet/4285/users/5c312b4e179f48b2be77724fc1ff630b.jpeg?Expires=1720029050&Signature=Q2cDT9bfOziXQ4BoFuOFMvh0X~-xlRJ~3cXs14D8JH162B0cXQ7tNcYWLVj956~t1bjJuxgGFcvlCzAoTVfjt2pDGfZG5aGOnzLvwZrBq4IsWK929FhMuroz70A5bY4IUn2nZl1dF800Lo~zb4H7YtgnhDeJr0Z30jgGN1QyrhfQr4aIACqI9pr4jVl0h6O9tnF7ynsUfBue~oNXhULtU84~l1tJwkYuZ4fdhIXDqDu8SC9HHUOTJPDM9PIdl6VIO1VbjqE2h3MP9l9q-TSk~1sA4pH9FAcFMnuDUKcJabSAC2AtSDWKxNrciiL81GzrUcWmMlXP3aJEbQMWxaqkdw__&Key-Pair-Id=KU10BOFVSBLS3",
-                  }}
-                  alt={"'s photo"}
-                  height={75}
-                  width={75}
-                  style={tw`rounded-full mx-2`}
-                />
-              </View> */}
+                {appointment?.user?.picture ? (
+                  <Image
+                    source={{
+                      uri: appointment?.user?.picture,
+                    }}
+                    alt={`${appointment?.user?.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : null}
+                {appointment?.additionalUsers &&
+                appointment?.additionalUsers[0]?.picture ? (
+                  <Image
+                    source={{
+                      uri: appointment?.additionalUsers[0]?.picture,
+                    }}
+                    alt={`${appointment?.user?.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : null}
+              </View>
+            )}
             <SubHeadingText
               style={tw`text-movet-white text-center mb-2`}
               noDarkMode
             >
-              with Barbra Caldwell & Dawn Brackpool
+              with{" "}
+              {appointment?.user?.name
+                ? appointment.user.name
+                : "a MoVET Expert"}
+              {appointment?.additionalUsers[0]?.name
+                ? ` & ${appointment?.additionalUsers[0]?.name}`
+                : ""}
             </SubHeadingText>
             <View style={tw`my-2 border-t-2 border-movet-gray w-full`} />
             <SubHeadingText
@@ -1174,7 +1227,7 @@ const InvoiceReady = ({ appointment }: { appointment: Appointment }) => {
         style={tw`flex-row mx-4 items-center justify-center rounded-b-xl bg-movet-red`}
         noDarkMode
       >
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => Linking.openURL(`tel:+17205077387`)}
           style={tw`w-4/12 pb-2`}
         >
@@ -1194,11 +1247,16 @@ const InvoiceReady = ({ appointment }: { appointment: Appointment }) => {
               </SubHeadingText>
             </View>
           </View>
-        </TouchableOpacity>
-        <View style={tw`w-2/12`} noDarkMode />
+        </TouchableOpacity> */}
+        {/* <View style={tw`w-2/12`} noDarkMode /> */}
         <TouchableOpacity
-          onPress={() => Linking.openURL(`sms:+17205077387`)}
-          style={tw`w-4/12 pb-2`}
+          onPress={() =>
+            alert(
+              "FEATURE COMING SOON! Please ask a MoVET team member to see your invoice and proceed with payment.",
+            )
+          }
+          //style={tw`w-4/12 pb-2`}
+          style={tw`w-full pb-2`}
         >
           <View
             style={tw`flex-row px-4 py-2 items-center bg-movet-red justify-center `}
@@ -1224,7 +1282,7 @@ const InvoicePaid = ({ appointment }: { appointment: Appointment }) => {
         onPress={() =>
           router.navigate({
             pathname: `/(app)/home/appointment-detail/`,
-            params: { id: 4410 },
+            params: { id: appointment.id },
           })
         }
         style={tw`rounded-xl w-full px-4`}
@@ -1241,74 +1299,102 @@ const InvoicePaid = ({ appointment }: { appointment: Appointment }) => {
               style={tw`my-4 flex-row items-center justify-center bg-movet-black`}
               noDarkMode
             >
-              <Image
-                source={{
-                  uri: "http://127.0.0.1:9199/v0/b/movet-care-staging.appspot.com/o/clients%2F5769%2Fpatients%2F7383%2Fprofile?alt=media&token=7def96c7-1d02-44f4-a5cf-f9c3e8f0be0c",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
-              <Image
-                source={{
-                  uri: "http://127.0.0.1:9199/v0/b/movet-care-staging.appspot.com/o/clients%2F5769%2Fpatients%2F7388%2Fprofile?alt=media&token=426012a2-42aa-4416-ba07-4d176c28e8c3",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
-              <Image
-                source={{
-                  uri: "http://127.0.0.1:9199/v0/b/movet-care-staging.appspot.com/o/clients%2F5769%2Fpatients%2F7383%2Fprofile?alt=media&token=7def96c7-1d02-44f4-a5cf-f9c3e8f0be0c",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
+              {appointment.patients.map((patient: any, index: number) =>
+                patient.photoUrl ? (
+                  <Image
+                    key={index}
+                    source={{
+                      uri: patient.photoUrl,
+                    }}
+                    alt={`${patient.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : (
+                  <View
+                    key={index}
+                    style={tw`flex-col items-center justify-center bg-transparent`}
+                    noDarkMode
+                  >
+                    <View
+                      style={tw`bg-movet-white/90 rounded-full p-4 mx-2`}
+                      noDarkMode
+                    >
+                      <Icon key={index} name="dog" size="lg" noDarkMode />
+                    </View>
+                    <ItalicText
+                      noDarkMode
+                      style={tw`text-movet-white mt-1 -mb-2`}
+                    >
+                      {patient.name}
+                    </ItalicText>
+                  </View>
+                ),
+              )}
             </View>
             <HeadingText
               style={tw`text-movet-white text-xl text-center`}
               noDarkMode
             >
-              Exam - Medical / Sick
+              {appointment.reason as any}
             </HeadingText>
             <SubHeadingText
               style={tw`text-movet-white text-lg text-center`}
               noDarkMode
             >
-              1:00PM @ 4246 Mcree Ave
+              {appointment?.start?.toDate()?.toLocaleString("en-US", {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              })}
+              {appointment?.locationType === "Home"
+                ? ` @ ${appointment?.address?.split(",")?.slice(0, 1)?.join(",")}`
+                : appointment?.locationType === "Clinic"
+                  ? " @ Belleview Station"
+                  : ""}
             </SubHeadingText>
-            <View
-              style={tw`my-4 flex-row items-center justify-center bg-movet-black`}
-              noDarkMode
-            >
-              <Image
-                source={{
-                  uri: "https://storage-us.provetcloud.com/provet/4285/users/2112c3c9a9544b3480f5350b9a9f17f0.jpeg?Expires=1720029050&Signature=UpvxoRrX6MRGbGV-xBbqsWGUGAbLfsNYAJBFiEHqGKENBnymrNWEbesHqMCupcUp4MKLc7EFWFWASMR8Mqzxqd~7amoThUcIYm1IS4gCwdqyRPoOjCpy1JE5f8-zhIqhZdaql1reuScUXRP03Pj7grcLi8jHhmpsRK8SgXesEXnG-KMmYLiYoIcgmlesm01Dvn8tef54VhaSKamhYvUKSUUCXCHINhueO~MrjfX8QIwnh6-eq5MFI7CJX8paungewySrbLKap7ZO8N-bL-hpY-~wkE8V9Uy6uOKEMoEvqM3pWrC66hIP6pe9apOIRiUHHtEpDhGKpnyzZf1cTiqubQ__&Key-Pair-Id=KU10BOFVSBLS3",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
-              <Image
-                source={{
-                  uri: "https://storage-us.provetcloud.com/provet/4285/users/5c312b4e179f48b2be77724fc1ff630b.jpeg?Expires=1720029050&Signature=Q2cDT9bfOziXQ4BoFuOFMvh0X~-xlRJ~3cXs14D8JH162B0cXQ7tNcYWLVj956~t1bjJuxgGFcvlCzAoTVfjt2pDGfZG5aGOnzLvwZrBq4IsWK929FhMuroz70A5bY4IUn2nZl1dF800Lo~zb4H7YtgnhDeJr0Z30jgGN1QyrhfQr4aIACqI9pr4jVl0h6O9tnF7ynsUfBue~oNXhULtU84~l1tJwkYuZ4fdhIXDqDu8SC9HHUOTJPDM9PIdl6VIO1VbjqE2h3MP9l9q-TSk~1sA4pH9FAcFMnuDUKcJabSAC2AtSDWKxNrciiL81GzrUcWmMlXP3aJEbQMWxaqkdw__&Key-Pair-Id=KU10BOFVSBLS3",
-                }}
-                alt={"'s photo"}
-                height={75}
-                width={75}
-                style={tw`rounded-full mx-2`}
-              />
-            </View>
+            {appointment?.user?.picture && (
+              <View
+                style={tw`my-4 flex-row items-center justify-center bg-movet-black`}
+                noDarkMode
+              >
+                {appointment?.user?.picture ? (
+                  <Image
+                    source={{
+                      uri: appointment?.user?.picture,
+                    }}
+                    alt={`${appointment?.user?.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : null}
+                {appointment?.additionalUsers &&
+                appointment?.additionalUsers[0]?.picture ? (
+                  <Image
+                    source={{
+                      uri: appointment?.additionalUsers[0]?.picture,
+                    }}
+                    alt={`${appointment?.user?.name}'s photo`}
+                    height={75}
+                    width={75}
+                    style={tw`rounded-full mx-2`}
+                  />
+                ) : null}
+              </View>
+            )}
             <SubHeadingText
               style={tw`text-movet-white text-center mb-2`}
               noDarkMode
             >
-              with Barbra Caldwell & Dawn Brackpool
+              with{" "}
+              {appointment?.user?.name
+                ? appointment.user.name
+                : "a MoVET Expert"}
+              {appointment?.additionalUsers[0]?.name
+                ? ` & ${appointment?.additionalUsers[0]?.name}`
+                : ""}
             </SubHeadingText>
             <View style={tw`my-2 border-t-2 border-movet-gray w-full`} />
             <SubHeadingText
@@ -1330,7 +1416,7 @@ const InvoicePaid = ({ appointment }: { appointment: Appointment }) => {
         style={tw`flex-row mx-4 items-center justify-center rounded-b-xl bg-movet-red`}
         noDarkMode
       >
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => Linking.openURL(`tel:+17205077387`)}
           style={tw`w-4/12 pb-2`}
         >
@@ -1350,18 +1436,26 @@ const InvoicePaid = ({ appointment }: { appointment: Appointment }) => {
               </SubHeadingText>
             </View>
           </View>
-        </TouchableOpacity>
-        <View style={tw`w-2/12`} noDarkMode />
+        </TouchableOpacity> */}
+        {/* <View style={tw`w-2/12 h-2`} noDarkMode /> */}
         <TouchableOpacity
-          onPress={() => Linking.openURL(`sms:+17205077387`)}
-          style={tw`w-4/12 pb-2`}
+          onPress={() => {
+            Linking.canOpenURL(getPlatformUrl() + "/contact").then(
+              (supported) => {
+                if (supported)
+                  Linking.openURL("https://g.page/r/CbtAdHSVgeMfEAE/review");
+              },
+            );
+          }}
+          // style={tw`w-4/12 pb-2`}
+          style={tw`w-full p-2`}
         >
           <View
             style={tw`flex-row px-4 py-2 items-center bg-movet-red justify-center `}
             noDarkMode
           >
             <Icon name="star" height={20} width={20} color="white" />
-            <View style={tw`bg-movet-red ml-4`} noDarkMode>
+            <View style={tw`bg-movet-red ml-2`} noDarkMode>
               <SubHeadingText style={tw`text-movet-white text-sm`} noDarkMode>
                 Leave a Review
               </SubHeadingText>

@@ -15,7 +15,7 @@ import type { EmailConfiguration } from "../../types/email.d";
 import { sendNotification } from "../sendNotification";
 import { getClientFirstNameFromDisplayName } from "../../utils/getClientFirstNameFromDisplayName";
 import { truncateString } from "../../utils/truncateString";
-import { subtractMinutesFromDate } from "../../utils/subtractMinutesFromDate";
+// import { subtractMinutesFromDate } from "../../utils/subtractMinutesFromDate";
 
 interface AppointmentDetails {
   active: boolean;
@@ -126,22 +126,25 @@ export const sendAppointmentReminderNotification = async (
           .collection("appointments")
           .doc(`${id}`)
           .set({ status: "IN-ROUTE", updatedOn: new Date() }, { merge: true });
-      admin
-        .firestore()
-        .collection("tasks_queue")
-        .doc(`${id}_update_appointment_to_in_progress`)
-        .set(
-          {
-            options: {
-              id,
-            },
-            worker: "update_appointment_to_in_progress",
-            status: "scheduled",
-            performAt: subtractMinutesFromDate(appointmentDetails?.start, 3),
-            createdOn: new Date(),
-          },
-          { merge: true },
-        );
+      // admin
+      //   .firestore()
+      //   .collection("tasks_queue")
+      //   .doc(`${id}_update_appointment_to_in_progress`)
+      //   .set(
+      //     {
+      //       options: {
+      //         id,
+      //       },
+      //       worker: "update_appointment_to_in_progress",
+      //       status: "scheduled",
+      //       performAt: subtractMinutesFromDate(
+      //         appointmentDetails?.start?.toDate(),
+      //         1,
+      //       ),
+      //       createdOn: new Date(),
+      //     },
+      //     { merge: true },
+      //   );
       await send30MinAppointmentNotification(
         appointmentDetails,
         userDetails,

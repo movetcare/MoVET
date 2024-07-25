@@ -3,6 +3,12 @@ import { admin, throwError, DEBUG } from "../../../../config/config";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { saveClient } from "../client/saveClient";
 import { fetchEntity } from "../fetchEntity";
+import {
+  getClientNotificationSettings,
+  UserNotificationSettings,
+} from "../../../../utils/getClientNotificationSettings";
+import { sendNotification } from "../../../../notifications/sendNotification";
+import { truncateString } from "../../../../utils/truncateString";
 
 export const processInvoiceWebhook = async (
   request: Request,
@@ -18,6 +24,86 @@ export const processInvoiceWebhook = async (
     const invoice = await fetchEntity("invoice", invoice_id);
     if (DEBUG)
       console.log("processInvoiceWebhook Invoice Details => ", invoice);
+
+    if (invoice?.status === 3 && invoice?.client_due_sum !== 0) {
+      admin
+        .firestore()
+        .collection("appointments")
+        .where("consultation", "==", getProVetIdFromUrl(invoice?.consultation))
+        .limit(1)
+        .get()
+        .then((querySnapshot: any) => {
+          if (querySnapshot?.docs?.length > 0) {
+            querySnapshot.forEach(async (doc: any) => {
+              admin
+                .firestore()
+                .collection("appointments")
+                .doc(doc.id)
+                .set(
+                  {
+                    status: "AWAITING-PAYMENT",
+                    updatedOn: new Date(),
+                  },
+                  { merge: true },
+                )
+                .then(async () => {
+                  const userNotificationSettings:
+                    | UserNotificationSettings
+                    | false = await getClientNotificationSettings(
+                    `${getProVetIdFromUrl(doc.data()?.client)}`,
+                  );
+                  if (
+                    userNotificationSettings &&
+                    userNotificationSettings?.sendPush &&
+                    doc.data()?.client
+                  )
+                    sendNotification({
+                      type: "push",
+                      payload: {
+                        user: { uid: getProVetIdFromUrl(doc.data()?.client) },
+                        category: "client-appointment",
+                        title: "Your Invoice from MoVET is Ready!",
+                        message: truncateString(
+                          "Please open the MoVET app to view and pay your invoice...",
+                        ),
+                        path: "/home/",
+                      },
+                    });
+                })
+                .catch((error: any) => throwError(error));
+            });
+          } else if (DEBUG)
+            console.log(
+              "NO APPOINTMENT W CONSULTATION ID FOUND",
+              getProVetIdFromUrl(invoice?.consultation),
+            );
+        });
+    }
+    // else if (invoice?.status === 3 && invoice?.client_due_sum === 0) {
+    //   admin
+    //     .firestore()
+    //     .collection("appointments")
+    //     .where("consultation", "==", getProVetIdFromUrl(invoice?.consultation))
+    //     .limit(1)
+    //     .get()
+    //     .then((querySnapshot: any) => {
+    //       if (querySnapshot?.docs?.length > 0)
+    //         querySnapshot.forEach(async (doc: any) =>
+    //           admin.firestore().collection("appointments").doc(doc.id).set(
+    //             {
+    //               status: "COMPLETE",
+    //               updatedOn: new Date(),
+    //             },
+    //             { merge: true },
+    //           ),
+    //         );
+    //       else if (DEBUG)
+    //         console.log(
+    //           "NO APPOINTMENT W CONSULTATION ID FOUND",
+    //           getProVetIdFromUrl(invoice?.consultation),
+    //         );
+    //     });
+    // }
 
     const invoiceItemDetails: any = [];
 
