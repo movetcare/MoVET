@@ -30,7 +30,6 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { isTablet } from "utils/isTablet";
-import LogRocket from "@logrocket/react-native";
 import { auth } from "firebase-config";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { Modal } from "components/Modal";
@@ -164,7 +163,6 @@ export default function SignIn() {
           setShowVerificationButton(true);
         });
     } else {
-      if (!__DEV__) LogRocket.identify(email, { status: "signed-out" });
       setShowVerificationButton(true);
       setHasEmailAddress(true);
       setDidProvideEmail(true);

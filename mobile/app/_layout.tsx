@@ -12,7 +12,6 @@ import { useFonts } from "expo-font";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { ErrorModal } from "components/Modal";
 import { ErrorStore } from "stores";
-import LogRocket from "@logrocket/react-native";
 
 // https://github.com/firebase/firebase-js-sdk/issues/7962#issuecomment-1902290249
 (window.navigator as any).userAgent = "ReactNative";
@@ -47,17 +46,18 @@ const useNotificationObserver = () => {
         router.push(url);
       }
     };
-    Notifications.getLastNotificationResponseAsync()
-      .then((response) => {
-        if (!isMounted || !response?.notification) {
-          return;
-        }
-        //alert("response?.notification => " + JSON.stringify(response?.notification));
-        redirect(response?.notification);
-      });
-    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-      redirect(response.notification);
+    Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (!isMounted || !response?.notification) {
+        return;
+      }
+      //alert("response?.notification => " + JSON.stringify(response?.notification));
+      redirect(response?.notification);
     });
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        redirect(response.notification);
+      },
+    );
 
     return () => {
       isMounted = false;
@@ -93,7 +93,6 @@ const Layout = () => {
   // }, []);
 
   useEffect(() => {
-    if (!__DEV__) LogRocket.init("cjlcsx/movet-mobile-app");
     const unsubscribeAuth = onAuthStateChanged(auth, (user: any) => {
       updateUserAuth(user);
     });

@@ -81,7 +81,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       googleServicesFile: "./google-services.json",
     },
     plugins: [
-      "@logrocket/react-native",
       "expo-router",
       [
         "@stripe/stripe-react-native",

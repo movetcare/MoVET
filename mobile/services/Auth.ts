@@ -16,7 +16,6 @@ import {
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import * as Device from "expo-device";
 import * as Network from "expo-network";
-import LogRocket from "@logrocket/react-native";
 
 export const signIn = async (email: string, password?: string | undefined) => {
   AuthStore.update((store) => {
@@ -159,6 +158,4 @@ export const updateUserAuth = async (user: any) => {
     store.isLoggedIn = user?.uid ? true : false;
     store.initialized = true;
   });
-  if (!__DEV__ && user?.uid)
-    LogRocket.identify(user?.email, { status: "logged-in" });
 };
