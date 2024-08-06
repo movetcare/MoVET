@@ -64,6 +64,9 @@ service cloud.firestore {
       match /payment_methods/{pid} {
         allow read, write: if clientOwnsDocuments(uid) || isMoVETStaff();
       }
+      match /invoices/{iid} {
+        allow read, list: if clientOwnsDocuments(uid) || isMoVETStaff();
+      }
       match /chat/{oid} {
         allow read, write, list: if clientOwnsDocuments(uid);
       }

@@ -20,31 +20,30 @@ export default function Layout() {
 
   useEffect(() => {
     if (segments && segments.includes("announcement")) {
-      //setTimeout(() => {
       setNavigationDetails({
         title: "Announcement",
         iconName: "bullhorn",
         canGoBack: true,
       });
-      //}, 180);
+    } else if (segments && segments.includes("invoice-detail")) {
+      setNavigationDetails({
+        title: "Invoice Summary",
+        iconName: "folder-heart",
+        canGoBack: true,
+      });
     } else if (segments && segments.includes("services")) {
-      //setTimeout(() => {
       setNavigationDetails({
         title: "Our Services",
         iconName: "list",
         canGoBack: true,
       });
-      //}, 180);
     } else if (segments && segments.includes("new-pet")) {
-      //setTimeout(() => {
       setNavigationDetails({
         title: "Add a Pet",
         iconName: "paw",
         canGoBack: true,
       });
-      //}, 180);
     } else if (segments && segments.includes("new-appointment")) {
-      //setTimeout(() => {
       setNavigationDetails({
         title:
           (!upcomingAppointments && !pastAppointments
@@ -53,9 +52,7 @@ export default function Layout() {
         iconName: "calendar-plus",
         canGoBack: true,
       });
-      //}, 180);
     } else if (segments && segments.includes("quick-book-appointment")) {
-      //setTimeout(() => {
       setNavigationDetails({
         title:
           (!upcomingAppointments && !pastAppointments
@@ -64,7 +61,10 @@ export default function Layout() {
         iconName: "calendar-plus",
         canGoBack: true,
       });
-    } else if (segments.includes("appointment-detail") && !segments.includes("pet")) {
+    } else if (
+      segments.includes("appointment-detail") &&
+      !segments.includes("pet")
+    ) {
       setNavigationDetails({
         title: "Appointment Details",
         iconName: "calendar-heart",

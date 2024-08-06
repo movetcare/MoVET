@@ -8,6 +8,8 @@ import {
   Appointment,
   AppointmentsStore,
   AuthStore,
+  Invoice,
+  InvoicesStore,
   Patient,
   PatientsStore,
 } from "stores";
@@ -37,6 +39,7 @@ const TabsLayout = (props: any) => {
   const [patientsCount, setPatientsCount] = useState<number | null>(null);
   const [reasons, setReasons] = useState<Array<any> | null>(null);
   const [loadedUser, setLoadedUser] = useState<boolean>(false);
+  const [loadedInvoices, setLoadedInvoices] = useState<boolean>(false);
   const [loadedPastAppointments, setLoadedPastAppointments] =
     useState<boolean>(false);
   const [loadedUpcomingAppointments, setLoadedUpcomingAppointments] =
@@ -279,8 +282,46 @@ const TabsLayout = (props: any) => {
         setError({ ...error, source: "unsubscribePatients" });
       },
     );
-    return () => unsubscribePatients();
+    const unsubscribeInvoices = onSnapshot(
+      query(
+        collection(firestore, `clients/${user?.uid}/invoices`),
+        orderBy("updatedOn", "desc"),
+        limit(100),
+      ),
+      (querySnapshot: QuerySnapshot) => {
+        if (querySnapshot.empty) {
+          InvoicesStore.update((store: any) => {
+            store.invoices = null;
+          });
+          setLoadedInvoices(true);
+          return;
+        }
+        const invoices: Invoice[] = [];
+        querySnapshot.forEach((doc: DocumentData) => {
+          if (DEBUG_DATA) console.log("INVOICE DATA => ", doc.data());
+          invoices.push(doc.data());
+        });
+        if (invoices.length > 0)
+          InvoicesStore.update((store: any) => {
+            store.invoices = invoices;
+          });
+        else
+          InvoicesStore.update((store: any) => {
+            store.invoices = null;
+          });
+        setLoadedInvoices(true);
+      },
+      (error: any) => {
+        setLoadedInvoices(true);
+        setError({ ...error, source: "unsubscribeInvoices" });
+      },
+    );
+    return () => {
+      unsubscribePatients();
+      unsubscribeInvoices();
+    };
   }, [user.uid]);
+
   useEffect(() => {
     const unsubscribeReasons = onSnapshot(
       query(collection(firestore, "reasons")),
@@ -302,11 +343,13 @@ const TabsLayout = (props: any) => {
       loadedPastAppointments &&
       loadedUpcomingAppointments &&
       loadedUser &&
+      loadedInvoices &&
       loadedPatients
     )
       SplashScreen.hideAsync();
   }, [
     loadedUser,
+    loadedInvoices,
     loadedPatients,
     loadedUpcomingAppointments,
     loadedPastAppointments,

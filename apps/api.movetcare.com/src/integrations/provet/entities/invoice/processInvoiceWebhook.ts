@@ -24,7 +24,6 @@ export const processInvoiceWebhook = async (
     const invoice = await fetchEntity("invoice", invoice_id);
     if (DEBUG)
       console.log("processInvoiceWebhook Invoice Details => ", invoice);
-
     if (invoice?.status === 3 && invoice?.client_due_sum !== 0) {
       admin
         .firestore()
@@ -208,6 +207,34 @@ export const processInvoiceWebhook = async (
             );
             if (DEBUG) console.log("client", client);
             await saveClient(client?.id, client);
+            const invoiceItems: Array<any> = [];
+            if (invoiceItemDetails && invoiceItemDetails.length > 0) {
+              for (let i = 0; i < invoiceItemDetails.length; i++) {
+                invoiceItems.push({
+                  id: invoiceItemDetails[i]?.id,
+                  itemId: getProVetIdFromUrl(invoiceItemDetails[i]?.item),
+                  name: invoiceItemDetails[i]?.name,
+                  quantity: invoiceItemDetails[i]?.quantity,
+                  price: invoiceItemDetails[i]?.sum,
+                  tax: invoiceItemDetails[i]?.sum_vat,
+                  total: invoiceItemDetails[i]?.sum_total,
+                  patient: null,
+                });
+              }
+            }
+            const payments: Array<any> = [];
+            if (invoicePaymentDetails && invoicePaymentDetails.length > 0) {
+              for (let i = 0; i < invoicePaymentDetails.length; i++) {
+                payments.push({
+                  id: invoicePaymentDetails[i]?.id,
+                  paid: invoicePaymentDetails[i]?.paid,
+                  paymentMethod: invoicePaymentDetails[i]?.info,
+                  invoice: getProVetIdFromUrl(
+                    invoicePaymentDetails[i]?.invoice,
+                  ),
+                });
+              }
+            }
             admin
               .firestore()
               .collection("clients")
@@ -216,72 +243,23 @@ export const processInvoiceWebhook = async (
               .doc(`${invoice_id}`)
               .set(
                 {
-                  ...invoice,
-                  syncUser: user,
-                  lastSync: timestamp,
+                  amountDue: invoice?.total,
+                  taxDue: invoice?.total_vat,
+                  totalDue: invoice?.total_with_vat,
+                  consultation: getProVetIdFromUrl(invoice?.consultation),
+                  patients: invoice?.patients.map((patientId: string) =>
+                    getProVetIdFromUrl(patientId),
+                  ),
+                  remarks: invoice?.remarks || null,
+                  payments,
+                  paymentStatus: payments?.length > 0 ? "complete" : null,
+                  items: invoiceItems,
+                  id: invoice_id,
                   updatedOn: new Date(),
                 },
                 { merge: true },
               )
               .catch((error: any) => throwError(error));
-          })
-          .then(() => {
-            if (invoiceItemDetails && invoiceItemDetails.length > 0) {
-              for (let i = 0; i < invoiceItemDetails.length; i++) {
-                admin
-                  .firestore()
-                  .collection("clients")
-                  .doc(`${getProVetIdFromUrl(invoice?.client)}`)
-                  .collection("invoices")
-                  .doc(`${invoice_id}`)
-                  .collection("items")
-                  .doc(`${invoiceItemDetails[i]?.id}`)
-                  .set(
-                    {
-                      updatedOn: new Date(),
-                      ...invoiceItemDetails[i],
-                    },
-                    { merge: true },
-                  )
-                  .then(
-                    () =>
-                      DEBUG &&
-                      console.log(
-                        `SUCCESSFULLY UPDATED CLIENTS INVOICE ITEM: ${invoiceItemDetails[i]?.id}`,
-                      ),
-                  )
-                  .catch((error: any) => throwError(error));
-              }
-            }
-          })
-          .then(() => {
-            if (invoicePaymentDetails && invoicePaymentDetails.length > 0) {
-              for (let i = 0; i < invoicePaymentDetails.length; i++) {
-                admin
-                  .firestore()
-                  .collection("clients")
-                  .doc(`${getProVetIdFromUrl(invoice?.client)}`)
-                  .collection("invoices")
-                  .doc(`${invoice_id}`)
-                  .collection("items")
-                  .doc(`${invoicePaymentDetails[i]?.id}`)
-                  .set(
-                    {
-                      updatedOn: new Date(),
-                      ...invoicePaymentDetails[i],
-                    },
-                    { merge: true },
-                  )
-                  .then(
-                    () =>
-                      DEBUG &&
-                      console.log(
-                        `SUCCESSFULLY UPDATED CLIENTS INVOICE PAYMENT: ${invoicePaymentDetails[i]?.id}`,
-                      ),
-                  )
-                  .catch((error: any) => throwError(error));
-              }
-            }
           })
           .then(() => {
             if (invoice?.credit_note_original_invoice) {

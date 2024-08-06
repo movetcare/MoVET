@@ -120,7 +120,7 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
       };
       updateAppointmentStatus();
     }
-  }, [didConfirm]);
+  }, [appointment.id, didConfirm]);
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
@@ -543,7 +543,7 @@ const InRouteAppointment = ({ appointment }: { appointment: Appointment }) => {
         )
         .finally(() => setIsLoading(false));
     }
-  }, [mapCoordinates]);
+  }, [appointment?.address, appointment?.notes, mapCoordinates]);
 
   useEffect(() => {
     if (didConfirm) {
@@ -571,7 +571,7 @@ const InRouteAppointment = ({ appointment }: { appointment: Appointment }) => {
       };
       updateAppointmentStatus();
     }
-  }, [didConfirm]);
+  }, [appointment.id, didConfirm]);
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
@@ -1092,8 +1092,8 @@ const InvoiceReady = ({ appointment }: { appointment: Appointment }) => {
       <TouchableOpacity
         onPress={() =>
           router.navigate({
-            pathname: `/(app)/home/appointment-detail/`,
-            params: { id: appointment.id },
+            pathname: `/(app)/home/invoice-detail/`,
+            params: { id: appointment.invoice },
           })
         }
         style={tw`rounded-xl w-full px-4`}
@@ -1209,16 +1209,16 @@ const InvoiceReady = ({ appointment }: { appointment: Appointment }) => {
             </SubHeadingText>
             <View style={tw`my-2 border-t-2 border-movet-gray w-full`} />
             <SubHeadingText
-              style={tw`text-movet-white text-center mt-2 text-lg`}
+              style={tw`text-movet-white text-center my-2 text-lg`}
               noDarkMode
             >
               Current Status
             </SubHeadingText>
-            <ItalicText style={tw`text-xl text-movet-white`} noDarkMode>
-              Appointment Complete
-            </ItalicText>
-            <ItalicText style={tw`text-movet-white`} noDarkMode>
-              AWAITING PAYMENT
+            <SubHeadingText style={tw`text-movet-white`} noDarkMode>
+              APPOINTMENT COMPLETE
+            </SubHeadingText>
+            <ItalicText style={tw`text-movet-white -mb-4`} noDarkMode>
+              AWAITING PAYMENT...
             </ItalicText>
           </View>
         </View>
@@ -1227,49 +1227,19 @@ const InvoiceReady = ({ appointment }: { appointment: Appointment }) => {
         style={tw`flex-row mx-4 items-center justify-center rounded-b-xl bg-movet-red`}
         noDarkMode
       >
-        {/* <TouchableOpacity
-          onPress={() => Linking.openURL(`tel:+17205077387`)}
-          style={tw`w-4/12 pb-2`}
-        >
-          <View
-            style={tw`flex-row px-4 py-2 items-center bg-movet-red justify-center`}
-            noDarkMode
-          >
-            <Icon
-              name="clipboard-medical"
-              height={20}
-              width={20}
-              color="white"
-            />
-            <View style={tw`bg-movet-red ml-4`} noDarkMode>
-              <SubHeadingText style={tw`text-movet-white text-sm`} noDarkMode>
-                Review Invoice
-              </SubHeadingText>
-            </View>
-          </View>
-        </TouchableOpacity> */}
-        {/* <View style={tw`w-2/12`} noDarkMode /> */}
-        <TouchableOpacity
-          onPress={() =>
-            alert(
-              "FEATURE COMING SOON! Please ask a MoVET team member to see your invoice and proceed with payment.",
-            )
-          }
-          //style={tw`w-4/12 pb-2`}
-          style={tw`w-full pb-2`}
-        >
-          <View
-            style={tw`flex-row px-4 py-2 items-center bg-movet-red justify-center `}
-            noDarkMode
-          >
-            <Icon name="credit-card" height={20} width={20} color="white" />
-            <View style={tw`bg-movet-red ml-4`} noDarkMode>
-              <SubHeadingText style={tw`text-movet-white text-sm`} noDarkMode>
-                Approve Payment
-              </SubHeadingText>
-            </View>
-          </View>
-        </TouchableOpacity>
+        <View style={tw`bg-movet-red mb-6`} noDarkMode>
+          <ActionButton
+            title="Review & Pay Invoice"
+            iconName={"folder-heart"}
+            color={"black"}
+            onPress={() =>
+              router.navigate({
+                pathname: `/(app)/home/invoice-detail/`,
+                params: { id: appointment.invoice },
+              })
+            }
+          />
+        </View>
       </View>
     </View>
   );
