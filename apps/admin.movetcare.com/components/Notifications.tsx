@@ -19,6 +19,7 @@ const Notifications = ({ children }: any) => {
           <div
             className="bg-white border-movet-red border-2 p-4 rounded-xl flex flex-row items-center min-w-min cursor-pointer ease-in-out duration-300 hover:border-movet-black"
             onClick={() => {
+              /* eslint-disable @typescript-eslint/no-unused-expressions */
               payload?.fcmOptions?.link
                 ? (router.push(payload?.fcmOptions?.link) as any)
                 : (router.push("/telehealth/chat") as any);

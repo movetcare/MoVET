@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+/* eslint-disable @typescript-eslint/no-require-imports */
 const express = require("express");
 const cors = require("cors");
 import { Request, Response, NextFunction } from "express";

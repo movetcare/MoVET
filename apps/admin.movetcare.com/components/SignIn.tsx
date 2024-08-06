@@ -107,6 +107,7 @@ export const SignIn = () => {
                           setDisabledNotice(true);
                           setIsLoading(false);
                         } else {
+                          /* eslint-disable @typescript-eslint/no-unused-expressions */
                           handleError(error) &&
                             setTimeout(() => router.reload(), 3000);
                         }

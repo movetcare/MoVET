@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { admin, throwError } from "../../../config/config";
 import * as func from "firebase-functions";
 import { fetchNewProVetAccessToken } from "../fetchNewProVetAccessToken";

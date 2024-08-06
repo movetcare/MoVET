@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const ngrok = require("ngrok");
 const app = require("./utils/initApp");
 const publicIp = require("public-ip");

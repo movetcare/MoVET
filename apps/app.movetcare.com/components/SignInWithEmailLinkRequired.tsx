@@ -1,7 +1,7 @@
-import { faEnvelopeSquare, faRedo } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import router from 'next/router';
-import toast from 'react-hot-toast';
+import { faEnvelopeSquare, faRedo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import router from "next/router";
+import toast from "react-hot-toast";
 import { environment } from "utilities";
 
 export const SignInWithEmailLinkRequired = ({
@@ -60,10 +60,11 @@ export const SignInWithEmailLinkRequired = ({
           });
 
           if (email)
+            /* eslint-disable  @typescript-eslint/no-unused-expressions */
             (router.replace(
-              `/request-an-appointment?email=${email?.replaceAll("+", "%2B")}`
+              `/request-an-appointment?email=${email?.replaceAll("+", "%2B")}`,
             ) as any) && router.reload();
-          else
+          /* eslint-disable  @typescript-eslint/no-unused-expressions */ else
             (router.replace("/request-an-appointment") as any) &&
               router.reload();
         }}

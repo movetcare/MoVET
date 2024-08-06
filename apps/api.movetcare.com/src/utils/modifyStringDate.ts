@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 export const modifyDateString = (date: string) => {
   const dateArray = date.split("-");
   dateArray[0].length === 4

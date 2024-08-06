@@ -1,15 +1,17 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { admin, throwError, DEBUG } from "../../../../../config/config";
 const { FieldValue } = require("firebase-admin/firestore");
 
 export const saveBreeds = async (
   breedData: Array<{ value: number; label: string }>,
-  type: "canine" | "feline"
+  type: "canine" | "feline",
 ): Promise<boolean> => {
   const breeds = breedData.map(
     ({ value, label }: { value: number; label: string }) => ({
       id: value.toString(),
       title: label,
-    })
+    }),
   );
   if (DEBUG) console.log("breeds", breeds);
   const didUpdateOldBreedsList = await Promise.all(
@@ -24,10 +26,10 @@ export const saveBreeds = async (
             record: FieldValue.arrayUnion(breed),
             updatedOn: new Date(),
           },
-          { merge: true }
+          { merge: true },
         )
         .catch((error: any) => throwError(error));
-    })
+    }),
   )
     .then(() => true)
     .catch((error: any) => throwError(error));

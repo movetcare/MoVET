@@ -137,6 +137,7 @@ const ChatSession = () => {
         }),
       )
       .finally(() => {
+        /* eslint-disable @typescript-eslint/no-unused-expressions */
         router.query.mode !== "embed" && router.push("/telehealth");
       });
   };

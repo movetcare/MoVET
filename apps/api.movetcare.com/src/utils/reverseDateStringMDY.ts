@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 export const reverseDateStringMDY = (date: string | null): string => {
   if (date !== null) {
     const dateArray = date.split("-");

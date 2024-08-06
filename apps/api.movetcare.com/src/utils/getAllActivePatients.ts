@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { admin, throwError, DEBUG } from "../config/config";
 import type { BookingError, PatientBookingData } from "../types/booking";
 import { handleFailedBooking } from "../booking/session/handleFailedBooking";

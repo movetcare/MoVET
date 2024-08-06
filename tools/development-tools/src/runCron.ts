@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { webhookHeartbeat } from "./utils/webhookHeartbeat";
 const request = require("axios");
 const config = require("./utils/firebase.json");

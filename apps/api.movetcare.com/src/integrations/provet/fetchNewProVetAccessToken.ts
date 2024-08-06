@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { admin, throwError } from "../../config/config";
 
 import * as func from "firebase-functions";
