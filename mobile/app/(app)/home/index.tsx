@@ -35,15 +35,18 @@ import {
   AppointmentsStore,
   AuthStore,
   ErrorStore,
+  InvoicesStore,
   Patient,
   PatientsStore,
 } from "stores";
+import type { Invoice } from "stores";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
 import { PaymentMethodSummary } from "components/home/PaymentMethodSummary";
 import { QuickBookWidget } from "components/home/QuickBookWidget";
 import { PetSummary } from "components/home/PetSummary";
 import { TodaysAppointments } from "components/home/TodaysAppointments";
+import { UnpaidInvoiceNotice } from "components/home/UnpaidInvoiceNotice";
 
 const DEBUG_DATA = false;
 
@@ -60,6 +63,10 @@ const Home = () => {
   const { user } = AuthStore.useState();
   const fadeInOpacity = useSharedValue(0);
   const { upcomingAppointments } = AppointmentsStore.useState();
+  const { invoices } = InvoicesStore.useState();
+  const [unpaidInvoices, setUnpaidInvoices] = useState<Array<Invoice> | null>(
+    null,
+  );
 
   const fadeIn = () => {
     fadeInOpacity.value = withTiming(1, {
@@ -77,6 +84,23 @@ const Home = () => {
   useEffect(() => {
     fadeIn();
   });
+
+  useEffect(() => {
+    if (invoices && invoices.length > 0) {
+      const unpaidInvoices: Array<Invoice> = [];
+      invoices.forEach((invoice: Invoice) => {
+        if (
+          invoice.paymentStatus !== "succeeded" &&
+          invoice.paymentStatus !== "fully-refunded" &&
+          invoice.paymentStatus !== "partially-refunded" &&
+          invoice.paymentStatus !== "canceled"
+        )
+          unpaidInvoices.push(invoice);
+      });
+      console.log("unpaidInvoices => ", unpaidInvoices);
+      setUnpaidInvoices(unpaidInvoices);
+    }
+  }, [invoices]);
 
   useEffect(() => {
     if (patients) {
@@ -222,6 +246,9 @@ const Home = () => {
             style={tw`bg-transparent`}
           />
         </View>
+        {unpaidInvoices && (
+          <UnpaidInvoiceNotice unpaidInvoices={unpaidInvoices} />
+        )}
         {patients && patients.length ? (
           <View
             style={tw`flex-grow w-full justify-center items-center bg-transparent`}

@@ -10,7 +10,7 @@ import {
 } from "../../../config/config";
 import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 import { getCustomerId } from "../../../utils/getCustomerId";
-const DEBUG = false;
+const DEBUG = true;
 export const createPaymentIntent = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
@@ -19,7 +19,7 @@ export const createPaymentIntent = functions
         mode: "counter" | "client";
         invoice: string;
         reader?: string;
-        email?: string;
+        uid?: string;
         paymentMethod?: string;
       },
       context: any,
@@ -28,8 +28,15 @@ export const createPaymentIntent = functions
         console.log("createPaymentIntent context.app => ", context.app);
         console.log("createPaymentIntent context.auth => ", context.auth);
         console.log("createPaymentIntent DATA =>", data);
+        console.log(
+          "context?.auth.uid === data.uid",
+          context?.auth.uid === data.uid,
+        );
       }
-      if (await requestIsAuthorized(context)) {
+      if (
+        context?.auth.uid === data.uid ||
+        (await requestIsAuthorized(context))
+      ) {
         const { mode, invoice, reader, paymentMethod } = data || {};
         if (mode && invoice) {
           const invoiceDetails = await admin

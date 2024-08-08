@@ -28,12 +28,18 @@ import { Patient, PatientsStore } from "stores/PatientsStore";
 import { Modal } from "./Modal";
 import MapView, { Marker } from "react-native-maps";
 import Constants from "expo-constants";
-import { AuthStore, Appointment, AppointmentsStore } from "stores";
+import {
+  AuthStore,
+  Appointment,
+  AppointmentsStore,
+  InvoicesStore,
+} from "stores";
 import { getPlatformUrl } from "utils/getPlatformUrl";
 import { useForm } from "react-hook-form";
 import { httpsCallable } from "firebase/functions";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 import { PaymentMethodSummary } from "./home/PaymentMethodSummary";
+import type { Invoice } from "stores";
 
 export const AppointmentDetail = () => {
   const { id } = useLocalSearchParams();
@@ -41,6 +47,7 @@ export const AppointmentDetail = () => {
     AppointmentsStore.useState();
   const { client } = AuthStore.useState();
   const { patients: patientsData } = PatientsStore.useState();
+  const { invoices } = InvoicesStore.useState();
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
   const isDarkMode = useColorScheme() !== "light";
@@ -50,6 +57,8 @@ export const AppointmentDetail = () => {
     lat: number;
     lng: number;
   } | null>(null);
+  const [invoice, setInvoice] = useState<Invoice | null>(null);
+  const [paymentComplete, setPaymentComplete] = useState<boolean>(false);
 
   const {
     control,
@@ -89,7 +98,7 @@ export const AppointmentDetail = () => {
       };
       updateAppointmentStatus();
     }
-  }, [didConfirm]);
+  }, [appointment, didConfirm]);
 
   useEffect(() => {
     if (
@@ -121,8 +130,9 @@ export const AppointmentDetail = () => {
   }, [
     mapCoordinates,
     appointment?.notes,
-    client?.address,
+    client.address,
     appointment?.locationType,
+    appointment?.address,
   ]);
 
   useEffect(() => {
@@ -185,6 +195,17 @@ export const AppointmentDetail = () => {
       s.currentError = error;
     });
 
+  useEffect(() => {
+    if (appointment?.invoice && invoices) {
+      invoices.forEach((invoice: any) => {
+        if (Number(invoice.id) === Number(appointment?.invoice)) {
+          setInvoice(invoice);
+          if (invoice?.paymentStatus === "succeeded") setPaymentComplete(true);
+        }
+      });
+    }
+  }, [appointment?.invoice, invoices]);
+
   return (
     <Screen>
       {appointment?.locationType === "Virtually" && (
@@ -226,7 +247,7 @@ export const AppointmentDetail = () => {
             </Container>
             <Container style={tw`flex-shrink`}>
               <HeadingText style={tw`text-movet-white text-base`} noDarkMode>
-                We're on our way!
+                We&apos;re on our way!
               </HeadingText>
               <BodyText style={tw`text-movet-white text-sm -mt-0.5`} noDarkMode>
                 {appointment?.user?.name
@@ -554,6 +575,87 @@ export const AppointmentDetail = () => {
               {appointment?.additionalNotes}
             </ItalicText>
           </>
+        )}
+        <SubHeadingText style={tw`mt-2`}>INVOICE SUMMARY</SubHeadingText>
+        {__DEV__ && <BodyText>#{invoice?.id}</BodyText>}
+        <View style={tw`mb-4 w-full`}>
+          {invoice &&
+            invoice?.items.map((item: any, index: number) => (
+              <View
+                key={index}
+                style={tw`w-full flex-row items-center justify-between${index !== invoice?.items.length - 1 ? " border-b-2 border-movet-gray/50" : ""}`}
+              >
+                <BodyText style={tw`text-sm my-2`}>
+                  {item.name}
+                  {item.quantity > 1 && ` x ${item.quantity}`}
+                </BodyText>
+                <BodyText style={tw`text-sm my-2`}>
+                  ${item.total?.toFixed(2)}
+                </BodyText>
+              </View>
+            ))}
+          {invoice && (
+            <>
+              <View style={tw`flex-row items-center justify-between`}>
+                <ItalicText style={tw`text-sm mb-2 mt-4`}>Subtotal</ItalicText>
+                <ItalicText style={tw`text-sm mb-2 mt-4`}>
+                  ${invoice?.amountDue?.toFixed(2)}
+                </ItalicText>
+              </View>
+              <View style={tw`flex-row items-center justify-between`}>
+                <ItalicText style={tw`text-sm mb-2`}>Tax</ItalicText>
+                <ItalicText style={tw`text-sm mb-2`}>
+                  ${invoice?.taxDue?.toFixed(2)}
+                </ItalicText>
+              </View>
+              <View
+                style={tw`flex-row items-center justify-between${paymentComplete ? " border-t-2 border-movet-gray/50 pt-2" : ""}`}
+              >
+                <SubHeadingText
+                  style={tw`${paymentComplete ? "text-base" : "text-lg"}`}
+                >
+                  Total
+                  {paymentComplete
+                    ? ` Paid w/ ${invoice.payments[0].paymentMethod}`
+                    : " Due"}
+                </SubHeadingText>
+                <SubHeadingText
+                  style={tw`text-lg${paymentComplete ? " text-movet-green" : " text-movet-red"}`}
+                  noDarkMode
+                >
+                  ${invoice?.totalDue?.toFixed(2)}
+                </SubHeadingText>
+              </View>
+            </>
+          )}
+        </View>
+        {paymentComplete && (
+          <Container
+            style={tw`flex-col items-center justify-center w-full mt-4`}
+          >
+            <ItalicText style={tw`text-xl mb-2`}>
+              How was your experience?
+            </ItalicText>
+            <ItalicText style={tw`text-center mb-2 text-sm`}>
+              Online reviews from great clients like you help others to feel
+              confident about choosing MoVET and will help our business grow.
+            </ItalicText>
+            <ActionButton
+              title="Leave a Review"
+              color="black"
+              iconName="star"
+              onPress={() => {
+                Linking.canOpenURL(getPlatformUrl() + "/contact").then(
+                  (supported) => {
+                    if (supported)
+                      Linking.openURL(
+                        "https://g.page/r/CbtAdHSVgeMfEAE/review",
+                      );
+                  },
+                );
+              }}
+            />
+          </Container>
         )}
         {appointment?.locationType === "Virtually" &&
           appointment?.start?.toDate() >= new Date() && (

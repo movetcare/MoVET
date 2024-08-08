@@ -252,7 +252,7 @@ export const processInvoiceWebhook = async (
                   ),
                   remarks: invoice?.remarks || null,
                   payments,
-                  paymentStatus: payments?.length > 0 ? "complete" : null,
+                  paymentStatus: payments?.length > 0 ? "succeeded" : null,
                   items: invoiceItems,
                   id: invoice_id,
                   updatedOn: new Date(),

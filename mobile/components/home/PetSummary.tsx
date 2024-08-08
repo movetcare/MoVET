@@ -68,7 +68,7 @@ export const PetSummary = () => {
             return (
               <View key={index} style={tw`bg-transparent`} noDarkMode>
                 <View
-                  style={tw`flex-row w-full items-center my-2 bg-transparent justify-between${index !== patients.length - 1 ? " border-b-2 border-movet-gray pb-4" : ""}`}
+                  style={tw`flex-row w-full items-center my-2 bg-transparent justify-between${index !== 0 ? " border-t-2 border-movet-gray pt-4" : ""}`}
                   noDarkMode
                 >
                   <TouchableOpacity

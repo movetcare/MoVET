@@ -52,7 +52,7 @@ export const TodaysAppointments = () => {
 
   return todaysAppointments && todaysAppointments.length > 0 ? (
     <>
-      <SubHeadingText style={tw`text-2xl w-full mb-2 mt-4 text-center`}>
+      <SubHeadingText style={tw`text-2xl w-full mb-2 text-center`}>
         Today&apos;s Appointment{todaysAppointments.length > 1 && "s"}
       </SubHeadingText>
       {todaysAppointments.map((appointment: Appointment, index: number) => (

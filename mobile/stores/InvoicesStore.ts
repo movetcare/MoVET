@@ -8,7 +8,15 @@ export interface Invoice {
   consultation: number;
   patients: Array<number>;
   remarks: string | null;
-  status: "PAID" | "AWAITING-PAYMENT";
+  paymentStatus:
+    | "succeeded"
+    | "pending"
+    | "fully-refunded"
+    | "partially-refunded"
+    | "canceled"
+    | "unknown"
+    | null
+    | undefined;
   items: Array<{
     id: number;
     itemId: number;

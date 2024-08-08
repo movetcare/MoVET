@@ -30,7 +30,7 @@ export const InvoiceSearch = () => {
       invoiceData.docs.map((invoice: any) => {
         const { id, total, payer_name, updatedOn } = invoice.data();
         invoices.push({
-          id: id.toString(),
+          id: id?.toString(),
           label: payer_name
             ? `$${total?.toFixed(2)?.toString()} - ${payer_name}`
             : `$${total?.toFixed(2)?.toString()}`,
