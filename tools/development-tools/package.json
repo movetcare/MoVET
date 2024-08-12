@@ -39,7 +39,7 @@
     "csvtojson": "^2.0.10",
     "dotenv": "^16.4.5",
     "firebase": "^10.12.5",
-    "firebase-admin": "^12.3.0",
+    "firebase-admin": "^12.3.1",
     "firebase-functions": "^5.0.1",
     "fs-extra": "^11.2.0",
     "ngrok": "^4.3.3",
@@ -47,7 +47,7 @@
     "watch": "^1.0.2"
   },
   "devDependencies": {
-    "@types/node": "^22.1.0",
+    "@types/node": "^22.2.0",
     "typescript": "^5.5.4"
   }
 }

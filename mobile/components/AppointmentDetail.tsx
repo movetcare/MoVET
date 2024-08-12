@@ -200,7 +200,7 @@ export const AppointmentDetail = () => {
       invoices.forEach((invoice: any) => {
         if (Number(invoice.id) === Number(appointment?.invoice)) {
           setInvoice(invoice);
-          if (invoice?.paymentStatus === "succeeded") setPaymentComplete(true);
+          if (invoice.paymentStatus === "succeeded") setPaymentComplete(true);
         }
       });
     }
@@ -576,8 +576,12 @@ export const AppointmentDetail = () => {
             </ItalicText>
           </>
         )}
-        <SubHeadingText style={tw`mt-2`}>INVOICE SUMMARY</SubHeadingText>
-        {__DEV__ && <BodyText>#{invoice?.id}</BodyText>}
+        {invoice && (
+          <>
+            <SubHeadingText style={tw`mt-2`}>INVOICE SUMMARY</SubHeadingText>
+            {__DEV__ && <BodyText>#{invoice?.id}</BodyText>}
+          </>
+        )}
         <View style={tw`mb-4 w-full`}>
           {invoice &&
             invoice?.items.map((item: any, index: number) => (
@@ -616,7 +620,9 @@ export const AppointmentDetail = () => {
                 >
                   Total
                   {paymentComplete
-                    ? ` Paid w/ ${invoice.payments[0].paymentMethod}`
+                    ? invoice?.payments[0]?.paymentMethod
+                      ? ` Paid w/ ${invoice?.payments[0]?.paymentMethod}`
+                      : " Paid"
                     : " Due"}
                 </SubHeadingText>
                 <SubHeadingText

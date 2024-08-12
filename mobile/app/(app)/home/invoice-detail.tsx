@@ -291,11 +291,11 @@ const InvoiceDetail = () => {
                   style={tw`w-full flex-row items-center justify-between${index !== invoice?.items.length - 1 ? " border-b-2 border-movet-gray/50" : ""}`}
                 >
                   <BodyText style={tw`text-sm my-2`}>
-                    {item.name}
-                    {item.quantity > 1 && ` x ${item.quantity}`}
+                    {item?.name}
+                    {item?.quantity > 1 && ` x ${item?.quantity}`}
                   </BodyText>
                   <BodyText style={tw`text-sm my-2`}>
-                    ${item.total?.toFixed(2)}
+                    ${item?.total?.toFixed(2)}
                   </BodyText>
                 </View>
               ))}
