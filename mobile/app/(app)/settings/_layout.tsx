@@ -32,6 +32,24 @@ export default function Layout() {
         iconName: "credit-card",
         canGoBack: true,
       });
+    } else if (segments && segments.includes("invoice-pay")) {
+      setNavigationDetails({
+        title: "Pay Invoice",
+        iconName: "credit-card",
+        canGoBack: true,
+      });
+    } else if (segments && segments.includes("invoice-detail")) {
+      setNavigationDetails({
+        title: "Invoice Summary",
+        iconName: "folder-heart",
+        canGoBack: true,
+      });
+    } else if (segments && segments.includes("invoices")) {
+      setNavigationDetails({
+        title: "Invoice History",
+        iconName: "folder-heart",
+        canGoBack: true,
+      });
     } else if (segments && segments.includes("privacy-policy")) {
       setNavigationDetails({
         title: "Privacy Policy",

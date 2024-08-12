@@ -13,8 +13,10 @@ import { isTablet } from "utils/isTablet";
 
 export const UnpaidInvoiceNotice = ({
   unpaidInvoices,
+  source = "settings",
 }: {
   unpaidInvoices: Array<Invoice>;
+  source?: "home" | "settings";
 }) => {
   return (
     unpaidInvoices &&
@@ -23,7 +25,10 @@ export const UnpaidInvoiceNotice = ({
         key={id}
         onPress={() =>
           router.navigate({
-            pathname: "/(app)/home/invoice-detail",
+            pathname:
+              source === "home"
+                ? "/(app)/home/invoice-detail"
+                : "/(app)/settings/invoices/pay-invoice",
             params: {
               id,
             },
@@ -42,12 +47,7 @@ export const UnpaidInvoiceNotice = ({
             noDarkMode
           >
             <Container>
-              <Icon
-                name="user-medical-message"
-                height={30}
-                width={30}
-                color="white"
-              />
+              <Icon name="paw" height={30} width={30} color="white" />
             </Container>
             <Container style={tw`pl-3 mr-6`}>
               <SubHeadingText style={tw`text-movet-white`} noDarkMode>

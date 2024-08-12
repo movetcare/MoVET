@@ -254,7 +254,10 @@ export const processInvoiceWebhook = async (
                   payments,
                   paymentStatus: payments?.length > 0 ? "succeeded" : null,
                   items: invoiceItems,
-                  id: invoice_id,
+                  creditNote: invoice?.credit_note
+                    ? getProVetIdFromUrl(invoice?.credit_note_original_invoice)
+                    : null,
+                  id: Number(invoice_id),
                   updatedOn: new Date(),
                 },
                 { merge: true },

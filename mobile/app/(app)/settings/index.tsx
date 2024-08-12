@@ -19,7 +19,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useEffect } from "react";
-const versions = require("../../../version.json");
+import * as versions from "../../../version.json";
+import { InvoicesStore } from "stores";
 
 interface Option {
   name: string;
@@ -27,45 +28,90 @@ interface Option {
   link: string | null;
 }
 
-const settingsOptions: Array<Option> = [
-  {
-    name: "My Account",
-    icon: "user-edit",
-    link: "/(app)/settings/account",
-  },
-  {
-    name: "Payment Methods",
-    icon: "credit-card",
-    link: "/(app)/settings/payment-methods",
-  },
-  {
-    name: "Notifications",
-    icon: "bell",
-    link: "/(app)/settings/notifications",
-  },
-  {
-    name: "Report a Bug",
-    icon: "headset",
-    link: "/(app)/settings/report-a-bug",
-  },
-  {
-    name: "System Settings",
-    icon: "gear",
-    link: null,
-  },
-  {
-    name: "Privacy Policy",
-    icon: "lock",
-    link: "/(app)/settings/privacy-policy",
-  },
-  {
-    name: "Logout",
-    icon: "right-from-bracket",
-    link: "/(app)/settings/sign-out",
-  },
-];
 const Settings = () => {
   const fadeInOpacity = useSharedValue(0);
+  const { invoices } = InvoicesStore.useState();
+  const settingsOptions: Array<Option> =
+    invoices && invoices?.length > 0
+      ? [
+          {
+            name: "My Account",
+            icon: "user-edit",
+            link: "/(app)/settings/account",
+          },
+          {
+            name: "Payment Methods",
+            icon: "credit-card",
+            link: "/(app)/settings/payment-methods",
+          },
+          {
+            name: "Invoice History",
+            icon: "folder-heart",
+            link: "/(app)/settings/invoices",
+          },
+          {
+            name: "Notifications",
+            icon: "bell",
+            link: "/(app)/settings/notifications",
+          },
+          {
+            name: "Report a Bug",
+            icon: "headset",
+            link: "/(app)/settings/report-a-bug",
+          },
+          {
+            name: "System Settings",
+            icon: "gear",
+            link: null,
+          },
+          {
+            name: "Privacy Policy",
+            icon: "lock",
+            link: "/(app)/settings/privacy-policy",
+          },
+          {
+            name: "Logout",
+            icon: "right-from-bracket",
+            link: "/(app)/settings/sign-out",
+          },
+        ]
+      : [
+          {
+            name: "My Account",
+            icon: "user-edit",
+            link: "/(app)/settings/account",
+          },
+          {
+            name: "Payment Methods",
+            icon: "credit-card",
+            link: "/(app)/settings/payment-methods",
+          },
+          {
+            name: "Notifications",
+            icon: "bell",
+            link: "/(app)/settings/notifications",
+          },
+          {
+            name: "Report a Bug",
+            icon: "headset",
+            link: "/(app)/settings/report-a-bug",
+          },
+          {
+            name: "System Settings",
+            icon: "gear",
+            link: null,
+          },
+          {
+            name: "Privacy Policy",
+            icon: "lock",
+            link: "/(app)/settings/privacy-policy",
+          },
+          {
+            name: "Logout",
+            icon: "right-from-bracket",
+            link: "/(app)/settings/sign-out",
+          },
+        ];
 
   const fadeIn = () => {
     fadeInOpacity.value = withTiming(1, {

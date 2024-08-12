@@ -340,7 +340,7 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
           )}
         </View>
       )}
-      {appointment?.telemedicineUrl && (
+      {appointment.confirmed && appointment?.telemedicineUrl && (
         <View
           style={tw`bg-movet-blue px-8 pb-4 flex-col items-center justify-center ${isTablet ? "mx-16" : "mx-4"}`}
           noDarkMode

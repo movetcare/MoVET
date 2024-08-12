@@ -97,7 +97,6 @@ const Home = () => {
         )
           unpaidInvoices.push(invoice);
       });
-      console.log("unpaidInvoices => ", unpaidInvoices);
       setUnpaidInvoices(unpaidInvoices);
     }
   }, [invoices]);
@@ -247,7 +246,7 @@ const Home = () => {
           />
         </View>
         {unpaidInvoices && (
-          <UnpaidInvoiceNotice unpaidInvoices={unpaidInvoices} />
+          <UnpaidInvoiceNotice unpaidInvoices={unpaidInvoices} source="home" />
         )}
         {patients && patients.length ? (
           <View

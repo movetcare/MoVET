@@ -17,6 +17,7 @@ export interface Invoice {
     | "unknown"
     | null
     | undefined;
+  paymentIntent: string | undefined;
   items: Array<{
     id: number;
     itemId: number;

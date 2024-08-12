@@ -524,15 +524,19 @@ export const AppointmentDetail = () => {
           const yearsAgo = (date: Date) => {
             const now = new Date();
             const years = now.getFullYear() - date.getFullYear();
-
             if (
               now.getMonth() < date.getMonth() ||
               (now.getMonth() === date.getMonth() &&
                 now.getDate() < date.getDate())
             ) {
-              return years - 1;
+              if (years === 1)
+                return 12 + (now.getMonth() - date.getMonth()) + " Months Old";
+              else return years - 1 + " Years Old";
             } else {
-              return years;
+              if (years === 0)
+                return 12 + (now.getMonth() - date.getMonth()) + " Months Old";
+              if (years === 1) return "1 Year Old";
+              else return years + " Years Old";
             }
           };
           return (
@@ -580,7 +584,7 @@ export const AppointmentDetail = () => {
                       size="xxs"
                     />
                     <ItalicText style={tw`text-movet-black text-xs ml-1`}>
-                      {yearsAgo(birthday)} Years Old
+                      {yearsAgo(birthday)}
                     </ItalicText>
                   </Container>
                 </Container>
@@ -623,7 +627,7 @@ export const AppointmentDetail = () => {
         {invoice && (
           <>
             <SubHeadingText style={tw`mt-2`}>INVOICE SUMMARY</SubHeadingText>
-            {__DEV__ && <BodyText>#{invoice?.id}</BodyText>}
+            <BodyText style={tw`text-xs`}>#{invoice?.id}</BodyText>
           </>
         )}
         <View style={tw`mb-4 w-full`}>
@@ -657,20 +661,17 @@ export const AppointmentDetail = () => {
                 </ItalicText>
               </View>
               <View
-                style={tw`flex-row items-center justify-between${paymentComplete ? " border-t-2 border-movet-gray/50 pt-2" : ""}`}
+                style={tw`flex-row items-center justify-between border-t-2 border-movet-gray/50 pt-2`}
               >
-                <SubHeadingText
-                  style={tw`${paymentComplete ? "text-base" : "text-lg"}`}
-                >
-                  Total
-                  {paymentComplete
-                    ? invoice?.payments[0]?.paymentMethod
-                      ? ` Paid w/ ${invoice?.payments[0]?.paymentMethod}`
-                      : " Paid"
-                    : " Due"}
+                <SubHeadingText>
+                  {invoice?.totalDue < 0
+                    ? "Total Refunded"
+                    : invoice?.payments[0]?.paymentMethod
+                      ? `Total Paid w/ ${invoice?.payments[0]?.paymentMethod}`
+                      : "Total Paid"}
                 </SubHeadingText>
                 <SubHeadingText
-                  style={tw`text-lg${paymentComplete ? " text-movet-green" : " text-movet-red"}`}
+                  style={tw`text-lg${invoice?.totalDue < 0 ? " text-movet-yellow" : " text-movet-green"}`}
                   noDarkMode
                 >
                   ${invoice?.totalDue?.toFixed(2)}
@@ -708,7 +709,10 @@ export const AppointmentDetail = () => {
           </Container>
         )}
         {appointment?.locationType === "Virtually" &&
-          appointment?.start?.toDate() >= new Date() && (
+          appointment?.start?.toDate() >= new Date() &&
+          appointment.confirmed &&
+          appointment?.telemedicineUrl &&
+          appointment.status !== "COMPLETE" && (
             <ItalicText style={tw`text-sm text-center mt-4`}>
               * Virtual Consultations are performed via a secure third party web
               application. A modern web browser with camera and microphone
@@ -843,26 +847,28 @@ export const AppointmentDetail = () => {
                 : tw`w-full flex-col items-center justify-center mt-4 mb-8`
             }
           >
-            {appointment?.telemedicineUrl && (
-              <ActionButton
-                title="Start Consultation"
-                iconName="paw"
-                onPress={() =>
-                  openUrlInWebBrowser(
-                    appointment?.telemedicineUrl as string,
-                    isDarkMode,
-                    {
-                      dismissButtonStyle: "close",
-                      enableBarCollapsing: true,
-                      enableDefaultShareMenuItem: false,
-                      readerMode: true,
-                      showTitle: false,
-                    },
-                  )
-                }
-                style={tw`sm:w-2.75/6`}
-              />
-            )}
+            {appointment.confirmed &&
+              appointment?.telemedicineUrl &&
+              appointment.status !== "COMPLETE" && (
+                <ActionButton
+                  title="Start Consultation"
+                  iconName="paw"
+                  onPress={() =>
+                    openUrlInWebBrowser(
+                      appointment?.telemedicineUrl as string,
+                      isDarkMode,
+                      {
+                        dismissButtonStyle: "close",
+                        enableBarCollapsing: true,
+                        enableDefaultShareMenuItem: false,
+                        readerMode: true,
+                        showTitle: false,
+                      },
+                    )
+                  }
+                  style={tw`sm:w-2.75/6`}
+                />
+              )}
             {appointment?.status === "PENDING" && (
               <ActionButton
                 color="black"

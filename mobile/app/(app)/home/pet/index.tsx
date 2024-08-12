@@ -44,7 +44,7 @@ const PetDetail = () => {
   const [vcprPatients, setVcprPatients] = useState<Patient[] | null>(null);
   const [backgroundImage, setBackgroundImage] =
     useState<ExtendedViewProps["withBackground"]>("bone");
-  const [ageInYears, setAgeInYears] = useState<number | null>(null);
+  const [petAge, setPetAge] = useState<string | null>(null);
 
   const textStyles = [isTablet ? tw`text-lg` : tw`text-sm`, tw`mb-2`];
 
@@ -98,23 +98,27 @@ const PetDetail = () => {
 
   useEffect(() => {
     if (patient?.birthday) {
-      const yearsAgo = (date: Date): number => {
+      const yearsAgo = (date: Date) => {
         const now = new Date();
         const years = now.getFullYear() - date.getFullYear();
-
         if (
           now.getMonth() < date.getMonth() ||
           (now.getMonth() === date.getMonth() && now.getDate() < date.getDate())
         ) {
-          return years - 1;
+          if (years === 1)
+            return 12 + (now.getMonth() - date.getMonth()) + " Months Old";
+          else return years - 1 + " Years Old";
         } else {
-          return years;
+          if (years === 0)
+            return 12 + (now.getMonth() - date.getMonth()) + " Months Old";
+          if (years === 1) return "1 Year Old";
+          else return years + " Years Old";
         }
       };
       const [month, day, year] = (patient?.birthday as string)?.split(
         "-",
       ) as any;
-      setAgeInYears(
+      setPetAge(
         yearsAgo(new Date(Number(year), Number(month) - 1, Number(day))),
       );
     }
@@ -206,9 +210,7 @@ const PetDetail = () => {
             style={tw`flex-row items-center justify-center w-full mb-4 mt-1`}
           >
             <Icon name="cake" height={20} width={20} />
-            <SubHeadingText style={tw`ml-1`}>
-              {ageInYears} Years Old
-            </SubHeadingText>
+            <SubHeadingText style={tw`ml-1`}>{petAge}</SubHeadingText>
           </Container>
         </Container>
         {upcomingPatientAppointments &&
