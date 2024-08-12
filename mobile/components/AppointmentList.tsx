@@ -102,7 +102,7 @@ export const AppointmentList = ({
                           ? "mobile"
                           : location === "TELEHEALTH"
                             ? "telehealth"
-                            : "question"
+                            : "clinic"
                     }
                     height={50}
                     width={50}
@@ -133,7 +133,7 @@ export const AppointmentList = ({
                   </BodyText>
                   <Container style={tw`flex-row`}>
                     <ItalicText style={tw`text-movet-black text-xs`}>
-                      {reason}
+                      {reason.includes("provet") ? "Exam" : reason}
                     </ItalicText>
                   </Container>
                 </Container>

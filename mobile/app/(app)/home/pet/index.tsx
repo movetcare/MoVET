@@ -25,7 +25,6 @@ import {
 } from "stores";
 import { isTablet } from "utils/isTablet";
 import { SectionHeading } from "components/SectionHeading";
-import { getProVetIdFromUrl } from "utils/getProVetIdFromUrl";
 import { RequestRecords } from "components/RequestRecords";
 
 const PetDetail = () => {
@@ -45,6 +44,7 @@ const PetDetail = () => {
   const [vcprPatients, setVcprPatients] = useState<Patient[] | null>(null);
   const [backgroundImage, setBackgroundImage] =
     useState<ExtendedViewProps["withBackground"]>("bone");
+  const [ageInYears, setAgeInYears] = useState<number | null>(null);
 
   const textStyles = [isTablet ? tw`text-lg` : tw`text-sm`, tw`mb-2`];
 
@@ -95,6 +95,30 @@ const PetDetail = () => {
       if (vcprPatients.length > 0) setVcprPatients(vcprPatients);
     }
   }, [id, patients, upcomingAppointments, pastAppointments]);
+
+  useEffect(() => {
+    if (patient?.birthday) {
+      const yearsAgo = (date: Date): number => {
+        const now = new Date();
+        const years = now.getFullYear() - date.getFullYear();
+
+        if (
+          now.getMonth() < date.getMonth() ||
+          (now.getMonth() === date.getMonth() && now.getDate() < date.getDate())
+        ) {
+          return years - 1;
+        } else {
+          return years;
+        }
+      };
+      const [month, day, year] = (patient?.birthday as string)?.split(
+        "-",
+      ) as any;
+      setAgeInYears(
+        yearsAgo(new Date(Number(year), Number(month) - 1, Number(day))),
+      );
+    }
+  }, [patient?.birthday]);
 
   return (
     <Screen withBackground={backgroundImage}>
@@ -183,7 +207,7 @@ const PetDetail = () => {
           >
             <Icon name="cake" height={20} width={20} />
             <SubHeadingText style={tw`ml-1`}>
-              {patient?.birthday?.toUpperCase()}
+              {ageInYears} Years Old
             </SubHeadingText>
           </Container>
         </Container>
@@ -202,62 +226,64 @@ const PetDetail = () => {
                 style={tw`flex-col rounded-xl bg-transparent w-full`}
                 noDarkMode
               >
-                {upcomingPatientAppointments.map((appointment: Appointment) => {
-                  return (
-                    <TouchableOpacity
-                      key={appointment.id}
-                      onPress={() =>
-                        router.navigate({
-                          pathname: `/(app)/home/pet/appointment-detail/`,
-                          params: { id: appointment?.id },
-                        })
-                      }
-                    >
-                      <View
-                        style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`}
+                {upcomingPatientAppointments.map(
+                  (appointment: Appointment, index: number) => {
+                    return (
+                      <TouchableOpacity
+                        key={appointment.id + index}
+                        onPress={() =>
+                          router.navigate({
+                            pathname: `/(app)/home/pet/appointment-detail/`,
+                            params: { id: appointment?.id },
+                          })
+                        }
                       >
-                        <Container style={tw`px-3`}>
-                          <Icon
-                            name={
-                              appointment?.locationType === "Clinic"
-                                ? "clinic-alt"
-                                : appointment?.locationType === "Home"
-                                  ? "mobile"
-                                  : appointment?.locationType === "Virtually"
-                                    ? "telehealth"
-                                    : "question"
-                            }
-                            height={50}
-                            width={50}
-                          />
-                        </Container>
-                        <Container style={tw`flex-shrink`}>
-                          <HeadingText style={tw`text-lg`}>
-                            {appointment.reason as string}
-                          </HeadingText>
-                          <BodyText style={tw`text-sm -mt-0.5`}>
-                            {appointment.start
-                              .toDate()
-                              .toLocaleDateString("en-us", {
-                                weekday: "long",
-                                year: "2-digit",
-                                month: "numeric",
-                                day: "numeric",
-                              })}{" "}
-                            @{" "}
-                            {appointment.start
-                              .toDate()
-                              .toLocaleString("en-US", {
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: true,
-                              })}
-                          </BodyText>
-                        </Container>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
+                        <View
+                          style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`}
+                        >
+                          <Container style={tw`px-3`}>
+                            <Icon
+                              name={
+                                appointment?.locationType === "Clinic"
+                                  ? "clinic-alt"
+                                  : appointment?.locationType === "Home"
+                                    ? "mobile"
+                                    : appointment?.locationType === "Virtually"
+                                      ? "telehealth"
+                                      : "question"
+                              }
+                              height={50}
+                              width={50}
+                            />
+                          </Container>
+                          <Container style={tw`flex-shrink`}>
+                            <HeadingText style={tw`text-lg`}>
+                              {appointment.reason as string}
+                            </HeadingText>
+                            <BodyText style={tw`text-sm -mt-0.5`}>
+                              {appointment.start
+                                .toDate()
+                                .toLocaleDateString("en-us", {
+                                  weekday: "long",
+                                  year: "2-digit",
+                                  month: "numeric",
+                                  day: "numeric",
+                                })}{" "}
+                              @{" "}
+                              {appointment.start
+                                .toDate()
+                                .toLocaleString("en-US", {
+                                  hour: "numeric",
+                                  minute: "numeric",
+                                  hour12: true,
+                                })}
+                            </BodyText>
+                          </Container>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  },
+                )}
               </View>
             </>
           )}
@@ -279,7 +305,7 @@ const PetDetail = () => {
                 (appointment: Appointment, index: number) => {
                   return !showAllPastAppointments && index < 3 ? (
                     <TouchableOpacity
-                      key={appointment.id}
+                      key={appointment.id + index}
                       onPress={() =>
                         router.navigate({
                           pathname: `/(app)/home/pet/appointment-detail/`,
@@ -288,7 +314,6 @@ const PetDetail = () => {
                       }
                     >
                       <View
-                        key={appointment.id}
                         style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full shadow-lg shadow-movet-black dark:shadow-movet-white`}
                       >
                         <Container style={tw`p-2`}>
@@ -300,7 +325,7 @@ const PetDetail = () => {
                                   ? "mobile"
                                   : appointment?.locationType === "Virtually"
                                     ? "telehealth"
-                                    : "question"
+                                    : "clinic"
                             }
                             height={50}
                             width={50}
@@ -308,7 +333,9 @@ const PetDetail = () => {
                         </Container>
                         <Container style={tw`flex-shrink`}>
                           <HeadingText style={tw`text-lg`}>
-                            {appointment.reason as string}
+                            {(appointment.reason as string).includes("provet")
+                              ? "Exam"
+                              : (appointment.reason as string)}
                           </HeadingText>
                           <BodyText style={tw`text-sm -mt-0.5`}>
                             {appointment.start
@@ -333,7 +360,7 @@ const PetDetail = () => {
                     </TouchableOpacity>
                   ) : showAllPastAppointments ? (
                     <TouchableOpacity
-                      key={appointment.id}
+                      key={appointment.id + index}
                       onPress={() =>
                         router.navigate({
                           pathname: `/(app)/home/pet/appointment-detail/`,
@@ -342,7 +369,6 @@ const PetDetail = () => {
                       }
                     >
                       <View
-                        key={appointment.id}
                         style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:border-movet-white w-full`}
                       >
                         <Container style={tw`p-2`}>
@@ -354,7 +380,7 @@ const PetDetail = () => {
                                   ? "mobile"
                                   : appointment?.locationType === "Virtually"
                                     ? "telehealth"
-                                    : "question"
+                                    : "clinic"
                             }
                             height={50}
                             width={50}
@@ -362,7 +388,9 @@ const PetDetail = () => {
                         </Container>
                         <Container style={tw`flex-shrink`}>
                           <HeadingText style={tw`text-lg`}>
-                            {appointment.reason as string}
+                            {(appointment.reason as string).includes("provet")
+                              ? "Exam"
+                              : (appointment.reason as string)}
                           </HeadingText>
                           <BodyText style={tw`text-sm -mt-0.5`}>
                             {appointment.start

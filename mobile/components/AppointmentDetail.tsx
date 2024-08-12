@@ -40,6 +40,7 @@ import { httpsCallable } from "firebase/functions";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 import { PaymentMethodSummary } from "./home/PaymentMethodSummary";
 import type { Invoice } from "stores";
+import { CountdownTimer } from "./CountDownTimer";
 
 export const AppointmentDetail = () => {
   const { id } = useLocalSearchParams();
@@ -103,7 +104,6 @@ export const AppointmentDetail = () => {
   useEffect(() => {
     if (
       mapCoordinates === null &&
-      appointment?.locationType === "Home" &&
       (appointment?.notes?.includes("Appointment Location:") ||
         appointment?.address)
     ) {
@@ -278,7 +278,7 @@ export const AppointmentDetail = () => {
                   ? "mobile"
                   : appointment?.locationType === "Virtually"
                     ? "telehealth"
-                    : "question"
+                    : "clinic"
             }
             height={100}
             width={100}
@@ -286,7 +286,9 @@ export const AppointmentDetail = () => {
         </Container>
         {__DEV__ && <BodyText>ID: {appointment?.id}</BodyText>}
         <HeadingText style={tw`text-center mb-1`}>
-          {appointment?.reason as string}
+          {(appointment?.reason as string)?.includes("provet")
+            ? "Exam"
+            : (appointment?.reason as string)}
         </HeadingText>
         <SubHeadingText style={tw`text-lg mb-1`}>
           {appointment?.start?.toDate()?.toLocaleString("en-US", {
@@ -312,18 +314,38 @@ export const AppointmentDetail = () => {
             : ""}
         </SubHeadingText>
         {appointment?.confirmed && (
-          <View style={tw`flex-row items-center justify-center mb-4`}>
-            <Icon name="check" size="xxs" />
-            <ItalicText style={tw`text-center ml-0.5 text-sm`}>
-              {appointment?.locationType === "Clinic"
-                ? "Checked In"
-                : (appointment?.locationType !== "Virtually"
-                    ? "Appointment"
-                    : "Consultation") + " Confirmed"}
-            </ItalicText>
-          </View>
+          <>
+            <View
+              style={tw`flex-row items-center justify-center${
+                appointment?.start?.toDate() >= new Date() &&
+                appointment?.status === "PENDING"
+                  ? ""
+                  : " mb-4"
+              }`}
+            >
+              <Icon name="check" size="xxs" />
+              <ItalicText style={tw`text-center ml-0.5 text-sm`}>
+                {appointment?.locationType === "Clinic"
+                  ? "Checked In"
+                  : (appointment?.locationType !== "Virtually"
+                      ? "Appointment"
+                      : "Consultation") + " Confirmed"}
+              </ItalicText>
+            </View>
+            {appointment?.start?.toDate() >= new Date() &&
+              appointment?.status === "PENDING" && (
+                <View
+                  style={tw`flex-row items-center justify-center mb-4`}
+                  noDarkMode
+                >
+                  <CountdownTimer
+                    targetDate={appointment?.start?.toDate()}
+                    style={tw`text-movet-black dark:text-movet-white text-xs`}
+                  />
+                </View>
+              )}
+          </>
         )}
-
         {appointment?.notes?.includes("Appointment Location:") ? (
           <>
             <SubHeadingText style={tw`mt-2`}>
@@ -492,58 +514,80 @@ export const AppointmentDetail = () => {
             )}
           </>
         ) : null}
-        {appointment?.patients?.map((patient: Patient, index: number) => (
-          <Container key={index} style={tw`flex-row`}>
-            <View
-              noDarkMode
-              style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:bg-movet-black dark:border-movet-white w-full`}
-            >
-              <Container style={tw`px-4 flex items-center justify-center`}>
-                {patient?.photoUrl ? (
-                  <Image
-                    source={{ uri: patient?.photoUrl }}
-                    alt={patient?.name + "'s photo"}
-                    height={50}
-                    width={50}
-                    style={tw`rounded-full`}
-                  />
-                ) : (
-                  <Icon
-                    name={
-                      patient?.species?.toLowerCase()?.includes("dog") ||
-                      patient?.species?.toLowerCase()?.includes("canine")
-                        ? "dog"
-                        : "cat"
-                    }
-                    size="md"
-                  />
-                )}
-              </Container>
-              <Container style={tw`flex-shrink`}>
-                <HeadingText style={tw`text-movet-black text-lg`}>
-                  {patient.name}
-                </HeadingText>
-                <BodyText style={tw`text-movet-black text-sm -mt-0.5`}>
-                  {patient.breed}
-                </BodyText>
-                <Container style={tw`flex-row items-center`}>
-                  <Icon
-                    name={
-                      patient?.gender?.toLowerCase()?.includes("female") ||
-                      patient?.gender?.toLowerCase()?.includes("female,")
-                        ? "female"
-                        : "male"
-                    }
-                    size="xxs"
-                  />
-                  <ItalicText style={tw`text-movet-black text-xs ml-1`}>
-                    {patient.birthday}
-                  </ItalicText>
+        {appointment?.patients?.map((patient: Patient, index: number) => {
+          const [month, day, year] = patient.birthday.split("-");
+          const birthday = new Date(
+            Number(year),
+            Number(month) - 1,
+            Number(day),
+          );
+          const yearsAgo = (date: Date) => {
+            const now = new Date();
+            const years = now.getFullYear() - date.getFullYear();
+
+            if (
+              now.getMonth() < date.getMonth() ||
+              (now.getMonth() === date.getMonth() &&
+                now.getDate() < date.getDate())
+            ) {
+              return years - 1;
+            } else {
+              return years;
+            }
+          };
+          return (
+            <Container key={index} style={tw`flex-row`}>
+              <View
+                noDarkMode
+                style={tw`pr-4 pt-2 pb-3 my-2 bg-movet-white rounded-xl flex-row items-center border-2 dark:bg-movet-black dark:border-movet-white w-full`}
+              >
+                <Container style={tw`px-4 flex items-center justify-center`}>
+                  {patient?.photoUrl ? (
+                    <Image
+                      source={{ uri: patient?.photoUrl }}
+                      alt={patient?.name + "'s photo"}
+                      height={50}
+                      width={50}
+                      style={tw`rounded-full`}
+                    />
+                  ) : (
+                    <Icon
+                      name={
+                        patient?.species?.toLowerCase()?.includes("dog") ||
+                        patient?.species?.toLowerCase()?.includes("canine")
+                          ? "dog"
+                          : "cat"
+                      }
+                      size="md"
+                    />
+                  )}
                 </Container>
-              </Container>
-            </View>
-          </Container>
-        ))}
+                <Container style={tw`flex-shrink`}>
+                  <HeadingText style={tw`text-movet-black text-lg`}>
+                    {patient.name}
+                  </HeadingText>
+                  <BodyText style={tw`text-movet-black text-sm -mt-0.5`}>
+                    {patient.breed}
+                  </BodyText>
+                  <Container style={tw`flex-row items-center`}>
+                    <Icon
+                      name={
+                        patient?.gender?.toLowerCase()?.includes("female") ||
+                        patient?.gender?.toLowerCase()?.includes("female,")
+                          ? "female"
+                          : "male"
+                      }
+                      size="xxs"
+                    />
+                    <ItalicText style={tw`text-movet-black text-xs ml-1`}>
+                      {yearsAgo(birthday)} Years Old
+                    </ItalicText>
+                  </Container>
+                </Container>
+              </View>
+            </Container>
+          );
+        })}
         {(appointment?.instructions ||
           (appointment?.reason as { name: string; instructions: string })
             ?.instructions) && (
@@ -756,7 +800,8 @@ export const AppointmentDetail = () => {
             />
           )}
         {appointment?.locationType === "Clinic" &&
-        appointment?.start?.toDate() >= new Date() ? (
+        appointment?.start?.toDate() >= new Date() &&
+        appointment?.status === "PENDING" ? (
           <Container
             style={tw`flex-col sm:flex-row justify-around w-full mt-4 mb-8`}
           >
@@ -818,15 +863,18 @@ export const AppointmentDetail = () => {
                 style={tw`sm:w-2.75/6`}
               />
             )}
-            <ActionButton
-              color="black"
-              title="Cancel Consultation"
-              iconName="cancel"
-              onPress={() => setShowCancelModal(true)}
-              style={tw`sm:w-2.75/6`}
-            />
+            {appointment?.status === "PENDING" && (
+              <ActionButton
+                color="black"
+                title="Cancel Consultation"
+                iconName="cancel"
+                onPress={() => setShowCancelModal(true)}
+                style={tw`sm:w-2.75/6`}
+              />
+            )}
           </Container>
-        ) : appointment?.start?.toDate() >= new Date() ? (
+        ) : appointment?.start?.toDate() >= new Date() &&
+          appointment?.status === "PENDING" ? (
           <ActionButton
             color="black"
             title="Cancel Appointment"

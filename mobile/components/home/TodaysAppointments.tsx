@@ -30,6 +30,7 @@ import { useForm } from "react-hook-form";
 import { Modal } from "components/Modal";
 import { openUrlInWebBrowser } from "utils/openUrlInWebBrowser";
 import { getPlatformUrl } from "utils/getPlatformUrl";
+import { CountdownTimer } from "components/CountDownTimer";
 
 export const TodaysAppointments = () => {
   const { upcomingAppointments }: any = AppointmentsStore.useState();
@@ -272,22 +273,33 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
                 : ""}
             </SubHeadingText>
             {appointment.confirmed && (
-              <View
-                style={tw`flex-row items-center justify-center bg-movet-blue mt-2`}
-                noDarkMode
-              >
-                <Icon name="check" size="xxs" color="white" />
-                <ItalicText
-                  style={tw`text-movet-white text-center ml-0.5 text-sm`}
+              <>
+                <View
+                  style={tw`flex-row items-center justify-center bg-movet-blue mt-2`}
                   noDarkMode
                 >
-                  {appointment?.locationType === "Clinic"
-                    ? "Checked In"
-                    : (appointment?.locationType !== "Virtually"
-                        ? "Appointment"
-                        : "Consultation") + " Confirmed"}
-                </ItalicText>
-              </View>
+                  <Icon name="check" size="xxs" color="white" />
+                  <ItalicText
+                    style={tw`text-movet-white text-center ml-0.5 text-sm`}
+                    noDarkMode
+                  >
+                    {appointment?.locationType === "Clinic"
+                      ? "Checked In"
+                      : (appointment?.locationType !== "Virtually"
+                          ? "Appointment"
+                          : "Consultation") + " Confirmed"}
+                  </ItalicText>
+                </View>
+                <View
+                  style={tw`flex-row items-center justify-center bg-movet-blue`}
+                  noDarkMode
+                >
+                  <CountdownTimer
+                    targetDate={appointment?.start?.toDate()}
+                    style={tw`text-movet-white text-xs`}
+                  />
+                </View>
+              </>
             )}
           </View>
         </View>
