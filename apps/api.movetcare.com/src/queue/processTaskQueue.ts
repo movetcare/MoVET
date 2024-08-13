@@ -35,7 +35,7 @@ export const processTaskQueue = async (): Promise<void> => {
           admin
             .firestore()
             .collection("tasks_completed")
-            .doc(task.id)
+            .doc(`${task.id}`)
             .set(
               {
                 ...task.data(),
@@ -90,7 +90,7 @@ export const processTaskQueue = async (): Promise<void> => {
           admin
             .firestore()
             .collection("tasks_completed")
-            .doc(task.id)
+            .doc(`${task.id}`)
             .set(
               {
                 ...task.data(),

@@ -342,7 +342,7 @@ export const Hours = ({
                   )}
                 </div>
               </div>
-            </div>{" "}
+            </div>
             <div className="w-full max-w-lg  whitespace-nowrap mt-8">
               <h3 className="text-xl text-center font-bold">
                 Boutique/Dog Wash @ Belleview Station
@@ -617,6 +617,9 @@ export const Hours = ({
                 <h3 className="text-xl text-center font-bold">
                   Boutique/Dog Wash @ Belleview Station
                 </h3>
+                <p className="text-center italic text-xs">
+                  * All dog baths must be completed 30 minutes before closing.
+                </p>
                 <p className="text-center -mb-1 italic">
                   CURRENTLY -{" "}
                   {hoursStatus && hoursStatus.boutiqueStatus ? (
@@ -910,6 +913,9 @@ export const Hours = ({
               <h3 className="text-xl text-center font-bold">
                 Boutique/Dog Wash @ Belleview Station
               </h3>
+              <p className="text-center italic text-xs">
+                * All dog baths must be completed 30 minutes before closing.
+              </p>
               <p className="text-center -mb-1 italic">
                 CURRENTLY -{" "}
                 {hoursStatus && hoursStatus.boutiqueStatus ? (
