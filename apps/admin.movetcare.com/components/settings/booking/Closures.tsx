@@ -111,13 +111,18 @@ export const Closures = () => {
 
   const onSubmit = async (data: any) => {
     const startDate = new Date(data?.startDate);
-    startDate.setHours(0, 0, 0, 0);
+    startDate.setHours(2, 0, 0, 0);
     const endDate = new Date(data?.endDate);
-    endDate.setHours(0, 0, 0, 0);
+    endDate.setHours(2, 0, 0, 0);
     await setDoc(
       doc(firestore, "configuration/closures"),
       {
-        closureDates: arrayUnion({ ...data, startDate, endDate }),
+        closureDates: arrayUnion({
+          ...data,
+          startDate,
+          endDate,
+          createdOn: new Date(),
+        }),
         updatedOn: serverTimestamp(),
       },
       { merge: true },
