@@ -40,14 +40,14 @@ const Settings = () => {
             link: "/(app)/settings/account",
           },
           {
+            name: "Invoices",
+            icon: "folder-heart",
+            link: "/(app)/settings/invoices",
+          },
+          {
             name: "Payment Methods",
             icon: "credit-card",
             link: "/(app)/settings/payment-methods",
-          },
-          {
-            name: "Invoice History",
-            icon: "folder-heart",
-            link: "/(app)/settings/invoices",
           },
           {
             name: "Notifications",

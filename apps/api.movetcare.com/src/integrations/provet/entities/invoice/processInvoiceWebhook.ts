@@ -252,7 +252,10 @@ export const processInvoiceWebhook = async (
                   ),
                   remarks: invoice?.remarks || null,
                   payments,
-                  paymentStatus: payments?.length > 0 ? "succeeded" : null,
+                  paymentStatus:
+                    payments?.length > 0 || invoice?.total_with_vat === 0
+                      ? "succeeded"
+                      : null,
                   items: invoiceItems,
                   creditNote: invoice?.credit_note
                     ? getProVetIdFromUrl(invoice?.credit_note_original_invoice)

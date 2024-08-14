@@ -283,6 +283,14 @@ const InvoiceDetail = () => {
         >
           <Icon name="clinic-alt" height={100} width={100} />
           <BodyText style={tw`text-xs`}>#{invoice?.id}</BodyText>
+          {paymentComplete && (
+            <SubHeadingText
+              style={tw`text-movet-green text-lg my-4`}
+              noDarkMode
+            >
+              PAYMENT COMPLETE
+            </SubHeadingText>
+          )}
           <View style={tw`mb-4 w-full`}>
             {invoice &&
               invoice?.items.map((item: any, index: number) => (
@@ -301,32 +309,35 @@ const InvoiceDetail = () => {
               ))}
             {invoice && (
               <>
-                <View style={tw`flex-row items-center justify-between`}>
-                  <ItalicText style={tw`text-sm mb-2 mt-4`}>
-                    Subtotal
-                  </ItalicText>
-                  <ItalicText style={tw`text-sm mb-2 mt-4`}>
-                    ${invoice?.amountDue?.toFixed(2)}
-                  </ItalicText>
-                </View>
-                <View style={tw`flex-row items-center justify-between`}>
-                  <ItalicText style={tw`text-sm mb-2`}>Tax</ItalicText>
-                  <ItalicText style={tw`text-sm mb-2`}>
-                    ${invoice?.taxDue?.toFixed(2)}
-                  </ItalicText>
-                </View>
+                {invoice.taxDue > 0 && (
+                  <>
+                    <View style={tw`flex-row items-center justify-between`}>
+                      <ItalicText style={tw`text-sm mb-2 mt-4`}>
+                        Subtotal
+                      </ItalicText>
+                      <ItalicText style={tw`text-sm mb-2 mt-4`}>
+                        ${invoice?.amountDue?.toFixed(2)}
+                      </ItalicText>
+                    </View>
+                    <View style={tw`flex-row items-center justify-between`}>
+                      <ItalicText style={tw`text-sm mb-2`}>Tax</ItalicText>
+                      <ItalicText style={tw`text-sm mb-2`}>
+                        ${invoice?.taxDue?.toFixed(2)}
+                      </ItalicText>
+                    </View>
+                  </>
+                )}
                 <View
-                  style={tw`flex-row items-center justify-between${paymentComplete ? " border-t-2 border-movet-gray/50 pt-2" : ""}`}
+                  style={tw`flex-row items-center justify-between${paymentComplete ? " border-t-2 border-movet-gray/50 pt-2" : ""}${invoice.taxDue === 0 ? " mt-4" : ""}`}
                 >
                   <SubHeadingText
                     style={tw`${paymentComplete ? "text-base" : "text-lg"}`}
                   >
-                    Total
                     {paymentComplete
                       ? invoice?.payments[0]?.paymentMethod
-                        ? ` Paid w/ ${invoice?.payments[0]?.paymentMethod}`
-                        : " Paid"
-                      : " Due"}
+                        ? `Total Paid w/ ${invoice?.payments[0]?.paymentMethod}`
+                        : "Total Paid"
+                      : "TOTAL DUE"}
                   </SubHeadingText>
                   <SubHeadingText
                     style={tw`text-lg${paymentComplete ? " text-movet-green" : " text-movet-red"}`}
@@ -368,7 +379,10 @@ const InvoiceDetail = () => {
           ) : (
             <>
               {!paymentMethods ? (
-                <>
+                <TouchableOpacity
+                  onPress={async () => await loadPaymentOptions()}
+                  style={tw`items-center justify-center mt-8`}
+                >
                   <Icon name="credit-card" size="xl" />
                   <ItalicText
                     style={tw`mb-4 mt-2 text-xl text-movet-red`}
@@ -376,7 +390,7 @@ const InvoiceDetail = () => {
                   >
                     No Payment Methods on File...
                   </ItalicText>
-                </>
+                </TouchableOpacity>
               ) : (
                 <>
                   {paymentMethods?.length > 1 && (

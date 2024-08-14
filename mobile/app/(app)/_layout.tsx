@@ -320,7 +320,7 @@ const TabsLayout = (props: any) => {
       unsubscribePatients();
       unsubscribeInvoices();
     };
-  }, [user.uid]);
+  }, [user?.uid]);
 
   useEffect(() => {
     const unsubscribeReasons = onSnapshot(

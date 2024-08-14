@@ -46,7 +46,7 @@ export default function Layout() {
       });
     } else if (segments && segments.includes("invoices")) {
       setNavigationDetails({
-        title: "Invoice History",
+        title: "Invoices",
         iconName: "folder-heart",
         canGoBack: true,
       });

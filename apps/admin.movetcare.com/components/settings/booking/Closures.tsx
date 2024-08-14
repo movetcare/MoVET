@@ -111,9 +111,9 @@ export const Closures = () => {
 
   const onSubmit = async (data: any) => {
     const startDate = new Date(data?.startDate);
-    startDate.setHours(2, 0, 0, 0);
+    startDate.setHours(3, 0, 0, 0);
     const endDate = new Date(data?.endDate);
-    endDate.setHours(2, 0, 0, 0);
+    endDate.setHours(3, 0, 0, 0);
     await setDoc(
       doc(firestore, "configuration/closures"),
       {
@@ -130,7 +130,6 @@ export const Closures = () => {
       .then(() =>
         toast(`Your closure update will appear in ~ 5 minutes.`, {
           duration: 5000,
-
           icon: (
             <FontAwesomeIcon
               icon={faCircleCheck}
@@ -143,7 +142,6 @@ export const Closures = () => {
       .catch((error: any) =>
         toast(`Closure Update FAILED: ${error?.message}`, {
           duration: 5000,
-
           icon: (
             <FontAwesomeIcon
               icon={faCircleExclamation}

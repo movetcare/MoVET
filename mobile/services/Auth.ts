@@ -10,6 +10,7 @@ import { httpsCallable } from "firebase/functions";
 import {
   AppointmentsStore,
   AuthStore,
+  InvoicesStore,
   NotificationStore,
   PatientsStore,
 } from "stores";
@@ -145,6 +146,9 @@ export const signOut = async () =>
         store.user = null;
         store.isLoggedIn = false;
         store.initialized = false;
+      });
+      InvoicesStore.update((store) => {
+        store.invoices = null;
       });
     })
     .catch((error: any) => {

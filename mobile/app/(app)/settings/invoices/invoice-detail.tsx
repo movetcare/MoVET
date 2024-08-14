@@ -67,20 +67,26 @@ const InvoiceDetail = () => {
             ))}
           {invoice && (
             <>
-              <View style={tw`flex-row items-center justify-between`}>
-                <ItalicText style={tw`text-sm mb-2 mt-4`}>Subtotal</ItalicText>
-                <ItalicText style={tw`text-sm mb-2 mt-4`}>
-                  ${invoice?.amountDue?.toFixed(2)}
-                </ItalicText>
-              </View>
-              <View style={tw`flex-row items-center justify-between`}>
-                <ItalicText style={tw`text-sm mb-2`}>Tax</ItalicText>
-                <ItalicText style={tw`text-sm mb-2`}>
-                  ${invoice?.taxDue?.toFixed(2)}
-                </ItalicText>
-              </View>
+              {invoice.taxDue > 0 && (
+                <>
+                  <View style={tw`flex-row items-center justify-between`}>
+                    <ItalicText style={tw`text-sm mb-2 mt-4`}>
+                      Subtotal
+                    </ItalicText>
+                    <ItalicText style={tw`text-sm mb-2 mt-4`}>
+                      ${invoice?.amountDue?.toFixed(2)}
+                    </ItalicText>
+                  </View>
+                  <View style={tw`flex-row items-center justify-between`}>
+                    <ItalicText style={tw`text-sm mb-2`}>Tax</ItalicText>
+                    <ItalicText style={tw`text-sm mb-2`}>
+                      ${invoice?.taxDue?.toFixed(2)}
+                    </ItalicText>
+                  </View>
+                </>
+              )}
               <View
-                style={tw`flex-row items-center justify-between border-t-2 border-movet-gray/50 pt-2`}
+                style={tw`flex-row items-center justify-between border-t-2 border-movet-gray/50 pt-2 ${invoice.taxDue === 0 ? " mt-4" : ""}`}
               >
                 <SubHeadingText>
                   {invoice?.totalDue < 0 ? "Total Refunded" : "Total Paid"}

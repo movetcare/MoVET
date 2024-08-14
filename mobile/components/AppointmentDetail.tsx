@@ -668,10 +668,12 @@ export const AppointmentDetail = () => {
                     ? "Total Refunded"
                     : invoice?.payments[0]?.paymentMethod
                       ? `Total Paid w/ ${invoice?.payments[0]?.paymentMethod}`
-                      : "Total Paid"}
+                      : invoice?.totalDue > 0
+                        ? "TOTAL DUE"
+                        : "Total Paid"}
                 </SubHeadingText>
                 <SubHeadingText
-                  style={tw`text-lg${invoice?.totalDue < 0 ? " text-movet-yellow" : " text-movet-green"}`}
+                  style={tw`text-lg${invoice?.totalDue < 0 ? " text-movet-yellow" : invoice?.totalDue > 0 ? " text-movet-red" : " text-movet-green"}`}
                   noDarkMode
                 >
                   ${invoice?.totalDue?.toFixed(2)}
@@ -804,10 +806,9 @@ export const AppointmentDetail = () => {
             />
           )}
         {appointment?.locationType === "Clinic" &&
-        appointment?.start?.toDate() >= new Date() &&
-        appointment?.status === "PENDING" ? (
+        appointment?.start?.toDate() >= new Date() ? (
           <Container
-            style={tw`flex-col sm:flex-row justify-around w-full mt-4 mb-8`}
+            style={tw`flex-col sm:flex-row justify-around w-full mb-8`}
           >
             <ActionButton
               title="Get Directions"
