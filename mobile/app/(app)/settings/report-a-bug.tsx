@@ -347,7 +347,7 @@ const ReportABug = () => {
             onSubmit={onSubmit}
             disabled={!isDirty || isLoading}
             loading={isLoading}
-            title={isLoading ? "REPORTING BUG..." : "REPORT BUG"}
+            title={isLoading ? "REPORTING BUG..." : "Report Bug"}
             color="red"
             iconName="bug"
             style={tw`mx-auto mb-8`}

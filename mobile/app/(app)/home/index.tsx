@@ -90,11 +90,11 @@ const Home = () => {
       const unpaidInvoices: Array<Invoice> = [];
       invoices.forEach((invoice: Invoice) => {
         if (
-          invoice.paymentStatus !== "succeeded" &&
-          invoice.paymentStatus !== "fully-refunded" &&
-          invoice.paymentStatus !== "partially-refunded" &&
-          invoice.paymentStatus !== "canceled" &&
-          invoice.paymentStatus !== null
+          (invoice.paymentStatus !== "succeeded" &&
+            invoice.paymentStatus !== "fully-refunded" &&
+            invoice.paymentStatus !== "partially-refunded" &&
+            invoice.paymentStatus !== "canceled") ||
+          invoice.paymentStatus === null
         )
           unpaidInvoices.push(invoice);
       });
@@ -273,7 +273,14 @@ const Home = () => {
                   )}
               </>
             )}
-            {upcomingAppointments !== null && <PaymentMethodSummary />}
+            {upcomingAppointments !== null && (
+              <>
+                {!announcement?.isActiveMobile && upcomingAppointments && (
+                  <View noDarkMode style={tw`h-4 bg-transparent`} />
+                )}
+                <PaymentMethodSummary />
+              </>
+            )}
             {upcomingAppointments !== null ? (
               <>
                 <TodaysAppointments />

@@ -40,7 +40,7 @@ const Settings = () => {
             link: "/(app)/settings/account",
           },
           {
-            name: "Invoices",
+            name: "Invoice History",
             icon: "folder-heart",
             link: "/(app)/settings/invoices",
           },

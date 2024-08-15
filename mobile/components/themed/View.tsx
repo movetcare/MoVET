@@ -13,6 +13,7 @@ export interface ExtendedViewProps extends ViewProps {
   withBackground?: "pets" | "cat" | "dog" | "bone" | "mouse";
   noDarkMode?: boolean;
   noScroll?: boolean;
+  resizeMode?: "cover" | "stretch" | "repeat";
 }
 
 export const Screen = (props: ExtendedViewProps) => {
@@ -22,6 +23,7 @@ export const Screen = (props: ExtendedViewProps) => {
     darkColor,
     withBackground,
     noScroll,
+    resizeMode = "cover",
     ...otherProps
   } = props;
   const backgroundColor = useThemeColor(
@@ -53,7 +55,7 @@ export const Screen = (props: ExtendedViewProps) => {
       {backgroundImage ? (
         <ImageBackground
           source={backgroundImage}
-          resizeMode="cover"
+          resizeMode={resizeMode}
           style={[{ backgroundColor }, tw`flex-1`]}
         >
           <DefaultView
@@ -81,7 +83,7 @@ export const Screen = (props: ExtendedViewProps) => {
       {backgroundImage ? (
         <ImageBackground
           source={backgroundImage}
-          resizeMode="cover"
+          resizeMode={resizeMode}
           style={[{ backgroundColor }, tw`flex-1`]}
         >
           <DefaultView
@@ -140,7 +142,7 @@ export const View = (props: ExtendedViewProps) => {
   return backgroundImage ? (
     <ImageBackground
       source={backgroundImage}
-      resizeMode="cover"
+      resizeMode={resizeMode}
       style={tw`flex-1`}
     >
       <DefaultView

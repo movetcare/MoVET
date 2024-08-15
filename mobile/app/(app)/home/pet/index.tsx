@@ -125,7 +125,7 @@ const PetDetail = () => {
   }, [patient?.birthday]);
 
   return (
-    <Screen withBackground={backgroundImage}>
+    <Screen withBackground={backgroundImage} resizeMode="repeat">
       <Stack.Screen options={{ title: patient?.name }} />
       <View
         style={[
