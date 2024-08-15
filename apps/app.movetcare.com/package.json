@@ -18,7 +18,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@headlessui/react": "^1.7.19",
     "@hookform/resolvers": "^3.9.0",
-    "firebase": "^10.12.5",
+    "firebase": "^10.13.0",
     "lodash.kebabcase": "^4.1.1",
     "lottie-web": "^5.12.2",
     "next": "^14.2.5",

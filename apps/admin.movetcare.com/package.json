@@ -18,7 +18,7 @@
     "@headlessui/react": "^1.7.19",
     "@hookform/resolvers": "^3.9.0",
     "@react-google-maps/api": "^2.19.3",
-    "firebase": "^10.12.5",
+    "firebase": "^10.13.0",
     "gray-matter": "^4.0.3",
     "lodash.kebabcase": "^4.1.1",
     "lottie-web": "^5.12.2",

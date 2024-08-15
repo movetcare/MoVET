@@ -94,7 +94,7 @@ const Home = () => {
           invoice.paymentStatus !== "fully-refunded" &&
           invoice.paymentStatus !== "partially-refunded" &&
           invoice.paymentStatus !== "canceled" &&
-          invoice?.totalDue !== undefined
+          invoice.paymentStatus !== null
         )
           unpaidInvoices.push(invoice);
       });

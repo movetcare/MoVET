@@ -299,7 +299,11 @@ const TabsLayout = (props: any) => {
         const invoices: Invoice[] = [];
         querySnapshot.forEach((doc: DocumentData) => {
           if (DEBUG_DATA) console.log("INVOICE DATA => ", doc.data());
-          invoices.push(doc.data());
+          if (
+            doc.data()?.totalDue !== undefined &&
+            doc.data()?.items !== undefined
+          )
+            invoices.push(doc.data());
         });
         if (invoices.length > 0)
           InvoicesStore.update((store: any) => {
