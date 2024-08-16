@@ -41,8 +41,6 @@ jobs:
         id: repo-checkout
         uses: actions/checkout@master
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9.1.7
       - uses: actions/setup-node@master
         with:
           node-version: latest
