@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
-      - uses: pnpm/action-setup@master
+      - uses: pnpm/action-setup@v4
         with:
           version: 9.7.1
       - uses: actions/setup-node@master
