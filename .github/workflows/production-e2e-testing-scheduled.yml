@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@master
       - uses: pnpm/action-setup@master
         with:
-          version: 9.1.4
+          version: 9.7.1
       - uses: actions/setup-node@master
         with:
           node-version: latest

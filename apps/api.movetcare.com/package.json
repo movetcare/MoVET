@@ -48,7 +48,7 @@
     "firebase-admin": "^12.3.1",
     "firebase-functions": "^5.0.1",
     "simple-oauth2": "^5.1.0",
-    "stripe": "^16.7.0",
+    "stripe": "^16.8.0",
     "trello-node-api": "^0.0.9",
     "uuid": "^10.0.0"
   },
