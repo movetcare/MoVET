@@ -67,7 +67,7 @@ export const processConsultationWebhook = async (
                 message: truncateString(
                   "Please leave us a review on the services you received today...",
                 ),
-                path: `/home/leave-a-review?id=${getProVetIdFromUrl(proVetConsultationData?.appointment)}`,
+                path: "/home/",
               },
             });
         })

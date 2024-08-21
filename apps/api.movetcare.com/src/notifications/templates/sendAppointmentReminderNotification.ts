@@ -503,7 +503,7 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
         message: truncateString(
           "Please reach out if you have any questions or need assistance!",
         ),
-        path: `/home/appointment-detail?id=${id}`,
+        path: `/home/`,
       },
     });
 };
@@ -858,7 +858,7 @@ const send30MinAppointmentNotification = async (
           message: truncateString(
             "Please reach out if you have any questions or need assistance!",
           ),
-          path: `/home/appointment-detail?id=${id}`,
+          path: `/home/`,
         },
       });
   }
