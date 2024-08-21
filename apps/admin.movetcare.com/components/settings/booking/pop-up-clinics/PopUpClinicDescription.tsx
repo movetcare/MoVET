@@ -91,6 +91,7 @@ export const PopUpClinicDescription = ({
             : string(),
         ),
         addressInfo: string(),
+        path: string().required("A URL path is required"),
       }),
     ),
     defaultValues: {
@@ -98,10 +99,11 @@ export const PopUpClinicDescription = ({
       description: configuration?.description || "",
       address: configuration?.address || "",
       addressInfo: configuration?.addressInfo || "",
+      path: configuration?.id || "",
     },
   });
 
-  const name = watch("name");
+  const path = watch("path");
   const address = watch("address");
 
   const onSubmit = async (data: any) => {
@@ -109,7 +111,7 @@ export const PopUpClinicDescription = ({
       if (clinic.id === configuration?.id)
         return {
           ...clinic,
-          id: kebabCase(data?.name),
+          id: kebabCase(data?.path),
           name: data.name,
           description: data.description,
           address: data.address.label || configuration?.address || null,
@@ -193,6 +195,18 @@ export const PopUpClinicDescription = ({
             errors={errors}
             control={control}
           />
+        </div>
+        <div className="flex-col justify-center items-center mx-4 w-full mt-4">
+          <span className="sm:mr-2">URL Path</span>
+          <TextInput
+            required
+            name="path"
+            label=""
+            placeholder={`${path}`}
+            type="text"
+            errors={errors}
+            control={control}
+          />
           <p className="text-xs text-movet-black/70 italic mt-2">
             Clinic Booking URL:{" "}
             <b>
@@ -201,14 +215,14 @@ export const PopUpClinicDescription = ({
                   environment === "development"
                     ? "http://localhost:3001"
                     : "https://app.movetcare.com"
-                }/booking/${kebabCase(name)}`}
+                }/booking/${kebabCase(path)}`}
                 target="_blank"
                 className="hover:text-movet-red hover:underline"
               >
                 {environment === "development"
                   ? "http://localhost:3001"
                   : "https://app.movetcare.com"}
-                /booking/{kebabCase(name)}
+                /booking/{kebabCase(path)}
               </a>
             </b>
           </p>

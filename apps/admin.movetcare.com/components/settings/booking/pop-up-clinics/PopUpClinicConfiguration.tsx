@@ -18,7 +18,6 @@ import { PopUpClinicSameDay } from "./PopUpClinicSameDay";
 import { PopUpClinicBuffer } from "./PopUpClinicBuffer";
 import { PopUpClinicMultiPatient } from "./PopUpClinicMultiPatient";
 import { PopUpClinicDescription } from "./PopUpClinicDescription";
-import kebabCase from "lodash.kebabcase";
 import PopUpClinicSchedule from "./PopUpClinicSchedule";
 import type { ClinicConfig } from "types";
 
@@ -251,7 +250,7 @@ export const PopUpClinicConfiguration = ({
                 <p className="text-xs text-movet-black/70 italic mt-1 mb-2">
                   <b>
                     <a
-                      href={`${environment === "development" ? "http://localhost:3001" : "https://app.movetcare.com"}/booking/${kebabCase(name)}`}
+                      href={`${environment === "development" ? "http://localhost:3001" : "https://app.movetcare.com"}/booking/${id}`}
                       target="_blank"
                       className="hover:text-movet-red hover:underline"
                     >
@@ -259,7 +258,7 @@ export const PopUpClinicConfiguration = ({
                         ? "http://localhost:3001"
                         : "https://app.movetcare.com"}
                       /booking/
-                      {kebabCase(name)}
+                      {id}
                     </a>
                   </b>
                 </p>
