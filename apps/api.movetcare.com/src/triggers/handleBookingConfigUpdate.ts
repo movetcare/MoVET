@@ -5,18 +5,16 @@ import {
   request,
   admin,
   throwError,
-  DEBUG,
+  // DEBUG,
 } from "../config/config";
-
+const DEBUG = true;
 type AutomationTypes = "clinic" | "housecall" | "boutique" | "walkins";
 export const handleBookingConfigUpdate = functions.firestore
   .document("configuration/bookings")
-  .onUpdate(async (change: any, context: any) => {
-    const { id } = context.params || {};
+  .onUpdate(async (change: any) => {
     const data = change.after.data();
     if (DEBUG)
       console.log("handleBookingConfigUpdate => DATA", {
-        id,
         data,
       });
     if (data !== undefined) {
@@ -278,8 +276,8 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
         automatedOpenTime.toString().length === 3
           ? `0${automatedOpenTime}`.slice(2)
           : `${automatedOpenTime}`.slice(3)?.length === 1
-          ? `0${automatedOpenTime}`.slice(3)
-          : `${automatedOpenTime}`.slice(3);
+            ? `0${automatedOpenTime}`.slice(3)
+            : `${automatedOpenTime}`.slice(3);
       const closeHours =
         automatedCloseTime.toString().length === 3
           ? `0${automatedCloseTime}`.slice(0, 2)
@@ -288,8 +286,8 @@ const updateHoursStatusAutomationTasks = async (data: any) => {
         automatedCloseTime.toString().length === 3
           ? `0${automatedCloseTime}`.slice(2)
           : `${automatedCloseTime}`.slice(3)?.length === 1
-          ? `0${automatedCloseTime}`.slice(3)
-          : `${automatedCloseTime}`.slice(3);
+            ? `0${automatedCloseTime}`.slice(3)
+            : `${automatedCloseTime}`.slice(3);
 
       const openDate = new Date(
         nextDateMonth +

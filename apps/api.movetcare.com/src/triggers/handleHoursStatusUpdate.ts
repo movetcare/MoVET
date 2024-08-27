@@ -3,12 +3,10 @@ import { DEBUG, environment, functions, request } from "../config/config";
 
 export const handleHoursStatusUpdate = functions.firestore
   .document("configuration/hours_status")
-  .onUpdate(async (change: any, context: any) => {
-    const { id } = context.params || {};
+  .onUpdate(async (change: any) => {
     const data = change.after.data();
     if (DEBUG)
       console.log("handleHoursStatusUpdate => DATA", {
-        id,
         data,
       });
     if (data !== undefined) {
@@ -16,14 +14,14 @@ export const handleHoursStatusUpdate = functions.firestore
         environment.type === "production"
           ? await request
               .post(
-                "https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false"
+                "https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false",
               )
               .then(async (response: any) => {
                 const { data, status } = response;
                 if (DEBUG)
                   console.log(
                     "API Response: POST https://api.vercel.com/v1/integrations/deploy/prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS?buildCache=false =>",
-                    data
+                    data,
                   );
                 return status !== 200 && status !== 201 ? "ERROR" : data;
               })
@@ -33,14 +31,14 @@ export const handleHoursStatusUpdate = functions.firestore
         environment.type === "production"
           ? await request
               .post(
-                "https://api.vercel.com/v1/integrations/deploy/prj_da86e8MG9HWaYYjOhzhDRwznKPtc/Kv7tDyrjjO?buildCache=false"
+                "https://api.vercel.com/v1/integrations/deploy/prj_da86e8MG9HWaYYjOhzhDRwznKPtc/Kv7tDyrjjO?buildCache=false",
               )
               .then(async (response: any) => {
                 const { data, status } = response;
                 if (DEBUG)
                   console.log(
                     "API Response: POST https://api.vercel.com/v1/integrations/deploy/prj_da86e8MG9HWaYYjOhzhDRwznKPtc/Kv7tDyrjjO?buildCache=false =>",
-                    data
+                    data,
                   );
                 return status !== 200 && status !== 201 ? "ERROR" : data;
               })
@@ -101,5 +99,22 @@ export const handleHoursStatusUpdate = functions.firestore
         },
       });
     }
+    sendNotification({
+      type: "email",
+      payload: {
+        to: ["info@movetcare.com", "alex.rodriguez@movetcare.com"],
+        replyTo: "alex.rodriguez@movetcare.com",
+        subject: `${data?.user ? `(User: #${data?.user}) - ` : ""}HOURS OVERRIDE STATUS UPDATED`,
+        message: `<p><b>CURRENT STATUS:</b></p><p>${
+          (data?.boutiqueStatus ? "Boutique: OPEN" : "Boutique: CLOSED ") +
+          " | " +
+          (data?.clinicStatus ? "Clinic: OPEN " : "Clinic: CLOSED ") +
+          " | " +
+          (data?.walkinsStatus ? "Walk Ins: OPEN " : "Walk Ins: CLOSED ") +
+          " | " +
+          (data?.housecallStatus ? "Housecalls: OPEN " : "Housecalls: CLOSED ")
+        }</p><p><a href="https://admin.movetcare.com/settings/manage-hours/" target="_blank">View Hours Override Settings</a></p>`,
+      },
+    });
     return true;
   });

@@ -9,6 +9,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
   dayOfWeek: number;
   automatedOpenTime: number;
   automatedCloseTime: number;
+  user?: string;
 }) => {
   const { action, type } = options;
   if (DEBUG) {
@@ -27,6 +28,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
             .set(
               {
                 clinicStatus: true,
+                user: options?.user || null,
                 updatedOn: new Date(),
               },
               { merge: true },
@@ -41,6 +43,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
             .set(
               {
                 walkinsStatus: true,
+                user: options?.user || null,
                 updatedOn: new Date(),
               },
               { merge: true },
@@ -55,6 +58,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
             .set(
               {
                 boutiqueStatus: true,
+                user: options?.user || null,
                 updatedOn: new Date(),
               },
               { merge: true },
@@ -69,6 +73,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
             .set(
               {
                 housecallStatus: true,
+                user: options?.user || null,
                 updatedOn: new Date(),
               },
               { merge: true },
@@ -81,9 +86,9 @@ export const processHoursStatusAutomationUpdate = async (options: {
       sendNotification({
         type: "email",
         payload: {
-          to: "info@movetcare.com",
+          to: ["info@movetcare.com", "alex.rodriguez@movetcare.com"],
           replyTo: "alex.rodriguez@movetcare.com",
-          subject: `${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
+          subject: `${options?.user ? `(User: #${options?.user}) - ` : ""}${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
           message:
             '<p>No further action is required. This is just an alert to let you know the hours automation has run successfully.</p><p><a href="https://admin.movetcare.com/settings/manage-hours/" target="_blank">View Hours Automation Settings</a></p>',
         },
@@ -92,7 +97,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
       sendNotification({
         type: "email",
         payload: {
-          to: "info@movetcare.com",
+          to: ["info@movetcare.com", "alex.rodriguez@movetcare.com"],
           replyTo: "alex.rodriguez@movetcare.com",
           subject: `SKIPPED ${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATE`,
           message:
@@ -109,6 +114,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
           .set(
             {
               clinicStatus: false,
+              user: options?.user || null,
               updatedOn: new Date(),
             },
             { merge: true },
@@ -122,6 +128,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
           .set(
             {
               walkinsStatus: false,
+              user: options?.user || null,
               updatedOn: new Date(),
             },
             { merge: true },
@@ -135,6 +142,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
           .set(
             {
               boutiqueStatus: false,
+              user: options?.user || null,
               updatedOn: new Date(),
             },
             { merge: true },
@@ -148,6 +156,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
           .set(
             {
               housecallStatus: false,
+              user: options?.user || null,
               updatedOn: new Date(),
             },
             { merge: true },
@@ -159,9 +168,9 @@ export const processHoursStatusAutomationUpdate = async (options: {
     sendNotification({
       type: "email",
       payload: {
-        to: "info@movetcare.com",
+        to: ["info@movetcare.com", "alex.rodriguez@movetcare.com"],
         replyTo: "alex.rodriguez@movetcare.com",
-        subject: `${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
+        subject: `${options?.user ? `(User: #${options?.user}) - ` : ""}${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
         message:
           '<p>No further action is required. This is just an alert to let you know the hours automation has run successfully.</p><p><a href="https://admin.movetcare.com/settings/manage-hours/" target="_blank">View Hours Automation Settings</a></p>',
       },
@@ -193,6 +202,14 @@ export const processHoursStatusAutomationUpdate = async (options: {
             {
               type: "plain_text",
               text: action,
+            },
+            {
+              type: "mrkdwn",
+              text: "*USER:*",
+            },
+            {
+              type: "plain_text",
+              text: options?.user || "None",
             },
           ],
         },

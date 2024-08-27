@@ -12,7 +12,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Divider } from "components/Divider";
 import { onSnapshot, doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { firestore } from "services/firebase";
 import { Button, Hours, Loader } from "ui";
 import Error from "../../Error";
@@ -20,8 +20,10 @@ import { Switch, Transition } from "@headlessui/react";
 import { classNames } from "utilities";
 import toast from "react-hot-toast";
 import { PatternFormat } from "react-number-format";
+import { UserContext } from "contexts/UserContext";
 
 export const HoursStatus = () => {
+  const { user }: any = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingStatus, setIsLoadingStatus] = useState(true);
   const [error, setError] = useState<any>(null);
@@ -259,6 +261,10 @@ export const HoursStatus = () => {
     useState<boolean>(false);
   const [didTouchWalkInsAutomationStatus, setDidTouchWalkInsAutomationStatus] =
     useState<boolean>(false);
+  const [lastUpdatedBy, setLastUpdatedBy] = useState<string | null>(null);
+  const [lastAutomationUpdatedBy, setLastAutomationUpdatedBy] = useState<
+    string | null
+  >(null);
   const [
     didTouchHousecallAutomationStatus,
     setDidTouchHousecallAutomationStatus,
@@ -297,6 +303,7 @@ export const HoursStatus = () => {
         setClinicStatus(doc.data()?.clinicStatus || false);
         setHousecallStatus(doc.data()?.housecallStatus || false);
         setWalkinsStatus(doc.data()?.walkinsStatus || false);
+        setLastUpdatedBy(doc.data()?.user || null);
         setIsLoadingStatus(false);
       },
       (error: any) => {
@@ -309,6 +316,7 @@ export const HoursStatus = () => {
       (doc: any) => {
         const formatTime = (time: string) =>
           time?.toString()?.length === 3 ? `0${time}` : `${time}`;
+        setLastAutomationUpdatedBy(doc.data()?.user || null);
         setIsOpenClinicMonday(
           doc.data()?.isOpenMondayClinicAutomation || false,
         );
@@ -594,6 +602,7 @@ export const HoursStatus = () => {
         clinicStatus,
         housecallStatus,
         walkinsStatus,
+        user: user?.displayName || user?.email || null,
         updatedOn: serverTimestamp(),
       },
       { merge: true },
@@ -634,6 +643,7 @@ export const HoursStatus = () => {
     await setDoc(
       doc(firestore, "configuration/bookings"),
       {
+        user: user?.displayName || user?.email || null,
         boutiqueStatus,
         clinicStatus,
         housecallStatus,
@@ -882,6 +892,11 @@ export const HoursStatus = () => {
             />
             OPEN / CLOSED Hours Overrides
           </h3>
+          {lastUpdatedBy && (
+            <p className="text-xs mb-2 text-center italic">
+              Last Changed By: {lastUpdatedBy}
+            </p>
+          )}
           <div className="flex flex-row justify-center items-center mb-8">
             <div className="flex flex-col w-full mx-auto justify-center items-center">
               <FontAwesomeIcon
@@ -1071,6 +1086,11 @@ export const HoursStatus = () => {
             *Be sure to update the &quot;HOURS OF OPERATION DISPLAY&quot;
             section below if you change any of these fields!
           </p>
+          {lastAutomationUpdatedBy && (
+            <p className="text-xs mb-2 text-center italic">
+              Last Changed By: {lastAutomationUpdatedBy}
+            </p>
+          )}
           <div className="flex flex-row justify-center items-center mb-8">
             <div className="flex flex-col w-full mx-auto justify-center items-center">
               <FontAwesomeIcon
@@ -1311,12 +1331,12 @@ export const HoursStatus = () => {
                       editAutomationSchedule === "clinic"
                         ? isOpenMondayClinicAutomation
                         : editAutomationSchedule === "boutique"
-                        ? isOpenMondayBoutiqueAutomation
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenMondayWalkInAutomation
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenMondayHousecallAutomation
-                        : false
+                          ? isOpenMondayBoutiqueAutomation
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenMondayWalkInAutomation
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenMondayHousecallAutomation
+                              : false
                     }
                     onChange={() => {
                       switch (editAutomationSchedule) {
@@ -1347,18 +1367,18 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : editAutomationSchedule === "boutique"
-                        ? isOpenMondayBoutiqueAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenMondayWalkInAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenMondayHousecallAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : "",
+                          ? isOpenMondayBoutiqueAutomation
+                            ? "bg-movet-green"
+                            : "bg-movet-red"
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenMondayWalkInAutomation
+                              ? "bg-movet-green"
+                              : "bg-movet-red"
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenMondayHousecallAutomation
+                                ? "bg-movet-green"
+                                : "bg-movet-red"
+                              : "",
                       "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
@@ -1370,18 +1390,18 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : editAutomationSchedule === "boutique"
-                          ? isOpenMondayBoutiqueAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "walkins"
-                          ? isOpenMondayWalkInAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "housecall"
-                          ? isOpenMondayHousecallAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : "",
+                            ? isOpenMondayBoutiqueAutomation
+                              ? "translate-x-5"
+                              : "translate-x-0"
+                            : editAutomationSchedule === "walkins"
+                              ? isOpenMondayWalkInAutomation
+                                ? "translate-x-5"
+                                : "translate-x-0"
+                              : editAutomationSchedule === "housecall"
+                                ? isOpenMondayHousecallAutomation
+                                  ? "translate-x-5"
+                                  : "translate-x-0"
+                                : "",
                         "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
@@ -1405,12 +1425,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicStartTimeMonday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueStartTimeMonday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInStartTimeMonday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallStartTimeMonday
-                          : null
+                            ? selectedBoutiqueStartTimeMonday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInStartTimeMonday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallStartTimeMonday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -1454,12 +1474,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicEndTimeMonday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueEndTimeMonday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInEndTimeMonday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallEndTimeMonday
-                          : null
+                            ? selectedBoutiqueEndTimeMonday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInEndTimeMonday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallEndTimeMonday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -1496,12 +1516,12 @@ export const HoursStatus = () => {
                       editAutomationSchedule === "clinic"
                         ? isOpenTuesdayClinicAutomation
                         : editAutomationSchedule === "boutique"
-                        ? isOpenTuesdayBoutiqueAutomation
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenTuesdayWalkInAutomation
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenTuesdayHousecallAutomation
-                        : false
+                          ? isOpenTuesdayBoutiqueAutomation
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenTuesdayWalkInAutomation
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenTuesdayHousecallAutomation
+                              : false
                     }
                     onChange={() => {
                       switch (editAutomationSchedule) {
@@ -1536,18 +1556,18 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : editAutomationSchedule === "boutique"
-                        ? isOpenTuesdayBoutiqueAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenTuesdayWalkInAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenTuesdayHousecallAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : "",
+                          ? isOpenTuesdayBoutiqueAutomation
+                            ? "bg-movet-green"
+                            : "bg-movet-red"
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenTuesdayWalkInAutomation
+                              ? "bg-movet-green"
+                              : "bg-movet-red"
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenTuesdayHousecallAutomation
+                                ? "bg-movet-green"
+                                : "bg-movet-red"
+                              : "",
                       "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
@@ -1559,18 +1579,18 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : editAutomationSchedule === "boutique"
-                          ? isOpenTuesdayBoutiqueAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "walkins"
-                          ? isOpenTuesdayWalkInAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "housecall"
-                          ? isOpenTuesdayHousecallAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : "",
+                            ? isOpenTuesdayBoutiqueAutomation
+                              ? "translate-x-5"
+                              : "translate-x-0"
+                            : editAutomationSchedule === "walkins"
+                              ? isOpenTuesdayWalkInAutomation
+                                ? "translate-x-5"
+                                : "translate-x-0"
+                              : editAutomationSchedule === "housecall"
+                                ? isOpenTuesdayHousecallAutomation
+                                  ? "translate-x-5"
+                                  : "translate-x-0"
+                                : "",
                         "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
@@ -1594,12 +1614,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicStartTimeTuesday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueStartTimeTuesday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInStartTimeTuesday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallStartTimeTuesday
-                          : null
+                            ? selectedBoutiqueStartTimeTuesday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInStartTimeTuesday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallStartTimeTuesday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -1643,12 +1663,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicEndTimeTuesday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueEndTimeTuesday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInEndTimeTuesday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallEndTimeTuesday
-                          : null
+                            ? selectedBoutiqueEndTimeTuesday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInEndTimeTuesday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallEndTimeTuesday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -1685,12 +1705,12 @@ export const HoursStatus = () => {
                       editAutomationSchedule === "clinic"
                         ? isOpenWednesdayClinicAutomation
                         : editAutomationSchedule === "boutique"
-                        ? isOpenWednesdayBoutiqueAutomation
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenWednesdayWalkInAutomation
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenWednesdayHousecallAutomation
-                        : false
+                          ? isOpenWednesdayBoutiqueAutomation
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenWednesdayWalkInAutomation
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenWednesdayHousecallAutomation
+                              : false
                     }
                     onChange={() => {
                       switch (editAutomationSchedule) {
@@ -1725,18 +1745,18 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : editAutomationSchedule === "boutique"
-                        ? isOpenWednesdayBoutiqueAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenWednesdayWalkInAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenWednesdayHousecallAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : "",
+                          ? isOpenWednesdayBoutiqueAutomation
+                            ? "bg-movet-green"
+                            : "bg-movet-red"
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenWednesdayWalkInAutomation
+                              ? "bg-movet-green"
+                              : "bg-movet-red"
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenWednesdayHousecallAutomation
+                                ? "bg-movet-green"
+                                : "bg-movet-red"
+                              : "",
                       "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
@@ -1748,18 +1768,18 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : editAutomationSchedule === "boutique"
-                          ? isOpenWednesdayBoutiqueAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "walkins"
-                          ? isOpenWednesdayWalkInAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "housecall"
-                          ? isOpenWednesdayHousecallAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : "",
+                            ? isOpenWednesdayBoutiqueAutomation
+                              ? "translate-x-5"
+                              : "translate-x-0"
+                            : editAutomationSchedule === "walkins"
+                              ? isOpenWednesdayWalkInAutomation
+                                ? "translate-x-5"
+                                : "translate-x-0"
+                              : editAutomationSchedule === "housecall"
+                                ? isOpenWednesdayHousecallAutomation
+                                  ? "translate-x-5"
+                                  : "translate-x-0"
+                                : "",
                         "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
@@ -1783,12 +1803,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicStartTimeWednesday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueStartTimeWednesday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInStartTimeWednesday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallStartTimeWednesday
-                          : null
+                            ? selectedBoutiqueStartTimeWednesday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInStartTimeWednesday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallStartTimeWednesday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -1834,12 +1854,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicEndTimeWednesday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueEndTimeWednesday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInEndTimeWednesday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallEndTimeWednesday
-                          : null
+                            ? selectedBoutiqueEndTimeWednesday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInEndTimeWednesday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallEndTimeWednesday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -1876,12 +1896,12 @@ export const HoursStatus = () => {
                       editAutomationSchedule === "clinic"
                         ? isOpenThursdayClinicAutomation
                         : editAutomationSchedule === "boutique"
-                        ? isOpenThursdayBoutiqueAutomation
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenThursdayWalkInAutomation
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenThursdayHousecallAutomation
-                        : false
+                          ? isOpenThursdayBoutiqueAutomation
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenThursdayWalkInAutomation
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenThursdayHousecallAutomation
+                              : false
                     }
                     onChange={() => {
                       switch (editAutomationSchedule) {
@@ -1916,18 +1936,18 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : editAutomationSchedule === "boutique"
-                        ? isOpenThursdayBoutiqueAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenThursdayWalkInAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenThursdayHousecallAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : "",
+                          ? isOpenThursdayBoutiqueAutomation
+                            ? "bg-movet-green"
+                            : "bg-movet-red"
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenThursdayWalkInAutomation
+                              ? "bg-movet-green"
+                              : "bg-movet-red"
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenThursdayHousecallAutomation
+                                ? "bg-movet-green"
+                                : "bg-movet-red"
+                              : "",
                       "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
@@ -1939,18 +1959,18 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : editAutomationSchedule === "boutique"
-                          ? isOpenThursdayBoutiqueAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "walkins"
-                          ? isOpenThursdayWalkInAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "housecall"
-                          ? isOpenThursdayHousecallAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : "",
+                            ? isOpenThursdayBoutiqueAutomation
+                              ? "translate-x-5"
+                              : "translate-x-0"
+                            : editAutomationSchedule === "walkins"
+                              ? isOpenThursdayWalkInAutomation
+                                ? "translate-x-5"
+                                : "translate-x-0"
+                              : editAutomationSchedule === "housecall"
+                                ? isOpenThursdayHousecallAutomation
+                                  ? "translate-x-5"
+                                  : "translate-x-0"
+                                : "",
                         "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
@@ -1974,12 +1994,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicStartTimeThursday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueStartTimeThursday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInStartTimeThursday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallStartTimeThursday
-                          : null
+                            ? selectedBoutiqueStartTimeThursday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInStartTimeThursday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallStartTimeThursday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -2023,12 +2043,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicEndTimeThursday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueEndTimeThursday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInEndTimeThursday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallEndTimeThursday
-                          : null
+                            ? selectedBoutiqueEndTimeThursday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInEndTimeThursday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallEndTimeThursday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -2065,12 +2085,12 @@ export const HoursStatus = () => {
                       editAutomationSchedule === "clinic"
                         ? isOpenFridayClinicAutomation
                         : editAutomationSchedule === "boutique"
-                        ? isOpenFridayBoutiqueAutomation
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenFridayWalkInAutomation
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenFridayHousecallAutomation
-                        : false
+                          ? isOpenFridayBoutiqueAutomation
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenFridayWalkInAutomation
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenFridayHousecallAutomation
+                              : false
                     }
                     onChange={() => {
                       switch (editAutomationSchedule) {
@@ -2101,18 +2121,18 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : editAutomationSchedule === "boutique"
-                        ? isOpenFridayBoutiqueAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenFridayWalkInAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenFridayHousecallAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : "",
+                          ? isOpenFridayBoutiqueAutomation
+                            ? "bg-movet-green"
+                            : "bg-movet-red"
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenFridayWalkInAutomation
+                              ? "bg-movet-green"
+                              : "bg-movet-red"
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenFridayHousecallAutomation
+                                ? "bg-movet-green"
+                                : "bg-movet-red"
+                              : "",
                       "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
@@ -2124,18 +2144,18 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : editAutomationSchedule === "boutique"
-                          ? isOpenFridayBoutiqueAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "walkins"
-                          ? isOpenFridayWalkInAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "housecall"
-                          ? isOpenFridayHousecallAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : "",
+                            ? isOpenFridayBoutiqueAutomation
+                              ? "translate-x-5"
+                              : "translate-x-0"
+                            : editAutomationSchedule === "walkins"
+                              ? isOpenFridayWalkInAutomation
+                                ? "translate-x-5"
+                                : "translate-x-0"
+                              : editAutomationSchedule === "housecall"
+                                ? isOpenFridayHousecallAutomation
+                                  ? "translate-x-5"
+                                  : "translate-x-0"
+                                : "",
                         "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
@@ -2159,12 +2179,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicStartTimeFriday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueStartTimeFriday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInStartTimeFriday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallStartTimeFriday
-                          : null
+                            ? selectedBoutiqueStartTimeFriday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInStartTimeFriday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallStartTimeFriday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -2208,12 +2228,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicEndTimeFriday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueEndTimeFriday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInEndTimeFriday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallEndTimeFriday
-                          : null
+                            ? selectedBoutiqueEndTimeFriday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInEndTimeFriday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallEndTimeFriday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -2250,12 +2270,12 @@ export const HoursStatus = () => {
                       editAutomationSchedule === "clinic"
                         ? isOpenSaturdayClinicAutomation
                         : editAutomationSchedule === "boutique"
-                        ? isOpenSaturdayBoutiqueAutomation
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenSaturdayWalkInAutomation
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenSaturdayHousecallAutomation
-                        : false
+                          ? isOpenSaturdayBoutiqueAutomation
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenSaturdayWalkInAutomation
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenSaturdayHousecallAutomation
+                              : false
                     }
                     onChange={() => {
                       switch (editAutomationSchedule) {
@@ -2290,18 +2310,18 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : editAutomationSchedule === "boutique"
-                        ? isOpenSaturdayBoutiqueAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenSaturdayWalkInAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenSaturdayHousecallAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : "",
+                          ? isOpenSaturdayBoutiqueAutomation
+                            ? "bg-movet-green"
+                            : "bg-movet-red"
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenSaturdayWalkInAutomation
+                              ? "bg-movet-green"
+                              : "bg-movet-red"
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenSaturdayHousecallAutomation
+                                ? "bg-movet-green"
+                                : "bg-movet-red"
+                              : "",
                       "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
@@ -2313,18 +2333,18 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : editAutomationSchedule === "boutique"
-                          ? isOpenSaturdayBoutiqueAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "walkins"
-                          ? isOpenSaturdayWalkInAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "housecall"
-                          ? isOpenSaturdayHousecallAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : "",
+                            ? isOpenSaturdayBoutiqueAutomation
+                              ? "translate-x-5"
+                              : "translate-x-0"
+                            : editAutomationSchedule === "walkins"
+                              ? isOpenSaturdayWalkInAutomation
+                                ? "translate-x-5"
+                                : "translate-x-0"
+                              : editAutomationSchedule === "housecall"
+                                ? isOpenSaturdayHousecallAutomation
+                                  ? "translate-x-5"
+                                  : "translate-x-0"
+                                : "",
                         "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
@@ -2348,12 +2368,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicStartTimeSaturday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueStartTimeSaturday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInStartTimeSaturday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallStartTimeSaturday
-                          : null
+                            ? selectedBoutiqueStartTimeSaturday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInStartTimeSaturday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallStartTimeSaturday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -2397,12 +2417,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicEndTimeSaturday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueEndTimeSaturday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInEndTimeSaturday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallEndTimeSaturday
-                          : null
+                            ? selectedBoutiqueEndTimeSaturday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInEndTimeSaturday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallEndTimeSaturday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -2439,12 +2459,12 @@ export const HoursStatus = () => {
                       editAutomationSchedule === "clinic"
                         ? isOpenSundayClinicAutomation
                         : editAutomationSchedule === "boutique"
-                        ? isOpenSundayBoutiqueAutomation
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenSundayWalkInAutomation
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenSundayHousecallAutomation
-                        : false
+                          ? isOpenSundayBoutiqueAutomation
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenSundayWalkInAutomation
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenSundayHousecallAutomation
+                              : false
                     }
                     onChange={() => {
                       switch (editAutomationSchedule) {
@@ -2475,18 +2495,18 @@ export const HoursStatus = () => {
                           ? "bg-movet-green"
                           : "bg-movet-red"
                         : editAutomationSchedule === "boutique"
-                        ? isOpenSundayBoutiqueAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "walkins"
-                        ? isOpenSundayWalkInAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : editAutomationSchedule === "housecall"
-                        ? isOpenSundayHousecallAutomation
-                          ? "bg-movet-green"
-                          : "bg-movet-red"
-                        : "",
+                          ? isOpenSundayBoutiqueAutomation
+                            ? "bg-movet-green"
+                            : "bg-movet-red"
+                          : editAutomationSchedule === "walkins"
+                            ? isOpenSundayWalkInAutomation
+                              ? "bg-movet-green"
+                              : "bg-movet-red"
+                            : editAutomationSchedule === "housecall"
+                              ? isOpenSundayHousecallAutomation
+                                ? "bg-movet-green"
+                                : "bg-movet-red"
+                              : "",
                       "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200",
                     )}
                   >
@@ -2498,18 +2518,18 @@ export const HoursStatus = () => {
                             ? "translate-x-5"
                             : "translate-x-0"
                           : editAutomationSchedule === "boutique"
-                          ? isOpenSundayBoutiqueAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "walkins"
-                          ? isOpenSundayWalkInAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : editAutomationSchedule === "housecall"
-                          ? isOpenSundayHousecallAutomation
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                          : "",
+                            ? isOpenSundayBoutiqueAutomation
+                              ? "translate-x-5"
+                              : "translate-x-0"
+                            : editAutomationSchedule === "walkins"
+                              ? isOpenSundayWalkInAutomation
+                                ? "translate-x-5"
+                                : "translate-x-0"
+                              : editAutomationSchedule === "housecall"
+                                ? isOpenSundayHousecallAutomation
+                                  ? "translate-x-5"
+                                  : "translate-x-0"
+                                : "",
                         "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
                       )}
                     />
@@ -2533,12 +2553,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicStartTimeSunday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueStartTimeSunday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInStartTimeSunday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallStartTimeSunday
-                          : null
+                            ? selectedBoutiqueStartTimeSunday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInStartTimeSunday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallStartTimeSunday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
@@ -2582,12 +2602,12 @@ export const HoursStatus = () => {
                         editAutomationSchedule === "clinic"
                           ? selectedClinicEndTimeSunday
                           : editAutomationSchedule === "boutique"
-                          ? selectedBoutiqueEndTimeSunday
-                          : editAutomationSchedule === "walkins"
-                          ? selectedWalkInEndTimeSunday
-                          : editAutomationSchedule === "housecall"
-                          ? selectedHousecallEndTimeSunday
-                          : null
+                            ? selectedBoutiqueEndTimeSunday
+                            : editAutomationSchedule === "walkins"
+                              ? selectedWalkInEndTimeSunday
+                              : editAutomationSchedule === "housecall"
+                                ? selectedHousecallEndTimeSunday
+                                : null
                       }
                       onBlur={() => setDidEditField(true)}
                       onValueChange={(target: any) => {
