@@ -59,7 +59,7 @@
     "lint-staged": "^15.2.9",
     "prettier": "^3.3.3",
     "start-server-and-test": "^2.0.5",
-    "turbo": "^2.0.14",
+    "turbo": "^2.1.0",
     "typescript": "^5.5.4",
     "typescript-coverage-report": "^1.0.0",
     "x2js": "^3.4.4"
