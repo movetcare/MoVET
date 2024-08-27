@@ -1,4 +1,4 @@
-import { environment, admin } from "../../config/config";
+import { environment, admin, DEBUG } from "../../config/config";
 import type { ClinicBooking } from "../../types/booking";
 import type { EmailConfiguration } from "../../types/email";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
@@ -8,7 +8,7 @@ import {
 } from "../../utils/getClientNotificationSettings";
 import { getYYMMDDFromString } from "../../utils/getYYMMDDFromString";
 import { sendNotification } from "../sendNotification";
-const DEBUG = true;
+
 export const sendClinicBookingRecoveryNotification = async ({
   id,
 }: {

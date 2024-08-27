@@ -217,7 +217,10 @@ export const PetSummary = () => {
                                             ?.join(",")
                                         : appointment?.locationType === "Clinic"
                                           ? "MoVET @ Belleview Station"
-                                          : "Virtually - In App"}
+                                          : appointment?.locationType ===
+                                              "Virtually"
+                                            ? "Virtually - In App"
+                                            : "MoVET @ Belleview Station"}
                                     </ItalicText>
                                   </View>
                                 </View>

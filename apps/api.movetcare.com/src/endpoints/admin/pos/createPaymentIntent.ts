@@ -6,11 +6,11 @@ import {
   stripe,
   admin,
   request,
-  //DEBUG,
+  DEBUG,
 } from "../../../config/config";
 import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 import { getCustomerId } from "../../../utils/getCustomerId";
-const DEBUG = true;
+
 export const createPaymentIntent = functions
   .runWith(defaultRuntimeOptions)
   .https.onCall(
@@ -159,7 +159,7 @@ export const createPaymentIntent = functions
             if (paymentMethod) {
               paymentIntentConfig.payment_method = paymentMethod;
               paymentIntentConfig.capture_method = "automatic";
-              paymentIntentConfig.payment_method_types = ["card"];
+              paymentIntentConfig.payment_method_types = ["card", "link"];
               paymentIntentConfig.confirm = true;
               paymentIntentConfig.return_url =
                 "https://movetcare.com/checkout/success";

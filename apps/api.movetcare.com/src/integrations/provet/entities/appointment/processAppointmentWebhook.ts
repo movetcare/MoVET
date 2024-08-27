@@ -27,9 +27,52 @@ export const processAppointmentWebhook = async (
         .collection("appointments")
         .doc(`${request.body?.appointment_id}`)
         .get()
-        .then((doc: any) => {
+        .then(async (doc: any) => {
           if (doc.exists) return doc.data();
-          else return "NEW APPOINTMENT - No Previous Data";
+          else {
+            const clientId = getProVetIdFromUrl(proVetAppointmentData?.client);
+            if (clientId) {
+              await admin
+                .firestore()
+                .collection("bookings")
+                .where("client.uid", "==", `${clientId}`)
+                .where("isActive", "==", true)
+                .get()
+                .then(async (snapshot: any) => {
+                  if (snapshot.size > 0) {
+                    snapshot.forEach(async (doc: any) => {
+                      await admin
+                        .firestore()
+                        .collection("bookings")
+                        .doc(doc.id)
+                        .update({ isActive: false })
+                        .catch((error: any) => throwError(error));
+                    });
+                  }
+                })
+                .catch((error: any) => throwError(error));
+              await admin
+                .firestore()
+                .collection("clinic_bookings")
+                .where("client.uid", "==", `${clientId}`)
+                .where("isActive", "==", true)
+                .get()
+                .then(async (snapshot: any) => {
+                  if (snapshot.size > 0) {
+                    snapshot.forEach(async (doc: any) => {
+                      await admin
+                        .firestore()
+                        .collection("clinic_bookings")
+                        .doc(doc.id)
+                        .update({ isActive: false })
+                        .catch((error: any) => throwError(error));
+                    });
+                  }
+                })
+                .catch((error: any) => throwError(error));
+            }
+            return "NEW APPOINTMENT - No Previous Data";
+          }
         })) || {};
 
     if (proVetAppointmentData) await saveAppointment(proVetAppointmentData);

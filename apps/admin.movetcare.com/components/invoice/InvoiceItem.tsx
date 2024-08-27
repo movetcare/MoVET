@@ -228,10 +228,14 @@ const InvoiceItemHeader = ({
                           className="hidden md:flex flex-row items-center text-sm mx-4 hover:text-movet-red w-full"
                         >
                           <FontAwesomeIcon icon={faCreditCard} />
-                          <span className="text-sm ml-2">
-                            {paymentMethod.data()?.card?.brand.toUpperCase()} -{" "}
-                            {paymentMethod.data()?.card?.last4}
-                          </span>
+                          {paymentMethod.data()?.type === "link" ? (
+                            <span className="text-sm ml-2">LINK</span>
+                          ) : (
+                            <span className="text-sm ml-2">
+                              {paymentMethod.data()?.card?.brand.toUpperCase()}{" "}
+                              - {paymentMethod.data()?.card?.last4}
+                            </span>
+                          )}
                         </a>
                       </>
                     ),
@@ -514,13 +518,13 @@ const InvoiceDetails = ({
                       {invoice?.paymentIntentObject?.charges?.data[0]
                         ?.payment_method_details?.card_present
                         ? invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card_present?.brand.toUpperCase()
-                        : invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card.brand.toUpperCase()}{" "}
+                        : invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card?.brand.toUpperCase()}{" "}
                       -{" "}
                       {invoice?.paymentIntentObject?.charges?.data[0]
                         ?.payment_method_details?.card_present
                         ? invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card_present?.last4.toUpperCase()
                         : invoice?.paymentIntentObject?.charges?.data[0]
-                            ?.payment_method_details?.card.last4}
+                            ?.payment_method_details?.card?.last4}
                       ?
                     </Dialog.Title>
                     <div className="mt-2">
@@ -784,7 +788,7 @@ const InvoiceDetails = ({
                                                   ?.payment_method_details
                                                   ?.card_present
                                                   ? invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card_present?.brand.toUpperCase()
-                                                  : invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card.brand.toUpperCase()}{" "}
+                                                  : invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card?.brand.toUpperCase()}{" "}
                                                 -{" "}
                                                 {invoice?.paymentIntentObject
                                                   ?.charges?.data[0]
@@ -794,7 +798,7 @@ const InvoiceDetails = ({
                                                   : invoice?.paymentIntentObject
                                                       ?.charges?.data[0]
                                                       ?.payment_method_details
-                                                      ?.card.last4}
+                                                      ?.card?.last4}
                                               </span>
                                             ) : (
                                               <span className="text-xs font-bold mr-2">
@@ -1072,14 +1076,16 @@ const InvoiceDetails = ({
                                       type="button"
                                       onClick={async () => {
                                         setIsLoading(true);
-                                        setLoadingMessage(`Charging $${invoice?.client_due_sum?.toFixed(
-                                          2,
-                                        )} to ${paymentMethod
-                                          .data()
-                                          ?.card?.brand.toUpperCase()}
-                                        - ${
-                                          paymentMethod.data()?.card?.last4
-                                        }`);
+                                        setLoadingMessage(
+                                          paymentMethod.data()?.type === "link"
+                                            ? "Charging LINK via Stripe"
+                                            : `Charging $${invoice?.client_due_sum?.toFixed(
+                                                2,
+                                              )} to ${paymentMethod
+                                                .data()
+                                                ?.card?.brand.toUpperCase()}
+                                        - ${paymentMethod.data()?.card?.last4}`,
+                                        );
                                         const createPaymentIntent =
                                           httpsCallable(
                                             functions,
@@ -1180,11 +1186,21 @@ const InvoiceDetails = ({
                                           />
                                           <span className="ml-2">
                                             Pay w/{" "}
-                                            {paymentMethod
-                                              .data()
-                                              ?.card?.brand.toUpperCase()}{" "}
-                                            -{" "}
-                                            {paymentMethod.data()?.card?.last4}
+                                            {paymentMethod.data()?.type ===
+                                            "link" ? (
+                                              "LINK"
+                                            ) : (
+                                              <>
+                                                {paymentMethod
+                                                  .data()
+                                                  ?.card?.brand.toUpperCase()}{" "}
+                                                -{" "}
+                                                {
+                                                  paymentMethod.data()?.card
+                                                    ?.last4
+                                                }
+                                              </>
+                                            )}
                                           </span>
                                         </div>
                                         <span className="text-xs italic mt-2">
@@ -1274,7 +1290,7 @@ const InvoiceDetails = ({
                                                   ?.payment_method_details
                                                   ?.card_present
                                                   ? invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card_present?.brand.toUpperCase()
-                                                  : invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card.brand.toUpperCase()}{" "}
+                                                  : invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card?.brand.toUpperCase()}{" "}
                                                 -{" "}
                                                 {invoice?.paymentIntentObject
                                                   ?.charges?.data[0]
@@ -1284,7 +1300,7 @@ const InvoiceDetails = ({
                                                   : invoice?.paymentIntentObject
                                                       ?.charges?.data[0]
                                                       ?.payment_method_details
-                                                      ?.card.last4}
+                                                      ?.card?.last4}
                                               </span>
                                             </>
                                           ) : item.data()?.payment_type ===
@@ -1411,7 +1427,7 @@ const InvoiceDetails = ({
                                         ?.data[0]?.payment_method_details
                                         ?.card_present
                                         ? invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card_present?.brand.toUpperCase()
-                                        : invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card.brand.toUpperCase()}{" "}
+                                        : invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card?.brand.toUpperCase()}{" "}
                                       -{" "}
                                       {invoice?.paymentIntentObject?.charges
                                         ?.data[0]?.payment_method_details
@@ -1419,7 +1435,7 @@ const InvoiceDetails = ({
                                         ? invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card_present?.last4.toUpperCase()
                                         : invoice?.paymentIntentObject?.charges
                                             ?.data[0]?.payment_method_details
-                                            ?.card.last4}
+                                            ?.card?.last4}
                                       )
                                     </span>
                                   </button>
@@ -1468,7 +1484,7 @@ const InvoiceDetails = ({
                                             ?.data[0]?.payment_method_details
                                             ?.card_present
                                             ? invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card_present?.brand.toUpperCase()
-                                            : invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card.brand.toUpperCase()}{" "}
+                                            : invoice?.paymentIntentObject?.charges?.data[0]?.payment_method_details?.card?.brand.toUpperCase()}{" "}
                                           -{" "}
                                           {invoice?.paymentIntentObject?.charges
                                             ?.data[0]?.payment_method_details

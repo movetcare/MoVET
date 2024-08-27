@@ -90,7 +90,8 @@ const InvoiceDetail = () => {
               >
                 <SubHeadingText>
                   {invoice?.totalDue < 0 ? "Total Refunded" : "Total Paid"}
-                  {invoice?.payments[0]?.paymentMethod
+                  {invoice?.payments[0]?.paymentMethod &&
+                  !invoice?.payments[0]?.paymentMethod.includes("UNKNOWN")
                     ? ` w/ ${invoice?.payments[0]?.paymentMethod}`
                     : paymentMethod
                       ? " to " + paymentMethod

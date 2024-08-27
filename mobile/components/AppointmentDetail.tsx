@@ -677,7 +677,10 @@ export const AppointmentDetail = () => {
                  <SubHeadingText>
                    {invoice?.totalDue < 0
                      ? "Total Refunded"
-                     : invoice?.payments[0]?.paymentMethod
+                     : invoice?.payments[0]?.paymentMethod &&
+                         !invoice?.payments[0]?.paymentMethod.includes(
+                           "UNKNOWN",
+                         )
                        ? `Total Paid w/ ${invoice?.payments[0]?.paymentMethod}`
                        : invoice?.totalDue > 0
                          ? "TOTAL DUE"

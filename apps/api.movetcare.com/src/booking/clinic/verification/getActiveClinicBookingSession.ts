@@ -1,9 +1,9 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-import { admin, throwError } from "../../../config/config";
+import { admin, throwError, DEBUG } from "../../../config/config";
 import type { ClinicBooking } from "../../../types/booking";
 import { startNewClinicBooking } from "../session/startNewClinicBooking";
 import { enforceOnlyOneActiveClinicBooking } from "./enforceOnlyOneActiveClinicBooking";
-const DEBUG = true;
+
 export const getActiveClinicBookingSession = async (
   clinic: ClinicBooking["clinic"],
   user: UserRecord,

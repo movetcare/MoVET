@@ -334,7 +334,8 @@ const InvoiceDetail = () => {
                     style={tw`${paymentComplete ? "text-base" : "text-lg"}`}
                   >
                     {paymentComplete
-                      ? invoice?.payments[0]?.paymentMethod
+                      ? invoice?.payments[0]?.paymentMethod &&
+                        !invoice?.payments[0]?.paymentMethod.includes("UNKNOWN")
                         ? `Total Paid w/ ${invoice?.payments[0]?.paymentMethod}`
                         : "Total Paid"
                       : "TOTAL DUE"}
@@ -465,15 +466,26 @@ const InvoiceDetail = () => {
                                 >
                                   Pay with
                                 </SubHeadingText>
-                                <ItalicText
-                                  style={[
-                                    isTablet ? tw`text-2xl` : tw`text-xl`,
-                                    tw`ml-0.5`,
-                                  ]}
-                                >
-                                  {paymentMethod.brand?.toUpperCase()} -{" "}
-                                  {paymentMethod.last4}
-                                </ItalicText>
+                                {paymentMethod?.type === "link" ? (
+                                  <ItalicText
+                                    style={[
+                                      isTablet ? tw`text-2xl` : tw`text-xl`,
+                                      tw`ml-2`,
+                                    ]}
+                                  >
+                                    LINK
+                                  </ItalicText>
+                                ) : (
+                                  <ItalicText
+                                    style={[
+                                      isTablet ? tw`text-2xl` : tw`text-xl`,
+                                      tw`ml-0.5`,
+                                    ]}
+                                  >
+                                    {paymentMethod.brand?.toUpperCase()} -{" "}
+                                    {paymentMethod.last4}
+                                  </ItalicText>
+                                )}
                               </Container>
                             </Container>
                           </View>

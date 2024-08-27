@@ -55,7 +55,7 @@ export const processDateTime = async (
     let validFormOfPayment = null,
       checkoutSession = null;
     if (DEBUG) console.log("customer", customer);
-    if (paymentMethodIsRequired) {
+    if (paymentMethodIsRequired || session.location === "Home") {
       validFormOfPayment = await verifyValidPaymentSource(
         session?.client?.uid,
         customer,
@@ -64,7 +64,7 @@ export const processDateTime = async (
       checkoutSession =
         validFormOfPayment === false
           ? await stripe.checkout.sessions.create({
-              payment_method_types: ["card"],
+              payment_method_types: ["card", "link"],
               mode: "setup",
               customer,
               client_reference_id: session?.client?.uid,

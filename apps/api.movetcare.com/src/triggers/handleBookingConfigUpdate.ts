@@ -5,9 +5,9 @@ import {
   request,
   admin,
   throwError,
-  // DEBUG,
+  DEBUG,
 } from "../config/config";
-const DEBUG = true;
+
 type AutomationTypes = "clinic" | "housecall" | "boutique" | "walkins";
 export const handleBookingConfigUpdate = functions.firestore
   .document("configuration/bookings")

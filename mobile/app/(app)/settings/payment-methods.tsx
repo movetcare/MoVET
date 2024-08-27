@@ -16,7 +16,7 @@ import {
   HeadingText,
 } from "components/themed";
 import Constants from "expo-constants";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { firestore, functions } from "firebase-config";
 import {
   onSnapshot,
@@ -283,25 +283,42 @@ const PaymentMethods = () => {
                           size={isTablet ? "md" : "sm"}
                         />
                       </Container>
-                      <Container style={tw`flex-shrink flex-row items-center`}>
-                        <ItalicText
-                          style={[
-                            isTablet ? tw`text-2xl` : tw`text-xl`,
-                            tw`ml-2`,
-                          ]}
+                      {paymentMethod?.type === "link" ? (
+                        <Container
+                          style={tw`flex-shrink flex-row items-center`}
                         >
-                          {paymentMethod.brand?.toUpperCase()} -{" "}
-                          {paymentMethod.last4}
-                        </ItalicText>
-                        <BodyText
-                          style={[
-                            tw`ml-2`,
-                            isTablet ? tw`text-base` : tw`text-xs`,
-                          ]}
+                          <ItalicText
+                            style={[
+                              isTablet ? tw`text-2xl` : tw`text-xl`,
+                              tw`ml-2`,
+                            ]}
+                          >
+                            LINK
+                          </ItalicText>
+                        </Container>
+                      ) : (
+                        <Container
+                          style={tw`flex-shrink flex-row items-center`}
                         >
-                          {paymentMethod.expMonth}/{paymentMethod.expYear}
-                        </BodyText>
-                      </Container>
+                          <ItalicText
+                            style={[
+                              isTablet ? tw`text-2xl` : tw`text-xl`,
+                              tw`ml-2`,
+                            ]}
+                          >
+                            {paymentMethod.brand?.toUpperCase()} -{" "}
+                            {paymentMethod.last4}
+                          </ItalicText>
+                          <BodyText
+                            style={[
+                              tw`ml-2`,
+                              isTablet ? tw`text-base` : tw`text-xs`,
+                            ]}
+                          >
+                            {paymentMethod.expMonth}/{paymentMethod.expYear}
+                          </BodyText>
+                        </Container>
+                      )}
                     </Container>
                   </View>
                 ),

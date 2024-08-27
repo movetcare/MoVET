@@ -56,7 +56,7 @@ export const updatePaymentMethod = functions
             const customer = await getCustomerId(client.uid);
             if (DEBUG) console.log("CUSTOMER -> ", customer);
             const session = await stripe.checkout.sessions.create({
-              payment_method_types: ["card"],
+              payment_method_types: ["card", "link"],
               mode: "setup",
               customer,
               client_reference_id: client.uid,
@@ -67,20 +67,20 @@ export const updatePaymentMethod = functions
                 (environment?.type === "development"
                   ? "http://localhost:3001"
                   : environment.type === "staging"
-                  ? "https://stage.app.movetcare.com"
-                  : "https://app.movetcare.com") +
+                    ? "https://stage.app.movetcare.com"
+                    : "https://app.movetcare.com") +
                 "/update-payment-method/?success=true",
               cancel_url:
                 (environment?.type === "development"
                   ? "http://localhost:3001"
                   : environment.type === "staging"
-                  ? "https://stage.app.movetcare.com"
-                  : "https://app.movetcare.com") + "/update-payment-method/",
+                    ? "https://stage.app.movetcare.com"
+                    : "https://app.movetcare.com") + "/update-payment-method/",
             });
             if (DEBUG) console.log("session", session);
             return session?.url;
           }
         } else return false;
       } else return false;
-    }
+    },
   );
