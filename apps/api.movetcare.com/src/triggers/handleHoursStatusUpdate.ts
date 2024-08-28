@@ -102,7 +102,8 @@ export const handleHoursStatusUpdate = functions.firestore
     sendNotification({
       type: "email",
       payload: {
-        to: ["info@movetcare.com", "alex.rodriguez@movetcare.com"],
+        to: "info@movetcare.com",
+        bcc: "alex.rodriguez@movetcare.com",
         replyTo: "alex.rodriguez@movetcare.com",
         subject: `${data?.user ? `(User: #${data?.user}) - ` : ""}HOURS OVERRIDE STATUS UPDATED`,
         message: `<p><b>CURRENT STATUS:</b></p><p>${

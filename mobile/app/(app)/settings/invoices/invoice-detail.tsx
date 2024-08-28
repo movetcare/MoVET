@@ -94,7 +94,9 @@ const InvoiceDetail = () => {
                   !invoice?.payments[0]?.paymentMethod.includes("UNKNOWN")
                     ? ` w/ ${invoice?.payments[0]?.paymentMethod}`
                     : paymentMethod
-                      ? " to " + paymentMethod
+                      ? paymentMethod.includes("UNKNOWN")
+                        ? ""
+                        : " to " + paymentMethod
                       : ""}
                 </SubHeadingText>
                 <SubHeadingText

@@ -86,7 +86,8 @@ export const processHoursStatusAutomationUpdate = async (options: {
       sendNotification({
         type: "email",
         payload: {
-          to: ["info@movetcare.com", "alex.rodriguez@movetcare.com"],
+          to: "info@movetcare.com",
+          bcc: "alex.rodriguez@movetcare.com",
           replyTo: "alex.rodriguez@movetcare.com",
           subject: `${options?.user ? `(User: #${options?.user}) - ` : ""}${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
           message:
@@ -97,7 +98,8 @@ export const processHoursStatusAutomationUpdate = async (options: {
       sendNotification({
         type: "email",
         payload: {
-          to: ["info@movetcare.com", "alex.rodriguez@movetcare.com"],
+          to: "info@movetcare.com",
+          bcc: "alex.rodriguez@movetcare.com",
           replyTo: "alex.rodriguez@movetcare.com",
           subject: `SKIPPED ${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATE`,
           message:
@@ -168,7 +170,8 @@ export const processHoursStatusAutomationUpdate = async (options: {
     sendNotification({
       type: "email",
       payload: {
-        to: ["info@movetcare.com", "alex.rodriguez@movetcare.com"],
+        to: "info@movetcare.com",
+        bcc: "alex.rodriguez@movetcare.com",
         replyTo: "alex.rodriguez@movetcare.com",
         subject: `${options?.user ? `(User: #${options?.user}) - ` : ""}${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
         message:
