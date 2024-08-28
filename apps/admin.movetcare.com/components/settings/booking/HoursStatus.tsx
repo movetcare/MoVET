@@ -265,6 +265,10 @@ export const HoursStatus = () => {
   const [lastAutomationUpdatedBy, setLastAutomationUpdatedBy] = useState<
     string | null
   >(null);
+  const [lastUpdatedOn, setLastUpdatedOn] = useState<string | null>(null);
+  const [lastAutomationUpdatedOn, setLastAutomationUpdatedOn] = useState<
+    string | null
+  >(null);
   const [
     didTouchHousecallAutomationStatus,
     setDidTouchHousecallAutomationStatus,
@@ -304,6 +308,17 @@ export const HoursStatus = () => {
         setHousecallStatus(doc.data()?.housecallStatus || false);
         setWalkinsStatus(doc.data()?.walkinsStatus || false);
         setLastUpdatedBy(doc.data()?.user || null);
+        setLastUpdatedOn(
+          doc.data()?.updatedOn?.toDate()?.toLocaleString("en-US", {
+            timeZone: "America/Denver",
+            month: "numeric",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          }),
+        );
         setIsLoadingStatus(false);
       },
       (error: any) => {
@@ -317,6 +332,17 @@ export const HoursStatus = () => {
         const formatTime = (time: string) =>
           time?.toString()?.length === 3 ? `0${time}` : `${time}`;
         setLastAutomationUpdatedBy(doc.data()?.user || null);
+        setLastAutomationUpdatedOn(
+          doc.data()?.updatedOn?.toDate()?.toLocaleString("en-US", {
+            timeZone: "America/Denver",
+            month: "numeric",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          }),
+        );
         setIsOpenClinicMonday(
           doc.data()?.isOpenMondayClinicAutomation || false,
         );
@@ -897,6 +923,9 @@ export const HoursStatus = () => {
               Last Changed By: {lastUpdatedBy}
             </p>
           )}
+          {lastUpdatedOn && (
+            <p className="text-xs mb-2 text-center italic">{lastUpdatedOn}</p>
+          )}
           <div className="flex flex-row justify-center items-center mb-8">
             <div className="flex flex-col w-full mx-auto justify-center items-center">
               <FontAwesomeIcon
@@ -1089,6 +1118,11 @@ export const HoursStatus = () => {
           {lastAutomationUpdatedBy && (
             <p className="text-xs mb-2 text-center italic">
               Last Changed By: {lastAutomationUpdatedBy}
+            </p>
+          )}
+          {lastAutomationUpdatedOn && (
+            <p className="text-xs mb-2 text-center italic">
+              Last Automation Run/Edit: {lastAutomationUpdatedOn}
             </p>
           )}
           <div className="flex flex-row justify-center items-center mb-8">
