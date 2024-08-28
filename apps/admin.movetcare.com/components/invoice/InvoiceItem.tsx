@@ -1493,7 +1493,7 @@ const InvoiceDetails = ({
                                             : invoice?.paymentIntentObject
                                                 ?.charges?.data[0]
                                                 ?.payment_method_details?.card
-                                                .last4}
+                                                ?.last4}
                                         </span>
                                       )}
                                     </a>

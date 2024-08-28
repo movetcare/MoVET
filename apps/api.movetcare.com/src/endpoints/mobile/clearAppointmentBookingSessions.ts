@@ -18,7 +18,7 @@ export const clearAppointmentBookingSessions = functions
     }
     if (!context.auth) return throwError({ message: "MISSING AUTHENTICATION" });
     else {
-      console.log("CONTEXT UID => ", context.auth.uid);
+      if (DEBUG) console.log("CONTEXT UID => ", context.auth.uid);
       return await admin
         .firestore()
         .collection("bookings")
