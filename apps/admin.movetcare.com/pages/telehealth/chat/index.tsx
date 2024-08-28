@@ -299,16 +299,7 @@ const ChatSession = () => {
                     <>
                       <span className="hidden sm:flex sm:flex-row items-center text-xs mt-1 italic ">
                         Asked:&nbsp;
-                        {session?.data()?.createdAt?.toDate()?.toString() ? (
-                          <time
-                            dateTime={session
-                              ?.data()
-                              ?.createdAt?.toDate()
-                              ?.toString()}
-                          >
-                            {timeSince(session?.data()?.createdAt?.toDate())}
-                          </time>
-                        ) : (
+                        {session?.data()?.createdOn?.toDate()?.toString() ? (
                           <time
                             dateTime={session
                               ?.data()
@@ -316,6 +307,15 @@ const ChatSession = () => {
                               ?.toString()}
                           >
                             {timeSince(session?.data()?.createdOn?.toDate())}
+                          </time>
+                        ) : (
+                          <time
+                            dateTime={session
+                              ?.data()
+                              ?.updatedOn?.toDate()
+                              ?.toString()}
+                          >
+                            {timeSince(session?.data()?.updatedOn?.toDate())}
                           </time>
                         )}
                       </span>

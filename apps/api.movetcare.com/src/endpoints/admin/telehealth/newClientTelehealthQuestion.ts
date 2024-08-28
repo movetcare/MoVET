@@ -101,6 +101,7 @@ export const newClientTelehealthMessage = functions.firestore
                   .get()
                   .then((doc: any) => doc?.data()),
                 updatedOn: new Date(),
+                createdOn: new Date(),
                 lastSlackThread: result?.message?.ts,
                 status: "active",
               },
