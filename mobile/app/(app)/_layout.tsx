@@ -122,8 +122,8 @@ const TabsLayout = (props: any) => {
       query(
         collection(firestore, "appointments"),
         where("client", "==", Number(user.uid)),
-        where("start", ">=", new Date()),
-        orderBy("start", "asc"),
+        where("end", ">=", new Date()),
+        orderBy("end", "asc"),
         limit(100),
       ),
       (querySnapshot: QuerySnapshot) => {

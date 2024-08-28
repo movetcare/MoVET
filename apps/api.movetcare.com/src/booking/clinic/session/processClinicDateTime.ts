@@ -50,7 +50,7 @@ export const processClinicDateTime = async (
       checkoutSession =
         validFormOfPayment === false
           ? await stripe.checkout.sessions.create({
-              payment_method_types: ["card", "link"],
+              payment_method_types: ["card"],
               mode: "setup",
               customer,
               client_reference_id: session?.client?.uid,

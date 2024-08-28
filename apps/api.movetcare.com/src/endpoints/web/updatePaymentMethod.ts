@@ -56,7 +56,7 @@ export const updatePaymentMethod = functions
             const customer = await getCustomerId(client.uid);
             if (DEBUG) console.log("CUSTOMER -> ", customer);
             const session = await stripe.checkout.sessions.create({
-              payment_method_types: ["card", "link"],
+              payment_method_types: ["card"],
               mode: "setup",
               customer,
               client_reference_id: client.uid,

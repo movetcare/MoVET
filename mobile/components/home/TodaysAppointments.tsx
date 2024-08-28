@@ -47,13 +47,14 @@ export const TodaysAppointments = () => {
         )
           todaysAppointments.push(appointment);
       });
+      console.log(todaysAppointments);
       setTodaysAppointments(todaysAppointments);
     }
   }, [upcomingAppointments]);
 
   return todaysAppointments && todaysAppointments.length > 0 ? (
     <>
-      <SubHeadingText style={tw`text-2xl w-full mb-2 text-center mt-4`}>
+      <SubHeadingText style={tw`text-2xl w-full mb-2 text-center`}>
         Today&apos;s Appointment{todaysAppointments.length > 1 && "s"}
       </SubHeadingText>
       {todaysAppointments.map((appointment: Appointment, index: number) => (
@@ -232,12 +233,11 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
                   ? " @ Belleview Station"
                   : ""}
             </SubHeadingText>
-            {appointment?.user?.picture && (
+            {/* {appointment?.user?.picture && (
               <View
                 style={tw`my-4 flex-row items-center justify-center bg-movet-blue`}
                 noDarkMode
               >
-                {/* <BodyText>{appointment?.user?.picture}</BodyText> */}
                 {appointment?.user?.picture ? (
                   <Image
                     source={{
@@ -262,7 +262,7 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
                   />
                 ) : null}
               </View>
-            )}
+            )} */}
             <SubHeadingText style={tw`text-movet-white text-center`} noDarkMode>
               with{" "}
               {appointment?.user?.name
@@ -694,7 +694,7 @@ const InRouteAppointment = ({ appointment }: { appointment: Appointment }) => {
                   ? " @ Belleview Station"
                   : ""}
             </SubHeadingText>
-            {appointment?.user?.picture && (
+            {/* {appointment?.user?.picture && (
               <View
                 style={tw`my-4 flex-row items-center justify-center bg-movet-yellow`}
                 noDarkMode
@@ -723,7 +723,7 @@ const InRouteAppointment = ({ appointment }: { appointment: Appointment }) => {
                   />
                 ) : null}
               </View>
-            )}
+            )} */}
             <SubHeadingText style={tw`text-movet-white text-center`} noDarkMode>
               with{" "}
               {appointment?.user?.name
@@ -1039,7 +1039,7 @@ const InProgressAppointment = ({
                   ? " @ Belleview Station"
                   : ""}
             </SubHeadingText>
-            {appointment?.user?.picture && (
+            {/* {appointment?.user?.picture && (
               <View
                 style={tw`my-4 flex-row items-center justify-center bg-movet-green`}
                 noDarkMode
@@ -1068,7 +1068,7 @@ const InProgressAppointment = ({
                   />
                 ) : null}
               </View>
-            )}
+            )} */}
             <SubHeadingText
               style={tw`text-movet-white text-center mb-2`}
               noDarkMode
@@ -1177,7 +1177,7 @@ const InvoiceReady = ({ appointment }: { appointment: Appointment }) => {
                   ? " @ Belleview Station"
                   : ""}
             </SubHeadingText>
-            {appointment?.user?.picture && (
+            {/* {appointment?.user?.picture && (
               <View
                 style={tw`my-4 flex-row items-center justify-center bg-movet-red`}
                 noDarkMode
@@ -1206,7 +1206,7 @@ const InvoiceReady = ({ appointment }: { appointment: Appointment }) => {
                   />
                 ) : null}
               </View>
-            )}
+            )} */}
             <SubHeadingText
               style={tw`text-movet-white text-center mb-2`}
               noDarkMode
@@ -1336,7 +1336,7 @@ const InvoicePaid = ({ appointment }: { appointment: Appointment }) => {
                   ? " @ Belleview Station"
                   : ""}
             </SubHeadingText>
-            {appointment?.user?.picture && (
+            {/* {appointment?.user?.picture && (
               <View
                 style={tw`my-4 flex-row items-center justify-center bg-movet-black`}
                 noDarkMode
@@ -1365,7 +1365,7 @@ const InvoicePaid = ({ appointment }: { appointment: Appointment }) => {
                   />
                 ) : null}
               </View>
-            )}
+            )} */}
             <SubHeadingText
               style={tw`text-movet-white text-center mb-2`}
               noDarkMode

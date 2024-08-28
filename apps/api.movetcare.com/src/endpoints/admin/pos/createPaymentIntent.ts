@@ -159,7 +159,7 @@ export const createPaymentIntent = functions
             if (paymentMethod) {
               paymentIntentConfig.payment_method = paymentMethod;
               paymentIntentConfig.capture_method = "automatic";
-              paymentIntentConfig.payment_method_types = ["card", "link"];
+              paymentIntentConfig.payment_method_types = ["card"];
               paymentIntentConfig.confirm = true;
               paymentIntentConfig.return_url =
                 "https://movetcare.com/checkout/success";
