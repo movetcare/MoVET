@@ -47,7 +47,6 @@ export const TodaysAppointments = () => {
         )
           todaysAppointments.push(appointment);
       });
-      console.log(todaysAppointments);
       setTodaysAppointments(todaysAppointments);
     }
   }, [upcomingAppointments]);

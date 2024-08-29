@@ -23,7 +23,7 @@ export const initTestUser: Promise<Response> = functions
           "dev+test@movetcare.com",
           5769,
           "cus_Prf6RZhu7iELJN",
-          "pm_1P1vnEDVQU5TYLF1pjpQcaOj",
+          "pm_1PtB8eDVQU5TYLF17XZFYzLh",
         )) &&
         (await importTestUser(
           "dev+test_vcpr_not_required@movetcare.com",

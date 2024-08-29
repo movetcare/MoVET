@@ -5,10 +5,13 @@ import {
   SubHeadingText,
   Screen,
   View,
+  ActionButton,
 } from "components/themed";
 import { useLocalSearchParams } from "expo-router";
-import { useState, useEffect } from "react";
-import { InvoicesStore } from "stores";
+import { functions } from "firebase-config";
+import { httpsCallable } from "firebase/functions";
+import { useState, useEffect, useCallback } from "react";
+import { ErrorStore, InvoicesStore } from "stores";
 import type { Invoice } from "stores";
 import tw from "tailwind";
 import { isTablet } from "utils/isTablet";
@@ -18,6 +21,10 @@ const InvoiceDetail = () => {
   const { invoices } = InvoicesStore.useState();
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
+  const [isLoadingEmailInvoicePDF, setIsLoadingEmailInvoicePDF] =
+    useState<boolean>(false);
+  const [emailInvoiceAsPDFComplete, setEmailInvoiceAsPDFComplete] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (id && invoices) {
@@ -35,6 +42,34 @@ const InvoiceDetail = () => {
       });
     }
   }, [id, invoices]);
+
+  const emailInvoiceAsPDF = async () => {
+    setIsLoadingEmailInvoicePDF(true);
+    const processEmailInvoiceAsPDF = httpsCallable(
+      functions,
+      "manualClientRequest",
+    );
+    processEmailInvoiceAsPDF({
+      invoice: invoice?.id,
+    })
+      .then((result: any) => {
+        if (result.data === true) setEmailInvoiceAsPDFComplete(true);
+        else
+          handleError({
+            code: 500,
+            message: "Unable to email invoice as PDF",
+          });
+      })
+      .catch((error: any) => handleError(error))
+      .finally(() => setIsLoadingEmailInvoicePDF(false));
+  };
+
+  const handleError = useCallback((error: any) => {
+    setIsLoadingEmailInvoicePDF(false);
+    ErrorStore.update((s: any) => {
+      s.currentError = error;
+    });
+  }, []);
 
   return (
     <Screen>
@@ -108,6 +143,19 @@ const InvoiceDetail = () => {
               </View>
             </>
           )}
+          <ActionButton
+            title={
+              emailInvoiceAsPDFComplete
+                ? "We'll send you an email shortly!"
+                : "Send Invoice via Email"
+            }
+            color="black"
+            disabled={emailInvoiceAsPDFComplete || isLoadingEmailInvoicePDF}
+            iconName={emailInvoiceAsPDFComplete ? "check" : "envelope"}
+            loading={isLoadingEmailInvoicePDF}
+            onPress={() => emailInvoiceAsPDF()}
+            style={tw`mt-16`}
+          />
         </View>
       </View>
     </Screen>

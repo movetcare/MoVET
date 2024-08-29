@@ -26,6 +26,7 @@ export { getBreeds } from "./endpoints/mobile/getBreeds";
 export { createCustomer } from "./endpoints/mobile/createCustomer";
 export { updatePatient } from "./endpoints/mobile/updatePatient";
 export { updateClient } from "./endpoints/mobile/updateClient";
+export { manualClientRequest } from "./endpoints/mobile/manualClientRequest";
 export { updateAppointment } from "./endpoints/mobile/updateAppointment";
 export { refreshCustomerToken } from "./endpoints/mobile/refreshCustomerToken";
 export { clearAppointmentBookingSessions } from "./endpoints/mobile/clearAppointmentBookingSessions";

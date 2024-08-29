@@ -62,6 +62,10 @@ const InvoiceDetail = () => {
     useState<Array<PaymentMethod> | null>(null);
   const [isLoadingPayment, setIsLoadingPayment] = useState<boolean>(false);
   const [paymentComplete, setPaymentComplete] = useState<boolean>(false);
+  const [isLoadingEmailInvoicePDF, setIsLoadingEmailInvoicePDF] =
+    useState<boolean>(false);
+  const [emailInvoiceAsPDFComplete, setEmailInvoiceAsPDFComplete] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (id && invoices) {
@@ -267,6 +271,27 @@ const InvoiceDetail = () => {
       .finally(() => setIsLoadingPayment(false));
   };
 
+  const emailInvoiceAsPDF = async () => {
+    setIsLoadingEmailInvoicePDF(true);
+    const processEmailInvoiceAsPDF = httpsCallable(
+      functions,
+      "manualClientRequest",
+    );
+    processEmailInvoiceAsPDF({
+      invoice: invoice?.id,
+    })
+      .then((result: any) => {
+        if (result.data === true) setEmailInvoiceAsPDFComplete(true);
+        else
+          handleError({
+            code: 500,
+            message: "Unable to email invoice as PDF",
+          });
+      })
+      .catch((error: any) => handleError(error))
+      .finally(() => setIsLoadingEmailInvoicePDF(false));
+  };
+
   return (
     <Screen>
       {isLoadingPayment ? (
@@ -375,6 +400,18 @@ const InvoiceDetail = () => {
                     },
                   );
                 }}
+              />
+              <ActionButton
+                title={
+                  emailInvoiceAsPDFComplete
+                    ? "We'll send you an email shortly!"
+                    : "Send Invoice via Email"
+                }
+                color="brown"
+                disabled={emailInvoiceAsPDFComplete || isLoadingEmailInvoicePDF}
+                iconName={emailInvoiceAsPDFComplete ? "check" : "envelope"}
+                loading={isLoadingEmailInvoicePDF}
+                onPress={() => emailInvoiceAsPDF()}
               />
             </Container>
           ) : (

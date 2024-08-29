@@ -1,5 +1,7 @@
+import { faPaw } from "@fortawesome/free-solid-svg-icons";
 import Layout from "components/Layout";
 import Head from "next/head";
+import { Button } from "ui";
 
 export default function FrontDeskListing() {
   return (
@@ -123,6 +125,15 @@ export default function FrontDeskListing() {
             describing your current and past experience and why you think you
             would be a good fit for the position.
           </p>
+          <Button
+            text="Apply Today"
+            icon={faPaw}
+            color="black"
+            className="self-center mt-8"
+            onClick={() =>
+              window.open("https://forms.gle/1btXB63xE5RgB9G16", "_blank")
+            }
+          />
         </div>
       </section>
     </Layout>

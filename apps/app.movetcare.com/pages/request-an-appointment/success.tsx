@@ -55,7 +55,7 @@ export default function RequestSuccess() {
               requests are responded to in the order they are received.
             </p>
             <Button
-              text="Book Another Appointment"
+              text="Request Another Appointment"
               onClick={() => router.push(`/${isAppMode ? "?mode=app" : ""}`)}
               color="black"
               className="mb-8"

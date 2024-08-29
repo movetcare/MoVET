@@ -55,7 +55,7 @@ export const throwError = (error: any): false => {
 
 export const defaultRuntimeOptions = {
   timeoutSeconds: 300,
-  memory: "1GB", //"512MB",
+  memory: "512MB",
   minInstances: environment.type === "production" ? 1 : 0,
   maxInstances: 20,
 };
