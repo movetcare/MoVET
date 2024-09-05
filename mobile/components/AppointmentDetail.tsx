@@ -545,7 +545,7 @@ export const AppointmentDetail = () => {
                else return years - 1 + " Years Old";
              } else {
                if (years === 0)
-                 return 12 + (now.getMonth() - date.getMonth()) + " Months Old";
+                 return now.getMonth() - date.getMonth() + " Months Old";
                if (years === 1) return "1 Year Old";
                else return years + " Years Old";
              }

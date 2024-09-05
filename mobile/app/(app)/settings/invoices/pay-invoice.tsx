@@ -412,6 +412,7 @@ const InvoiceDetail = () => {
                 iconName={emailInvoiceAsPDFComplete ? "check" : "envelope"}
                 loading={isLoadingEmailInvoicePDF}
                 onPress={() => emailInvoiceAsPDF()}
+                style={tw`mx-auto`}
               />
             </Container>
           ) : (

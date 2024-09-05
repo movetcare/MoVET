@@ -520,7 +520,7 @@ export const sendNotification = async ({
         const clientPushTokens = await admin
           .firestore()
           .collection("push_tokens")
-          .doc(payload?.user?.uid)
+          .doc(`${payload?.user?.uid}`)
           .get()
           .then((doc: any) => {
             const allValidTokens: Array<string> = [];
