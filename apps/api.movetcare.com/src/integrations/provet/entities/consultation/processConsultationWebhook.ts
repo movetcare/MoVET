@@ -32,9 +32,36 @@ export const processConsultationWebhook = async (
         proVetConsultationData,
       );
     if (proVetConsultationData?.status === 9) {
-      proVetConsultationData.patients.map((patient: string) =>
-        updateCustomField(`${getProVetIdFromUrl(patient)}`, 2, "False"),
-      );
+      proVetConsultationData.patients.map((patient: string) => {
+        const patientId = getProVetIdFromUrl(patient);
+        updateCustomField(`${patientId}`, 2, "False");
+        const today = new Date();
+        admin
+          .firestore()
+          .collection("tasks_queue")
+          .doc(`${patientId}_expire_vcpr`)
+          .set(
+            {
+              options: {
+                id: patientId,
+              },
+              worker: "expire_patient_vcpr",
+              status: "scheduled",
+              performAt: new Date(today.setMonth(today.getMonth() + 13)),
+              createdOn: new Date(),
+            },
+            { merge: true },
+          )
+          .then(
+            () =>
+              DEBUG &&
+              console.log(
+                "PATIENT VCPR EXPIRE TASK ADDED TO QUEUE => ",
+                `${patientId}_expire_vcpr`,
+              ),
+          )
+          .catch((error: any) => throwError(error));
+      });
       admin
         .firestore()
         .collection("appointments")

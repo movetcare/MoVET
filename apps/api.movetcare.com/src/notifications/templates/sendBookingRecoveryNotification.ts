@@ -93,9 +93,7 @@ const sendAdminBookingRecoveryNotification = async (
                 ? `<p><b>Aggression Status:</b> "${
                     patient?.aggressionStatus
                       ? "IS AGGRESSIVE!"
-                      : "Is not aggressive" ||
-                        // eslint-disable-next-line quotes
-                        'UNKNOWN - Update "Is Aggressive" custom field on patient\'s profile in ProVet!'
+                      : "Is not aggressive"
                   } "</p>`
                 : ""
             }${

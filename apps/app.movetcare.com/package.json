@@ -33,7 +33,7 @@
     "react-google-recaptcha-v3": "^1.10.1",
     "react-hook-form": "^7.53.0",
     "react-hot-toast": "^2.4.1",
-    "react-number-format": "^5.4.1",
+    "react-number-format": "^5.4.2",
     "react-select": "^5.8.0",
     "react-swipeable": "^7.0.1",
     "react-time-picker": "^7.0.0",
@@ -62,7 +62,7 @@
     "tailwindcss": "^3.4.10",
     "tsconfig": "workspace:*",
     "types": "workspace:*",
-    "typescript": "^5.5.4",
+    "typescript": "^5.6.2",
     "ui": "workspace:*",
     "utilities": "workspace:*"
   }

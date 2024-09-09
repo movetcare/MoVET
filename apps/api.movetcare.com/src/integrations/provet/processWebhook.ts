@@ -12,7 +12,6 @@ import { processConsultationWebhook } from "./entities/consultation/processConsu
 import { sendNotification } from "../../notifications/sendNotification";
 import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { configureProVetAuth } from "./configureProVetAuth";
-import { updateCustomField } from "./entities/patient/updateCustomField";
 
 export const processProVetWebhook = async (
   request: Request,
@@ -142,18 +141,6 @@ export const processProVetWebhook = async (
       fetchEntity("reminder", request.body.reminder_id)
         .then((response: any) => {
           if (DEBUG) console.log("REMINDER => ", response);
-          if (
-            response?.email_subject?.toLowerCase().includes("annual") &&
-            response?.email_subject?.toLowerCase().includes("wellness") &&
-            response?.email_subject?.toLowerCase().includes("exam") &&
-            response?.patient
-          ) {
-            updateCustomField(
-              `${getProVetIdFromUrl(response?.patient)}`,
-              2,
-              "True",
-            );
-          }
           let message = null;
           if (response?.send_method === 1) {
             if (response?.status === 4)
