@@ -19,7 +19,7 @@ service firebase.storage {
     }
     
     match /clients/{clientId}/{allPaths=**} {
-      allow read, write: if clientOwnsBucket(clientId);
+      allow read, write: if clientOwnsBucket(clientId) || userIsVerified();
       match /patients/{patientId} {
         allow read, write: if clientOwnsBucket(clientId);
       }

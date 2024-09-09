@@ -24,6 +24,7 @@ import {
   faSms,
   faCat,
   faDog,
+  faArrowCircleLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import environment from "utils/environment";
@@ -36,11 +37,13 @@ import TelehealthChatSummary from "components/TelehealthChatSummary";
 import Image from "next/image";
 import "react-tooltip/dist/react-tooltip.css";
 import { httpsCallable } from "firebase/functions";
+import { FileUploadInput } from "components/inputs/FileUploadInput";
 interface ChatMessage {
   _id: string;
   createdAt: any;
   startNewThread?: boolean;
-  text: string;
+  text?: string;
+  image?: string;
   user: {
     _id: string;
     avatar?: string | null;
@@ -54,6 +57,9 @@ const ChatSession = () => {
   const messagesEndRef: any = useRef(null);
   const [didEndChat, setDidEndChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [photo, setPhoto] = useState<{ url: string; name: string } | null>(
+    null,
+  );
   const [messages, loadingMessages, errorMessages] = useCollection(
     firestoreQuery(
       collection(firestore, `telehealth_chat/${query?.id}/log`),
@@ -74,6 +80,7 @@ const ChatSession = () => {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { isValid, isSubmitting, isDirty, errors },
   } = useForm({
     mode: "onChange",
@@ -142,21 +149,45 @@ const ChatSession = () => {
       });
   };
 
+  useEffect(() => {
+    if (photo) {
+      setValue("message", photo, {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+    }
+  }, [photo, setValue]);
+
   const onSubmit = async (data: { message: string }) =>
     await addDoc(
       collection(doc(firestore, "telehealth_chat", `${query?.id}`), "log"),
-      {
-        _id: uuid(),
-        createdAt: serverTimestamp(),
-        text: data?.message,
-        user: {
-          _id: "0",
-          name: "MoVET",
-          avatar: "https://movetcare.com/images/logo/logo-paw-black.png",
-        },
-      } as ChatMessage,
+      photo
+        ? ({
+            _id: uuid(),
+            createdAt: serverTimestamp(),
+            image: data?.message,
+            user: {
+              _id: "0",
+              name: "MoVET",
+              avatar: "https://movetcare.com/images/logo/logo-paw-black.png",
+            },
+          } as ChatMessage)
+        : ({
+            _id: uuid(),
+            createdAt: serverTimestamp(),
+            text: data?.message,
+            user: {
+              _id: "0",
+              name: "MoVET",
+              avatar: "https://movetcare.com/images/logo/logo-paw-black.png",
+            },
+          } as ChatMessage),
     )
-      .then(() => reset())
+      .then(() => {
+        setPhoto(null);
+        reset();
+      })
       .then(
         async () =>
           await updateDoc(doc(firestore, "telehealth_chat", `${query?.id}`), {
@@ -251,7 +282,8 @@ const ChatSession = () => {
         !errorMessages &&
         !loadingPatients &&
         !errorPatients &&
-        messages ? (
+        messages &&
+        session.data()?.question ? (
           <>
             <div className="flex sm:items-center justify-between md:pb-6 border-b border-movet-gray px-8 py-4">
               <div className="flex items-center space-x-4">
@@ -528,20 +560,22 @@ const ChatSession = () => {
                     onSubmit={handleSubmit(onSubmit as any)}
                     className="relative flex"
                   >
+                    <FileUploadInput
+                      setValue={setPhoto}
+                      uploadPath={`/clients/${query?.id}/`}
+                    />
                     <textarea
                       placeholder={
                         session.data()?.question
                           ? "Write Something..."
                           : "This message will not be seen until the client downloads the MoVET mobile app"
                       }
+                      disabled={photo !== null}
                       rows={6}
                       className="flex items=center w-full border-movet-gray focus:border-movet-gray focus:ring-0 focus:placeholder-movet-gray text-movet-black placeholder-movet-black placeholder:opacity-50 pl-8 pr-12 bg-white rounded-md mb-4 lg:-mb-4 h-18 md:h-20"
                       {...register("message", { required: true })}
                     />
                     <div className="absolute right-0 items-center inset-y-0">
-                      {/* <div className="cursor-pointer inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none">
-                  <FontAwesomeIcon icon={faPaperclip} size="lg" />
-                </div> */}
                       <button
                         type="submit"
                         disabled={!isDirty || isSubmitting || !isValid}
@@ -566,6 +600,17 @@ const ChatSession = () => {
               <Loader />
             )}
           </>
+        ) : session && !session.data()?.question ? (
+          <div className="flex flex-grow items-center justify-center">
+            <div className="flex flex-row items-center justify-center">
+              <FontAwesomeIcon
+                icon={faArrowCircleLeft}
+                size="xl"
+                className="text-movet-red mr-2 mt-1"
+              />
+              <h3 className="italic text-2xl">Select a Chat Session...</h3>
+            </div>
+          </div>
         ) : (
           <Loader />
         )}

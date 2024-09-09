@@ -62,7 +62,7 @@ export const newClientTelehealthMessage = functions.firestore
           user: { uid: context.params.clientId },
           category: "client-telehealth",
           title: "New Message from MoVET",
-          message: truncateString(text),
+          message: image ? "New Image Uploaded..." : truncateString(text),
           path: "/chat",
         },
       });
