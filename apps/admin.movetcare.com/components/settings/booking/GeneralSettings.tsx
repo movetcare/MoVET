@@ -250,7 +250,7 @@ const GeneralSettings = () => {
                                     {reason.data()?.name && (
                                       <Switch.Label
                                         as="h3"
-                                        className={`text-xs font-medium text-movet-black italic${reason.data()?.name?.toLowerCase()?.includes("office use only") ? " text-movet-gray" : ""}`}
+                                        className={`text-xs font-medium text-movet-black italic${reason.data()?.name?.toLowerCase()?.includes("office use only") || reason.data()?.name?.toLowerCase()?.includes("lunch") ? " text-movet-gray" : ""}`}
                                         passive
                                       >
                                         <FontAwesomeIcon
@@ -268,10 +268,16 @@ const GeneralSettings = () => {
                                   </div>
                                   <Switch
                                     checked={reason.data()?.isVisible}
-                                    disabled={reason
-                                      .data()
-                                      ?.name?.toLowerCase()
-                                      ?.includes("office use only")}
+                                    disabled={
+                                      reason
+                                        .data()
+                                        ?.name?.toLowerCase()
+                                        ?.includes("office use only") ||
+                                      reason
+                                        .data()
+                                        ?.name?.toLowerCase()
+                                        ?.includes("lunch")
+                                    }
                                     onChange={async () =>
                                       await toggleReasonVisibility(
                                         reason.data(),
@@ -283,7 +289,11 @@ const GeneralSettings = () => {
                                         ? reason
                                             .data()
                                             ?.name?.toLowerCase()
-                                            ?.includes("office use only")
+                                            ?.includes("office use only") ||
+                                          reason
+                                            .data()
+                                            ?.name?.toLowerCase()
+                                            ?.includes("lunch")
                                           ? "bg-movet-green/50"
                                           : "bg-movet-green"
                                         : "bg-movet-gray",
