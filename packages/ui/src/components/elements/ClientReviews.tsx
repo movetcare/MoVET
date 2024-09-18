@@ -17,6 +17,47 @@ export const ClientReviews = ({
       <div
         className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4cursor-pointer"
         onClick={() =>
+          window.open("https://maps.app.goo.gl/HMaxZhaiaTq3jYKR8", "_blank")
+        }
+      >
+        <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+        </div>
+        <p className="text-xl text-center mb-4 group-hover:opacity-75">
+          This vet office is the perfect model as to what vet offices should
+          look like
+        </p>
+        <i className="group-hover:opacity-75">
+          &quot;Unfortunately, good and trustworthy vets are hard to come by
+          these days and it&apos;s been such a breath of fresh air to have found
+          Movet. My dog, Shiloh, went from cowering away every time I walked in
+          the door at other vets to pulling me towards the door when we&apos;re
+          walking up to Movet. Dr. Caldwell and her whole team always love on my
+          girl like she&apos;s their own, she literally smiles every time
+          she&apos;s here. They take the time to answer every single one of your
+          questions and concerns and I never feel rushed out of my appointment.
+          This vet office is the perfect model as to what vet offices should
+          look like. We are so thankful to have them as our vet &quot;
+        </i>
+        <p className="text-center mt-4 group-hover:opacity-75">
+          <a
+            href="https://maps.app.goo.gl/HMaxZhaiaTq3jYKR8"
+            target="_blank"
+            rel="noreferrer"
+            className="flex flex-row justify-center items-center italic text-center text-movet-black"
+          >
+            <FontAwesomeIcon icon={faGoogle} className="mr-2 text-movet-blue" />{" "}
+            Google Review
+          </a>
+        </p>
+      </div>
+      <div
+        className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4cursor-pointer"
+        onClick={() =>
           window.open("https://goo.gl/maps/MF5XNcxp1grNiWXU7", "_blank")
         }
       >
@@ -51,7 +92,7 @@ export const ClientReviews = ({
         </p>
       </div>
       <div
-        className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4cursor-pointer"
+        className="group bg-white p-8 rounded-xl mb-8 sm:mb-4 sm:-mt-4 cursor-pointer"
         onClick={() =>
           window.open("https://goo.gl/maps/igEwpBsZBNnPVuFk6", "_blank")
         }
