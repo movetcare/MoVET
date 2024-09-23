@@ -1,8 +1,8 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { admin, throwError } from "../../config/config";
-
-import * as func from "firebase-functions";
+import * as func from "firebase-functions/v1";
 const axios = require("axios").default;
 const DEBUG = false;
 

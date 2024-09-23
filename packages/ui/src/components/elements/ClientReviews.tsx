@@ -58,6 +58,50 @@ export const ClientReviews = ({
       <div
         className="group bg-white p-8 rounded-xl my-8 sm:mb-4 sm:-mt-4cursor-pointer"
         onClick={() =>
+          window.open("https://maps.app.goo.gl/PyoThCtBofyQKcRv9", "_blank")
+        }
+      >
+        <div className="flex flex-row justify-center items-center text-movet-yellow text-3xl my-8 group-hover:opacity-75">
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+          <FontAwesomeIcon icon={faStar} />
+        </div>
+        <p className="text-xl text-center mb-4 group-hover:opacity-75">
+          After my experience at MoVet, I won&apos;t take my pup anywhere
+          else...
+        </p>
+        <i className="group-hover:opacity-75">
+          &quot;The whole team at MoVet is incredible and embodies
+          professionalism, empathy, and efficiency. When my pup was squinting
+          her eye during the work day, the team at MoVet was incredibly flexible
+          with my work schedule to accommodate us. The appointment was so
+          efficient: we waited approximately 5 minutes for the vet and the whole
+          appointment took less than 30 minutes! The best part: Dr. Caldwell and
+          the whole team really care! We felt welcome and comfortable and the
+          team worked to explain what was happening with our pup the whole time,
+          we never felt lost and we were with our pup the entire time! After my
+          experience at MoVet, I won&apos;t take my pup anywhere else. I cannot
+          recommend MoVet, Dr. Caldwell and the whole team enough. One
+          experience and I&apos;m completely sold, and I&apos;m sure anyone else
+          would feel the same.&quot;
+        </i>
+        <p className="text-center mt-4 group-hover:opacity-75">
+          <a
+            href="https://maps.app.goo.gl/PyoThCtBofyQKcRv9"
+            target="_blank"
+            rel="noreferrer"
+            className="flex flex-row justify-center items-center italic text-center text-movet-black"
+          >
+            <FontAwesomeIcon icon={faGoogle} className="mr-2 text-movet-blue" />{" "}
+            Google Review
+          </a>
+        </p>
+      </div>
+      <div
+        className="group bg-white p-8 rounded-xl mb-8 sm:mb-4 sm:-mt-4 cursor-pointer"
+        onClick={() =>
           window.open("https://goo.gl/maps/MF5XNcxp1grNiWXU7", "_blank")
         }
       >
@@ -91,6 +135,7 @@ export const ClientReviews = ({
           </a>
         </p>
       </div>
+
       <div
         className="group bg-white p-8 rounded-xl mb-8 sm:mb-4 sm:-mt-4 cursor-pointer"
         onClick={() =>

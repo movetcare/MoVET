@@ -1,7 +1,8 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { sendNotification } from "./../notifications/sendNotification";
 import * as firebase from "firebase-admin";
-import * as func from "firebase-functions";
+import * as func from "firebase-functions/v1";
 const axios = require("axios").default;
 import Stripe from "stripe";
 import * as email from "@sendgrid/mail";

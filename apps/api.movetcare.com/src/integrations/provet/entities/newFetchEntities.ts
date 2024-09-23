@@ -1,6 +1,7 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { admin, throwError } from "../../../config/config";
-import * as func from "firebase-functions";
+import * as func from "firebase-functions/v1";
 import { fetchNewProVetAccessToken } from "../fetchNewProVetAccessToken";
 const axios = require("axios").default;
 const DEBUG = false;
