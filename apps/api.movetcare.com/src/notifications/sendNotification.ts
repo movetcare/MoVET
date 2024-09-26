@@ -516,133 +516,143 @@ export const sendNotification = async ({
             "sendNotification PUSH => payload?.user?.uid",
             payload?.user?.uid,
           );
-        const allClientTokenData: Array<any> = [];
-        const clientPushTokens = await admin
-          .firestore()
-          .collection("push_tokens")
-          .doc(`${payload?.user?.uid}`)
-          .get()
-          .then((doc: any) => {
-            const allValidTokens: Array<string> = [];
-            if (DEBUG)
-              console.log(
-                "sendNotification PUSH => doc.id" + doc.id,
-                " => ",
-                doc.data(),
-              );
-            doc.data()?.tokens?.forEach((token: any) => {
+        const userNotificationSettings: UserNotificationSettings | false =
+          await getClientNotificationSettings(`${payload?.user?.uid}`);
+        if (userNotificationSettings && userNotificationSettings?.sendPush) {
+          const allClientTokenData: Array<any> = [];
+          const clientPushTokens = await admin
+            .firestore()
+            .collection("push_tokens")
+            .doc(`${payload?.user?.uid}`)
+            .get()
+            .then((doc: any) => {
+              const allValidTokens: Array<string> = [];
               if (DEBUG)
-                console.log("sendNotification PUSH => TOKEN ARRAY", token);
-              if (token.isActive) {
-                allValidTokens.push(token.token);
-                allClientTokenData.push({ uid: doc.id, token: token.token });
-              }
-            });
-            if (DEBUG)
-              console.log(
-                "sendNotification PUSH => allValidTokens",
-                allValidTokens,
-              );
-            return allValidTokens;
-          })
-          .catch((error: any) => throwError(error));
-        if (DEBUG) console.log("clientPushTokens", clientPushTokens);
-        if (clientPushTokens && clientPushTokens.length > 0)
-          sendPushNotificationViaExpo({
-            to: clientPushTokens,
-            title: payload?.title,
-            body: payload?.message,
-            data: {
-              path: payload?.path || "/home",
-            },
-          })
-            .then(
-              async (response: {
-                failureCount: number;
-                responses: Array<ExpoPushTicket>;
-              }) => {
-                sendSlackMessageToChannel(
-                  `:outbox_tray: CLIENT Push Notifications Sent to ${
-                    (clientPushTokens as any).length
-                  } devices${
-                    response?.failureCount > 0
-                      ? ` with ${response?.failureCount} failures`
-                      : ""
-                  } - "${payload?.title} | ${payload?.message}"`,
+                console.log(
+                  "sendNotification PUSH => doc.id" + doc.id,
+                  " => ",
+                  doc.data(),
                 );
-                if (response.failureCount > 0) {
-                  const failedTokens: any = [];
-                  response.responses.forEach((resp: ExpoPushTicket) => {
-                    if (resp.status === "error") {
-                      failedTokens.push((resp.details as any)?.expoPushToken);
-                    }
+              doc.data()?.tokens?.forEach((token: any) => {
+                if (DEBUG)
+                  console.log("sendNotification PUSH => TOKEN ARRAY", token);
+                if (token.isActive) {
+                  allValidTokens.push(token.token);
+                  allClientTokenData.push({
+                    uid: doc.id,
+                    token: token.token,
                   });
-                  if (DEBUG)
-                    console.log(
-                      "sendNotification PUSH => List of tokens that caused failures: " +
-                        failedTokens,
-                    );
-                  if (failedTokens.length > 0) {
-                    const clientTokensToDisable: Array<{
-                      uid: string;
-                      token: string;
-                    }> = [];
-                    allClientTokenData.map((tokenData: any) => {
-                      if (failedTokens.includes(tokenData.token))
-                        clientTokensToDisable.push({
-                          uid: tokenData.uid,
-                          token: tokenData.token,
-                        });
+                }
+              });
+              if (DEBUG)
+                console.log(
+                  "sendNotification PUSH => allValidTokens",
+                  allValidTokens,
+                );
+              return allValidTokens;
+            })
+            .catch((error: any) => throwError(error));
+          if (DEBUG) console.log("clientPushTokens", clientPushTokens);
+          if (clientPushTokens && clientPushTokens.length > 0)
+            sendPushNotificationViaExpo({
+              to: clientPushTokens,
+              title: payload?.title,
+              body: payload?.message,
+              data: {
+                path: payload?.path || "/home",
+              },
+            })
+              .then(
+                async (response: {
+                  failureCount: number;
+                  responses: Array<ExpoPushTicket>;
+                }) => {
+                  sendSlackMessageToChannel(
+                    `:outbox_tray: CLIENT Push Notifications Sent to ${
+                      (clientPushTokens as any).length
+                    } devices${
+                      response?.failureCount > 0
+                        ? ` with ${response?.failureCount} failures`
+                        : ""
+                    } - "${payload?.title} | ${payload?.message}"`,
+                  );
+                  if (response.failureCount > 0) {
+                    const failedTokens: any = [];
+                    response.responses.forEach((resp: ExpoPushTicket) => {
+                      if (resp.status === "error") {
+                        failedTokens.push((resp.details as any)?.expoPushToken);
+                      }
                     });
                     if (DEBUG)
                       console.log(
-                        "sendNotification PUSH => clientTokensToDisable",
-                        clientTokensToDisable,
+                        "sendNotification PUSH => List of tokens that caused failures: " +
+                          failedTokens,
                       );
-                    await Promise.all(
-                      clientTokensToDisable.map(async (tokenData: any) => {
-                        if (DEBUG)
-                          console.log(
-                            "sendNotification PUSH => tokenData.uid",
-                            tokenData.uid,
-                          );
-                        const clientTokens = await admin
-                          .firestore()
-                          .collection("push_tokens")
-                          .doc(tokenData.uid)
-                          .get()
-                          .then((doc: any) => doc.data().tokens)
-                          .catch((error: any) => throwError(error));
-                        if (clientTokens) {
-                          const updatedTokens = clientTokens.map(
-                            (token: any) => {
-                              if (token.token === tokenData.token)
-                                return {
-                                  ...token,
-                                  isActive: false,
-                                  updatedOn: new Date(),
-                                };
-                              else return token;
-                            },
-                          );
-                          await admin
+                    if (failedTokens.length > 0) {
+                      const clientTokensToDisable: Array<{
+                        uid: string;
+                        token: string;
+                      }> = [];
+                      allClientTokenData.map((tokenData: any) => {
+                        if (failedTokens.includes(tokenData.token))
+                          clientTokensToDisable.push({
+                            uid: tokenData.uid,
+                            token: tokenData.token,
+                          });
+                      });
+                      if (DEBUG)
+                        console.log(
+                          "sendNotification PUSH => clientTokensToDisable",
+                          clientTokensToDisable,
+                        );
+                      await Promise.all(
+                        clientTokensToDisable.map(async (tokenData: any) => {
+                          if (DEBUG)
+                            console.log(
+                              "sendNotification PUSH => tokenData.uid",
+                              tokenData.uid,
+                            );
+                          const clientTokens = await admin
                             .firestore()
                             .collection("push_tokens")
                             .doc(tokenData.uid)
-                            .update({
-                              tokens: updatedTokens,
-                              updatedOn: new Date(),
-                            })
+                            .get()
+                            .then((doc: any) => doc.data().tokens)
                             .catch((error: any) => throwError(error));
-                        }
-                      }),
-                    );
+                          if (clientTokens) {
+                            const updatedTokens = clientTokens.map(
+                              (token: any) => {
+                                if (token.token === tokenData.token)
+                                  return {
+                                    ...token,
+                                    isActive: false,
+                                    updatedOn: new Date(),
+                                  };
+                                else return token;
+                              },
+                            );
+                            await admin
+                              .firestore()
+                              .collection("push_tokens")
+                              .doc(tokenData.uid)
+                              .update({
+                                tokens: updatedTokens,
+                                updatedOn: new Date(),
+                              })
+                              .catch((error: any) => throwError(error));
+                          }
+                        }),
+                      );
+                    }
                   }
-                }
-              },
-            )
-            .catch((error: any) => throwError(error));
-        else if (DEBUG) console.log("NO TOKENS FOUND", { clientPushTokens });
+                },
+              )
+              .catch((error: any) => throwError(error));
+          else if (DEBUG) console.log("NO TOKENS FOUND", { clientPushTokens });
+        } else if (DEBUG)
+          console.log(
+            `CLIENT ${payload?.user?.uid} DOES NOT HAVE PUSH NOTIFICATION ENABLED!`,
+          );
       } else if (DEBUG) console.log("UNSUPPORTED PUSH NOTIFICATION TYPE!");
       break;
     default:

@@ -7,31 +7,33 @@ export default function HowlOWeen() {
   return (
     <Layout>
       <Head>
-        <title>HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 29th @ 1pm</title>
+        <title>
+          HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 27th @ 11AM - 3PM
+        </title>
         <meta
           name="description"
-          content="Come one come all! Join us, Oct 29th at 1pm in the Belleview Station Dog Park to show off your Halloween Best! We'll have a fall themed photo booth to capture this once-a-year attire! Come as a couple, or just in an awesome-sauce costume! We hope to see you there! Free treats and belly rubs included for all who come. Best of all, all entry photos will be posted on Instagram and Facebook -- make sure to campaign your friends to vote by LIKING your picture. Winning photo (the one with the most likes) will be announced on Halloween and be featured as MoVET's November PET OF THE MONTH!"
+          content="Unleash your furry friend's inner superstar this Halloween with MoVET's spook-tacular HOWL-O-WEEN Pet Costume Contest! Dress up your pet in their most boo-tiful costume and capture their hauntingly adorable look in a FREE photoshoot!"
         />
         <meta property="og:type" content="website" />
         <meta
           name="og:title"
           property="og:title"
-          content="HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 29th @ 1pm"
+          content="HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 27th @ 11AM - 3PM"
         />
         <meta
           name="og:description"
           property="og:description"
-          content="Come one come all! Join us, Sunday Oct 29th at 1pm in the Belleview Station Dog Park to show off your Halloween Best! We'll have a fall themed photo booth to capture this once-a-year attire! Come as a couple, or just in an awesome-sauce costume! We hope to see you there! Free treats and belly rubs included for all who come. Best of all, all entry photos will be posted on Instagram and Facebook -- make sure to campaign your friends to vote by LIKING your picture. Winning photo (the one with the most likes) will be announced on Halloween and be featured as MoVET's November PET OF THE MONTH!"
+          content="Unleash your furry friend's inner superstar this Halloween with MoVET's spook-tacular HOWL-O-WEEN Pet Costume Contest! Dress up your pet in their most boo-tiful costume and capture their hauntingly adorable look in a FREE photoshoot!"
         />
         <meta property="og:site_name" content="MoVET" />
         <meta name="twitter:card" content="summary" />
         <meta
           name="twitter:title"
-          content="HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 29th @ 1pm"
+          content="HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 27th @ 11AM - 3PM"
         />
         <meta
           name="twitter:description"
-          content="Come one come all! Join us, Sunday Oct 29th at 1pm in the Belleview Station Dog Park to show off your Halloween Best! We'll have a fall themed photo booth to capture this once-a-year attire! Come as a couple, or just in an awesome-sauce costume! We hope to see you there! Free treats and belly rubs included for all who come. Best of all, all entry photos will be posted on Instagram and Facebook -- make sure to campaign your friends to vote by LIKING your picture. Winning photo (the one with the most likes) will be announced on Halloween and be featured as MoVET's November PET OF THE MONTH!"
+          content="Unleash your furry friend's inner superstar this Halloween with MoVET's spook-tacular HOWL-O-WEEN Pet Costume Contest! Dress up your pet in their most boo-tiful costume and capture their hauntingly adorable look in a FREE photoshoot!"
         />
         <meta name="twitter:site" content="https://movetcare.com" />
         <meta name="twitter:creator" content="Dr. A." />
@@ -50,33 +52,20 @@ export default function HowlOWeen() {
         <Image
           className="rounded-xl"
           src="/images/blog/howl-o-ween-banner.png"
-          alt="MoVET's 2nd Annual Howl-O-Ween"
+          alt="MoVET's 3rd Annual Howl-O-Ween"
           height={480}
           width={820}
         />
         <h2 className="text-2xl mt-8 text-center">
-          The Pet Costume Contest is still ON!
+          HOWL-O-WEEN Pet Costume Contest Photoshoot Extravaganza
         </h2>
-        <h3 className="italic test-xl">Sunday, October 29th 1 PM - 3 PM</h3>
-        <h3 className="italic test-xl mb-4">Photography starts at 1:15 PM</h3>
+        <h3 className="italic test-xl">Sunday, October 27th 11AM - 3PM</h3>
         <p className="text-lg">
-          The Annual MoVET HOWL-O-WEEN Pet Costume is still on for today to show
-          off your Halloween Best! The snow won&apos;t hold us back!
+          Unleash your furry friend&apos;s inner superstar this Halloween with
+          MoVET&apos;s spook-tacular HOWL-O-WEEN Pet Costume Contest! Dress up
+          your pet in their most boo-tiful costume and capture their hauntingly
+          adorable look in a FREE photoshoot!
         </p>
-        <p className="text-lg">
-          Join us, TODAY! We&apos;ve made a few adjustments for the weather.
-          Please meet us in the{" "}
-          <a href="https://maps.app.goo.gl/1rQbAQogr3ZexD3F9" target="_blank">
-            Belleview Station Beer Garden Ski Chalet
-          </a>
-          .
-          <span className="font-extrabold">
-            {" "}
-            Don&apos;t worry, it&apos;s covered and heated, but still dress
-            warmly!
-          </span>
-        </p>
-
         <p className="italic text-lg my-4">
           We&apos;ll keep in touch with you via Text/SMS so you know when to
           show up for your photo, so keep your phone handy!

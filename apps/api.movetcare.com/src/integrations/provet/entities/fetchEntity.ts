@@ -16,6 +16,7 @@ export const fetchEntity = async (
     | "reason"
     | "reminder"
     | "consultation"
+    | "consultationnote"
     // | 'appointment_reminder'
     | "remindertemplate"
     | "cancellationreason"

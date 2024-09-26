@@ -64,7 +64,11 @@ export const saveAppointment = async (
       data.additionalUsers = additionalUsers;
     }
     if (proVetAppointmentData?.reason)
-      data.reason = proVetAppointmentData?.reason;
+      data.reason = getProVetIdFromUrl(proVetAppointmentData?.reason);
+    if (proVetAppointmentData?.consultation)
+      data.consultation = getProVetIdFromUrl(
+        proVetAppointmentData?.consultation,
+      );
     if (proVetAppointmentData?.notes) data.notes = proVetAppointmentData?.notes;
     if (proVetAppointmentData?.start)
       data.start = new Date(proVetAppointmentData?.start);

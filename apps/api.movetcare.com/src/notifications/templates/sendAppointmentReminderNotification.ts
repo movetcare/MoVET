@@ -3,10 +3,6 @@ import { getProVetIdFromUrl } from "../../utils/getProVetIdFromUrl";
 import { getAuthUserById } from "../../utils/auth/getAuthUserById";
 import { admin, throwError } from "../../config/config";
 const DEBUG = false;
-import {
-  getClientNotificationSettings,
-  UserNotificationSettings,
-} from "../../utils/getClientNotificationSettings";
 import { getDateStringFromDate } from "../../utils/getDateStringFromDate";
 import { getCustomerId } from "../../utils/getCustomerId";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
@@ -79,8 +75,6 @@ export const sendAppointmentReminderNotification = async (
         `${client}`,
         customerId,
       );
-    const userNotificationSettings: UserNotificationSettings | false =
-      await getClientNotificationSettings(`${client}`);
     const clientProvetRecord = await fetchEntity("client", client);
     const petNames =
       patients.length > 1
@@ -112,7 +106,6 @@ export const sendAppointmentReminderNotification = async (
       await send24HourAppointmentNotification(
         appointmentDetails,
         userDetails,
-        userNotificationSettings,
         doesHaveValidPaymentOnFile,
         petNames,
       );
@@ -148,7 +141,6 @@ export const sendAppointmentReminderNotification = async (
       await send30MinAppointmentNotification(
         appointmentDetails,
         userDetails,
-        userNotificationSettings,
         doesHaveValidPaymentOnFile,
         petNames,
       );
@@ -159,7 +151,6 @@ export const sendAppointmentReminderNotification = async (
 const send24HourAppointmentNotification = async (
   appointmentDetails: AppointmentDetails,
   userDetails: UserDetails,
-  userNotificationSettings: UserNotificationSettings | false,
   doesHaveValidPaymentOnFile: false | Array<any>,
   petNames: string | Array<string>,
 ) => {
@@ -203,7 +194,6 @@ const send24HourAppointmentNotification = async (
   if (DEBUG)
     console.log("sendAppointmentReminderNotification => USER DATA", {
       email,
-      phoneNumber,
       displayName,
     });
   if (email) {
@@ -366,16 +356,10 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
     console.log(
       "sendAppointmentReminderNotification => DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION EMAIL",
       {
-        sendEmail:
-          userNotificationSettings && userNotificationSettings?.sendEmail,
         email,
       },
     );
-  if (
-    userNotificationSettings &&
-    userNotificationSettings?.sendSms &&
-    phoneNumber
-  ) {
+  if (phoneNumber) {
     if (DEBUG)
       console.log(
         "sendAppointmentReminderNotification => SENDING SMS APPOINTMENT NOTIFICATION",
@@ -475,7 +459,6 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
     console.log(
       "sendAppointmentReminderNotification => DID NOT SEND 24 HOUR APPOINTMENT NOTIFICATION SMS",
       {
-        sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
         phoneNumber,
       },
     );
@@ -487,31 +470,28 @@ make your pet's visit more comfortable. We thank you in advance for keeping our 
         phoneNumber,
         displayName,
         client,
-        userNotificationSettings,
       },
     );
-  if (userNotificationSettings && userNotificationSettings?.sendPush && client)
-    sendNotification({
-      type: "push",
-      payload: {
-        user: { uid: client },
-        category: "client-appointment",
-        title: `${petNames}'s Appointment Reminder: ${getDateStringFromDate(
-          start?.toDate(),
-          "dateOnly",
-        )} @ ${getDateStringFromDate(start?.toDate(), "timeOnly")}`,
-        message: truncateString(
-          "Please reach out if you have any questions or need assistance!",
-        ),
-        path: `/home/`,
-      },
-    });
+  sendNotification({
+    type: "push",
+    payload: {
+      user: { uid: client },
+      category: "client-appointment",
+      title: `${petNames}'s Appointment Reminder: ${getDateStringFromDate(
+        start?.toDate(),
+        "dateOnly",
+      )} @ ${getDateStringFromDate(start?.toDate(), "timeOnly")}`,
+      message: truncateString(
+        "Please reach out if you have any questions or need assistance!",
+      ),
+      path: `/home/`,
+    },
+  });
 };
 
 const send30MinAppointmentNotification = async (
   appointmentDetails: AppointmentDetails,
   userDetails: UserDetails,
-  userNotificationSettings: UserNotificationSettings | false,
   doesHaveValidPaymentOnFile: false | Array<any>,
   petNames: string | Array<string>,
 ) => {
@@ -686,16 +666,10 @@ const send30MinAppointmentNotification = async (
     console.log(
       "sendAppointmentReminderNotification => DID NOT SEND 30 MIN APPOINTMENT NOTIFICATION EMAIL",
       {
-        sendEmail:
-          userNotificationSettings && userNotificationSettings?.sendEmail,
         email,
       },
     );
-  if (
-    userNotificationSettings &&
-    userNotificationSettings?.sendSms &&
-    phoneNumber
-  ) {
+  if (phoneNumber) {
     if (DEBUG)
       console.log(
         "sendAppointmentReminderNotification => SENDING SMS APPOINTMENT NOTIFICATION",
@@ -825,43 +799,33 @@ const send30MinAppointmentNotification = async (
   } else if (DEBUG)
     console.log(
       "sendAppointmentReminderNotification => DID NOT 30 MIN HOUR APPOINTMENT NOTIFICATION SMS",
-      {
-        sendSms: userNotificationSettings && userNotificationSettings?.sendSms,
-        phoneNumber,
-      },
     );
-  if (
-    userNotificationSettings &&
-    userNotificationSettings?.sendPush &&
-    client
-  ) {
-    if (resources?.includes(3) || resources?.includes(9))
-      sendNotification({
-        type: "push",
-        payload: {
-          user: { uid: client },
-          category: "client-appointment",
-          title: "A MoVET Expert is on their way to your location!",
-          message: truncateString(
-            "Please reach out if you have any questions or need assistance!",
-          ),
-          path: `/home/`,
-        },
-      });
-    else
-      sendNotification({
-        type: "push",
-        payload: {
-          user: { uid: client },
-          category: "client-appointment",
-          title: "It's almost time for your appointment w/ MoVET!",
-          message: truncateString(
-            "Please reach out if you have any questions or need assistance!",
-          ),
-          path: `/home/`,
-        },
-      });
-  }
+  if (resources?.includes(3) || resources?.includes(9))
+    sendNotification({
+      type: "push",
+      payload: {
+        user: { uid: client },
+        category: "client-appointment",
+        title: "A MoVET Expert is on their way to your location!",
+        message: truncateString(
+          "Please reach out if you have any questions or need assistance!",
+        ),
+        path: `/home/`,
+      },
+    });
+  else
+    sendNotification({
+      type: "push",
+      payload: {
+        user: { uid: client },
+        category: "client-appointment",
+        title: "It's almost time for your appointment w/ MoVET!",
+        message: truncateString(
+          "Please reach out if you have any questions or need assistance!",
+        ),
+        path: `/home/`,
+      },
+    });
 };
 
 const getReasonName = async (reason: string) =>

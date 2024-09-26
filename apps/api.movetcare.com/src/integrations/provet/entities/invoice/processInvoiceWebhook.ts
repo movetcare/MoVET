@@ -3,10 +3,6 @@ import { admin, throwError, DEBUG } from "../../../../config/config";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { saveClient } from "../client/saveClient";
 import { fetchEntity } from "../fetchEntity";
-import {
-  getClientNotificationSettings,
-  UserNotificationSettings,
-} from "../../../../utils/getClientNotificationSettings";
 import { sendNotification } from "../../../../notifications/sendNotification";
 import { truncateString } from "../../../../utils/truncateString";
 
@@ -46,28 +42,18 @@ export const processInvoiceWebhook = async (
                   { merge: true },
                 )
                 .then(async () => {
-                  const userNotificationSettings:
-                    | UserNotificationSettings
-                    | false = await getClientNotificationSettings(
-                    `${getProVetIdFromUrl(doc.data()?.client)}`,
-                  );
-                  if (
-                    userNotificationSettings &&
-                    userNotificationSettings?.sendPush &&
-                    doc.data()?.client
-                  )
-                    sendNotification({
-                      type: "push",
-                      payload: {
-                        user: { uid: getProVetIdFromUrl(doc.data()?.client) },
-                        category: "client-appointment",
-                        title: "Your Invoice from MoVET is Ready!",
-                        message: truncateString(
-                          "Please open the MoVET app to view and pay your invoice...",
-                        ),
-                        path: "/home/",
-                      },
-                    });
+                  sendNotification({
+                    type: "push",
+                    payload: {
+                      user: { uid: getProVetIdFromUrl(doc.data()?.client) },
+                      category: "client-appointment",
+                      title: "Your Invoice from MoVET is Ready!",
+                      message: truncateString(
+                        "Please open the MoVET app to view and pay your invoice...",
+                      ),
+                      path: "/home/",
+                    },
+                  });
                 })
                 .catch((error: any) => throwError(error));
             });
