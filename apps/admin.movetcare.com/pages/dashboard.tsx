@@ -1,5 +1,6 @@
 import { ClientSearch } from "components/ClientSearch";
 import { HoursStatus } from "components/HoursStatus";
+import { HoloweenCostumeContest } from "components/inactive/HowloweenCostumeContest";
 import { PushNotificationWarning } from "components/PushNotificationWarning";
 import TelehealthChatSummary from "components/TelehealthChatSummary";
 import Head from "next/head";
@@ -12,11 +13,11 @@ export default function Dashboard() {
       </Head>
       <ClientSearch />
       <PushNotificationWarning />
-      <div className="grid lg:grid-cols-2 gap-4">
+      <div className="grid lg:grid-cols-2 gap-4 mb-8">
         <HoursStatus mode="admin" />
         <TelehealthChatSummary />
       </div>
-      {/* <HoloweenCostumeContest/> */}
+      <HoloweenCostumeContest />
     </section>
   );
 }

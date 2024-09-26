@@ -12,6 +12,24 @@ import type { PopUpAd as PopUpAdType } from "types";
 const posts: Array<BlogPost> = [
   {
     isFeatured: true,
+    title:
+      "🎃 Annual HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 27th at 11AM - 3PM 🎃",
+    href: "/blog/howl-o-ween",
+    category: { name: "Community", href: "#", color: "bg-movet-magenta" },
+    description:
+      "Unleash your furry friend's inner superstar this Halloween with MoVET's spook-tacular HOWL-O-WEEN Pet Costume Contest! Dress up your pet in their most boo-tiful costume and capture their hauntingly adorable look in a FREE photoshoot!",
+    date: "Sept. 26th, 2024",
+    datetime: "2024-09-26",
+    imageUrl: "/images/blog/howl-o-ween-fetch-photo-logo.gif",
+    readingTime: "3 min",
+    author: {
+      name: "Dr. A",
+      href: "#",
+      imageUrl: "/images/blog/dr-a.png",
+    },
+  },
+  {
+    isFeatured: false,
     title: "Spot Check Heartworm Clinic - May 19th",
     href: "/blog/spot-check-heartworm-clinic",
     category: {
@@ -32,7 +50,7 @@ const posts: Array<BlogPost> = [
     },
   },
   {
-    isFeatured: true,
+    isFeatured: false,
     title: "Puppy Love Valentines Photo Event - Saturday, Feb 3rd  10AM-12PM",
     href: "/blog/puppy-love-photo-shoot",
     category: { name: "Community", href: "#", color: "bg-movet-magenta" },
@@ -42,23 +60,6 @@ const posts: Array<BlogPost> = [
     datetime: "2024-01-22",
     imageUrl: "/images/blog/puppy-love-photo-shoot.png",
     readingTime: "1 min",
-    author: {
-      name: "Dr. A",
-      href: "#",
-      imageUrl: "/images/blog/dr-a.png",
-    },
-  },
-  {
-    isFeatured: false,
-    title: "Annual HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 29th at 1PM",
-    href: "/blog/howl-o-ween",
-    category: { name: "Community", href: "#", color: "bg-movet-magenta" },
-    description:
-      "Join us at the Belleview Station Dog Park for this fun and FREE event! Enjoy a Photo Booth, Treats, and Belly Rubs. Dress your furry friend in their most adorable, scary, or hilarious costume. The more creative the better!",
-    date: "Oct 29th, 2023",
-    datetime: "2023-10-29",
-    imageUrl: "/images/blog/howl-o-ween-clip.png",
-    readingTime: "3 min",
     author: {
       name: "Dr. A",
       href: "#",

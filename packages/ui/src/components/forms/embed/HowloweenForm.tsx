@@ -162,14 +162,44 @@ export const HowloweenForm = () => {
     <>
       {!submissionSuccess ? (
         <>
-          <h1 className="mt-8 mb-0">Costume Contest Sign Up</h1>
-          <p>Submit the form below to enter into the contest.</p>
+          <h3 className="mt-4 mb-0 text-2xl">Existing MoVET Clients</h3>
+          <h2>You get a FREE photoshoot—no tricks, just treats!</h2>
+          <p>Please submit the form below to enter into the contest.</p>
         </>
       ) : (
         <>
-          <h1 className="mt-8 mb-0">Costume Contest Sign Up Successful</h1>
+          <h3 className="mt-4 mb-0 text-2xl">
+            Costume Contest Sign Up Successful
+          </h3>
           <p className="text-lg">
             We&apos;ve added you and your pet into the contest!
+          </p>
+          <FontAwesomeIcon
+            icon={faCheckCircle}
+            size="4x"
+            className="text-movet-green mx-auto w-full my-4"
+          />
+          <p className="text-center italic">
+            All entry photos will be posted on{" "}
+            <a
+              href="https://www.instagram.com/nessie_themovetpup/"
+              target="_blank"
+            >
+              Instagram
+            </a>{" "}
+            and{" "}
+            <a href="https://www.facebook.com/MOVETCARE" target="_blank">
+              Facebook
+            </a>{" "}
+            -- make sure to campaign your friends to vote by &quot;LIKING&quot;
+            your picture. Winning photo (the one with the most likes) will be
+            announced on Halloween and be featured as MoVET&apos;s November PET
+            OF THE MONTH!
+          </p>
+          <p className="italic text-center text-sm">
+            * Please arrive at least 5 minutes before your scheduled session.
+            Photos begin right at your scheduled time. If you&apos;re more than
+            3 minutes late, we won&apos;t have time to complete a session.
           </p>
         </>
       )}
@@ -183,27 +213,6 @@ export const HowloweenForm = () => {
             </pre>
           ) : submissionSuccess ? (
             <section className="relative mx-auto mt-4">
-              <FontAwesomeIcon
-                icon={faCheckCircle}
-                size="4x"
-                className="text-movet-green mx-auto w-full mb-4"
-              />
-              <p className="text-center sm:px-8 italic">
-                Be sure to have your friends and family vote
-                <br />
-                for their favorite costume on our{" "}
-                <a href="https://www.facebook.com/MOVETCARE" target="_blank">
-                  Facebook
-                </a>{" "}
-                and{" "}
-                <a
-                  href="https://www.instagram.com/nessie_themovetpup/"
-                  target="_blank"
-                >
-                  Instagram
-                </a>
-                !
-              </p>
               <p className="text-center sm:px-8 font-bold -mb-2 mt-4 text-sm">
                 Have another pet?
               </p>
@@ -372,7 +381,7 @@ export const HowloweenForm = () => {
                       </label>
                       <p className="text-xs italic">
                         By clicking the &quot;Sign Up&quot; button below, I
-                        hereby give the MoVET, Inc. and/or DenverPetPics my
+                        hereby give the MoVET, Inc. and/or Fetch Photo Truck my
                         permission to use the Images depicting the Property in
                         any Media, for any purpose, which may include, among
                         others, advertising, promotion, marketing and packaging
@@ -380,7 +389,7 @@ export const HowloweenForm = () => {
                         be combined with other images, text and graphics and
                         cropped, altered or modified. I agree that I have no
                         rights to the Images, and all rights to the Images
-                        belong to the MoVET, Inc. and/or DenverPetPics.
+                        belong to the MoVET, Inc. and/or Fetch Photo Truck.
                       </p>
                     </div>
                   </section>
