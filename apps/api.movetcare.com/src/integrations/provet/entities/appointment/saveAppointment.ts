@@ -64,7 +64,7 @@ export const saveAppointment = async (
       data.additionalUsers = additionalUsers;
     }
     if (proVetAppointmentData?.reason)
-      data.reason = getProVetIdFromUrl(proVetAppointmentData?.reason);
+      data.reason = proVetAppointmentData?.reason; //TODO: Update to getProVetIdFromUrl(proVetAppointmentData?.reason) and fix broken emails and mobile app screens;
     if (proVetAppointmentData?.consultation)
       data.consultation = getProVetIdFromUrl(
         proVetAppointmentData?.consultation,
