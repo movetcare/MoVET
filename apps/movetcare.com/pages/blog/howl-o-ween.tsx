@@ -1,7 +1,8 @@
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import Layout from "components/Layout";
 import Head from "next/head";
 import Image from "next/image";
-import { CallToAction, HowloweenForm } from "ui";
+import { Button, CallToAction } from "ui";
 
 export default function HowlOWeen() {
   return (
@@ -83,8 +84,10 @@ export default function HowlOWeen() {
           announced on Halloween and be featured as MoVET&apos;s November PET OF
           THE MONTH!
         </p>
-        <h3 className="mt-4 mb-0 text-2xl">New to MoVET?</h3>
-        <h2>Don&apos;t fret! Here&apos;s how you can join the fun...</h2>
+        <h3 className="mt-4 mb-0 text-2xl text-center">New to MoVET?</h3>
+        <h2 className="text-center">
+          Don&apos;t fret! Here&apos;s how you can join the fun...
+        </h2>
         <ol className="mb-8 italic">
           <li>
             1.{" "}
@@ -113,7 +116,25 @@ export default function HowlOWeen() {
             on Instagram.
           </li>
         </ol>
-        <HowloweenForm />
+        <h3 className="mt-4 mb-0 text-2xl text-center">
+          Existing MoVET Clients
+        </h3>
+        <h2 className="text-center mb-8">
+          You get a FREE photoshoot—no tricks, just treats!
+        </h2>
+        <Button
+          color="red"
+          text="Join the Contest"
+          icon={faArrowRight}
+          className="mb-8"
+          onClick={() =>
+            window.open(
+              `https://app.movetcare.com/booking/2024-howl-o-ween-pet-costume-contest/`,
+              "_blank",
+            )
+          }
+        />
+        {/* <HowloweenForm /> */}
       </section>
       <CallToAction />
     </Layout>
