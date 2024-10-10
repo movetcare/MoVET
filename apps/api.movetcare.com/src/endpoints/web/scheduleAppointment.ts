@@ -14,7 +14,11 @@ import { processReason } from "../../booking/session/processReason";
 import { processStaff } from "../../booking/session/processStaff";
 const DEBUG = false;
 export const scheduleAppointment = functions
-  .runWith(defaultRuntimeOptions)
+  .runWith({
+    ...defaultRuntimeOptions,
+    memory: "4GB",
+    minInstances: 1,
+  })
   .https.onCall(async (data: any): Promise<Booking | BookingError> => {
     if (DEBUG)
       console.log(

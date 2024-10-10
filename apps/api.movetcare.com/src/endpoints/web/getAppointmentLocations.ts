@@ -7,7 +7,7 @@ import {
 } from "../../config/config";
 
 export const getAppointmentLocations = functions
-  .runWith(defaultRuntimeOptions)
+  .runWith({ ...defaultRuntimeOptions, memory: "4GB" })
   .https.onCall(
     async (): Promise<any> =>
       await admin
@@ -19,7 +19,7 @@ export const getAppointmentLocations = functions
           if (DEBUG)
             console.log(
               "querySnapshot?.docs?.length",
-              querySnapshot?.docs?.length
+              querySnapshot?.docs?.length,
             );
           const reasonGroups: Array<{ label: string; value: string }> = [];
           if (querySnapshot?.docs?.length > 0)
@@ -27,10 +27,10 @@ export const getAppointmentLocations = functions
               reasonGroups.push({
                 label: doc.data()?.name,
                 value: doc.data()?.id,
-              })
+              }),
             );
           if (DEBUG) console.log("reasonGroups", reasonGroups);
           return reasonGroups;
         })
-        .catch((error: any) => throwError(error))
+        .catch((error: any) => throwError(error)),
   );

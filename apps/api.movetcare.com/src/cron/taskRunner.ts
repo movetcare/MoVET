@@ -6,6 +6,6 @@ import {
 import { processTaskQueue } from "../queue/processTaskQueue";
 
 export const taskRunner: Promise<any> = functions
-  .runWith(defaultRuntimeOptions)
+  .runWith({ ...defaultRuntimeOptions, memory: "4GB" })
   .pubsub.schedule("every 5 minutes")
   .onRun(() => environment?.type === "production" && processTaskQueue());

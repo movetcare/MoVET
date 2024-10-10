@@ -75,6 +75,7 @@ app.get("/configuration/reasons/", runAsync(getReasonsConfiguration));
 export const incomingWebhook: Promise<Response> = functions
   .runWith({
     ...defaultRuntimeOptions,
-    memory: "2GB",
+    memory: "4GB",
+    minInstances: 1,
   })
   .https.onRequest(app);

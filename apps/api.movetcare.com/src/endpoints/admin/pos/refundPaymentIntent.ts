@@ -9,7 +9,7 @@ import {
 import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 export const refundPaymentIntent = functions
-  .runWith(defaultRuntimeOptions)
+  .runWith({ ...defaultRuntimeOptions, memory: "4GB" })
   .https.onCall(
     async (
       data: {

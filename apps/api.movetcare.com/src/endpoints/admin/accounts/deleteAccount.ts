@@ -9,7 +9,7 @@ import { deleteAllAccountData } from "../../../utils/deleteAllAccountData";
 import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 export const deleteAccount = functions
-  .runWith(defaultRuntimeOptions)
+  .runWith({ ...defaultRuntimeOptions, memory: "4GB" })
   .https.onCall(async (data: any, context: any): Promise<boolean> => {
     if (!context.auth) return throwError({ message: "MISSING AUTHENTICATION" });
     else if (

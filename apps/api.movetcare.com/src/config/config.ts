@@ -55,10 +55,10 @@ export const throwError = (error: any): false => {
 };
 
 export const defaultRuntimeOptions = {
-  timeoutSeconds: 300,
+  timeoutSeconds: 540,
   memory: "512MB",
-  // minInstances: environment.type === "production" ? 1 : 0,
-  // maxInstances: 20,
+  minInstances: 0,
+  maxInstances: 30,
 };
 
 firebaseInstance = firebase.initializeApp(

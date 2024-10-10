@@ -10,7 +10,7 @@ import {
 } from "../../config/config";
 
 export const refreshCustomerToken = functions
-  .runWith(defaultRuntimeOptions)
+  .runWith({ ...defaultRuntimeOptions, memory: "4GB" })
   .https.onCall(
     async (
       data: any,

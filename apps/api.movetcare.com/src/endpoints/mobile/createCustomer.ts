@@ -13,7 +13,7 @@ import { getAuthUserById } from "../../utils/auth/getAuthUserById";
 import { verifyValidPaymentSource } from "../../utils/verifyValidPaymentSource";
 
 export const createCustomer = functions
-  .runWith(defaultRuntimeOptions)
+  .runWith({ ...defaultRuntimeOptions, memory: "4GB" })
   .https.onCall(async (data: any, context: any): Promise<any> => {
     if (DEBUG) console.log("INCOMING REQUEST PAYLOAD => ", context.auth?.uid);
     if (!context.auth) return throwError({ message: "MISSING AUTHENTICATION" });

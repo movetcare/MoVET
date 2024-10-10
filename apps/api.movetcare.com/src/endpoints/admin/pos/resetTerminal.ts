@@ -8,7 +8,7 @@ import { configureTerminals } from "../../../config/configureTerminals";
 import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 
 export const resetTerminal = functions
-  .runWith(defaultRuntimeOptions)
+  .runWith({ ...defaultRuntimeOptions, memory: "4GB" })
   .https.onCall(
     async (
       data: { mode: "counter" | "client"; invoice: string; reader: string },

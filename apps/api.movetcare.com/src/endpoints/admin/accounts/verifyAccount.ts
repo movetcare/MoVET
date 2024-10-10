@@ -125,7 +125,10 @@ interface StripeData {
   customer: Array<string>;
 }
 export const verifyAccount = functions
-  .runWith(defaultRuntimeOptions)
+  .runWith({
+    ...defaultRuntimeOptions,
+    memory: "4GB",
+  })
   .https.onCall(
     async (
       { id }: { id: string },

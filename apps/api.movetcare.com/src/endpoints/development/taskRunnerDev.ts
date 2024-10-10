@@ -1,9 +1,12 @@
-import {Response} from "express";
-import {functions, defaultRuntimeOptions} from "../../config/config";
-import {processTaskQueue} from "../../queue/processTaskQueue";
+import { Response } from "express";
+import { functions, defaultRuntimeOptions } from "../../config/config";
+import { processTaskQueue } from "../../queue/processTaskQueue";
 
 export const taskRunnerDev: Promise<Response> = functions
-  .runWith(defaultRuntimeOptions)
+  .runWith({
+    ...defaultRuntimeOptions,
+    memory: "2GB",
+  })
   .https.onRequest((request: any, response: any) => {
     if (request.headers.host === "localhost:5001") {
       processTaskQueue();
