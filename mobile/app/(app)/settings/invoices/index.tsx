@@ -1,6 +1,5 @@
 import { UnpaidInvoiceNotice } from "components/home/UnpaidInvoiceNotice";
 import {
-  BodyText,
   Container,
   Icon,
   ItalicText,
@@ -31,10 +30,12 @@ const Invoices = () => {
       const closedInvoices: Array<Invoice> = [];
       invoices.forEach((invoice: Invoice) => {
         if (
-          invoice.paymentStatus !== "succeeded" &&
-          invoice.paymentStatus !== "fully-refunded" &&
-          invoice.paymentStatus !== "partially-refunded" &&
-          invoice.paymentStatus !== "canceled"
+          ((invoice.paymentStatus !== "succeeded" &&
+            invoice.paymentStatus !== "fully-refunded" &&
+            invoice.paymentStatus !== "partially-refunded" &&
+            invoice.paymentStatus !== "canceled") ||
+            invoice.paymentStatus === null) &&
+          invoice?.status === 3
         )
           unpaidInvoices.push(invoice);
         else closedInvoices.push(invoice);

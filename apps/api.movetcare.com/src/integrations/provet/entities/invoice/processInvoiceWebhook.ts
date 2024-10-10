@@ -237,6 +237,7 @@ export const processInvoiceWebhook = async (
                     getProVetIdFromUrl(patientId),
                   ),
                   remarks: invoice?.remarks || null,
+                  status: invoice?.status,
                   payments,
                   paymentStatus: payments?.length > 0 ? "succeeded" : null,
                   items: invoiceItems,

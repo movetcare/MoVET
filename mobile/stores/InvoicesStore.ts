@@ -8,6 +8,7 @@ export interface Invoice {
   consultation: number;
   patients: Array<number>;
   remarks: string | null;
+  status: 0 | 3 | 4 | 99; // 0 = draft, 3 = finalized, 4 = invoicing, 99 = voided
   paymentStatus:
     | "succeeded"
     | "pending"

@@ -90,11 +90,12 @@ const Home = () => {
       const unpaidInvoices: Array<Invoice> = [];
       invoices.forEach((invoice: Invoice) => {
         if (
-          (invoice.paymentStatus !== "succeeded" &&
+          ((invoice.paymentStatus !== "succeeded" &&
             invoice.paymentStatus !== "fully-refunded" &&
             invoice.paymentStatus !== "partially-refunded" &&
             invoice.paymentStatus !== "canceled") ||
-          invoice.paymentStatus === null
+            invoice.paymentStatus === null) &&
+          invoice?.status === 3
         )
           unpaidInvoices.push(invoice);
       });
