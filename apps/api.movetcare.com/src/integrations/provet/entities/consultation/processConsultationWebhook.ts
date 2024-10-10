@@ -107,64 +107,74 @@ export const processConsultationWebhook = async (
     ) {
       // Place appointment summary in queue...
       if (proVetConsultationData?.status === 9) {
-        proVetConsultationData.patients.map((patient: string) => {
-          const patientId = getProVetIdFromUrl(patient);
-          updateCustomField(`${patientId}`, 2, "False");
-          const today = new Date();
-          admin
-            .firestore()
-            .collection("tasks_queue")
-            .doc(`${patientId}_expire_vcpr`)
-            .set(
-              {
-                options: {
-                  id: patientId,
-                },
-                worker: "expire_patient_vcpr",
-                status: "scheduled",
-                performAt: new Date(today.setMonth(today.getMonth() + 13)),
-                createdOn: new Date(),
-              },
-              { merge: true },
-            )
-            .then(
-              () =>
-                DEBUG &&
-                console.log(
-                  "PATIENT VCPR EXPIRE TASK ADDED TO QUEUE => ",
-                  `${patientId}_expire_vcpr`,
-                ),
-            )
-            .catch((error: any) => throwError(error));
-        });
-        admin
+        const didSendPushNotification = await admin
           .firestore()
           .collection("appointments")
           .doc(`${getProVetIdFromUrl(proVetConsultationData?.appointment)}`)
-          .set(
-            {
-              status: "COMPLETE",
-              updatedOn: new Date(),
-            },
-            { merge: true },
-          )
-          .then(async () => {
-            sendNotification({
-              type: "push",
-              payload: {
-                user: {
-                  uid: getProVetIdFromUrl(proVetConsultationData?.client),
-                },
-                category: "client-appointment",
-                title: "Your MoVET Invoice is Paid!",
-                message: truncateString(
-                  "Please leave us a review on the services you received today...",
-                ),
-                path: "/home/",
-              },
-            });
-          })
+          .get()
+          .then(async (doc: any) => doc.data()?.pushNotificationSentToClient)
           .catch((error: any) => throwError(error));
+        if (!didSendPushNotification) {
+          proVetConsultationData.patients.map((patient: string) => {
+            const patientId = getProVetIdFromUrl(patient);
+            updateCustomField(`${patientId}`, 2, "False");
+            const today = new Date();
+            admin
+              .firestore()
+              .collection("tasks_queue")
+              .doc(`${patientId}_expire_vcpr`)
+              .set(
+                {
+                  options: {
+                    id: patientId,
+                  },
+                  worker: "expire_patient_vcpr",
+                  status: "scheduled",
+                  performAt: new Date(today.setMonth(today.getMonth() + 13)),
+                  createdOn: new Date(),
+                },
+                { merge: true },
+              )
+              .then(
+                () =>
+                  DEBUG &&
+                  console.log(
+                    "PATIENT VCPR EXPIRE TASK ADDED TO QUEUE => ",
+                    `${patientId}_expire_vcpr`,
+                  ),
+              )
+              .catch((error: any) => throwError(error));
+          });
+          admin
+            .firestore()
+            .collection("appointments")
+            .doc(`${getProVetIdFromUrl(proVetConsultationData?.appointment)}`)
+            .set(
+              {
+                status: "COMPLETE",
+                pushNotificationSentToClient: new Date(),
+                updatedOn: new Date(),
+              },
+              { merge: true },
+            )
+            .then(async () => {
+              sendNotification({
+                type: "push",
+                payload: {
+                  user: {
+                    uid: getProVetIdFromUrl(proVetConsultationData?.client),
+                  },
+                  category: "client-appointment",
+                  title: "Your MoVET Invoice is Paid!",
+                  message: truncateString(
+                    "Please leave us a review on the services you received today...",
+                  ),
+                  path: "/home/",
+                },
+              });
+            })
+            .catch((error: any) => throwError(error));
+        }
       } else if (proVetConsultationData?.status === 8) {
         admin
           .firestore()

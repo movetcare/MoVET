@@ -70,14 +70,8 @@ export const Hero = ({
                       className="hover:no-underline group"
                     >
                       <div className="rounded-full bg-movet-brown mx-auto mt-4 group-hover:bg-movet-blue">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0">
-                            <FontAwesomeIcon
-                              icon={faSyringe}
-                              className="text-movet-white text-xl ml-6"
-                            />
-                          </div>
-                          <div className="ml-6 flex-1 mb-1">
+                        <div className="flex justify-center items-center text-center w-full">
+                          <div className="flex-1 mb-1">
                             <p className="-mb-2 text-movet-white">
                               {clinic?.name}
                             </p>
@@ -155,14 +149,8 @@ export const Hero = ({
               className="hover:no-underline group"
             >
               <div className="rounded-full bg-movet-brown mx-auto mt-4 group-hover:bg-movet-blue">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <FontAwesomeIcon
-                      icon={faSyringe}
-                      className="text-movet-white text-xl ml-6"
-                    />
-                  </div>
-                  <div className="ml-6 flex-1 mb-1">
+                <div className="flex items-center justify-center w-full">
+                  <div className="flex-col text-center mb-1">
                     <p className="-mb-2 text-movet-white">{clinic?.name}</p>
                     <p className="text-xs text-movet-white italic">
                       {new Date(

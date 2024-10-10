@@ -36,7 +36,7 @@ export const processClinicDateTime = async (
         throwError(error);
         return await handleFailedBooking(error, "GET BOOKING DATA FAILED");
       });
-    const paymentMethodIsRequired = true;
+    const paymentMethodIsRequired = false;
     const customer: string = await getCustomerId(session?.client?.uid);
     let validFormOfPayment = null,
       checkoutSession = null;
