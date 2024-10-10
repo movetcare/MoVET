@@ -20,7 +20,7 @@
     "@types/react-dom": "^18.3.0",
     "constant": "workspace:*",
     "lottie-web": "^5.12.2",
-    "next": "14.2.14",
+    "next": "14.2.15",
     "react": "^18.3.1",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.53.0",
@@ -29,7 +29,7 @@
     "schemas": "workspace:*",
     "tsconfig": "workspace:*",
     "types": "workspace:*",
-    "typescript": "^5.6.2",
+    "typescript": "^5.6.3",
     "utilities": "workspace:*",
     "yup": "^1.4.0"
   },
