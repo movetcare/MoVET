@@ -16,7 +16,6 @@ const DEBUG = false;
 export const scheduleAppointment = functions
   .runWith({
     ...defaultRuntimeOptions,
-    memory: "4GB",
     minInstances: 1,
   })
   .https.onCall(async (data: any): Promise<Booking | BookingError> => {

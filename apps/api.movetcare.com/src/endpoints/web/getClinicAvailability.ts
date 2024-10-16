@@ -30,7 +30,7 @@ interface ActiveResource {
   staggerTime: number;
 }
 export const getClinicAvailability = functions
-  .runWith({ ...defaultRuntimeOptions, memory: "4GB", minInstances: 1 })
+  .runWith({ ...defaultRuntimeOptions, minInstances: 1 })
   .https.onCall(async ({ id }: { id: string }): Promise<any> => {
     if (DEBUG)
       console.log("---------- getClinicAvailability ----------\n\nID => ", id);

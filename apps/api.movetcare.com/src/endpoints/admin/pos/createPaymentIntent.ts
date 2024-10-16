@@ -12,7 +12,7 @@ import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 import { getCustomerId } from "../../../utils/getCustomerId";
 
 export const createPaymentIntent = functions
-  .runWith({ ...defaultRuntimeOptions, memory: "4GB", minInstances: 1 })
+  .runWith({ ...defaultRuntimeOptions, minInstances: 1 })
   .https.onCall(
     async (
       data: {
