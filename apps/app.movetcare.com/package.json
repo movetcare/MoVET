@@ -59,7 +59,7 @@
     "postcss": "^8.4.47",
     "schemas": "workspace:*",
     "server": "workspace:*",
-    "tailwindcss": "^3.4.13",
+    "tailwindcss": "^3.4.14",
     "tsconfig": "workspace:*",
     "types": "workspace:*",
     "typescript": "^5.6.3",
