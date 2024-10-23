@@ -12,7 +12,7 @@ import { requestIsAuthorized } from "../../../utils/requestIsAuthorized";
 export const cancelTerminalAction = functions
   .runWith({
     ...defaultRuntimeOptions,
-    memory: "4GB",
+    memory: "2GB",
   })
   .https.onCall(
     async (

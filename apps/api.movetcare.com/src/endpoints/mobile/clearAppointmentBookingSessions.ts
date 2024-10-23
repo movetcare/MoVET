@@ -7,7 +7,7 @@ import {
 } from "../../config/config";
 
 export const clearAppointmentBookingSessions = functions
-  .runWith({ ...defaultRuntimeOptions, memory: "2GB" })
+  .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any, context: any): Promise<boolean> => {
     if (DEBUG) {
       console.log("clearAppointmentBookingSessions data => ", data);

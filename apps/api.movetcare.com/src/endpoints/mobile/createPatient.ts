@@ -6,7 +6,7 @@ import {
 import { createProVetPatient } from "../../integrations/provet/entities/patient/createProVetPatient";
 
 export const createPatient = functions
-  .runWith({ ...defaultRuntimeOptions, memory: "4GB" })
+  .runWith({ ...defaultRuntimeOptions, memory: "2GB" })
   .https.onCall(async (data: any, context: any): Promise<false | boolean> => {
     if (!context.auth) throwError({ message: "MISSING AUTHENTICATION" });
     return await createProVetPatient({ ...data, client: context.auth.uid });

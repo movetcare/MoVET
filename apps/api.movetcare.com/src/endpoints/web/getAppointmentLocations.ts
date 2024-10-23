@@ -7,7 +7,7 @@ import {
 } from "../../config/config";
 
 export const getAppointmentLocations = functions
-  .runWith({ ...defaultRuntimeOptions, memory: "4GB" })
+  .runWith(defaultRuntimeOptions)
   .https.onCall(
     async (): Promise<any> =>
       await admin
