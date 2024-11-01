@@ -35,8 +35,6 @@ export default function BlackFridayDeal() {
         />
         <meta name="twitter:site" content="https://movetcare.com" />
         <meta name="twitter:creator" content="Dr. A." />
-        <link rel="icon" type="image/png" href="/static/images/favicon.ico" />
-        <link rel="apple-touch-icon" href="/static/images/favicon.ico" />
         <meta
           property="og:image"
           content="/static/images/blog/black-friday-deal-2022.png"

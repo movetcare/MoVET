@@ -23,10 +23,25 @@ const MoVET = ({ Component, pageProps }: AppProps) => {
   return (
     <ErrorBoundary>
       <Head>
-        <title>MoVET - Your neighborhood vet, delivered</title>
+        <title>Veterinarian Near Me | MoVET @ Belleview Station</title>
+        <meta name="geo.placename" content="Denver" />
+        <meta name="geo.position" content="39.6252377;-104.9067478" />
+        <meta name="icbm" content="39.6252377, -104.9067478" />
+        <meta
+          property="og:title"
+          content="Veterinarian Near Me | MoVET @ Belleview Station"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://movetcare.com" />
+        <link rel="icon" type="image/png" href="favicon.ico" />
+        <link rel="apple-touch-icon" href="favicon.ico" />
         <meta
           name="description"
-          content="A stress-free way to take care of your pet care. Whether your pet is at the very beginning or the tailend of their lifespan, we can provide the age-appropriate primary care they need. For puppies and kittens, we offer packages and a la carte services for nutrition advice, vaccinations and boosters, spay/neuter advice, oral care, training, microchipping, parasite control, grooming, and exercise. For senior cats and dogs, our annual checks will be tailored toward your pet's advancing years."
+          content="MoVET @ Belleview Station offers a unique approach to veterinarian services to keep your pet healthy! As an experienced veterinarian in Denver, CO, we specialize in primary pet care and minor illness treatment through house calls, in-clinic appointments, and telehealth services."
+        />
+        <meta
+          property="og:description"
+          content="MoVET @ Belleview Station offers a unique approach to veterinarian services to keep your pet healthy! As an experienced veterinarian in Denver, CO, we specialize in primary pet care and minor illness treatment through house calls, in-clinic appointments, and telehealth services."
         />
         <meta
           name="apple-itunes-app"

@@ -41,8 +41,6 @@ heartworm disease. It is important that your pet be protected."
         />
         <meta name="twitter:site" content="https://movetcare.com" />
         <meta name="twitter:creator" content="Dr. Barbara Caldwell" />
-        <link rel="icon" type="image/png" href="/static/images/favicon.ico" />
-        <link rel="apple-touch-icon" href="/static/images/favicon.ico" />
         <meta
           property="og:image"
           content="/static/images/blog/winter-heartworm.jpg"

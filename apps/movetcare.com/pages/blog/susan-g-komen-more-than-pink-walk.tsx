@@ -46,8 +46,6 @@ export default function MoreThanPinkWalk() {
         />
         <meta name="twitter:site" content="https://movetcare.com" />
         <meta name="twitter:creator" content="Rachel Bloch" />
-        <link rel="icon" type="image/png" href="/static/images/favicon.ico" />
-        <link rel="apple-touch-icon" href="/static/images/favicon.ico" />
         <meta
           property="og:image"
           content="/static/images/blog/crop-cancer-awareness.png"
