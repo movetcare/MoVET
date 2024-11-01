@@ -9,7 +9,7 @@ import { processClinicPetSelection } from "../../booking/clinic/session/processC
 import { processClinicDateTime } from "../../booking/clinic/session/processClinicDateTime";
 const DEBUG = false;
 export const scheduleClinic = functions
-  .runWith({ ...defaultRuntimeOptions, minInstances: 1 })
+  .runWith(defaultRuntimeOptions)
   .https.onCall(async (data: any): Promise<ClinicBooking | BookingError> => {
     if (DEBUG)
       console.log(

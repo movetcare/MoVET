@@ -20,7 +20,7 @@
     "deploy:all": "eas submit --platform all --latest --profile release"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.9.0",
+    "@hookform/resolvers": "^3.9.1",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-picker/picker": "2.7.5",
     "@react-navigation/native": "^6.1.18",
@@ -59,11 +59,11 @@
     "react-native-webview": "13.8.6",
     "tailwindcss": "^3.4.14",
     "twrnc": "^4.5.1",
-    "uuid": "^10.0.0",
+    "uuid": "^11.0.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.9",
+    "@babel/core": "^7.26.0",
     "@expo/metro-config": "~0.18.11",
     "@types/lodash.debounce": "^4.0.9",
     "@types/react": "~18.2.79",

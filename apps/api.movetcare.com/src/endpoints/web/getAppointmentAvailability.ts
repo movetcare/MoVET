@@ -39,7 +39,7 @@ interface ActiveResource {
   staggerTime: number;
 }
 export const getAppointmentAvailability = functions
-  .runWith({ ...defaultRuntimeOptions, minInstances: 1, memory: "2GB" })
+  .runWith({ ...defaultRuntimeOptions, minInstances: 1 })
   .https.onCall(
     async ({
       date,
