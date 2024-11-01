@@ -1,5 +1,3 @@
-import { faSyringe } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import type { ClinicConfig } from "types";
@@ -63,11 +61,12 @@ export const Hero = ({
                   priority
                 />
                 {clinicsConfig &&
-                  clinicsConfig.map((clinic: ClinicConfig) => (
+                  clinicsConfig.map((clinic: ClinicConfig, index: number) => (
                     <a
                       href={`https://app.movetcare.com/booking/${clinic?.id}`}
                       target="_blank"
                       className="hover:no-underline group"
+                      key={index}
                     >
                       <div className="rounded-full bg-movet-brown mx-auto mt-4 group-hover:bg-movet-blue">
                         <div className="flex justify-center items-center text-center w-full">
@@ -142,11 +141,12 @@ export const Hero = ({
       </div>
       <div className="block z-100 sm:hidden mb-24 -mt-16 mx-8">
         {clinicsConfig &&
-          clinicsConfig.map((clinic: ClinicConfig) => (
+          clinicsConfig.map((clinic: ClinicConfig, index: number) => (
             <a
               href={`https://app.movetcare.com/booking/${clinic?.id}`}
               target="_blank"
               className="hover:no-underline group"
+              key={index}
             >
               <div className="rounded-full bg-movet-brown mx-auto mt-4 group-hover:bg-movet-blue">
                 <div className="flex items-center justify-center w-full">
