@@ -6,6 +6,7 @@ import { environment } from "utilities";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import ErrorBoundary from "components/ErrorBoundary";
+import { hotjar } from "react-hotjar";
 
 const AnalyticsTracker = dynamic(() =>
   import("ui").then((mod) => mod.AnalyticsTracker),
@@ -14,7 +15,10 @@ const AnalyticsTracker = dynamic(() =>
 const MoVET = ({ Component, pageProps }: AppProps) => {
   const [loadAnalytics, setLoadAnalytics] = useState(false);
   useEffect(() => {
-    if (environment === "production") setLoadAnalytics(true);
+    if (environment === "production") {
+      setLoadAnalytics(true);
+      hotjar.initialize({ id: 2516615, sv: 6 });
+    }
   }, []);
   return (
     <ErrorBoundary>

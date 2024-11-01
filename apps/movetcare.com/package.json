@@ -20,7 +20,8 @@
     "next": "15.0.2",
     "react": "18.3.1",
     "react-device-detect": "^2.2.3",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "react-hotjar": "^6.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
@@ -29,17 +30,17 @@
     "@types/node": "^22.8.6",
     "@types/react": "18.3.12",
     "autoprefixer": "^10.4.20",
+    "constant": "workspace:*",
     "eslint": "8.57.0",
     "eslint-config-custom": "workspace:*",
     "next-transpile-modules": "10.0.1",
     "postcss": "^8.4.47",
+    "schemas": "workspace:*",
+    "server": "workspace:*",
     "tailwindcss": "^3.4.14",
     "tsconfig": "workspace:*",
-    "typescript": "^5.6.3",
     "types": "workspace:*",
-    "schemas": "workspace:*",
-    "constant": "workspace:*",
-    "server": "workspace:*",
+    "typescript": "^5.6.3",
     "ui": "workspace:*",
     "utilities": "workspace:*"
   }

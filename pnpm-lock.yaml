@@ -476,6 +476,9 @@ importers:
       react-dom:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
+      react-hotjar:
+        specifier: ^6.3.1
+        version: 6.3.1
     devDependencies:
       '@babel/core':
         specifier: ^7.26.0
@@ -4333,6 +4336,9 @@ packages:
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
+
+  react-hotjar@6.3.1:
+    resolution: {integrity: sha512-EwMqL+ROSlKzatMhT/aqRq7XWWfzlnHynSBSTJh5M2O78mBiPohiSl4Ysls3HOQkkD9y6L22BW0c9bxK2JguwQ==}
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -9453,6 +9459,8 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
     transitivePeerDependencies:
       - csstype
+
+  react-hotjar@6.3.1: {}
 
   react-is@16.13.1: {}
 

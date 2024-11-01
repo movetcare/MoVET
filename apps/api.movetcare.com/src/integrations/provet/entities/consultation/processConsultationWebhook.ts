@@ -130,7 +130,7 @@ export const processConsultationWebhook = async (
                   },
                   worker: "expire_patient_vcpr",
                   status: "scheduled",
-                  performAt: new Date(today.setMonth(today.getMonth() + 13)),
+                  performAt: new Date(today.setMonth(today.getMonth() + 15)),
                   createdOn: new Date(),
                 },
                 { merge: true },
