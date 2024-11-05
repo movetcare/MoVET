@@ -150,12 +150,6 @@ export default function BookingSuccess() {
                         Note: {session?.address?.info}
                       </p>
                     )}
-                    <h5 className="font-bold -mb-2">Reason</h5>
-                    <p className="italic font-extrabold">
-                      {session?.establishCareExamRequired
-                        ? "Establish Care Exam"
-                        : session?.reason?.label}
-                    </p>
                     <h5 className="font-bold -mb-2">
                       Pet{session?.selectedPatients.length > 1 && "s"}
                     </h5>

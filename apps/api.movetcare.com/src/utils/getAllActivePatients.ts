@@ -22,6 +22,7 @@ export const getAllActivePatients = async (
                 species: patient.data().species,
                 birthday: patient.data().birthday,
                 breed: patient.data().breed,
+                vcprExpiresOn: patient.data().vcprExpiresOn || null,
                 vcprRequired:
                   patient.data().vcprRequired ||
                   (getCustomFieldValue(

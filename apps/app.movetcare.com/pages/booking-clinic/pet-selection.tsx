@@ -38,6 +38,8 @@ export default function PetSelection() {
   const [clinicRequiresVcpr, setClinicRequiresVcpr] = useState<boolean | null>(
     null,
   );
+  const [reestablishCareExamRequired, setreestablishCareExamRequired] =
+    useState<boolean>(false);
   const cancelButtonRef = useRef(null);
   const [session, setSession] = useState<any>();
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -169,6 +171,7 @@ export default function PetSelection() {
       let vcprPetCount = 0;
       pets.forEach((pet: any) => {
         if (pet.vcprRequired) vcprPetCount++;
+        if (pet.vcprExpiresOn) setreestablishCareExamRequired(true);
         if (selectedPets !== null) {
           if (Array.isArray(selectedPets))
             selectedPets.map((selectedPet: any) => {
@@ -335,7 +338,8 @@ export default function PetSelection() {
                                   {capitalizeFirstLetter(pet.name)}
                                 </p>
                                 <span className="text-xs italic text-movet-red/70 ml-2 text-right grow font-extrabold cursor-not-allowed">
-                                  * Requires Establish Care Exam
+                                  * Requires {pet?.vcprExpiresOn ? "Re-" : ""}
+                                  Establish Care Exam
                                 </span>
                                 <FontAwesomeIcon
                                   icon={faTimes}
@@ -369,6 +373,23 @@ export default function PetSelection() {
                     </div>
                   ))}
                 <ErrorMessage errorMessage={errors?.pets?.message as string} />
+                {reestablishCareExamRequired && (
+                  <div
+                    className={
+                      "w-full p-4 text-center border-2 border-movet-yellow rounded-xl my-8"
+                    }
+                  >
+                    <h5 className="italic">
+                      It&apos;s been over a year since your pet&apos;s last
+                      appointment!
+                    </h5>
+                    <p className="text-sm mb-0">
+                      An in-person check up is required to re-establish care for
+                      your pet and unlock all of the services and benefits MoVET
+                      has to offer.
+                    </p>
+                  </div>
+                )}
                 {showVcprDescription && (
                   <>
                     <span
@@ -380,7 +401,8 @@ export default function PetSelection() {
                         size="lg"
                         className="mr-2 text-movet-brown -mt-1"
                       />
-                      What are Establish Care Exams?
+                      What are {reestablishCareExamRequired ? "Re-" : ""}
+                      Establish Care Exams?
                     </span>
                   </>
                 )}
@@ -393,12 +415,15 @@ export default function PetSelection() {
                   content={
                     <>
                       <h2 className="m-0 italic text-base">
-                        Only pets that have completed an Establish Care Exam may
-                        attend this clinic.
+                        Only pets that have completed
+                        {reestablishCareExamRequired ? " a Re-" : " an "}
+                        Establish Care Exam may attend this clinic.
                       </h2>
                       <hr className="border-movet-gray w-full my-4" />
                       <p>
-                        Establish Care Exams are used to start a
+                        {reestablishCareExamRequired ? "Re-" : ""}Establish Care
+                        Exams are used to{" "}
+                        {reestablishCareExamRequired ? "restart" : "start"} a
                         Veterinarian-Client-Patient Relationship
                         (&quot;VCPR&quot;). A VCPR is established only when your
                         veterinarian examines your pet in person, and is
@@ -433,7 +458,9 @@ export default function PetSelection() {
                           contact us
                         </a>{" "}
                         if you believe there is an error and your pet has
-                        completed an establish care exam.
+                        completed{" "}
+                        {reestablishCareExamRequired ? "a re-" : "an "}
+                        establish care exam.
                       </p>
                     </>
                   }
@@ -457,7 +484,7 @@ export default function PetSelection() {
                           icon={faStethoscope}
                           iconSize={"sm"}
                           color="red"
-                          text="Establish VCPR"
+                          text={`${reestablishCareExamRequired ? "Re-" : ""}Establish VCPR`}
                           className={
                             "w-full sm:w-1/2 ml-0 sm:ml-4 mt-4 sm:mt-0"
                           }
@@ -478,7 +505,7 @@ export default function PetSelection() {
                           icon={faStethoscope}
                           iconSize={"sm"}
                           color="black"
-                          text="Establish VCPR"
+                          text={`${reestablishCareExamRequired ? "Re-" : ""}Establish VCPR`}
                           className={"w-full sm:w-1/2 mr-0 sm:mr-4"}
                           onClick={() => {
                             window.localStorage.setItem(

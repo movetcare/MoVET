@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Error from "../Error";
 import Select, { components } from "react-select";
-import { collection } from "firebase/firestore";
+import { collection, limit, query } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { firestore } from "services/firebase";
 import { useRouter } from "next/router";
@@ -22,7 +22,7 @@ export const InvoiceSearch = () => {
   const [searchTerm, setSearchTerm]: any = useState<string>();
   const [options, setOptions] = useState<Array<Option> | null>(null);
   const [invoiceData, loading, error] = useCollection(
-    collection(firestore, "client_invoices"),
+    query(collection(firestore, "client_invoices"), limit(100)),
   );
   useEffect(() => {
     if (invoiceData) {

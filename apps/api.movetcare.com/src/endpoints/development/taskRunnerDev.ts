@@ -5,7 +5,7 @@ import { processTaskQueue } from "../../queue/processTaskQueue";
 export const taskRunnerDev: Promise<Response> = functions
   .runWith({
     ...defaultRuntimeOptions,
-    memory: "2GB",
+    memory: "1GB",
   })
   .https.onRequest((request: any, response: any) => {
     if (request.headers.host === "localhost:5001") {

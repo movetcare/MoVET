@@ -11,7 +11,7 @@ import { getAuthUserByEmail } from "../../utils/auth/getAuthUserByEmail";
 import { recaptchaIsVerified } from "../../utils/recaptchaIsVerified";
 const DEBUG = false;
 export const requestAppointment = functions
-  .runWith({ ...defaultRuntimeOptions, memory: "2GB" })
+  .runWith({ ...defaultRuntimeOptions, memory: "1GB" })
   .https.onCall(async (data: any): Promise<true | BookingError> => {
     if (DEBUG)
       console.log(

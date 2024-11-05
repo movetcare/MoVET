@@ -13,7 +13,7 @@ import { verifyExistingClient } from "../../utils/auth/verifyExistingClient";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 
 export const verifyClient = functions
-  .runWith({ ...defaultRuntimeOptions, memory: "2GB" })
+  .runWith({ ...defaultRuntimeOptions, memory: "1GB" })
   .https.onCall(
     async (data: {
       email: string;

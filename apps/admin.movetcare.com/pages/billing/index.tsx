@@ -42,7 +42,7 @@ export default function Billing() {
       where("client_due_sum", "==", 0),
       where("status", "==", 3),
       orderBy("updatedOn", "desc"),
-      limit(100),
+      limit(50),
     ),
   );
   const [
@@ -55,7 +55,7 @@ export default function Billing() {
       where("client_due_sum", "==", 0),
       where("status", "==", 3),
       orderBy("updatedOn", "desc"),
-      limit(100),
+      limit(50),
     ),
   );
 

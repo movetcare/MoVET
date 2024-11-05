@@ -29,7 +29,7 @@ export const processLocation = async (data: {
           step: "location-selection" as Booking["step"],
           updatedOn: new Date(),
         },
-        { merge: true }
+        { merge: true },
       )
       .catch(async (error: any) => {
         throwError(error);
@@ -81,7 +81,7 @@ export const processLocation = async (data: {
       } else if (DEBUG)
         console.log(
           "SKIPPED PROVET CLIENT ADDRESS UPDATE - LOCATION: ",
-          location
+          location,
         );
       sendNotification({
         type: "slack",
@@ -139,13 +139,19 @@ export const processLocation = async (data: {
       });
       return {
         ...session,
-        reason: session?.establishCareExamRequired
+        reason: session?.reestablishCareExamRequired
           ? location === "Home"
-            ? defaultBookingReasons?.housecallStandardVcprReason
+            ? defaultBookingReasons?.housecallRenewVcprReason
             : location === "Clinic"
-            ? defaultBookingReasons?.clinicStandardVcprReason
-            : defaultBookingReasons?.virtualStandardVcprReason
-          : null,
+              ? defaultBookingReasons?.clinicRenewVcprReason
+              : defaultBookingReasons?.virtualRenewVcprReason
+          : session?.establishCareExamRequired
+            ? location === "Home"
+              ? defaultBookingReasons?.housecallStandardVcprReason
+              : location === "Clinic"
+                ? defaultBookingReasons?.clinicStandardVcprReason
+                : defaultBookingReasons?.virtualStandardVcprReason
+            : null,
         id,
         client: {
           uid: session?.client?.uid,

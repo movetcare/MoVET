@@ -54,6 +54,20 @@ export const updateCustomField = async (
     );
     console.log("id", id);
   }
+  if (id === 2 && value === "False") {
+    const today = new Date();
+    admin
+      .firestore()
+      .collection("clients")
+      .doc(`${patient}`)
+      .set(
+        {
+          vcprExpiresOn: new Date(today.setMonth(today.getMonth() + 15)),
+          updatedOn: new Date(),
+        },
+        { merge: true },
+      );
+  }
   if (
     customFieldValue === null ||
     customFieldValue === false ||

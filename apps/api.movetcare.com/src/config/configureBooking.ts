@@ -213,6 +213,10 @@ export const configureBooking = async (): Promise<boolean> => {
             value: 106,
             label: "Establish Care Exam",
           },
+          clinicRenewVcprReason: {
+            value: 132,
+            label: "Re-Establish Care Exam @ Clinic",
+          },
           clinicSameDayAppointmentVcprRequired: true,
           clinicSameDayAppointmentLeadTime: 90,
           housecallActiveResources: [
@@ -250,6 +254,10 @@ export const configureBooking = async (): Promise<boolean> => {
             value: 105,
             label: "Establish Care Exam",
           },
+          housecallRenewVcprReason: {
+            value: 133,
+            label: "Re-Establish Care Exam @ Home",
+          },
           housecallSameDayAppointmentVcprRequired: false,
           housecallSameDayAppointmentLeadTime: 120,
           virtualActiveResources: [
@@ -284,6 +292,10 @@ export const configureBooking = async (): Promise<boolean> => {
           virtualThreePatientDuration: 90,
           virtualAppointmentBufferTime: 0,
           virtualStandardVcprReason: {
+            value: 121,
+            label: "Virtual Meet & Greet",
+          },
+          virtualRenewVcprReason: {
             value: 121,
             label: "Virtual Meet & Greet",
           },

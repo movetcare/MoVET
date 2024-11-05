@@ -697,7 +697,7 @@ const verifyScheduleIsOpen = async (
     return {
       isOpenOnDate: false,
       closedReason:
-        "Same day appointments are not available for new patients. Please select a future date.",
+        "Same day appointments are not currently available. Please select a future date...",
     };
   }
   return { isOpenOnDate: true, closedReason: null };

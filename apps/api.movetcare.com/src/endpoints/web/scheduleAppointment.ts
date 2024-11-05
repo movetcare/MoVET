@@ -32,6 +32,7 @@ export const scheduleAppointment = functions
       addAPet,
       petSelection,
       establishCareExamRequired,
+      reestablishCareExamRequired,
       illPetSelection,
       illnessDetails,
       location,
@@ -72,6 +73,7 @@ export const scheduleAppointment = functions
                 ? petSelection.pets
                 : [petSelection.pets],
               establishCareExamRequired,
+              reestablishCareExamRequired,
             );
           } else if (illPetSelection) {
             if (DEBUG)

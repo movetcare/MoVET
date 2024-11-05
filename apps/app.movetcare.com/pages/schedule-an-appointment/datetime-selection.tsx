@@ -161,6 +161,7 @@ export default function DateTime() {
             setLoadingMessage("Almost finished...");
             if (result?.needsRetry) {
               setRetryRequired(true);
+              setSelectedTime(null);
               setIsLoading(false);
               setIsLoadingFull(false);
             } else if (result?.client?.uid && result?.id) {
@@ -220,22 +221,6 @@ export default function DateTime() {
                       }
                     />
                     <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
-                      <Modal
-                        showModal={retryRequired}
-                        setShowModal={setRetryRequired}
-                        cancelButtonRef={cancelButtonRef}
-                        isLoading={isLoading}
-                        error={error ? <Error message={error} /> : undefined}
-                        content={
-                          <p>
-                            We&apos;re sorry, but there is already an
-                            appointment scheduled for this time. Please select a
-                            different time slot and try again.
-                          </p>
-                        }
-                        title="Something Went Wrong..."
-                        icon={faExclamationTriangle}
-                      />
                       <Calendar
                         onChange={(value: any) => {
                           setIsLoading(true);
@@ -588,9 +573,7 @@ export default function DateTime() {
                         Reason
                       </label>
                       <p className="italic font-extrabold">
-                        {session?.establishCareExamRequired
-                          ? "Establish Care Exam"
-                          : session?.reason?.label}
+                        {session?.reason?.label}
                       </p>
                       <label className="block text-sm font-medium text-movet-black font-abside mt-2 -mb-2">
                         Pet
@@ -661,6 +644,21 @@ export default function DateTime() {
           </div>
         </div>
       </div>
+      <Modal
+        showModal={retryRequired}
+        setShowModal={setRetryRequired}
+        cancelButtonRef={cancelButtonRef}
+        isLoading={isLoading}
+        error={error ? <Error message={error} /> : undefined}
+        content={
+          <p>
+            We&apos;re sorry, but there is already an appointment scheduled for
+            this time. Please select a different time slot and try again.
+          </p>
+        }
+        title="Something Went Wrong..."
+        icon={faExclamationTriangle}
+      />
     </section>
   );
 }

@@ -36,6 +36,8 @@ export default function PetSelection() {
     useState<boolean>(false);
   const [establishCareExamRequired, setEstablishCareExamRequired] =
     useState<boolean>(false);
+  const [reestablishCareExamRequired, setreestablishCareExamRequired] =
+    useState<boolean>(false);
   const [showExplainer, setShowExplainer] = useState<boolean>(false);
   const [session, setSession] = useState<any>();
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -82,6 +84,7 @@ export default function PetSelection() {
       let vcprPetCount = 0;
       pets.forEach((pet: any) => {
         if (pet.vcprRequired) vcprPetCount++;
+        if (pet.vcprExpiresOn) setreestablishCareExamRequired(true);
         if (selectedPets !== null) {
           if (Array.isArray(selectedPets))
             selectedPets.map((selectedPet: any) => {
@@ -142,6 +145,17 @@ export default function PetSelection() {
     setIsLoading(true);
     setLoadingMessage("Saving Your Selection...");
     if (executeRecaptcha) {
+      let vcprRenewPetMatchCount = 0;
+      pets.forEach((pet: any) => {
+        if (selectedPets !== null) {
+          if (Array.isArray(selectedPets))
+            selectedPets.map((selectedPet: any) => {
+              if (selectedPet === pet.id && pet.vcprExpiresOn)
+                vcprRenewPetMatchCount++;
+            });
+        } else if (selectedPets === pet.id && pet.vcprExpiresOn)
+          vcprRenewPetMatchCount++;
+      });
       const token = await executeRecaptcha("booking");
       if (token) {
         try {
@@ -153,6 +167,7 @@ export default function PetSelection() {
               ...data,
             },
             establishCareExamRequired,
+            reestablishCareExamRequired: vcprRenewPetMatchCount > 0,
             id: session?.id,
             device: JSON.parse(
               JSON.stringify(UAParser(), function (key: any, value: any) {
@@ -268,7 +283,8 @@ export default function PetSelection() {
                         </p>
                         {pet.vcprRequired ? (
                           <span className="text-xs italic text-movet-red ml-2 text-right grow font-extrabold">
-                            * Requires Establish Care Exam
+                            * Requires {pet?.vcprExpiresOn ? "Re-" : ""}
+                            Establish Care Exam
                           </span>
                         ) : (
                           <span className="text-xs italic text-movet-red ml-2 text-center grow">
@@ -294,6 +310,23 @@ export default function PetSelection() {
                       : (errors?.pets?.message as string)
                   }
                 />
+                {reestablishCareExamRequired && (
+                  <div
+                    className={
+                      "w-full p-4 text-center border-2 border-movet-yellow rounded-xl mt-8"
+                    }
+                  >
+                    <h5 className="italic">
+                      It&apos;s been over a year since your pet&apos;s last
+                      appointment!
+                    </h5>
+                    <p className="text-sm mb-0">
+                      An in-person check up is required to re-establish care for
+                      your pet and unlock all of the services and benefits MoVET
+                      has to offer.
+                    </p>
+                  </div>
+                )}
                 {showVcprDescription && (
                   <>
                     <span
@@ -305,10 +338,12 @@ export default function PetSelection() {
                         size="lg"
                         className="mr-2 text-movet-brown -mt-1"
                       />
-                      What are Establish Care Exams?
+                      What are {reestablishCareExamRequired ? "Re-" : ""}
+                      Establish Care Exams?
                     </span>
                   </>
                 )}
+
                 <Modal
                   showModal={showExplainer}
                   setShowModal={setShowExplainer}
@@ -318,7 +353,9 @@ export default function PetSelection() {
                   content={
                     <>
                       <p>
-                        Establish Care Exams are used to start a
+                        {reestablishCareExamRequired ? "Re-" : ""}Establish Care
+                        Exams are used to{" "}
+                        {reestablishCareExamRequired ? "restart" : "start"} a
                         Veterinarian-Client-Patient Relationship
                         (&quot;VCPR&quot;).
                       </p>
@@ -347,7 +384,7 @@ export default function PetSelection() {
                       </p>
                     </>
                   }
-                  title="What are Establish Care Exams?"
+                  title={`What are ${reestablishCareExamRequired ? "Re-" : ""}Establish Care Exams?`}
                   icon={faStethoscope}
                 />
                 <div className="flex flex-col sm:flex-row mt-12 mb-6">

@@ -17,6 +17,7 @@ export type ClientBookingData = {
 export type PatientBookingData = {
   id: string;
   name: string;
+  vcprExpiresOn?: any;
   archived?: boolean;
   vcprRequired?: boolean | null;
   aggressionStatus?: boolean | null;
@@ -54,6 +55,7 @@ export type Booking = {
   createdAt?: any;
   device?: any;
   establishCareExamRequired?: boolean;
+  reestablishCareExamRequired?: boolean;
   patients?: Array<PatientBookingData>;
   id: string;
   selectedPatients?: Array<string>;

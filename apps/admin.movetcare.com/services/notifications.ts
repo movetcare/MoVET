@@ -24,11 +24,6 @@ export const notifications = {
           })
             .then(async (currentToken: string) => {
               if (currentToken) {
-                if (
-                  user?.uid === "0" ||
-                  user?.uid === "bBbNFLLYA9O7Xi4oAVEAPP34rmm2"
-                )
-                  console.log("PUSH TOKEN", currentToken);
                 const deviceInfo = JSON.parse(
                   JSON.stringify(UAParser(), (key: any, value: any) =>
                     value === undefined ? null : value,

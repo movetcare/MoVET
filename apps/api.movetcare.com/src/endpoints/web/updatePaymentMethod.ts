@@ -16,7 +16,7 @@ interface UpdatePaymentMethodRequest {
 }
 
 export const updatePaymentMethod = functions
-  .runWith({ ...defaultRuntimeOptions, memory: "2GB" })
+  .runWith({ ...defaultRuntimeOptions, memory: "1GB" })
   .https.onCall(
     async ({
       token,

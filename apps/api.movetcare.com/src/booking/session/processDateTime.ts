@@ -108,6 +108,7 @@ export const processDateTime = async (
             patientSelection: session?.selectedPatients,
             illPatientSelection: session?.illPatientSelection,
             establishCareExamRequired: session?.establishCareExamRequired,
+            reestablishCareExamRequired: session.reestablishCareExamRequired,
             totalPatients: session?.selectedPatients?.length,
           });
         const { proVetData, movetData }: any = await formatAppointmentData({
@@ -126,6 +127,7 @@ export const processDateTime = async (
           patientSelection: session?.selectedPatients,
           illPatientSelection: session?.illPatientSelection,
           establishCareExamRequired: session?.establishCareExamRequired,
+          reestablishCareExamRequired: session.reestablishCareExamRequired,
           totalPatients: session?.selectedPatients?.length,
         });
         if (DEBUG)
@@ -372,24 +374,30 @@ const formatAppointmentData = async (appointment: any) => {
       return await handleFailedBooking(error, "GET DEFAULT REASONS FAILED");
     });
 
-  const complaint = appointment?.establishCareExamRequired
+  const complaint = appointment?.reestablishCareExamRequired
     ? appointment?.locationType === "Home"
-      ? defaultBookingReasons?.housecallStandardVcprReason?.label
+      ? defaultBookingReasons?.housecallRenewVcprReason?.label
       : appointment?.locationType === "Clinic"
-        ? defaultBookingReasons?.clinicStandardVcprReason?.label
-        : defaultBookingReasons?.virtualStandardVcprReason?.label
-    : appointment?.reason
-      ? await admin
-          .firestore()
-          .collection("reasons")
-          .doc(`${appointment?.reason}`)
-          .get()
-          .then((doc: any) => doc.data()?.name || "REASON NAME NOT FOUND...")
-          .catch(async (error: any) => {
-            console.error(error);
-            return "REASON NOT FOUND...";
-          })
-      : "No Symptoms of Illness";
+        ? defaultBookingReasons?.clinicRenewVcprReason?.label
+        : defaultBookingReasons?.virtualRenewVcprReason?.label
+    : appointment?.establishCareExamRequired
+      ? appointment?.locationType === "Home"
+        ? defaultBookingReasons?.housecallStandardVcprReason?.label
+        : appointment?.locationType === "Clinic"
+          ? defaultBookingReasons?.clinicStandardVcprReason?.label
+          : defaultBookingReasons?.virtualStandardVcprReason?.label
+      : appointment?.reason
+        ? await admin
+            .firestore()
+            .collection("reasons")
+            .doc(`${appointment?.reason}`)
+            .get()
+            .then((doc: any) => doc.data()?.name || "REASON NAME NOT FOUND...")
+            .catch(async (error: any) => {
+              console.error(error);
+              return "REASON NOT FOUND...";
+            })
+        : "No Symptoms of Illness";
   if (DEBUG)
     console.log("appointment RETURN", {
       proVetData: {
@@ -408,13 +416,19 @@ const formatAppointmentData = async (appointment: any) => {
         start: formatToProVetTimestamp(start),
         end: formatToProVetTimestamp(end),
         complaint,
-        reason: appointment?.establishCareExamRequired
+        reason: appointment?.reestablishCareExamRequired
           ? appointment?.locationType === "Home"
-            ? defaultBookingReasons?.housecallStandardVcprReason?.value
+            ? defaultBookingReasons?.housecallRenewVcprReason?.value
             : appointment?.locationType === "Clinic"
-              ? defaultBookingReasons?.clinicStandardVcprReason?.value
-              : defaultBookingReasons?.virtualStandardVcprReason?.value
-          : appointment?.reason,
+              ? defaultBookingReasons?.clinicRenewVcprReason?.value
+              : defaultBookingReasons?.virtualRenewVcprReason?.value
+          : appointment?.establishCareExamRequired
+            ? appointment?.locationType === "Home"
+              ? defaultBookingReasons?.housecallStandardVcprReason?.value
+              : appointment?.locationType === "Clinic"
+                ? defaultBookingReasons?.clinicStandardVcprReason?.value
+                : defaultBookingReasons?.virtualStandardVcprReason?.value
+            : appointment?.reason,
         resources: [appointment?.resource],
         notes,
         patients: appointment.patientSelection,
@@ -427,6 +441,22 @@ const formatAppointmentData = async (appointment: any) => {
         status: "PENDING",
       },
     });
+  console.log(
+    "reason",
+    appointment?.reestablishCareExamRequired
+      ? appointment?.locationType === "Home"
+        ? defaultBookingReasons?.housecallRenewVcprReason?.value
+        : appointment?.locationType === "Clinic"
+          ? defaultBookingReasons?.clinicRenewVcprReason?.value
+          : defaultBookingReasons?.virtualRenewVcprReason?.value
+      : appointment?.establishCareExamRequired
+        ? appointment?.locationType === "Home"
+          ? defaultBookingReasons?.housecallStandardVcprReason?.value
+          : appointment?.locationType === "Clinic"
+            ? defaultBookingReasons?.clinicStandardVcprReason?.value
+            : defaultBookingReasons?.virtualStandardVcprReason?.value
+        : appointment?.reason,
+  );
   return {
     proVetData: {
       client: appointment?.client,
@@ -444,13 +474,19 @@ const formatAppointmentData = async (appointment: any) => {
       start: formatToProVetTimestamp(start),
       end: formatToProVetTimestamp(end),
       complaint,
-      reason: appointment?.establishCareExamRequired
+      reason: appointment?.reestablishCareExamRequired
         ? appointment?.locationType === "Home"
-          ? defaultBookingReasons?.housecallStandardVcprReason?.value
+          ? defaultBookingReasons?.housecallRenewVcprReason?.value
           : appointment?.locationType === "Clinic"
-            ? defaultBookingReasons?.clinicStandardVcprReason?.value
-            : defaultBookingReasons?.virtualStandardVcprReason?.value
-        : appointment?.reason,
+            ? defaultBookingReasons?.clinicRenewVcprReason?.value
+            : defaultBookingReasons?.virtualRenewVcprReason?.value
+        : appointment?.establishCareExamRequired
+          ? appointment?.locationType === "Home"
+            ? defaultBookingReasons?.housecallStandardVcprReason?.value
+            : appointment?.locationType === "Clinic"
+              ? defaultBookingReasons?.clinicStandardVcprReason?.value
+              : defaultBookingReasons?.virtualStandardVcprReason?.value
+          : appointment?.reason,
       resources: [appointment?.resource],
       notes,
       patients: appointment.patientSelection,

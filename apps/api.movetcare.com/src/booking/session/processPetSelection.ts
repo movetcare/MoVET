@@ -6,12 +6,14 @@ import { handleFailedBooking } from "./handleFailedBooking";
 export const processPetSelection = async (
   id: string,
   selectedPets: Array<string>,
-  establishCareExamRequired: boolean
+  establishCareExamRequired: boolean,
+  reestablishCareExamRequired: boolean,
 ): Promise<Booking | BookingError> => {
   const data = {
     id,
     selectedPets,
     establishCareExamRequired,
+    reestablishCareExamRequired,
   };
   if (DEBUG) console.log("PET SELECTION DATA", data);
   if (selectedPets?.length > 0) {
@@ -21,10 +23,11 @@ export const processPetSelection = async (
         {
           selectedPatients: selectedPets,
           establishCareExamRequired,
+          reestablishCareExamRequired,
           step: "pet-selection" as Booking["step"],
           updatedOn: new Date(),
         },
-        { merge: true }
+        { merge: true },
       )
       .catch(async (error: any) => {
         throwError(error);
@@ -82,6 +85,7 @@ export const processPetSelection = async (
       patients: session.patients,
       selectedPatients: session.selectedPatients,
       establishCareExamRequired: session.establishCareExamRequired,
+      reestablishCareExamRequired: session.reestablishCareExamRequired,
       id,
       client: {
         uid: session?.client?.uid,
