@@ -306,7 +306,7 @@ export default function PetSelection() {
                 <ErrorMessage
                   errorMessage={
                     vcprRequiredError
-                      ? "Only pets that require an Establish Care Exam may be selected"
+                      ? `Only pets that require ${reestablishCareExamRequired ? "a Re-establish" : "an Establish"} Care Exam may be selected`
                       : (errors?.pets?.message as string)
                   }
                 />
