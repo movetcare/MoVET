@@ -107,14 +107,19 @@ export const processConsultationWebhook = async (
     ) {
       // Place appointment summary in queue...
       if (proVetConsultationData?.status === 9) {
-        const didSendPushNotification = await admin
+        const appointmentEndedFromInvoicePaymentSuccess = await admin
           .firestore()
           .collection("appointments")
           .doc(`${getProVetIdFromUrl(proVetConsultationData?.appointment)}`)
           .get()
-          .then(async (doc: any) => doc.data()?.pushNotificationSentToClient)
+          .then(async (doc: any) => doc.data()?.appointmentEndedAt)
           .catch((error: any) => throwError(error));
-        if (!didSendPushNotification) {
+        if (DEBUG)
+          console.log(
+            "appointmentEndedFromInvoicePaymentSuccess",
+            appointmentEndedFromInvoicePaymentSuccess,
+          );
+        if (!appointmentEndedFromInvoicePaymentSuccess) {
           proVetConsultationData.patients.map((patient: string) => {
             const patientId = getProVetIdFromUrl(patient);
             updateCustomField(`${patientId}`, 2, "False");
@@ -152,7 +157,7 @@ export const processConsultationWebhook = async (
             .set(
               {
                 status: "COMPLETE",
-                pushNotificationSentToClient: new Date(),
+                appointmentEndedAt: new Date(),
                 updatedOn: new Date(),
               },
               { merge: true },

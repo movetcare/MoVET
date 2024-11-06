@@ -17,7 +17,7 @@ export type ClientBookingData = {
 export type PatientBookingData = {
   id: string;
   name: string;
-  vcprExpiresOn?: any;
+  vcprRenewedOn?: any;
   archived?: boolean;
   vcprRequired?: boolean | null;
   aggressionStatus?: boolean | null;

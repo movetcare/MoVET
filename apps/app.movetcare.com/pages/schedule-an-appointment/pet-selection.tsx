@@ -84,7 +84,7 @@ export default function PetSelection() {
       let vcprPetCount = 0;
       pets.forEach((pet: any) => {
         if (pet.vcprRequired) vcprPetCount++;
-        if (pet.vcprExpiresOn) setreestablishCareExamRequired(true);
+        if (pet.vcprRenewedOn) setreestablishCareExamRequired(true);
         if (selectedPets !== null) {
           if (Array.isArray(selectedPets))
             selectedPets.map((selectedPet: any) => {
@@ -150,10 +150,10 @@ export default function PetSelection() {
         if (selectedPets !== null) {
           if (Array.isArray(selectedPets))
             selectedPets.map((selectedPet: any) => {
-              if (selectedPet === pet.id && pet.vcprExpiresOn)
+              if (selectedPet === pet.id && pet.vcprRenewedOn)
                 vcprRenewPetMatchCount++;
             });
-        } else if (selectedPets === pet.id && pet.vcprExpiresOn)
+        } else if (selectedPets === pet.id && pet.vcprRenewedOn)
           vcprRenewPetMatchCount++;
       });
       const token = await executeRecaptcha("booking");
@@ -283,7 +283,7 @@ export default function PetSelection() {
                         </p>
                         {pet.vcprRequired ? (
                           <span className="text-xs italic text-movet-red ml-2 text-right grow font-extrabold">
-                            * Requires {pet?.vcprExpiresOn ? "Re-" : ""}
+                            * Requires {pet?.vcprRenewedOn ? "Re-" : ""}
                             Establish Care Exam
                           </span>
                         ) : (

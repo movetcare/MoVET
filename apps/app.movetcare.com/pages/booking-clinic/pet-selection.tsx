@@ -171,7 +171,7 @@ export default function PetSelection() {
       let vcprPetCount = 0;
       pets.forEach((pet: any) => {
         if (pet.vcprRequired) vcprPetCount++;
-        if (pet.vcprExpiresOn) setreestablishCareExamRequired(true);
+        if (pet.vcprRenewedOn) setreestablishCareExamRequired(true);
         if (selectedPets !== null) {
           if (Array.isArray(selectedPets))
             selectedPets.map((selectedPet: any) => {
@@ -338,7 +338,7 @@ export default function PetSelection() {
                                   {capitalizeFirstLetter(pet.name)}
                                 </p>
                                 <span className="text-xs italic text-movet-red/70 ml-2 text-right grow font-extrabold cursor-not-allowed">
-                                  * Requires {pet?.vcprExpiresOn ? "Re-" : ""}
+                                  * Requires {pet?.vcprRenewedOn ? "Re-" : ""}
                                   Establish Care Exam
                                 </span>
                                 <FontAwesomeIcon
