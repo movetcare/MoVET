@@ -859,10 +859,17 @@ const getReasons = async (schedule: AppointmentScheduleTypes) =>
             reasonGroup === doc.data().group
           )
             reasons.push(doc.data()?.id);
-          else if (doc.data().id === 106 && schedule === "clinic")
+          else if (
+            (doc.data().id === 106 ||
+              doc.data().id === 110 ||
+              doc.data().id === 132) &&
+            schedule === "clinic"
+          )
             reasons.push(doc.data()?.id);
           else if (
-            (doc.data().id === 105 || doc.data().id === 111) &&
+            (doc.data().id === 105 ||
+              doc.data().id === 111 ||
+              doc.data().id === 133) &&
             schedule === "housecall"
           )
             reasons.push(doc.data()?.id);
