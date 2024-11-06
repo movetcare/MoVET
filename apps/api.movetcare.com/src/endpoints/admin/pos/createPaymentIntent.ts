@@ -179,6 +179,7 @@ export const createPaymentIntent = functions
           if (DEBUG) console.log("paymentIntent", paymentIntent);
           const params = new URLSearchParams();
           params.append("payment_intent", paymentIntent?.id);
+          params.append("collect_config[allow_redisplay]", "always");
           return reader
             ? await request
                 .post(
