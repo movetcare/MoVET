@@ -57,16 +57,17 @@ export const updateCustomField = async (
     );
     console.log("id", id);
   }
-  if (id === 2 && value === "False") {
-    if (DEBUG) console.log("updateCustomField => vcprRenewedOn", new Date());
-    admin.firestore().collection("patients").doc(`${patient}`).set(
-      {
-        vcprRenewedOn: new Date(),
-        updatedOn: new Date(),
-      },
-      { merge: true },
-    );
-  }
+  // TODO: FIX LOGIC...
+  // if (id === 2 && value === "False") {
+  //   if (DEBUG) console.log("updateCustomField => vcprRenewedOn", new Date());
+  //   admin.firestore().collection("patients").doc(`${patient}`).set(
+  //     {
+  //       vcprRenewedOn: new Date(),
+  //       updatedOn: new Date(),
+  //     },
+  //     { merge: true },
+  //   );
+  // }
   if (
     customFieldValue === null ||
     customFieldValue === false ||
