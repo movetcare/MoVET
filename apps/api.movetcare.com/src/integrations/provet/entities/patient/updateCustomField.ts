@@ -59,6 +59,7 @@ export const updateCustomField = async (
   }
   // TODO: FIX LOGIC...
   // if (id === 2 && value === "False") {
+  // Check if patient has vcprRequired = true, if vcprRequired value does not exist skip, if it does exist, set vcprRenewedOn
   //   if (DEBUG) console.log("updateCustomField => vcprRenewedOn", new Date());
   //   admin.firestore().collection("patients").doc(`${patient}`).set(
   //     {

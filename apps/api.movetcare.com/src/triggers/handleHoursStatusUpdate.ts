@@ -99,23 +99,24 @@ export const handleHoursStatusUpdate = functions.firestore
         },
       });
     }
-    sendNotification({
-      type: "email",
-      payload: {
-        to: "info@movetcare.com",
-        bcc: "alex.rodriguez@movetcare.com",
-        replyTo: "alex.rodriguez@movetcare.com",
-        subject: `${data?.user ? `(User: #${data?.user}) - ` : ""}HOURS OVERRIDE STATUS UPDATED`,
-        message: `<p><b>CURRENT STATUS:</b></p><p>${
-          (data?.boutiqueStatus ? "Boutique: OPEN" : "Boutique: CLOSED ") +
-          " | " +
-          (data?.clinicStatus ? "Clinic: OPEN " : "Clinic: CLOSED ") +
-          " | " +
-          (data?.walkinsStatus ? "Walk Ins: OPEN " : "Walk Ins: CLOSED ") +
-          " | " +
-          (data?.housecallStatus ? "Housecalls: OPEN " : "Housecalls: CLOSED ")
-        }</p><p><a href="https://admin.movetcare.com/settings/manage-hours/" target="_blank">View Hours Override Settings</a></p>`,
-      },
-    });
+    if (data?.user)
+      sendNotification({
+        type: "email",
+        payload: {
+          to: "info@movetcare.com",
+          subject: `${data?.user ? `${data?.user}` : "SOMEONE"} MANUALLY CHANGED MOVET'S OPEN/CLOSED HOURS...`,
+          message: `<p><b>CURRENT STATUS:</b></p><p>${
+            (data?.boutiqueStatus ? "Boutique: OPEN" : "Boutique: CLOSED ") +
+            " | " +
+            (data?.clinicStatus ? "Clinic: OPEN " : "Clinic: CLOSED ") +
+            " | " +
+            (data?.walkinsStatus ? "Walk Ins: OPEN " : "Walk Ins: CLOSED ") +
+            " | " +
+            (data?.housecallStatus
+              ? "Housecalls: OPEN "
+              : "Housecalls: CLOSED ")
+          }</p><p><a href="https://admin.movetcare.com/settings/manage-hours/" target="_blank">View Hours Override Settings</a></p>`,
+        },
+      });
     return true;
   });

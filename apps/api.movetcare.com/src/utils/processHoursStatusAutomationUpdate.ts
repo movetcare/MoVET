@@ -87,9 +87,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
         type: "email",
         payload: {
           to: "info@movetcare.com",
-          bcc: "alex.rodriguez@movetcare.com",
-          replyTo: "alex.rodriguez@movetcare.com",
-          subject: `${options?.user ? `(User: #${options?.user}) - ` : ""}${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
+          subject: `${options?.user ? `${options?.user} CHANGED ` : ""} ${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
           message:
             '<p>No further action is required. This is just an alert to let you know the hours automation has run successfully.</p><p><a href="https://admin.movetcare.com/settings/manage-hours/" target="_blank">View Hours Automation Settings</a></p>',
         },
@@ -99,8 +97,6 @@ export const processHoursStatusAutomationUpdate = async (options: {
         type: "email",
         payload: {
           to: "info@movetcare.com",
-          bcc: "alex.rodriguez@movetcare.com",
-          replyTo: "alex.rodriguez@movetcare.com",
           subject: `SKIPPED ${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATE`,
           message:
             '<p>This automation has been skipped because today is marked as a global closure. No further action is required.</p><p><a href="https://admin.movetcare.com/settings/manage-hours/" target="_blank">View Hours Automation Settings</a></p>',
@@ -171,9 +167,7 @@ export const processHoursStatusAutomationUpdate = async (options: {
       type: "email",
       payload: {
         to: "info@movetcare.com",
-        bcc: "alex.rodriguez@movetcare.com",
-        replyTo: "alex.rodriguez@movetcare.com",
-        subject: `${options?.user ? `(User: #${options?.user}) - ` : ""}${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
+        subject: `${options?.user ? `${options?.user} CHANGED ` : ""} ${type?.toUpperCase()} HOURS AUTOMATION STATUS UPDATED -  ${action?.toUpperCase()}`,
         message:
           '<p>No further action is required. This is just an alert to let you know the hours automation has run successfully.</p><p><a href="https://admin.movetcare.com/settings/manage-hours/" target="_blank">View Hours Automation Settings</a></p>',
       },
