@@ -50,7 +50,7 @@
     "simple-oauth2": "^5.1.0",
     "stripe": "^17.3.1",
     "trello-node-api": "^0.0.9",
-    "uuid": "^11.0.2"
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
