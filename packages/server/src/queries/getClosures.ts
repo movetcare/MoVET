@@ -4,6 +4,7 @@ interface Closure {
   isActiveForClinic: boolean;
   endDate: any;
   startDate: any;
+  createdOn: any;
   isActiveForHousecalls: boolean;
   isActiveForTelehealth: boolean;
   showOnWebsite: boolean;
@@ -22,6 +23,14 @@ export const getClosures = async () => {
         if (closure?.showOnWebsite)
           websiteClosuresToDisplay.push({
             ...closure,
+            createdOn: closure?.createdOn
+              ? closure?.createdOn?.toDate()?.toLocaleDateString("en-us", {
+                  weekday: "short",
+                  year: "numeric",
+                  month: "numeric",
+                  day: "numeric",
+                })
+              : null,
             startDate: closure?.startDate
               ?.toDate()
               ?.toLocaleDateString("en-us", {
