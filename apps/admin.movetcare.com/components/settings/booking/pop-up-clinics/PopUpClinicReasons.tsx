@@ -110,8 +110,8 @@ const PopUpClinicReasons = ({
                   Reason <span className="text-sm text-movet-red">*</span>
                 </span>
                 <p className="text-sm">
-                  This is the reason assigned to appointments when a 1st time
-                  client (or existing client with a new pet) books a clinic.
+                  This is the reason assigned to appointments when a client (new
+                  or existing) books a clinic.
                 </p>
               </div>
               <Listbox value={selectedReason} onChange={setSelectedReason}>

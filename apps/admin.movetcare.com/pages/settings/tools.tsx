@@ -5,6 +5,9 @@ import {
   faCheckCircle,
   faClock,
   faGear,
+  faCloudArrowUp,
+  faCircleCheck,
+  faRedo,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Loader } from "ui";
@@ -23,6 +26,11 @@ const Tools = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const { id } = router.query;
+  const [marketingDeploymentSummary, setMarketingDeploymentSummary] =
+    useState<any>(null);
+  const [webDeploymentSummary, setWebDeploymentSummary] = useState<any>(null);
+  const [adminDeploymentSummary, setAdminDeploymentSummary] =
+    useState<any>(null);
   const {
     reset,
     handleSubmit,
@@ -34,6 +42,82 @@ const Tools = () => {
       clientId: null,
     } as any,
   });
+
+  const getDeploymentStatus = async (
+    application: "MARKETING" | "WEB" | "ADMIN",
+  ) => {
+    const result = await fetch(
+      `https://api.vercel.com/v13/deployments/${application === "MARKETING" ? "movetcare.com" : application === "WEB" ? "app.movetcare.com" : "admin.movetcare.com"}`,
+      {
+        headers: {
+          Authorization: "Bearer " + process.env.NEXT_PUBLIC_DEPLOY_TOKEN,
+          "Content-Type": "application/json",
+        },
+        method: "get",
+      },
+    );
+    const data = await result.json();
+    console.log(application + " DEPLOY SUMMARY =>", data);
+    if (application === "MARKETING") setMarketingDeploymentSummary(data);
+    else if (application === "WEB") setWebDeploymentSummary(data);
+    else if (application === "ADMIN") setAdminDeploymentSummary(data);
+  };
+
+  useEffect(() => {
+    getDeploymentStatus("WEB");
+    getDeploymentStatus("MARKETING");
+    getDeploymentStatus("ADMIN");
+  }, []);
+
+  const deployApplication = async (
+    application: "MARKETING" | "WEB" | "ADMIN",
+  ) => {
+    const deploy = await fetch(
+      `https://api.vercel.com/v1/integrations/deploy/${
+        application === "MARKETING"
+          ? "prj_U3YE4SJdfQooyh9TsZsZmvdoL28T/exR90BAbzS"
+          : application === "WEB"
+            ? "prj_da86e8MG9HWaYYjOhzhDRwznKPtc/Kv7tDyrjjO"
+            : "prj_zwuwfb9o6mrilCIVcJCUKa6NAtua/UUpwHgjX3H"
+      }?buildCache=false`,
+      {
+        method: "post",
+      },
+    );
+    const deployData = await deploy.json();
+    console.log(application + " DEPLOY TRIGGER RESPONSE", deployData);
+    if (deployData?.job?.id)
+      toast(
+        `${application} App Deployment Triggered: ${deployData?.job?.id}\n\nStatus: ${deployData?.job?.state} - ${new Date(
+          deployData?.job?.createdAt,
+        ).toLocaleTimeString("en-US", {
+          timeZone: "America/Denver",
+          timeZoneName: "short",
+          hour12: true,
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`,
+        {
+          icon: (
+            <FontAwesomeIcon
+              icon={faCircleCheck}
+              size="sm"
+              className="text-movet-green"
+            />
+          ),
+        },
+      );
+    else
+      toast(`Something went wrong...\n\n${JSON.stringify(deployData)}`, {
+        icon: (
+          <FontAwesomeIcon
+            icon={faCircleExclamation}
+            size="sm"
+            className="text-movet-red"
+          />
+        ),
+      });
+  };
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
@@ -91,8 +175,147 @@ const Tools = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  const DeploymentTool = ({
+    application,
+    deploymentSummary,
+  }: {
+    application: "MARKETING" | "WEB" | "ADMIN";
+    deploymentSummary: any;
+  }) => {
+    return (
+      <div className="mx-auto w-full flex flex-col justify-center items-center p-4">
+        <Button
+          type="submit"
+          color="red"
+          onClick={() => deployApplication(application)}
+          className="mb-3"
+        >
+          <FontAwesomeIcon icon={faCloudArrowUp} size="lg" />
+          <span className="ml-2">RE-DEPLOY {application}</span>
+        </Button>
+        <div className="hover:cursor-pointer">
+          {deploymentSummary?.ready && (
+            <p className="text-center text-xs">
+              <FontAwesomeIcon
+                icon={faRedo}
+                size="xs"
+                className="mr-1 hover:cursor-pointer hover:text-movet-green ease-in-out duration-500"
+                onClick={() => {
+                  toast(
+                    `${application} App Deployment Status is Refreshing...`,
+                    {
+                      icon: (
+                        <FontAwesomeIcon
+                          icon={faCircleCheck}
+                          size="sm"
+                          className="text-movet-green"
+                        />
+                      ),
+                    },
+                  );
+                  getDeploymentStatus(application);
+                }}
+              />
+              Last Deployment:{" "}
+              <span
+                className="italic"
+                onClick={() =>
+                  window.open(deploymentSummary?.inspectorUrl, "_blank")
+                }
+              >
+                {new Date(deploymentSummary?.ready).toLocaleTimeString(
+                  "en-US",
+                  {
+                    // timeZone: "America/Denver",
+                    timeZoneName: "short",
+                    day: "numeric",
+                    month: "numeric",
+                    year: "numeric",
+                    hour12: true,
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  },
+                )}
+              </span>
+            </p>
+          )}
+          {deploymentSummary?.readyState &&
+            deploymentSummary?.readyState !== "READY" && (
+              <p
+                className="text-center text-xs text-movet-red"
+                onClick={() =>
+                  window.open(deploymentSummary?.inspectorUrl, "_blank")
+                }
+              >
+                Status:{" "}
+                <span className="italic">{deploymentSummary?.readyState}</span>
+              </p>
+            )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <AdminCheck>
+      <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
+        <div className="flex flex-row items-center justify-center -mb-4">
+          <FontAwesomeIcon
+            icon={faCloudArrowUp}
+            className={"text-movet-green"}
+            size="lg"
+          />
+          <h1 className="ml-2 my-4 text-lg cursor-pointer">
+            Re-Deploy an Application
+          </h1>
+        </div>
+        <ul
+          role="list"
+          className="divide-y divide-movet-gray border-t border-movet-gray mt-4"
+        >
+          <li>
+            <div
+              className={
+                "flex flex-col items-center px-4 py-4 sm:px-6 group mx-auto max-w-xl"
+              }
+            >
+              <div className="min-w-0 flex-col w-full justify-center">
+                <p className=" mt-2 text-center text-sm">
+                  Use this tool to manually trigger deployments of MoVET
+                  applications.
+                </p>
+                <p className="mt-2 text-center text-xs italic">
+                  This is useful when changes made in the Admin app are not
+                  being reflected on the marketing website or scheduling app.
+                </p>
+                <div className="flex flex-col md:flex-row w-full mx-auto">
+                  <DeploymentTool
+                    application="MARKETING"
+                    deploymentSummary={marketingDeploymentSummary}
+                  />
+                  <DeploymentTool
+                    application="WEB"
+                    deploymentSummary={webDeploymentSummary}
+                  />
+                  <DeploymentTool
+                    application="ADMIN"
+                    deploymentSummary={adminDeploymentSummary}
+                  />
+                </div>
+                <p className="text-center text-sm italic text-movet-red">
+                  NOTE: Deployments can take up to 5 minutes to complete...
+                </p>
+                <p className="text-center text-xs italic text-movet-red">
+                  Contact technical support if it&apos;s been more than 15
+                  minutes and the &quot;Last Deployment&quot; time is not
+                  updating after clicking on the refresh button for that
+                  application.
+                </p>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
       {environment === "development" && (
         <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
           <div className="flex flex-row items-center justify-center -mb-4">
@@ -112,7 +335,7 @@ const Tools = () => {
             <li>
               <div
                 className={
-                  "flex flex-col items-center px-4 py-4 sm:px-6 group mx-auto max-w-xl"
+                  "flex flex-col items-center px-4 py-4 sm:px-6 mx-auto max-w-xl"
                 }
               >
                 <div className="min-w-0 flex-col w-full justify-center">

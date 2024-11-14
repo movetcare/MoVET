@@ -455,7 +455,7 @@ export default function DateTime() {
                         name="notes"
                         control={control}
                         errors={errors}
-                        placeholder="Enter any additional notes or a promo code"
+                        placeholder="Please provide more detail about your medical concerns for this visit..."
                         multiline
                         numberOfLines={2}
                         className="my-4 w-full"
