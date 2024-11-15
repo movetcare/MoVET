@@ -120,6 +120,7 @@ export const processConsultationWebhook = async (
             appointmentEndedFromInvoicePaymentSuccess,
           );
         if (!appointmentEndedFromInvoicePaymentSuccess) {
+          // TODO: refactor to check if the invoice items contain "VCPR" and only update a patients VCPR status if its tagged on the item.
           proVetConsultationData.patients.map((patient: string) => {
             const patientId = getProVetIdFromUrl(patient);
             updateCustomField(`${patientId}`, 2, "False");

@@ -1,5 +1,6 @@
 // PROVET CUSTOM FIELDS MAPPING - https://us.provetcloud.com/4285/api/0.1/custom_fields/
 import { admin, request } from "../../../../config/config";
+import { sendNotification } from "../../../../notifications/sendNotification";
 const DEBUG = true;
 export const updateCustomField = async (
   patient: string,
@@ -57,18 +58,22 @@ export const updateCustomField = async (
     );
     console.log("id", id);
   }
-  // TODO: FIX LOGIC...
-  // if (id === 2 && value === "False") {
-  // Check if patient has vcprRequired = true, if vcprRequired value does not exist skip, if it does exist, set vcprRenewedOn
-  //   if (DEBUG) console.log("updateCustomField => vcprRenewedOn", new Date());
-  //   admin.firestore().collection("patients").doc(`${patient}`).set(
-  //     {
-  //       vcprRenewedOn: new Date(),
-  //       updatedOn: new Date(),
-  //     },
-  //     { merge: true },
-  //   );
-  // }
+  if (id === 2 && value === "False") {
+    if (DEBUG) console.log("updateCustomField => vcprRenewedOn", new Date());
+    // admin.firestore().collection("patients").doc(`${patient}`).set(
+    //   {
+    //     vcprRenewedOn: new Date(),
+    //     updatedOn: new Date(),
+    //   },
+    //   { merge: true },
+    // );
+    sendNotification({
+      type: "slack",
+      payload: {
+        message: `:robot_face: Patient #${patient}'s VCPR has been established (or renewed)`,
+      },
+    });
+  }
   if (
     customFieldValue === null ||
     customFieldValue === false ||
