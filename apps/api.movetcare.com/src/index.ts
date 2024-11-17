@@ -5,7 +5,6 @@ export { resetTestData } from "./endpoints/development/resetTestData";
 export { syncData } from "./endpoints/development/syncData";
 
 export { taskRunner } from "./cron/taskRunner";
-export { rebuildStaticSites as rebuildStaticWebsite } from "./cron/rebuildStaticSites";
 
 export { handleClinicBookingConfigUpdate } from "./triggers/handleClinicBookingConfigUpdate";
 export { handleBookingUpdate } from "./triggers/handleBookingUpdate";
