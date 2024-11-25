@@ -164,5 +164,43 @@ const updatePatientsVcprRenewedOn = async (patient: string) => {
         message: `:robot_face: Patient #${patient}'s VCPR has been ESTABLISHED`,
       },
     });
+  const today = new Date();
+  admin
+    .firestore()
+    .collection("tasks_queue")
+    .doc(`${patient}_expire_vcpr`)
+    .set(
+      {
+        options: {
+          id: patient,
+        },
+        worker: "expire_patient_vcpr",
+        status: "scheduled",
+        performAt: new Date(today.setMonth(today.getMonth() + 15)),
+        createdOn: new Date(),
+      },
+      { merge: true },
+    )
+    .then(() => {
+      if (DEBUG)
+        console.log(
+          "PATIENT VCPR EXPIRE TASK ADDED TO QUEUE => ",
+          `${patient}_expire_vcpr`,
+        );
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: `:robot_face: Patient #${patient}'s VCPR is set to auto EXPIRE in 15 months (${new Date(
+            today.setMonth(today.getMonth() + 15),
+          )?.toLocaleDateString("en-us", {
+            weekday: "short",
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          })})}`,
+        },
+      });
+    })
+    .catch((error: any) => throwError(error));
   return true;
 };

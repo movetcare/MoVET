@@ -5,6 +5,7 @@ import { fetchEntity } from "../fetchEntity";
 import { Request, Response } from "express";
 import { sendNotification } from "../../../../notifications/sendNotification";
 import { truncateString } from "../../../../utils/truncateString";
+import { savePatient } from "../patient/savePatient";
 
 const DEBUG = true;
 export const processConsultationWebhook = async (
@@ -120,37 +121,36 @@ export const processConsultationWebhook = async (
             appointmentEndedFromInvoicePaymentSuccess,
           );
         if (!appointmentEndedFromInvoicePaymentSuccess) {
-          // TODO: refactor to check if the invoice items contain "VCPR" and only update a patients VCPR status if its tagged on the item.
-          proVetConsultationData.patients.map((patient: string) => {
-            const patientId = getProVetIdFromUrl(patient);
-            updateCustomField(`${patientId}`, 2, "False");
-            const today = new Date();
-            admin
-              .firestore()
-              .collection("tasks_queue")
-              .doc(`${patientId}_expire_vcpr`)
-              .set(
-                {
-                  options: {
-                    id: patientId,
-                  },
-                  worker: "expire_patient_vcpr",
-                  status: "scheduled",
-                  performAt: new Date(today.setMonth(today.getMonth() + 15)),
-                  createdOn: new Date(),
-                },
-                { merge: true },
-              )
-              .then(
-                () =>
-                  DEBUG &&
-                  console.log(
-                    "PATIENT VCPR EXPIRE TASK ADDED TO QUEUE => ",
-                    `${patientId}_expire_vcpr`,
-                  ),
-              )
-              .catch((error: any) => throwError(error));
-          });
+          const vcprEstablishedIds: Array<number> = [];
+          await admin
+            .firestore()
+            .collection("client_invoices")
+            .doc(`${proVetConsultationData?.invoice}`)
+            .collection("items")
+            .get()
+            .then((snapshot: any) => {
+              snapshot.docs.map((doc: any) => {
+                if (
+                  doc.data()?.name?.toLowerCase()?.includes("establish care") ||
+                  doc.data()?.name?.toLowerCase()?.includes("vcpr")
+                ) {
+                  const patientId = getProVetIdFromUrl(doc.data()?.patient);
+                  if (patientId) vcprEstablishedIds.push();
+                }
+              });
+            })
+            .catch((error: any) => throwError(error));
+          if (vcprEstablishedIds.length > 0)
+            await Promise.all(
+              vcprEstablishedIds.map(async (patientId: number) => {
+                await updateCustomField(`${patientId}`, 2, "False");
+                const proVetPatientData = await fetchEntity(
+                  "patient",
+                  patientId,
+                );
+                await savePatient(proVetPatientData);
+              }),
+            );
           admin
             .firestore()
             .collection("appointments")
