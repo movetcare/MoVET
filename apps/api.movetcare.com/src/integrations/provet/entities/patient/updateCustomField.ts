@@ -78,9 +78,9 @@ export const updateCustomField = async (
             response.data,
           ),
       )
-      .then(() => {
+      .then(async () => {
         if (id === 2 && value === "False")
-          return updatePatientsVcprRenewedOn(patient);
+          return await updatePatientsVcprRenewedOn(patient);
         else return true;
       })
       .catch((error: any) => (console.log("ERROR: ", error) as any) && false);
@@ -99,9 +99,9 @@ export const updateCustomField = async (
             response.data,
           ),
       )
-      .then(() => {
+      .then(async () => {
         if (id === 2 && value === "False")
-          return updatePatientsVcprRenewedOn(patient);
+          return await updatePatientsVcprRenewedOn(patient);
         else return true;
       })
       .catch(
