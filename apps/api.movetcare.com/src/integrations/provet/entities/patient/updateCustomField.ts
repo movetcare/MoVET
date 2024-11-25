@@ -58,56 +58,6 @@ export const updateCustomField = async (
     );
     console.log("id", id);
   }
-  if (id === 2 && value === "False") {
-    const hasCompletedOneOrMoreAppointments = await admin
-      .firestore()
-      .collection("appointments")
-      .where("patientIds", "array-contains", Number(patient))
-      .where("active", "==", 1)
-      .where("start", "<=", new Date())
-      .get()
-      .then((docs: any) => {
-        if (DEBUG)
-          console.log(
-            `updateCustomField => pastAppointments (PATIENT ${patient})`,
-            docs.size,
-          );
-        if (docs.size > 0) return true;
-        else return false;
-      })
-      .catch((error: any) => {
-        throwError(error);
-        return null;
-      });
-    if (hasCompletedOneOrMoreAppointments) {
-      if (DEBUG) {
-        console.log(
-          "updateCustomField => hasCompletedOneOrMoreAppointments",
-          true,
-        );
-        console.log("updateCustomField => vcprRenewedOn", new Date());
-      }
-      admin.firestore().collection("patients").doc(`${patient}`).set(
-        {
-          vcprRenewedOn: new Date(),
-          updatedOn: new Date(),
-        },
-        { merge: true },
-      );
-      sendNotification({
-        type: "slack",
-        payload: {
-          message: `:robot_face: Patient #${patient}'s VCPR has been RENEWED`,
-        },
-      });
-    } else
-      sendNotification({
-        type: "slack",
-        payload: {
-          message: `:robot_face: Patient #${patient}'s VCPR has been ESTABLISHED`,
-        },
-      });
-  }
   if (
     customFieldValue === null ||
     customFieldValue === false ||
@@ -128,7 +78,11 @@ export const updateCustomField = async (
             response.data,
           ),
       )
-      .then(() => true)
+      .then(() => {
+        if (id === 2 && value === "False")
+          return updatePatientsVcprRenewedOn(patient);
+        else return true;
+      })
       .catch((error: any) => (console.log("ERROR: ", error) as any) && false);
   else
     return await request
@@ -145,9 +99,70 @@ export const updateCustomField = async (
             response.data,
           ),
       )
-      .then(() => true)
+      .then(() => {
+        if (id === 2 && value === "False")
+          return updatePatientsVcprRenewedOn(patient);
+        else return true;
+      })
       .catch(
         (error: any) =>
           (console.log("API ERROR: ", JSON.stringify(error)) as any) && false,
       );
+};
+
+const updatePatientsVcprRenewedOn = async (patient: string) => {
+  const hasCompletedOneOrMoreAppointments = await admin
+    .firestore()
+    .collection("appointments")
+    .where("patientIds", "array-contains", Number(patient))
+    .where("active", "==", 1)
+    .where("start", "<=", new Date())
+    .get()
+    .then((docs: any) => {
+      if (DEBUG)
+        console.log(
+          `updateCustomField => pastAppointments (PATIENT ${patient})`,
+          docs.size,
+        );
+      if (docs.size > 0) return true;
+      else return false;
+    })
+    .catch((error: any) => {
+      throwError(error);
+      return null;
+    });
+  if (hasCompletedOneOrMoreAppointments) {
+    if (DEBUG) {
+      console.log(
+        "updateCustomField => hasCompletedOneOrMoreAppointments",
+        true,
+      );
+      console.log("updateCustomField => vcprRenewedOn", new Date());
+    }
+    admin
+      .firestore()
+      .collection("patients")
+      .doc(`${patient}`)
+      .set(
+        {
+          vcprRenewedOn: new Date(),
+          updatedOn: new Date(),
+        },
+        { merge: true },
+      )
+      .catch((error: any) => throwError(error));
+    sendNotification({
+      type: "slack",
+      payload: {
+        message: `:robot_face: Patient #${patient}'s VCPR has been RENEWED`,
+      },
+    });
+  } else
+    sendNotification({
+      type: "slack",
+      payload: {
+        message: `:robot_face: Patient #${patient}'s VCPR has been ESTABLISHED`,
+      },
+    });
+  return true;
 };
