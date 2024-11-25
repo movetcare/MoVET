@@ -117,40 +117,10 @@ export const processConsultationWebhook = async (
           .catch((error: any) => throwError(error));
         if (DEBUG)
           console.log(
-            "appointmentEndedFromInvoicePaymentSuccess",
+            "processConsultationWebhook => appointmentEndedFromInvoicePaymentSuccess",
             appointmentEndedFromInvoicePaymentSuccess,
           );
         if (!appointmentEndedFromInvoicePaymentSuccess) {
-          const vcprEstablishedIds: Array<number> = [];
-          await admin
-            .firestore()
-            .collection("client_invoices")
-            .doc(`${proVetConsultationData?.invoice}`)
-            .collection("items")
-            .get()
-            .then((snapshot: any) => {
-              snapshot.docs.map((doc: any) => {
-                if (
-                  doc.data()?.name?.toLowerCase()?.includes("establish care") ||
-                  doc.data()?.name?.toLowerCase()?.includes("vcpr")
-                ) {
-                  const patientId = getProVetIdFromUrl(doc.data()?.patient);
-                  if (patientId) vcprEstablishedIds.push();
-                }
-              });
-            })
-            .catch((error: any) => throwError(error));
-          if (vcprEstablishedIds.length > 0)
-            await Promise.all(
-              vcprEstablishedIds.map(async (patientId: number) => {
-                await updateCustomField(`${patientId}`, 2, "False");
-                const proVetPatientData = await fetchEntity(
-                  "patient",
-                  patientId,
-                );
-                await savePatient(proVetPatientData);
-              }),
-            );
           admin
             .firestore()
             .collection("appointments")
@@ -180,6 +150,58 @@ export const processConsultationWebhook = async (
               });
             })
             .catch((error: any) => throwError(error));
+          const vcprEstablishedIds: Array<number> = [];
+          if (DEBUG) {
+            console.log(
+              "processConsultationWebhook => proVetConsultationData?.invoice",
+              proVetConsultationData?.invoice,
+            );
+          }
+          await admin
+            .firestore()
+            .collection("client_invoices")
+            .doc(`${proVetConsultationData?.invoice}`)
+            .collection("items")
+            .get()
+            .then((snapshot: any) => {
+              snapshot.docs.map((doc: any) => {
+                if (DEBUG) {
+                  console.log(
+                    "processConsultationWebhook => item?.name includes 'establish care' or 'vcpr'",
+                    doc
+                      .data()
+                      ?.name?.toLowerCase()
+                      ?.includes("establish care") ||
+                      doc.data()?.name?.toLowerCase()?.includes("vcpr"),
+                  );
+                }
+                if (
+                  doc.data()?.name?.toLowerCase()?.includes("establish care") ||
+                  doc.data()?.name?.toLowerCase()?.includes("vcpr")
+                ) {
+                  const patientId = getProVetIdFromUrl(doc.data()?.patient);
+                  if (patientId) vcprEstablishedIds.push();
+                }
+              });
+            })
+            .catch((error: any) => throwError(error));
+          if (DEBUG) {
+            console.log(
+              "processConsultationWebhook => vcprEstablishedIds",
+              vcprEstablishedIds,
+            );
+          }
+          if (vcprEstablishedIds.length > 0)
+            await Promise.all(
+              vcprEstablishedIds.map(async (patientId: number) => {
+                await updateCustomField(`${patientId}`, 2, "False");
+                const proVetPatientData = await fetchEntity(
+                  "patient",
+                  patientId,
+                );
+                await savePatient(proVetPatientData);
+              }),
+            );
         }
       } else if (proVetConsultationData?.status === 8) {
         admin
