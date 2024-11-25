@@ -171,7 +171,8 @@ export default function PetSelection() {
       let vcprPetCount = 0;
       pets.forEach((pet: any) => {
         if (pet.vcprRequired) vcprPetCount++;
-        if (pet.vcprRenewedOn) setreestablishCareExamRequired(true);
+        if (pet.vcprRequired && pet.vcprRenewedOn)
+          setreestablishCareExamRequired(true);
         if (selectedPets !== null) {
           if (Array.isArray(selectedPets))
             selectedPets.map((selectedPet: any) => {

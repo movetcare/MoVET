@@ -6,7 +6,7 @@ export const expirePatientVcpr = ({ id }: { id: string }) => {
   sendNotification({
     type: "slack",
     payload: {
-      message: `:robot_face: Patient #${id}'s VCPR has been auto expired!`,
+      message: `:robot_face: Patient #${id}'s VCPR has been auto EXPIRED!`,
     },
   });
 };

@@ -8,7 +8,7 @@ import type { Appointment } from "../../../../types/appointment";
 // import {getAuthUserById} from '../../../../utils/auth/getAuthUserById';
 // import {getDateStringFromDate} from '../../../../utils/getDateStringFromDate';
 
-const DEBUG = false;
+const DEBUG = true;
 export const saveAppointment = async (
   proVetAppointmentData: Appointment,
   movetAppointmentData?: any,
@@ -95,16 +95,22 @@ export const saveAppointment = async (
       );
     if (proVetAppointmentData?.ward)
       data.ward = getProVetIdFromUrl(proVetAppointmentData?.ward);
-    if (movetAppointmentData?.patients)
+    if (movetAppointmentData?.patients) {
       data.patients = movetAppointmentData?.patients;
+      data.patientIds = movetAppointmentData?.patients?.map(
+        (patient: any) => patient?.id,
+      );
+    }
     if (movetAppointmentData?.notes)
       data.additionalNotes = movetAppointmentData?.notes;
     if (movetAppointmentData?.illnessDetails)
       data.illnessDetails = movetAppointmentData?.illnessDetails;
     else if (proVetAppointmentData?.patients) {
+      const patientIds: any = [];
       const proVetPatientData: any = await Promise.all(
         proVetAppointmentData?.patients.map(async (patientUrl: string) => {
           const id = getProVetIdFromUrl(patientUrl);
+          patientIds.push(id);
           const patientData = await fetchEntity("patient", id);
           const { name, species, gender } = patientData;
           let complaintsJson = null;
@@ -155,6 +161,7 @@ export const saveAppointment = async (
         }),
       ).catch((error: any) => throwError(error));
       data.patients = proVetPatientData;
+      data.patientIds = patientIds;
     }
   }
 

@@ -1,0 +1,41 @@
+name: Production Deploy Functions
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/api.movetcare.com/**"
+      - ".github/workflows/production-deploy-functions.yml"
+jobs:
+  deploy_functions:
+    name: Deploy API via Firebase Cloud Functions
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PRODUCTION_LOGS }}
+    steps:
+      - name: Checkout Repo
+        id: repo-checkout
+        uses: actions/checkout@master
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@master
+        with:
+          node-version: latest
+      - name: Install Global Dependencies
+        id: install-global-dependencies
+        run: pnpm add -g firebase-tools
+      - name: Install Dependencies
+        id: install-dependencies
+        run: pnpm install
+      - name: Build Cloud Functions
+        id: build
+        run: pnpm -F api.movetcare.com run build
+      - name: Deploy to Firebase
+        id: deploy-cloud-functions
+        run: firebase use movet-care --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}" && firebase deploy --only functions --non-interactive -f --token "${{ secrets.FIREBASE_TOKEN_PRODUCTION}}"
+      - uses: act10ns/slack@master
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          config: .github/config/slack.yml
+          channel: "#production-logs"
+        if: always()

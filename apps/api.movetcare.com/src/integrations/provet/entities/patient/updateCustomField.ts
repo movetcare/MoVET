@@ -1,5 +1,5 @@
 // PROVET CUSTOM FIELDS MAPPING - https://us.provetcloud.com/4285/api/0.1/custom_fields/
-import { admin, request } from "../../../../config/config";
+import { admin, request, throwError } from "../../../../config/config";
 import { sendNotification } from "../../../../notifications/sendNotification";
 const DEBUG = true;
 export const updateCustomField = async (
@@ -59,20 +59,54 @@ export const updateCustomField = async (
     console.log("id", id);
   }
   if (id === 2 && value === "False") {
-    if (DEBUG) console.log("updateCustomField => vcprRenewedOn", new Date());
-    // admin.firestore().collection("patients").doc(`${patient}`).set(
-    //   {
-    //     vcprRenewedOn: new Date(),
-    //     updatedOn: new Date(),
-    //   },
-    //   { merge: true },
-    // );
-    sendNotification({
-      type: "slack",
-      payload: {
-        message: `:robot_face: Patient #${patient}'s VCPR has been established (or renewed)`,
-      },
-    });
+    const hasCompletedOneOrMoreAppointments = await admin
+      .firestore()
+      .collection("appointments")
+      .where("patientIds", "array-contains", Number(patient))
+      .where("active", "==", 1)
+      .where("start", "<=", new Date())
+      .get()
+      .then((docs: any) => {
+        if (DEBUG)
+          console.log(
+            `updateCustomField => pastAppointments (PATIENT ${patient})`,
+            docs.size,
+          );
+        if (docs.size > 0) return true;
+        else return false;
+      })
+      .catch((error: any) => {
+        throwError(error);
+        return null;
+      });
+    if (hasCompletedOneOrMoreAppointments) {
+      if (DEBUG) {
+        console.log(
+          "updateCustomField => hasCompletedOneOrMoreAppointments",
+          true,
+        );
+        console.log("updateCustomField => vcprRenewedOn", new Date());
+      }
+      admin.firestore().collection("patients").doc(`${patient}`).set(
+        {
+          vcprRenewedOn: new Date(),
+          updatedOn: new Date(),
+        },
+        { merge: true },
+      );
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: `:robot_face: Patient #${patient}'s VCPR has been RENEWED`,
+        },
+      });
+    } else
+      sendNotification({
+        type: "slack",
+        payload: {
+          message: `:robot_face: Patient #${patient}'s VCPR has been ESTABLISHED`,
+        },
+      });
   }
   if (
     customFieldValue === null ||
