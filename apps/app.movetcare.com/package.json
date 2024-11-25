@@ -12,9 +12,9 @@
     "update": "ncu -u --reject 'eslint,@headlessui/react'"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.6.0",
-    "@fortawesome/free-brands-svg-icons": "^6.6.0",
-    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/fontawesome-svg-core": "^6.7.1",
+    "@fortawesome/free-brands-svg-icons": "^6.7.1",
+    "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@headlessui/react": "^1.7.19",
     "@hookform/resolvers": "^3.9.1",
@@ -37,7 +37,7 @@
     "react-select": "^5.8.3",
     "react-swipeable": "^7.0.2",
     "react-time-picker": "^7.0.0",
-    "ua-parser-js": "^1.0.39",
+    "ua-parser-js": "^2.0.0",
     "yup": "^1.4.0"
   },
   "devDependencies": {
@@ -45,7 +45,7 @@
     "@react-google-maps/api": "2.20.3",
     "@tailwindcss/forms": "^0.5.9",
     "@types/lodash.kebabcase": "^4.1.9",
-    "@types/node": "^22.9.0",
+    "@types/node": "^22.9.3",
     "@types/react": "18.3.12",
     "@types/react-calendar": "^4.1.0",
     "@types/react-time-picker": "^6.0.0",
@@ -62,7 +62,7 @@
     "tailwindcss": "^3.4.15",
     "tsconfig": "workspace:*",
     "types": "workspace:*",
-    "typescript": "^5.6.3",
+    "typescript": "^5.7.2",
     "ui": "workspace:*",
     "utilities": "workspace:*"
   }

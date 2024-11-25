@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { getClinicConfig } from "server";
 import { functions } from "services/firebase";
 import type { ClinicConfig } from "types";
-import UAParser from "ua-parser-js";
+import { UAParser } from "ua-parser-js";
 import { Loader, Button, AppLinks, Modal } from "ui";
 import { object, string } from "yup";
 import { Error } from "components/Error";

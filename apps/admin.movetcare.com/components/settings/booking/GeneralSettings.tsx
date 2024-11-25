@@ -153,14 +153,13 @@ const GeneralSettings = () => {
       method="POST"
     >
       <div className="divide-y divide-movet-gray">
-        <>
+        <div>
           {(loadingReasonGroups || loadingReasons) && <Loader />}
-          {errorReasonGroups ||
-            (errorReasons && (
-              <div className="my-4">
-                <Error error={errorReasonGroups || errorReasons} />
-              </div>
-            ))}
+          {(errorReasonGroups || errorReasons) && (
+            <div className="my-4">
+              <Error error={errorReasonGroups || errorReasons} />
+            </div>
+          )}
           {reasonGroups && (
             <>
               <div className="px-4 sm:px-6">
@@ -353,7 +352,7 @@ const GeneralSettings = () => {
               </div>
             </>
           )}
-        </>
+        </div>
       </div>
     </form>
   );

@@ -93,12 +93,11 @@ const ManageUsers = () => {
           {(loadingUsers || loadingAdmins) && (
             <h3 className="text-center uppercase italic">Loading...</h3>
           )}
-          {errorUsers ||
-            (errorAdmins && (
-              <div className="my-4">
-                <Error error={errorUsers || errorAdmins} />
-              </div>
-            ))}
+          {(errorUsers || errorAdmins) && (
+            <div className="my-4">
+              <Error error={errorUsers || errorAdmins} />
+            </div>
+          )}
           {admins && (
             <>
               <div className="sm:flex sm:items-center mb-8 mt-6">
