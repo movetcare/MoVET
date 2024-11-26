@@ -20,6 +20,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     privacy: "hidden",
     backgroundColor: themeColor.white,
     primaryColor: themeColor.red,
+    expo: {
+      newArchEnabled: true,
+    },
     notification: {
       icon: "./assets/icons/app-icon.png",
       color: themeColor.red,

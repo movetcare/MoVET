@@ -60,7 +60,7 @@ const QuickBookAppointment = () => {
         incognito
         startInLoadingState
         onLoad={() => setTimeout(() => setIsLoadingWeb(false), 1500)}
-        style={tw`${isLoadingWeb ? "hidden" : "flex-1"}`}
+        style={tw`flex-1`}
       />
     </>
   );

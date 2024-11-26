@@ -2,6 +2,16 @@
   "name": "movet",
   "version": "3.0.0",
   "main": "expo-router/entry",
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-keyboard-aware-scroll-view"
+        ],
+        "listUnknownPackages": false
+      }
+    }
+  },
   "scripts": {
     "start": "npx expo start",
     "start:prod": "npx expo start --no-dev --minify",

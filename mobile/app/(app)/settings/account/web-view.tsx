@@ -30,7 +30,7 @@ const WebView = () => {
         incognito
         startInLoadingState
         onLoad={() => setTimeout(() => setIsLoading(false), 1500)}
-        style={tw`${isLoading ? "hidden" : "flex-1"}`}
+        style={tw`flex-1`}
         onShouldStartLoadWithRequest={(event) => {
           if (
             event.url.slice(0, 4) === "http" && Platform.OS === "ios"

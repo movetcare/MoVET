@@ -58,7 +58,7 @@ const NewAppointment = () => {
         incognito
         startInLoadingState
         onLoad={() => setTimeout(() => setIsLoadingWeb(false), 1500)}
-        style={tw`${isLoadingWeb ? "hidden" : "flex-1"}`}
+        style={`flex-1`}
       />
     </>
   );
