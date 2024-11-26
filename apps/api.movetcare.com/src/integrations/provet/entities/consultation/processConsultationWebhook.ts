@@ -160,7 +160,7 @@ export const processConsultationWebhook = async (
           await admin
             .firestore()
             .collection("client_invoices")
-            .doc(`${proVetConsultationData?.invoice}`)
+            .doc(`${getProVetIdFromUrl(proVetConsultationData?.invoice)}`)
             .collection("items")
             .get()
             .then((snapshot: any) => {
