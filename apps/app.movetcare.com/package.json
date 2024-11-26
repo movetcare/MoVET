@@ -45,7 +45,7 @@
     "@react-google-maps/api": "2.20.3",
     "@tailwindcss/forms": "^0.5.9",
     "@types/lodash.kebabcase": "^4.1.9",
-    "@types/node": "^22.9.3",
+    "@types/node": "^22.10.0",
     "@types/react": "18.3.12",
     "@types/react-calendar": "^4.1.0",
     "@types/react-time-picker": "^6.0.0",
