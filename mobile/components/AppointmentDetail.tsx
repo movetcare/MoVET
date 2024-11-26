@@ -100,6 +100,7 @@ export const AppointmentDetail = () => {
            .finally(() => {
              setShowCancelModal(false);
              setIsLoadingConfirmation(false);
+            setDidConfirm(false);
            });
        };
        updateAppointmentStatus();

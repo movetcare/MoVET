@@ -127,10 +127,7 @@ const updatePatientsVcprRenewedOn = async (patient: string) => {
       if (docs.size > 0) return true;
       else return false;
     })
-    .catch((error: any) => {
-      throwError(error);
-      return null;
-    });
+    .catch((error: any) => throwError(error));
   if (hasCompletedOneOrMoreAppointments) {
     if (DEBUG) {
       console.log(

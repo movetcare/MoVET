@@ -117,6 +117,7 @@ const UpcomingAppointment = ({ appointment }: { appointment: Appointment }) => {
           .finally(() => {
             setShowCancelModal(false);
             setIsLoading(false);
+             setDidConfirm(false);
           });
       };
       updateAppointmentStatus();
