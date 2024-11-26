@@ -505,7 +505,12 @@ export const sendNotification = async ({
                 }
               }
             })
-            .catch((error: any) => throwError(error));
+            .catch((error: any) =>
+              console.log(
+                "FAILED TO SEND ADMIN PUSH NOTIFICATIONS - REFACTOR REQUIRED! sendEachForMulticast",
+                error,
+              ),
+            );
         else if (DEBUG) console.log("NO TOKENS FOUND", { adminFcmTokens });
       } else if (
         payload?.category === "client-telehealth" ||
