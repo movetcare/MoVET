@@ -405,113 +405,116 @@ export const sendNotification = async ({
           })
           .catch((error: any) => throwError(error));
         if (DEBUG) console.log("adminFcmTokens", adminFcmTokens);
-        if (adminFcmTokens && adminFcmTokens.length > 0)
-          admin
-            .messaging()
-            .sendMulticast({
-              tokens: adminFcmTokens,
-              notification: {
-                title: payload?.title,
-                body: payload?.message,
-              },
-              data: {
-                link:
-                  (environment?.type === "production"
-                    ? "https://admin.movetcare.com"
-                    : "http://localhost:3002") +
-                  (payload?.path || "/telehealth"),
-              },
-              webpush: {
-                headers: {
-                  Urgency: payload?.urgency || "high",
-                },
-                notification: {
-                  body: payload?.message,
-                  requireInteraction: "true",
-                  badge: "/images/logo/logo-paw-black.png",
-                },
-                fcmOptions: {
-                  link:
-                    (environment?.type === "production"
-                      ? "https://admin.movetcare.com"
-                      : "http://localhost:3002") +
-                    (payload?.path || "/telehealth"),
-                },
-              },
-            })
-            .then(async (response: any) => {
-              sendSlackMessageToChannel(
-                `:outbox_tray: ADMIN Push Notifications Sent to ${
-                  (adminFcmTokens as any).length
-                } devices${
-                  response?.failureCount.length > 0
-                    ? ` with ${response?.failureCount} failures`
-                    : ""
-                } - "${payload?.title} | ${payload?.message}"`,
-              );
-              if (response.failureCount > 0) {
-                const failedTokens: any = [];
-                response.responses.forEach((resp: any, index: number) => {
-                  if (!resp.success) {
-                    failedTokens.push(
-                      adminFcmTokens ? adminFcmTokens[index] : [],
-                    );
-                  }
-                });
-                if (DEBUG)
-                  console.log(
-                    "List of tokens that caused failures: " + failedTokens,
-                  );
-                if (failedTokens.length > 0) {
-                  const adminTokensToDisable: Array<{
-                    uid: string;
-                    token: string;
-                  }> = [];
-                  allAdminTokenData.map((tokenData: any) => {
-                    if (failedTokens.includes(tokenData.token))
-                      adminTokensToDisable.push({
-                        uid: tokenData.uid,
-                        token: tokenData.token,
-                      });
-                  });
-                  if (DEBUG)
-                    console.log("adminTokensToDisable", adminTokensToDisable);
-                  await Promise.all(
-                    adminTokensToDisable.map(async (tokenData: any) => {
-                      const adminUserTokens = await admin
-                        .firestore()
-                        .collection("admin_push_tokens")
-                        .doc(tokenData.uid)
-                        .get()
-                        .then((doc: any) => doc.data().tokens)
-                        .catch((error: any) => throwError(error));
-                      if (adminUserTokens) {
-                        const updatedTokens = adminUserTokens.map(
-                          (token: any) => {
-                            if (token.token === tokenData.token)
-                              return { ...token, isActive: false };
-                            else return token;
-                          },
-                        );
-                        await admin
-                          .firestore()
-                          .collection("admin_push_tokens")
-                          .doc(tokenData.uid)
-                          .update({ tokens: updatedTokens })
-                          .catch((error: any) => throwError(error));
-                      }
-                    }),
-                  );
-                }
-              }
-            })
-            .catch((error: any) =>
-              console.log(
-                "FAILED TO SEND ADMIN PUSH NOTIFICATIONS - REFACTOR REQUIRED! sendEachForMulticast",
-                error,
-              ),
-            );
-        else if (DEBUG) console.log("NO TOKENS FOUND", { adminFcmTokens });
+        // if (adminFcmTokens && adminFcmTokens.length > 0)
+        //   admin
+        //     .messaging()
+        //     .sendMulticast({
+        //       tokens: adminFcmTokens,
+        //       notification: {
+        //         title: payload?.title,
+        //         body: payload?.message,
+        //       },
+        //       data: {
+        //         link:
+        //           (environment?.type === "production"
+        //             ? "https://admin.movetcare.com"
+        //             : "http://localhost:3002") +
+        //           (payload?.path || "/telehealth"),
+        //       },
+        //       webpush: {
+        //         headers: {
+        //           Urgency: payload?.urgency || "high",
+        //         },
+        //         notification: {
+        //           body: payload?.message,
+        //           requireInteraction: "true",
+        //           badge: "/images/logo/logo-paw-black.png",
+        //         },
+        //         fcmOptions: {
+        //           link:
+        //             (environment?.type === "production"
+        //               ? "https://admin.movetcare.com"
+        //               : "http://localhost:3002") +
+        //             (payload?.path || "/telehealth"),
+        //         },
+        //       },
+        //     })
+        //     .then(async (response: any) => {
+        //       sendSlackMessageToChannel(
+        //         `:outbox_tray: ADMIN Push Notifications Sent to ${
+        //           (adminFcmTokens as any).length
+        //         } devices${
+        //           response?.failureCount.length > 0
+        //             ? ` with ${response?.failureCount} failures`
+        //             : ""
+        //         } - "${payload?.title} | ${payload?.message}"`,
+        //       );
+        //       if (response.failureCount > 0) {
+        //         const failedTokens: any = [];
+        //         response.responses.forEach((resp: any, index: number) => {
+        //           if (!resp.success) {
+        //             failedTokens.push(
+        //               adminFcmTokens ? adminFcmTokens[index] : [],
+        //             );
+        //           }
+        //         });
+        //         if (DEBUG)
+        //           console.log(
+        //             "List of tokens that caused failures: " + failedTokens,
+        //           );
+        //         if (failedTokens.length > 0) {
+        //           const adminTokensToDisable: Array<{
+        //             uid: string;
+        //             token: string;
+        //           }> = [];
+        //           allAdminTokenData.map((tokenData: any) => {
+        //             if (failedTokens.includes(tokenData.token))
+        //               adminTokensToDisable.push({
+        //                 uid: tokenData.uid,
+        //                 token: tokenData.token,
+        //               });
+        //           });
+        //           if (DEBUG)
+        //             console.log("adminTokensToDisable", adminTokensToDisable);
+        //           await Promise.all(
+        //             adminTokensToDisable.map(async (tokenData: any) => {
+        //               const adminUserTokens = await admin
+        //                 .firestore()
+        //                 .collection("admin_push_tokens")
+        //                 .doc(tokenData.uid)
+        //                 .get()
+        //                 .then((doc: any) => doc.data().tokens)
+        //                 .catch((error: any) => throwError(error));
+        //               if (adminUserTokens) {
+        //                 const updatedTokens = adminUserTokens.map(
+        //                   (token: any) => {
+        //                     if (token.token === tokenData.token)
+        //                       return { ...token, isActive: false };
+        //                     else return token;
+        //                   },
+        //                 );
+        //                 await admin
+        //                   .firestore()
+        //                   .collection("admin_push_tokens")
+        //                   .doc(tokenData.uid)
+        //                   .update({ tokens: updatedTokens })
+        //                   .catch((error: any) => throwError(error));
+        //               }
+        //             }),
+        //           );
+        //         }
+        //       }
+        //     })
+        //     .catch((error: any) =>
+        //       console.log(
+        //         "FAILED TO SEND ADMIN PUSH NOTIFICATIONS - REFACTOR REQUIRED! sendEachForMulticast",
+        //         error,
+        //       ),
+        //     );
+        // else if (DEBUG) console.log("NO TOKENS FOUND", { adminFcmTokens });
+        console.log(
+          "FAILED TO SEND ADMIN PUSH NOTIFICATIONS - REFACTOR REQUIRED! replace sendMulticast with sendEachForMulticast",
+        );
       } else if (
         payload?.category === "client-telehealth" ||
         payload?.category === "client-appointment"
