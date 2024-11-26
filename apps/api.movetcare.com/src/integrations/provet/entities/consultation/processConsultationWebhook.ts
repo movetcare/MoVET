@@ -143,7 +143,7 @@ export const processConsultationWebhook = async (
                   category: "client-appointment",
                   title: "Your MoVET Invoice is Paid!",
                   message: truncateString(
-                    "Please leave us a review on the services you received today...",
+                    "Please leave us a review on the services you received today",
                   ),
                   path: "/home/",
                 },
@@ -180,7 +180,7 @@ export const processConsultationWebhook = async (
                   doc.data()?.name?.toLowerCase()?.includes("vcpr")
                 ) {
                   const patientId = getProVetIdFromUrl(doc.data()?.patient);
-                  if (patientId) vcprEstablishedIds.push();
+                  if (patientId) vcprEstablishedIds.push(patientId);
                 }
               });
             })
