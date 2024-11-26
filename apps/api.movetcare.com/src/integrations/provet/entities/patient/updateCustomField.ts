@@ -187,14 +187,7 @@ const updatePatientsVcprRenewedOn = async (patient: string) => {
       sendNotification({
         type: "slack",
         payload: {
-          message: `:robot_face: Patient #${patient}'s VCPR is set to auto EXPIRE in 15 months (${new Date(
-            today.setMonth(today.getMonth() + 15),
-          )?.toLocaleDateString("en-us", {
-            weekday: "short",
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-          })})}`,
+          message: `:robot_face: Patient #${patient}'s VCPR is set to auto EXPIRE in 15 months`,
         },
       });
     })
