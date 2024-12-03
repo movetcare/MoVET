@@ -27,7 +27,7 @@
     "@babel/core": "^7.26.0",
     "@tailwindcss/forms": "^0.5.9",
     "@types/lodash.kebabcase": "^4.1.9",
-    "@types/node": "^22.10.0",
+    "@types/node": "^22.10.1",
     "@types/react": "18.3.12",
     "autoprefixer": "^10.4.20",
     "constant": "workspace:*",
