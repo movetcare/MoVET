@@ -73,17 +73,9 @@ export default function K9Smiles() {
           Upcoming Clinics:
         </h3>
         <ul className="text-center mt-2">
-          {/* <li>January 20th - 9:30AM - 3:30PM</li>
-          <li>March 2nd - 9:30AM - 3:30PM</li>
-          <li>April 6th - 9:30AM - 3:30PM</li>
-          <li>May 18th - 9:30AM - 3:30PM</li> */}
-          <li>June 8th - 9:30AM - 3:30PM</li>
-          <li>July 13th - 9:30AM - 3:30PM</li>
-          <li>August 24th - 9:30AM - 3:30PM</li>
-          <li>September 14th - 9:30AM - 3:30PM</li>
-          <li>October 5th - 9:30AM - 3:30PM</li>
-          <li>November 9th - 9:30AM - 3:30PM</li>
           <li>December 14th - 9:30AM - 3:30PM</li>
+          <li>January 18th - 9:30AM - 3:30PM</li>
+          <li>February 22nd - 9:30AM - 3:30PM</li>
         </ul>
         <h3 className="text-xl text-center mt-12 font-abside">
           SCHEDULE A TEETH CLEANING FOR YOUR PET TODAY!

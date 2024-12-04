@@ -158,7 +158,7 @@ export default function BookingSuccess() {
                         if (patientId === patient?.id)
                           return (
                             <div key={index + "-" + patient?.name}>
-                              <p className="italic font-extrabold">
+                              <p className="italic font-extrabold mb-0">
                                 {patient?.name}
                               </p>
                               {patient?.illnessDetails && (
