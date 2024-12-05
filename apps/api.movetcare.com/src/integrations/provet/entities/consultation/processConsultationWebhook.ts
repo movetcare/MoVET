@@ -194,6 +194,11 @@ export const processConsultationWebhook = async (
           }
           if (vcprEstablishedIds.length > 0)
             vcprEstablishedIds.forEach(async (patientId: number) => {
+              if (DEBUG)
+                console.log(
+                  "processConsultationWebhook => disabling vcpr for patientId",
+                  patientId,
+                );
               await updateCustomField(`${patientId}`, 2, "False");
               const proVetPatientData = await fetchEntity("patient", patientId);
               await savePatient(proVetPatientData);
@@ -208,6 +213,11 @@ export const processConsultationWebhook = async (
           )
             proVetConsultationData?.patients?.forEach(
               async (patientIdUrl: string) => {
+                if (DEBUG)
+                  console.log(
+                    "processConsultationWebhook => disabling vcpr for patientIdUrl",
+                    patientIdUrl,
+                  );
                 await updateCustomField(
                   `${getProVetIdFromUrl(patientIdUrl)}`,
                   2,

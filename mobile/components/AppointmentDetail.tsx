@@ -818,7 +818,10 @@ export const AppointmentDetail = () => {
                      }`
                }
                iconName={"check"}
-               onPress={() => setDidConfirm(!appointment?.confirmed)}
+               onPress={() => {
+                 // TODO: only show check in button if its the day of the appointment AND its not past the appointment start time
+                 setDidConfirm(!appointment?.confirmed);
+               }}
                loading={isLoadingConfirmation}
              />
            )}

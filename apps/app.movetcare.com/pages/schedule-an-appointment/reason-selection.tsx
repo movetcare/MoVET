@@ -67,7 +67,10 @@ export default function ReasonSelection() {
       if (result?.error !== true || result?.error === undefined) {
         const reasons: any = [];
         result.forEach((reason: any) => {
-          if (!reason.label?.toLowerCase().includes("office use only"))
+          if (
+            !reason.label?.toLowerCase().includes("office use only") &&
+            !reason.label?.toLowerCase().includes("lunch")
+          )
             reasons.push({
               label: reason?.label,
               value: reason?.value,
