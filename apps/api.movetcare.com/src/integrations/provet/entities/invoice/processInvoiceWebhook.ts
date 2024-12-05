@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
-import { admin, throwError, DEBUG } from "../../../../config/config";
+import { admin, throwError } from "../../../../config/config";
 import { getProVetIdFromUrl } from "../../../../utils/getProVetIdFromUrl";
 import { saveClient } from "../client/saveClient";
 import { fetchEntity } from "../fetchEntity";
 import { sendNotification } from "../../../../notifications/sendNotification";
 import { truncateString } from "../../../../utils/truncateString";
+
+const DEBUG = true;
 
 export const processInvoiceWebhook = async (
   request: Request,
@@ -97,6 +99,7 @@ export const processInvoiceWebhook = async (
         const invoiceItem = await fetchEntity(
           "invoicerow",
           getProVetIdFromUrl(invoice?.invoice_row[i]),
+          // "?expose_consultation_item",
         );
         invoiceItemDetails.push(invoiceItem);
       }

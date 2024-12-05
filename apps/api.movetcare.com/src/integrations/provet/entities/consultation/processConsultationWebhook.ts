@@ -36,7 +36,7 @@ export const processConsultationWebhook = async (
     //   .set(
     //     {
     //       client: proVetConsultationData?.client,
-    //       patients: proVetConsultationData?.patients.map((patientId: string) =>
+    //       patients: proVetConsultationData?.patients.forEach((patientId: string) =>
     //         getProVetIdFromUrl(patientId),
     //       ),
     //       complaint: proVetConsultationData?.complaint,
@@ -46,30 +46,30 @@ export const processConsultationWebhook = async (
     //       started: new Date(proVetConsultationData?.started),
     //       ended: new Date(proVetConsultationData?.ended),
     //       finished: new Date(proVetConsultationData?.finished),
-    //       consultationItems: proVetConsultationData?.consultation_items.map(
+    //       consultationItems: proVetConsultationData?.consultation_items.forEach(
     //         (consultationItemUrl: string) =>
     //           getProVetIdFromUrl(consultationItemUrl),
     //       ),
-    //       consultationNotes: proVetConsultationData?.consultation_notes.map(
+    //       consultationNotes: proVetConsultationData?.consultation_notes.forEach(
     //         (consultationNoteUrl: string) =>
     //           getProVetIdFromUrl(consultationNoteUrl),
     //       ),
     //       consultationDiagnosis:
-    //         proVetConsultationData?.consultation_diagnosis.map(
+    //         proVetConsultationData?.consultation_diagnosis.forEach(
     //           (consultationDiagnosisUrl: string) =>
     //             getProVetIdFromUrl(consultationDiagnosisUrl),
     //         ),
     //       consultationDischargeInstructions:
-    //         proVetConsultationData?.consultation_dischargeinstructions.map(
+    //         proVetConsultationData?.consultation_dischargeinstructions.forEach(
     //           (consultationDischargeInstructionsUrl: string) =>
     //             getProVetIdFromUrl(consultationDischargeInstructionsUrl),
     //         ),
     //       consultationPatientStatus:
-    //         proVetConsultationData?.consultation_patient_status.map(
+    //         proVetConsultationData?.consultation_patient_status.forEach(
     //           (consultationPatientStatusUrl: string) =>
     //             getProVetIdFromUrl(consultationPatientStatusUrl),
     //         ),
-    //       customFields: proVetConsultationData?.custom_fields.map(
+    //       customFields: proVetConsultationData?.custom_fields.forEach(
     //         (customFieldUrl: string) => getProVetIdFromUrl(customFieldUrl),
     //       ),
     //       created: new Date(proVetConsultationData?.created),
@@ -150,6 +150,7 @@ export const processConsultationWebhook = async (
               });
             })
             .catch((error: any) => throwError(error));
+          // TODO: replace with checking consultation items for patients with established care and vcpr items
           const vcprEstablishedIds: Array<number> = [];
           if (DEBUG) {
             console.log(
@@ -164,7 +165,7 @@ export const processConsultationWebhook = async (
             .collection("items")
             .get()
             .then((snapshot: any) => {
-              snapshot.docs.map((doc: any) => {
+              snapshot.docs.forEach((doc: any) => {
                 if (DEBUG) {
                   console.log(
                     "processConsultationWebhook => item?.name includes 'establish care' or 'vcpr'",
@@ -192,15 +193,32 @@ export const processConsultationWebhook = async (
             );
           }
           if (vcprEstablishedIds.length > 0)
-            await Promise.all(
-              vcprEstablishedIds.map(async (patientId: number) => {
-                await updateCustomField(`${patientId}`, 2, "False");
+            vcprEstablishedIds.forEach(async (patientId: number) => {
+              await updateCustomField(`${patientId}`, 2, "False");
+              const proVetPatientData = await fetchEntity("patient", patientId);
+              await savePatient(proVetPatientData);
+            });
+          else if (
+            proVetConsultationData?.complaint
+              ?.toLowerCase()
+              ?.includes("vcpr") ||
+            proVetConsultationData?.complaint
+              ?.toLowerCase()
+              ?.includes("establish care")
+          )
+            proVetConsultationData?.patients?.forEach(
+              async (patientIdUrl: string) => {
+                await updateCustomField(
+                  `${getProVetIdFromUrl(patientIdUrl)}`,
+                  2,
+                  "False",
+                );
                 const proVetPatientData = await fetchEntity(
                   "patient",
-                  patientId,
+                  getProVetIdFromUrl(patientIdUrl),
                 );
                 await savePatient(proVetPatientData);
-              }),
+              },
             );
         }
       } else if (proVetConsultationData?.status === 8) {
