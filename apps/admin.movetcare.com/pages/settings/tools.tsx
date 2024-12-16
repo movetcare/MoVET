@@ -8,12 +8,24 @@ import {
   faCloudArrowUp,
   faCircleCheck,
   faRedo,
+  faToiletPaper,
+  faCloudDownload,
+  faStopCircle,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Loader } from "ui";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { setDoc, doc, serverTimestamp } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  serverTimestamp,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import toast from "react-hot-toast";
 import { firestore } from "services/firebase";
 import { NumberInput } from "components/inputs/NumberInput";
@@ -21,6 +33,7 @@ import Button from "components/Button";
 import { useRouter } from "next/router";
 import environment from "utils/environment";
 import AdminCheck from "components/AdminCheck";
+import { Tooltip } from "react-tooltip";
 
 const Tools = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -29,6 +42,9 @@ const Tools = () => {
   const [marketingDeploymentSummary, setMarketingDeploymentSummary] =
     useState<any>(null);
   const [webDeploymentSummary, setWebDeploymentSummary] = useState<any>(null);
+  const [abandonedAccounts, setAbandonedAccounts] = useState<Array<any> | null>(
+    null,
+  );
   const [adminDeploymentSummary, setAdminDeploymentSummary] =
     useState<any>(null);
   const {
@@ -42,6 +58,59 @@ const Tools = () => {
       clientId: null,
     } as any,
   });
+
+  function subtractYears(years: number) {
+    const dateCopy = new Date();
+    dateCopy.setFullYear(dateCopy.getFullYear() - years);
+    return dateCopy;
+  }
+
+  const getAbandonedAccounts = async () => {
+    setIsLoading(true);
+    const twoYearsAgo = subtractYears(2);
+    const querySnapshot = await getDocs(
+      query(
+        collection(firestore, "clients"),
+        where("updatedOn", "<=", twoYearsAgo),
+      ),
+    );
+    if (querySnapshot.docs.length > 0) {
+      const abandonedAccounts: Array<any> = [];
+      await Promise.all(
+        querySnapshot.docs.map(async (doc: any) => {
+          console.log(doc.id, " => ", doc.data());
+          const appointmentQuerySnapshot = await getDocs(
+            query(
+              collection(firestore, "appointments"),
+              where("client", "==", Number(doc.id)),
+            ),
+          );
+          let completedAppointments: number = 0;
+          if (appointmentQuerySnapshot.docs.length > 0)
+            appointmentQuerySnapshot.forEach(async (doc: any) => {
+              console.log(doc.id, "APT  => ", doc.data());
+              if (doc.data()?.active === 1) completedAppointments++;
+            });
+          abandonedAccounts.push({
+            id: doc.id,
+            completedAppointments,
+            ...doc.data(),
+          });
+        }),
+      );
+      setAbandonedAccounts(abandonedAccounts);
+    } else
+      toast("No Inactive Accounts Found...", {
+        icon: (
+          <FontAwesomeIcon
+            icon={faStopCircle}
+            size="sm"
+            className="text-movet-red"
+          />
+        ),
+      });
+    setIsLoading(false);
+  };
 
   const getDeploymentStatus = async (
     application: "MARKETING" | "WEB" | "ADMIN",
@@ -258,6 +327,214 @@ const Tools = () => {
 
   return (
     <AdminCheck>
+      <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
+        <div className="flex flex-row items-center justify-center -mb-4">
+          <FontAwesomeIcon
+            icon={faToiletPaper}
+            className={"text-movet-brown"}
+            size="lg"
+          />
+          <h1 className="ml-2 my-4 text-lg cursor-pointer">Data Clean Up</h1>
+        </div>
+        <ul
+          role="list"
+          className="divide-y divide-movet-gray border-t border-movet-gray mt-4"
+        >
+          <li>
+            <div
+              className={
+                "flex flex-col items-center px-4 py-4 sm:px-6 mx-auto max-w-xl"
+              }
+            >
+              <div className="min-w-0 flex-col w-full justify-center">
+                <p className=" mt-2 text-center text-sm">
+                  Use this tool to find and delete accounts that have not been
+                  active for over two years.
+                </p>
+                {abandonedAccounts && abandonedAccounts?.length > 0 ? (
+                  <div className="mx-auto w-full flex flex-col justify-center items-center group mt-4">
+                    <div className="flow-root">
+                      <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                          <div className="overflow-hidden shadow rounded-xl">
+                            <table className="min-w-full divide-y divide-movet-gray">
+                              <thead className="bg-movet-white/50">
+                                <tr>
+                                  <th
+                                    scope="col"
+                                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-movet-black sm:pl-6"
+                                  >
+                                    Name
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="px-3 py-3.5 text-left text-sm font-semibold text-movet-black"
+                                  >
+                                    Email
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="px-3 py-3.5 text-left text-sm font-semibold text-movet-black"
+                                  >
+                                    Completed Appointments
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="px-3 py-3.5 text-left text-sm font-semibold text-movet-black"
+                                  >
+                                    Created
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="px-3 py-3.5 text-left text-sm font-semibold text-movet-black"
+                                  >
+                                    Last Updated
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                                  >
+                                    <Tooltip id="deleteAccounts" />
+                                    <div
+                                      data-tooltip-id="deleteAccounts"
+                                      data-tooltip-content="Delete ALL Accounts"
+                                      title="Delete ALL Accounts"
+                                      onClick={() =>
+                                        abandonedAccounts.forEach(
+                                          (client: any) =>
+                                            window.open(
+                                              `https://us.provetcloud.com/4285/client/${client?.id}/forget`,
+                                              "_blank",
+                                            ),
+                                        )
+                                      }
+                                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"
+                                    >
+                                      <FontAwesomeIcon icon={faTrash} />
+                                      <span className="sr-only">Delete</span>
+                                    </div>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-movet-gray bg-white">
+                                {abandonedAccounts.map(
+                                  (client: {
+                                    id: string;
+                                    email: string;
+                                    firstName: string;
+                                    lastName: string;
+                                    createdOn: any;
+                                    updatedOn: any;
+                                    completedAppointments: number;
+                                  }) => (
+                                    <tr key={client?.id}>
+                                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-xs font-medium sm:pl-6">
+                                        <Tooltip id="viewAccount" />
+                                        <div
+                                          className="hover:cursor-pointer hover:underline hover:text-movet-red"
+                                          data-tooltip-id="viewAccount"
+                                          data-tooltip-content={
+                                            "View Account Summary"
+                                          }
+                                          onClick={() =>
+                                            window.open(
+                                              `/client/?id=${client?.id}`,
+                                              "_blank",
+                                            )
+                                          }
+                                        >
+                                          {client?.firstName} {client?.lastName}
+                                        </div>
+                                      </td>
+                                      <td className="whitespace-nowrap px-3 py-4 text-xs">
+                                        <Tooltip id="viewProVet" />
+                                        <p
+                                          className="hover:cursor-pointer hover:underline hover:text-movet-red"
+                                          data-tooltip-id="viewProVet"
+                                          data-tooltip-content={
+                                            "View Client in ProVet"
+                                          }
+                                          onClick={() =>
+                                            window.open(
+                                              `https://us.provetcloud.com/4285/client/${client?.id}`,
+                                              "_blank",
+                                            )
+                                          }
+                                        >
+                                          {client?.email}
+                                        </p>
+                                      </td>
+                                      <td className="whitespace-nowrap px-3 py-4 text-xs">
+                                        {client?.completedAppointments}
+                                      </td>
+                                      <td className="whitespace-nowrap px-3 py-4 text-xs">
+                                        {client?.createdOn
+                                          ?.toDate()
+                                          ?.toLocaleDateString()}{" "}
+                                        @
+                                        {client?.createdOn
+                                          ?.toDate()
+                                          ?.toLocaleTimeString("en-US", {
+                                            timeZone: "America/Denver",
+                                            timeZoneName: "short",
+                                            hour12: true,
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                          })}
+                                      </td>
+                                      <td className="whitespace-nowrap px-3 py-4 text-xs">
+                                        {client?.updatedOn
+                                          ?.toDate()
+                                          ?.toLocaleDateString()}{" "}
+                                        @
+                                        {client?.updatedOn
+                                          ?.toDate()
+                                          ?.toLocaleTimeString("en-US", {
+                                            timeZone: "America/Denver",
+                                            timeZoneName: "short",
+                                            hour12: true,
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                          })}
+                                      </td>
+                                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                        <FontAwesomeIcon
+                                          icon={faTrash}
+                                          size="lg"
+                                        />
+                                      </td>
+                                    </tr>
+                                  ),
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mx-auto w-full flex flex-col justify-center items-center group mt-4">
+                    <Button
+                      type="submit"
+                      color="red"
+                      loading={isLoading}
+                      onClick={() => getAbandonedAccounts()}
+                      className="mb-3"
+                    >
+                      <FontAwesomeIcon icon={faCloudDownload} size="lg" />
+                      <span className="ml-2">GET ABANDONED ACCOUNTS</span>
+                    </Button>
+                    <p className="invisible group-hover:visible text-xs text-movet-red italic text-center w-full sm:w-2/3 mx-auto -mb-4 duration-500 ease-in-out">
+                      * NOTE: This could take a while...
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
       <div className="bg-white shadow overflow-hidden rounded-lg mb-4">
         <div className="flex flex-row items-center justify-center -mb-4">
           <FontAwesomeIcon

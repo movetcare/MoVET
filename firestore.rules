@@ -76,7 +76,7 @@ service cloud.firestore {
       allow list: if isMoVETStaff();
     }
     match /appointments/{aid} {
-      allow read, write: if clientIsAuthed() && request.auth.uid  == string(resource.data.client);
+      allow read, write: if isMoVETStaff() || (clientIsAuthed() && request.auth.uid  == string(resource.data.client));
     }
     match /bookings/{bid} {
       allow read, write, list: if clientIsAuthed() && bid == string(resource.id) && request.auth.uid == string(resource.data.client.uid);

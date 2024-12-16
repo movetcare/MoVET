@@ -1153,7 +1153,9 @@ const Client = () => {
                     </Switch>
                   </div>
                   <Divider />
-                  <div className="flex flex-row items-center w-full mt-2 ml-2">
+                  <div
+                    className={`flex flex-row items-center w-full mt-2 ml-2${client?.device === undefined || client?.device === null ? " mb-6" : ""}`}
+                  >
                     <h3 className="text-lg m-0 font-extrabold">
                       <FontAwesomeIcon icon={faSms} className="mr-4" />
                       SMS NOTIFICATIONS:

@@ -106,8 +106,8 @@ const GeneralSettings = () => {
         />
       ),
     });
-    const deleteAccount = httpsCallable(functions, "resyncReasons");
-    deleteAccount()
+    const resyncReasons = httpsCallable(functions, "resyncReasons");
+    resyncReasons()
       .then((result: any) => {
         if (result.data) {
           toast(`REASON RE-SYNC COMPLETE`, {
