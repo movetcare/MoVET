@@ -43,7 +43,7 @@
     "firebase-functions": "6.1.2",
     "fs-extra": "^11.2.0",
     "ngrok": "^4.3.3",
-    "public-ip": "4.0.4",
+    "public-ip": "7.0.1",
     "watch": "^1.0.2"
   },
   "devDependencies": {
