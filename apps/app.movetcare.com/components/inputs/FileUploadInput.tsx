@@ -36,7 +36,7 @@ export const FileUploadInput = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [sourceFileName, setSourceFileName] = useState<string | null>(null);
-  const inputFileRef = useRef();
+  const inputFileRef = useRef(null);
   const onFileChangeCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -51,13 +51,13 @@ export const FileUploadInput = ({
       file,
       {
         contentType: file?.type,
-      }
+      },
     );
     uploadTask.on(
       "state_changed",
       (snapshot) => {
         const prog = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
         );
         setProgress(prog);
       },
@@ -93,7 +93,7 @@ export const FileUploadInput = ({
             ),
           });
           setIsLoading(false);
-        })
+        }),
     );
   };
 

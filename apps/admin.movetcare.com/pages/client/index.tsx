@@ -14,15 +14,11 @@ import {
   faSpinner,
   faCheckCircle,
   faPaperPlane,
-  faMapLocation,
   faTrash,
   faFire,
   faMessage,
-  faIdCard,
-  faAddressBook,
   faEnvelopesBulk,
   faCalendarPlus,
-  faBan,
   faCircleCheck,
   faMobileAndroid,
   faComments,
@@ -30,7 +26,6 @@ import {
   faHouse,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { GOTO_PHONE_URL } from "constants/urls";
 import environment from "utils/environment";
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useDocument } from "react-firebase-hooks/firestore";

@@ -19,7 +19,7 @@ export const FileUploadInput = ({
   setValue: any;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const inputFileRef = useRef();
+  const inputFileRef = useRef(null);
   const onFileChangeCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setIsLoading(true);

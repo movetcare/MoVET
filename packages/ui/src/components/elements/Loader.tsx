@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { useEffect, useRef, useState } from "react";
 import lottie from "lottie-web";
 import { BlueDog } from "../../assets/animations/blue-dog/BlueDog";
@@ -50,7 +51,7 @@ export const Loader = ({
   height = 300,
 }: LottieProps) => {
   const element = useRef<HTMLDivElement>(null);
-  const lottieInstance = useRef<any>();
+  const lottieInstance = useRef<any>(null);
   const [index, setIndex] = useState<number>(0);
 
   useEffect(() => {
