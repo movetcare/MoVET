@@ -498,9 +498,21 @@ const Tools = () => {
                                           })}
                                       </td>
                                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                        <Tooltip id="deleteAccount" />
                                         <FontAwesomeIcon
                                           icon={faTrash}
                                           size="lg"
+                                          data-tooltip-id="deleteAccount"
+                                          data-tooltip-content={
+                                            "Delete Account"
+                                          }
+                                          className="hover:cursor-pointer hover:underline hover:text-movet-red"
+                                          onClick={() =>
+                                            window.open(
+                                              `https://us.provetcloud.com/4285/client/${client?.id}/forget`,
+                                              "_blank",
+                                            )
+                                          }
                                         />
                                       </td>
                                     </tr>
