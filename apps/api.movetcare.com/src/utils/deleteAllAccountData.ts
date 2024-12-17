@@ -10,7 +10,7 @@ import { getProVetIdFromUrl } from "./getProVetIdFromUrl";
 import { deleteCollection } from "./deleteCollection";
 import * as client from "@sendgrid/client";
 
-const DEBUG = false;
+const DEBUG = true;
 
 client.setApiKey(functions.config()?.sendgrid.api_key);
 const sendGridAPI = client;
@@ -105,13 +105,32 @@ export const deleteAllAccountData = async (
       if (proVetPatientIds.length) {
         if (DEBUG)
           console.log(
-            "deleteMoVETAccount => ARCHIVING PATIENTS: ",
+            "deleteMoVETAccount => ARCHIVING PATIENTS IN PROVET: ",
             proVetPatientIds,
           );
         await Promise.all(
           proVetPatientIds.map(
             async (id: number) =>
               await updateProVetPatient({ id: `${id}`, archived: true }),
+          ),
+        );
+        await Promise.all(
+          proVetPatientIds.map(
+            async (id: number) =>
+              await admin
+                .firestore()
+                .collection("patients")
+                .doc(`${id}`)
+                .delete()
+                .then(
+                  () =>
+                    DEBUG &&
+                    console.log(
+                      "deleteMoVETAccount => FIRESTORE PATIENT RECORD DELETED: ",
+                      id,
+                    ),
+                )
+                .catch((error: any) => DEBUG && console.log(error)),
           ),
         );
       } else if (DEBUG)
@@ -123,7 +142,7 @@ export const deleteAllAccountData = async (
       if (proVetClientIds.length) {
         if (DEBUG)
           console.log(
-            "deleteMoVETAccount => ARCHIVING CLIENTS: ",
+            "deleteMoVETAccount => ARCHIVING CLIENTS IN PROVET: ",
             proVetClientIds,
           );
         await Promise.all(
@@ -134,6 +153,46 @@ export const deleteAllAccountData = async (
         );
       } else if (DEBUG)
         console.log("deleteMoVETAccount => NO CLIENTS FOUND", proVetPatientIds);
+    }
+    if (email?.toLowerCase()?.includes("+test")) {
+      let clientSendgridId: any = null;
+      await sendGridAPI
+        .request({
+          url: "/v3/marketing/contacts/search",
+          method: "POST",
+          body: {
+            query: `email LIKE '${email}%'`,
+          },
+        })
+        .then(([response]: any) => {
+          if (DEBUG) {
+            console.log(response.statusCode);
+            console.log(response.body);
+          }
+          clientSendgridId = response.body.result[0].id;
+          if (DEBUG) console.log("clientSendgridId", clientSendgridId);
+        })
+        .catch((error: any) => DEBUG && console.log(error));
+
+      if (clientSendgridId)
+        sendGridAPI
+          .request({
+            url: "/v3/marketing/contacts",
+            method: "DELETE",
+            qs: { ids: clientSendgridId },
+          })
+          .then(([response]: any) => {
+            if (DEBUG) {
+              console.log("DELETING CLIENT FROM SENDGRID", {
+                email,
+                clientSendgridId,
+              });
+              console.log(response.statusCode);
+              console.log(response.body);
+            }
+          })
+          .catch((error: any) => DEBUG && console.log(error));
+      else if (DEBUG) console.log("NO CLIENT SENDGRID ID FOUND", email);
     }
   } else {
     const proVetClient = await fetchEntity("client", Number(uid));
@@ -176,7 +235,7 @@ export const deleteAllAccountData = async (
       if (proVetAppointmentIds.length) {
         if (DEBUG)
           console.log(
-            "deleteMoVETAccount => ARCHIVING APPOINTMENTS: ",
+            "deleteMoVETAccount => ARCHIVING APPOINTMENTS IN PROVET: ",
             proVetAppointmentIds,
           );
         await Promise.all(
@@ -194,7 +253,7 @@ export const deleteAllAccountData = async (
       if (proVetPatientIds.length > 0) {
         if (DEBUG)
           console.log(
-            "deleteMoVETAccount => ARCHIVING PATIENTS: ",
+            "deleteMoVETAccount => ARCHIVING PATIENTS IN PROVET: ",
             proVetPatientIds,
           );
         await Promise.all(
@@ -203,15 +262,30 @@ export const deleteAllAccountData = async (
               await updateProVetPatient({ id: `${id}`, archived: true }),
           ),
         );
+        await Promise.all(
+          proVetPatientIds.map(
+            async (id: number) =>
+              await admin
+                .firestore()
+                .collection("patients")
+                .doc(`${id}`)
+                .delete()
+                .then(
+                  () =>
+                    DEBUG &&
+                    console.log(
+                      "deleteMoVETAccount => FIRESTORE PATIENT RECORD DELETED: ",
+                      id,
+                    ),
+                )
+                .catch((error: any) => DEBUG && console.log(error)),
+          ),
+        );
       } else if (DEBUG)
         console.log(
           "deleteMoVETAccount => NO PATIENTS FOUND",
           proVetPatientIds,
         );
-
-      // await updateProVetClient({ id: uid, archived: true }).catch(
-      //   (error: any) => DEBUG && console.log(error)
-      // );
     }
   }
   const customerId = await getCustomerId(uid, true);
@@ -231,46 +305,6 @@ export const deleteAllAccountData = async (
       )
       .catch((error: any) => DEBUG && console.log(error));
 
-  if (email?.toLowerCase()?.includes("+test")) {
-    let clientSendgridId: any = null;
-    await sendGridAPI
-      .request({
-        url: "/v3/marketing/contacts/search",
-        method: "POST",
-        body: {
-          query: `email LIKE '${email}%'`,
-        },
-      })
-      .then(([response]: any) => {
-        if (DEBUG) {
-          console.log(response.statusCode);
-          console.log(response.body);
-        }
-        clientSendgridId = response.body.result[0].id;
-        if (DEBUG) console.log("clientSendgridId", clientSendgridId);
-      })
-      .catch((error: any) => DEBUG && console.log(error));
-
-    if (clientSendgridId)
-      sendGridAPI
-        .request({
-          url: "/v3/marketing/contacts",
-          method: "DELETE",
-          qs: { ids: clientSendgridId },
-        })
-        .then(([response]: any) => {
-          if (DEBUG) {
-            console.log("DELETING CLIENT FROM SENDGRID", {
-              email,
-              clientSendgridId,
-            });
-            console.log(response.statusCode);
-            console.log(response.body);
-          }
-        })
-        .catch((error: any) => DEBUG && console.log(error));
-    else if (DEBUG) console.log("NO CLIENT SENDGRID ID FOUND", email);
-  }
   deleteCollection(`clients/${uid}/notifications`)
     .then(() => DEBUG && console.log(`DELETED clients/${uid}/notifications`))
     .catch((error: any) => DEBUG && console.log(error));

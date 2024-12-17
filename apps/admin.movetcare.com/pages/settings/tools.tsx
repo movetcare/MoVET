@@ -25,6 +25,8 @@ import {
   getDocs,
   query,
   where,
+  getDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import toast from "react-hot-toast";
 import { firestore } from "services/firebase";
@@ -45,6 +47,9 @@ const Tools = () => {
   const [abandonedAccounts, setAbandonedAccounts] = useState<Array<any> | null>(
     null,
   );
+  const [orphanedPatients, setOrphanedPatients] = useState<Array<any> | null>(
+    null,
+  );
   const [adminDeploymentSummary, setAdminDeploymentSummary] =
     useState<any>(null);
   const {
@@ -59,11 +64,134 @@ const Tools = () => {
     } as any,
   });
 
+  const deleteOrphanedPatient = async (patientId: "ALL" | number) => {
+    console.log("patientId", patientId);
+    if (patientId === "ALL" && orphanedPatients)
+      await Promise.all(
+        orphanedPatients.map(
+          async (patient: any) =>
+            await deleteDoc(doc(firestore, "patients", `${patient?.id}`)).catch(
+              (error: any) =>
+                toast(
+                  `Patient #${patient?.id} (${patient?.name}) Deletion FAILED: ${error?.message}`,
+                  {
+                    duration: 5000,
+                    icon: (
+                      <FontAwesomeIcon
+                        icon={faCircleExclamation}
+                        size="sm"
+                        className="text-movet-red"
+                      />
+                    ),
+                  },
+                ),
+            ),
+        ),
+      )
+        .then(() =>
+          toast("All Orphaned Patients Deleted!", {
+            icon: (
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                size="sm"
+                className="text-movet-green"
+              />
+            ),
+          }),
+        )
+        .catch((error: any) =>
+          toast(`Patient Deletions FAILED: ${error?.message}`, {
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                size="sm"
+                className="text-movet-red"
+              />
+            ),
+          }),
+        )
+        .finally(() => {
+          setOrphanedPatients(null);
+          setIsLoading(false);
+        });
+    else
+      await deleteDoc(doc(firestore, "patients", `${patientId}`))
+        .catch((error: any) =>
+          toast(`Patient #${patientId} Deletion FAILED: ${error?.message}`, {
+            duration: 5000,
+            icon: (
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                size="sm"
+                className="text-movet-red"
+              />
+            ),
+          }),
+        )
+        .then(() =>
+          toast("Orphaned Patient Deleted!", {
+            icon: (
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                size="sm"
+                className="text-movet-green"
+              />
+            ),
+          }),
+        )
+        .finally(() => {
+          setOrphanedPatients(null);
+          setIsLoading(false);
+        });
+  };
+
   function subtractYears(years: number) {
     const dateCopy = new Date();
     dateCopy.setFullYear(dateCopy.getFullYear() - years);
     return dateCopy;
   }
+
+  const getOrphanedPatients = async () => {
+    setIsLoading(true);
+    const querySnapshot = await getDocs(
+      query(collection(firestore, "patients")),
+    );
+    if (querySnapshot.docs.length > 0) {
+      const orphanedPatients: Array<any> = [];
+      await Promise.all(
+        querySnapshot.docs.map(async (patientDoc: any) => {
+          await getDoc(
+            doc(firestore, "clients", `${patientDoc.data()?.client}`),
+          ).then((doc: any) => {
+            if (doc.exists()) return;
+            else orphanedPatients.push(patientDoc.data());
+          });
+        }),
+      );
+      if (orphanedPatients.length > 0) setOrphanedPatients(orphanedPatients);
+      else
+        toast("No Orphaned Patients Found...", {
+          icon: (
+            <FontAwesomeIcon
+              icon={faStopCircle}
+              size="sm"
+              className="text-movet-red"
+            />
+          ),
+        });
+    } else
+      toast("No Orphaned Patients Found...", {
+        icon: (
+          <FontAwesomeIcon
+            icon={faStopCircle}
+            size="sm"
+            className="text-movet-red"
+          />
+        ),
+      });
+    setIsLoading(false);
+  };
 
   const getAbandonedAccounts = async () => {
     setIsLoading(true);
@@ -536,6 +664,198 @@ const Tools = () => {
                     >
                       <FontAwesomeIcon icon={faCloudDownload} size="lg" />
                       <span className="ml-2">GET ABANDONED ACCOUNTS</span>
+                    </Button>
+                    <p className="invisible group-hover:visible text-xs text-movet-red italic text-center w-full sm:w-2/3 mx-auto -mb-4 duration-500 ease-in-out">
+                      * NOTE: This could take a while...
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </li>
+          <li>
+            <div
+              className={
+                "flex flex-col items-center px-4 py-4 sm:px-6 mx-auto max-w-xl"
+              }
+            >
+              <div className="min-w-0 flex-col w-full justify-center">
+                <p className=" mt-2 text-center text-sm">
+                  Use this tool to find and delete orphaned patient records.
+                </p>
+                {orphanedPatients && orphanedPatients?.length > 0 ? (
+                  <div className="mx-auto w-full flex flex-col justify-center items-center group mt-4">
+                    <div className="flow-root">
+                      <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                          <div className="overflow-hidden shadow rounded-xl">
+                            <table className="min-w-full divide-y divide-movet-gray">
+                              <thead className="bg-movet-white/50">
+                                <tr>
+                                  <th
+                                    scope="col"
+                                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-movet-black sm:pl-6"
+                                  >
+                                    Name
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="px-3 py-3.5 text-left text-sm font-semibold text-movet-black"
+                                  >
+                                    Client #
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="px-3 py-3.5 text-left text-sm font-semibold text-movet-black"
+                                  >
+                                    Created
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="px-3 py-3.5 text-left text-sm font-semibold text-movet-black"
+                                  >
+                                    Last Updated
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                                  >
+                                    <Tooltip id="deleteOrphanedPatients" />
+                                    <div
+                                      data-tooltip-id="deleteOrphanedPatients"
+                                      data-tooltip-content="Delete ALL Orphaned Patients"
+                                      title="Delete ALL Orphaned Patients"
+                                      onClick={() =>
+                                        deleteOrphanedPatient("ALL")
+                                      }
+                                      className="inline-flex items-center justify-center rounded-full p-2 transition duration-500 ease-in-out hover:bg-movet-gray hover:bg-opacity-25 focus:outline-none hover:text-movet-red mr-2"
+                                    >
+                                      <FontAwesomeIcon icon={faTrash} />
+                                      <span className="sr-only">Delete</span>
+                                    </div>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-movet-gray bg-white">
+                                {orphanedPatients.map(
+                                  (patient: {
+                                    id: number;
+                                    name: string;
+                                    client: number;
+                                    createdOn: any;
+                                    updatedOn: any;
+                                  }) => (
+                                    <tr key={patient?.id}>
+                                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-xs font-medium sm:pl-6">
+                                        <Tooltip id="viewOrphanInFirebase" />
+                                        <div
+                                          className="hover:cursor-pointer hover:underline hover:text-movet-red"
+                                          data-tooltip-id="viewOrphanInFirebase"
+                                          data-tooltip-content={
+                                            "View Record in Firebase"
+                                          }
+                                          onClick={() =>
+                                            window.open(
+                                              `https://console.firebase.google.com/u/0/project/movet-care/firestore/databases/-default-/data/~2Fpatients~2F${patient?.id}`,
+                                              "_blank",
+                                            )
+                                          }
+                                        >
+                                          {patient?.name}
+                                        </div>
+                                      </td>
+                                      <td className="whitespace-nowrap px-3 py-4 text-xs">
+                                        <Tooltip id="viewPatientClientProVet" />
+                                        <p
+                                          className="hover:cursor-pointer hover:underline hover:text-movet-red"
+                                          data-tooltip-id="viewPatientClientProVet"
+                                          data-tooltip-content={
+                                            "View patient's client in ProVet (if it still exists)"
+                                          }
+                                          onClick={() =>
+                                            window.open(
+                                              `https://us.provetcloud.com/4285/client/${patient?.client}`,
+                                              "_blank",
+                                            )
+                                          }
+                                        >
+                                          {patient?.client}
+                                        </p>
+                                      </td>
+                                      <td className="whitespace-nowrap px-3 py-4 text-xs">
+                                        {patient?.createdOn
+                                          ?.toDate()
+                                          ?.toLocaleDateString()}{" "}
+                                        @
+                                        {patient?.createdOn
+                                          ?.toDate()
+                                          ?.toLocaleTimeString("en-US", {
+                                            timeZone: "America/Denver",
+                                            timeZoneName: "short",
+                                            hour12: true,
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                          })}
+                                      </td>
+                                      <td className="whitespace-nowrap px-3 py-4 text-xs">
+                                        {patient?.updatedOn ? (
+                                          <>
+                                            {patient?.updatedOn
+                                              ?.toDate()
+                                              ?.toLocaleDateString()}{" "}
+                                            @
+                                            {patient?.updatedOn
+                                              ?.toDate()
+                                              ?.toLocaleTimeString("en-US", {
+                                                timeZone: "America/Denver",
+                                                timeZoneName: "short",
+                                                hour12: true,
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                              })}
+                                          </>
+                                        ) : (
+                                          <p className="text-movet-red">
+                                            NEVER
+                                          </p>
+                                        )}
+                                      </td>
+                                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                        <Tooltip id="deleteOrphan" />
+                                        <FontAwesomeIcon
+                                          icon={faTrash}
+                                          size="lg"
+                                          data-tooltip-id="deleteOrphan"
+                                          data-tooltip-content={
+                                            "Delete Orphaned Patient"
+                                          }
+                                          className="hover:cursor-pointer hover:underline hover:text-movet-red"
+                                          onClick={() =>
+                                            deleteOrphanedPatient(patient.id)
+                                          }
+                                        />
+                                      </td>
+                                    </tr>
+                                  ),
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mx-auto w-full flex flex-col justify-center items-center group mt-4">
+                    <Button
+                      type="submit"
+                      color="red"
+                      loading={isLoading}
+                      onClick={() => getOrphanedPatients()}
+                      className="mb-3"
+                    >
+                      <FontAwesomeIcon icon={faCloudDownload} size="lg" />
+                      <span className="ml-2">GET ORPHANED PATIENTS</span>
                     </Button>
                     <p className="invisible group-hover:visible text-xs text-movet-red italic text-center w-full sm:w-2/3 mx-auto -mb-4 duration-500 ease-in-out">
                       * NOTE: This could take a while...
