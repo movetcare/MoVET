@@ -27,6 +27,7 @@ import {
   where,
   getDoc,
   deleteDoc,
+  limit,
 } from "firebase/firestore";
 import toast from "react-hot-toast";
 import { firestore } from "services/firebase";
@@ -155,7 +156,7 @@ const Tools = () => {
   const getOrphanedPatients = async () => {
     setIsLoading(true);
     const querySnapshot = await getDocs(
-      query(collection(firestore, "patients")),
+      query(collection(firestore, "patients"), limit(100)),
     );
     if (querySnapshot.docs.length > 0) {
       const orphanedPatients: Array<any> = [];
