@@ -724,7 +724,7 @@ const Tools = () => {
                                     <Tooltip id="deleteOrphanedPatients" />
                                     <div
                                       data-tooltip-id="deleteOrphanedPatients"
-                                      data-tooltip-content="Delete ALL Orphaned Patients"
+                                      data-tooltip-content="Delete ALL Orphaned Patients (10 @ a time)"
                                       title="Delete ALL Orphaned Patients"
                                       onClick={() =>
                                         deleteOrphanedPatient("ALL")
