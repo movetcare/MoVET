@@ -10,17 +10,17 @@
     "update": "ncu -u --reject 'eslint,@headlessui/react'"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.7.1",
-    "@fortawesome/free-brands-svg-icons": "^6.7.1",
-    "@fortawesome/free-solid-svg-icons": "^6.7.1",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@headlessui/react": "^1.7.19",
     "@hookform/resolvers": "^3.9.1",
-    "@types/react": "^19.0.1",
+    "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "constant": "workspace:*",
     "lottie-web": "^5.12.2",
-    "next": "15.1.0",
+    "next": "15.1.1",
     "react": "^19.0.0",
     "react-dom": "19.0.0",
     "react-hook-form": "^7.54.1",
@@ -31,7 +31,7 @@
     "types": "workspace:*",
     "typescript": "^5.7.2",
     "utilities": "workspace:*",
-    "yup": "^1.5.0"
+    "yup": "^1.6.1"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",

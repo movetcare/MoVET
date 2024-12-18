@@ -201,6 +201,7 @@ const Tools = () => {
       query(
         collection(firestore, "clients"),
         where("updatedOn", "<=", twoYearsAgo),
+        limit(10),
       ),
     );
     if (querySnapshot.docs.length > 0) {
@@ -477,8 +478,8 @@ const Tools = () => {
             >
               <div className="min-w-0 flex-col w-full justify-center">
                 <p className=" mt-2 text-center text-sm">
-                  Use this tool to find and delete accounts that have not been
-                  active for over two years.
+                  Use this tool to find and delete accounts (10 @ a time) that
+                  have not been active for over two years.
                 </p>
                 {abandonedAccounts && abandonedAccounts?.length > 0 ? (
                   <div className="mx-auto w-full flex flex-col justify-center items-center group mt-4">
@@ -682,7 +683,8 @@ const Tools = () => {
             >
               <div className="min-w-0 flex-col w-full justify-center">
                 <p className=" mt-2 text-center text-sm">
-                  Use this tool to find and delete orphaned patient records.
+                  Use this tool to find and delete (100 @ a time) orphaned
+                  patient records.
                 </p>
                 {orphanedPatients && orphanedPatients?.length > 0 ? (
                   <div className="mx-auto w-full flex flex-col justify-center items-center group mt-4">
