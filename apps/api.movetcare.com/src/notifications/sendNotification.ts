@@ -87,20 +87,34 @@ export const sendNotification = async ({
         console.log("DID NOT SEND SLACK MESSAGE - MISSING MESSAGE", payload);
       break;
     case "email":
-      const emailConfig: any = {
-        to:
-          environment.type === "production"
-            ? payload?.to || "info@movetcare.com"
-            : "support+staging@movetcare.com",
-        from: payload?.from || "info@movetcare.com",
-        bcc: payload?.bcc || "support+copy@movetcare.com",
-        replyTo: payload?.replyTo || "info@movetcare.com",
-        subject:
-          (environment.type === "staging" ? "(STAGING) " : "") +
-          (payload?.subject || "WHOOPS! Something Went Wrong..."),
-        text: payload?.message?.replace(/(<([^>]+)>)/gi, ""),
-        html: payload?.message,
-      };
+      const emailConfig: any = payload?.bcc
+        ? {
+            to:
+              environment.type === "production"
+                ? payload?.to || "info@movetcare.com"
+                : "support+staging@movetcare.com",
+            from: payload?.from || "info@movetcare.com",
+            bcc: payload?.bcc,
+            replyTo: payload?.replyTo || "info@movetcare.com",
+            subject:
+              (environment.type === "staging" ? "(STAGING) " : "") +
+              (payload?.subject || "WHOOPS! Something Went Wrong..."),
+            text: payload?.message?.replace(/(<([^>]+)>)/gi, ""),
+            html: payload?.message,
+          }
+        : {
+            to:
+              environment.type === "production"
+                ? payload?.to || "info@movetcare.com"
+                : "support+staging@movetcare.com",
+            from: payload?.from || "info@movetcare.com",
+            replyTo: payload?.replyTo || "info@movetcare.com",
+            subject:
+              (environment.type === "staging" ? "(STAGING) " : "") +
+              (payload?.subject || "WHOOPS! Something Went Wrong..."),
+            text: payload?.message?.replace(/(<([^>]+)>)/gi, ""),
+            html: payload?.message,
+          };
       if (DEBUG) console.log("emailConfig =>", emailConfig);
       const sendEmailNotification = () => {
         if (
