@@ -32,7 +32,7 @@
     "react-google-places-autocomplete": "^4.1.0",
     "react-google-recaptcha-v3": "^1.10.1",
     "react-hook-form": "^7.54.2",
-    "react-hot-toast": "^2.4.1",
+    "react-hot-toast": "^2.5.1",
     "react-number-format": "^5.4.3",
     "react-select": "^5.9.0",
     "react-swipeable": "^7.0.2",

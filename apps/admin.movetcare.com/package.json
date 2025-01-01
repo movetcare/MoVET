@@ -30,7 +30,7 @@
     "react-firebase-hooks": "^5.1.1",
     "react-google-places-autocomplete": "^4.1.0",
     "react-hook-form": "^7.54.2",
-    "react-hot-toast": "^2.4.1",
+    "react-hot-toast": "^2.5.1",
     "react-json-formatter": "^0.4.0",
     "react-number-format": "^5.4.3",
     "react-tooltip": "^5.28.0",
