@@ -31,7 +31,7 @@
     "@types/react": "19.0.2",
     "autoprefixer": "^10.4.20",
     "constant": "workspace:*",
-    "eslint": "8.57.0",
+    "eslint": "9.17.0",
     "eslint-config-custom": "workspace:*",
     "next-transpile-modules": "10.0.1",
     "postcss": "^8.4.49",
