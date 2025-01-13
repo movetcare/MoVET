@@ -29,22 +29,22 @@ export const sendWelcomeEmail = async (
       <p>It's important to point out up front that we are not a full-service veterinary service. While great for some, we understand it's not always the best fit for others. We do not perform end-of-life veterinary care, nor do we perform anesthetic procedures, such as surgery or dentals, but will partner with you to make the best recommendation for you that fits your needs with a local practice or specialist in town who can help. We pride ourselves on being available to you - either in your home or even better, for a virtual consultation, with our knowledgeable veterinary team.</p>
       <p><b>Here's a small sampling of our most common charges:</b></p>
       <ul>
-      <li>Housecall fee - $60/trip</li>
       <li>Establish Care Consult/Exam - $85/pet</li>
       <li>Annual Veterinary Examination - $68/pet</li>
-      <li>Nurse Visit - $45</li>
+      <li>Housecall Fee -  Zone 1 ($60), Zone 2 ($72), Zone 3 ($89)</li>
+      <li>Rechecks / Nurse Visit - Zone 1 ($45), Zone 2 ($60), Zone 3 ($72)</li>
       <li>Telehealth Appointment - $32 - $50</li>
       <li>Vaccines (1 year) - $25 ea.</li>
       <li>Vaccines (3 year) - $35 ea.</li>
-      <li>Annual Heartworm Blood Test - $40 </li>
+      <li>Annual Heartworm Blood Test - $45 </li>
       <li>Heartworm & Intestinal parasite monthly preventative chews (cost varies by weight - 6 mo. and 12 mo. options available)</li>
-      <li>(other charges will vary based on diagnostics, medications, etc.)</li>
+      <li>Other charges will vary based on diagnostics, medications, etc.</li>
       </ul>
       <p><b>Additional Pampering:</b></p>
       <ul>
-      <li>Nail Trim: $18</li>
-      <li>Anal Gland expression: $25</li>
-      <li>Ear Cleaning: $25</li>
+      <li>Nail Trim: $18 - $45</li>
+      <li>Anal Gland expression: $30 - $42</li>
+      <li>Ear Cleaning: $25 - $28</li>
       <li>Microchip: $60</li>
       </ul>
     <p>I invite you to become part of our family and grow with us! Should you have any questions, concerns, or recommendations for us to improve your experience with MoVET, please email me directly at lexi.abramson@movetcare.com.</p><p>- Dr. A</p>`;
