@@ -73,11 +73,16 @@ export default function K9Smiles() {
           Upcoming Clinics:
         </h3>
         <ul className="text-center mt-2">
-          <li>
-            <span className="line-through">January 18th - 9:30AM - 3:30PM</span>{" "}
-            <span className="text-movet-red">CANCELLED</span>
-          </li>
           <li>February 22nd - 9:30AM - 3:30PM</li>
+          <li>March 22nd - 9:30AM - 3:30PM</li>
+          <li>April 26th - 9:30AM - 3:30PM</li>
+          <li>May 17th - 9:30AM - 3:30PM</li>
+          <li>June 7th - 9:30AM - 3:30PM</li>
+          <li>July 12th - 9:30AM - 3:30PM</li>
+          <li>August 23rd - 9:30AM - 3:30PM</li>
+          <li>September 20th - 9:30AM - 3:30PM</li>
+          <li>October 11th - 9:30AM - 3:30PM</li>
+          <li>November 8th - 9:30AM - 3:30PM</li>
         </ul>
         <h3 className="text-xl text-center mt-12 font-abside">
           SCHEDULE A TEETH CLEANING FOR YOUR PET TODAY!
