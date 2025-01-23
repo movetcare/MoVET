@@ -884,12 +884,12 @@ export const HoursStatus = () => {
       <Hours
         winterMode={winterMode}
         hours={hours}
-        hoursStatus={{
-          boutiqueStatus,
-          clinicStatus,
-          housecallStatus,
-          walkinsStatus,
-        }}
+        // hoursStatus={{
+        //   boutiqueStatus,
+        //   clinicStatus,
+        //   housecallStatus,
+        //   walkinsStatus,
+        // }}
         previewMode
       />
       <h3>HOURS STATUS OVERRIDES & AUTOMATION</h3>

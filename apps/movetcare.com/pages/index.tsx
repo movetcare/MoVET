@@ -3,7 +3,7 @@ import {
   getAnnouncement,
   getHours,
   getWinterMode,
-  getHoursStatus,
+  // getHoursStatus,
   getPopUpAd,
   getClinicConfig,
 } from "server";
@@ -25,7 +25,7 @@ import type {
   Announcement as AnnouncementType,
   WinterMode as WinterModeType,
   Hours as HoursType,
-  HoursStatus as HoursStatusType,
+  // HoursStatus as HoursStatusType,
   PopUpAd as PopUpAdType,
   ClinicConfig,
 } from "types";
@@ -38,7 +38,7 @@ export async function getStaticProps() {
       announcement: (await getAnnouncement()) || null,
       winterMode: (await getWinterMode()) || null,
       hours: (await getHours()) || null,
-      hoursStatus: (await getHoursStatus()) || null,
+      // hoursStatus: (await getHoursStatus()) || null,
       popUpAd: (await getPopUpAd()) || null,
       clinicsConfig: await getClinicConfig({ id: "summary" }),
     } as any,
@@ -49,14 +49,14 @@ export default function Home({
   announcement,
   winterMode,
   hours,
-  hoursStatus,
+  // hoursStatus,
   popUpAd,
   clinicsConfig,
 }: {
   announcement: AnnouncementType;
   winterMode: WinterModeType;
   hours: Array<HoursType>;
-  hoursStatus: HoursStatusType;
+  // hoursStatus: HoursStatusType;
   popUpAd: PopUpAdType;
   clinicsConfig: Array<ClinicConfig>;
 }) {
@@ -96,7 +96,7 @@ export default function Home({
           winterMode={winterMode}
           embed
           hours={hours}
-          hoursStatus={hoursStatus}
+          // hoursStatus={hoursStatus}
         />
         <Reviews />
         <Contact />

@@ -5,10 +5,10 @@ import type {
   WinterMode as WinterModeType,
   Closures as ClosuresType,
   Hours as HoursType,
-  HoursStatus as HoursStatusType,
+  // HoursStatus as HoursStatusType,
   PopUpAd as PopUpAdType,
 } from "types";
-import { getWinterMode, getClosures, getHours, getHoursStatus } from "server";
+import { getWinterMode, getClosures, getHours } from "server";
 import Link from "next/link";
 import Image from "next/image";
 import { getPopUpAd } from "server";
@@ -20,7 +20,7 @@ export async function getStaticProps() {
       winterMode: (await getWinterMode()) || null,
       closures: (await getClosures()) || null,
       hours: (await getHours()) || null,
-      hoursStatus: (await getHoursStatus()) || null,
+      // hoursStatus: (await getHoursStatus()) || null,
       popUpAd: (await getPopUpAd()) || null,
     } as any,
   };
@@ -30,13 +30,13 @@ export default function HoursPage({
   winterMode,
   closures,
   hours,
-  hoursStatus,
+  // hoursStatus,
   popUpAd,
 }: {
   winterMode: WinterModeType;
   closures: Array<ClosuresType>;
   hours: Array<HoursType>;
-  hoursStatus: HoursStatusType;
+  // hoursStatus: HoursStatusType;
   popUpAd: PopUpAdType;
 }) {
   return (
@@ -44,7 +44,7 @@ export default function HoursPage({
       <Head>
         <title>Hours of Operation</title>
       </Head>
-      <Hours winterMode={winterMode} hours={hours} hoursStatus={hoursStatus} />
+      <Hours winterMode={winterMode} hours={hours} />
       {closures && (closures as any)?.length > 0 && (
         <section className="w-full pb-6 -mt-4">
           <div className="relative z-20 px-4 sm:px-8 max-w-screen-lg mx-auto">

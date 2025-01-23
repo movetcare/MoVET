@@ -99,12 +99,12 @@ export const HoursStatus = ({
                 winterMode={winterMode}
                 hours={hours}
                 mode={mode}
-                hoursStatus={{
-                  boutiqueStatus,
-                  clinicStatus,
-                  housecallStatus,
-                  walkinsStatus,
-                }}
+                // hoursStatus={{
+                //   boutiqueStatus,
+                //   clinicStatus,
+                //   housecallStatus,
+                //   walkinsStatus,
+                // }}
                 previewMode
               />
             </div>

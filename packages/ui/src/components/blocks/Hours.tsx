@@ -1,23 +1,17 @@
 import { faParking } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type {
-  Hours as HoursType,
-  WinterMode as WinterModeType,
-  HoursStatus as HoursStatusType,
-} from "types";
+import type { Hours as HoursType, WinterMode as WinterModeType } from "types";
 import Image from "next/image";
 
 export const Hours = ({
   winterMode,
   hours,
   embed = false,
-  hoursStatus,
   previewMode = false,
   mode = "default",
 }: {
   winterMode: WinterModeType;
   hours: Array<HoursType>;
-  hoursStatus: HoursStatusType;
   embed?: boolean;
   previewMode?: boolean;
   mode?: "admin" | "default";
@@ -552,7 +546,7 @@ export const Hours = ({
                 <h3 className="text-xl text-center font-bold pt-2">
                   Clinic @ Belleview Station
                 </h3>
-                <p className="text-center -mb-1 italic">
+                {/* <p className="text-center -mb-1 italic">
                   CURRENTLY -{" "}
                   {hoursStatus && hoursStatus.clinicStatus ? (
                     <span className="text-movet-green font-extrabold">
@@ -563,7 +557,7 @@ export const Hours = ({
                       CLOSED
                     </span>
                   )}
-                </p>
+                </p> */}
                 {mode !== "admin" && (
                   <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                     <div className="w-full">
@@ -620,7 +614,7 @@ export const Hours = ({
                 <p className="text-center italic text-xs">
                   * All dog baths must be completed 30 minutes before closing.
                 </p>
-                <p className="text-center -mb-1 italic">
+                {/* <p className="text-center -mb-1 italic">
                   CURRENTLY -{" "}
                   {hoursStatus && hoursStatus.boutiqueStatus ? (
                     <span className="text-movet-green font-extrabold">
@@ -631,7 +625,7 @@ export const Hours = ({
                       CLOSED
                     </span>
                   )}
-                </p>
+                </p> */}
                 {mode !== "admin" && (
                   <div className="flex py-4 px-2 sm:px-4 leading-6 font-abside text-lg pb-2 whitespace-nowrap uppercase">
                     <div className="w-full">
@@ -859,14 +853,14 @@ export const Hours = ({
               <h3 className="text-xl text-center font-bold pt-2">
                 Clinic @ Belleview Station
               </h3>
-              <p className="text-center -mb-1 italic">
+              {/* <p className="text-center -mb-1 italic">
                 CURRENTLY -{" "}
                 {hoursStatus && hoursStatus.clinicStatus ? (
                   <span className="text-movet-green font-extrabold">OPEN</span>
                 ) : (
                   <span className="text-movet-red font-extrabold">CLOSED</span>
                 )}
-              </p>
+              </p> */}
               {mode !== "admin" && (
                 <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
                   <div className="w-full">
@@ -916,14 +910,14 @@ export const Hours = ({
               <p className="text-center italic text-xs">
                 * All dog baths must be completed 30 minutes before closing.
               </p>
-              <p className="text-center -mb-1 italic">
+              {/* <p className="text-center -mb-1 italic">
                 CURRENTLY -{" "}
                 {hoursStatus && hoursStatus.boutiqueStatus ? (
                   <span className="text-movet-green font-extrabold">OPEN</span>
                 ) : (
                   <span className="text-movet-red font-extrabold">CLOSED</span>
                 )}
-              </p>
+              </p> */}
               {mode !== "admin" && (
                 <div className="flex justify-center py-4 px-2 sm:px-4 leading-6 font-abside pb-2 whitespace-nowrap">
                   <div className="w-full">
