@@ -20,7 +20,7 @@
     "@types/react-dom": "^19.0.3",
     "constant": "workspace:*",
     "lottie-web": "^5.12.2",
-    "next": "15.1.5",
+    "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "19.0.0",
     "react-hook-form": "^7.54.2",
