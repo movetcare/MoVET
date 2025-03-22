@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { AppLinks } from "../elements";
-import { BookAnAppointmentForm } from "../forms";
+import { faCalendarPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const CallToAction = () => {
   const router = useRouter();
   return router?.query?.mode !== "app" ? (
     <section className="relative bg-center bg-cover w-full bg-movet-black py-16 bg-[url('/images/backgrounds/pets-background.png')]">
-      <div className="h-28 -top-1 overflow-hidden absolute w-full">
+      <div className="overflow-hidden absolute -top-1 w-full h-28">
         <svg
           viewBox="0 0 500 150"
           preserveAspectRatio="none"
@@ -20,9 +20,9 @@ export const CallToAction = () => {
         </svg>
       </div>
       <div className="flex flex-col items-center">
-        <div className="flex flex-col sm:flex-row justify-center items-center relative mt-4 mb-8  w-full sm:max-w-screen-lg lg:px-6">
-          <div className="md:w-1/2 h-full">
-            <div className="px-4 max-w-xs sm:max-w-sm mx-auto">
+        <div className="flex relative flex-col justify-center items-center mt-4 mb-8 w-full sm:flex-row sm:max-w-screen-lg lg:px-6">
+          <div className="h-full md:w-1/2">
+            <div className="px-4 mx-auto max-w-xs sm:max-w-sm">
               <Image
                 src="/images/pets/home-appointment-1.png"
                 alt="dog"
@@ -32,27 +32,30 @@ export const CallToAction = () => {
               />
             </div>
           </div>
-          <div className="w-80 relative z-10 md:w-1/2 text-center mt-8 sm:mt-0 -mb-16 md:mb-0">
+          <div className="relative z-10 mt-8 -mb-16 w-80 text-center md:w-1/2 sm:mt-0 md:mb-0">
             <h3 className="first-letter:tracking-wide text-2xl sm:text-3xl whitespace-nowrap mb-1.5 text-movet-white">
               Your neighborhood vet,
             </h3>
             <h3 className="text-4xl sm:text-5xl text-movet-red">Delivered</h3>
-            <p className="text-base sm:text-lg font-abside leading-6 my-4 text-movet-white">
+            <p className="my-4 text-base leading-6 sm:text-lg font-abside text-movet-white">
               A stress-free way to take care
               <br /> of your vet appointments.
             </p>
-
             <div className="flex flex-col justify-center items-center">
-              <p className="mb-3 font-abside text-sm text-movet-white">
+              <a
+                className="flex justify-center items-center px-6 py-2 text-base font-medium uppercase rounded-full border border-transparent shadow-sm duration-500 ease-in-out text-movet-white font-abside bg-movet-red group-hover:bg-movet-black hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red hover:text-decoration-none"
+                target="_blank"
+                href={`https://petportal.vet/movet/`}
+                rel="noopener noreferrer"
+                id="mobile-request-appointment-cta"
+              >
+                <FontAwesomeIcon
+                  icon={faCalendarPlus}
+                  size="lg"
+                  className="mr-2"
+                />
                 SCHEDULE AN APPOINTMENT
-              </p>
-              <BookAnAppointmentForm />
-              <div className="flex justify-center">
-                <p className="text-sm font-abside my-3 text-movet-white">OR</p>
-              </div>
-              <div className="flex justify-center">
-                <AppLinks />
-              </div>
+              </a>
             </div>
           </div>
         </div>

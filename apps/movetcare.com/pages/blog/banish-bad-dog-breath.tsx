@@ -119,7 +119,7 @@ export default function BanishBadDogBreath() {
           SCHEDULE A TEETH CLEANING FOR YOUR DOG TODAY!
         </h3>
         <p className="mt-0 text-center text-xl font-bold">
-          DENTAL EXAM + IN-DEPTH TEETH CLEANING - $290
+          DENTAL EXAM + IN-DEPTH TEETH CLEANING - $295
         </p>
         <K9SmilesForm />
         <p className="text-center max-w-screen-md font-extrabold italic text-xs -mt-2">

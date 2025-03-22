@@ -80,7 +80,7 @@ export const Header = () => {
               toggleMobileMenu(!mobileMenu);
             }}
           >
-            <span className="sm:not-sr-only uppercase text-base font-semibold">
+            <span className="text-base font-semibold uppercase sm:not-sr-only">
               {data.text}
             </span>
           </span>
@@ -95,12 +95,12 @@ export const Header = () => {
         router.pathname === "/" ? " bg-movet-white" : " bg-white"
       }`}
     >
-      <div className="w-full z-20">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-center">
+      <div className="z-20 w-full">
+        <div className="px-4 py-4 mx-auto sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center">
             <Link href="/">
               <div
-                className="cursor-pointer mx-4 hover:opacity-80 ease-in-out duration-500"
+                className="mx-4 duration-500 ease-in-out cursor-pointer hover:opacity-80"
                 onClick={() => {
                   toggleMobileMenu(!mobileMenu);
                 }}
@@ -114,8 +114,8 @@ export const Header = () => {
                 />
               </div>
             </Link>
-            <div className="hidden lg:flex ml-10 justify-center space-x-4">
-              <div className="flex items-center justify-center">
+            <div className="hidden justify-center ml-10 space-x-4 lg:flex">
+              <div className="flex justify-center items-center">
                 {mainNavigationElements &&
                   mainNavigationElements.map(
                     (navigationItem: NavigationItem) => (
@@ -126,7 +126,7 @@ export const Header = () => {
                   )}
                 <div className="ml-4">
                   <a
-                    className="text-center ease-in-out duration-500 w-full lg:w-40 flex justify-center items-center border border-transparent shadow-sm text-movet-white text-sm font-medium font-abside uppercase bg-movet-brown group-hover:bg-movet-dark-brown hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-brown py-2 px-6 rounded-full"
+                    className="flex justify-center items-center px-6 py-2 w-full text-sm font-medium text-center uppercase rounded-full border border-transparent shadow-sm duration-500 ease-in-out lg:w-40 text-movet-white font-abside bg-movet-brown group-hover:bg-movet-dark-brown hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-brown"
                     target="_blank"
                     href={"sms:+17205077387"}
                     rel="noopener noreferrer"
@@ -138,9 +138,9 @@ export const Header = () => {
                 </div>
                 <div className="ml-4">
                   <a
-                    className="text-center ease-in-out duration-500 w-full xl:w-72 flex justify-center items-center border border-transparent shadow-sm text-movet-white text-sm font-medium font-abside uppercase bg-movet-red group-hover:bg-movet-black hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red py-2 sm:px-6 xl:px-0 rounded-full"
+                    className="flex justify-center items-center py-2 w-full text-sm font-medium text-center uppercase rounded-full border border-transparent shadow-sm duration-500 ease-in-out xl:w-72 text-movet-white font-abside bg-movet-red group-hover:bg-movet-black hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red sm:px-6 xl:px-0"
                     target="_blank"
-                    href={`https://app.movetcare.com/schedule-an-appointment`}
+                    href={`https://petportal.vet/movet/`}
                     rel="noopener noreferrer"
                     id="request-appointment-cta"
                   >
@@ -154,17 +154,17 @@ export const Header = () => {
                 </div>
               </div>
             </div>
-            <div className="mx-4 flex lg:hidden">
+            <div className="flex mx-4 lg:hidden">
               <Button
                 onClick={() => {
                   toggleMobileMenu(!mobileMenu);
                 }}
                 id="mobile-navigation"
-                className="bg-transparent inline-flex items-center justify-center hover:bg-transparent shadow-none"
+                className="inline-flex justify-center items-center bg-transparent shadow-none hover:bg-transparent"
               >
                 <span className="sr-only">Open Navigation Menu - Mobile</span>
                 <svg
-                  className="block h-8 w-8 text-movet-black"
+                  className="block w-8 h-8 text-movet-black"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 20 20"
@@ -179,7 +179,7 @@ export const Header = () => {
                   />
                 </svg>
                 <svg
-                  className="hidden h-3 w-3 text-movet-black"
+                  className="hidden w-3 h-3 text-movet-black"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 20 20"
@@ -220,7 +220,7 @@ export const Header = () => {
             <div className="pt-2 pb-2">
               <div className="flex items-center px-4">
                 <a
-                  className="w-full flex justify-center items-center border border-transparent shadow-sm text-movet-white text-base font-abside font-medium uppercase bg-movet-brown group-hover:bg-movet-black hover:bg-movet-dark-brown focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-brown py-2 px-6 rounded-full ease-in-out duration-500"
+                  className="flex justify-center items-center px-6 py-2 w-full text-base font-medium uppercase rounded-full border border-transparent shadow-sm duration-500 ease-in-out text-movet-white font-abside bg-movet-brown group-hover:bg-movet-black hover:bg-movet-dark-brown focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-dark-brown"
                   target="_blank"
                   href={"sms:+17205077387"}
                   rel="noopener noreferrer"
@@ -234,9 +234,9 @@ export const Header = () => {
             <div className="pt-2 pb-6">
               <div className="flex items-center px-4">
                 <a
-                  className="w-full flex justify-center items-center border border-transparent shadow-sm text-movet-white text-base font-abside font-medium uppercase bg-movet-red group-hover:bg-movet-black hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red py-2 px-6 rounded-full ease-in-out duration-500"
+                  className="flex justify-center items-center px-6 py-2 w-full text-base font-medium uppercase rounded-full border border-transparent shadow-sm duration-500 ease-in-out text-movet-white font-abside bg-movet-red group-hover:bg-movet-black hover:bg-movet-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-movet-red"
                   target="_blank"
-                  href={`https://app.movetcare.com/schedule-an-appointment`}
+                  href={`https://petportal.vet/movet/`}
                   rel="noopener noreferrer"
                   id="mobile-request-appointment-cta"
                 >
@@ -253,9 +253,9 @@ export const Header = () => {
         </Transition>
       </div>
       {router.pathname === "/" && (
-        <div className="hidden sm:block absolute top-0 right-0 w-2/5 max-w-md z-10">
+        <div className="hidden absolute top-0 right-0 z-10 w-2/5 max-w-md sm:block">
           <svg
-            className="fill-current text-movet-tan w-full"
+            className="w-full fill-current text-movet-tan"
             viewBox="0 0 100 150"
           >
             <path d="M 0,0 C 41.36373,35.851041 -37.395737,144.20046 46.655397,141.68437 71.463645,141.23132 90.311646,133.74687 110.1554,124.48646 V 0 Z" />

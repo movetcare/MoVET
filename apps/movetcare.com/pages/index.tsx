@@ -62,7 +62,7 @@ export default function Home({
 }) {
   return (
     <Layout announcement={announcement}>
-      <div className="flex flex-col items-center justify-center min-py-2 bg-movet-white">
+      <div className="flex flex-col justify-center items-center min-py-2 bg-movet-white">
         <Hero
           title="Your neighborhood vet,"
           secondTitle="Delivered"
@@ -74,13 +74,7 @@ export default function Home({
           }
           callToAction={
             <>
-              <p className="mb-3 font-abside text-sm">
-                SCHEDULE AN APPOINTMENT
-              </p>
-              <BookAnAppointmentForm />
-              <div className="flex justify-center">
-                <p className="text-sm font-abside my-3">OR</p>
-              </div>
+              <p className="mb-3 font-abside">SCHEDULE AN APPOINTMENT</p>
               <div className="flex justify-center">
                 <AppLinks />
               </div>

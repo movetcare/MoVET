@@ -1,8 +1,8 @@
-import { faArrowLeft, faCreditCard } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { Button, PopUpAd } from "ui";
+import { PopUpAd } from "ui";
 import Layout from "components/Layout";
 import Head from "next/head";
 import { getPopUpAd } from "server";
@@ -24,7 +24,7 @@ const AppointmentPrep = ({ popUpAd }: { popUpAd: PopUpAdType }) => {
       <Head>
         <title>How to Prepare for Your Appointment</title>
       </Head>
-      <section className="flex flex-col max-w-screen-lg bg-white rounded-xl p-4 sm:p-8 mx-4 sm:mx-auto my-8">
+      <section className="flex flex-col p-4 mx-4 my-8 max-w-screen-lg bg-white rounded-xl sm:p-8 sm:mx-auto">
         <div
           className="flex flex-row justify-center items-center my-4 cursor-pointer"
           onClick={() => router.back()}
@@ -32,7 +32,7 @@ const AppointmentPrep = ({ popUpAd }: { popUpAd: PopUpAdType }) => {
           <FontAwesomeIcon icon={faArrowLeft} />
           <p className="ml-2">Go Back</p>
         </div>
-        <div className="w-36 h-32 sm:w-28 sm:h-24 mx-auto mb-4">
+        <div className="mx-auto mb-4 w-36 h-32 sm:w-28 sm:h-24">
           <Image
             src="/images/icons/clinic.svg"
             alt={"appointment icon"}
@@ -54,24 +54,6 @@ const AppointmentPrep = ({ popUpAd }: { popUpAd: PopUpAdType }) => {
           </a>{" "}
           <b>prior</b> to your appointment.
         </p>
-        <h2 className="mb-0">Payment on File</h2>
-        <p>
-          A valid form of payment on file is required before MoVET can perform
-          any services. Please be sure to add a payment method to your account{" "}
-          <i>before</i> your appointment.
-        </p>
-        <a
-          href="https://app.movetcare.com/update-payment-method"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <Button
-            icon={faCreditCard}
-            text="Add a Form of Payment"
-            color="red"
-            className="my-4 mx-auto"
-          />
-        </a>
         <h2 className="mb-0">Handling Tips for your Pets</h2>
         <p>
           Pets can get nervous and anxious about visiting the veterinarian. We
@@ -135,7 +117,7 @@ const AppointmentPrep = ({ popUpAd }: { popUpAd: PopUpAdType }) => {
             The cost of this service is between $32.00 - $50 per consultation.
           </b>
         </p>
-        <h3 className="text-center mt-8 text-lg">
+        <h3 className="mt-8 text-lg text-center">
           Please{" "}
           <a
             href="https://movetcare.com/contact"

@@ -12,6 +12,23 @@ import type { PopUpAd as PopUpAdType } from "types";
 const posts: Array<BlogPost> = [
   {
     isFeatured: true,
+    title: "Exciting Changes Coming to Enhance Your Pet's Care!",
+    href: "/blog/new-pet-portal",
+    category: { name: "Announcements", href: "#", color: "bg-movet-blue" },
+    description:
+      "We are excited to share some important updates regarding our veterinary record-keeping and appointment scheduling system! Beginning in the next few weeks, we will be transitioning to a new and improved platform designed to streamline communication and enhance your experience with us. ",
+    date: "March 20, 2025",
+    datetime: "2025-03-20",
+    imageUrl: "/images/logos/logo.png",
+    readingTime: "3 min",
+    author: {
+      name: "Dr. A",
+      href: "#",
+      imageUrl: "/images/blog/dr-a.png",
+    },
+  },
+  {
+    isFeatured: false,
     title:
       "🎃 Annual HOWL-O-WEEN Pet Costume Contest - Sunday, Oct 27th at 11AM - 3PM 🎃",
     href: "/blog/howl-o-ween",
@@ -334,25 +351,25 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
       <Head>
         <title>Blog</title>
       </Head>
-      <section className="px-4 md:px-0px-4 md:px-0 pb-16 sm:pb-20">
+      <section className="px-4 pb-16 md:px-0px-4 md:px-0 sm:pb-20">
         <div className="relative mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-4xl tracking-wide mt-8 text-center">
+            <h2 className="mt-8 text-4xl tracking-wide text-center">
               From The Blog
             </h2>
           </div>
-          <div className="mx-auto mt-8 -mb-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
+          <div className="grid gap-5 mx-auto mt-8 -mb-8 max-w-lg lg:max-w-none lg:grid-cols-3">
             {posts.map((post: BlogPost, index: number) =>
               post.isFeatured ? (
                 <div
                   key={index}
-                  className="flex flex-col lg:flex-row overflow-hidden rounded-lg shadow-lg col-span-3 items-center bg-white"
+                  className="flex overflow-hidden flex-col col-span-3 items-center bg-white rounded-lg shadow-lg lg:flex-row"
                 >
                   <div className="flex-shrink-0 -mb-2 bg-white">
                     {post.isExternalLink ? (
                       <a href={post.href} target="_blank">
                         <Image
-                          className="hover:opacity-75 cursor-pointer"
+                          className="cursor-pointer hover:opacity-75"
                           src={post.imageUrl}
                           alt=""
                           height={510}
@@ -362,7 +379,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                     ) : (
                       <Link href={post.href}>
                         <Image
-                          className="hover:opacity-75 cursor-pointer"
+                          className="cursor-pointer hover:opacity-75"
                           src={post.imageUrl}
                           alt=""
                           height={510}
@@ -371,12 +388,12 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                       </Link>
                     )}
                   </div>
-                  <div className="flex flex-1 flex-col justify-between bg-white p-6">
+                  <div className="flex flex-col flex-1 justify-between p-6 bg-white">
                     <div className="flex-1">
                       <div className="flex flex-row items-center">
                         {Array.isArray(post.category) ? (
                           post.category.map((cat: any) => (
-                            <p className="text-sm font-medium mr-2">
+                            <p className="mr-2 text-sm font-medium">
                               <span
                                 className={classNames(
                                   cat.color,
@@ -405,7 +422,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                           <a
                             href={post.href}
                             target="_blank"
-                            className="mt-2 block hover:no-underline"
+                            className="block mt-2 hover:no-underline"
                           >
                             <p className="text-xl font-semibold cursor-pointer text-movet-black hover:no-underline">
                               {post.title}
@@ -414,7 +431,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                           <a
                             href={post.href}
                             target="_blank"
-                            className="mt-2 block hover:no-underline"
+                            className="block mt-2 hover:no-underline"
                           >
                             <p className="mt-3 text-base cursor-pointer text-movet-black hover:no-underline">
                               {post.description}
@@ -425,7 +442,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                         <>
                           <Link
                             href={post.href}
-                            className="mt-2 block hover:no-underline"
+                            className="block mt-2 hover:no-underline"
                           >
                             <p className="text-xl font-semibold cursor-pointer text-movet-black hover:no-underline">
                               {post.title}
@@ -433,7 +450,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                           </Link>
                           <Link
                             href={post.href}
-                            className="mt-2 block hover:no-underline"
+                            className="block mt-2 hover:no-underline"
                           >
                             <p className="mt-3 text-base cursor-pointer text-movet-black hover:no-underline">
                               {post.description}
@@ -442,7 +459,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                         </>
                       )}
                     </div>
-                    <div className="mt-3 flex items-center">
+                    <div className="flex items-center mt-3">
                       {post.author.imageUrl && (
                         <div className="flex-shrink-0 mt-3">
                           {/* <a href={post.author.href}> */}
@@ -458,7 +475,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                         </div>
                       )}
                       <div className="ml-3">
-                        <p className="text-sm font-medium mb-0">
+                        <p className="mb-0 text-sm font-medium">
                           {/*<a href={post.author.href} className="hover:underline">*/}
                           {post.author.name}
                           {/* </a>*/}
@@ -479,12 +496,12 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
               ),
             )}
           </div>
-          <div className="mx-auto sm:pb-8 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
+          <div className="grid gap-5 mx-auto max-w-lg sm:pb-8 lg:max-w-none lg:grid-cols-3">
             {posts.map((post, index) =>
               !post.isFeatured ? (
                 <div
                   key={post.title}
-                  className="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white"
+                  className="flex overflow-hidden flex-col bg-white rounded-lg shadow-lg"
                 >
                   <div className="flex-shrink-0 -mb-2">
                     {post.isExternalLink ? (
@@ -509,12 +526,12 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                       </Link>
                     )}
                   </div>
-                  <div className="flex flex-1 flex-col justify-between bg-white p-6">
+                  <div className="flex flex-col flex-1 justify-between p-6 bg-white">
                     <div className="flex-1">
                       <div className="flex flex-row items-center">
                         {Array.isArray(post.category) ? (
                           post.category.map((cat: any) => (
-                            <p className="text-sm font-medium mr-2">
+                            <p className="mr-2 text-sm font-medium">
                               <span
                                 className={classNames(
                                   cat.color,
@@ -542,7 +559,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                         <a
                           href={post.href}
                           target="_blank"
-                          className="mt-2 block text-movet-black hover:no-underline"
+                          className="block mt-2 text-movet-black hover:no-underline"
                         >
                           <p className="text-xl font-semibold hover:no-underline">
                             {post.title}
@@ -554,7 +571,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                       ) : (
                         <Link
                           href={post.href}
-                          className="mt-2 block text-movet-black hover:no-underline"
+                          className="block mt-2 text-movet-black hover:no-underline"
                         >
                           <p className="text-xl font-semibold hover:no-underline">
                             {post.title}
@@ -565,7 +582,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                         </Link>
                       )}
                     </div>
-                    <div className="mt-3 flex items-center">
+                    <div className="flex items-center mt-3">
                       <div className="flex-shrink-0 mt-3">
                         <span className="sr-only">{post.author.name}</span>
                         <Image
@@ -577,7 +594,7 @@ export default function Blog({ popUpAd }: { popUpAd: PopUpAdType }) {
                         />
                       </div>
                       <div className="ml-3">
-                        <p className="text-sm font-medium mb-0">
+                        <p className="mb-0 text-sm font-medium">
                           {post.author.name}
                         </p>
                         <div className="flex space-x-1 text-sm">

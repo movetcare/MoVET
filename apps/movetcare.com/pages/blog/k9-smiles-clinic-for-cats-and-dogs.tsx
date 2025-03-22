@@ -47,7 +47,7 @@ export default function K9Smiles() {
           content="/images/blog/canine-smiles-clinic.png"
         />
       </Head>
-      <section className="flex flex-col items-center justify-center sm:max-w-screen-lg mx-4 sm:mx-auto mt-8 mb-20 lg:px-20 bg-white rounded-xl p-4 sm:p-8">
+      <section className="flex flex-col justify-center items-center p-4 mx-4 mt-8 mb-20 bg-white rounded-xl sm:max-w-screen-lg sm:mx-auto lg:px-20 sm:p-8">
         <Image
           className="rounded-xl cursor-pointer"
           src="/images/blog/canine-smiles-clinic.png"
@@ -55,7 +55,7 @@ export default function K9Smiles() {
           height={500}
           width={600}
         />
-        <h2 className="text-2xl mt-8 text-center max-w-screen-md font-extrabold">
+        <h2 className="mt-8 max-w-screen-md text-2xl font-extrabold text-center">
           MoVET is partnering with{" "}
           <a href="https://www.k-9smiles.com/" target="_blank" rel="noreferrer">
             K-9 Smiles
@@ -63,16 +63,16 @@ export default function K9Smiles() {
           to offer a safe and affordable teeth cleaning clinic for your dog or
           cat!
         </h2>
-        <p className="mt-4 text-center max-w-screen-md">
+        <p className="mt-4 max-w-screen-md text-center">
           K-9 Smiles provides in-depth teeth cleaning for both cats and dogs.
           Their services include an oral exam, no anesthesia, plaque & tarter
           removal, scaling & polishing with their well trained technicians under
           the supervision of one of MoVET&apos;s licensed veterinarians.
         </p>
-        <h3 className="text-xl text-center mt-4 font-abside">
+        <h3 className="mt-4 text-xl text-center font-abside">
           Upcoming Clinics:
         </h3>
-        <ul className="text-center mt-2">
+        <ul className="mt-2 text-center">
           <li>February 22nd - 9:30AM - 3:30PM</li>
           <li>March 22nd - 9:30AM - 3:30PM</li>
           <li>April 26th - 9:30AM - 3:30PM</li>
@@ -84,18 +84,18 @@ export default function K9Smiles() {
           <li>October 11th - 9:30AM - 3:30PM</li>
           <li>November 8th - 9:30AM - 3:30PM</li>
         </ul>
-        <h3 className="text-xl text-center mt-12 font-abside">
+        <h3 className="mt-12 text-xl text-center font-abside">
           SCHEDULE A TEETH CLEANING FOR YOUR PET TODAY!
         </h3>
-        <p className="mt-0 text-center text-xl font-bold">
-          DENTAL EXAM + IN-DEPTH TEETH CLEANING - $290
+        <p className="mt-0 text-xl font-bold text-center">
+          DENTAL EXAM + IN-DEPTH TEETH CLEANING - $295
         </p>
         <K9SmilesForm />
-        <p className="text-center max-w-screen-md font-extrabold italic text-xs -mt-2">
+        <p className="-mt-2 max-w-screen-md text-xs italic font-extrabold text-center">
           * It is always up to the veterinarian whether your pet is a candidate
           for the service.
         </p>
-        <p className="-mt-2 text-center max-w-screen-md font-extrabold italic text-xs">
+        <p className="-mt-2 max-w-screen-md text-xs italic font-extrabold text-center">
           * This is not intended to replace a dental under anesthesia but rather
           to be part of your pet&apos;s dental plan.
         </p>

@@ -7,7 +7,7 @@ describe("k9-smiles-page", () => {
   });
   it("can view all k9 smile form ui", () => {
     cy.get("h3").contains("SCHEDULE A TEETH CLEANING FOR YOUR PET TODAY!");
-    cy.get("p").contains("DENTAL EXAM + IN-DEPTH TEETH CLEANING - $290");
+    cy.get("p").contains("DENTAL EXAM + IN-DEPTH TEETH CLEANING - $295");
     cy.get("label").as("l").contains("First Name");
     cy.get("@l").contains("Last Name");
     cy.get("@l").contains("Email");

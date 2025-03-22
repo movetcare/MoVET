@@ -31,11 +31,11 @@ const amenities: {
 ];
 export const Amenities = () => (
   <section className="relative z-30 my-12 sm:px-8 sm:max-w-screen-lg sm:mx-auto">
-    <div className="-mt-2 sm:mb-16 flex flex-col mx-4">
-      <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-movet-black">
+    <div className="flex flex-col mx-4 -mt-2 sm:mb-16">
+      <h2 className="text-3xl font-extrabold tracking-tight text-center sm:text-4xl text-movet-black">
         Additional Amenities
       </h2>
-      <p className="text-lg w-full text-center">
+      <p className="w-full text-lg text-center">
         Available at our <span className="font-extrabold">NEW</span> Belleview
         Station location
       </p>
@@ -47,13 +47,13 @@ export const Amenities = () => (
       >
         4912 S Newport St, Denver CO 80237
       </a>
-      <div className="flex flex-col sm:flex-row mx-auto justify-center mt-4 mb-12 sm:mb-16 max-w-screen-lg">
+      <div className="flex flex-col justify-center mx-auto mt-4 mb-12 max-w-screen-lg sm:flex-row sm:mb-16">
         {amenities.map((service) => (
           <div
-            className="w-full py-4 sm:py-0 sm:mx-8 text-center flex flex-col"
+            className="flex flex-col py-4 w-full text-center sm:py-0 sm:mx-8"
             key={service.name}
           >
-            <div className="mx-auto hover:animate-bounce duration-500">
+            <div className="mx-auto">
               <Image
                 width={112}
                 height={112}
@@ -61,15 +61,15 @@ export const Amenities = () => (
                 alt={`${service.name} icon`}
               />
             </div>
-            <p className="text-center text-xl m-0 sm:mt-2 font-bold">
+            <p className="m-0 text-xl font-bold text-center sm:mt-2">
               {service.name}
             </p>
           </div>
         ))}
       </div>
     </div>
-    <div className="flex flex-col sm:flex-row mt-12 sm:-mt-12 -mb-4">
-      <div className="sm:w-7/12 flex flex-col items-center relative z-20 -mt-8">
+    <div className="flex flex-col mt-12 -mb-4 sm:flex-row sm:-mt-12">
+      <div className="flex relative z-20 flex-col items-center -mt-8 sm:w-7/12">
         <div className="w-full">
           <div className="hidden sm:block">
             <Carousel
@@ -85,7 +85,7 @@ export const Amenities = () => (
                   <h3 className="text-2xl tracking-wide">
                     {serviceStyle?.name}
                   </h3>
-                  <p className="text-lg my-3 tracking-tight">
+                  <p className="my-3 text-lg tracking-tight">
                     {serviceStyle?.description}
                   </p>
                 </div>
@@ -108,7 +108,7 @@ export const Amenities = () => (
                   <h3 className="text-2xl tracking-wide">
                     {serviceStyle?.name}
                   </h3>
-                  <p className="text-base my-3 tracking-tight">
+                  <p className="my-3 text-base tracking-tight">
                     {serviceStyle?.description}
                   </p>
                 </div>
@@ -117,9 +117,9 @@ export const Amenities = () => (
           </div>
         </div>
       </div>
-      <div className="w-full flex justify-center items-center">
-        <div className="max-w-xs h-fit w-full mt-4 sm:mt-0">
-          <video controls className="rounded-xl w-full">
+      <div className="flex justify-center items-center w-full">
+        <div className="mt-4 w-full max-w-xs h-fit sm:mt-0">
+          <video controls className="w-full rounded-xl">
             <source
               src="/videos/movet-clinic-virtual-tour.mov"
               type="video/mp4"
